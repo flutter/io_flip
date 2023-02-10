@@ -1,0 +1,16 @@
+{
+  "projects": {
+    "default": "io-photobooth-dev",
+    "production": "holobooth-prod"
+  },
+  "targets": {
+    "top-dash-dev": {
+      "hosting": {
+        "app_dev": [
+          "a16e0900d-fe2c-3609-b43c-87093e447b78"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
