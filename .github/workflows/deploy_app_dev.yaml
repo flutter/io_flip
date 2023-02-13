@@ -16,7 +16,7 @@ jobs:
           flutter-version: "3.7.2"
           channel: "stable"
       - run: flutter packages get
-      - run: flutter build web --web-renderer canvaskit -t lib/main_dev.dart --dart-define SHARING_ENABLED=true
+      - run: flutter build web --web-renderer canvaskit -t lib/main_development.dart --dart-define SHARING_ENABLED=true
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
