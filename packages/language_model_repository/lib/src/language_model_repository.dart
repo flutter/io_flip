@@ -57,7 +57,6 @@ final _expressions = [
   'Unicorns are real',
 ];
 
-
 /// {@template language_model_repository}
 /// Repository providing access language model services
 /// {@endtemplate}
