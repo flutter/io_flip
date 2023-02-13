@@ -1,0 +1,27 @@
+name: deploy_app_dev
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-dev:
+    runs-on: ubuntu-latest
+    name: Deploy App Development
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.7.1"
+          channel: "stable"
+      - run: flutter packages get
+      - run: flutter build web --web-renderer canvaskit -t lib/main_dev.dart --dart-define SHARING_ENABLED=true
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_DEV }}"
+          projectId: top-dash-dev
+          target: app_dev
+          expires: 30d
+          channelId: live
