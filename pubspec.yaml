@@ -9,6 +9,7 @@ environment:
 
 dependencies:
   bloc: ^8.1.1
+  equatable: ^2.0.5
   firebase_auth: ^4.2.6
   firebase_core: ^2.5.0
   firebase_storage: ^11.0.11
@@ -18,6 +19,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: ^0.17.0
+  language_model_repository:
+    path: packages/language_model_repository
 
 dev_dependencies:
   bloc_test: ^9.1.1
