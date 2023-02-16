@@ -10,6 +10,22 @@ import 'package:top_dash/settings/settings.dart';
 import 'package:top_dash/style/palette.dart';
 import 'package:top_dash/style/snack_bar.dart';
 
+typedef CreateAudioController = AudioController Function();
+
+@visibleForTesting
+AudioController updateAudioController(
+  BuildContext context,
+  SettingsController settings,
+  ValueNotifier<AppLifecycleState> lifecycleNotifier,
+  AudioController? audio, {
+  CreateAudioController createAudioController = AudioController.new,
+}) {
+  return audio ?? createAudioController()
+    ..initialize()
+    ..attachSettings(settings)
+    ..attachLifecycleNotifier(lifecycleNotifier);
+}
+
 class App extends StatefulWidget {
   const App({
     required this.settingsPersistence,
@@ -46,12 +62,7 @@ class _AppState extends State<App> {
             // This way, music starts immediately.
             lazy: false,
             create: (context) => AudioController()..initialize(),
-            update: (context, settings, lifecycleNotifier, audio) {
-              return audio ?? AudioController()
-                ..initialize()
-                ..attachSettings(settings)
-                ..attachLifecycleNotifier(lifecycleNotifier);
-            },
+            update: updateAudioController,
             dispose: (context, audio) => audio.dispose(),
           ),
           Provider(
