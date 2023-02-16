@@ -8,19 +8,25 @@ environment:
   flutter: 3.7.2
 
 dependencies:
+  audioplayers: ^3.0.1
   bloc: ^8.1.1
   equatable: ^2.0.5
   firebase_auth: ^4.2.6
   firebase_core: ^2.5.0
+  firebase_crashlytics: ^3.0.12
   firebase_storage: ^11.0.11
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.2
   flutter_localizations:
     sdk: flutter
+  go_router: ^6.0.7
   intl: ^0.17.0
   language_model_repository:
     path: packages/language_model_repository
+  logging: ^1.1.1
+  provider: ^6.0.5
+  shared_preferences: ^2.0.17
 
 dev_dependencies:
   bloc_test: ^9.1.1
@@ -32,3 +38,13 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+
+  assets:
+    - assets/images/
+    - assets/music/
+    - assets/sfx/
+
+  fonts:
+    - family: Permanent Marker
+      fonts:
+        - asset: assets/Permanent_Marker/PermanentMarker-Regular.ttf

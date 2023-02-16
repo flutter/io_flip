@@ -3,7 +3,9 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:logging/logging.dart';
 
 class AppBlocObserver extends BlocObserver {
   const AppBlocObserver();
@@ -36,7 +38,21 @@ Future<void> bootstrap({
   );
 
   await runZonedGuarded(
-    () async => runApp(await builder()),
+    () async {
+      if (kReleaseMode) {
+        // Don't log anything below warnings in production.
+        Logger.root.level = Level.WARNING;
+      }
+      Logger.root.onRecord.listen((record) {
+        debugPrint('${record.level.name}: ${record.time}: '
+            '${record.loggerName}: '
+            '${record.message}');
+      });
+
+      WidgetsFlutterBinding.ensureInitialized();
+
+      runApp(await builder());
+    },
     (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
   );
 }
