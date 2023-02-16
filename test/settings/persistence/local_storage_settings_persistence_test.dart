@@ -4,6 +4,10 @@ import 'package:top_dash/settings/persistence/persistence.dart';
 
 void main() {
   group('LocalStorageSettingsPersistence', () {
+    setUp(() {
+      SharedPreferences.setMockInitialValues({});
+    });
+
     test('getMusicOn', () async {
       SharedPreferences.setMockInitialValues({
         'musicOn': false,
