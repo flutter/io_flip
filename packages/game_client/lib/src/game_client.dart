@@ -10,7 +10,6 @@ import 'package:http/http.dart';
 /// Check [cause] and [stackTrace] for specific details.
 /// {@endtemplate}
 class GameClientError extends Error {
-
   /// {@macro game_client_error}
   GameClientError(this.cause);
 
@@ -29,8 +28,8 @@ class GameClient {
   const GameClient({
     required String endpoint,
     PostCall postCall = post,
-  }) : _endpoint = endpoint,
-  _post = postCall;
+  })  : _endpoint = endpoint,
+        _post = postCall;
 
   final String _endpoint;
 
@@ -42,16 +41,16 @@ class GameClient {
 
     if (response.statusCode != HttpStatus.ok) {
       throw GameClientError(
-        'POST /cards returned status ${response.statusCode} with the following response: "${response.body}"', 
+        'POST /cards returned status ${response.statusCode} with the following response: "${response.body}"',
       );
     }
 
     try {
       final json = jsonDecode(response.body);
       return Card.fromJson(json as Map<String, dynamic>);
-    } catch(e) {
+    } catch (e) {
       throw GameClientError(
-        'POST /cards returned invalid response "${response.body}"', 
+        'POST /cards returned invalid response "${response.body}"',
       );
     }
   }

@@ -66,8 +66,7 @@ void main() {
 
     test('throws GameClientError when request response is invalid', () async {
       final response = _MockResponse();
-      when(() => response.statusCode)
-          .thenReturn(HttpStatus.ok);
+      when(() => response.statusCode).thenReturn(HttpStatus.ok);
       when(() => response.body).thenReturn('Ops');
 
       final client = GameClient(endpoint: '', postCall: (_) async => response);
