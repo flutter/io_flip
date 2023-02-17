@@ -4,12 +4,10 @@ import 'package:cards_repository/cards_repository.dart';
 import 'package:image_model_repository/image_model_repository.dart';
 import 'package:language_model_repository/language_model_repository.dart';
 
-
 /// {@template card_rng}
 /// Generate random attributes to be used in the card generation.
 /// {@endtemplate}
 class CardRng {
-
   /// {@macro card_rng}
   CardRng({
     Random? rng,
@@ -39,7 +37,6 @@ class CardRng {
 /// Access to Cards Datasource.
 /// {@endtemplate}
 class CardsRepository {
-
   /// {@macro cards_repository}
   CardsRepository({
     required ImageModelRepository imageModelRepository,

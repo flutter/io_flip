@@ -8,7 +8,6 @@ part 'card.g.dart';
 /// {@endtemplate}
 @JsonSerializable(createFactory: false)
 class Card extends Equatable {
-
   /// {@macro card}
   const Card({
     required this.id,
@@ -24,20 +23,28 @@ class Card extends Equatable {
 
   /// Id
   final String id;
+
   /// Name
   final String name;
+
   /// Description
   final String description;
+
   /// Image
   final String image;
+
   /// Product
   final int product;
+
   /// Design
   final int design;
+
   /// Frontend
   final int frontend;
+
   /// Backend
   final int backend;
+
   /// Rarity
   final bool rarity;
 
@@ -46,14 +53,14 @@ class Card extends Equatable {
 
   @override
   List<Object> get props => [
-    id,
-    name,
-    description,
-    image,
-    product,
-    design,
-    frontend,
-    backend,
-    rarity,
-  ];
+        id,
+        name,
+        description,
+        image,
+        product,
+        design,
+        frontend,
+        backend,
+        rarity,
+      ];
 }

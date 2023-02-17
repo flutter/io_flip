@@ -22,8 +22,6 @@ dependencies:
     sdk: flutter
   go_router: ^6.0.7
   intl: ^0.17.0
-  language_model_repository:
-    path: packages/language_model_repository
   logging: ^1.1.1
   provider: ^6.0.5
   shared_preferences: ^2.0.17
