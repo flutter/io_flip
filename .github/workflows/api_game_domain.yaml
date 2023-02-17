@@ -1,4 +1,4 @@
-name: game_domain
+name: api_game_domain
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -7,8 +7,8 @@ concurrency:
 on:
   pull_request:
     paths:
-      - "packages/game_domain/**"
-      - ".github/workflows/game_domain.yaml"
+      - "api/packages/game_domain/**"
+      - ".github/workflows/api_game_domain.yaml"
     branches:
       - main
 
@@ -16,4 +16,4 @@ jobs:
   build:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v1
     with:
-      working_directory: packages/game_domain/
+      working_directory: api_packages/game_domain
