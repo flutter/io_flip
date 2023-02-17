@@ -1,0 +1,57 @@
+name: deploy_dev_api
+
+on:
+  push:
+    paths:
+      - "api/**"
+      - ".github/workflows/deploy_dev_api.yaml"
+    branches:
+      - main
+
+env:
+  PROJECT_ID: top-dash-dev
+  SERVICE: top-dash-dev-api
+  REGION: us-central1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: dart-lang/setup-dart@v1
+
+      - name: Install Dart Frog
+        run: dart pub global activate dart_frog_cli
+
+      - name: Create Dev Build
+        working-directory: ./api
+        run: dart_frog build
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.CLOUD_RUN_DEV_SA }}
+
+      - name: Authorize Docker push
+        run: gcloud auth configure-docker
+
+      - name: Build and Push Container
+        run: |-
+          docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }} api/build
+          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }}
+
+      - name: Deploy to Cloud Run
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v1
+        with:
+          service: ${{ env.SERVICE }}
+          image: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }}
+          region: ${{ env.REGION }}
+
+      - name: Show Output
+        run: echo ${{ steps.deploy.outputs.url }}
+
+      - name: Ping
+        run: curl "${{ steps.deploy.outputs.url }}"
