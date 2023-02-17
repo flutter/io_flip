@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:image_model_repository/image_model_repository.dart';
 import 'package:language_model_repository/language_model_repository.dart';
+import 'package:meta/meta.dart';
 
 /// {@template card_rng}
 /// Generate random attributes to be used in the card generation.
@@ -15,13 +16,15 @@ class CardRng {
     _rng = rng ?? Random();
   }
 
-  static const _rareChance = .2;
+  /// Then chance of the rare card to be generated.
+  @visibleForTesting
+  static const rareChance = .2;
 
   late final Random _rng;
 
   /// Rolls the chances to generate a rare card.
   bool rollRarity() {
-    return _rng.nextDouble() < _rareChance;
+    return _rng.nextDouble() < rareChance;
   }
 
   /// Rolls the value for an attribute.

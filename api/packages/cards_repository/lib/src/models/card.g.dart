@@ -10,6 +10,7 @@ Map<String, dynamic> _$CardToJson(Card instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
       'description': instance.description,
+      'image': instance.image,
       'product': instance.product,
       'design': instance.design,
       'frontend': instance.frontend,
