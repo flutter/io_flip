@@ -20,7 +20,7 @@ dependencies:
   flutter_bloc: ^8.1.2
   flutter_localizations:
     sdk: flutter
-  go_router: ^6.0.7
+  go_router: ^6.0.8
   intl: ^0.17.0
   logging: ^1.1.1
   provider: ^6.0.5
