@@ -1,4 +1,4 @@
-name: cards_repository
+name: api_cards_repository
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -8,7 +8,7 @@ on:
   pull_request:
     paths:
       - "api/packages/cards_repository/**"
-      - ".github/workflows/cards_repository.yaml"
+      - ".github/workflows/api_cards_repository.yaml"
     branches:
       - main
 

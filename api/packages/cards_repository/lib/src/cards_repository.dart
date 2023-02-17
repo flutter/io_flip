@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:cards_repository/cards_repository.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:image_model_repository/image_model_repository.dart';
 import 'package:language_model_repository/language_model_repository.dart';
 import 'package:meta/meta.dart';

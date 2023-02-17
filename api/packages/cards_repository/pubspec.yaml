@@ -8,6 +8,8 @@ environment:
 
 dependencies:
   equatable: ^2.0.5
+  game_domain:
+    path: ../../../packages/game_domain
   image_model_repository:
     path: ../image_model_repository
   json_annotation: ^4.8.0
