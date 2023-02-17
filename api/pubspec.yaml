@@ -1,0 +1,24 @@
+name: api
+description: Top Dash Game APIs
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ">=2.19.0 <3.0.0"
+
+dependencies:
+  cards_repository:
+    path: packages/cards_repository
+  dart_frog: ^0.3.0
+  image_model_repository:
+    path: packages/image_model_repository
+  json_annotation: ^4.8.0
+  language_model_repository:
+    path: packages/language_model_repository
+
+dev_dependencies:
+  build_runner: ^2.3.3
+  json_serializable: ^6.6.1
+  mocktail: ^0.3.0
+  test: ^1.19.2
+  very_good_analysis: ^4.0.0
