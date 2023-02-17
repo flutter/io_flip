@@ -1,4 +1,4 @@
-name: language_model_repository
+name: api
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -7,8 +7,8 @@ concurrency:
 on:
   pull_request:
     paths:
-      - "api/packages/language_model_repository/**"
-      - ".github/workflows/language_model_repository.yaml"
+      - "api/**"
+      - ".github/workflows/api.yaml"
     branches:
       - main
 
@@ -16,4 +16,7 @@ jobs:
   build:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v1
     with:
-      working_directory: api/packages/language_model_repository
+      working_directory: api
+      analyze_directories: "routes test"
+      coverage_excludes: "**/*.g.dart"
+      report_on: "routes"

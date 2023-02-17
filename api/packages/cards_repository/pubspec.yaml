@@ -1,0 +1,23 @@
+name: cards_repository
+description: Access to Cards datasource.
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ">=2.19.0 <3.0.0"
+
+dependencies:
+  equatable: ^2.0.5
+  image_model_repository:
+    path: ../image_model_repository
+  json_annotation: ^4.8.0
+  language_model_repository:
+    path: ../language_model_repository
+  meta: ^1.9.0
+
+dev_dependencies:
+  build_runner: ^2.3.3
+  json_serializable: ^6.6.1
+  mocktail: ^0.3.0
+  test: ^1.19.2
+  very_good_analysis: ^4.0.0
