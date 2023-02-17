@@ -49,6 +49,35 @@ void main() {
       );
     });
 
+    test('fromJson returns the correct instance', () {
+      expect(
+        Card.fromJson(const {
+          'id': '',
+          'name': '',
+          'description': '',
+          'image': '',
+          'rarity': false,
+          'design': 1,
+          'frontend': 1,
+          'backend': 1,
+          'product': 1,
+        }),
+        equals(
+          Card(
+            id: '',
+            name: '',
+            description: '',
+            image: '',
+            rarity: false,
+            design: 1,
+            frontend: 1,
+            backend: 1,
+            product: 1,
+          ),
+        ),
+      );
+    });
+
     test('supports equality', () {
       expect(
         Card(
