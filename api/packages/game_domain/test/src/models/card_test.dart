@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:cards_repository/cards_repository.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -46,6 +46,35 @@ void main() {
           'backend': 1,
           'product': 1,
         }),
+      );
+    });
+
+    test('fromJson returns the correct instance', () {
+      expect(
+        Card.fromJson(const {
+          'id': '',
+          'name': '',
+          'description': '',
+          'image': '',
+          'rarity': false,
+          'design': 1,
+          'frontend': 1,
+          'backend': 1,
+          'product': 1,
+        }),
+        equals(
+          Card(
+            id: '',
+            name: '',
+            description: '',
+            image: '',
+            rarity: false,
+            design: 1,
+            frontend: 1,
+            backend: 1,
+            product: 1,
+          ),
+        ),
       );
     });
 

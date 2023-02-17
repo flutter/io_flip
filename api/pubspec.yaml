@@ -10,6 +10,8 @@ dependencies:
   cards_repository:
     path: packages/cards_repository
   dart_frog: ^0.3.0
+  game_domain:
+    path: packages/game_domain
   image_model_repository:
     path: packages/image_model_repository
   json_annotation: ^4.8.0

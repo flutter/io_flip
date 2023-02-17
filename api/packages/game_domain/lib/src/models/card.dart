@@ -6,7 +6,7 @@ part 'card.g.dart';
 /// {@template card}
 /// Model representing a card.
 /// {@endtemplate}
-@JsonSerializable(createFactory: false, ignoreUnannotated: true)
+@JsonSerializable(ignoreUnannotated: true)
 class Card extends Equatable {
   /// {@macro card}
   const Card({
@@ -20,6 +20,9 @@ class Card extends Equatable {
     required this.backend,
     required this.rarity,
   });
+
+  /// {@macro card}
+  factory Card.fromJson(Map<String, dynamic> json) => _$CardFromJson(json);
 
   /// Id
   @JsonKey()
