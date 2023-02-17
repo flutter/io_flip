@@ -7,7 +7,6 @@ on:
       - ".github/workflows/deploy_dev_api.yaml"
     branches:
       - main
-      - feat/api-deploy-action
 
 env:
   PROJECT_ID: top-dash-dev
@@ -26,7 +25,7 @@ jobs:
       - name: Install Dart Frog
         run: dart pub global activate dart_frog_cli
 
-      - name: Create Production Build
+      - name: Create Dev Build
         working-directory: ./api
         run: dart_frog build
 
