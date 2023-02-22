@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/game/game_screen.dart';
 import 'package:top_dash/main_menu/main_menu_screen.dart';
 import 'package:top_dash/settings/settings_screen.dart';
@@ -23,6 +24,12 @@ GoRouter createRouter() {
             path: 'play',
             builder: (context, state) => const GameScreen(
               key: Key('settings'),
+            ),
+          ),
+          GoRoute(
+            path: 'draft',
+            builder: (context, state) => const DraftPage(
+              key: Key('draft'),
             ),
           ),
         ],

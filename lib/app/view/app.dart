@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:game_client/game_client.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:top_dash/app_lifecycle/app_lifecycle.dart';
@@ -29,11 +30,14 @@ AudioController updateAudioController(
 class App extends StatefulWidget {
   const App({
     required this.settingsPersistence,
+    required this.gameClient,
     this.router,
     super.key,
   });
 
   final SettingsPersistence settingsPersistence;
+
+  final GameClient gameClient;
 
   final GoRouter? router;
 
@@ -49,6 +53,9 @@ class _AppState extends State<App> {
     return AppLifecycleObserver(
       child: MultiProvider(
         providers: [
+          Provider.value(
+            value: widget.gameClient,
+          ),
           Provider<SettingsController>(
             lazy: false,
             create: (context) => SettingsController(
