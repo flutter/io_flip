@@ -24,7 +24,7 @@ class DraftView extends StatelessWidget {
     }
 
     return BlocListener<DraftBloc, DraftState>(
-      listenWhen: (old, current) => old.cards.length != state.cards.length,
+      listenWhen: (old, current) => old.cards.length != current.cards.length,
       listener: (context, state) {
         if (state.status != DraftStateStatus.deckCompleted) {
           bloc.add(CardRequested());
@@ -38,31 +38,48 @@ class DraftView extends StatelessWidget {
             children: [
               Stack(
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: palette.backgroundSettings,
-                      borderRadius: BorderRadius.circular(10),
+                  for (var i = 0; i < state.cards.length; i++)
+                    Transform.rotate(
+                      angle: -.12,
+                      child: Transform.translate(
+                        offset: Offset(i * 40, i * 40),
+                        child: Transform.rotate(
+                          angle: i * .4,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: palette.backgroundSettings,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            width: 200,
+                            height: 350,
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 8),
+                                Text(state.cards[i].name),
+                                const SizedBox(height: 8),
+                                Image.network(
+                                  state.cards[i].image,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                    width: 200,
-                    height: 350,
-                    child: const SizedBox(
-                      width: 50,
-                      height: 50,
-                      child: Align(child: CircularProgressIndicator()),
-                    ),
-                  ),
                 ],
               ),
-              const SizedBox(height: 16),
-              Text(l10n.generatingCards(state.cards.length + 1, 3)),
-              const SizedBox(height: 16),
+              const SizedBox(height: 120),
+              if (state.status != DraftStateStatus.deckCompleted) ...[
+                const CircularProgressIndicator(),
+                Text(l10n.generatingCards(state.cards.length + 1, 3)),
+              ],
               if (state.status == DraftStateStatus.deckCompleted)
-              ElevatedButton(
-                onPressed: () {
-                  // TODO navigate to the lobby when implemented
-                },
-                child: Text(l10n.play),
-              ),
+                ElevatedButton(
+                  onPressed: () {
+                    // TODO navigate to the lobby when implemented
+                  },
+                  child: Text(l10n.play),
+                ),
             ],
           ),
         ),
