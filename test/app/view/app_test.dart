@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:game_client/game_client.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/app/app.dart';
 import 'package:top_dash/audio/audio_controller.dart';
-import 'package:top_dash/game/game_screen.dart';
+import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/main_menu/main_menu_screen.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
 import 'package:top_dash/settings/settings.dart';
@@ -21,6 +22,8 @@ class _MockSettingsController extends Mock implements SettingsController {}
 class _MockLifecycleNotifier extends Mock
     implements ValueNotifier<AppLifecycleState> {}
 
+class _MockGameClient extends Mock implements GameClient {}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -29,6 +32,7 @@ void main() {
       await tester.pumpWidget(
         App(
           settingsPersistence: MemoryOnlySettingsPersistence(),
+          gameClient: _MockGameClient(),
         ),
       );
 
@@ -99,6 +103,7 @@ void main() {
         await tester.pumpWidget(
           App(
             settingsPersistence: MemoryOnlySettingsPersistence(),
+            gameClient: _MockGameClient(),
           ),
         );
 
@@ -110,13 +115,14 @@ void main() {
         await tester.pumpWidget(
           App(
             settingsPersistence: MemoryOnlySettingsPersistence(),
+            gameClient: _MockGameClient(),
           ),
         );
 
         await tester.tap(find.text('Play'));
         await tester.pumpAndSettle();
 
-        expect(find.byType(GameScreen), findsOneWidget);
+        expect(find.byType(DraftPage), findsOneWidget);
       });
 
       testWidgets('can navigate to the settings page', (tester) async {
@@ -124,6 +130,7 @@ void main() {
         await tester.pumpWidget(
           App(
             settingsPersistence: MemoryOnlySettingsPersistence(),
+            gameClient: _MockGameClient(),
           ),
         );
 
@@ -140,6 +147,7 @@ void main() {
           await tester.pumpWidget(
             App(
               settingsPersistence: MemoryOnlySettingsPersistence(),
+              gameClient: _MockGameClient(),
             ),
           );
 
@@ -160,6 +168,7 @@ void main() {
         await tester.pumpWidget(
           App(
             settingsPersistence: MemoryOnlySettingsPersistence(),
+            gameClient: _MockGameClient(),
           ),
         );
 
@@ -172,13 +181,14 @@ void main() {
         await tester.pumpWidget(
           App(
             settingsPersistence: MemoryOnlySettingsPersistence(),
+            gameClient: _MockGameClient(),
           ),
         );
 
         await tester.tap(find.text('Play'));
         await tester.pumpAndSettle();
 
-        expect(find.byType(GameScreen), findsOneWidget);
+        expect(find.byType(DraftPage), findsOneWidget);
       });
 
       testWidgets('can navigate to the settings page', (tester) async {
@@ -187,6 +197,7 @@ void main() {
         await tester.pumpWidget(
           App(
             settingsPersistence: MemoryOnlySettingsPersistence(),
+            gameClient: _MockGameClient(),
           ),
         );
 
@@ -204,6 +215,7 @@ void main() {
           await tester.pumpWidget(
             App(
               settingsPersistence: MemoryOnlySettingsPersistence(),
+              gameClient: _MockGameClient(),
             ),
           );
 

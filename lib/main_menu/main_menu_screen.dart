@@ -48,7 +48,7 @@ class MainMenuScreen extends StatelessWidget {
             FilledButton(
               onPressed: () {
                 audioController.playSfx(SfxType.buttonTap);
-                GoRouter.of(context).go('/play');
+                GoRouter.of(context).go('/draft');
               },
               child: Text(l10n.play),
             ),
