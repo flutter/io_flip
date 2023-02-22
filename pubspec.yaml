@@ -11,7 +11,7 @@ dependencies:
   audioplayers: ^3.0.1
   bloc: ^8.1.1
   equatable: ^2.0.5
-  firebase_auth: ^4.2.6
+  firebase_auth: ^4.2.8
   firebase_core: ^2.5.0
   firebase_crashlytics: ^3.0.12
   firebase_storage: ^11.0.13
