@@ -167,7 +167,7 @@ void main() {
         await tester.pumpSubject(draftBloc: draftBloc);
 
         await tester.tap(find.text('Play'));
-        // TODO assert navigation when implemented.
+        // TODO(erickzanardo): assert navigation when implemented.
       },
     );
   });

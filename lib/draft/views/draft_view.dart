@@ -76,7 +76,8 @@ class DraftView extends StatelessWidget {
               if (state.status == DraftStateStatus.deckCompleted)
                 ElevatedButton(
                   onPressed: () {
-                    // TODO navigate to the lobby when implemented
+                    // TODO(erickzanardo): navigate to the lobby when
+                    // implemented
                   },
                   child: Text(l10n.play),
                 ),
