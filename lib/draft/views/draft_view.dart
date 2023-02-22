@@ -27,7 +27,7 @@ class DraftView extends StatelessWidget {
       listenWhen: (old, current) => old.cards.length != current.cards.length,
       listener: (context, state) {
         if (state.status != DraftStateStatus.deckCompleted) {
-          bloc.add(CardRequested());
+          bloc.add(const CardRequested());
         }
       },
       child: Scaffold(

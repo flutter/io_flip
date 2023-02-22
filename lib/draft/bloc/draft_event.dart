@@ -5,6 +5,8 @@ abstract class DraftEvent extends Equatable {
 }
 
 class CardRequested extends DraftEvent {
+  const CardRequested();
+
   @override
   List<Object> get props => [];
 }

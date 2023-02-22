@@ -14,10 +14,11 @@ class DraftState extends Equatable {
     required this.status,
   });
 
-  const DraftState.initial() : this(
-    cards: const [],
-    status: DraftStateStatus.initial,
-  );
+  const DraftState.initial()
+      : this(
+          cards: const [],
+          status: DraftStateStatus.initial,
+        );
 
   final List<Card> cards;
   final DraftStateStatus status;

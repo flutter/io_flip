@@ -11,8 +11,8 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     required GameClient gameClient,
   })  : _gameClient = gameClient,
         super(const DraftState.initial()) {
-          on<CardRequested>(_onCardRequested);
-        }
+    on<CardRequested>(_onCardRequested);
+  }
 
   final GameClient _gameClient;
 

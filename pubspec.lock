@@ -467,6 +467,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.0"
+  mocktail_image_network:
+    dependency: "direct dev"
+    description:
+      name: mocktail_image_network
+      sha256: a13cb88a8e199c797ad9ddce80880821781c164a9693ddb58104c07915f60877
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.1"
   nested:
     dependency: transitive
     description:
