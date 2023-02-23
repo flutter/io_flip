@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:top_dash/app_lifecycle/app_lifecycle.dart';
 import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/l10n/l10n.dart';
+import 'package:top_dash/match_making/match_maker.dart';
 import 'package:top_dash/router/router.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
 import 'package:top_dash/settings/settings.dart';
@@ -31,6 +32,7 @@ class App extends StatefulWidget {
   const App({
     required this.settingsPersistence,
     required this.gameClient,
+    required this.matchMaker,
     this.router,
     super.key,
   });
@@ -38,6 +40,8 @@ class App extends StatefulWidget {
   final SettingsPersistence settingsPersistence;
 
   final GameClient gameClient;
+
+  final MatchMaker matchMaker;
 
   final GoRouter? router;
 
@@ -53,9 +57,8 @@ class _AppState extends State<App> {
     return AppLifecycleObserver(
       child: MultiProvider(
         providers: [
-          Provider.value(
-            value: widget.gameClient,
-          ),
+          Provider.value(value: widget.gameClient),
+          Provider.value(value: widget.matchMaker),
           Provider<SettingsController>(
             lazy: false,
             create: (context) => SettingsController(

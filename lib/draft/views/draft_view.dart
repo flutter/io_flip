@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/style/palette.dart';
@@ -76,8 +77,7 @@ class DraftView extends StatelessWidget {
               if (state.status == DraftStateStatus.deckCompleted)
                 ElevatedButton(
                   onPressed: () {
-                    // TODO(erickzanardo): navigate to the lobby when
-                    // implemented
+                    GoRouter.of(context).go('/match_making');
                   },
                   child: Text(l10n.play),
                 ),
