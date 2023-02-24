@@ -16,15 +16,13 @@ class Match extends Equatable {
   final String host;
   final String? guest;
 
-  Match copyWith({
-    String? id,
-    String? host,
-    String? guest,
+  Match copyWithGuest({
+    required String guest,
   }) {
     return Match(
-      id: id ?? this.id,
-      host: host ?? this.host,
-      guest: guest ?? this.guest,
+      id: id,
+      host: host,
+      guest: guest,
     );
   }
 
@@ -32,13 +30,21 @@ class Match extends Equatable {
   List<Object?> get props => [id, host, guest];
 }
 
+/// An error throw when the match making process has timedout.
+class MatchMakingTimeout extends Error {}
+
 class MatchMaker {
   MatchMaker({
     required this.db,
+    this.retryDelay = defaultRetryDelay,
   }) {
     collection = db.collection('matches');
   }
 
+  static const defaultRetryDelay = 2;
+  static const maxRetries = 3;
+
+  final int retryDelay;
   final FirebaseFirestore db;
   late final CollectionReference<Map<String, dynamic>> collection;
 
@@ -57,7 +63,7 @@ class MatchMaker {
     });
   }
 
-  Future<Match> findMatch(String id) async {
+  Future<Match> findMatch(String id, {int retryNumber = 0}) async {
     final matchesResult = await collection
         .where(
           'guest',
@@ -80,20 +86,24 @@ class MatchMaker {
 
       for (final match in matches) {
         try {
-          await db.runTransaction((transaction) async {
+          await db.runTransaction<Transaction>((transaction) async {
             final ref = collection.doc(match.id);
-            transaction.update(ref, {'guest': id});
+            return transaction.update(ref, {'guest': id});
           });
-          return match.copyWith(guest: id);
-        } catch (_) {
+          return match.copyWithGuest(guest: id);
+        } catch (e) {
           log('Match "${match.id}" already matched, trying next...');
         }
       }
 
+      if (retryNumber == maxRetries) {
+        throw MatchMakingTimeout();
+      }
+
       log('No match available, trying again in 2 seconds...');
       return Future.delayed(
-        const Duration(seconds: 2),
-        () => findMatch(id),
+        Duration(seconds: retryDelay),
+        () => findMatch(id, retryNumber: retryNumber + 1),
       );
     }
   }

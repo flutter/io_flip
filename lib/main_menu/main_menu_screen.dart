@@ -16,6 +16,12 @@ import 'package:top_dash/style/responsive_screen.dart';
 class MainMenuScreen extends StatelessWidget {
   const MainMenuScreen({super.key});
 
+  factory MainMenuScreen.routeBuilder(_, __) {
+    return const MainMenuScreen(
+      key: Key('main menu'),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final palette = context.watch<Palette>();

@@ -6,6 +6,7 @@ import 'package:top_dash/app/app.dart';
 import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/main_menu/main_menu_screen.dart';
+import 'package:top_dash/match_making/match_maker.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
 import 'package:top_dash/settings/settings.dart';
 import 'package:top_dash/settings/settings_screen.dart';
@@ -24,6 +25,8 @@ class _MockLifecycleNotifier extends Mock
 
 class _MockGameClient extends Mock implements GameClient {}
 
+class _MockMatchMaker extends Mock implements MatchMaker {}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -33,6 +36,7 @@ void main() {
         App(
           settingsPersistence: MemoryOnlySettingsPersistence(),
           gameClient: _MockGameClient(),
+          matchMaker: _MockMatchMaker(),
         ),
       );
 
@@ -104,6 +108,7 @@ void main() {
           App(
             settingsPersistence: MemoryOnlySettingsPersistence(),
             gameClient: _MockGameClient(),
+            matchMaker: _MockMatchMaker(),
           ),
         );
 
@@ -116,6 +121,7 @@ void main() {
           App(
             settingsPersistence: MemoryOnlySettingsPersistence(),
             gameClient: _MockGameClient(),
+            matchMaker: _MockMatchMaker(),
           ),
         );
 
@@ -131,6 +137,7 @@ void main() {
           App(
             settingsPersistence: MemoryOnlySettingsPersistence(),
             gameClient: _MockGameClient(),
+            matchMaker: _MockMatchMaker(),
           ),
         );
 
@@ -148,6 +155,7 @@ void main() {
             App(
               settingsPersistence: MemoryOnlySettingsPersistence(),
               gameClient: _MockGameClient(),
+              matchMaker: _MockMatchMaker(),
             ),
           );
 
@@ -169,6 +177,7 @@ void main() {
           App(
             settingsPersistence: MemoryOnlySettingsPersistence(),
             gameClient: _MockGameClient(),
+            matchMaker: _MockMatchMaker(),
           ),
         );
 
@@ -182,6 +191,7 @@ void main() {
           App(
             settingsPersistence: MemoryOnlySettingsPersistence(),
             gameClient: _MockGameClient(),
+            matchMaker: _MockMatchMaker(),
           ),
         );
 
@@ -198,6 +208,7 @@ void main() {
           App(
             settingsPersistence: MemoryOnlySettingsPersistence(),
             gameClient: _MockGameClient(),
+            matchMaker: _MockMatchMaker(),
           ),
         );
 
@@ -216,6 +227,7 @@ void main() {
             App(
               settingsPersistence: MemoryOnlySettingsPersistence(),
               gameClient: _MockGameClient(),
+              matchMaker: _MockMatchMaker(),
             ),
           );
 

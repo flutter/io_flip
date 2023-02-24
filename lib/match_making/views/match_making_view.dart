@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 import 'package:top_dash/match_making/match_making.dart';
 import 'package:top_dash/style/palette.dart';
 
@@ -10,16 +9,10 @@ class MatchMakingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = context.read<Palette>();
-    //final bloc = context.watch<MatchMakingBloc>();
-    //final state = bloc.state;
-
     return BlocBuilder<MatchMakingBloc, MatchMakingState>(
       builder: (context, state) {
-        print('BUILD');
-        print(state.match);
-        print(state.status);
-
-        if (state.status == MatchMakingStatus.processing) {
+        if (state.status == MatchMakingStatus.processing ||
+            state.status == MatchMakingStatus.initial) {
           return Scaffold(
             backgroundColor: palette.backgroundMain,
             body: const Center(
@@ -43,8 +36,10 @@ class MatchMakingView extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Host: ${state.match?.host}'),
-                Text('Guest: ${state.match?.guest}'),
+                const Text('Host:'),
+                Text(state.match?.host ?? ''),
+                const Text('Guest:'),
+                Text(state.match?.guest ?? ''),
               ],
             ),
           ),
