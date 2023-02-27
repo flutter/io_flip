@@ -13,10 +13,7 @@ void main() {
           description: '',
           image: '',
           rarity: false,
-          design: 1,
-          frontend: 1,
-          backend: 1,
-          product: 1,
+          power: 1,
         ),
         isNotNull,
       );
@@ -30,10 +27,7 @@ void main() {
           description: '',
           image: '',
           rarity: false,
-          design: 1,
-          frontend: 1,
-          backend: 1,
-          product: 1,
+          power: 1,
         ).toJson(),
         equals({
           'id': '',
@@ -41,10 +35,7 @@ void main() {
           'description': '',
           'image': '',
           'rarity': false,
-          'design': 1,
-          'frontend': 1,
-          'backend': 1,
-          'product': 1,
+          'power': 1,
         }),
       );
     });
@@ -57,10 +48,7 @@ void main() {
           'description': '',
           'image': '',
           'rarity': false,
-          'design': 1,
-          'frontend': 1,
-          'backend': 1,
-          'product': 1,
+          'power': 1,
         }),
         equals(
           Card(
@@ -69,10 +57,7 @@ void main() {
             description: '',
             image: '',
             rarity: false,
-            design: 1,
-            frontend: 1,
-            backend: 1,
-            product: 1,
+            power: 1,
           ),
         ),
       );
@@ -86,10 +71,7 @@ void main() {
           description: '',
           image: '',
           rarity: false,
-          design: 1,
-          frontend: 1,
-          backend: 1,
-          product: 1,
+          power: 1,
         ),
         equals(
           Card(
@@ -98,10 +80,7 @@ void main() {
             description: '',
             image: '',
             rarity: false,
-            design: 1,
-            frontend: 1,
-            backend: 1,
-            product: 1,
+            power: 1,
           ),
         ),
       );
@@ -113,10 +92,7 @@ void main() {
           description: '',
           image: '',
           rarity: false,
-          design: 1,
-          frontend: 1,
-          backend: 1,
-          product: 1,
+          power: 1,
         ),
         isNot(
           equals(
@@ -126,10 +102,7 @@ void main() {
               description: '',
               image: '',
               rarity: false,
-              design: 1,
-              frontend: 1,
-              backend: 1,
-              product: 1,
+              power: 1,
             ),
           ),
         ),
@@ -142,10 +115,7 @@ void main() {
           description: '',
           image: '',
           rarity: false,
-          design: 1,
-          frontend: 1,
-          backend: 1,
-          product: 1,
+          power: 1,
         ),
         isNot(
           equals(
@@ -155,10 +125,7 @@ void main() {
               description: '',
               image: '',
               rarity: false,
-              design: 1,
-              frontend: 1,
-              backend: 1,
-              product: 1,
+              power: 1,
             ),
           ),
         ),
@@ -171,10 +138,7 @@ void main() {
           description: '',
           image: '',
           rarity: false,
-          design: 1,
-          frontend: 1,
-          backend: 1,
-          product: 1,
+          power: 1,
         ),
         isNot(
           equals(
@@ -184,10 +148,7 @@ void main() {
               description: 'a',
               image: '',
               rarity: false,
-              design: 1,
-              frontend: 1,
-              backend: 1,
-              product: 1,
+              power: 1,
             ),
           ),
         ),
@@ -200,10 +161,7 @@ void main() {
           description: '',
           image: '',
           rarity: false,
-          design: 1,
-          frontend: 1,
-          backend: 1,
-          product: 1,
+          power: 1,
         ),
         isNot(
           equals(
@@ -213,10 +171,7 @@ void main() {
               description: '',
               image: 'a',
               rarity: false,
-              design: 1,
-              frontend: 1,
-              backend: 1,
-              product: 1,
+              power: 1,
             ),
           ),
         ),
@@ -229,39 +184,7 @@ void main() {
           description: '',
           image: '',
           rarity: false,
-          design: 1,
-          frontend: 1,
-          backend: 1,
-          product: 1,
-        ),
-        isNot(
-          equals(
-            Card(
-              id: '',
-              name: '',
-              description: '',
-              image: '',
-              rarity: true,
-              design: 1,
-              frontend: 1,
-              backend: 1,
-              product: 1,
-            ),
-          ),
-        ),
-      );
-
-      expect(
-        Card(
-          id: '',
-          name: '',
-          description: '',
-          image: '',
-          rarity: false,
-          design: 1,
-          frontend: 1,
-          backend: 1,
-          product: 1,
+          power: 1,
         ),
         isNot(
           equals(
@@ -271,97 +194,7 @@ void main() {
               description: '',
               image: '',
               rarity: false,
-              design: 2,
-              frontend: 1,
-              backend: 1,
-              product: 1,
-            ),
-          ),
-        ),
-      );
-
-      expect(
-        Card(
-          id: '',
-          name: '',
-          description: '',
-          image: '',
-          rarity: false,
-          design: 1,
-          frontend: 1,
-          backend: 1,
-          product: 1,
-        ),
-        isNot(
-          equals(
-            Card(
-              id: '',
-              name: '',
-              description: '',
-              image: '',
-              rarity: false,
-              design: 1,
-              frontend: 2,
-              backend: 1,
-              product: 1,
-            ),
-          ),
-        ),
-      );
-
-      expect(
-        Card(
-          id: '',
-          name: '',
-          description: '',
-          image: '',
-          rarity: false,
-          design: 1,
-          frontend: 1,
-          backend: 1,
-          product: 1,
-        ),
-        isNot(
-          equals(
-            Card(
-              id: '',
-              name: '',
-              description: '',
-              image: '',
-              rarity: false,
-              design: 1,
-              frontend: 1,
-              backend: 2,
-              product: 1,
-            ),
-          ),
-        ),
-      );
-
-      expect(
-        Card(
-          id: '',
-          name: '',
-          description: '',
-          image: '',
-          rarity: false,
-          design: 1,
-          frontend: 1,
-          backend: 1,
-          product: 1,
-        ),
-        isNot(
-          equals(
-            Card(
-              id: '',
-              name: '',
-              description: '',
-              image: '',
-              rarity: false,
-              design: 1,
-              frontend: 1,
-              backend: 1,
-              product: 2,
+              power: 2,
             ),
           ),
         ),

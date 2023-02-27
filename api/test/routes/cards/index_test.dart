@@ -26,10 +26,7 @@ void main() {
       description: '',
       rarity: true,
       image: '',
-      design: 1,
-      product: 1,
-      frontend: 1,
-      backend: 1,
+      power: 1,
     );
     setUp(() {
       cardsRepository = _MockCardsRepository();
@@ -60,10 +57,7 @@ void main() {
           'description': '',
           'rarity': true,
           'image': '',
-          'design': 1,
-          'product': 1,
-          'frontend': 1,
-          'backend': 1,
+          'power': 1,
         }),
       );
     });
