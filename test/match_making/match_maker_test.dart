@@ -40,23 +40,38 @@ class _MockDocumentReference<T> extends Mock implements DocumentReference<T> {}
 
 class _MockTransaction extends Mock implements Transaction {}
 
+// ignore: one_member_abstracts
+abstract class _TimestampFactory {
+  Timestamp now();
+}
+
+class _MockTimestampFactory extends Mock implements _TimestampFactory {}
+
 void main() {
   group('MatchMaker', () {
     late _MockFirebaseFirestore db;
     late CollectionReference<Map<String, dynamic>> collection;
     late MatchMaker matchMaker;
+    late _TimestampFactory timestampFactory;
 
     setUp(() {
       db = _MockFirebaseFirestore();
       collection = _MockCollectionReference();
+      timestampFactory = _MockTimestampFactory();
 
       when(() => db.collection('matches')).thenReturn(collection);
-      matchMaker = MatchMaker(db: db, retryDelay: 0);
+      matchMaker = MatchMaker(db: db, retryDelay: 0, now: timestampFactory.now);
     });
 
     void mockQueryResult({List<Match> matches = const []}) {
       when(() => collection.where('guest', isEqualTo: 'EMPTY'))
           .thenReturn(collection);
+      when(
+        () => collection.where(
+          'lastPing',
+          isGreaterThanOrEqualTo: any(named: 'isGreaterThanOrEqualTo'),
+        ),
+      ).thenReturn(collection);
       when(() => collection.limit(3)).thenReturn(collection);
 
       final query = _MockQuerySnapshot<Map<String, dynamic>>();
@@ -68,6 +83,7 @@ void main() {
         when(doc.data).thenReturn({
           'host': match.host,
           'guest': match.guest == null ? 'EMPTY' : '',
+          'lastPing': match.lastPing,
         });
         docs.add(doc);
       }
@@ -76,12 +92,13 @@ void main() {
       when(collection.get).thenAnswer((_) async => query);
     }
 
-    void mockAdd(String host, String guest, String id) {
+    void mockAdd(String host, String guest, String id, Timestamp lastPing) {
       when(
         () => collection.add(
           {
             'host': host,
             'guest': guest,
+            'lastPing': lastPing,
           },
         ),
       ).thenAnswer(
@@ -124,8 +141,10 @@ void main() {
     });
 
     test('returns a new match as host when there are no matches', () async {
+      final now = Timestamp.now();
+      when(timestampFactory.now).thenReturn(now);
       mockQueryResult();
-      mockAdd('hostId', 'EMPTY', 'matchId');
+      mockAdd('hostId', 'EMPTY', 'matchId', now);
 
       final match = await matchMaker.findMatch('hostId');
       expect(
@@ -134,6 +153,7 @@ void main() {
           Match(
             id: 'matchId',
             host: 'hostId',
+            lastPing: now,
           ),
         ),
       );
@@ -142,9 +162,11 @@ void main() {
     test(
       'joins a match when one is available and no concurrence error happens',
       () async {
+        final now = Timestamp.now();
+        when(timestampFactory.now).thenReturn(now);
         mockQueryResult(
           matches: [
-            Match(id: 'match123', host: 'host123'),
+            Match(id: 'match123', host: 'host123', lastPing: now),
           ],
         );
         mockSuccessfulTransaction('guest123', 'match123');
@@ -157,6 +179,7 @@ void main() {
               id: 'match123',
               host: 'host123',
               guest: 'guest123',
+              lastPing: now,
             ),
           ),
         );
@@ -166,9 +189,15 @@ void main() {
     test(
       'joins a match when one is available and no concurrence error happens',
       () async {
+        final now = Timestamp.now();
+        when(timestampFactory.now).thenReturn(
+          Timestamp.fromMillisecondsSinceEpoch(
+            Timestamp.now().millisecondsSinceEpoch - 2000,
+          ),
+        );
         mockQueryResult(
           matches: [
-            Match(id: 'match123', host: 'host123'),
+            Match(id: 'match123', host: 'host123', lastPing: now),
           ],
         );
         mockSuccessfulTransaction('guest123', 'match123');
@@ -181,6 +210,7 @@ void main() {
               id: 'match123',
               host: 'host123',
               guest: 'guest123',
+              lastPing: now,
             ),
           ),
         );
@@ -190,9 +220,11 @@ void main() {
     test(
       'throws MatchMakingTimeout when max retry reach its maximum',
       () async {
+        final now = Timestamp.now();
+        when(timestampFactory.now).thenReturn(now);
         mockQueryResult(
           matches: [
-            Match(id: 'match123', host: 'host123'),
+            Match(id: 'match123', host: 'host123', lastPing: now),
           ],
         );
         // The mock defaul behavior is to fail the transaction. So no need
@@ -206,6 +238,8 @@ void main() {
     );
 
     test('can watch a match', () async {
+      final now = Timestamp.now();
+      when(timestampFactory.now).thenReturn(now);
       final streamController =
           StreamController<DocumentSnapshot<Map<String, dynamic>>>();
 
@@ -219,6 +253,7 @@ void main() {
       when(snapshot.data).thenReturn({
         'host': 'host1',
         'guest': 'guest1',
+        'lastPing': now,
       });
 
       streamController.add(snapshot);
@@ -232,6 +267,7 @@ void main() {
             id: '123',
             host: 'host1',
             guest: 'guest1',
+            lastPing: now,
           )
         ]),
       );
@@ -240,6 +276,8 @@ void main() {
     });
 
     test('correctly maps a match when the spot is vacant', () async {
+      final now = Timestamp.now();
+      when(timestampFactory.now).thenReturn(now);
       final streamController =
           StreamController<DocumentSnapshot<Map<String, dynamic>>>();
 
@@ -253,6 +291,7 @@ void main() {
       when(snapshot.data).thenReturn({
         'host': 'host1',
         'guest': 'EMPTY',
+        'lastPing': now,
       });
 
       streamController.add(snapshot);
@@ -265,6 +304,7 @@ void main() {
           Match(
             id: '123',
             host: 'host1',
+            lastPing: now,
           )
         ]),
       );
