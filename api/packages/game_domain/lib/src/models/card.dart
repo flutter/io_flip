@@ -14,10 +14,7 @@ class Card extends Equatable {
     required this.name,
     required this.description,
     required this.image,
-    required this.product,
-    required this.design,
-    required this.frontend,
-    required this.backend,
+    required this.power,
     required this.rarity,
   });
 
@@ -42,19 +39,7 @@ class Card extends Equatable {
 
   /// Product
   @JsonKey()
-  final int product;
-
-  /// Design
-  @JsonKey()
-  final int design;
-
-  /// Frontend
-  @JsonKey()
-  final int frontend;
-
-  /// Backend
-  @JsonKey()
-  final int backend;
+  final int power;
 
   /// Rarity
   @JsonKey()
@@ -69,10 +54,7 @@ class Card extends Equatable {
         name,
         description,
         image,
-        product,
-        design,
-        frontend,
-        backend,
+        power,
         rarity,
       ];
 }

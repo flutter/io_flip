@@ -8,6 +8,7 @@ environment:
 
 dependencies:
   equatable: ^2.0.5
+  firedart: ^0.9.0+1
   game_domain:
     path: ../game_domain
   image_model_repository:

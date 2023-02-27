@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:firedart/firedart.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:image_model_repository/image_model_repository.dart';
 import 'package:language_model_repository/language_model_repository.dart';
@@ -44,13 +45,15 @@ class CardsRepository {
   CardsRepository({
     required ImageModelRepository imageModelRepository,
     required LanguageModelRepository languageModelRepository,
+    required Firestore firestore,
     CardRng? rng,
-  }) {
+  }) : _firestore = firestore {
     _rng = rng ?? CardRng();
     _imageModelRepository = imageModelRepository;
     _languageModelRepository = languageModelRepository;
   }
 
+  final Firestore _firestore;
   late final CardRng _rng;
   late final ImageModelRepository _imageModelRepository;
   late final LanguageModelRepository _languageModelRepository;
@@ -66,16 +69,29 @@ class CardsRepository {
       _imageModelRepository.generateImage(),
     ]);
 
+    final collection = _firestore.collection('cards');
+
+    final name = values.first;
+    final description = values[1];
+    final image = values.last;
+    final rarity = isRare;
+    final power = _rng.rollAttribute(base: 10, modifier: modifier);
+
+    final doc = await collection.add({
+      'name': name,
+      'description': description,
+      'image': image,
+      'rarity': rarity,
+      'power': power,
+    });
+
     return Card(
-      id: '',
-      name: values.first,
-      description: values[1],
-      image: values.last,
+      id: doc.id,
+      name: name,
+      description: description,
+      image: image,
       rarity: isRare,
-      product: _rng.rollAttribute(base: 10, modifier: modifier),
-      design: _rng.rollAttribute(base: 10, modifier: modifier),
-      frontend: _rng.rollAttribute(base: 10, modifier: modifier),
-      backend: _rng.rollAttribute(base: 10, modifier: modifier),
+      power: power,
     );
   }
 }

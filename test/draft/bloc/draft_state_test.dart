@@ -11,10 +11,7 @@ void main() {
     description: '',
     rarity: true,
     image: '',
-    design: 1,
-    product: 1,
-    frontend: 1,
-    backend: 1,
+    power: 1,
   );
 
   const card2 = Card(
@@ -23,10 +20,7 @@ void main() {
     description: '',
     rarity: true,
     image: '',
-    design: 1,
-    product: 1,
-    frontend: 1,
-    backend: 1,
+    power: 1,
   );
 
   group('DraftState', () {

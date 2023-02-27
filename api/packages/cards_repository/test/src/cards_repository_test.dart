@@ -2,6 +2,7 @@
 import 'dart:math';
 
 import 'package:cards_repository/cards_repository.dart';
+import 'package:firedart/firedart.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:image_model_repository/image_model_repository.dart';
 import 'package:language_model_repository/language_model_repository.dart';
@@ -15,7 +16,13 @@ class _MockImageModelRepository extends Mock implements ImageModelRepository {}
 class _MockLanguageModelRepository extends Mock
     implements LanguageModelRepository {}
 
+class _MockFirestore extends Mock implements Firestore {}
+
 class _MockRandom extends Mock implements Random {}
+
+class _MockCollectionReference extends Mock implements CollectionReference {}
+
+class _MockDocument extends Mock implements Document {}
 
 void main() {
   group('CardsRepository', () {
@@ -23,6 +30,9 @@ void main() {
     late ImageModelRepository imageModelRepository;
     late LanguageModelRepository languageModelRepository;
     late CardsRepository cardsRepository;
+    late Firestore firestore;
+    late CollectionReference collection;
+    late Document document;
 
     setUp(() {
       cardRng = _MockCardRng();
@@ -43,9 +53,20 @@ void main() {
       when(languageModelRepository.generateFlavorText)
           .thenAnswer((_) async => 'Super Bird Is Ready!');
 
+      firestore = _MockFirestore();
+
+      collection = _MockCollectionReference();
+      when(() => firestore.collection('cards')).thenReturn(collection);
+
+      document = _MockDocument();
+      when(() => document.id).thenReturn('abc');
+
+      when(() => collection.add(any())).thenAnswer((_) async => document);
+
       cardsRepository = CardsRepository(
         imageModelRepository: imageModelRepository,
         languageModelRepository: languageModelRepository,
+        firestore: firestore,
         rng: cardRng,
       );
     });
@@ -55,6 +76,7 @@ void main() {
         CardsRepository(
           imageModelRepository: const ImageModelRepository(),
           languageModelRepository: const LanguageModelRepository(),
+          firestore: firestore,
         ),
         isNotNull,
       );
@@ -66,17 +88,28 @@ void main() {
       expect(
         card,
         Card(
-          id: '',
+          id: 'abc',
           name: 'Super Bird',
           description: 'Super Bird Is Ready!',
           image: 'https://image.png',
           rarity: false,
-          design: 10,
-          product: 10,
-          frontend: 10,
-          backend: 10,
+          power: 10,
         ),
       );
+    });
+
+    test('saves the card in the db', () async {
+      await cardsRepository.generateCard();
+
+      verify(
+        () => collection.add({
+          'name': 'Super Bird',
+          'description': 'Super Bird Is Ready!',
+          'image': 'https://image.png',
+          'rarity': false,
+          'power': 10,
+        }),
+      ).called(1);
     });
 
     test('generates a rare card', () async {
@@ -86,19 +119,16 @@ void main() {
       expect(
         card,
         Card(
-          id: '',
+          id: 'abc',
           name: 'Super Bird',
           description: 'Super Bird Is Ready!',
           image: 'https://image.png',
           rarity: true,
-          design: 10,
-          product: 10,
-          frontend: 10,
-          backend: 10,
+          power: 10,
         ),
       );
 
-      verify(() => cardRng.rollAttribute(base: 10, modifier: 10)).called(4);
+      verify(() => cardRng.rollAttribute(base: 10, modifier: 10)).called(1);
     });
   });
 

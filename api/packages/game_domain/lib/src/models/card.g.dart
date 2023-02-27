@@ -11,10 +11,7 @@ Card _$CardFromJson(Map<String, dynamic> json) => Card(
       name: json['name'] as String,
       description: json['description'] as String,
       image: json['image'] as String,
-      product: json['product'] as int,
-      design: json['design'] as int,
-      frontend: json['frontend'] as int,
-      backend: json['backend'] as int,
+      power: json['power'] as int,
       rarity: json['rarity'] as bool,
     );
 
@@ -23,9 +20,6 @@ Map<String, dynamic> _$CardToJson(Card instance) => <String, dynamic>{
       'name': instance.name,
       'description': instance.description,
       'image': instance.image,
-      'product': instance.product,
-      'design': instance.design,
-      'frontend': instance.frontend,
-      'backend': instance.backend,
+      'power': instance.power,
       'rarity': instance.rarity,
     };
