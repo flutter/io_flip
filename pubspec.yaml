@@ -10,6 +10,7 @@ environment:
 dependencies:
   audioplayers: ^3.0.1
   bloc: ^8.1.1
+  cloud_firestore: ^4.4.3
   equatable: ^2.0.5
   firebase_auth: ^4.2.9
   firebase_core: ^2.5.0
@@ -29,6 +30,7 @@ dependencies:
   logging: ^1.1.1
   provider: ^6.0.5
   shared_preferences: ^2.0.17
+  uuid: ^3.0.7
 
 dev_dependencies:
   bloc_test: ^9.1.1

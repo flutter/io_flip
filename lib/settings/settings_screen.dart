@@ -13,6 +13,12 @@ import 'package:top_dash/style/responsive_screen.dart';
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
+  factory SettingsScreen.routeBuilder(_, __) {
+    return const SettingsScreen(
+      key: Key('settings'),
+    );
+  }
+
   static const _gap = SizedBox(height: 60);
 
   @override

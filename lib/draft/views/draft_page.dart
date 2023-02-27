@@ -6,6 +6,10 @@ import 'package:top_dash/draft/draft.dart';
 class DraftPage extends StatelessWidget {
   const DraftPage({super.key});
 
+  factory DraftPage.routeBuilder(_, __) {
+    return const DraftPage(key: Key('draft'));
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
