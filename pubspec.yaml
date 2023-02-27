@@ -29,7 +29,7 @@ dependencies:
   intl: ^0.17.0
   logging: ^1.1.1
   provider: ^6.0.5
-  shared_preferences: ^2.0.17
+  shared_preferences: ^2.0.18
   uuid: ^3.0.7
 
 dev_dependencies:
