@@ -41,7 +41,7 @@ void main() {
       id: '1',
       name: 'card1',
       description: '',
-      rarity: true,
+      rarity: false,
       image: '',
       power: 1,
     );
@@ -89,7 +89,8 @@ void main() {
         [
           DraftState(
             cards: const [card1, card2],
-            status: DraftStateStatus.cardLoaded,
+            selectedCards: const [],
+            status: DraftStateStatus.deckLoaded,
           )
         ],
       );
@@ -99,12 +100,49 @@ void main() {
       expect(find.text('card2'), findsOneWidget);
     });
 
+    testWidgets('selects the top card', (tester) async {
+      mockState(
+        [
+          DraftState(
+            cards: const [card1, card2],
+            selectedCards: const [],
+            status: DraftStateStatus.deckLoaded,
+          )
+        ],
+      );
+      await tester.pumpSubject(draftBloc: draftBloc);
+
+      await tester.tap(find.text('Use card'));
+      await tester.pumpAndSettle();
+
+      verify(() => draftBloc.add(SelectCard())).called(1);
+    });
+
+    testWidgets('can go to the next card', (tester) async {
+      mockState(
+        [
+          DraftState(
+            cards: const [card1, card2],
+            selectedCards: const [],
+            status: DraftStateStatus.deckLoaded,
+          )
+        ],
+      );
+      await tester.pumpSubject(draftBloc: draftBloc);
+
+      await tester.tap(find.text('Next card'));
+      await tester.pumpAndSettle();
+
+      verify(() => draftBloc.add(NextCard())).called(1);
+    });
+
     testWidgets('renders an error message when loading failed', (tester) async {
       mockState(
         [
           DraftState(
             cards: const [card1, card2],
-            status: DraftStateStatus.cardFailed,
+            selectedCards: const [],
+            status: DraftStateStatus.deckFailed,
           )
         ],
       );
@@ -116,20 +154,6 @@ void main() {
       );
     });
 
-    testWidgets('renders the status message', (tester) async {
-      mockState(
-        [
-          DraftState(
-            cards: const [card1, card2],
-            status: DraftStateStatus.cardLoaded,
-          )
-        ],
-      );
-      await tester.pumpSubject(draftBloc: draftBloc);
-
-      expect(find.text('Generating 3 of 3'), findsOneWidget);
-    });
-
     testWidgets(
       'render the play button once deck is complete',
       (tester) async {
@@ -137,31 +161,14 @@ void main() {
           [
             DraftState(
               cards: const [card1, card2, card3],
-              status: DraftStateStatus.deckCompleted,
+              selectedCards: const [card1, card2, card3],
+              status: DraftStateStatus.deckSelected,
             )
           ],
         );
         await tester.pumpSubject(draftBloc: draftBloc);
 
         expect(find.text('Play'), findsOneWidget);
-      },
-    );
-
-    testWidgets(
-      'fetches a new card when the loading is finished',
-      (tester) async {
-        mockState(
-          [
-            DraftState.initial(),
-            DraftState(
-              cards: const [card1],
-              status: DraftStateStatus.cardLoaded,
-            ),
-          ],
-        );
-        await tester.pumpSubject(draftBloc: draftBloc);
-
-        verify(() => draftBloc.add(CardRequested())).called(1);
       },
     );
 
@@ -173,7 +180,8 @@ void main() {
           [
             DraftState(
               cards: const [card1, card2, card3],
-              status: DraftStateStatus.deckCompleted,
+              selectedCards: const [card1, card2, card3],
+              status: DraftStateStatus.deckSelected,
             )
           ],
         );

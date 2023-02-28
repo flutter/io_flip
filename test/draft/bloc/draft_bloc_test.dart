@@ -11,20 +11,24 @@ class _MockGameClient extends Mock implements GameClient {}
 
 void main() {
   group('DraftBloc', () {
-    const card = Card(
-      id: '1',
-      name: '',
-      description: '',
-      rarity: true,
-      image: '',
-      power: 1,
+    final cards = List.generate(
+      10,
+      (i) => Card(
+        id: i.toString(),
+        name: '',
+        description: '',
+        image: '',
+        rarity: false,
+        power: 20,
+      ),
     );
 
     late GameClient gameClient;
 
     setUp(() {
       gameClient = _MockGameClient();
-      when(gameClient.generateCard).thenAnswer((_) async => card);
+      var last = 0;
+      when(gameClient.generateCard).thenAnswer((_) async => cards[last++]);
     });
 
     test('has the correct initial state', () {
@@ -35,17 +39,42 @@ void main() {
     });
 
     blocTest<DraftBloc, DraftState>(
-      'can request a card',
+      'can request a deck',
       build: () => DraftBloc(gameClient: gameClient),
-      act: (bloc) => bloc.add(CardRequested()),
+      act: (bloc) => bloc.add(DeckRequested()),
       expect: () => [
         DraftState(
           cards: const [],
-          status: DraftStateStatus.cardLoading,
+          selectedCards: const [],
+          status: DraftStateStatus.deckLoading,
         ),
         DraftState(
-          cards: const [card],
-          status: DraftStateStatus.cardLoaded,
+          cards: cards,
+          selectedCards: const [],
+          status: DraftStateStatus.deckLoaded,
+        ),
+      ],
+    );
+
+    blocTest<DraftBloc, DraftState>(
+      'change the cards order on NextCard',
+      build: () => DraftBloc(gameClient: gameClient),
+      seed: () => DraftState(
+        cards: cards,
+        selectedCards: const [],
+        status: DraftStateStatus.deckLoaded,
+      ),
+      act: (bloc) {
+        bloc.add(NextCard());
+      },
+      expect: () => [
+        DraftState(
+          cards: [
+            cards.last,
+            ...List.generate(9, (i) => cards[i]),
+          ],
+          selectedCards: const [],
+          status: DraftStateStatus.deckLoaded,
         ),
       ],
     );
@@ -54,18 +83,18 @@ void main() {
       'status is complete when the deck is full',
       build: () => DraftBloc(gameClient: gameClient),
       seed: () => DraftState(
-        cards: const [card, card],
-        status: DraftStateStatus.cardLoaded,
+        cards: cards,
+        selectedCards: [cards[0], cards[1]],
+        status: DraftStateStatus.deckLoaded,
       ),
-      act: (bloc) => bloc.add(CardRequested()),
+      act: (bloc) {
+        bloc.add(SelectCard());
+      },
       expect: () => [
         DraftState(
-          cards: const [card, card],
-          status: DraftStateStatus.cardLoading,
-        ),
-        DraftState(
-          cards: const [card, card, card],
-          status: DraftStateStatus.deckCompleted,
+          cards: cards,
+          selectedCards: [cards[0], cards[1], cards.last],
+          status: DraftStateStatus.deckSelected,
         ),
       ],
     );
@@ -76,15 +105,17 @@ void main() {
         when(gameClient.generateCard).thenThrow(Exception('Error'));
       },
       build: () => DraftBloc(gameClient: gameClient),
-      act: (bloc) => bloc.add(CardRequested()),
+      act: (bloc) => bloc.add(DeckRequested()),
       expect: () => [
         DraftState(
           cards: const [],
-          status: DraftStateStatus.cardLoading,
+          selectedCards: const [],
+          status: DraftStateStatus.deckLoading,
         ),
         DraftState(
           cards: const [],
-          status: DraftStateStatus.cardFailed,
+          selectedCards: const [],
+          status: DraftStateStatus.deckFailed,
         ),
       ],
     );

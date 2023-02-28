@@ -15,7 +15,7 @@ class DraftView extends StatelessWidget {
     final state = bloc.state;
     final l10n = context.l10n;
 
-    if (state.status == DraftStateStatus.cardFailed) {
+    if (state.status == DraftStateStatus.deckFailed) {
       return Scaffold(
         backgroundColor: palette.backgroundMain,
         body: Center(
@@ -24,65 +24,119 @@ class DraftView extends StatelessWidget {
       );
     }
 
-    return BlocListener<DraftBloc, DraftState>(
-      listenWhen: (old, current) => old.cards.length != current.cards.length,
-      listener: (context, state) {
-        if (state.status != DraftStateStatus.deckCompleted) {
-          bloc.add(const CardRequested());
-        }
-      },
-      child: Scaffold(
+    if (state.status == DraftStateStatus.deckLoading ||
+        state.status == DraftStateStatus.initial) {
+      return Scaffold(
         backgroundColor: palette.backgroundMain,
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Stack(
-                children: [
-                  for (var i = 0; i < state.cards.length; i++)
-                    Transform.rotate(
-                      angle: -.12,
-                      child: Transform.translate(
-                        offset: Offset(i * 40, i * 40),
-                        child: Transform.rotate(
-                          angle: i * .4,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: palette.backgroundSettings,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            width: 200,
-                            height: 350,
-                            child: Column(
-                              children: [
-                                const SizedBox(height: 8),
-                                Text(state.cards[i].name),
-                                const SizedBox(height: 8),
-                                Image.network(
-                                  state.cards[i].image,
-                                ),
-                              ],
-                            ),
+        body: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    final translateTween = Tween<Offset>(
+      begin: Offset.zero,
+      end: const Offset(0, 80),
+    );
+
+    final scaleTween = Tween<double>(
+      begin: 1,
+      end: .8,
+    );
+
+    return Scaffold(
+      backgroundColor: palette.backgroundMain,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Stack(
+              children: [
+                for (var i = state.cards.length - 1; i >= 0; i--)
+                  Transform.translate(
+                    offset: translateTween.transform(
+                      (i + 1) / state.cards.length,
+                    ),
+                    child: Transform.scale(
+                      scale: scaleTween.transform(
+                        (i + 1) / state.cards.length,
+                      ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: state.cards[i].rarity
+                              ? Colors.yellow.shade200
+                              : palette.backgroundSettings,
+                          border: Border.all(
+                            width: 2,
+                            color: Colors.blue.shade100,
                           ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        width: 200,
+                        height: 350,
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 8),
+                            Text(state.cards[i].name),
+                            const SizedBox(height: 8),
+                            Image.network(
+                              state.cards[i].image,
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: Text(
+                                  'Power: ${state.cards[i].power}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineMedium,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 60),
+            if (state.status == DraftStateStatus.deckSelected)
+              ElevatedButton(
+                onPressed: () {
+                  GoRouter.of(context).go('/match_making');
+                },
+                child: Text(l10n.play),
+              )
+            else
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      bloc.add(const NextCard());
+                    },
+                    child: Text(l10n.nextCard),
+                  ),
+                  ElevatedButton(
+                    onPressed: state.selectedCards.contains(state.cards.last)
+                        ? null
+                        : () {
+                            bloc.add(const SelectCard());
+                          },
+                    child: Text(l10n.useCard),
+                  ),
                 ],
               ),
-              const SizedBox(height: 120),
-              if (state.status != DraftStateStatus.deckCompleted) ...[
-                const CircularProgressIndicator(),
-                Text(l10n.generatingCards(state.cards.length + 1, 3)),
+            const SizedBox(height: 60),
+            Column(
+              children: [
+                for (final card in state.selectedCards)
+                  Text(
+                    '${card.name}: ${card.power}',
+                  ),
               ],
-              if (state.status == DraftStateStatus.deckCompleted)
-                ElevatedButton(
-                  onPressed: () {
-                    GoRouter.of(context).go('/match_making');
-                  },
-                  child: Text(l10n.play),
-                ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

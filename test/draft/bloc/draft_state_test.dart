@@ -28,6 +28,7 @@ void main() {
       expect(
         DraftState(
           cards: const [],
+          selectedCards: const [],
           status: DraftStateStatus.initial,
         ),
         isNotNull,
@@ -40,6 +41,7 @@ void main() {
         equals(
           DraftState(
             cards: const [],
+            selectedCards: const [],
             status: DraftStateStatus.initial,
           ),
         ),
@@ -50,11 +52,13 @@ void main() {
       expect(
         DraftState(
           cards: const [],
+          selectedCards: const [],
           status: DraftStateStatus.initial,
         ),
         equals(
           DraftState(
             cards: const [],
+            selectedCards: const [],
             status: DraftStateStatus.initial,
           ),
         ),
@@ -63,12 +67,14 @@ void main() {
       expect(
         DraftState(
           cards: const [card1],
+          selectedCards: const [],
           status: DraftStateStatus.initial,
         ),
         isNot(
           equals(
             DraftState(
               cards: const [card2],
+              selectedCards: const [],
               status: DraftStateStatus.initial,
             ),
           ),
@@ -78,13 +84,32 @@ void main() {
       expect(
         DraftState(
           cards: const [],
+          selectedCards: const [card1],
           status: DraftStateStatus.initial,
         ),
         isNot(
           equals(
             DraftState(
               cards: const [],
-              status: DraftStateStatus.cardLoading,
+              selectedCards: const [card2],
+              status: DraftStateStatus.initial,
+            ),
+          ),
+        ),
+      );
+
+      expect(
+        DraftState(
+          cards: const [],
+          selectedCards: const [],
+          status: DraftStateStatus.initial,
+        ),
+        isNot(
+          equals(
+            DraftState(
+              cards: const [],
+              selectedCards: const [],
+              status: DraftStateStatus.deckLoading,
             ),
           ),
         ),
@@ -95,11 +120,13 @@ void main() {
       expect(
         DraftState(
           cards: const [],
+          selectedCards: const [],
           status: DraftStateStatus.initial,
         ).copyWith(cards: [card1, card2]),
         equals(
           DraftState(
             cards: const [card1, card2],
+            selectedCards: const [],
             status: DraftStateStatus.initial,
           ),
         ),
@@ -108,12 +135,29 @@ void main() {
       expect(
         DraftState(
           cards: const [],
+          selectedCards: const [],
           status: DraftStateStatus.initial,
-        ).copyWith(status: DraftStateStatus.cardLoaded),
+        ).copyWith(selectedCards: [card1, card2]),
         equals(
           DraftState(
             cards: const [],
-            status: DraftStateStatus.cardLoaded,
+            selectedCards: const [card1, card2],
+            status: DraftStateStatus.initial,
+          ),
+        ),
+      );
+
+      expect(
+        DraftState(
+          cards: const [],
+          selectedCards: const [],
+          status: DraftStateStatus.initial,
+        ).copyWith(status: DraftStateStatus.deckLoaded),
+        equals(
+          DraftState(
+            cards: const [],
+            selectedCards: const [],
+            status: DraftStateStatus.deckLoaded,
           ),
         ),
       );

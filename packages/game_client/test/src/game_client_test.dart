@@ -26,10 +26,7 @@ void main() {
         description: 'Cute blue bird',
         image: 'image.png',
         rarity: true,
-        design: 1,
-        product: 2,
-        frontend: 3,
-        backend: 4,
+        power: 1,
       );
 
       final response = _MockResponse();
