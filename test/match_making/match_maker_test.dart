@@ -45,18 +45,26 @@ void main() {
     late _MockFirebaseFirestore db;
     late CollectionReference<Map<String, dynamic>> collection;
     late MatchMaker matchMaker;
+    late Timestamp now;
 
     setUp(() {
       db = _MockFirebaseFirestore();
       collection = _MockCollectionReference();
+      now = Timestamp.now();
 
       when(() => db.collection('matches')).thenReturn(collection);
-      matchMaker = MatchMaker(db: db, retryDelay: 0);
+      matchMaker = MatchMaker(db: db, retryDelay: 0, now: () => now);
     });
 
     void mockQueryResult({List<Match> matches = const []}) {
       when(() => collection.where('guest', isEqualTo: 'EMPTY'))
           .thenReturn(collection);
+      when(
+        () => collection.where(
+          'lastPing',
+          isGreaterThanOrEqualTo: any(named: 'isGreaterThanOrEqualTo'),
+        ),
+      ).thenReturn(collection);
       when(() => collection.limit(3)).thenReturn(collection);
 
       final query = _MockQuerySnapshot<Map<String, dynamic>>();
@@ -68,6 +76,7 @@ void main() {
         when(doc.data).thenReturn({
           'host': match.host,
           'guest': match.guest == null ? 'EMPTY' : '',
+          'lastPing': match.lastPing,
         });
         docs.add(doc);
       }
@@ -76,12 +85,13 @@ void main() {
       when(collection.get).thenAnswer((_) async => query);
     }
 
-    void mockAdd(String host, String guest, String id) {
+    void mockAdd(String host, String guest, String id, Timestamp lastPing) {
       when(
         () => collection.add(
           {
             'host': host,
             'guest': guest,
+            'lastPing': lastPing,
           },
         ),
       ).thenAnswer(
@@ -125,7 +135,7 @@ void main() {
 
     test('returns a new match as host when there are no matches', () async {
       mockQueryResult();
-      mockAdd('hostId', 'EMPTY', 'matchId');
+      mockAdd('hostId', 'EMPTY', 'matchId', now);
 
       final match = await matchMaker.findMatch('hostId');
       expect(
@@ -134,6 +144,7 @@ void main() {
           Match(
             id: 'matchId',
             host: 'hostId',
+            lastPing: now,
           ),
         ),
       );
@@ -144,7 +155,7 @@ void main() {
       () async {
         mockQueryResult(
           matches: [
-            Match(id: 'match123', host: 'host123'),
+            Match(id: 'match123', host: 'host123', lastPing: now),
           ],
         );
         mockSuccessfulTransaction('guest123', 'match123');
@@ -157,6 +168,7 @@ void main() {
               id: 'match123',
               host: 'host123',
               guest: 'guest123',
+              lastPing: now,
             ),
           ),
         );
@@ -166,9 +178,12 @@ void main() {
     test(
       'joins a match when one is available and no concurrence error happens',
       () async {
+        final now = Timestamp.fromMillisecondsSinceEpoch(
+          Timestamp.now().millisecondsSinceEpoch - 2000,
+        );
         mockQueryResult(
           matches: [
-            Match(id: 'match123', host: 'host123'),
+            Match(id: 'match123', host: 'host123', lastPing: now),
           ],
         );
         mockSuccessfulTransaction('guest123', 'match123');
@@ -181,6 +196,7 @@ void main() {
               id: 'match123',
               host: 'host123',
               guest: 'guest123',
+              lastPing: now,
             ),
           ),
         );
@@ -192,7 +208,7 @@ void main() {
       () async {
         mockQueryResult(
           matches: [
-            Match(id: 'match123', host: 'host123'),
+            Match(id: 'match123', host: 'host123', lastPing: now),
           ],
         );
         // The mock defaul behavior is to fail the transaction. So no need
@@ -219,6 +235,7 @@ void main() {
       when(snapshot.data).thenReturn({
         'host': 'host1',
         'guest': 'guest1',
+        'lastPing': now,
       });
 
       streamController.add(snapshot);
@@ -232,6 +249,7 @@ void main() {
             id: '123',
             host: 'host1',
             guest: 'guest1',
+            lastPing: now,
           )
         ]),
       );
@@ -253,6 +271,7 @@ void main() {
       when(snapshot.data).thenReturn({
         'host': 'host1',
         'guest': 'EMPTY',
+        'lastPing': now,
       });
 
       streamController.add(snapshot);
@@ -265,6 +284,7 @@ void main() {
           Match(
             id: '123',
             host: 'host1',
+            lastPing: now,
           )
         ]),
       );

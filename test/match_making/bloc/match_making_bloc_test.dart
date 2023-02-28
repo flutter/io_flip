@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/match_making/match_making.dart';
@@ -14,12 +15,14 @@ void main() {
     late MatchMaker matchMaker;
     late StreamController<Match> watchController;
     const playerId = 'playerId';
+    late Timestamp timestamp;
 
     setUp(() {
       matchMaker = _MockMatchMaker();
       watchController = StreamController.broadcast();
       when(() => matchMaker.watchMatch(any()))
           .thenAnswer((_) => watchController.stream);
+      timestamp = Timestamp.now();
     });
 
     test('can be instantiated', () {
@@ -51,7 +54,12 @@ void main() {
       ),
       setUp: () {
         when(() => matchMaker.findMatch(playerId)).thenAnswer(
-          (_) async => Match(id: '', host: '', guest: playerId),
+          (_) async => Match(
+            id: '',
+            host: '',
+            guest: playerId,
+            lastPing: timestamp,
+          ),
         );
       },
       act: (bloc) => bloc.add(MatchRequested()),
@@ -61,7 +69,12 @@ void main() {
         ),
         MatchMakingState(
           status: MatchMakingStatus.completed,
-          match: Match(id: '', host: '', guest: playerId),
+          match: Match(
+            id: '',
+            host: '',
+            guest: playerId,
+            lastPing: timestamp,
+          ),
         ),
       ],
     );
@@ -96,7 +109,11 @@ void main() {
       ),
       setUp: () {
         when(() => matchMaker.findMatch(playerId)).thenAnswer(
-          (_) async => Match(id: '', host: playerId),
+          (_) async => Match(
+            id: '',
+            host: playerId,
+            lastPing: timestamp,
+          ),
         );
       },
       act: (bloc) => bloc.add(MatchRequested()),
@@ -106,14 +123,22 @@ void main() {
         ),
         MatchMakingState(
           status: MatchMakingStatus.processing,
-          match: Match(id: '', host: playerId),
+          match: Match(
+            id: '',
+            host: playerId,
+            lastPing: timestamp,
+          ),
         ),
       ],
     );
 
     test('completes the match when is host and a guest joins', () async {
       when(() => matchMaker.findMatch(playerId)).thenAnswer(
-        (_) async => Match(id: '', host: playerId),
+        (_) async => Match(
+          id: '',
+          host: playerId,
+          lastPing: timestamp,
+        ),
       );
 
       final bloc = MatchMakingBloc(
@@ -126,7 +151,11 @@ void main() {
         equals(
           MatchMakingState(
             status: MatchMakingStatus.processing,
-            match: Match(id: '', host: playerId),
+            match: Match(
+              id: '',
+              host: playerId,
+              lastPing: timestamp,
+            ),
           ),
         ),
       );
@@ -136,6 +165,7 @@ void main() {
           id: '',
           host: playerId,
           guest: '',
+          lastPing: timestamp,
         ),
       );
 
@@ -148,6 +178,7 @@ void main() {
               id: '',
               host: playerId,
               guest: '',
+              lastPing: timestamp,
             ),
           ),
         ),
@@ -156,7 +187,11 @@ void main() {
 
     test('tries again when the guest wait times out', () async {
       when(() => matchMaker.findMatch(playerId)).thenAnswer(
-        (_) async => Match(id: '', host: playerId),
+        (_) async => Match(
+          id: '',
+          host: playerId,
+          lastPing: timestamp,
+        ),
       );
 
       final bloc = MatchMakingBloc(
@@ -170,7 +205,11 @@ void main() {
         equals(
           MatchMakingState(
             status: MatchMakingStatus.processing,
-            match: Match(id: '', host: playerId),
+            match: Match(
+              id: '',
+              host: playerId,
+              lastPing: timestamp,
+            ),
           ),
         ),
       );
@@ -183,6 +222,7 @@ void main() {
           id: '',
           host: playerId,
           guest: '',
+          lastPing: timestamp,
         ),
       );
 
@@ -195,6 +235,7 @@ void main() {
               id: '',
               host: playerId,
               guest: '',
+              lastPing: timestamp,
             ),
           ),
         ),
