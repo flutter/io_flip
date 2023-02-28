@@ -17,7 +17,7 @@ class DraftPage extends StatelessWidget {
         final gameClient = context.read<GameClient>();
         return DraftBloc(
           gameClient: gameClient,
-        )..add(const CardRequested());
+        )..add(const DeckRequested());
       },
       child: const DraftView(),
     );

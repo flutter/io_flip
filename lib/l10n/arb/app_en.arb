@@ -15,5 +15,13 @@
     "cardGenerationError": "Error generating cards, please try again in a few moments",
     "@cardGenerationError": {
         "description": "Label show when there is an error generating a deck"
+    },
+    "nextCard": "Next card",
+    "@nextCard": {
+        "description": "Label show on the draft page to show the next card"
+    },
+    "useCard": "Use card",
+    "@useCard": {
+        "description": "Label show on the draft page to use the card"
     }
 }
