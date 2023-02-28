@@ -12,6 +12,7 @@ env:
   PROJECT_ID: top-dash-dev
   SERVICE: top-dash-dev-api
   REGION: us-central1
+  DEV_CORS: https://a16e0900d-fe2c-3609-b43c-87093e447b78.web.app/
 
 jobs:
   deploy:
@@ -51,6 +52,7 @@ jobs:
           region: ${{ env.REGION }}
           env_vars: |
             FB_APP_ID=${{ env.PROJECT_ID }}
+            CORS_DOMAIN=${{ env.DEV_CORS }}
 
       - name: Show Output
         run: echo ${{ steps.deploy.outputs.url }}
