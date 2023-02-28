@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cards_repository/cards_repository.dart';
@@ -10,6 +11,7 @@ FutureOr<Response> onRequest(RequestContext context) async {
     final cards = json['cards'];
 
     if (cards is! List<String>) {
+      log('Received invalid payload: $json');
       return Response(statusCode: HttpStatus.badRequest);
     }
 

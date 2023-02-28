@@ -18,7 +18,7 @@ class GameClientError extends Error {
 }
 
 /// Definition of a post call used by this client.
-typedef PostCall = Future<Response> Function(Uri);
+typedef PostCall = Future<Response> Function(Uri, {Object? body});
 
 /// {@template game_client}
 /// Client to access the game api
@@ -30,6 +30,7 @@ class GameClient {
     PostCall postCall = post,
   })  : _endpoint = endpoint,
         _post = postCall;
+
 
   final String _endpoint;
 
@@ -59,7 +60,7 @@ class GameClient {
   ///
   /// Returns the id of the created deck.
   Future<String> createDeck(List<String> cardIds) async {
-    final response = await _post(Uri.parse('$_endpoint/decks'));
+    final response = await _post(Uri.parse('$_endpoint/decks'), body: jsonEncode({'cards': cardIds}));
 
     if (response.statusCode != HttpStatus.ok) {
       throw GameClientError(
