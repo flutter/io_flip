@@ -4,7 +4,10 @@
 [![License: MIT][license_badge]][license_link]
 [![Powered by Dart Frog](https://img.shields.io/endpoint?url=https://tinyurl.com/dartfrog-badge)](https://dartfrog.vgv.dev)
 
-An example application built with dart_frog
+API used on the Top Dash card game for Google I/O.
+
+Used env variables:
+  - FB_APP_ID
 
 [license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [license_link]: https://opensource.org/licenses/MIT

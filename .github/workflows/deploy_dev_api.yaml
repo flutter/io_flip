@@ -49,6 +49,8 @@ jobs:
           service: ${{ env.SERVICE }}
           image: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }}
           region: ${{ env.REGION }}
+          env_vars: |
+            FB_APP_ID=${{ env.PROJECT_ID }}
 
       - name: Show Output
         run: echo ${{ steps.deploy.outputs.url }}
