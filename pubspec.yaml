@@ -30,7 +30,6 @@ dependencies:
   logging: ^1.1.1
   provider: ^6.0.5
   shared_preferences: ^2.0.17
-  uuid: ^3.0.7
 
 dev_dependencies:
   bloc_test: ^9.1.1

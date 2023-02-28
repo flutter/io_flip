@@ -49,6 +49,7 @@ void main() {
 
       dbClient = _MockDbClient();
       when(() => dbClient.add('cards', any())).thenAnswer((_) async => 'abc');
+      when(() => dbClient.add('decks', any())).thenAnswer((_) async => 'deck');
 
       cardsRepository = CardsRepository(
         imageModelRepository: imageModelRepository,
@@ -116,6 +117,14 @@ void main() {
       );
 
       verify(() => cardRng.rollAttribute(base: 10, modifier: 10)).called(1);
+    });
+
+    test('creates a deck from a list of card ids', () async {
+      final deckId = await cardsRepository.createDeck([
+        'a', 'b'
+      ]);
+
+      expect(deckId, equals('deck'));
     });
   });
 

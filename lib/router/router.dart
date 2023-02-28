@@ -20,6 +20,7 @@ GoRouter createRouter() {
             builder: DraftPage.routeBuilder,
           ),
           GoRoute(
+            name: 'match_making',
             path: 'match_making',
             builder: MatchMakingPage.routeBuilder,
           ),

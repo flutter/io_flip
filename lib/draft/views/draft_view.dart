@@ -103,7 +103,13 @@ class DraftView extends StatelessWidget {
             if (state.status == DraftStateStatus.deckSelected)
               ElevatedButton(
                 onPressed: () {
-                  GoRouter.of(context).go('/match_making');
+                  GoRouter.of(context).goNamed(
+                    'match_making',
+                    queryParams: {
+                      'cardId':
+                          state.selectedCards.map((card) => card.id).toList(),
+                    },
+                  );
                 },
                 child: Text(l10n.play),
               )

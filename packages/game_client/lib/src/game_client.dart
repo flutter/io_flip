@@ -54,4 +54,26 @@ class GameClient {
       );
     }
   }
+
+  /// Post /decks
+  ///
+  /// Returns the id of the created deck.
+  Future<String> createDeck(List<String> cardIds) async {
+    final response = await _post(Uri.parse('$_endpoint/decks'));
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw GameClientError(
+        'POST /decks returned status ${response.statusCode} with the following response: "${response.body}"',
+      );
+    }
+
+    try {
+      final json = jsonDecode(response.body);
+      return (json as Map<String, dynamic>)['id'] as String;
+    } catch (e) {
+      throw GameClientError(
+        'POST /decks returned invalid response "${response.body}"',
+      );
+    }
+  }
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:game_client/game_client.dart';
 import 'package:top_dash/match_making/match_making.dart';
 
 part 'match_making_event.dart';
@@ -10,15 +11,18 @@ part 'match_making_state.dart';
 class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   MatchMakingBloc({
     required MatchMaker matchMaker,
-    required this.playerId,
+    required GameClient gameClient,
+    required this.cardIds,
     this.hostWaitTime = defaultHostWaitTime,
   })  : _matchMaker = matchMaker,
+        _gameClient = gameClient,
         super(const MatchMakingState.initial()) {
     on<MatchRequested>(_onMatchRequested);
   }
 
+  final GameClient _gameClient;
   final MatchMaker _matchMaker;
-  final String playerId;
+  final List<String> cardIds;
 
   static const defaultHostWaitTime = Duration(seconds: 4);
   final Duration hostWaitTime;
@@ -29,6 +33,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   ) async {
     try {
       emit(state.copyWith(status: MatchMakingStatus.processing));
+      final playerId = await _gameClient.createDeck(cardIds);
       final match = await _matchMaker.findMatch(playerId);
 
       if (match.guest != null) {
