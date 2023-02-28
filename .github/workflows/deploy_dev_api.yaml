@@ -51,6 +51,7 @@ jobs:
           region: ${{ env.REGION }}
           env_vars: |
             FB_APP_ID=${{ env.PROJECT_ID }}
+            CORS_DOMAIN=${{ secrets.DEV_CORS }}
 
       - name: Show Output
         run: echo ${{ steps.deploy.outputs.url }}
