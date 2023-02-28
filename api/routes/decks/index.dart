@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cards_repository/cards_repository.dart';
 import 'package:dart_frog/dart_frog.dart';
+import 'package:logging/logging.dart';
 
 FutureOr<Response> onRequest(RequestContext context) async {
   if (context.request.method == HttpMethod.post) {
@@ -11,13 +11,15 @@ FutureOr<Response> onRequest(RequestContext context) async {
     final cards = json['cards'];
 
     if (cards is! List<String>) {
-      log('Received invalid payload: $json');
+      context.read<Logger>().warning(
+        'Received invalid payload: $json',
+      );
       return Response(statusCode: HttpStatus.badRequest);
     }
 
     final cardsRepository = context.read<CardsRepository>();
     final deckId = await cardsRepository.createDeck(cards);
-    return Response.json(body: { 'id': deckId });
+    return Response.json(body: {'id': deckId});
   }
   return Response(statusCode: HttpStatus.methodNotAllowed);
 }

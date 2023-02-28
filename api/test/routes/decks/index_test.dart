@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cards_repository/cards_repository.dart';
 import 'package:dart_frog/dart_frog.dart';
+import 'package:logging/logging.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
@@ -13,11 +14,14 @@ class _MockCardsRepository extends Mock implements CardsRepository {}
 
 class _MockRequest extends Mock implements Request {}
 
+class _MockLogger extends Mock implements Logger {}
+
 void main() {
   group('POST /', () {
     late CardsRepository cardsRepository;
     late Request request;
     late RequestContext context;
+    late Logger logger;
 
     setUp(() {
       cardsRepository = _MockCardsRepository();
@@ -28,9 +32,12 @@ void main() {
       when(() => request.method).thenReturn(HttpMethod.post);
       when(request.json).thenAnswer((_) async => {'cards': ['a', 'b', 'c']});
 
+      logger = _MockLogger();
+
       context = _MockRequestContext();
       when(() => context.request).thenReturn(request);
       when(() => context.read<CardsRepository>()).thenReturn(cardsRepository);
+      when(() => context.read<Logger>()).thenReturn(logger);
     });
 
     test('responds with a 200', () async {

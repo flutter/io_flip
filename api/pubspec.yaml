@@ -19,6 +19,7 @@ dependencies:
   json_annotation: ^4.8.0
   language_model_repository:
     path: packages/language_model_repository
+  logging: ^1.1.1
   shelf_cors_headers: ^0.1.4
 
 dev_dependencies:
