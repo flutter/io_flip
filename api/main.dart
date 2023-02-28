@@ -21,7 +21,6 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) {
     print('${record.level.name}: ${record.time}: ${record.message}');
   });
 
-
   cardsRepository = CardsRepository(
     imageModelRepository: imageModelRepository,
     languageModelRepository: languageModelRepository,

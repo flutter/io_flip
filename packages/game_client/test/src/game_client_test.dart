@@ -34,8 +34,10 @@ void main() {
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
         when(() => response.body).thenReturn(jsonEncode(card.toJson()));
 
-        final client =
-            GameClient(endpoint: '', postCall: (_) async => response,);
+        final client = GameClient(
+          endpoint: '',
+          postCall: (_) async => response,
+        );
         final returnedCard = await client.generateCard();
 
         expect(returnedCard, equals(card));
@@ -47,8 +49,10 @@ void main() {
             .thenReturn(HttpStatus.internalServerError);
         when(() => response.body).thenReturn('Ops');
 
-        final client =
-            GameClient(endpoint: '', postCall: (_) async => response,);
+        final client = GameClient(
+          endpoint: '',
+          postCall: (_) async => response,
+        );
 
         await expectLater(
           client.generateCard,
@@ -69,8 +73,10 @@ void main() {
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
         when(() => response.body).thenReturn('Ops');
 
-        final client =
-            GameClient(endpoint: '', postCall: (_) async => response,);
+        final client = GameClient(
+          endpoint: '',
+          postCall: (_) async => response,
+        );
 
         await expectLater(
           client.generateCard,
@@ -106,11 +112,13 @@ void main() {
             .thenReturn(HttpStatus.internalServerError);
         when(() => response.body).thenReturn('Ops');
 
-        final client =
-            GameClient(endpoint: '', postCall: (_) async => response,);
+        final client = GameClient(
+          endpoint: '',
+          postCall: (_) async => response,
+        );
 
         await expectLater(
-          () => client.createDeck(['a','b', 'c']),
+          () => client.createDeck(['a', 'b', 'c']),
           throwsA(
             isA<GameClientError>().having(
               (e) => e.cause,
@@ -128,11 +136,13 @@ void main() {
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
         when(() => response.body).thenReturn('Ops');
 
-        final client =
-            GameClient(endpoint: '', postCall: (_) async => response,);
+        final client = GameClient(
+          endpoint: '',
+          postCall: (_) async => response,
+        );
 
         await expectLater(
-          () => client.createDeck(['a','b', 'c']),
+          () => client.createDeck(['a', 'b', 'c']),
           throwsA(
             isA<GameClientError>().having(
               (e) => e.cause,

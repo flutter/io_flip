@@ -120,9 +120,7 @@ void main() {
     });
 
     test('creates a deck from a list of card ids', () async {
-      final deckId = await cardsRepository.createDeck([
-        'a', 'b'
-      ]);
+      final deckId = await cardsRepository.createDeck(['a', 'b']);
 
       expect(deckId, equals('deck'));
     });
