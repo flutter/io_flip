@@ -40,27 +40,20 @@ class _MockDocumentReference<T> extends Mock implements DocumentReference<T> {}
 
 class _MockTransaction extends Mock implements Transaction {}
 
-// ignore: one_member_abstracts
-abstract class _TimestampFactory {
-  Timestamp now();
-}
-
-class _MockTimestampFactory extends Mock implements _TimestampFactory {}
-
 void main() {
   group('MatchMaker', () {
     late _MockFirebaseFirestore db;
     late CollectionReference<Map<String, dynamic>> collection;
     late MatchMaker matchMaker;
-    late _TimestampFactory timestampFactory;
+    late Timestamp now;
 
     setUp(() {
       db = _MockFirebaseFirestore();
       collection = _MockCollectionReference();
-      timestampFactory = _MockTimestampFactory();
+      now = Timestamp.now();
 
       when(() => db.collection('matches')).thenReturn(collection);
-      matchMaker = MatchMaker(db: db, retryDelay: 0, now: timestampFactory.now);
+      matchMaker = MatchMaker(db: db, retryDelay: 0, now: () => now);
     });
 
     void mockQueryResult({List<Match> matches = const []}) {
@@ -141,8 +134,6 @@ void main() {
     });
 
     test('returns a new match as host when there are no matches', () async {
-      final now = Timestamp.now();
-      when(timestampFactory.now).thenReturn(now);
       mockQueryResult();
       mockAdd('hostId', 'EMPTY', 'matchId', now);
 
@@ -162,8 +153,6 @@ void main() {
     test(
       'joins a match when one is available and no concurrence error happens',
       () async {
-        final now = Timestamp.now();
-        when(timestampFactory.now).thenReturn(now);
         mockQueryResult(
           matches: [
             Match(id: 'match123', host: 'host123', lastPing: now),
@@ -189,11 +178,8 @@ void main() {
     test(
       'joins a match when one is available and no concurrence error happens',
       () async {
-        final now = Timestamp.now();
-        when(timestampFactory.now).thenReturn(
-          Timestamp.fromMillisecondsSinceEpoch(
-            Timestamp.now().millisecondsSinceEpoch - 2000,
-          ),
+        final now = Timestamp.fromMillisecondsSinceEpoch(
+          Timestamp.now().millisecondsSinceEpoch - 2000,
         );
         mockQueryResult(
           matches: [
@@ -220,8 +206,6 @@ void main() {
     test(
       'throws MatchMakingTimeout when max retry reach its maximum',
       () async {
-        final now = Timestamp.now();
-        when(timestampFactory.now).thenReturn(now);
         mockQueryResult(
           matches: [
             Match(id: 'match123', host: 'host123', lastPing: now),
@@ -238,8 +222,6 @@ void main() {
     );
 
     test('can watch a match', () async {
-      final now = Timestamp.now();
-      when(timestampFactory.now).thenReturn(now);
       final streamController =
           StreamController<DocumentSnapshot<Map<String, dynamic>>>();
 
@@ -276,8 +258,6 @@ void main() {
     });
 
     test('correctly maps a match when the spot is vacant', () async {
-      final now = Timestamp.now();
-      when(timestampFactory.now).thenReturn(now);
       final streamController =
           StreamController<DocumentSnapshot<Map<String, dynamic>>>();
 

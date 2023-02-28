@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 
 const _emptyKey = 'EMPTY';
 
@@ -39,7 +40,7 @@ class MatchMakingTimeout extends Error {}
 class MatchMaker {
   MatchMaker({
     required this.db,
-    Timestamp Function() now = Timestamp.now,
+    ValueGetter<Timestamp> now = Timestamp.now,
     this.retryDelay = defaultRetryDelay,
   }) : _now = now {
     collection = db.collection('matches');
@@ -48,7 +49,7 @@ class MatchMaker {
   static const defaultRetryDelay = 2;
   static const maxRetries = 3;
 
-  late final Timestamp Function() _now;
+  final ValueGetter<Timestamp> _now;
   final int retryDelay;
   final FirebaseFirestore db;
   late final CollectionReference<Map<String, dynamic>> collection;
