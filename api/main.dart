@@ -13,7 +13,7 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) {
   const imageModelRepository = ImageModelRepository();
   const languageModelRepository = LanguageModelRepository();
 
-  final dbClient = DbClient.initialize('top-dash-dev');
+  final dbClient = DbClient.initialize(_appId);
 
   cardsRepository = CardsRepository(
     imageModelRepository: imageModelRepository,
@@ -26,4 +26,12 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) {
     ip,
     port,
   );
+}
+
+String get _appId {
+  final value = Platform.environment['FB_APP_ID'];
+  if (value == null) {
+    throw ArgumentError('FB_APP_ID is required to run the API');
+  }
+  return value;
 }

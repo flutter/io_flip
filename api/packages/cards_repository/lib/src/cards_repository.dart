@@ -47,16 +47,15 @@ class CardsRepository {
     required LanguageModelRepository languageModelRepository,
     required DbClient dbClient,
     CardRng? rng,
-  }) : _dbClient = dbClient {
-    _rng = rng ?? CardRng();
-    _imageModelRepository = imageModelRepository;
-    _languageModelRepository = languageModelRepository;
-  }
+  })  : _dbClient = dbClient,
+        _rng = rng ?? CardRng(),
+        _imageModelRepository = imageModelRepository,
+        _languageModelRepository = languageModelRepository;
 
   final DbClient _dbClient;
-  late final CardRng _rng;
-  late final ImageModelRepository _imageModelRepository;
-  late final LanguageModelRepository _languageModelRepository;
+  final CardRng _rng;
+  final ImageModelRepository _imageModelRepository;
+  final LanguageModelRepository _languageModelRepository;
 
   /// Generates a random card.
   Future<Card> generateCard() async {
