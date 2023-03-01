@@ -1,5 +1,22 @@
 import 'package:firedart/firedart.dart';
 
+/// {@template db_entity_record}
+/// A model representing a record in an entity.
+/// {@endtemplate}
+class DbEntityRecord {
+  /// {@macro db_entity_record}
+  const DbEntityRecord({
+    required this.id,
+    this.data = const {},
+  });
+
+  /// Record's  id.
+  final String id;
+
+  /// Record's data.
+  final Map<String, dynamic> data;
+}
+
 /// {@template db_client}
 /// Client used to access the game database
 /// {@endtemplate}
@@ -27,7 +44,7 @@ class DbClient {
   }
 
   /// Gets a record by id on the given [entity].
-  Future<Map<String, dynamic>?> getById(String entity, String id) async {
+  Future<DbEntityRecord?> getById(String entity, String id) async {
     final collection = _firestore.collection(entity);
 
     final documentReference = collection.document(id);
@@ -39,9 +56,9 @@ class DbClient {
 
     final document = await documentReference.get();
 
-    return {
+    return DbEntityRecord(
       id: document.id,
-      ...document.map,
-    };
+      data: document.map,
+    );
   }
 }

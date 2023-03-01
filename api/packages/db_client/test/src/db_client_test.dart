@@ -60,11 +60,11 @@ void main() {
         when(documentReference.get).thenAnswer((_) async => document);
 
         final client = DbClient(firestore: firestore);
-        final map = await client.getById('birds', 'id');
+        final record = await client.getById('birds', 'id');
 
-        expect(map, isNotNull);
-        expect(map!['id'], equals('id'));
-        expect(map['name'], equals('Dash'));
+        expect(record, isNotNull);
+        expect(record!.id, equals('id'));
+        expect(record.data['name'], equals('Dash'));
       });
 
       test("returns null when the entity doesn't exists", () async {
