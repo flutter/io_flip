@@ -6,8 +6,10 @@ import 'package:db_client/db_client.dart';
 import 'package:image_model_repository/image_model_repository.dart';
 import 'package:language_model_repository/language_model_repository.dart';
 import 'package:logging/logging.dart';
+import 'package:match_repository/match_repository.dart';
 
 late CardsRepository cardsRepository;
+late MatchRepository matchRepository;
 late DbClient dbClient;
 
 Future<HttpServer> run(Handler handler, InternetAddress ip, int port) {
@@ -24,6 +26,11 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) {
   cardsRepository = CardsRepository(
     imageModelRepository: imageModelRepository,
     languageModelRepository: languageModelRepository,
+    dbClient: dbClient,
+  );
+
+  matchRepository = MatchRepository(
+    cardsRepository: cardsRepository,
     dbClient: dbClient,
   );
 

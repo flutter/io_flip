@@ -20,6 +20,9 @@ class GameClientError extends Error {
 /// Definition of a post call used by this client.
 typedef PostCall = Future<Response> Function(Uri, {Object? body});
 
+/// Definition of a get call used by this client.
+typedef GetCall = Future<Response> Function(Uri);
+
 /// {@template game_client}
 /// Client to access the game api
 /// {@endtemplate}
@@ -28,12 +31,16 @@ class GameClient {
   const GameClient({
     required String endpoint,
     PostCall postCall = post,
+    GetCall getCall = get,
   })  : _endpoint = endpoint,
-        _post = postCall;
+        _post = postCall,
+        _get = getCall;
 
   final String _endpoint;
 
   final PostCall _post;
+
+  final GetCall _get;
 
   /// Post /cards
   Future<Card> generateCard() async {
@@ -76,6 +83,62 @@ class GameClient {
     } catch (e) {
       throw GameClientError(
         'POST /decks returned invalid response "${response.body}"',
+      );
+    }
+  }
+
+  /// Get /decks/:deckId
+  ///
+  /// Returns a [Deck], if any to be found.
+  Future<Deck?> getDeck(String deckId) async {
+    final response = await _get(
+      Uri.parse('$_endpoint/decks/$deckId'),
+    );
+
+    if (response.statusCode == HttpStatus.notFound) {
+      return null;
+    }
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw GameClientError(
+        'GET /decks/$deckId returned status ${response.statusCode} with the following response: "${response.body}"',
+      );
+    }
+
+    try {
+      final json = jsonDecode(response.body);
+      return Deck.fromJson(json as Map<String, dynamic>);
+    } catch (e) {
+      throw GameClientError(
+        'POST /decks/$deckId returned invalid response "${response.body}"',
+      );
+    }
+  }
+
+  /// Get /matches/:matchId
+  ///
+  /// Returns a [Match], if any to be found.
+  Future<Match?> getMatch(String matchId) async {
+    final response = await _get(
+      Uri.parse('$_endpoint/matches/$matchId'),
+    );
+
+    if (response.statusCode == HttpStatus.notFound) {
+      return null;
+    }
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw GameClientError(
+        'GET /matches/$matchId returned status ${response.statusCode} with the following response: "${response.body}"',
+      );
+    }
+
+    try {
+      final json = jsonDecode(response.body);
+      return Match.fromJson(json as Map<String, dynamic>);
+    } catch (e) {
+      throw GameClientError(
+        'POST /matches/$matchId returned invalid response "${response.body}"',
       );
     }
   }
