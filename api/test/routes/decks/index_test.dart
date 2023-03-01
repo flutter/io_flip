@@ -30,9 +30,11 @@ void main() {
 
       request = _MockRequest();
       when(() => request.method).thenReturn(HttpMethod.post);
-      when(request.json).thenAnswer((_) async => {
-            'cards': ['a', 'b', 'c']
-          });
+      when(request.json).thenAnswer(
+        (_) async => {
+          'cards': ['a', 'b', 'c']
+        },
+      );
 
       logger = _MockLogger();
 

@@ -36,7 +36,7 @@ void main() {
 
         final client = GameClient(
           endpoint: '',
-          postCall: (_) async => response,
+          postCall: (_, {Object? body}) async => response,
         );
         final returnedCard = await client.generateCard();
 
@@ -51,7 +51,7 @@ void main() {
 
         final client = GameClient(
           endpoint: '',
-          postCall: (_) async => response,
+          postCall: (_, {Object? body}) async => response,
         );
 
         await expectLater(
@@ -75,7 +75,7 @@ void main() {
 
         final client = GameClient(
           endpoint: '',
-          postCall: (_) async => response,
+          postCall: (_, {Object? body}) async => response,
         );
 
         await expectLater(
@@ -99,8 +99,10 @@ void main() {
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
         when(() => response.body).thenReturn(jsonEncode({'id': 'deck'}));
 
-        final client =
-            GameClient(endpoint: '', postCall: (_) async => response);
+        final client = GameClient(
+          endpoint: '',
+          postCall: (_, {Object? body}) async => response,
+        );
         final id = await client.createDeck(['a', 'b', 'c']);
 
         expect(id, equals('deck'));
@@ -114,7 +116,7 @@ void main() {
 
         final client = GameClient(
           endpoint: '',
-          postCall: (_) async => response,
+          postCall: (_, {Object? body}) async => response,
         );
 
         await expectLater(
@@ -138,7 +140,7 @@ void main() {
 
         final client = GameClient(
           endpoint: '',
-          postCall: (_) async => response,
+          postCall: (_, {Object? body}) async => response,
         );
 
         await expectLater(
