@@ -20,6 +20,18 @@ void main() {
     });
 
     group('generateCard', () {
+      late GameClient client;
+      late Response response;
+
+      setUp(() {
+        response = _MockResponse();
+
+        client = GameClient(
+          endpoint: '',
+          postCall: (_, {Object? body}) async => response,
+        );
+      });
+
       test('returns a Card', () async {
         const card = Card(
           id: '',
@@ -30,29 +42,17 @@ void main() {
           power: 1,
         );
 
-        final response = _MockResponse();
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
         when(() => response.body).thenReturn(jsonEncode(card.toJson()));
-
-        final client = GameClient(
-          endpoint: '',
-          postCall: (_, {Object? body}) async => response,
-        );
         final returnedCard = await client.generateCard();
 
         expect(returnedCard, equals(card));
       });
 
       test('throws GameClientError when request fails', () async {
-        final response = _MockResponse();
         when(() => response.statusCode)
             .thenReturn(HttpStatus.internalServerError);
         when(() => response.body).thenReturn('Ops');
-
-        final client = GameClient(
-          endpoint: '',
-          postCall: (_, {Object? body}) async => response,
-        );
 
         await expectLater(
           client.generateCard,
@@ -69,14 +69,8 @@ void main() {
       });
 
       test('throws GameClientError when request response is invalid', () async {
-        final response = _MockResponse();
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
         when(() => response.body).thenReturn('Ops');
-
-        final client = GameClient(
-          endpoint: '',
-          postCall: (_, {Object? body}) async => response,
-        );
 
         await expectLater(
           client.generateCard,
@@ -94,15 +88,22 @@ void main() {
     });
 
     group('createDeck', () {
-      test('returns the deck id', () async {
-        final response = _MockResponse();
-        when(() => response.statusCode).thenReturn(HttpStatus.ok);
-        when(() => response.body).thenReturn(jsonEncode({'id': 'deck'}));
+      late GameClient client;
+      late Response response;
 
-        final client = GameClient(
+      setUp(() {
+        response = _MockResponse();
+
+        client = GameClient(
           endpoint: '',
           postCall: (_, {Object? body}) async => response,
         );
+      });
+
+      test('returns the deck id', () async {
+        when(() => response.statusCode).thenReturn(HttpStatus.ok);
+        when(() => response.body).thenReturn(jsonEncode({'id': 'deck'}));
+
         final id = await client.createDeck(['a', 'b', 'c']);
 
         expect(id, equals('deck'));
@@ -134,14 +135,8 @@ void main() {
       });
 
       test('throws GameClientError when request response is invalid', () async {
-        final response = _MockResponse();
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
         when(() => response.body).thenReturn('Ops');
-
-        final client = GameClient(
-          endpoint: '',
-          postCall: (_, {Object? body}) async => response,
-        );
 
         await expectLater(
           () => client.createDeck(['a', 'b', 'c']),
