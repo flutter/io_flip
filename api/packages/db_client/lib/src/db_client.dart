@@ -25,4 +25,23 @@ class DbClient {
 
     return reference.id;
   }
+
+  /// Gets a record by id on the given [entity].
+  Future<Map<String, dynamic>?> getById(String entity, String id) async {
+    final collection = _firestore.collection(entity);
+
+    final documentReference = collection.document(id);
+
+    final exists = await documentReference.exists;
+    if (!exists) {
+      return null;
+    }
+
+    final document = await documentReference.get();
+
+    return {
+      id: document.id,
+      ...document.map,
+    };
+  }
 }

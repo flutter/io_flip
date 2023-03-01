@@ -10,6 +10,8 @@ class _MockCollectionRefrence extends Mock implements CollectionReference {}
 
 class _MockDocument extends Mock implements Document {}
 
+class _MockDocumentReference extends Mock implements DocumentReference {}
+
 void main() {
   group('DbClient', () {
     test('can be instantiated', () {
@@ -37,6 +39,49 @@ void main() {
 
         expect(id, equals('id'));
         verify(() => collection.add({'name': 'Dash'})).called(1);
+      });
+    });
+
+    group('get', () {
+      test('gets an entity in firestore', () async {
+        final firestore = _MockFirestore();
+        final collection = _MockCollectionRefrence();
+
+        when(() => firestore.collection('birds')).thenReturn(collection);
+
+        final documentReference = _MockDocumentReference();
+        when(() => documentReference.exists).thenAnswer((_) async => true);
+
+        final document = _MockDocument();
+        when(() => document.id).thenReturn('id');
+        when(() => document.map).thenReturn({'name': 'Dash'});
+
+        when(() => collection.document('id')).thenReturn(documentReference);
+        when(documentReference.get).thenAnswer((_) async => document);
+
+        final client = DbClient(firestore: firestore);
+        final map = await client.getById('birds', 'id');
+
+        expect(map, isNotNull);
+        expect(map!['id'], equals('id'));
+        expect(map['name'], equals('Dash'));
+      });
+
+      test("returns null when the entity doesn't exists", () async {
+        final firestore = _MockFirestore();
+        final collection = _MockCollectionRefrence();
+
+        when(() => firestore.collection('birds')).thenReturn(collection);
+
+        final documentReference = _MockDocumentReference();
+        when(() => documentReference.exists).thenAnswer((_) async => false);
+
+        when(() => collection.document('id')).thenReturn(documentReference);
+
+        final client = DbClient(firestore: firestore);
+        final map = await client.getById('birds', 'id');
+
+        expect(map, isNull);
       });
     });
   });
