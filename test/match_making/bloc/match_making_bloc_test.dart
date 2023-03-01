@@ -203,17 +203,18 @@ void main() {
 
     test('periodically pings the created match until a guest joins', () async {
       fakeAsync((async) {
-        when(() => matchMaker.findMatch(playerId)).thenAnswer(
+        when(() => matchMaker.findMatch(deckId)).thenAnswer(
           (_) async => Match(
             id: 'id',
-            host: playerId,
+            host: deckId,
             lastPing: timestamp,
           ),
         );
 
         MatchMakingBloc(
           matchMaker: matchMaker,
-          playerId: playerId,
+          gameClient: gameClient,
+          cardIds: cardIds,
           pingInterval: Duration(milliseconds: 10),
           hostWaitTime: Duration(milliseconds: 100),
         ).add(MatchRequested());
@@ -225,7 +226,7 @@ void main() {
         watchController.add(
           Match(
             id: 'id',
-            host: playerId,
+            host: deckId,
             guest: '',
             lastPing: timestamp,
           ),
