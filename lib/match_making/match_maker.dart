@@ -71,6 +71,11 @@ class MatchMaker {
     });
   }
 
+  Future<void> pingMatch(String id) async {
+    final ref = collection.doc(id);
+    await ref.update({'lastPing': _now()});
+  }
+
   Future<Match> findMatch(String id, {int retryNumber = 0}) async {
     final matchesResult = await collection
         .where(

@@ -22,6 +22,8 @@ void main() {
       watchController = StreamController.broadcast();
       when(() => matchMaker.watchMatch(any()))
           .thenAnswer((_) => watchController.stream);
+      when(() => matchMaker.pingMatch(any())).thenAnswer((_) async {});
+
       timestamp = Timestamp.now();
     });
 
@@ -183,6 +185,52 @@ void main() {
           ),
         ),
       );
+    });
+
+    test('periodically pings the created match until a guest joins', () async {
+      when(() => matchMaker.findMatch(playerId)).thenAnswer(
+        (_) async => Match(
+          id: 'id',
+          host: playerId,
+          lastPing: timestamp,
+        ),
+      );
+
+      final bloc = MatchMakingBloc(
+        matchMaker: matchMaker,
+        playerId: playerId,
+        pingInterval: Duration(milliseconds: 10),
+        hostWaitTime: Duration(milliseconds: 100),
+      )..add(MatchRequested());
+
+      expect(
+        await bloc.stream.take(2).last,
+        equals(
+          MatchMakingState(
+            status: MatchMakingStatus.processing,
+            match: Match(
+              id: 'id',
+              host: playerId,
+              lastPing: timestamp,
+            ),
+          ),
+        ),
+      );
+
+      await Future<void>.delayed(Duration(milliseconds: 55));
+
+      verify(() => matchMaker.pingMatch('id')).called(5);
+
+      watchController.add(
+        Match(
+          id: 'id',
+          host: playerId,
+          guest: '',
+          lastPing: timestamp,
+        ),
+      );
+      await Future<void>.delayed(Duration(milliseconds: 30));
+      verifyNever(() => matchMaker.pingMatch('id'));
     });
 
     test('tries again when the guest wait times out', () async {
