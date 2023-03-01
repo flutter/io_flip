@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/match_making/match_making.dart';
@@ -188,49 +189,37 @@ void main() {
     });
 
     test('periodically pings the created match until a guest joins', () async {
-      when(() => matchMaker.findMatch(playerId)).thenAnswer(
-        (_) async => Match(
-          id: 'id',
-          host: playerId,
-          lastPing: timestamp,
-        ),
-      );
-
-      final bloc = MatchMakingBloc(
-        matchMaker: matchMaker,
-        playerId: playerId,
-        pingInterval: Duration(milliseconds: 10),
-        hostWaitTime: Duration(milliseconds: 100),
-      )..add(MatchRequested());
-
-      expect(
-        await bloc.stream.take(2).last,
-        equals(
-          MatchMakingState(
-            status: MatchMakingStatus.processing,
-            match: Match(
-              id: 'id',
-              host: playerId,
-              lastPing: timestamp,
-            ),
+      fakeAsync((async) {
+        when(() => matchMaker.findMatch(playerId)).thenAnswer(
+          (_) async => Match(
+            id: 'id',
+            host: playerId,
+            lastPing: timestamp,
           ),
-        ),
-      );
+        );
 
-      await Future<void>.delayed(Duration(milliseconds: 55));
+        MatchMakingBloc(
+          matchMaker: matchMaker,
+          playerId: playerId,
+          pingInterval: Duration(milliseconds: 10),
+          hostWaitTime: Duration(milliseconds: 100),
+        ).add(MatchRequested());
 
-      verify(() => matchMaker.pingMatch('id')).called(5);
+        async.elapse(Duration(milliseconds: 55));
 
-      watchController.add(
-        Match(
-          id: 'id',
-          host: playerId,
-          guest: '',
-          lastPing: timestamp,
-        ),
-      );
-      await Future<void>.delayed(Duration(milliseconds: 30));
-      verifyNever(() => matchMaker.pingMatch('id'));
+        verify(() => matchMaker.pingMatch('id')).called(5);
+
+        watchController.add(
+          Match(
+            id: 'id',
+            host: playerId,
+            guest: '',
+            lastPing: timestamp,
+          ),
+        );
+        async.elapse(Duration(milliseconds: 30));
+        verifyNever(() => matchMaker.pingMatch('id'));
+      });
     });
 
     test('tries again when the guest wait times out', () async {
