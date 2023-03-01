@@ -191,7 +191,14 @@ void main() {
         );
 
         await tester.tap(find.text('Play'));
-        verify(() => goRouter.go('/match_making')).called(1);
+        verify(
+          () => goRouter.goNamed(
+            'match_making',
+            queryParams: {
+              'cardId': [card1, card2, card3].map((card) => card.id).toList(),
+            },
+          ),
+        ).called(1);
       },
     );
   });

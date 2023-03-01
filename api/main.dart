@@ -5,6 +5,7 @@ import 'package:dart_frog/dart_frog.dart';
 import 'package:db_client/db_client.dart';
 import 'package:image_model_repository/image_model_repository.dart';
 import 'package:language_model_repository/language_model_repository.dart';
+import 'package:logging/logging.dart';
 
 late CardsRepository cardsRepository;
 late DbClient dbClient;
@@ -14,6 +15,11 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) {
   const languageModelRepository = LanguageModelRepository();
 
   final dbClient = DbClient.initialize(_appId);
+
+  Logger.root.onRecord.listen((record) {
+    // ignore: avoid_print
+    print('${record.level.name}: ${record.time}: ${record.message}');
+  });
 
   cardsRepository = CardsRepository(
     imageModelRepository: imageModelRepository,

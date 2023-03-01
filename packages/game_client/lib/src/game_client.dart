@@ -18,7 +18,7 @@ class GameClientError extends Error {
 }
 
 /// Definition of a post call used by this client.
-typedef PostCall = Future<Response> Function(Uri);
+typedef PostCall = Future<Response> Function(Uri, {Object? body});
 
 /// {@template game_client}
 /// Client to access the game api
@@ -51,6 +51,31 @@ class GameClient {
     } catch (e) {
       throw GameClientError(
         'POST /cards returned invalid response "${response.body}"',
+      );
+    }
+  }
+
+  /// Post /decks
+  ///
+  /// Returns the id of the created deck.
+  Future<String> createDeck(List<String> cardIds) async {
+    final response = await _post(
+      Uri.parse('$_endpoint/decks'),
+      body: jsonEncode({'cards': cardIds}),
+    );
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw GameClientError(
+        'POST /decks returned status ${response.statusCode} with the following response: "${response.body}"',
+      );
+    }
+
+    try {
+      final json = jsonDecode(response.body);
+      return (json as Map<String, dynamic>)['id'] as String;
+    } catch (e) {
+      throw GameClientError(
+        'POST /decks returned invalid response "${response.body}"',
       );
     }
   }

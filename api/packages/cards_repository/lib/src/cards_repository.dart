@@ -91,4 +91,11 @@ class CardsRepository {
       power: power,
     );
   }
+
+  /// Creates a deck with the given cards.
+  Future<String> createDeck(List<String> cardIds) {
+    return _dbClient.add('decks', {
+      'cards': cardIds,
+    });
+  }
 }
