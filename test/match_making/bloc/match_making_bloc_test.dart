@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_client/game_client.dart';
 import 'package:mocktail/mocktail.dart';
@@ -27,6 +28,8 @@ void main() {
       watchController = StreamController.broadcast();
       when(() => matchMaker.watchMatch(any()))
           .thenAnswer((_) => watchController.stream);
+      when(() => matchMaker.pingMatch(any())).thenAnswer((_) async {});
+
       timestamp = Timestamp.now();
 
       gameClient = _MockGameClient();
@@ -196,6 +199,40 @@ void main() {
           ),
         ),
       );
+    });
+
+    test('periodically pings the created match until a guest joins', () async {
+      fakeAsync((async) {
+        when(() => matchMaker.findMatch(playerId)).thenAnswer(
+          (_) async => Match(
+            id: 'id',
+            host: playerId,
+            lastPing: timestamp,
+          ),
+        );
+
+        MatchMakingBloc(
+          matchMaker: matchMaker,
+          playerId: playerId,
+          pingInterval: Duration(milliseconds: 10),
+          hostWaitTime: Duration(milliseconds: 100),
+        ).add(MatchRequested());
+
+        async.elapse(Duration(milliseconds: 55));
+
+        verify(() => matchMaker.pingMatch('id')).called(5);
+
+        watchController.add(
+          Match(
+            id: 'id',
+            host: playerId,
+            guest: '',
+            lastPing: timestamp,
+          ),
+        );
+        async.elapse(Duration(milliseconds: 30));
+        verifyNever(() => matchMaker.pingMatch('id'));
+      });
     });
 
     test('tries again when the guest wait times out', () async {

@@ -105,6 +105,13 @@ void main() {
       );
     }
 
+    _MockDocumentReference<Map<String, dynamic>> mockUpdate(String matchId) {
+      final docRef = _MockDocumentReference<Map<String, dynamic>>();
+      when(() => collection.doc(matchId)).thenReturn(docRef);
+      when(() => docRef.update(any())).thenAnswer((_) async {});
+      return docRef;
+    }
+
     void mockSuccessfulTransaction(String guestId, String matchId) {
       final docRef = _MockDocumentReference<Map<String, dynamic>>();
       when(() => collection.doc(matchId)).thenReturn(docRef);
@@ -131,6 +138,20 @@ void main() {
         MatchMaker(db: db),
         isNotNull,
       );
+    });
+
+    test('updates the match document on ping', () async {
+      final mockDoc = mockUpdate('matchId');
+
+      await matchMaker.pingMatch('matchId');
+
+      verify(
+        () => mockDoc.update(
+          {
+            'lastPing': now,
+          },
+        ),
+      ).called(1);
     });
 
     test('returns a new match as host when there are no matches', () async {
