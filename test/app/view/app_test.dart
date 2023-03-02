@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_client/game_client.dart';
+import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/app/app.dart';
 import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/main_menu/main_menu_screen.dart';
-import 'package:top_dash/match_making/match_maker.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
 import 'package:top_dash/settings/settings.dart';
 import 'package:top_dash/settings/settings_screen.dart';
@@ -25,7 +25,7 @@ class _MockLifecycleNotifier extends Mock
 
 class _MockGameClient extends Mock implements GameClient {}
 
-class _MockMatchMaker extends Mock implements MatchMaker {}
+class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +36,7 @@ void main() {
         App(
           settingsPersistence: MemoryOnlySettingsPersistence(),
           gameClient: _MockGameClient(),
-          matchMaker: _MockMatchMaker(),
+          matchMakerRepository: _MockMatchMakerRepository(),
         ),
       );
 
@@ -108,7 +108,7 @@ void main() {
           App(
             settingsPersistence: MemoryOnlySettingsPersistence(),
             gameClient: _MockGameClient(),
-            matchMaker: _MockMatchMaker(),
+            matchMakerRepository: _MockMatchMakerRepository(),
           ),
         );
 
@@ -121,7 +121,7 @@ void main() {
           App(
             settingsPersistence: MemoryOnlySettingsPersistence(),
             gameClient: _MockGameClient(),
-            matchMaker: _MockMatchMaker(),
+            matchMakerRepository: _MockMatchMakerRepository(),
           ),
         );
 
@@ -137,7 +137,7 @@ void main() {
           App(
             settingsPersistence: MemoryOnlySettingsPersistence(),
             gameClient: _MockGameClient(),
-            matchMaker: _MockMatchMaker(),
+            matchMakerRepository: _MockMatchMakerRepository(),
           ),
         );
 
@@ -155,7 +155,7 @@ void main() {
             App(
               settingsPersistence: MemoryOnlySettingsPersistence(),
               gameClient: _MockGameClient(),
-              matchMaker: _MockMatchMaker(),
+              matchMakerRepository: _MockMatchMakerRepository(),
             ),
           );
 
@@ -177,7 +177,7 @@ void main() {
           App(
             settingsPersistence: MemoryOnlySettingsPersistence(),
             gameClient: _MockGameClient(),
-            matchMaker: _MockMatchMaker(),
+            matchMakerRepository: _MockMatchMakerRepository(),
           ),
         );
 
@@ -191,7 +191,7 @@ void main() {
           App(
             settingsPersistence: MemoryOnlySettingsPersistence(),
             gameClient: _MockGameClient(),
-            matchMaker: _MockMatchMaker(),
+            matchMakerRepository: _MockMatchMakerRepository(),
           ),
         );
 
@@ -208,7 +208,7 @@ void main() {
           App(
             settingsPersistence: MemoryOnlySettingsPersistence(),
             gameClient: _MockGameClient(),
-            matchMaker: _MockMatchMaker(),
+            matchMakerRepository: _MockMatchMakerRepository(),
           ),
         );
 
@@ -227,7 +227,7 @@ void main() {
             App(
               settingsPersistence: MemoryOnlySettingsPersistence(),
               gameClient: _MockGameClient(),
-              matchMaker: _MockMatchMaker(),
+              matchMakerRepository: _MockMatchMakerRepository(),
             ),
           );
 
