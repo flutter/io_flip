@@ -7,7 +7,7 @@ part 'deck.g.dart';
 /// {@template deck}
 /// A model that represents a deck of cards.
 /// {@endtemplate}
-@JsonSerializable(ignoreUnannotated: true)
+@JsonSerializable(ignoreUnannotated: true, explicitToJson: true)
 class Deck extends Equatable {
 
   /// {@macro deck}

@@ -27,7 +27,7 @@ GoRouter createRouter() {
           ),
           GoRoute(
             name: 'game',
-            path: 'game',
+            path: 'game/:matchId',
             builder: GamePage.routeBuilder,
           ),
         ],

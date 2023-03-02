@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:top_dash/match_making/match_making.dart';
 import 'package:top_dash/style/palette.dart';
 
@@ -9,7 +10,12 @@ class MatchMakingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = context.read<Palette>();
-    return BlocBuilder<MatchMakingBloc, MatchMakingState>(
+    return BlocConsumer<MatchMakingBloc, MatchMakingState>(
+      listener: (previous, next) {
+        if (next.status == MatchMakingStatus.completed) {
+          context.go('/game/${next.match?.id}');
+        }
+      },
       builder: (context, state) {
         if (state.status == MatchMakingStatus.processing ||
             state.status == MatchMakingStatus.initial) {

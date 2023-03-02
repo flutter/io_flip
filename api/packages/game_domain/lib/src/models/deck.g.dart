@@ -15,5 +15,5 @@ Deck _$DeckFromJson(Map<String, dynamic> json) => Deck(
 
 Map<String, dynamic> _$DeckToJson(Deck instance) => <String, dynamic>{
       'id': instance.id,
-      'cards': instance.cards,
+      'cards': instance.cards.map((e) => e.toJson()).toList(),
     };
