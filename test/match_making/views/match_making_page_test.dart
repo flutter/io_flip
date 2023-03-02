@@ -3,13 +3,14 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_client/game_client.dart';
 import 'package:go_router/go_router.dart';
+import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
 import 'package:top_dash/match_making/match_making.dart';
 
 import '../../helpers/helpers.dart';
 
-class _MockMatchMaker extends Mock implements MatchMaker {}
+class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
 
 class _MockGameClient extends Mock implements GameClient {}
 
@@ -45,7 +46,9 @@ extension MatchMakingPageTest on WidgetTester {
     return pumpApp(
       MultiProvider(
         providers: [
-          Provider<MatchMaker>(create: (_) => _MockMatchMaker()),
+          Provider<MatchMakerRepository>(
+            create: (_) => _MockMatchMakerRepository(),
+          ),
           Provider<GameClient>(create: (_) => _MockGameClient()),
         ],
         child: MatchMakingPage(

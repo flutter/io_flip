@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:game_client/game_client.dart';
+import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:top_dash/app/app.dart';
 import 'package:top_dash/bootstrap.dart';
 import 'package:top_dash/firebase_options_development.dart';
-import 'package:top_dash/match_making/match_maker.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
 
 void main() {
@@ -15,7 +15,7 @@ void main() {
     builder: (FirebaseFirestore firebaseFirestore) => App(
       settingsPersistence: LocalStorageSettingsPersistence(),
       gameClient: gameClient,
-      matchMaker: MatchMaker(db: firebaseFirestore),
+      matchMakerRepository: MatchMakerRepository(db: firebaseFirestore),
     ),
   );
 }

@@ -1,59 +1,42 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:match_maker_repository/match_maker_repository.dart';
 
 const _emptyKey = 'EMPTY';
 
-class Match extends Equatable {
-  const Match({
-    required this.id,
-    required this.host,
-    required this.lastPing,
-    this.guest,
-  });
-
-  final String id;
-  final String host;
-  final String? guest;
-  final Timestamp lastPing;
-
-  Match copyWithGuest({
-    required String guest,
-  }) {
-    return Match(
-      id: id,
-      host: host,
-      guest: guest,
-      lastPing: lastPing,
-    );
-  }
-
-  @override
-  List<Object?> get props => [id, host, guest, lastPing];
-}
-
-/// An error throw when the match making process has timedout.
+/// Represents an error that occurs when a matchmaking process times out.
 class MatchMakingTimeout extends Error {}
 
-class MatchMaker {
-  MatchMaker({
+/// {@template match_maker_repository}
+/// Repository for match making.
+/// {@endtemplate}
+class MatchMakerRepository {
+  /// {@macro match_maker_repository}
+  MatchMakerRepository({
     required this.db,
     ValueGetter<Timestamp> now = Timestamp.now,
-    this.retryDelay = defaultRetryDelay,
+    this.retryDelay = _defaultRetryDelay,
   }) : _now = now {
     collection = db.collection('matches');
   }
 
-  static const defaultRetryDelay = 2;
-  static const maxRetries = 3;
+  static const _defaultRetryDelay = 2;
+  static const _maxRetries = 3;
 
   final ValueGetter<Timestamp> _now;
+
+  /// The delay between retries when finding a match.
   final int retryDelay;
+
+  /// The [FirebaseFirestore] instance.
   final FirebaseFirestore db;
+
+  /// The [CollectionReference] for the matches.
   late final CollectionReference<Map<String, dynamic>> collection;
 
+  /// Watches a match.
   Stream<Match> watchMatch(String id) {
     return collection.doc(id).snapshots().map((snapshot) {
       final id = snapshot.id;
@@ -71,6 +54,13 @@ class MatchMaker {
     });
   }
 
+  /// Pings a match.
+  Future<void> pingMatch(String id) async {
+    final ref = collection.doc(id);
+    await ref.update({'lastPing': _now()});
+  }
+
+  /// Finds a match.
   Future<Match> findMatch(String id, {int retryNumber = 0}) async {
     final matchesResult = await collection
         .where(
@@ -111,7 +101,7 @@ class MatchMaker {
         }
       }
 
-      if (retryNumber == maxRetries) {
+      if (retryNumber == _maxRetries) {
         throw MatchMakingTimeout();
       }
 

@@ -28,11 +28,14 @@ dependencies:
   go_router: ^6.2.0
   intl: ^0.17.0
   logging: ^1.1.1
+  match_maker_repository:
+    path: packages/match_maker_repository
   provider: ^6.0.5
   shared_preferences: ^2.0.17
 
 dev_dependencies:
   bloc_test: ^9.1.1
+  fake_async: ^1.3.1
   flutter_test:
     sdk: flutter
   mocktail: ^0.3.0

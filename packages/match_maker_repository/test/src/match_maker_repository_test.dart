@@ -4,8 +4,8 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:top_dash/match_making/match_maker.dart';
 
 class _MockFirebaseFirestore extends Mock implements FirebaseFirestore {
   Transaction? mockTransaction;
@@ -41,10 +41,10 @@ class _MockDocumentReference<T> extends Mock implements DocumentReference<T> {}
 class _MockTransaction extends Mock implements Transaction {}
 
 void main() {
-  group('MatchMaker', () {
+  group('MatchMakerRepository', () {
     late _MockFirebaseFirestore db;
     late CollectionReference<Map<String, dynamic>> collection;
-    late MatchMaker matchMaker;
+    late MatchMakerRepository matchMakerRepository;
     late Timestamp now;
 
     setUp(() {
@@ -53,7 +53,11 @@ void main() {
       now = Timestamp.now();
 
       when(() => db.collection('matches')).thenReturn(collection);
-      matchMaker = MatchMaker(db: db, retryDelay: 0, now: () => now);
+      matchMakerRepository = MatchMakerRepository(
+        db: db,
+        retryDelay: 0,
+        now: () => now,
+      );
     });
 
     void mockQueryResult({List<Match> matches = const []}) {
@@ -105,6 +109,13 @@ void main() {
       );
     }
 
+    _MockDocumentReference<Map<String, dynamic>> mockUpdate(String matchId) {
+      final docRef = _MockDocumentReference<Map<String, dynamic>>();
+      when(() => collection.doc(matchId)).thenReturn(docRef);
+      when(() => docRef.update(any())).thenAnswer((_) async {});
+      return docRef;
+    }
+
     void mockSuccessfulTransaction(String guestId, String matchId) {
       final docRef = _MockDocumentReference<Map<String, dynamic>>();
       when(() => collection.doc(matchId)).thenReturn(docRef);
@@ -128,16 +139,30 @@ void main() {
 
     test('can be instantiated', () {
       expect(
-        MatchMaker(db: db),
+        MatchMakerRepository(db: db),
         isNotNull,
       );
+    });
+
+    test('updates the match document on ping', () async {
+      final mockDoc = mockUpdate('matchId');
+
+      await matchMakerRepository.pingMatch('matchId');
+
+      verify(
+        () => mockDoc.update(
+          {
+            'lastPing': now,
+          },
+        ),
+      ).called(1);
     });
 
     test('returns a new match as host when there are no matches', () async {
       mockQueryResult();
       mockAdd('hostId', 'EMPTY', 'matchId', now);
 
-      final match = await matchMaker.findMatch('hostId');
+      final match = await matchMakerRepository.findMatch('hostId');
       expect(
         match,
         equals(
@@ -160,7 +185,7 @@ void main() {
         );
         mockSuccessfulTransaction('guest123', 'match123');
 
-        final match = await matchMaker.findMatch('guest123');
+        final match = await matchMakerRepository.findMatch('guest123');
         expect(
           match,
           equals(
@@ -188,7 +213,7 @@ void main() {
         );
         mockSuccessfulTransaction('guest123', 'match123');
 
-        final match = await matchMaker.findMatch('guest123');
+        final match = await matchMakerRepository.findMatch('guest123');
         expect(
           match,
           equals(
@@ -215,7 +240,7 @@ void main() {
         // manually mock a failed transaction.
 
         await expectLater(
-          () => matchMaker.findMatch('guest123'),
+          () => matchMakerRepository.findMatch('guest123'),
           throwsA(isA<MatchMakingTimeout>()),
         );
       },
@@ -228,7 +253,8 @@ void main() {
       mockSnapshoots('123', streamController.stream);
 
       final values = <Match>[];
-      final subscription = matchMaker.watchMatch('123').listen(values.add);
+      final subscription =
+          matchMakerRepository.watchMatch('123').listen(values.add);
 
       final snapshot = _MockQueryDocumentSnapshot<Map<String, dynamic>>();
       when(() => snapshot.id).thenReturn('123');
@@ -264,7 +290,8 @@ void main() {
       mockSnapshoots('123', streamController.stream);
 
       final values = <Match>[];
-      final subscription = matchMaker.watchMatch('123').listen(values.add);
+      final subscription =
+          matchMakerRepository.watchMatch('123').listen(values.add);
 
       final snapshot = _MockQueryDocumentSnapshot<Map<String, dynamic>>();
       when(() => snapshot.id).thenReturn('123');

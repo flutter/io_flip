@@ -1,0 +1,20 @@
+name: match_maker_repository
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    paths:
+      - "packages/match_maker_repository/**"
+      - ".github/workflows/match_maker_repository.yaml"
+    branches:
+      - main
+
+jobs:
+  build:
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
+    with:
+      flutter_version: 3.7.2
+      working_directory: packages/match_maker_repository
