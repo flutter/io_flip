@@ -8,6 +8,8 @@ environment:
   flutter: 3.7.2
 
 dependencies:
+  cloud_firestore: ^4.4.3
+  equatable: ^2.0.5
   flutter:
     sdk: flutter
 

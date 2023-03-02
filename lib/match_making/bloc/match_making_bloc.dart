@@ -3,26 +3,26 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_client/game_client.dart';
-import 'package:top_dash/match_making/match_making.dart';
+import 'package:match_maker_repository/match_maker_repository.dart';
 
 part 'match_making_event.dart';
 part 'match_making_state.dart';
 
 class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   MatchMakingBloc({
-    required MatchMaker matchMaker,
+    required MatchMakerRepository matchMakerRepository,
     required GameClient gameClient,
     required this.cardIds,
     this.hostWaitTime = defaultHostWaitTime,
     this.pingInterval = defaultPingInterval,
-  })  : _matchMaker = matchMaker,
+  })  : _matchMakerRepository = matchMakerRepository,
         _gameClient = gameClient,
         super(const MatchMakingState.initial()) {
     on<MatchRequested>(_onMatchRequested);
   }
 
   final GameClient _gameClient;
-  final MatchMaker _matchMaker;
+  final MatchMakerRepository _matchMakerRepository;
   final List<String> cardIds;
 
   static const defaultHostWaitTime = Duration(seconds: 4);
@@ -38,7 +38,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
     try {
       emit(state.copyWith(status: MatchMakingStatus.processing));
       final playerId = await _gameClient.createDeck(cardIds);
-      final match = await _matchMaker.findMatch(playerId);
+      final match = await _matchMakerRepository.findMatch(playerId);
 
       if (match.guest != null) {
         emit(
@@ -48,7 +48,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
           ),
         );
       } else {
-        final stream = _matchMaker
+        final stream = _matchMakerRepository
             .watchMatch(match.id)
             .where((match) => match.guest != null);
 
@@ -62,7 +62,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
         final timer = Timer.periodic(pingInterval, (_) async {
           if (!pinging) {
             pinging = true;
-            await _matchMaker.pingMatch(match.id);
+            await _matchMakerRepository.pingMatch(match.id);
             pinging = false;
           }
         });

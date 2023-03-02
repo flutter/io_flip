@@ -7,28 +7,30 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_client/game_client.dart';
+import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/match_making/match_making.dart';
 
-class _MockMatchMaker extends Mock implements MatchMaker {}
+class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
 
 class _MockGameClient extends Mock implements GameClient {}
 
 void main() {
   group('MatchMakingBloc', () {
     late GameClient gameClient;
-    late MatchMaker matchMaker;
+    late MatchMakerRepository matchMakerRepository;
     late StreamController<Match> watchController;
     const deckId = 'deckId';
     final cardIds = ['a', 'b', 'c'];
     late Timestamp timestamp;
 
     setUp(() {
-      matchMaker = _MockMatchMaker();
+      matchMakerRepository = _MockMatchMakerRepository();
       watchController = StreamController.broadcast();
-      when(() => matchMaker.watchMatch(any()))
+      when(() => matchMakerRepository.watchMatch(any()))
           .thenAnswer((_) => watchController.stream);
-      when(() => matchMaker.pingMatch(any())).thenAnswer((_) async {});
+      when(() => matchMakerRepository.pingMatch(any()))
+          .thenAnswer((_) async {});
 
       timestamp = Timestamp.now();
 
@@ -39,7 +41,7 @@ void main() {
     test('can be instantiated', () {
       expect(
         MatchMakingBloc(
-          matchMaker: _MockMatchMaker(),
+          matchMakerRepository: _MockMatchMakerRepository(),
           gameClient: gameClient,
           cardIds: cardIds,
         ),
@@ -50,7 +52,7 @@ void main() {
     test('has the correct initial state', () {
       expect(
         MatchMakingBloc(
-          matchMaker: _MockMatchMaker(),
+          matchMakerRepository: _MockMatchMakerRepository(),
           gameClient: gameClient,
           cardIds: cardIds,
         ).state,
@@ -61,13 +63,13 @@ void main() {
     blocTest<MatchMakingBloc, MatchMakingState>(
       'can find a match as a guest',
       build: () => MatchMakingBloc(
-        matchMaker: matchMaker,
+        matchMakerRepository: matchMakerRepository,
         gameClient: gameClient,
         cardIds: cardIds,
         hostWaitTime: Duration.zero,
       ),
       setUp: () {
-        when(() => matchMaker.findMatch(deckId)).thenAnswer(
+        when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
           (_) async => Match(
             id: '',
             host: '',
@@ -96,13 +98,15 @@ void main() {
     blocTest<MatchMakingBloc, MatchMakingState>(
       'emits a failure when an error happens',
       build: () => MatchMakingBloc(
-        matchMaker: matchMaker,
+        matchMakerRepository: matchMakerRepository,
         gameClient: gameClient,
         cardIds: cardIds,
         hostWaitTime: Duration.zero,
       ),
       setUp: () {
-        when(() => matchMaker.findMatch(deckId)).thenThrow(Exception('Error'));
+        when(() => matchMakerRepository.findMatch(deckId)).thenThrow(
+          Exception('Error'),
+        );
       },
       act: (bloc) => bloc.add(MatchRequested()),
       expect: () => [
@@ -118,12 +122,12 @@ void main() {
     blocTest<MatchMakingBloc, MatchMakingState>(
       "creates a match when there isn't one open",
       build: () => MatchMakingBloc(
-        matchMaker: matchMaker,
+        matchMakerRepository: matchMakerRepository,
         gameClient: gameClient,
         cardIds: cardIds,
       ),
       setUp: () {
-        when(() => matchMaker.findMatch(deckId)).thenAnswer(
+        when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
           (_) async => Match(
             id: '',
             host: deckId,
@@ -148,7 +152,7 @@ void main() {
     );
 
     test('completes the match when is host and a guest joins', () async {
-      when(() => matchMaker.findMatch(deckId)).thenAnswer(
+      when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
         (_) async => Match(
           id: '',
           host: deckId,
@@ -157,7 +161,7 @@ void main() {
       );
 
       final bloc = MatchMakingBloc(
-        matchMaker: matchMaker,
+        matchMakerRepository: matchMakerRepository,
         gameClient: gameClient,
         cardIds: cardIds,
       )..add(MatchRequested());
@@ -203,7 +207,7 @@ void main() {
 
     test('periodically pings the created match until a guest joins', () async {
       fakeAsync((async) {
-        when(() => matchMaker.findMatch(deckId)).thenAnswer(
+        when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
           (_) async => Match(
             id: 'id',
             host: deckId,
@@ -212,7 +216,7 @@ void main() {
         );
 
         MatchMakingBloc(
-          matchMaker: matchMaker,
+          matchMakerRepository: matchMakerRepository,
           gameClient: gameClient,
           cardIds: cardIds,
           pingInterval: Duration(milliseconds: 10),
@@ -221,7 +225,7 @@ void main() {
 
         async.elapse(Duration(milliseconds: 55));
 
-        verify(() => matchMaker.pingMatch('id')).called(5);
+        verify(() => matchMakerRepository.pingMatch('id')).called(5);
 
         watchController.add(
           Match(
@@ -232,12 +236,12 @@ void main() {
           ),
         );
         async.elapse(Duration(milliseconds: 30));
-        verifyNever(() => matchMaker.pingMatch('id'));
+        verifyNever(() => matchMakerRepository.pingMatch('id'));
       });
     });
 
     test('tries again when the guest wait times out', () async {
-      when(() => matchMaker.findMatch(deckId)).thenAnswer(
+      when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
         (_) async => Match(
           id: '',
           host: deckId,
@@ -246,7 +250,7 @@ void main() {
       );
 
       final bloc = MatchMakingBloc(
-        matchMaker: matchMaker,
+        matchMakerRepository: matchMakerRepository,
         gameClient: gameClient,
         cardIds: cardIds,
         hostWaitTime: const Duration(milliseconds: 200),
