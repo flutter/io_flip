@@ -14,6 +14,6 @@ Match _$MatchFromJson(Map<String, dynamic> json) => Match(
 
 Map<String, dynamic> _$MatchToJson(Match instance) => <String, dynamic>{
       'id': instance.id,
-      'hostDeck': instance.hostDeck,
-      'guestDeck': instance.guestDeck,
+      'hostDeck': instance.hostDeck.toJson(),
+      'guestDeck': instance.guestDeck.toJson(),
     };

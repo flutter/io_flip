@@ -110,7 +110,7 @@ class GameClient {
       return Deck.fromJson(json as Map<String, dynamic>);
     } catch (e) {
       throw GameClientError(
-        'POST /decks/$deckId returned invalid response "${response.body}"',
+        'GET /decks/$deckId returned invalid response "${response.body}"',
       );
     }
   }
@@ -138,7 +138,7 @@ class GameClient {
       return Match.fromJson(json as Map<String, dynamic>);
     } catch (e) {
       throw GameClientError(
-        'POST /matches/$matchId returned invalid response "${response.body}"',
+        'GET /matches/$matchId returned invalid response "${response.body}"',
       );
     }
   }

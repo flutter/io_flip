@@ -9,7 +9,6 @@ part 'deck.g.dart';
 /// {@endtemplate}
 @JsonSerializable(ignoreUnannotated: true, explicitToJson: true)
 class Deck extends Equatable {
-
   /// {@macro deck}
   const Deck({
     required this.id,

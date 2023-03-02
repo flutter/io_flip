@@ -13,15 +13,15 @@ class MatchRepository {
   const MatchRepository({
     required CardsRepository cardsRepository,
     required DbClient dbClient,
-  }) : _cardsRepository = cardsRepository,
-    _dbClient = dbClient;
+  })  : _cardsRepository = cardsRepository,
+        _dbClient = dbClient;
 
   final CardsRepository _cardsRepository;
   final DbClient _dbClient;
 
   /// Return the match with the given [matchId].
   Future<Match?> getMatch(String matchId) async {
-    final matchData = await _dbClient.getById('matches',matchId);
+    final matchData = await _dbClient.getById('matches', matchId);
 
     if (matchData == null) {
       return null;

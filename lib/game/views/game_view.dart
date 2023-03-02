@@ -20,7 +20,7 @@ class GameView extends StatelessWidget {
           );
         }
 
-        if (state is MatchLoadingState) {
+        if (state is MatchLoadFailedState) {
           return Scaffold(
             backgroundColor: palette.backgroundMain,
             body: const Center(

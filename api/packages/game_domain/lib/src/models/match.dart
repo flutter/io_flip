@@ -7,9 +7,8 @@ part 'match.g.dart';
 /// {@template match}
 /// A model that represents a match.
 /// {@endtemplate}
-@JsonSerializable(ignoreUnannotated: true)
+@JsonSerializable(ignoreUnannotated: true, explicitToJson: true)
 class Match extends Equatable {
-
   /// {@macro match}
   const Match({
     required this.id,

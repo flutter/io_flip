@@ -115,9 +115,12 @@ class CardsRepository {
 
     return Deck.fromJson({
       'id': deckData.id,
-      'cards': cardsData.whereType<DbEntityRecord>().map(
+      'cards': cardsData
+          .whereType<DbEntityRecord>()
+          .map(
             (data) => {'id': data.id, ...data.data},
-          ).toList(),
+          )
+          .toList(),
     });
   }
 }

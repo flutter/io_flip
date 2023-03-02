@@ -5,7 +5,6 @@ abstract class GameEvent extends Equatable {
 }
 
 class MatchRequested extends GameEvent {
-
   const MatchRequested(this.matchId);
 
   final String matchId;

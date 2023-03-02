@@ -20,6 +20,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     MatchRequested event,
     Emitter<GameState> emit,
   ) async {
+    try {
       emit(const MatchLoadingState());
 
       final match = await _gameClient.getMatch(event.matchId);
@@ -29,7 +30,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       } else {
         emit(MatchLoadedState(match));
       }
-    try {
     } catch (e, s) {
       addError(e, s);
       emit(const MatchLoadFailedState());
