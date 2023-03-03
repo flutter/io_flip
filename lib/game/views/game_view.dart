@@ -56,29 +56,56 @@ class _GameBoard extends StatelessWidget {
     final oponentDeck =
         bloc.isHost ? state.match.hostDeck : state.match.guestDeck;
 
-    return Column(
-      children: [
-        Expanded(
-          flex: 2,
-          child: Row(
-            children: [
-              for (final _ in oponentDeck.cards) const FlippedGameCard(),
-            ],
+    final query = MediaQuery.of(context);
+
+    final cardWidth = query.size.width * .25;
+    final cardHeight = cardWidth * 1.4;
+
+    return Center(
+      child: Column(
+        children: [
+          Expanded(
+            flex: 2,
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  for (final _ in oponentDeck.cards)
+                    FlippedGameCard(
+                      width: cardWidth * .6,
+                      height: cardHeight * .6,
+                    ),
+                ],
+              ),
+            ),
           ),
-        ),
-        const Expanded(
-          flex: 2,
-          child: SizedBox(),
-        ),
-        Expanded(
-          flex: 4,
-          child: Row(
-            children: [
-              for (final card in playerDeck.cards) GameCard(card: card),
-            ],
+          const Expanded(
+            flex: 2,
+            child: SizedBox(),
           ),
-        ),
-      ],
+          Expanded(
+            flex: 4,
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  for (final card in playerDeck.cards)
+                    InkWell(
+                      onTap: () {
+                        context.read<GameBloc>().add(PlayerPlayed(card.id));
+                      },
+                      child: GameCard(
+                        card: card,
+                        width: cardWidth,
+                        height: cardHeight,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

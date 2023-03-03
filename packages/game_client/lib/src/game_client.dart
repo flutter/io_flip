@@ -170,4 +170,30 @@ class GameClient {
       );
     }
   }
+
+  /// Plays a card
+  ///
+  /// Post /matches/:matchId/state/move
+  Future<void> playCard({
+    required String matchId,
+    required String cardId,
+    required bool isHost,
+  }) async {
+    final response = await _get(
+      Uri.parse('$_endpoint/matches/move?matchId=$matchId&cardId=$cardId&isHost=$isHost'),
+    );
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw GameClientError(
+        'POST /matches/$matchId/move returned status ${response.statusCode} with the following response: "${response.body}"',
+      );
+    }
+
+    try {
+    } catch (e) {
+      throw GameClientError(
+        'GET /matches/$matchId/state returned invalid response "${response.body}"',
+      );
+    }
+  }
 }

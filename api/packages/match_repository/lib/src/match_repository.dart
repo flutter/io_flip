@@ -5,6 +5,9 @@ import 'package:game_domain/game_domain.dart';
 /// Throw when getting a match fails.
 class GetMatchFailure extends Error {}
 
+/// Throw when adding a move to a match fails.
+class PlayCardFailure extends Error {}
+
 /// {@template match_repository}
 /// Access to Match datasource
 /// {@endtemplate}
@@ -47,8 +50,7 @@ class MatchRepository {
     );
   }
 
-  /// Returns the match state from the given [matchId].
-  Future<MatchState?> getMatchState(String matchId) async {
+  Future<DbEntityRecord?> _findMatchStateByMatchId(String matchId) async {
     final result = await _dbClient.findBy(
       'match_states',
       'matchId',
@@ -56,7 +58,17 @@ class MatchRepository {
     );
 
     if (result.isNotEmpty) {
-      final record = result.first;
+      return result.first;
+    }
+
+    return null;
+  }
+
+  /// Returns the match state from the given [matchId].
+  Future<MatchState?> getMatchState(String matchId) async {
+    final record = await _findMatchStateByMatchId(matchId);
+
+    if (record != null) {
       return MatchState(
         id: record.id,
         matchId: matchId,
@@ -68,5 +80,28 @@ class MatchRepository {
     }
 
     return null;
+  }
+
+  /// Play a card on the given match.
+  ///
+  /// throws [PlayCardFailure] if the match state isn't found.
+  Future<void> playCard({
+    required String matchId,
+    required String cardId,
+    required bool isHost,
+  }) async {
+    final record = await _findMatchStateByMatchId(matchId);
+
+    if (record == null) {
+      throw PlayCardFailure();
+    }
+
+    final key = isHost
+        ? 'hostPlayedCards'
+        : 'guestPlayedCards';
+
+    (record.data[key] as List).add(cardId);
+
+    await _dbClient.update('match_states', record);
   }
 }
