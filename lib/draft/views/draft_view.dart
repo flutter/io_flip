@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:top_dash/widgets/widgets.dart';
 
 class DraftView extends StatelessWidget {
   const DraftView({super.key});
@@ -60,39 +61,10 @@ class DraftView extends StatelessWidget {
                       scale: scaleTween.transform(
                         (i + 1) / state.cards.length,
                       ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: state.cards[i].rarity
-                              ? Colors.yellow.shade200
-                              : TopDashColors.backgroundSettings,
-                          border: Border.all(
-                            width: 2,
-                            color: Colors.blue.shade100,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                      child: GameCard(
                         width: 200,
                         height: 350,
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 8),
-                            Text(state.cards[i].name),
-                            const SizedBox(height: 8),
-                            Image.network(
-                              state.cards[i].image,
-                            ),
-                            Expanded(
-                              child: Center(
-                                child: Text(
-                                  'Power: ${state.cards[i].power}',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineMedium,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                        card: state.cards[i],
                       ),
                     ),
                   ),

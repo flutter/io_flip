@@ -7,6 +7,7 @@ import 'package:top_dash/game/game.dart';
 class GamePage extends StatelessWidget {
   const GamePage({
     required this.matchId,
+    required this.isHost,
     super.key,
   });
 
@@ -14,10 +15,12 @@ class GamePage extends StatelessWidget {
     return GamePage(
       key: const Key('game'),
       matchId: state.params['matchId'] ?? '',
+      isHost: (state.params['isHost'] ?? '') == 'true',
     );
   }
 
   final String matchId;
+  final bool isHost;
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +29,7 @@ class GamePage extends StatelessWidget {
         final gameClient = context.read<GameClient>();
         return GameBloc(
           gameClient: gameClient,
+          isHost: isHost,
         )..add(MatchRequested(matchId));
       },
       child: const GameView(),

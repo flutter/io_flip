@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:top_dash/widgets/widgets.dart';
 
 class GameView extends StatelessWidget {
   const GameView({super.key});
@@ -31,25 +32,53 @@ class GameView extends StatelessWidget {
         if (state is MatchLoadedState) {
           return Scaffold(
             backgroundColor: TopDashColors.backgroundMain,
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Host:'),
-                  for (final card in state.match.hostDeck.cards)
-                    Text(card.name),
-                  const SizedBox(height: TopDashSpacing.lg),
-                  const Text('Guest'),
-                  for (final card in state.match.guestDeck.cards)
-                    Text(card.name),
-                ],
-              ),
-            ),
+            body: const _GameBoard(),
           );
         }
 
         return const Scaffold(backgroundColor: TopDashColors.backgroundMain);
       },
+    );
+  }
+}
+
+class _GameBoard extends StatelessWidget {
+  const _GameBoard();
+
+  @override
+  Widget build(BuildContext context) {
+    final bloc = context.watch<GameBloc>();
+    final state = bloc.state as MatchLoadedState;
+
+    final playerDeck =
+        bloc.isHost ? state.match.guestDeck : state.match.hostDeck;
+
+    final oponentDeck =
+        bloc.isHost ? state.match.hostDeck : state.match.guestDeck;
+
+    return Column(
+      children: [
+        Expanded(
+          flex: 2,
+          child: Row(
+            children: [
+              for (final _ in oponentDeck.cards) const FlippedGameCard(),
+            ],
+          ),
+        ),
+        const Expanded(
+          flex: 2,
+          child: SizedBox(),
+        ),
+        Expanded(
+          flex: 4,
+          child: Row(
+            children: [
+              for (final card in playerDeck.cards) GameCard(card: card),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

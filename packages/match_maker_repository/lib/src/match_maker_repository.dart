@@ -20,6 +20,7 @@ class MatchMakerRepository {
     this.retryDelay = _defaultRetryDelay,
   }) : _now = now {
     collection = db.collection('matches');
+    matchStatesCollection = db.collection('match_states');
   }
 
   static const _defaultRetryDelay = 2;
@@ -35,6 +36,9 @@ class MatchMakerRepository {
 
   /// The [CollectionReference] for the matches.
   late final CollectionReference<Map<String, dynamic>> collection;
+
+  /// The [CollectionReference] for the match_states.
+  late final CollectionReference<Map<String, dynamic>> matchStatesCollection;
 
   /// Watches a match.
   Stream<Match> watchMatch(String id) {
@@ -119,6 +123,11 @@ class MatchMakerRepository {
       'host': id,
       'guest': _emptyKey,
       'lastPing': now,
+    });
+    await matchStatesCollection.add({
+      'matchId': result.id,
+      'hostPlayedCards': const <String>[],
+      'guestPlayedCards': const <String>[],
     });
     return Match(
       id: result.id,

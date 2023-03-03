@@ -45,6 +45,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
           state.copyWith(
             match: match,
             status: MatchMakingStatus.completed,
+            isHost: false,
           ),
         );
       } else {
@@ -83,6 +84,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
             state.copyWith(
               match: newMatch,
               status: MatchMakingStatus.completed,
+              isHost: true,
             ),
           );
           timer.cancel();

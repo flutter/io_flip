@@ -46,4 +46,27 @@ class MatchRepository {
       guestDeck: matchDecks.last,
     );
   }
+
+  /// Returns the match state from the given [matchId].
+  Future<MatchState?> getMatchState(String matchId) async {
+    final result = await _dbClient.findBy(
+      'match_states',
+      'matchId',
+      matchId,
+    );
+
+    if (result.isNotEmpty) {
+      final record = result.first;
+      return MatchState(
+        id: record.id,
+        matchId: matchId,
+        hostPlayedCards:
+            (record.data['hostPlayedCards'] as List).cast<String>(),
+        guestPlayedCards:
+            (record.data['guestPlayedCards'] as List).cast<String>(),
+      );
+    }
+
+    return null;
+  }
 }

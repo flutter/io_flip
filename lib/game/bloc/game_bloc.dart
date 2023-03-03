@@ -9,12 +9,14 @@ part 'game_state.dart';
 class GameBloc extends Bloc<GameEvent, GameState> {
   GameBloc({
     required GameClient gameClient,
+    required this.isHost,
   })  : _gameClient = gameClient,
         super(const MatchLoadingState()) {
     on<MatchRequested>(_onMatchRequested);
   }
 
   final GameClient _gameClient;
+  final bool isHost;
 
   Future<void> _onMatchRequested(
     MatchRequested event,
@@ -23,12 +25,23 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     try {
       emit(const MatchLoadingState());
 
-      final match = await _gameClient.getMatch(event.matchId);
+      final values = await Future.wait([
+        _gameClient.getMatch(event.matchId),
+        _gameClient.getMatchState(event.matchId),
+      ]);
 
-      if (match == null) {
+      final match = values.first as Match?;
+      final matchState = values.last as MatchState?;
+
+      if (match == null || matchState == null) {
         emit(const MatchLoadFailedState());
       } else {
-        emit(MatchLoadedState(match));
+        emit(
+          MatchLoadedState(
+            match: match,
+            matchState: matchState,
+          ),
+        );
       }
     } catch (e, s) {
       addError(e, s);

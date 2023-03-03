@@ -61,4 +61,26 @@ class DbClient {
       data: document.map,
     );
   }
+
+  /// Search for records where the [field] match the [value].
+  Future<List<DbEntityRecord>> findBy(
+    String entity,
+    String field,
+    dynamic value,
+  ) async {
+    final collection = _firestore.collection(entity);
+
+    final results = await collection.where(field, isEqualTo: value).get();
+
+    if (results.isNotEmpty) {
+      return results.map((document) {
+        return DbEntityRecord(
+          id: document.id,
+          data: document.map,
+        );
+      }).toList();
+    }
+
+    return [];
+  }
 }

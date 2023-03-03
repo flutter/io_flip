@@ -142,4 +142,32 @@ class GameClient {
       );
     }
   }
+
+  /// Get /matches/:matchId/state
+  ///
+  /// Returns a [Match], if any to be found.
+  Future<MatchState?> getMatchState(String matchId) async {
+    final response = await _get(
+      Uri.parse('$_endpoint/matches/state?matchId=$matchId'),
+    );
+
+    if (response.statusCode == HttpStatus.notFound) {
+      return null;
+    }
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw GameClientError(
+        'GET /matches/$matchId/state returned status ${response.statusCode} with the following response: "${response.body}"',
+      );
+    }
+
+    try {
+      final json = jsonDecode(response.body);
+      return MatchState.fromJson(json as Map<String, dynamic>);
+    } catch (e) {
+      throw GameClientError(
+        'GET /matches/$matchId/state returned invalid response "${response.body}"',
+      );
+    }
+  }
 }

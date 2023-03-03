@@ -19,10 +19,14 @@ class MatchLoadFailedState extends GameState {
 }
 
 class MatchLoadedState extends GameState {
-  const MatchLoadedState(this.match);
+  const MatchLoadedState({
+    required this.match, 
+    required this.matchState, 
+  });
 
   final Match match;
+  final MatchState matchState;
 
   @override
-  List<Object> get props => [match];
+  List<Object> get props => [match, matchState];
 }
