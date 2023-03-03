@@ -179,20 +179,20 @@ class GameClient {
     required String cardId,
     required bool isHost,
   }) async {
-    final response = await _get(
-      Uri.parse('$_endpoint/matches/move?matchId=$matchId&cardId=$cardId&isHost=$isHost'),
+    final response = await _post(
+      Uri.parse(
+          '$_endpoint/matches/move?matchId=$matchId&cardId=$cardId&host=$isHost'),
     );
 
-    if (response.statusCode != HttpStatus.ok) {
+    if (response.statusCode != HttpStatus.noContent) {
       throw GameClientError(
         'POST /matches/$matchId/move returned status ${response.statusCode} with the following response: "${response.body}"',
       );
     }
 
-    try {
-    } catch (e) {
+    try {} catch (e) {
       throw GameClientError(
-        'GET /matches/$matchId/state returned invalid response "${response.body}"',
+        'POST /matches/$matchId/move returned invalid response "${response.body}"',
       );
     }
   }

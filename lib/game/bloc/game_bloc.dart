@@ -92,20 +92,34 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             ],
           ),
         );
+      } else {
+        final lastTurn = matchState.turns.last;
+
+        if (lastTurn.playerCardId == null) {
+          final newTurn = lastTurn.copyWith(playerCardId: event.cardId);
+          emit(
+            matchState.copyWith(
+              turns: matchState.turns
+                  .map(
+                    (turn) => turn == lastTurn ? newTurn : turn,
+                  )
+                  .toList(),
+            ),
+          );
+        } else {
+          emit(
+            matchState.copyWith(
+              turns: [
+                ...matchState.turns,
+                MatchTurn(
+                  playerCardId: event.cardId,
+                  oponentCardId: null,
+                ),
+              ],
+            ),
+          );
+        }
       }
-
-      final lastTurn = matchState.turns.last;
-      final newTurn = lastTurn.copyWith(playerCardId: event.cardId);
-
-      emit(
-        matchState.copyWith(
-          turns: matchState.turns
-              .map(
-                (turn) => turn == lastTurn ? newTurn : turn,
-              )
-              .toList(),
-        ),
-      );
     }
   }
 
@@ -127,20 +141,35 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             ],
           ),
         );
+      } else {
+        final lastTurn = matchState.turns.last;
+
+        if (lastTurn.oponentCardId == null) {
+          final newTurn = lastTurn.copyWith(oponentCardId: event.cardId);
+
+          emit(
+            matchState.copyWith(
+              turns: matchState.turns
+                  .map(
+                    (turn) => turn == lastTurn ? newTurn : turn,
+                  )
+                  .toList(),
+            ),
+          );
+        } else {
+          emit(
+            matchState.copyWith(
+              turns: [
+                ...matchState.turns,
+                MatchTurn(
+                  playerCardId: null,
+                  oponentCardId: event.cardId,
+                ),
+              ],
+            ),
+          );
+        }
       }
-
-      final lastTurn = matchState.turns.last;
-      final newTurn = lastTurn.copyWith(oponentCardId: event.cardId);
-
-      emit(
-        matchState.copyWith(
-          turns: matchState.turns
-              .map(
-                (turn) => turn == lastTurn ? newTurn : turn,
-              )
-              .toList(),
-        ),
-      );
     }
   }
 

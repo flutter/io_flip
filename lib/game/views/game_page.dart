@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_client/game_client.dart';
 import 'package:go_router/go_router.dart';
+import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:top_dash/game/game.dart';
 
 class GamePage extends StatelessWidget {
@@ -27,8 +28,10 @@ class GamePage extends StatelessWidget {
     return BlocProvider(
       create: (context) {
         final gameClient = context.read<GameClient>();
+        final matchMakerRepository = context.read<MatchMakerRepository>();
         return GameBloc(
           gameClient: gameClient,
+          matchMakerRepository: matchMakerRepository,
           isHost: isHost,
         )..add(MatchRequested(matchId));
       },

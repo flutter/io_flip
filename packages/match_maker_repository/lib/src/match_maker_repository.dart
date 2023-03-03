@@ -65,7 +65,7 @@ class MatchMakerRepository {
       final hostCards = (data['hostPlayedCards'] as List).cast<String>();
 
       return hostCards.last;
-    });
+    }).distinct();
   }
 
   /// Watch for the host played cards in a match state.
@@ -75,7 +75,7 @@ class MatchMakerRepository {
       final guestCards = (data['guestPlayedCards'] as List).cast<String>();
 
       return guestCards.last;
-    });
+    }).distinct();
   }
 
   /// Pings a match.

@@ -56,10 +56,28 @@ class _GameBoard extends StatelessWidget {
     final oponentDeck =
         bloc.isHost ? state.match.hostDeck : state.match.guestDeck;
 
+    String? playerLastPlayedCard;
+    String? oponentLastPlayedCard;
+
+    if (state.turns.isNotEmpty) {
+      final lastTurn = state.turns.last;
+
+      playerLastPlayedCard = lastTurn.playerCardId;
+      oponentLastPlayedCard = lastTurn.oponentCardId;
+    }
+
+    final allPlayerPlayedCards =
+        state.turns.map((turn) => turn.playerCardId).toList();
+    final allOponentPlayedCards =
+        state.turns.map((turn) => turn.oponentCardId).toList();
+
     final query = MediaQuery.of(context);
 
     final cardWidth = query.size.width * .25;
     final cardHeight = cardWidth * 1.4;
+
+    final oponentCardWidth = cardWidth * .8;
+    final oponentCardHeight = cardHeight * .8;
 
     return Center(
       child: Column(
@@ -70,10 +88,37 @@ class _GameBoard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  for (final _ in oponentDeck.cards)
-                    FlippedGameCard(
-                      width: cardWidth * .6,
-                      height: cardHeight * .6,
+                  for (final card in oponentDeck.cards)
+                    Transform.translate(
+                      offset: Offset(
+                        0,
+                        card.id == oponentLastPlayedCard ? 16 : 0,
+                      ),
+                      child: allOponentPlayedCards.contains(card.id) &&
+                              state.isCardTurnComplete(card)
+                          ? Stack(
+                              children: [
+                                GameCard(
+                                  card: card,
+                                  width: oponentCardWidth,
+                                  height: oponentCardHeight,
+                                ),
+                                if (state.isWiningCard(card))
+                                  Positioned(
+                                    top: 16,
+                                    right: 16,
+                                    child: Container(
+                                      width: 32,
+                                      height: 32,
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                              ],
+                            )
+                          : FlippedGameCard(
+                              width: oponentCardWidth,
+                              height: oponentCardHeight,
+                            ),
                     ),
                 ],
               ),
@@ -91,13 +136,41 @@ class _GameBoard extends StatelessWidget {
                 children: [
                   for (final card in playerDeck.cards)
                     InkWell(
-                      onTap: () {
-                        context.read<GameBloc>().add(PlayerPlayed(card.id));
-                      },
-                      child: GameCard(
-                        card: card,
-                        width: cardWidth,
-                        height: cardHeight,
+                      onTap: allPlayerPlayedCards.contains(card.id)
+                          ? null
+                          : () {
+                              context
+                                  .read<GameBloc>()
+                                  .add(PlayerPlayed(card.id));
+                            },
+                      child: Transform.translate(
+                        offset: Offset(
+                          0,
+                          card.id == playerLastPlayedCard ? -16 : 0,
+                        ),
+                        child: Opacity(
+                          opacity:
+                              allPlayerPlayedCards.contains(card.id) ? .4 : 1,
+                          child: Stack(
+                            children: [
+                              GameCard(
+                                card: card,
+                                width: cardWidth,
+                                height: cardHeight,
+                              ),
+                              if (state.isWiningCard(card))
+                                Positioned(
+                                  top: 16,
+                                  right: 16,
+                                  child: Container(
+                                    width: 32,
+                                    height: 32,
+                                    color: Colors.green,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                 ],

@@ -17,8 +17,7 @@ class GameCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color:
-            card.rarity ? Colors.yellow.shade200 : Colors.blue.shade200,
+        color: card.rarity ? Colors.yellow.shade200 : Colors.blue.shade200,
         border: Border.all(
           width: 2,
           color: Colors.blue.shade100,
@@ -38,7 +37,7 @@ class GameCard extends StatelessWidget {
           Expanded(
             child: Center(
               child: Text(
-                'Power: ${card.power}',
+                '${card.power}',
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
             ),
