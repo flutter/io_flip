@@ -7,6 +7,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
+import 'package:logging/logging.dart';
 import 'package:match_repository/match_repository.dart';
 
 FutureOr<Response> onRequest(RequestContext context) async {
@@ -19,11 +20,16 @@ FutureOr<Response> onRequest(RequestContext context) async {
     }
 
     final matchRepository = context.read<MatchRepository>();
-    await matchRepository.playCard(
-      matchId: matchId,
-      cardId: cardId,
-      isHost: host == 'true',
-    );
+    try {
+      await matchRepository.playCard(
+        matchId: matchId,
+        cardId: cardId,
+        isHost: host == 'true',
+      );
+    } catch (e, s) {
+      context.read<Logger>().severe('Error playing a move, $e \n$s');
+      return Response(statusCode: HttpStatus.internalServerError);
+    }
 
     return Response(statusCode: HttpStatus.noContent);
   }
