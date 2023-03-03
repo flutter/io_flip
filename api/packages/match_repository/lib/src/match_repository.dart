@@ -96,12 +96,19 @@ class MatchRepository {
       throw PlayCardFailure();
     }
 
-    final key = isHost
-        ? 'hostPlayedCards'
-        : 'guestPlayedCards';
+    final key = isHost ? 'hostPlayedCards' : 'guestPlayedCards';
 
-    (record.data[key] as List).add(cardId);
-
-    await _dbClient.update('match_states', record);
+    await _dbClient.update(
+      'match_states',
+      DbEntityRecord(
+        id: record.id,
+        data: {
+          key: [
+            ...record.data[key] as List,
+            cardId,
+          ],
+        },
+      ),
+    );
   }
 }

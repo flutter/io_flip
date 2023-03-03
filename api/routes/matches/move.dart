@@ -27,7 +27,7 @@ FutureOr<Response> onRequest(RequestContext context) async {
         isHost: host == 'true',
       );
     } catch (e, s) {
-      context.read<Logger>().severe('Error playing a move, $e \n$s');
+      context.read<Logger>().severe('Error playing a move', e, s);
       return Response(statusCode: HttpStatus.internalServerError);
     }
 
