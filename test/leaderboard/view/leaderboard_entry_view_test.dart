@@ -57,6 +57,20 @@ void main() {
 
         expect(find.text(l10n.enterInitialsError), findsOneWidget);
       });
+
+      testWidgets('capitalizes lowercase letters', (tester) async {
+        await tester.pumpApp(buildSubject());
+
+        final l10n = tester.element(find.byType(LeaderboardEntryView)).l10n;
+
+        await tester.enterText(find.byType(TextField), 'aaa');
+        await tester.tap(find.byType(OutlinedButton));
+        await tester.pumpAndSettle();
+        final input = tester.widget<EditableText>(find.byType(EditableText));
+        expect(input.controller.text == 'AAA', isTrue);
+
+        expect(find.text(l10n.enterInitialsError), findsNothing);
+      });
     });
   });
 }
