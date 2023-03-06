@@ -98,4 +98,29 @@ class CardsRepository {
       'cards': cardIds,
     });
   }
+
+  /// Finds a deck with the given [deckId].
+  Future<Deck?> getDeck(String deckId) async {
+    final deckData = await _dbClient.getById('decks', deckId);
+
+    if (deckData == null) {
+      return null;
+    }
+
+    final cardIds = (deckData.data['cards'] as List).cast<String>();
+
+    final cardsData = await Future.wait(
+      cardIds.map((id) => _dbClient.getById('cards', id)),
+    );
+
+    return Deck.fromJson({
+      'id': deckData.id,
+      'cards': cardsData
+          .whereType<DbEntityRecord>()
+          .map(
+            (data) => {'id': data.id, ...data.data},
+          )
+          .toList(),
+    });
+  }
 }
