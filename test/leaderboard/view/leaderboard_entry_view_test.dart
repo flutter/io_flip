@@ -7,10 +7,8 @@ import '../../helpers/helpers.dart';
 
 void main() {
   group('LeaderboardEntryView', () {
-    Widget buildSubject() => const LeaderboardEntryView();
-
     testWidgets('renders correct title and subtitle', (tester) async {
-      await tester.pumpApp(buildSubject());
+      await tester.pumpSubject();
 
       final l10n = tester.element(find.byType(LeaderboardEntryView)).l10n;
 
@@ -19,7 +17,7 @@ void main() {
     });
 
     testWidgets('renders continue button', (tester) async {
-      await tester.pumpApp(buildSubject());
+      await tester.pumpSubject();
 
       final l10n = tester.element(find.byType(LeaderboardEntryView)).l10n;
 
@@ -29,13 +27,13 @@ void main() {
 
     group('initials textfield', () {
       testWidgets('renders correctly', (tester) async {
-        await tester.pumpApp(buildSubject());
+        await tester.pumpSubject();
 
         expect(find.byType(TextFormField), findsOneWidget);
       });
 
       testWidgets('validates initials', (tester) async {
-        await tester.pumpApp(buildSubject());
+        await tester.pumpSubject();
 
         final l10n = tester.element(find.byType(LeaderboardEntryView)).l10n;
 
@@ -47,7 +45,7 @@ void main() {
       });
 
       testWidgets('shows error text on failed validation', (tester) async {
-        await tester.pumpApp(buildSubject());
+        await tester.pumpSubject();
 
         final l10n = tester.element(find.byType(LeaderboardEntryView)).l10n;
 
@@ -59,7 +57,7 @@ void main() {
       });
 
       testWidgets('capitalizes lowercase letters', (tester) async {
-        await tester.pumpApp(buildSubject());
+        await tester.pumpSubject();
 
         final l10n = tester.element(find.byType(LeaderboardEntryView)).l10n;
 
@@ -73,4 +71,12 @@ void main() {
       });
     });
   });
+}
+
+extension LeaderboardEntryViewTest on WidgetTester {
+  Future<void> pumpSubject() async {
+    return pumpApp(
+      const LeaderboardEntryView(),
+    );
+  }
 }
