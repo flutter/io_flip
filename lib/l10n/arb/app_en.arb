@@ -1,27 +1,52 @@
 {
-    "@@locale": "en",
-    "play": "Play",
-    "@play": {
-        "description": "Label play"
-    },
-    "generatingCards": "Generating {count} of {total}",
-    "@generatingCards": {
-        "description": "Label shown on the draft page.",
-        "placeholders": {
-          "count": { "type": "int" },
-          "total": { "type": "int" }
-        }
-    },
-    "cardGenerationError": "Error generating cards, please try again in a few moments",
-    "@cardGenerationError": {
-        "description": "Label show when there is an error generating a deck"
-    },
-    "nextCard": "Next card",
-    "@nextCard": {
-        "description": "Label show on the draft page to show the next card"
-    },
-    "useCard": "Use card",
-    "@useCard": {
-        "description": "Label show on the draft page to use the card"
+  "@@locale": "en",
+  "play": "Play Now",
+  "@play": {
+    "description": "Label play"
+  },
+  "ioBash": "I/O Bash",
+  "@ioBash": {
+    "description": "I/O Bash - Name of the game"
+  },
+  "generatingCards": "Generating {count} of {total}",
+  "@generatingCards": {
+    "description": "Label shown on the draft page.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
+  },
+  "cardGenerationError": "Error generating cards, please try again in a few moments",
+  "@cardGenerationError": {
+    "description": "Label show when there is an error generating a deck"
+  },
+  "nextCard": "Next card",
+  "@nextCard": {
+    "description": "Label show on the draft page to show the next card"
+  },
+  "useCard": "Use card",
+  "@useCard": {
+    "description": "Label show on the draft page to use the card"
+  },
+  "leaderboardLongestStreak": "Longest Streak",
+  "@leaderboardLongestStreak": {
+    "description": "Label shown on the leaderboard for the longest streak category tab"
+  },
+  "leaderboardMostWins": "Most Wins",
+  "@leaderboardMostWins": {
+    "description": "Label shown on the leaderboard for the most wins category tab"
+  },
+  "leaderboardPlayerWins": "{total} wins",
+  "@leaderboardPlayerWins": {
+    "description": "Label shown on the leaderboard to show the total wins of a player",
+    "placeholders": {
+      "total": {
+        "type": "int"
+      }
+    }
+  }
 }

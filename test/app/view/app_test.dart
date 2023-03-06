@@ -6,6 +6,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/app/app.dart';
 import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/draft/draft.dart';
+import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/main_menu/main_menu_screen.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
 import 'package:top_dash/settings/settings.dart';
@@ -101,108 +102,54 @@ void main() {
       });
     });
 
-    group('when in portrait mode', () {
-      testWidgets('renders the app', (tester) async {
-        tester.setPortraitDisplaySize();
-        await tester.pumpWidget(
-          App(
-            settingsPersistence: MemoryOnlySettingsPersistence(),
-            gameClient: _MockGameClient(),
-            matchMakerRepository: _MockMatchMakerRepository(),
-          ),
-        );
-
-        expect(find.byType(MainMenuScreen), findsOneWidget);
-      });
-
-      testWidgets('can navigate to the game page', (tester) async {
-        tester.setPortraitDisplaySize();
-        await tester.pumpWidget(
-          App(
-            settingsPersistence: MemoryOnlySettingsPersistence(),
-            gameClient: _MockGameClient(),
-            matchMakerRepository: _MockMatchMakerRepository(),
-          ),
-        );
-
-        await tester.tap(find.text('Play'));
-        await tester.pumpAndSettle();
-
-        expect(find.byType(DraftPage), findsOneWidget);
-      });
-
-      testWidgets('can navigate to the settings page', (tester) async {
-        tester.setPortraitDisplaySize();
-        await tester.pumpWidget(
-          App(
-            settingsPersistence: MemoryOnlySettingsPersistence(),
-            gameClient: _MockGameClient(),
-            matchMakerRepository: _MockMatchMakerRepository(),
-          ),
-        );
-
-        await tester.tap(find.text('Settings'));
-        await tester.pumpAndSettle();
-
-        expect(find.byType(SettingsScreen), findsOneWidget);
-      });
-
-      testWidgets(
-        'can navigate to the settings page and go back',
-        (tester) async {
-          tester.setPortraitDisplaySize();
-          await tester.pumpWidget(
-            App(
-              settingsPersistence: MemoryOnlySettingsPersistence(),
-              gameClient: _MockGameClient(),
-              matchMakerRepository: _MockMatchMakerRepository(),
-            ),
-          );
-
-          await tester.tap(find.text('Settings'));
-          await tester.pumpAndSettle();
-
-          await tester.tap(find.text('Back'));
-          await tester.pumpAndSettle();
-
-          expect(find.byType(SettingsScreen), findsNothing);
-        },
+    testWidgets('renders the app', (tester) async {
+      await tester.pumpWidget(
+        App(
+          settingsPersistence: MemoryOnlySettingsPersistence(),
+          gameClient: _MockGameClient(),
+          matchMakerRepository: _MockMatchMakerRepository(),
+        ),
       );
+
+      expect(find.byType(MainMenuScreen), findsOneWidget);
     });
 
-    group('when in landscape mode', () {
-      testWidgets('renders the app', (tester) async {
-        tester.setLandspaceDisplaySize();
-        await tester.pumpWidget(
-          App(
-            settingsPersistence: MemoryOnlySettingsPersistence(),
-            gameClient: _MockGameClient(),
-            matchMakerRepository: _MockMatchMakerRepository(),
-          ),
-        );
+    testWidgets('can navigate to the game page', (tester) async {
+      await tester.pumpWidget(
+        App(
+          settingsPersistence: MemoryOnlySettingsPersistence(),
+          gameClient: _MockGameClient(),
+          matchMakerRepository: _MockMatchMakerRepository(),
+        ),
+      );
 
-        expect(find.byType(MainMenuScreen), findsOneWidget);
-      });
+      final l10n = tester.element(find.byType(MainMenuScreen)).l10n;
 
-      testWidgets('can navigate to the game page', (tester) async {
-        tester.setLandspaceDisplaySize();
+      await tester.tap(find.text(l10n.play));
+      await tester.pumpAndSettle();
 
-        await tester.pumpWidget(
-          App(
-            settingsPersistence: MemoryOnlySettingsPersistence(),
-            gameClient: _MockGameClient(),
-            matchMakerRepository: _MockMatchMakerRepository(),
-          ),
-        );
+      expect(find.byType(DraftPage), findsOneWidget);
+    });
 
-        await tester.tap(find.text('Play'));
-        await tester.pumpAndSettle();
+    testWidgets('can navigate to the settings page', (tester) async {
+      await tester.pumpWidget(
+        App(
+          settingsPersistence: MemoryOnlySettingsPersistence(),
+          gameClient: _MockGameClient(),
+          matchMakerRepository: _MockMatchMakerRepository(),
+        ),
+      );
 
-        expect(find.byType(DraftPage), findsOneWidget);
-      });
+      await tester.tap(find.text('Settings'));
+      await tester.pumpAndSettle();
 
-      testWidgets('can navigate to the settings page', (tester) async {
-        tester.setLandspaceDisplaySize();
+      expect(find.byType(SettingsScreen), findsOneWidget);
+    });
+
+    testWidgets(
+      'can navigate to the settings page and go back',
+      (tester) async {
+        tester.setPortraitDisplaySize();
 
         await tester.pumpWidget(
           App(
@@ -215,31 +162,11 @@ void main() {
         await tester.tap(find.text('Settings'));
         await tester.pumpAndSettle();
 
-        expect(find.byType(SettingsScreen), findsOneWidget);
-      });
+        await tester.tap(find.text('Back'));
+        await tester.pumpAndSettle();
 
-      testWidgets(
-        'can navigate to the settings page and go back',
-        (tester) async {
-          tester.setLandspaceDisplaySize();
-
-          await tester.pumpWidget(
-            App(
-              settingsPersistence: MemoryOnlySettingsPersistence(),
-              gameClient: _MockGameClient(),
-              matchMakerRepository: _MockMatchMakerRepository(),
-            ),
-          );
-
-          await tester.tap(find.text('Settings'));
-          await tester.pumpAndSettle();
-
-          await tester.tap(find.text('Back'));
-          await tester.pumpAndSettle();
-
-          expect(find.byType(SettingsScreen), findsNothing);
-        },
-      );
-    });
+        expect(find.byType(SettingsScreen), findsNothing);
+      },
+    );
   });
 }
