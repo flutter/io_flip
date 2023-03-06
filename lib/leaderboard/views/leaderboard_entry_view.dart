@@ -1,41 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/style/palette.dart';
-
-// TODO(samobrien): update hard coded styles when style guides are added.
+import 'package:top_dash_ui/top_dash_ui.dart';
 
 class LeaderboardEntryView extends StatelessWidget {
   const LeaderboardEntryView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final palette = context.read<Palette>();
     final l10n = context.l10n;
+    final textTheme = Theme.of(context).textTheme;
+    const white = TopDashColors.white;
 
     return Scaffold(
-      backgroundColor: palette.leaderboardEntry,
+      backgroundColor: TopDashColors.backgroundLeaderboardEntry,
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 48),
+        padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.xxlg),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 l10n.youMadeItToTheLeaderboard,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                style: textTheme.titleMedium?.copyWith(
+                  color: white,
+                  fontWeight: FontWeight.w700,
                 ),
                 textAlign: TextAlign.center,
               ),
               Text(
                 l10n.enterYourInitials,
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.white),
+                style: textTheme.bodySmall?.copyWith(
+                  color: white,
+                ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: TopDashSpacing.xxlg),
               const _InitialsForm()
             ],
           ),
@@ -60,6 +60,7 @@ class _InitialsFormState extends State<_InitialsForm> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    const white = TopDashColors.white;
     return Form(
       key: _formKey,
       child: Column(
@@ -82,29 +83,29 @@ class _InitialsFormState extends State<_InitialsForm> {
                 LengthLimitingTextInputFormatter(3)
               ],
               textCapitalization: TextCapitalization.characters,
-              cursorColor: Colors.white,
+              cursorColor: white,
               decoration: const InputDecoration(
                 enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
+                  borderSide: BorderSide(color: white),
                 ),
                 focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
+                  borderSide: BorderSide(color: white),
                 ),
                 hintText: 'AAA',
-                hintStyle: TextStyle(color: Colors.white),
+                hintStyle: TextStyle(color: white),
               ),
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: white),
             ),
           ),
-          const SizedBox(height: 48),
+          const SizedBox(height: TopDashSpacing.xxlg),
           OutlinedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {}
             },
             style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: Colors.white),
-              foregroundColor: Colors.white,
+              side: const BorderSide(color: white),
+              foregroundColor: white,
             ),
             child: Text(l10n.continueButton.toUpperCase()),
           )
