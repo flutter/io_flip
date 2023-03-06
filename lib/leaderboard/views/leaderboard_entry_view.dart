@@ -36,7 +36,7 @@ class LeaderboardEntryView extends StatelessWidget {
                 style: const TextStyle(color: Colors.white),
               ),
               const SizedBox(height: 32),
-              _InitialsForm()
+              const _InitialsForm()
             ],
           ),
         ),

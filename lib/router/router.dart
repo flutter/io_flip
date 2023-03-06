@@ -36,10 +36,6 @@ GoRouter createRouter() {
             path: 'game/:matchId',
             builder: GamePage.routeBuilder,
           ),
-          GoRoute(
-            path: 'leaderboard_entry',
-            builder: LeaderboardEntryPage.routeBuilder,
-          ),
         ],
       ),
     ],
