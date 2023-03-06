@@ -29,6 +29,7 @@ void main() {
     late DbClient dbClient;
 
     setUp(() {
+      dbClient = _MockDbClient();
       cardRng = _MockCardRng();
       when(cardRng.rollRarity).thenReturn(false);
       when(
@@ -38,18 +39,7 @@ void main() {
         ),
       ).thenReturn(10);
       imageModelRepository = _MockImageModelRepository();
-      when(imageModelRepository.generateImage)
-          .thenAnswer((_) async => 'https://image.png');
-
       languageModelRepository = _MockLanguageModelRepository();
-      when(languageModelRepository.generateCardName)
-          .thenAnswer((_) async => 'Super Bird');
-      when(languageModelRepository.generateFlavorText)
-          .thenAnswer((_) async => 'Super Bird Is Ready!');
-
-      dbClient = _MockDbClient();
-      when(() => dbClient.add('cards', any())).thenAnswer((_) async => 'abc');
-      when(() => dbClient.add('decks', any())).thenAnswer((_) async => 'deck');
 
       cardsRepository = CardsRepository(
         imageModelRepository: imageModelRepository,
@@ -70,59 +60,141 @@ void main() {
       );
     });
 
-    test('generates a common card', () async {
-      final card = await cardsRepository.generateCard();
+    group('generateCard', () {
+      setUp(() {
+        when(imageModelRepository.generateImage)
+            .thenAnswer((_) async => 'https://image.png');
 
-      expect(
-        card,
-        Card(
-          id: 'abc',
-          name: 'Super Bird',
-          description: 'Super Bird Is Ready!',
-          image: 'https://image.png',
-          rarity: false,
-          power: 10,
-        ),
-      );
+        when(languageModelRepository.generateCardName)
+            .thenAnswer((_) async => 'Super Bird');
+        when(languageModelRepository.generateFlavorText)
+            .thenAnswer((_) async => 'Super Bird Is Ready!');
+
+        when(() => dbClient.add('cards', any())).thenAnswer((_) async => 'abc');
+      });
+
+      test('generates a common card', () async {
+        final card = await cardsRepository.generateCard();
+
+        expect(
+          card,
+          Card(
+            id: 'abc',
+            name: 'Super Bird',
+            description: 'Super Bird Is Ready!',
+            image: 'https://image.png',
+            rarity: false,
+            power: 10,
+          ),
+        );
+      });
+
+      test('saves the card in the db', () async {
+        await cardsRepository.generateCard();
+
+        verify(
+          () => dbClient.add('cards', {
+            'name': 'Super Bird',
+            'description': 'Super Bird Is Ready!',
+            'image': 'https://image.png',
+            'rarity': false,
+            'power': 10,
+          }),
+        ).called(1);
+      });
+
+      test('generates a rare card', () async {
+        when(cardRng.rollRarity).thenReturn(true);
+        final card = await cardsRepository.generateCard();
+
+        expect(
+          card,
+          Card(
+            id: 'abc',
+            name: 'Super Bird',
+            description: 'Super Bird Is Ready!',
+            image: 'https://image.png',
+            rarity: true,
+            power: 10,
+          ),
+        );
+
+        verify(() => cardRng.rollAttribute(base: 10, modifier: 10)).called(1);
+      });
     });
 
-    test('saves the card in the db', () async {
-      await cardsRepository.generateCard();
+    group('createDeck', () {
+      setUp(() {
+        when(() => dbClient.add('decks', any()))
+            .thenAnswer((_) async => 'deck');
+      });
 
-      verify(
-        () => dbClient.add('cards', {
-          'name': 'Super Bird',
-          'description': 'Super Bird Is Ready!',
-          'image': 'https://image.png',
-          'rarity': false,
-          'power': 10,
-        }),
-      ).called(1);
+      test('creates a deck from a list of card ids', () async {
+        final deckId = await cardsRepository.createDeck(['a', 'b']);
+
+        expect(deckId, equals('deck'));
+      });
     });
 
-    test('generates a rare card', () async {
-      when(cardRng.rollRarity).thenReturn(true);
-      final card = await cardsRepository.generateCard();
+    group('getDeck', () {
+      const deckId = 'deckId';
+      const cardId = 'card1';
 
-      expect(
-        card,
-        Card(
-          id: 'abc',
-          name: 'Super Bird',
-          description: 'Super Bird Is Ready!',
-          image: 'https://image.png',
-          rarity: true,
-          power: 10,
-        ),
-      );
+      setUp(() {
+        when(() => dbClient.getById('decks', any())).thenAnswer(
+          (_) async => DbEntityRecord(
+            id: deckId,
+            data: {
+              'cards': [cardId],
+            },
+          ),
+        );
 
-      verify(() => cardRng.rollAttribute(base: 10, modifier: 10)).called(1);
-    });
+        when(() => dbClient.getById('cards', cardId)).thenAnswer(
+          (_) async => DbEntityRecord(
+            id: cardId,
+            data: {
+              'name': cardId,
+              'description': cardId,
+              'image': cardId,
+              'power': 10,
+              'rarity': false,
+            },
+          ),
+        );
+      });
 
-    test('creates a deck from a list of card ids', () async {
-      final deckId = await cardsRepository.createDeck(['a', 'b']);
+      test('returns a deck', () async {
+        final deck = await cardsRepository.getDeck(deckId);
 
-      expect(deckId, equals('deck'));
+        expect(
+          deck,
+          equals(
+            Deck(
+              id: deckId,
+              cards: const [
+                Card(
+                  id: cardId,
+                  name: cardId,
+                  description: cardId,
+                  image: cardId,
+                  power: 10,
+                  rarity: false,
+                ),
+              ],
+            ),
+          ),
+        );
+      });
+
+      test('returns null when there is no deck for that id', () async {
+        when(() => dbClient.getById('decks', any())).thenAnswer(
+          (_) async => null,
+        );
+        final deck = await cardsRepository.getDeck(deckId);
+
+        expect(deck, isNull);
+      });
     });
   });
 

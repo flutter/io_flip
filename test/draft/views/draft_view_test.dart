@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:bloc_test/bloc_test.dart';
-import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
@@ -14,25 +13,6 @@ import 'package:top_dash/l10n/l10n.dart';
 import '../../helpers/helpers.dart';
 
 class _MockDraftBloc extends Mock implements DraftBloc {}
-
-class _MockGoRouter extends Mock implements GoRouter {}
-
-class _MockGoRouterProvider extends StatelessWidget {
-  const _MockGoRouterProvider({
-    required this.goRouter,
-    required this.child,
-  });
-
-  final GoRouter goRouter;
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) => InheritedGoRouter(
-        goRouter: goRouter,
-        child: child,
-      );
-}
 
 void main() {
   group('DraftView', () {
@@ -178,7 +158,7 @@ void main() {
     testWidgets(
       'navigates to the game lobby when clicking on play',
       (tester) async {
-        final goRouter = _MockGoRouter();
+        final goRouter = MockGoRouter();
         mockState(
           [
             DraftState(
@@ -216,8 +196,8 @@ extension DraftViewTest on WidgetTester {
   }) async {
     await mockNetworkImages(() {
       return pumpApp(
-        _MockGoRouterProvider(
-          goRouter: goRouter ?? _MockGoRouter(),
+        MockGoRouterProvider(
+          goRouter: goRouter ?? MockGoRouter(),
           child: BlocProvider.value(
             value: draftBloc,
             child: DraftView(),
