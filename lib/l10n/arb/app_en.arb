@@ -108,5 +108,9 @@
   "continueButton": "Continue",
   "@continueButton": {
       "description": "Continue button label"
+    },
+    "enterInitialsError": "Please enter three initials",
+    "@enterInitialsError": {
+        "description": "Leaderboard initials textfeild validation error text"
     }
 }
