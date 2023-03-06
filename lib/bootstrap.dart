@@ -25,10 +25,14 @@ class AppBlocObserver extends BlocObserver {
   }
 }
 
+typedef BootstrapBuilder = Future<Widget> Function(
+  FirebaseFirestore firestore,
+  FirebaseAuth firebaseAuth,
+);
+
 Future<void> bootstrap({
   required FirebaseOptions firebaseOptions,
-  required FutureOr<Widget> Function(FirebaseFirestore firestoreInstance)
-      builder,
+  required BootstrapBuilder builder,
 }) async {
   FlutterError.onError = (details) {
     log(details.exceptionAsString(), stackTrace: details.stack);
@@ -39,9 +43,6 @@ Future<void> bootstrap({
   await Firebase.initializeApp(
     options: firebaseOptions,
   );
-
-  // TODO(erickzanardo): Move this to an authentication repo.
-  await FirebaseAuth.instance.signInAnonymously();
 
   await runZonedGuarded(
     () async {
@@ -57,7 +58,12 @@ Future<void> bootstrap({
 
       WidgetsFlutterBinding.ensureInitialized();
 
-      runApp(await builder(FirebaseFirestore.instance));
+      runApp(
+        await builder(
+          FirebaseFirestore.instance,
+          FirebaseAuth.instance,
+        ),
+      );
     },
     (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
   );
