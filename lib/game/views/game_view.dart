@@ -11,32 +11,28 @@ class GameView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<GameBloc, GameState>(
       builder: (context, state) {
+        late final Widget child;
+
         if (state is MatchLoadingState) {
-          return const Scaffold(
-            backgroundColor: TopDashColors.backgroundMain,
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
+          child = const Center(
+            child: CircularProgressIndicator(),
           );
         }
 
         if (state is MatchLoadFailedState) {
-          return const Scaffold(
-            backgroundColor: TopDashColors.backgroundMain,
-            body: Center(
-              child: Text('Unable to join game!'),
-            ),
+          child = const Center(
+            child: Text('Unable to join game!'),
           );
         }
 
         if (state is MatchLoadedState) {
-          return Scaffold(
-            backgroundColor: TopDashColors.backgroundMain,
-            body: const _GameBoard(),
-          );
+          child = const _GameBoard();
         }
 
-        return const Scaffold(backgroundColor: TopDashColors.backgroundMain);
+        return Scaffold(
+          backgroundColor: TopDashColors.backgroundMain,
+          body: child,
+        );
       },
     );
   }

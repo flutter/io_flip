@@ -4,7 +4,6 @@ import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_client/game_client.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
@@ -29,8 +28,6 @@ void main() {
       watchController = StreamController.broadcast();
       when(() => matchMakerRepository.watchMatch(any()))
           .thenAnswer((_) => watchController.stream);
-      when(() => matchMakerRepository.pingMatch(any()))
-          .thenAnswer((_) async {});
 
       timestamp = Timestamp.now();
 
@@ -200,44 +197,10 @@ void main() {
               guest: '',
               lastPing: timestamp,
             ),
+            isHost: true,
           ),
         ),
       );
-    });
-
-    test('periodically pings the created match until a guest joins', () async {
-      fakeAsync((async) {
-        when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
-          (_) async => Match(
-            id: 'id',
-            host: deckId,
-            lastPing: timestamp,
-          ),
-        );
-
-        MatchMakingBloc(
-          matchMakerRepository: matchMakerRepository,
-          gameClient: gameClient,
-          cardIds: cardIds,
-          pingInterval: Duration(milliseconds: 10),
-          hostWaitTime: Duration(milliseconds: 100),
-        ).add(MatchRequested());
-
-        async.elapse(Duration(milliseconds: 55));
-
-        verify(() => matchMakerRepository.pingMatch('id')).called(5);
-
-        watchController.add(
-          Match(
-            id: 'id',
-            host: deckId,
-            guest: '',
-            lastPing: timestamp,
-          ),
-        );
-        async.elapse(Duration(milliseconds: 30));
-        verifyNever(() => matchMakerRepository.pingMatch('id'));
-      });
     });
 
     test('tries again when the guest wait times out', () async {
@@ -293,6 +256,7 @@ void main() {
               guest: '',
               lastPing: timestamp,
             ),
+            isHost: true,
           ),
         ),
       );

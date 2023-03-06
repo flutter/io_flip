@@ -78,12 +78,6 @@ class MatchMakerRepository {
     }).distinct();
   }
 
-  /// Pings a match.
-  Future<void> pingMatch(String id) async {
-    //final ref = collection.doc(id);
-    //await ref.update({'lastPing': _now()});
-  }
-
   /// Finds a match.
   Future<Match> findMatch(String id, {int retryNumber = 0}) async {
     final matchesResult = await collection

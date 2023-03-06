@@ -14,7 +14,6 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
     required GameClient gameClient,
     required this.cardIds,
     this.hostWaitTime = defaultHostWaitTime,
-    this.pingInterval = defaultPingInterval,
   })  : _matchMakerRepository = matchMakerRepository,
         _gameClient = gameClient,
         super(const MatchMakingState.initial()) {
@@ -27,9 +26,6 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
 
   static const defaultHostWaitTime = Duration(seconds: 4);
   final Duration hostWaitTime;
-
-  static const defaultPingInterval = Duration(milliseconds: 100);
-  final Duration pingInterval;
 
   Future<void> _onMatchRequested(
     MatchRequested event,
@@ -59,19 +55,9 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
 
         late StreamSubscription<Match> subscription;
 
-        var pinging = false;
-        final timer = Timer.periodic(pingInterval, (_) async {
-          if (!pinging) {
-            pinging = true;
-            await _matchMakerRepository.pingMatch(match.id);
-            pinging = false;
-          }
-        });
-
         Future<void>.delayed(hostWaitTime, () {
           if (!isClosed) {
             if (state.status == MatchMakingStatus.processing) {
-              timer.cancel();
               subscription.cancel();
               completer.complete();
               add(const MatchRequested());
@@ -87,7 +73,6 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
               isHost: true,
             ),
           );
-          timer.cancel();
           completer.complete();
           subscription.cancel();
         });

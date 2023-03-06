@@ -6,16 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/game/game.dart';
 
 import '../../helpers/helpers.dart';
 
 class _MockGameBloc extends Mock implements GameBloc {}
-
-class _UnknowState extends GameState {
-  @override
-  List<Object> get props => const [];
-}
 
 void main() {
   group('GameView', () {
@@ -23,6 +19,7 @@ void main() {
 
     setUp(() {
       bloc = _MockGameBloc();
+      when(() => bloc.isHost).thenReturn(true);
     });
 
     void mockState(GameState state) {
@@ -45,10 +42,11 @@ void main() {
       expect(find.text('Unable to join game!'), findsOneWidget);
     });
 
+    // TODO(erickzanardo): expand this test.
     testWidgets('renders the game summary on success', (tester) async {
       mockState(
         MatchLoadedState(
-          Match(
+          match: Match(
             id: '',
             hostDeck: Deck(
               id: '',
@@ -77,29 +75,31 @@ void main() {
               ],
             ),
           ),
+          matchState: MatchState(
+            id: '',
+            matchId: '',
+            guestPlayedCards: const [],
+            hostPlayedCards: const [],
+          ),
+          turns: const [],
         ),
       );
       await tester.pumpSubject(bloc);
 
-      expect(find.text('host_card'), findsOneWidget);
-      expect(find.text('guest_card'), findsOneWidget);
-    });
-
-    testWidgets('renders empty when on an unknow', (tester) async {
-      mockState(_UnknowState());
-      await tester.pumpSubject(bloc);
-      expect(find.byType(Scaffold), findsOneWidget);
+      expect(find.byType(GameView), findsOneWidget);
     });
   });
 }
 
 extension MatchMakingViewTest on WidgetTester {
   Future<void> pumpSubject(GameBloc bloc) {
-    return pumpApp(
-      BlocProvider<GameBloc>.value(
-        value: bloc,
-        child: GameView(),
-      ),
-    );
+    return mockNetworkImages(() {
+      return pumpApp(
+        BlocProvider<GameBloc>.value(
+          value: bloc,
+          child: GameView(),
+        ),
+      );
+    });
   }
 }

@@ -181,7 +181,8 @@ class GameClient {
   }) async {
     final response = await _post(
       Uri.parse(
-          '$_endpoint/matches/move?matchId=$matchId&cardId=$cardId&host=$isHost'),
+        '$_endpoint/matches/move?matchId=$matchId&cardId=$cardId&host=$isHost',
+      ),
     );
 
     if (response.statusCode != HttpStatus.noContent) {
