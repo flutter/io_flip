@@ -48,5 +48,41 @@
         "type": "int"
       }
     }
+  },
+  "howToPlayHeader": "is a Flutter-powered, worldwide, card competition game.",
+  "@howToPlayHeader": {
+    "description": "Header shown on the how to play page"
+  },
+  "howToPlayTitle": "How to Play",
+  "@howToPlayTitle": {
+    "description": "Title text shown on the how to play page"
+  },
+  "howToPlayStepOneTitle": "Draw a random deck",
+  "@howToPlayStepOneTitle": {
+    "description": "Title text shown on the how to play page for step one"
+  },
+  "howToPlayStepTwoTitle": "Pick your three best cards",
+  "@howToPlayStepTwoTitle": {
+    "description": "Title text shown on the how to play page for step two"
+  },
+  "howToPlayStepThreeTitle": "Find an opponent and compete",
+  "@howToPlayStepThreeTitle": {
+    "description": "Title text shown on the how to play page for step three"
+  },
+  "howToPlayStepFourTitle": "Best two out of three wins!",
+  "@howToPlayStepFourTitle": {
+    "description": "Title text shown on the how to play page for step four"
+  },
+  "howToPlayTip": "Most wins and longest streaks make it to the leaderboard.",
+  "@howToPlayTip": {
+    "description": "Tip text shown on the how to play page"
+  },
+  "howToPlayTipEncouragement": "Good luck!",
+  "@howToPlayTipEncouragement": {
+    "description": "Encouragement tip text shown on the how to play page"
+  },
+  "howToPlayButtonText": "LET'S GO",
+  "@howToPlayButtonText": {
+    "description": "Button text shown on the how to play page"
   }
 }

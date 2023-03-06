@@ -109,10 +109,10 @@ class _Header extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 3),
-        const IconButton(
-          onPressed: null,
-          icon: Icon(Icons.help_outline),
-        )
+        IconButton(
+          onPressed: () => GoRouter.of(context).go('/how_to_play'),
+          icon: const Icon(Icons.help_outline),
+        ),
       ],
     );
   }
