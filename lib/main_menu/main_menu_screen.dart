@@ -10,11 +10,10 @@ import 'package:top_dash/audio/sounds.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/leaderboard/leaderboard.dart';
 import 'package:top_dash/settings/settings.dart';
-import 'package:top_dash/style/palette.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
 
 // TODO(willhlas): remove default flutter game template code
-//  once main menu design is complete and replace hard coded values with
-//  values from the design system.
+//  once main menu design is complete.
 
 class MainMenuScreen extends StatelessWidget {
   const MainMenuScreen({super.key});
@@ -25,28 +24,29 @@ class MainMenuScreen extends StatelessWidget {
     );
   }
 
-  static const _gap = SizedBox(height: 16);
+  static const _gap = SizedBox(height: TopDashSpacing.lg);
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final palette = context.watch<Palette>();
     final settingsController = context.watch<SettingsController>();
     final audioController = context.watch<AudioController>();
 
     return Scaffold(
-      backgroundColor: palette.backgroundMain,
+      backgroundColor: TopDashColors.backgroundMain,
       body: SingleChildScrollView(
         child: Align(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 800),
             child: Padding(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(TopDashSpacing.xlg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16),
+                    padding: EdgeInsets.symmetric(
+                      vertical: TopDashSpacing.lg,
+                    ),
                     child: _Header(),
                   ),
                   const LeaderboardView(),
@@ -65,7 +65,7 @@ class MainMenuScreen extends StatelessWidget {
                   ),
                   _gap,
                   Padding(
-                    padding: const EdgeInsets.only(top: 32),
+                    padding: const EdgeInsets.only(top: TopDashSpacing.lg * 2),
                     child: ValueListenableBuilder<bool>(
                       valueListenable: settingsController.muted,
                       builder: (context, muted, child) {
@@ -108,7 +108,7 @@ class _Header extends StatelessWidget {
             style: textTheme.displayLarge,
           ),
         ),
-        const SizedBox(width: 3),
+        const SizedBox(width: TopDashSpacing.xxxs + TopDashSpacing.xxs),
         IconButton(
           onPressed: () => GoRouter.of(context).go('/how_to_play'),
           icon: const Icon(Icons.help_outline),

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/l10n/l10n.dart';
-
-// TODO(willhlas): update hard coded values with values from the
-//  design system once it is complete.
+import 'package:top_dash_ui/top_dash_ui.dart';
 
 class HowToPlayPage extends StatelessWidget {
   const HowToPlayPage({super.key});
@@ -14,7 +12,7 @@ class HowToPlayPage extends StatelessWidget {
     );
   }
 
-  static const _gap = SizedBox(height: 16);
+  static const _gap = SizedBox(height: TopDashSpacing.lg);
 
   @override
   Widget build(BuildContext context) {
@@ -34,12 +32,15 @@ class HowToPlayPage extends StatelessWidget {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 800),
             child: Padding(
-              padding: const EdgeInsets.all(32),
+              padding: const EdgeInsets.all(TopDashSpacing.lg * 2),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const Padding(
-                    padding: EdgeInsets.only(top: 16, bottom: 32),
+                    padding: EdgeInsets.only(
+                      top: TopDashSpacing.lg,
+                      bottom: TopDashSpacing.lg * 2,
+                    ),
                     child: _Header(),
                   ),
                   _gap,
@@ -58,14 +59,17 @@ class HowToPlayPage extends StatelessWidget {
                     _gap,
                   ],
                   Padding(
-                    padding: const EdgeInsets.only(top: 56, bottom: 64),
+                    padding: const EdgeInsets.only(
+                      top: TopDashSpacing.lg + TopDashSpacing.xxlg,
+                      bottom: TopDashSpacing.xxxlg,
+                    ),
                     child: Column(
                       children: [
                         Text(
                           l10n.howToPlayTip,
                           style: textTheme.titleMedium,
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: TopDashSpacing.sm),
                         Text(
                           l10n.howToPlayTipEncouragement,
                           style: textTheme.titleMedium?.copyWith(

@@ -3,21 +3,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/style/palette.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
 
 class DraftView extends StatelessWidget {
   const DraftView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final palette = context.read<Palette>();
     final bloc = context.watch<DraftBloc>();
     final state = bloc.state;
     final l10n = context.l10n;
 
     if (state.status == DraftStateStatus.deckFailed) {
       return Scaffold(
-        backgroundColor: palette.backgroundMain,
+        backgroundColor: TopDashColors.backgroundMain,
         body: Center(
           child: Text(l10n.cardGenerationError),
         ),
@@ -26,9 +25,9 @@ class DraftView extends StatelessWidget {
 
     if (state.status == DraftStateStatus.deckLoading ||
         state.status == DraftStateStatus.initial) {
-      return Scaffold(
-        backgroundColor: palette.backgroundMain,
-        body: const Center(
+      return const Scaffold(
+        backgroundColor: TopDashColors.backgroundMain,
+        body: Center(
           child: CircularProgressIndicator(),
         ),
       );
@@ -45,7 +44,7 @@ class DraftView extends StatelessWidget {
     );
 
     return Scaffold(
-      backgroundColor: palette.backgroundMain,
+      backgroundColor: TopDashColors.backgroundMain,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -65,7 +64,7 @@ class DraftView extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: state.cards[i].rarity
                               ? Colors.yellow.shade200
-                              : palette.backgroundSettings,
+                              : TopDashColors.backgroundSettings,
                           border: Border.all(
                             width: 2,
                             color: Colors.blue.shade100,

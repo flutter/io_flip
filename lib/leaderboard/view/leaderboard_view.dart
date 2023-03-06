@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/leaderboard/leaderboard.dart';
-
-// TODO(willhlas): update hard coded values with values from the
-//  design system once it is complete.
+import 'package:top_dash_ui/top_dash_ui.dart';
 
 class LeaderboardView extends StatefulWidget {
   const LeaderboardView({super.key});
@@ -32,7 +30,7 @@ class LeaderboardViewState extends State<LeaderboardView> {
             tabs: [for (final tab in tabs.keys) Tab(text: tab)],
             onTap: (i) => setState(() => index = i),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: TopDashSpacing.lg),
           tabs.values.elementAt(index),
         ],
       ),
