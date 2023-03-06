@@ -1,0 +1,20 @@
+name: top_dash_ui
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    paths:
+      - "packages/top_dash_ui/**"
+      - ".github/workflows/top_dash_ui.yaml"
+    branches:
+      - main
+
+jobs:
+  build:
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
+    with:
+      flutter_version: 3.7.2
+      working_directory: packages/top_dash_ui

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:top_dash/l10n/l10n.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
 
 class LeaderboardPlayers extends StatelessWidget {
   const LeaderboardPlayers({super.key});
@@ -24,7 +25,7 @@ class LeaderboardPlayers extends StatelessWidget {
       children: [
         for (final player in _playerList) ...[
           player,
-          const SizedBox(height: 2),
+          const SizedBox(height: TopDashSpacing.xxs),
         ],
       ],
     );

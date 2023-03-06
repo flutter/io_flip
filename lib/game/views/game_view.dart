@@ -1,29 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:top_dash/game/game.dart';
-import 'package:top_dash/style/palette.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
 
 class GameView extends StatelessWidget {
   const GameView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final palette = context.read<Palette>();
     return BlocBuilder<GameBloc, GameState>(
       builder: (context, state) {
         if (state is MatchLoadingState) {
-          return Scaffold(
-            backgroundColor: palette.backgroundMain,
-            body: const Center(
+          return const Scaffold(
+            backgroundColor: TopDashColors.backgroundMain,
+            body: Center(
               child: CircularProgressIndicator(),
             ),
           );
         }
 
         if (state is MatchLoadFailedState) {
-          return Scaffold(
-            backgroundColor: palette.backgroundMain,
-            body: const Center(
+          return const Scaffold(
+            backgroundColor: TopDashColors.backgroundMain,
+            body: Center(
               child: Text('Unable to join game!'),
             ),
           );
@@ -31,7 +30,7 @@ class GameView extends StatelessWidget {
 
         if (state is MatchLoadedState) {
           return Scaffold(
-            backgroundColor: palette.backgroundMain,
+            backgroundColor: TopDashColors.backgroundMain,
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -39,7 +38,7 @@ class GameView extends StatelessWidget {
                   const Text('Host:'),
                   for (final card in state.match.hostDeck.cards)
                     Text(card.name),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: TopDashSpacing.lg),
                   const Text('Guest'),
                   for (final card in state.match.guestDeck.cards)
                     Text(card.name),
@@ -49,7 +48,7 @@ class GameView extends StatelessWidget {
           );
         }
 
-        return Scaffold(backgroundColor: palette.backgroundMain);
+        return const Scaffold(backgroundColor: TopDashColors.backgroundMain);
       },
     );
   }

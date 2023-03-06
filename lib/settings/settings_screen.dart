@@ -5,10 +5,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-
 import 'package:top_dash/settings/settings.dart';
-import 'package:top_dash/style/palette.dart';
 import 'package:top_dash/style/responsive_screen.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -24,10 +23,9 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final settings = context.watch<SettingsController>();
-    final palette = context.watch<Palette>();
 
     return Scaffold(
-      backgroundColor: palette.backgroundSettings,
+      backgroundColor: TopDashColors.backgroundSettings,
       body: ResponsiveScreen(
         squarishMainArea: ListView(
           children: [

@@ -9,8 +9,8 @@ import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/router/router.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
 import 'package:top_dash/settings/settings.dart';
-import 'package:top_dash/style/palette.dart';
 import 'package:top_dash/style/snack_bar.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
 
 typedef CreateAudioController = AudioController Function();
 
@@ -75,28 +75,12 @@ class _AppState extends State<App> {
             update: updateAudioController,
             dispose: (context, audio) => audio.dispose(),
           ),
-          Provider(
-            create: (context) => Palette(),
-          ),
         ],
         child: Builder(
           builder: (context) {
-            final palette = context.watch<Palette>();
-
             return MaterialApp.router(
               title: 'Top Dash',
-              theme: ThemeData.from(
-                colorScheme: ColorScheme.fromSeed(
-                  seedColor: palette.darkPen,
-                  background: palette.backgroundMain,
-                ),
-                textTheme: TextTheme(
-                  bodyMedium: TextStyle(
-                    color: palette.ink,
-                  ),
-                ),
-                useMaterial3: true,
-              ),
+              theme: TopDashTheme.themeData,
               routeInformationProvider: router.routeInformationProvider,
               routeInformationParser: router.routeInformationParser,
               routerDelegate: router.routerDelegate,
