@@ -25,7 +25,7 @@ class LeaderboardViewState extends State<LeaderboardView> {
     };
 
     return DefaultTabController(
-      length: 2,
+      length: tabs.length,
       child: Column(
         children: [
           TabBar(
