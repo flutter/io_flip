@@ -25,6 +25,6 @@ import 'package:flutter/material.dart';
 class Palette {
   Color get darkPen => const Color(0xFF0050bc);
   Color get ink => const Color(0xee352b42);
-  Color get backgroundMain => const Color(0xffffffd1);
+  Color get backgroundMain => const Color(0xFFF9F9F9);
   Color get backgroundSettings => const Color(0xffbfc8e3);
 }

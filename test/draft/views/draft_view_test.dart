@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/draft/draft.dart';
+import 'package:top_dash/l10n/l10n.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -168,7 +169,9 @@ void main() {
         );
         await tester.pumpSubject(draftBloc: draftBloc);
 
-        expect(find.text('Play'), findsOneWidget);
+        final l10n = tester.element(find.byType(DraftView)).l10n;
+
+        expect(find.text(l10n.play), findsOneWidget);
       },
     );
 
@@ -190,7 +193,9 @@ void main() {
           goRouter: goRouter,
         );
 
-        await tester.tap(find.text('Play'));
+        final l10n = tester.element(find.byType(DraftView)).l10n;
+
+        await tester.tap(find.text(l10n.play));
         verify(
           () => goRouter.goNamed(
             'match_making',
