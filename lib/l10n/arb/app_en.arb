@@ -36,8 +36,8 @@
   "@leaderboardLongestStreak": {
     "description": "Label shown on the leaderboard for the longest streak category tab"
   },
-  "leaderboardMostWinsCategory": "Most Wins",
-  "@leaderboardMostWinsCategory": {
+  "leaderboardMostWins": "Most Wins",
+  "@leaderboardMostWins": {
     "description": "Label shown on the leaderboard for the most wins category tab"
   },
   "leaderboardPlayerWins": "{total} wins",

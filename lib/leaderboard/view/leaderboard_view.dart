@@ -21,7 +21,7 @@ class LeaderboardViewState extends State<LeaderboardView> {
 
     final tabs = {
       l10n.leaderboardLongestStreak: const LeaderboardPlayers(),
-      l10n.leaderboardMostWinsCategory: const LeaderboardPlayers(),
+      l10n.leaderboardMostWins: const LeaderboardPlayers(),
     };
 
     return DefaultTabController(

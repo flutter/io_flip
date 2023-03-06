@@ -15,7 +15,7 @@ void main() {
       final l10n = tester.element(find.byType(LeaderboardView)).l10n;
 
       expect(find.text(l10n.leaderboardLongestStreak), findsOneWidget);
-      expect(find.text(l10n.leaderboardMostWinsCategory), findsOneWidget);
+      expect(find.text(l10n.leaderboardMostWins), findsOneWidget);
     });
 
     testWidgets('updates index correctly', (tester) async {
@@ -27,7 +27,7 @@ void main() {
       expect(index, 0);
 
       final l10n = tester.element(finder).l10n;
-      await tester.tap(find.text(l10n.leaderboardMostWinsCategory));
+      await tester.tap(find.text(l10n.leaderboardMostWins));
       await tester.pumpAndSettle();
 
       final newIndex = tester.state<LeaderboardViewState>(finder).index;
