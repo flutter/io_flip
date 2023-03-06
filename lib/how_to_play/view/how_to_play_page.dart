@@ -10,7 +10,7 @@ class HowToPlayPage extends StatelessWidget {
 
   factory HowToPlayPage.routeBuilder(_, __) {
     return const HowToPlayPage(
-      key: Key('how to play'),
+      key: Key('how_to_play'),
     );
   }
 
