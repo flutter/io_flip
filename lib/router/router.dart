@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
+import 'package:top_dash/leaderboard/leaderboard.dart';
 import 'package:top_dash/main_menu/main_menu_screen.dart';
 import 'package:top_dash/match_making/match_making.dart';
 import 'package:top_dash/settings/settings_screen.dart';
@@ -34,6 +35,10 @@ GoRouter createRouter() {
             name: 'game',
             path: 'game/:matchId',
             builder: GamePage.routeBuilder,
+          ),
+          GoRoute(
+            path: 'leaderboard_entry',
+            builder: LeaderboardEntryPage.routeBuilder,
           ),
         ],
       ),
