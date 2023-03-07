@@ -44,15 +44,19 @@ void main() {
   group('MatchMakerRepository', () {
     late _MockFirebaseFirestore db;
     late CollectionReference<Map<String, dynamic>> collection;
+    late CollectionReference<Map<String, dynamic>> matchStateCollection;
     late MatchMakerRepository matchMakerRepository;
     late Timestamp now;
 
     setUp(() {
       db = _MockFirebaseFirestore();
       collection = _MockCollectionReference();
+      matchStateCollection = _MockCollectionReference();
       now = Timestamp.now();
 
       when(() => db.collection('matches')).thenReturn(collection);
+      when(() => db.collection('match_states'))
+          .thenReturn(matchStateCollection);
       matchMakerRepository = MatchMakerRepository(
         db: db,
         retryDelay: 0,
@@ -109,11 +113,28 @@ void main() {
       );
     }
 
-    _MockDocumentReference<Map<String, dynamic>> mockUpdate(String matchId) {
-      final docRef = _MockDocumentReference<Map<String, dynamic>>();
-      when(() => collection.doc(matchId)).thenReturn(docRef);
-      when(() => docRef.update(any())).thenAnswer((_) async {});
-      return docRef;
+    void mockAddState(
+      String matchId,
+      List<String> hostPlayedCards,
+      List<String> guestPlayedCards,
+    ) {
+      when(
+        () => matchStateCollection.add(
+          {
+            'matchId': matchId,
+            'hostPlayedCards': hostPlayedCards,
+            'guestPlayedCards': guestPlayedCards,
+          },
+        ),
+      ).thenAnswer(
+        (_) async {
+          final docRef = _MockDocumentReference<Map<String, dynamic>>();
+
+          when(() => docRef.id).thenReturn('state_of_$matchId');
+
+          return docRef;
+        },
+      );
     }
 
     void mockSuccessfulTransaction(String guestId, String matchId) {
@@ -137,6 +158,16 @@ void main() {
       when(docRef.snapshots).thenAnswer((_) => stream);
     }
 
+    void mockMatchStateSnapshoots(
+      String matchStateId,
+      Stream<DocumentSnapshot<Map<String, dynamic>>> stream,
+    ) {
+      final docRef = _MockDocumentReference<Map<String, dynamic>>();
+      when(() => matchStateCollection.doc(matchStateId)).thenReturn(docRef);
+
+      when(docRef.snapshots).thenAnswer((_) => stream);
+    }
+
     test('can be instantiated', () {
       expect(
         MatchMakerRepository(db: db),
@@ -144,23 +175,10 @@ void main() {
       );
     });
 
-    test('updates the match document on ping', () async {
-      final mockDoc = mockUpdate('matchId');
-
-      await matchMakerRepository.pingMatch('matchId');
-
-      verify(
-        () => mockDoc.update(
-          {
-            'lastPing': now,
-          },
-        ),
-      ).called(1);
-    });
-
     test('returns a new match as host when there are no matches', () async {
       mockQueryResult();
       mockAdd('hostId', 'EMPTY', 'matchId', now);
+      mockAddState('matchId', const [], const []);
 
       final match = await matchMakerRepository.findMatch('hostId');
       expect(
@@ -173,6 +191,16 @@ void main() {
           ),
         ),
       );
+
+      verify(
+        () => matchStateCollection.add(
+          {
+            'matchId': 'matchId',
+            'hostPlayedCards': const <String>[],
+            'guestPlayedCards': const <String>[],
+          },
+        ),
+      ).called(1);
     });
 
     test(
@@ -314,6 +342,62 @@ void main() {
             lastPing: now,
           )
         ]),
+      );
+
+      await subscription.cancel();
+    });
+
+    test('can watch host cards', () async {
+      final streamController =
+          StreamController<DocumentSnapshot<Map<String, dynamic>>>();
+
+      mockMatchStateSnapshoots('123', streamController.stream);
+
+      final values = <String>[];
+      final subscription =
+          matchMakerRepository.watchHostCards('123').listen(values.add);
+
+      final snapshot = _MockQueryDocumentSnapshot<Map<String, dynamic>>();
+      when(() => snapshot.id).thenReturn('123');
+      when(snapshot.data).thenReturn({
+        'hostPlayedCards': ['321'],
+      });
+
+      streamController.add(snapshot);
+
+      await Future.microtask(() {});
+
+      expect(
+        values,
+        equals(['321']),
+      );
+
+      await subscription.cancel();
+    });
+
+    test('can watch guest cards', () async {
+      final streamController =
+          StreamController<DocumentSnapshot<Map<String, dynamic>>>();
+
+      mockMatchStateSnapshoots('123', streamController.stream);
+
+      final values = <String>[];
+      final subscription =
+          matchMakerRepository.watchGuestCards('123').listen(values.add);
+
+      final snapshot = _MockQueryDocumentSnapshot<Map<String, dynamic>>();
+      when(() => snapshot.id).thenReturn('123');
+      when(snapshot.data).thenReturn({
+        'guestPlayedCards': ['321'],
+      });
+
+      streamController.add(snapshot);
+
+      await Future.microtask(() {});
+
+      expect(
+        values,
+        equals(['321']),
       );
 
       await subscription.cancel();

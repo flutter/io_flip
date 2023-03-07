@@ -20,6 +20,7 @@ class MatchMakerRepository {
     this.retryDelay = _defaultRetryDelay,
   }) : _now = now {
     collection = db.collection('matches');
+    matchStatesCollection = db.collection('match_states');
   }
 
   static const _defaultRetryDelay = 2;
@@ -35,6 +36,9 @@ class MatchMakerRepository {
 
   /// The [CollectionReference] for the matches.
   late final CollectionReference<Map<String, dynamic>> collection;
+
+  /// The [CollectionReference] for the match_states.
+  late final CollectionReference<Map<String, dynamic>> matchStatesCollection;
 
   /// Watches a match.
   Stream<Match> watchMatch(String id) {
@@ -54,10 +58,24 @@ class MatchMakerRepository {
     });
   }
 
-  /// Pings a match.
-  Future<void> pingMatch(String id) async {
-    final ref = collection.doc(id);
-    await ref.update({'lastPing': _now()});
+  /// Watch for the host played cards in a match state.
+  Stream<String> watchHostCards(String matchStateId) {
+    return matchStatesCollection.doc(matchStateId).snapshots().map((snapshot) {
+      final data = snapshot.data()!;
+      final hostCards = (data['hostPlayedCards'] as List).cast<String>();
+
+      return hostCards.last;
+    }).distinct();
+  }
+
+  /// Watch for the host played cards in a match state.
+  Stream<String> watchGuestCards(String matchStateId) {
+    return matchStatesCollection.doc(matchStateId).snapshots().map((snapshot) {
+      final data = snapshot.data()!;
+      final guestCards = (data['guestPlayedCards'] as List).cast<String>();
+
+      return guestCards.last;
+    }).distinct();
   }
 
   /// Finds a match.
@@ -119,6 +137,11 @@ class MatchMakerRepository {
       'host': id,
       'guest': _emptyKey,
       'lastPing': now,
+    });
+    await matchStatesCollection.add({
+      'matchId': result.id,
+      'hostPlayedCards': const <String>[],
+      'guestPlayedCards': const <String>[],
     });
     return Match(
       id: result.id,

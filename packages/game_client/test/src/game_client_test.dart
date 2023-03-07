@@ -10,8 +10,19 @@ import 'package:test/test.dart';
 
 class _MockResponse extends Mock implements Response {}
 
+// ignore: one_member_abstracts
+abstract class __HttpClient {
+  Future<Response> onPost(Uri uri, {Object? body});
+}
+
+class _MockHttpClient extends Mock implements __HttpClient {}
+
 void main() {
   group('GameClient', () {
+    setUpAll(() {
+      registerFallbackValue(Uri());
+    });
+
     test('can be instantiated', () {
       expect(
         GameClient(endpoint: ''),
@@ -306,6 +317,192 @@ void main() {
               ),
             ),
           ),
+        );
+      });
+    });
+
+    group('getMatchState', () {
+      late GameClient client;
+      late Response response;
+
+      setUp(() {
+        response = _MockResponse();
+
+        client = GameClient(
+          endpoint: '',
+          getCall: (_) async => response,
+        );
+      });
+
+      test('returns a match state', () async {
+        const matchState = MatchState(
+          id: 'matchStateId',
+          matchId: 'matchId',
+          guestPlayedCards: ['a'],
+          hostPlayedCards: ['b'],
+        );
+
+        when(() => response.statusCode).thenReturn(HttpStatus.ok);
+        when(() => response.body).thenReturn(jsonEncode(matchState.toJson()));
+        final returnedMatchState = await client.getMatchState('matchId');
+
+        expect(returnedMatchState, equals(matchState));
+      });
+
+      test('returns null when is not found', () async {
+        when(() => response.statusCode).thenReturn(HttpStatus.notFound);
+        final returnedMatchState = await client.getMatchState('matchId');
+
+        expect(returnedMatchState, isNull);
+      });
+
+      test('throws GameClientError when request fails', () async {
+        when(() => response.statusCode)
+            .thenReturn(HttpStatus.internalServerError);
+        when(() => response.body).thenReturn('Ops');
+
+        await expectLater(
+          () => client.getMatchState('matchId'),
+          throwsA(
+            isA<GameClientError>().having(
+              (e) => e.cause,
+              'cause',
+              equals(
+                'GET /matches/matchId/state returned status 500 with the following response: "Ops"',
+              ),
+            ),
+          ),
+        );
+      });
+
+      test('throws GameClientError when request response is invalid', () async {
+        when(() => response.statusCode).thenReturn(HttpStatus.ok);
+        when(() => response.body).thenReturn('Ops');
+
+        await expectLater(
+          () => client.getMatchState('matchId'),
+          throwsA(
+            isA<GameClientError>().having(
+              (e) => e.cause,
+              'cause',
+              equals(
+                'GET /matches/matchId/state returned invalid response "Ops"',
+              ),
+            ),
+          ),
+        );
+      });
+    });
+
+    group('playCard', () {
+      late __HttpClient httpClient;
+      late GameClient client;
+      late Response response;
+
+      setUp(() {
+        httpClient = _MockHttpClient();
+
+        response = _MockResponse();
+        when(() => httpClient.onPost(any(), body: any(named: 'body')))
+            .thenAnswer((_) async => response);
+
+        client = GameClient(
+          endpoint: '',
+          postCall: httpClient.onPost,
+        );
+      });
+
+      test('makes the correct call', () async {
+        when(() => response.statusCode).thenReturn(HttpStatus.noContent);
+        await client.playCard(
+          matchId: 'matchId',
+          cardId: 'cardId',
+          isHost: true,
+        );
+
+        verify(
+          () => httpClient.onPost(
+            Uri.parse(
+              '/matches/move?matchId=matchId&cardId=cardId&host=true',
+            ),
+          ),
+        ).called(1);
+      });
+
+      test('makes the correct call', () async {
+        when(() => httpClient.onPost(any(), body: any(named: 'body')))
+            .thenThrow(Exception('Ops'));
+
+        await expectLater(
+          () => client.playCard(
+            matchId: 'matchId',
+            cardId: 'cardId',
+            isHost: true,
+          ),
+          throwsA(
+            isA<GameClientError>().having(
+              (e) => e.cause,
+              'cause',
+              equals(
+                'POST /matches/matchId/move failed with the following message: "Exception: Ops"',
+              ),
+            ),
+          ),
+        );
+      });
+
+      test('throws GameClientError when the returns error code', () async {
+        when(() => response.statusCode).thenReturn(
+          HttpStatus.internalServerError,
+        );
+        when(() => response.body).thenReturn('Ops');
+
+        await expectLater(
+          () => client.playCard(
+            matchId: 'matchId',
+            cardId: 'cardId',
+            isHost: true,
+          ),
+          throwsA(
+            isA<GameClientError>().having(
+              (e) => e.cause,
+              'cause',
+              equals(
+                'POST /matches/matchId/move returned status 500 with the following response: "Ops"',
+              ),
+            ),
+          ),
+        );
+      });
+
+      test('throws GameClientError when the request breaks', () async {
+        when(() => httpClient.onPost(any(), body: any(named: 'body')))
+            .thenThrow(Exception('Ops'));
+
+        await expectLater(
+          () => client.playCard(
+            matchId: 'matchId',
+            cardId: 'cardId',
+            isHost: true,
+          ),
+          throwsA(
+            isA<GameClientError>().having(
+              (e) => e.cause,
+              'cause',
+              equals(
+                'POST /matches/matchId/move failed with the following message: "Exception: Ops"',
+              ),
+            ),
+          ),
+        );
+      });
+    });
+
+    group('GameClientError', () {
+      test('toString returns the cause', () {
+        expect(
+          GameClientError('Ops', StackTrace.empty).toString(),
+          equals('Ops'),
         );
       });
     });

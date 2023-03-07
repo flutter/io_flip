@@ -3,6 +3,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_client/game_client.dart';
 import 'package:go_router/go_router.dart';
+import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
 import 'package:top_dash/game/game.dart';
@@ -12,6 +13,8 @@ import '../../helpers/pump_app.dart';
 class _MockGoRouterState extends Mock implements GoRouterState {}
 
 class _MockGameClient extends Mock implements GameClient {}
+
+class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
 
 void main() {
   group('GamePage', () {
@@ -39,15 +42,19 @@ void main() {
   });
 }
 
-extension MatchMakingPageTest on WidgetTester {
+extension GamePageTest on WidgetTester {
   Future<void> pumpSubject() {
     return pumpApp(
       MultiProvider(
         providers: [
           Provider<GameClient>(create: (_) => _MockGameClient()),
+          Provider<MatchMakerRepository>(
+            create: (_) => _MockMatchMakerRepository(),
+          ),
         ],
         child: GamePage(
           matchId: 'matchId',
+          isHost: false,
         ),
       ),
     );
