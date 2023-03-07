@@ -783,6 +783,69 @@ void main() {
           expect(state.isCardTurnComplete(card), isTrue);
         });
       });
+
+      group('canPlayerPlay', () {
+        final cards = List.generate(
+          6,
+          (i) => Card(
+            id: i.toString(),
+            name: '',
+            description: '',
+            image: '',
+            power: 1 + i,
+            rarity: false,
+          ),
+        );
+
+        final baseState = MatchLoadedState(
+          match: Match(
+            id: '',
+            hostDeck: Deck(
+              id: '',
+              cards: [cards[0], cards[2], cards[4]],
+            ),
+            guestDeck: Deck(
+              id: '',
+              cards: [cards[1], cards[3], cards[5]],
+            ),
+          ),
+          matchState: MatchState(
+            id: '',
+            matchId: '',
+            hostPlayedCards: const [],
+            guestPlayedCards: const [],
+          ),
+          turns: const [],
+        );
+
+        test('returns true when there are no turns yet', () {
+          expect(baseState.canPlayerPlay(), isTrue);
+        });
+
+        test('returns true when the last turn is complete', () {
+          final state = baseState.copyWith(
+            turns: [
+              MatchTurn(
+                opponentCardId: 'b',
+                playerCardId: 'a',
+              ),
+            ],
+          );
+          expect(state.canPlayerPlay(), isTrue);
+        });
+
+        test('returns false when there player has played last', () {
+          final state = baseState.copyWith(
+            turns: [
+              MatchTurn(
+                opponentCardId: null,
+                playerCardId: 'a',
+              ),
+            ],
+          );
+          expect(state.canPlayerPlay(), isFalse);
+        });
+      });
     });
 
     group('MatchTurn', () {

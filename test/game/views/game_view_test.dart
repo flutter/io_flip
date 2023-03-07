@@ -57,6 +57,14 @@ void main() {
                 rarity: true,
                 power: 2,
               ),
+              Card(
+                id: 'player_card_2',
+                name: 'host_card_2',
+                description: '',
+                image: '',
+                rarity: true,
+                power: 2,
+              ),
             ],
           ),
           guestDeck: Deck(
@@ -127,6 +135,27 @@ void main() {
           await tester.tap(find.byKey(const Key('player_card_player_card')));
 
           verifyNever(() => bloc.add(PlayerPlayed('player_card')));
+        },
+      );
+
+      testWidgets(
+        "can't play is it is not the player turn",
+        (tester) async {
+          mockState(
+            baseState.copyWith(
+              turns: [
+                MatchTurn(
+                  playerCardId: 'player_card',
+                  opponentCardId: null,
+                )
+              ],
+            ),
+          );
+          await tester.pumpSubject(bloc);
+
+          await tester.tap(find.byKey(const Key('player_card_player_card_2')));
+
+          verifyNever(() => bloc.add(PlayerPlayed('player_card_2')));
         },
       );
 

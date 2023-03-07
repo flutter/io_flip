@@ -215,4 +215,14 @@ extension MatchLoadedStateX on MatchLoadedState {
     }
     return false;
   }
+
+  bool canPlayerPlay() {
+    if (turns.isEmpty) {
+      return true;
+    }
+
+    final lastTurn = turns.last;
+
+    return lastTurn.isComplete() || lastTurn.playerCardId == null;
+  }
 }
