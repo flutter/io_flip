@@ -16,7 +16,9 @@ void main() {
     setUp(() {
       firebaseAuth = _MockFirebaseAuth();
       userCredential = _MockUserCredential();
-      authenticationRepository = AuthenticationRepository(firebaseAuth);
+      authenticationRepository = AuthenticationRepository(
+        firebaseAuth: firebaseAuth,
+      );
     });
 
     group('signInAnonymously', () {

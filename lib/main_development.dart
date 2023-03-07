@@ -1,4 +1,3 @@
-import 'package:authentication_repository/authentication_repository.dart';
 import 'package:game_client/game_client.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:top_dash/app/app.dart';
@@ -13,15 +12,10 @@ void main() {
   );
   bootstrap(
     firebaseOptions: DefaultFirebaseOptions.currentPlatform,
-    builder: (firestore, firebaseAuth) async {
-      final authenticationRepository = AuthenticationRepository(firebaseAuth);
-      await authenticationRepository.signInAnonymously();
-
-      return App(
-        settingsPersistence: LocalStorageSettingsPersistence(),
-        gameClient: gameClient,
-        matchMakerRepository: MatchMakerRepository(db: firestore),
-      );
-    },
+    builder: (firestore) => App(
+      settingsPersistence: LocalStorageSettingsPersistence(),
+      gameClient: gameClient,
+      matchMakerRepository: MatchMakerRepository(db: firestore),
+    ),
   );
 }
