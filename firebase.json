@@ -62,6 +62,16 @@
       "enabled": true,
       "port": 5002,
       "host": "0.0.0.0"
-    }
+    },
+    "auth": {
+      "port": 9099
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "storage": {
+      "port": 9199
+    },
+    "singleProjectMode": true
   }
 }

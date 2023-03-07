@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -39,9 +40,16 @@ Future<void> bootstrap({
 
   Bloc.observer = const AppBlocObserver();
 
-  await Firebase.initializeApp(
-    options: firebaseOptions,
-  );
+  await Firebase.initializeApp(options: firebaseOptions);
+
+  if (const bool.hasEnvironment('USE_EMULATORS') && kDebugMode) {
+    try {
+      FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+      await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
 
   final authenticationRepository = AuthenticationRepository();
   await authenticationRepository.signInAnonymously();
