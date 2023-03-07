@@ -9,8 +9,11 @@ environment:
 
 dependencies:
   firebase_auth: ^4.2.9
+  firebase_core: ^2.5.0
+  firebase_core_platform_interface: ^4.5.3
   flutter:
     sdk: flutter
+  plugin_platform_interface: ^2.1.4
 
 dev_dependencies:
   flutter_test:
