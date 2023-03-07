@@ -54,13 +54,14 @@ void main() {
               guest: 'guestId',
               lastPing: Timestamp.now(),
             ),
+            isHost: true,
           ),
         );
         final goRouter = MockGoRouter();
         await tester.pumpSubject(bloc, goRouter: goRouter);
 
         verify(
-          () => goRouter.go('/game/matchId'),
+          () => goRouter.go('/game/matchId/true'),
         ).called(1);
       },
     );

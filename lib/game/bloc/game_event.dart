@@ -12,3 +12,21 @@ class MatchRequested extends GameEvent {
   @override
   List<Object> get props => [matchId];
 }
+
+class PlayerPlayed extends GameEvent {
+  const PlayerPlayed(this.cardId);
+
+  final String cardId;
+
+  @override
+  List<Object> get props => [cardId];
+}
+
+class OpponentPlayed extends GameEvent {
+  const OpponentPlayed(this.cardId);
+
+  final String cardId;
+
+  @override
+  List<Object> get props => [cardId];
+}

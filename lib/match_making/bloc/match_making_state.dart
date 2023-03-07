@@ -10,6 +10,7 @@ enum MatchMakingStatus {
 class MatchMakingState extends Equatable {
   const MatchMakingState({
     required this.status,
+    this.isHost = false,
     this.match,
   });
 
@@ -20,14 +21,17 @@ class MatchMakingState extends Equatable {
 
   final Match? match;
   final MatchMakingStatus status;
+  final bool isHost;
 
   MatchMakingState copyWith({
     Match? match,
     MatchMakingStatus? status,
+    bool? isHost,
   }) {
     return MatchMakingState(
       match: match ?? this.match,
       status: status ?? this.status,
+      isHost: isHost ?? this.isHost,
     );
   }
 
@@ -35,5 +39,6 @@ class MatchMakingState extends Equatable {
   List<Object?> get props => [
         status,
         match,
+        isHost,
       ];
 }

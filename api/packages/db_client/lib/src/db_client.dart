@@ -43,6 +43,15 @@ class DbClient {
     return reference.id;
   }
 
+  /// Updates a record with the given data.
+  Future<void> update(String entity, DbEntityRecord record) async {
+    final collection = _firestore.collection(entity);
+
+    final reference = collection.document(record.id);
+
+    await reference.update(record.data);
+  }
+
   /// Gets a record by id on the given [entity].
   Future<DbEntityRecord?> getById(String entity, String id) async {
     final collection = _firestore.collection(entity);
@@ -60,5 +69,27 @@ class DbClient {
       id: document.id,
       data: document.map,
     );
+  }
+
+  /// Search for records where the [field] match the [value].
+  Future<List<DbEntityRecord>> findBy(
+    String entity,
+    String field,
+    dynamic value,
+  ) async {
+    final collection = _firestore.collection(entity);
+
+    final results = await collection.where(field, isEqualTo: value).get();
+
+    if (results.isNotEmpty) {
+      return results.map((document) {
+        return DbEntityRecord(
+          id: document.id,
+          data: document.map,
+        );
+      }).toList();
+    }
+
+    return [];
   }
 }

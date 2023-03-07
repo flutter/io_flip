@@ -22,5 +22,58 @@ void main() {
         );
       });
     });
+
+    group('PlayerPlayed', () {
+      test('can be instantiated', () {
+        expect(PlayerPlayed('cardId'), isNotNull);
+      });
+
+      test('supports equality', () {
+        expect(
+          PlayerPlayed('card1'),
+          equals(PlayerPlayed('card1')),
+        );
+
+        expect(
+          PlayerPlayed('card1'),
+          isNot(equals(PlayerPlayed('card2'))),
+        );
+      });
+    });
+
+    group('OpponentPlayed', () {
+      test('can be instantiated', () {
+        expect(OpponentPlayed('cardId'), isNotNull);
+      });
+
+      test('supports equality', () {
+        expect(
+          OpponentPlayed('card1'),
+          equals(OpponentPlayed('card1')),
+        );
+
+        expect(
+          OpponentPlayed('card1'),
+          isNot(equals(OpponentPlayed('card2'))),
+        );
+      });
+    });
+    group('OpponentPlayed', () {
+      test('can be instantiated', () {
+        expect(OpponentPlayed('cardId'), isNotNull);
+      });
+
+      test('supports equality', () {
+        expect(
+          OpponentPlayed('card1'),
+          equals(OpponentPlayed('card1')),
+        );
+
+        expect(
+          OpponentPlayed('card1'),
+          isNot(equals(OpponentPlayed('card2'))),
+        );
+      });
+    });
   });
 }
