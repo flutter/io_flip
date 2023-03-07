@@ -9,12 +9,20 @@ import 'package:http/http.dart';
 ///
 /// Check [cause] and [stackTrace] for specific details.
 /// {@endtemplate}
-class GameClientError extends Error {
+class GameClientError implements Exception {
   /// {@macro game_client_error}
-  GameClientError(this.cause);
+  GameClientError(this.cause, this.stackTrace);
 
   /// Error cause.
   final dynamic cause;
+
+  /// The stack trace of the error.
+  final StackTrace stackTrace;
+
+  @override
+  String toString() {
+    return cause.toString();
+  }
 }
 
 /// Definition of a post call used by this client.
@@ -49,6 +57,7 @@ class GameClient {
     if (response.statusCode != HttpStatus.ok) {
       throw GameClientError(
         'POST /cards returned status ${response.statusCode} with the following response: "${response.body}"',
+        StackTrace.current,
       );
     }
 
@@ -58,6 +67,7 @@ class GameClient {
     } catch (e) {
       throw GameClientError(
         'POST /cards returned invalid response "${response.body}"',
+        StackTrace.current,
       );
     }
   }
@@ -74,6 +84,7 @@ class GameClient {
     if (response.statusCode != HttpStatus.ok) {
       throw GameClientError(
         'POST /decks returned status ${response.statusCode} with the following response: "${response.body}"',
+        StackTrace.current,
       );
     }
 
@@ -83,6 +94,7 @@ class GameClient {
     } catch (e) {
       throw GameClientError(
         'POST /decks returned invalid response "${response.body}"',
+        StackTrace.current,
       );
     }
   }
@@ -102,6 +114,7 @@ class GameClient {
     if (response.statusCode != HttpStatus.ok) {
       throw GameClientError(
         'GET /decks/$deckId returned status ${response.statusCode} with the following response: "${response.body}"',
+        StackTrace.current,
       );
     }
 
@@ -111,6 +124,7 @@ class GameClient {
     } catch (e) {
       throw GameClientError(
         'GET /decks/$deckId returned invalid response "${response.body}"',
+        StackTrace.current,
       );
     }
   }
@@ -130,6 +144,7 @@ class GameClient {
     if (response.statusCode != HttpStatus.ok) {
       throw GameClientError(
         'GET /matches/$matchId returned status ${response.statusCode} with the following response: "${response.body}"',
+        StackTrace.current,
       );
     }
 
@@ -139,13 +154,14 @@ class GameClient {
     } catch (e) {
       throw GameClientError(
         'GET /matches/$matchId returned invalid response "${response.body}"',
+        StackTrace.current,
       );
     }
   }
 
   /// Get /matches/:matchId/state
   ///
-  /// Returns a [Match], if any to be found.
+  /// Returns a [MatchState], if any to be found.
   Future<MatchState?> getMatchState(String matchId) async {
     final response = await _get(
       Uri.parse('$_endpoint/matches/state?matchId=$matchId'),
@@ -158,6 +174,7 @@ class GameClient {
     if (response.statusCode != HttpStatus.ok) {
       throw GameClientError(
         'GET /matches/$matchId/state returned status ${response.statusCode} with the following response: "${response.body}"',
+        StackTrace.current,
       );
     }
 
@@ -167,6 +184,7 @@ class GameClient {
     } catch (e) {
       throw GameClientError(
         'GET /matches/$matchId/state returned invalid response "${response.body}"',
+        StackTrace.current,
       );
     }
   }
@@ -179,21 +197,25 @@ class GameClient {
     required String cardId,
     required bool isHost,
   }) async {
-    final response = await _post(
-      Uri.parse(
-        '$_endpoint/matches/move?matchId=$matchId&cardId=$cardId&host=$isHost',
-      ),
-    );
-
-    if (response.statusCode != HttpStatus.noContent) {
-      throw GameClientError(
-        'POST /matches/$matchId/move returned status ${response.statusCode} with the following response: "${response.body}"',
+    try {
+      final response = await _post(
+        Uri.parse(
+          '$_endpoint/matches/move?matchId=$matchId&cardId=$cardId&host=$isHost',
+        ),
       );
-    }
 
-    try {} catch (e) {
+      if (response.statusCode != HttpStatus.noContent) {
+        throw GameClientError(
+          'POST /matches/$matchId/move returned status ${response.statusCode} with the following response: "${response.body}"',
+          StackTrace.current,
+        );
+      }
+    } on GameClientError {
+      rethrow;
+    } catch (e) {
       throw GameClientError(
-        'POST /matches/$matchId/move returned invalid response "${response.body}"',
+        'POST /matches/$matchId/move failed with the following message: "$e"',
+        StackTrace.current,
       );
     }
   }
