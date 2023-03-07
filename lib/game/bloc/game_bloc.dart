@@ -19,7 +19,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         super(const MatchLoadingState()) {
     on<MatchRequested>(_onMatchRequested);
     on<PlayerPlayed>(_onPlayerPlayed);
-    on<OponentPlayed>(_onOponentPlayed);
+    on<OpponentPlayed>(_onOpponentPlayed);
   }
 
   final GameClient _gameClient;
@@ -59,7 +59,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             : _matchMakerRepository.watchHostCards(matchState.id);
 
         _opponentSubscription = stream.listen((id) {
-          add(OponentPlayed(id));
+          add(OpponentPlayed(id));
         });
       }
     } catch (e, s) {
@@ -87,7 +87,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             turns: [
               MatchTurn(
                 playerCardId: event.cardId,
-                oponentCardId: null,
+                opponentCardId: null,
               ),
             ],
           ),
@@ -113,7 +113,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
                 ...matchState.turns,
                 MatchTurn(
                   playerCardId: event.cardId,
-                  oponentCardId: null,
+                  opponentCardId: null,
                 ),
               ],
             ),
@@ -123,8 +123,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     }
   }
 
-  Future<void> _onOponentPlayed(
-    OponentPlayed event,
+  Future<void> _onOpponentPlayed(
+    OpponentPlayed event,
     Emitter<GameState> emit,
   ) async {
     if (state is MatchLoadedState) {
@@ -136,7 +136,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             turns: [
               MatchTurn(
                 playerCardId: null,
-                oponentCardId: event.cardId,
+                opponentCardId: event.cardId,
               ),
             ],
           ),
@@ -144,8 +144,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       } else {
         final lastTurn = matchState.turns.last;
 
-        if (lastTurn.oponentCardId == null) {
-          final newTurn = lastTurn.copyWith(oponentCardId: event.cardId);
+        if (lastTurn.opponentCardId == null) {
+          final newTurn = lastTurn.copyWith(opponentCardId: event.cardId);
 
           emit(
             matchState.copyWith(
@@ -163,7 +163,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
                 ...matchState.turns,
                 MatchTurn(
                   playerCardId: null,
-                  oponentCardId: event.cardId,
+                  opponentCardId: event.cardId,
                 ),
               ],
             ),
@@ -182,14 +182,14 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
 extension MatchTurnX on MatchTurn {
   bool isComplete() {
-    return playerCardId != null && oponentCardId != null;
+    return playerCardId != null && opponentCardId != null;
   }
 }
 
 extension MatchLoadedStateX on MatchLoadedState {
   bool isCardTurnComplete(Card card) {
     for (final turn in turns) {
-      if (card.id == turn.playerCardId || card.id == turn.oponentCardId) {
+      if (card.id == turn.playerCardId || card.id == turn.opponentCardId) {
         return turn.isComplete();
       }
     }
@@ -199,18 +199,18 @@ extension MatchLoadedStateX on MatchLoadedState {
 
   bool isWiningCard(Card card) {
     for (final turn in turns) {
-      if ((card.id == turn.playerCardId || card.id == turn.oponentCardId) &&
+      if ((card.id == turn.playerCardId || card.id == turn.opponentCardId) &&
           turn.isComplete()) {
         final allCards = {
           for (final card in match.hostDeck.cards) card.id: card.power,
           for (final card in match.guestDeck.cards) card.id: card.power,
         };
 
-        final oponentId = card.id == turn.playerCardId
-            ? turn.oponentCardId
+        final opponentId = card.id == turn.playerCardId
+            ? turn.opponentCardId
             : turn.playerCardId;
 
-        return (allCards[card.id] ?? 0) > (allCards[oponentId] ?? 0);
+        return (allCards[card.id] ?? 0) > (allCards[opponentId] ?? 0);
       }
     }
     return false;

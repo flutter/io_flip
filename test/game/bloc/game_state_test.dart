@@ -132,7 +132,7 @@ void main() {
               matchState: matchState1,
               turns: const [
                 MatchTurn(
-                  oponentCardId: '',
+                  opponentCardId: '',
                   playerCardId: '',
                 ),
               ],
@@ -178,12 +178,12 @@ void main() {
           match: match1,
           matchState: matchState1,
           turns: const [],
-        ).copyWith(turns: [MatchTurn(playerCardId: '', oponentCardId: '')]),
+        ).copyWith(turns: [MatchTurn(playerCardId: '', opponentCardId: '')]),
         equals(
           MatchLoadedState(
             match: match1,
             matchState: matchState1,
-            turns: const [MatchTurn(playerCardId: '', oponentCardId: '')],
+            turns: const [MatchTurn(playerCardId: '', opponentCardId: '')],
           ),
         ),
       );
@@ -193,31 +193,31 @@ void main() {
   group('MatchTurn', () {
     test('can be instantiated', () {
       expect(
-        MatchTurn(playerCardId: null, oponentCardId: null),
+        MatchTurn(playerCardId: null, opponentCardId: null),
         isNotNull,
       );
     });
 
     test('supports equality', () {
       expect(
-        MatchTurn(playerCardId: null, oponentCardId: null),
-        equals(MatchTurn(playerCardId: null, oponentCardId: null)),
+        MatchTurn(playerCardId: null, opponentCardId: null),
+        equals(MatchTurn(playerCardId: null, opponentCardId: null)),
       );
 
       expect(
-        MatchTurn(playerCardId: null, oponentCardId: null),
+        MatchTurn(playerCardId: null, opponentCardId: null),
         equals(
           isNot(
-            MatchTurn(playerCardId: '1', oponentCardId: null),
+            MatchTurn(playerCardId: '1', opponentCardId: null),
           ),
         ),
       );
 
       expect(
-        MatchTurn(playerCardId: null, oponentCardId: null),
+        MatchTurn(playerCardId: null, opponentCardId: null),
         equals(
           isNot(
-            MatchTurn(playerCardId: null, oponentCardId: '1'),
+            MatchTurn(playerCardId: null, opponentCardId: '1'),
           ),
         ),
       );

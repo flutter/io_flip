@@ -21,24 +21,24 @@ class MatchLoadFailedState extends GameState {
 class MatchTurn extends Equatable {
   const MatchTurn({
     required this.playerCardId,
-    required this.oponentCardId,
+    required this.opponentCardId,
   });
 
   final String? playerCardId;
-  final String? oponentCardId;
+  final String? opponentCardId;
 
   MatchTurn copyWith({
     String? playerCardId,
-    String? oponentCardId,
+    String? opponentCardId,
   }) {
     return MatchTurn(
       playerCardId: playerCardId ?? this.playerCardId,
-      oponentCardId: oponentCardId ?? this.oponentCardId,
+      opponentCardId: opponentCardId ?? this.opponentCardId,
     );
   }
 
   @override
-  List<Object?> get props => [playerCardId, oponentCardId];
+  List<Object?> get props => [playerCardId, opponentCardId];
 }
 
 class MatchLoadedState extends GameState {

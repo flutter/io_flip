@@ -63,7 +63,7 @@ void main() {
             id: '',
             cards: const [
               Card(
-                id: 'oponent_card',
+                id: 'opponent_card',
                 name: 'guest_card',
                 description: '',
                 image: '',
@@ -87,7 +87,7 @@ void main() {
         await tester.pumpSubject(bloc);
 
         expect(
-          find.byKey(const Key('oponent_hidden_card_oponent_card')),
+          find.byKey(const Key('opponent_hidden_card_opponent_card')),
           findsOneWidget,
         );
 
@@ -117,7 +117,7 @@ void main() {
               turns: [
                 MatchTurn(
                   playerCardId: 'player_card',
-                  oponentCardId: 'oponent_card',
+                  opponentCardId: 'opponent_card',
                 )
               ],
             ),
@@ -131,14 +131,14 @@ void main() {
       );
 
       testWidgets(
-        'render the oponent card revealed when the turn is over',
+        'render the opponent card revealed when the turn is over',
         (tester) async {
           mockState(
             baseState.copyWith(
               turns: [
                 MatchTurn(
                   playerCardId: 'player_card',
-                  oponentCardId: 'oponent_card',
+                  opponentCardId: 'opponent_card',
                 )
               ],
             ),
@@ -146,7 +146,7 @@ void main() {
           await tester.pumpSubject(bloc);
 
           expect(
-            find.byKey(const Key('oponent_revealed_card_oponent_card')),
+            find.byKey(const Key('opponent_revealed_card_opponent_card')),
             findsOneWidget,
           );
 
@@ -165,7 +165,7 @@ void main() {
               turns: [
                 MatchTurn(
                   playerCardId: 'player_card',
-                  oponentCardId: 'oponent_card',
+                  opponentCardId: 'opponent_card',
                 )
               ],
             ),
@@ -180,7 +180,7 @@ void main() {
       );
 
       testWidgets(
-        'render the win badge on the oponent winning card',
+        'render the win badge on the opponent winning card',
         (tester) async {
           mockState(
             baseState.copyWith(
@@ -191,7 +191,7 @@ void main() {
                   id: '',
                   cards: const [
                     Card(
-                      id: 'oponent_card',
+                      id: 'opponent_card',
                       name: 'guest_card',
                       description: '',
                       image: '',
@@ -204,7 +204,7 @@ void main() {
               turns: [
                 MatchTurn(
                   playerCardId: 'player_card',
-                  oponentCardId: 'oponent_card',
+                  opponentCardId: 'opponent_card',
                 )
               ],
             ),
@@ -212,7 +212,7 @@ void main() {
           await tester.pumpSubject(bloc);
 
           expect(
-            find.byKey(const Key('win_badge_oponent_card')),
+            find.byKey(const Key('win_badge_opponent_card')),
             findsOneWidget,
           );
         },

@@ -87,7 +87,7 @@ void main() {
       });
     });
 
-    group('udpdate', () {
+    group('update', () {
       test('updates and entity ad firestore', () async {
         final firestore = _MockFirestore();
         final collection = _MockCollectionRefrence();

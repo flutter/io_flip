@@ -41,37 +41,37 @@ void main() {
       });
     });
 
-    group('OponentPlayed', () {
+    group('OpponentPlayed', () {
       test('can be instantiated', () {
-        expect(OponentPlayed('cardId'), isNotNull);
+        expect(OpponentPlayed('cardId'), isNotNull);
       });
 
       test('supports equality', () {
         expect(
-          OponentPlayed('card1'),
-          equals(OponentPlayed('card1')),
+          OpponentPlayed('card1'),
+          equals(OpponentPlayed('card1')),
         );
 
         expect(
-          OponentPlayed('card1'),
-          isNot(equals(OponentPlayed('card2'))),
+          OpponentPlayed('card1'),
+          isNot(equals(OpponentPlayed('card2'))),
         );
       });
     });
-    group('OponentPlayed', () {
+    group('OpponentPlayed', () {
       test('can be instantiated', () {
-        expect(OponentPlayed('cardId'), isNotNull);
+        expect(OpponentPlayed('cardId'), isNotNull);
       });
 
       test('supports equality', () {
         expect(
-          OponentPlayed('card1'),
-          equals(OponentPlayed('card1')),
+          OpponentPlayed('card1'),
+          equals(OpponentPlayed('card1')),
         );
 
         expect(
-          OponentPlayed('card1'),
-          isNot(equals(OponentPlayed('card2'))),
+          OpponentPlayed('card1'),
+          isNot(equals(OpponentPlayed('card2'))),
         );
       });
     });

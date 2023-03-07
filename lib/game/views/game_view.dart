@@ -49,31 +49,31 @@ class _GameBoard extends StatelessWidget {
     final playerDeck =
         bloc.isHost ? state.match.hostDeck : state.match.guestDeck;
 
-    final oponentDeck =
+    final opponentDeck =
         bloc.isHost ? state.match.guestDeck : state.match.hostDeck;
 
     String? playerLastPlayedCard;
-    String? oponentLastPlayedCard;
+    String? opponentLastPlayedCard;
 
     if (state.turns.isNotEmpty) {
       final lastTurn = state.turns.last;
 
       playerLastPlayedCard = lastTurn.playerCardId;
-      oponentLastPlayedCard = lastTurn.oponentCardId;
+      opponentLastPlayedCard = lastTurn.opponentCardId;
     }
 
     final allPlayerPlayedCards =
         state.turns.map((turn) => turn.playerCardId).toList();
-    final allOponentPlayedCards =
-        state.turns.map((turn) => turn.oponentCardId).toList();
+    final allOpponentPlayedCards =
+        state.turns.map((turn) => turn.opponentCardId).toList();
 
     final query = MediaQuery.of(context);
 
     final cardWidth = query.size.width * .25;
     final cardHeight = cardWidth * 1.4;
 
-    final oponentCardWidth = cardWidth * .8;
-    final oponentCardHeight = cardHeight * .8;
+    final opponentCardWidth = cardWidth * .8;
+    final opponentCardHeight = cardHeight * .8;
 
     return Center(
       child: Column(
@@ -84,21 +84,21 @@ class _GameBoard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  for (final card in oponentDeck.cards)
+                  for (final card in opponentDeck.cards)
                     Transform.translate(
                       offset: Offset(
                         0,
-                        card.id == oponentLastPlayedCard ? 16 : 0,
+                        card.id == opponentLastPlayedCard ? 16 : 0,
                       ),
-                      child: allOponentPlayedCards.contains(card.id) &&
+                      child: allOpponentPlayedCards.contains(card.id) &&
                               state.isCardTurnComplete(card)
                           ? Stack(
                               children: [
                                 GameCard(
-                                  key: Key('oponent_revealed_card_${card.id}'),
+                                  key: Key('opponent_revealed_card_${card.id}'),
                                   card: card,
-                                  width: oponentCardWidth,
-                                  height: oponentCardHeight,
+                                  width: opponentCardWidth,
+                                  height: opponentCardHeight,
                                 ),
                                 if (state.isWiningCard(card))
                                   Positioned(
@@ -114,9 +114,9 @@ class _GameBoard extends StatelessWidget {
                               ],
                             )
                           : FlippedGameCard(
-                              key: Key('oponent_hidden_card_${card.id}'),
-                              width: oponentCardWidth,
-                              height: oponentCardHeight,
+                              key: Key('opponent_hidden_card_${card.id}'),
+                              width: opponentCardWidth,
+                              height: opponentCardHeight,
                             ),
                     ),
                 ],

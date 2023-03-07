@@ -22,8 +22,8 @@ class PlayerPlayed extends GameEvent {
   List<Object> get props => [cardId];
 }
 
-class OponentPlayed extends GameEvent {
-  const OponentPlayed(this.cardId);
+class OpponentPlayed extends GameEvent {
+  const OpponentPlayed(this.cardId);
 
   final String cardId;
 
