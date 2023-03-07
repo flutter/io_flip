@@ -9,7 +9,8 @@ class Match extends Equatable {
   const Match({
     required this.id,
     required this.host,
-    required this.lastPing,
+    required this.hostPing,
+    required this.guestPing,
     this.guest,
   });
 
@@ -24,8 +25,11 @@ class Match extends Equatable {
   /// Defaults to `null`.
   final String? guest;
 
-  /// Time when the last ping occurred.
-  final Timestamp lastPing;
+  /// Time when the last ping occurred from the host.
+  final Timestamp hostPing;
+
+  /// Time when the last ping occurred from the guest.
+  final Timestamp guestPing;
 
   /// Returns a new [Match] object with a new [guest] property.
   Match copyWithGuest({
@@ -35,10 +39,11 @@ class Match extends Equatable {
       id: id,
       host: host,
       guest: guest,
-      lastPing: lastPing,
+      hostPing: hostPing,
+      guestPing: guestPing,
     );
   }
 
   @override
-  List<Object?> get props => [id, host, guest, lastPing];
+  List<Object?> get props => [id, host, guest, hostPing, guestPing];
 }
