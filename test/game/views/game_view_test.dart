@@ -42,56 +42,186 @@ void main() {
       expect(find.text('Unable to join game!'), findsOneWidget);
     });
 
-    // TODO(erickzanardo): expand this test.
-    testWidgets('renders the game summary on success', (tester) async {
-      mockState(
-        MatchLoadedState(
-          match: Match(
+    group('Gameplay', () {
+      final baseState = MatchLoadedState(
+        match: Match(
+          id: '',
+          hostDeck: Deck(
             id: '',
-            hostDeck: Deck(
-              id: '',
-              cards: const [
-                Card(
-                  id: '',
-                  name: 'host_card',
-                  description: '',
-                  image: '',
-                  rarity: true,
-                  power: 1,
-                ),
-              ],
-            ),
-            guestDeck: Deck(
-              id: '',
-              cards: const [
-                Card(
-                  id: '',
-                  name: 'guest_card',
-                  description: '',
-                  image: '',
-                  rarity: true,
-                  power: 1,
-                ),
-              ],
-            ),
+            cards: const [
+              Card(
+                id: 'player_card',
+                name: 'host_card',
+                description: '',
+                image: '',
+                rarity: true,
+                power: 2,
+              ),
+            ],
           ),
-          matchState: MatchState(
+          guestDeck: Deck(
             id: '',
-            matchId: '',
-            guestPlayedCards: const [],
-            hostPlayedCards: const [],
+            cards: const [
+              Card(
+                id: 'oponent_card',
+                name: 'guest_card',
+                description: '',
+                image: '',
+                rarity: true,
+                power: 1,
+              ),
+            ],
           ),
-          turns: const [],
         ),
+        matchState: MatchState(
+          id: '',
+          matchId: '',
+          guestPlayedCards: const [],
+          hostPlayedCards: const [],
+        ),
+        turns: const [],
       );
-      await tester.pumpSubject(bloc);
 
-      expect(find.byType(GameView), findsOneWidget);
+      testWidgets('renders the game in its initial state', (tester) async {
+        mockState(baseState);
+        await tester.pumpSubject(bloc);
+
+        expect(
+          find.byKey(const Key('oponent_hidden_card_oponent_card')),
+          findsOneWidget,
+        );
+
+        expect(
+          find.byKey(const Key('player_card_player_card')),
+          findsOneWidget,
+        );
+      });
+
+      testWidgets(
+        'plays a player card on tap',
+        (tester) async {
+          mockState(baseState);
+          await tester.pumpSubject(bloc);
+
+          await tester.tap(find.byKey(const Key('player_card_player_card')));
+
+          verify(() => bloc.add(PlayerPlayed('player_card'))).called(1);
+        },
+      );
+
+      testWidgets(
+        "can't play a card that was already played",
+        (tester) async {
+          mockState(
+            baseState.copyWith(
+              turns: [
+                MatchTurn(
+                  playerCardId: 'player_card',
+                  oponentCardId: 'oponent_card',
+                )
+              ],
+            ),
+          );
+          await tester.pumpSubject(bloc);
+
+          await tester.tap(find.byKey(const Key('player_card_player_card')));
+
+          verifyNever(() => bloc.add(PlayerPlayed('player_card')));
+        },
+      );
+
+      testWidgets(
+        'render the oponent card revealed when the turn is over',
+        (tester) async {
+          mockState(
+            baseState.copyWith(
+              turns: [
+                MatchTurn(
+                  playerCardId: 'player_card',
+                  oponentCardId: 'oponent_card',
+                )
+              ],
+            ),
+          );
+          await tester.pumpSubject(bloc);
+
+          expect(
+            find.byKey(const Key('oponent_revealed_card_oponent_card')),
+            findsOneWidget,
+          );
+
+          expect(
+            find.byKey(const Key('player_card_player_card')),
+            findsOneWidget,
+          );
+        },
+      );
+
+      testWidgets(
+        'render the win badge on the player winning card',
+        (tester) async {
+          mockState(
+            baseState.copyWith(
+              turns: [
+                MatchTurn(
+                  playerCardId: 'player_card',
+                  oponentCardId: 'oponent_card',
+                )
+              ],
+            ),
+          );
+          await tester.pumpSubject(bloc);
+
+          expect(
+            find.byKey(const Key('win_badge_player_card')),
+            findsOneWidget,
+          );
+        },
+      );
+
+      testWidgets(
+        'render the win badge on the oponent winning card',
+        (tester) async {
+          mockState(
+            baseState.copyWith(
+              match: Match(
+                id: '',
+                hostDeck: baseState.match.hostDeck,
+                guestDeck: Deck(
+                  id: '',
+                  cards: const [
+                    Card(
+                      id: 'oponent_card',
+                      name: 'guest_card',
+                      description: '',
+                      image: '',
+                      rarity: true,
+                      power: 10,
+                    ),
+                  ],
+                ),
+              ),
+              turns: [
+                MatchTurn(
+                  playerCardId: 'player_card',
+                  oponentCardId: 'oponent_card',
+                )
+              ],
+            ),
+          );
+          await tester.pumpSubject(bloc);
+
+          expect(
+            find.byKey(const Key('win_badge_oponent_card')),
+            findsOneWidget,
+          );
+        },
+      );
     });
   });
 }
 
-extension MatchMakingViewTest on WidgetTester {
+extension GameViewTest on WidgetTester {
   Future<void> pumpSubject(GameBloc bloc) {
     return mockNetworkImages(() {
       return pumpApp(

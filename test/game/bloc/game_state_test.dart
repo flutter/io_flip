@@ -142,8 +142,146 @@ void main() {
       );
     });
 
-    group('isCardTurnComplete', () {
+    test('copyWith returns a new instance with the copied values', () {
+      expect(
+        MatchLoadedState(
+          match: match1,
+          matchState: matchState1,
+          turns: const [],
+        ).copyWith(match: match2),
+        equals(
+          MatchLoadedState(
+            match: match2,
+            matchState: matchState1,
+            turns: const [],
+          ),
+        ),
+      );
 
+      expect(
+        MatchLoadedState(
+          match: match1,
+          matchState: matchState1,
+          turns: const [],
+        ).copyWith(matchState: matchState2),
+        equals(
+          MatchLoadedState(
+            match: match1,
+            matchState: matchState2,
+            turns: const [],
+          ),
+        ),
+      );
+
+      expect(
+        MatchLoadedState(
+          match: match1,
+          matchState: matchState1,
+          turns: const [],
+        ).copyWith(turns: [MatchTurn(playerCardId: '', oponentCardId: '')]),
+        equals(
+          MatchLoadedState(
+            match: match1,
+            matchState: matchState1,
+            turns: const [MatchTurn(playerCardId: '', oponentCardId: '')],
+          ),
+        ),
+      );
+    });
+
+    group('isCardTurnComplete', () {
+      final cards = List.generate(
+        6,
+        (i) => Card(
+          id: i.toString(),
+          name: '',
+          description: '',
+          image: '',
+          power: 1 + i,
+          rarity: false,
+        ),
+      );
+
+      final baseState = MatchLoadedState(
+        match: Match(
+          id: '',
+          hostDeck: Deck(
+            id: '',
+            cards: [cards[0], cards[2], cards[4]],
+          ),
+          guestDeck: Deck(
+            id: '',
+            cards: [cards[1], cards[3], cards[5]],
+          ),
+        ),
+        matchState: MatchState(
+          id: '',
+          matchId: '',
+          hostPlayedCards: const [],
+          guestPlayedCards: const [],
+        ),
+        turns: const [],
+      );
+
+      test('returns true if the turn is complete and the card won', () {
+        final state = baseState.copyWith(
+          turns: [
+            MatchTurn(playerCardId: cards[4].id, oponentCardId: cards[1].id),
+          ],
+        );
+        expect(state.isWiningCard(cards[4]), isTrue);
+      });
+
+      test("returns false if the turn is complete but the card didn't win", () {
+        final state = baseState.copyWith(
+          turns: [
+            MatchTurn(playerCardId: cards[2].id, oponentCardId: cards[5].id),
+          ],
+        );
+        expect(state.isWiningCard(cards[2]), isFalse);
+      });
+
+      test("returns false if the turn isn't complete", () {
+        final state = baseState.copyWith(
+          turns: [
+            MatchTurn(playerCardId: cards[4].id, oponentCardId: null),
+          ],
+        );
+        expect(state.isWiningCard(cards[4]), isFalse);
+      });
+
+      group('when the card is the oponent', () {
+        test('returns true if the turn is complete and the card won', () {
+          final state = baseState.copyWith(
+            turns: [
+              MatchTurn(playerCardId: cards[0].id, oponentCardId: cards[1].id),
+            ],
+          );
+          expect(state.isWiningCard(cards[1]), isTrue);
+        });
+
+        test("returns false if the turn is complete but the card didn't win",
+            () {
+          final state = baseState.copyWith(
+            turns: [
+              MatchTurn(playerCardId: cards[2].id, oponentCardId: cards[3].id),
+            ],
+          );
+          expect(state.isWiningCard(cards[2]), isFalse);
+        });
+
+        test("returns false if the turn isn't complete", () {
+          final state = baseState.copyWith(
+            turns: [
+              MatchTurn(playerCardId: null, oponentCardId: cards[1].id),
+            ],
+          );
+          expect(state.isWiningCard(cards[1]), isFalse);
+        });
+      });
+    });
+
+    group('isWiningCard', () {
       final card = Card(
         id: '1',
         name: '',
@@ -159,7 +297,7 @@ void main() {
         turns: const [],
       );
 
-      test('returns true if the turn is complete', () {
+      test('returns true if the card is the winning one', () {
         final state = baseState.copyWith(
           turns: [
             MatchTurn(

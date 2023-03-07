@@ -75,8 +75,9 @@ class MatchLoadedState extends GameState {
           for (final card in match.guestDeck.cards) card.id: card.power,
         };
 
-        final oponentId =
-            card.id == turn.playerCardId ? turn.oponentCardId : card.id;
+        final oponentId = card.id == turn.playerCardId
+            ? turn.oponentCardId
+            : turn.playerCardId;
 
         return (allCards[card.id] ?? 0) > (allCards[oponentId] ?? 0);
       }

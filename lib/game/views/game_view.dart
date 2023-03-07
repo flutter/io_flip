@@ -47,10 +47,10 @@ class _GameBoard extends StatelessWidget {
     final state = bloc.state as MatchLoadedState;
 
     final playerDeck =
-        bloc.isHost ? state.match.guestDeck : state.match.hostDeck;
+        bloc.isHost ? state.match.hostDeck : state.match.guestDeck;
 
     final oponentDeck =
-        bloc.isHost ? state.match.hostDeck : state.match.guestDeck;
+        bloc.isHost ? state.match.guestDeck : state.match.hostDeck;
 
     String? playerLastPlayedCard;
     String? oponentLastPlayedCard;
@@ -95,12 +95,14 @@ class _GameBoard extends StatelessWidget {
                           ? Stack(
                               children: [
                                 GameCard(
+                                  key: Key('oponent_revealed_card_${card.id}'),
                                   card: card,
                                   width: oponentCardWidth,
                                   height: oponentCardHeight,
                                 ),
                                 if (state.isWiningCard(card))
                                   Positioned(
+                                    key: Key('win_badge_${card.id}'),
                                     top: 16,
                                     right: 16,
                                     child: Container(
@@ -112,6 +114,7 @@ class _GameBoard extends StatelessWidget {
                               ],
                             )
                           : FlippedGameCard(
+                              key: Key('oponent_hidden_card_${card.id}'),
                               width: oponentCardWidth,
                               height: oponentCardHeight,
                             ),
@@ -150,12 +153,14 @@ class _GameBoard extends StatelessWidget {
                           child: Stack(
                             children: [
                               GameCard(
+                                key: Key('player_card_${card.id}'),
                                 card: card,
                                 width: cardWidth,
                                 height: cardHeight,
                               ),
                               if (state.isWiningCard(card))
                                 Positioned(
+                                  key: Key('win_badge_${card.id}'),
                                   top: 16,
                                   right: 16,
                                   child: Container(
