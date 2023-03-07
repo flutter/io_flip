@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:top_dash/game/game.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 import 'package:top_dash/widgets/widgets.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
 
 class GameView extends StatelessWidget {
   const GameView({super.key});

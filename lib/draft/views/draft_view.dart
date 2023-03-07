@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 import 'package:top_dash/widgets/widgets.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
 
 class DraftView extends StatelessWidget {
   const DraftView({super.key});
