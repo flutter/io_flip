@@ -144,7 +144,7 @@ void main() {
         when(() => dbClient.getById('decks', any())).thenAnswer(
           (_) async => DbEntityRecord(
             id: deckId,
-            data: {
+            data: const {
               'cards': [cardId],
             },
           ),
@@ -153,7 +153,7 @@ void main() {
         when(() => dbClient.getById('cards', cardId)).thenAnswer(
           (_) async => DbEntityRecord(
             id: cardId,
-            data: {
+            data: const {
               'name': cardId,
               'description': cardId,
               'image': cardId,
@@ -194,6 +194,46 @@ void main() {
         final deck = await cardsRepository.getDeck(deckId);
 
         expect(deck, isNull);
+      });
+    });
+
+    group('getCard', () {
+      const cardId = 'cardId';
+
+      const card = Card(
+        id: cardId,
+        name: 'name',
+        description: 'description',
+        image: 'image',
+        power: 10,
+        rarity: true,
+      );
+
+      test('returns the card', () async {
+        when(() => dbClient.getById('cards', cardId)).thenAnswer(
+          (_) async => DbEntityRecord(
+            id: cardId,
+            data: const {
+              'name': 'name',
+              'description': 'description',
+              'image': 'image',
+              'power': 10,
+              'rarity': true,
+            },
+          ),
+        );
+
+        final returnedCard = await cardsRepository.getCard(cardId);
+        expect(returnedCard, equals(card));
+      });
+
+      test('returns null if card if not found', () async {
+        when(() => dbClient.getById('cards', cardId)).thenAnswer(
+          (_) async => null,
+        );
+
+        final returnedCard = await cardsRepository.getCard(cardId);
+        expect(returnedCard, isNull);
       });
     });
   });

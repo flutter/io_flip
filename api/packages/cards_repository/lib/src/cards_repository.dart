@@ -123,4 +123,18 @@ class CardsRepository {
           .toList(),
     });
   }
+
+  /// Finds a card with the given [cardId].
+  Future<Card?> getCard(String cardId) async {
+    final cardData = await _dbClient.getById('cards', cardId);
+
+    if (cardData == null) {
+      return null;
+    }
+
+    return Card.fromJson({
+      'id': cardData.id,
+      ...cardData.data,
+    });
+  }
 }
