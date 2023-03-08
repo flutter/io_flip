@@ -5,7 +5,7 @@ part 'match_state.g.dart';
 
 const _maxTurns = 3;
 
-/// Enum listing the possibles outcomes of a match.
+/// Enum listing the possible outcomes of a match.
 enum MatchResult {
   /// Host won.
   host,
