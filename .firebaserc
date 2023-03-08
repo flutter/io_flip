@@ -1,7 +1,6 @@
 {
   "projects": {
-    "default": "io-photobooth-dev",
-    "production": "holobooth-prod"
+    "default": "top-dash-dev"
   },
   "targets": {
     "top-dash-dev": {

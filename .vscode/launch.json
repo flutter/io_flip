@@ -17,6 +17,21 @@
       ]
     },
     {
+      "name": "Launch with emulators",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_development.dart",
+      "preLaunchTask": "emulate",
+      "args": [
+        "--flavor",
+        "development",
+        "--target",
+        "lib/main_development.dart",
+        "--dart-define",
+        "USE_EMULATORS=true"
+      ],
+    },
+    {
       "name": "Launch staging",
       "request": "launch",
       "type": "dart",
