@@ -15,8 +15,10 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     required GameClient gameClient,
     required MatchMakerRepository matchMakerRepository,
     required this.isHost,
+    MatchSolver matchSolver = const MatchSolver(),
   })  : _gameClient = gameClient,
         _matchMakerRepository = matchMakerRepository,
+        _matchSolver = matchSolver,
         super(const MatchLoadingState()) {
     on<MatchRequested>(_onMatchRequested);
     on<PlayerPlayed>(_onPlayerPlayed);
@@ -25,6 +27,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
   final GameClient _gameClient;
   final MatchMakerRepository _matchMakerRepository;
+  final MatchSolver _matchSolver;
   final bool isHost;
 
   StreamSubscription<MatchState>? _stateSubscription;
@@ -130,6 +133,48 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     }
   }
 
+  bool isWiningCard(Card card, {required bool isPlayer}) {
+    if (state is MatchLoadedState) {
+      final isCardFromHost = isPlayer ? isHost : !isHost;
+
+      final matchLoadedState = state as MatchLoadedState;
+      final matchState = matchLoadedState.matchState;
+
+      final round = isHost
+          ? matchState.hostPlayedCards.indexWhere((id) => id == card.id)
+          : matchState.guestPlayedCards.indexWhere((id) => id == card.id);
+
+      if (round >= 0) {
+        final turn = matchLoadedState.turns[round];
+        if (turn.isComplete()) {
+          final result = _matchSolver.calculateRoundResult(
+            matchLoadedState.match,
+            matchLoadedState.matchState,
+            round,
+          );
+
+          return isCardFromHost
+              ? result == MatchResult.host
+              : result == MatchResult.guest;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  bool canPlayerPlay() {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+      return _matchSolver.canPlayCard(
+        matchLoadedState.matchState,
+        isHost: isHost,
+      );
+    }
+
+    return false;
+  }
+
   @override
   Future<void> close() {
     _stateSubscription?.cancel();
@@ -152,34 +197,5 @@ extension MatchLoadedStateX on MatchLoadedState {
     }
 
     return false;
-  }
-
-  bool isWiningCard(Card card) {
-    for (final turn in turns) {
-      if ((card.id == turn.playerCardId || card.id == turn.opponentCardId) &&
-          turn.isComplete()) {
-        final allCards = {
-          for (final card in match.hostDeck.cards) card.id: card.power,
-          for (final card in match.guestDeck.cards) card.id: card.power,
-        };
-
-        final opponentId = card.id == turn.playerCardId
-            ? turn.opponentCardId
-            : turn.playerCardId;
-
-        return (allCards[card.id] ?? 0) > (allCards[opponentId] ?? 0);
-      }
-    }
-    return false;
-  }
-
-  bool canPlayerPlay() {
-    if (turns.isEmpty) {
-      return true;
-    }
-
-    final lastTurn = turns.last;
-
-    return lastTurn.isComplete() || lastTurn.playerCardId == null;
   }
 }

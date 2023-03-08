@@ -77,26 +77,6 @@ class MatchMakerRepository {
     });
   }
 
-  /// Watch for the host played cards in a match state.
-  Stream<String> watchHostCards(String matchStateId) {
-    return matchStatesCollection.doc(matchStateId).snapshots().map((snapshot) {
-      final data = snapshot.data()!;
-      final hostCards = (data['hostPlayedCards'] as List).cast<String>();
-
-      return hostCards.last;
-    }).distinct();
-  }
-
-  /// Watch for the host played cards in a match state.
-  Stream<String> watchGuestCards(String matchStateId) {
-    return matchStatesCollection.doc(matchStateId).snapshots().map((snapshot) {
-      final data = snapshot.data()!;
-      final guestCards = (data['guestPlayedCards'] as List).cast<String>();
-
-      return guestCards.last;
-    }).distinct();
-  }
-
   /// Finds a match.
   Future<Match> findMatch(String id, {int retryNumber = 0}) async {
     final matchesResult = await collection

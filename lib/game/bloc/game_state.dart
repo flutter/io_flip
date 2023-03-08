@@ -27,16 +27,6 @@ class MatchTurn extends Equatable {
   final String? playerCardId;
   final String? opponentCardId;
 
-  MatchTurn copyWith({
-    String? playerCardId,
-    String? opponentCardId,
-  }) {
-    return MatchTurn(
-      playerCardId: playerCardId ?? this.playerCardId,
-      opponentCardId: opponentCardId ?? this.opponentCardId,
-    );
-  }
-
   @override
   List<Object?> get props => [playerCardId, opponentCardId];
 }
