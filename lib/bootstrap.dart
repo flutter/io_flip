@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
@@ -28,31 +26,16 @@ class AppBlocObserver extends BlocObserver {
 
 typedef BootstrapBuilder = FutureOr<Widget> Function(
   FirebaseFirestore firestore,
+  FirebaseAuth firebaseAuth,
 );
 
-Future<void> bootstrap({
-  required FirebaseOptions firebaseOptions,
-  required BootstrapBuilder builder,
-}) async {
+Future<void> bootstrap(BootstrapBuilder builder) async {
+  WidgetsFlutterBinding.ensureInitialized();
   FlutterError.onError = (details) {
     log(details.exceptionAsString(), stackTrace: details.stack);
   };
 
   Bloc.observer = const AppBlocObserver();
-
-  await Firebase.initializeApp(options: firebaseOptions);
-
-  if (const bool.hasEnvironment('USE_EMULATORS') && kDebugMode) {
-    try {
-      FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
-      await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-  }
-
-  final authenticationRepository = AuthenticationRepository();
-  await authenticationRepository.signInAnonymously();
 
   await runZonedGuarded(
     () async {
@@ -66,9 +49,12 @@ Future<void> bootstrap({
             '${record.message}');
       });
 
-      WidgetsFlutterBinding.ensureInitialized();
-
-      runApp(await builder(FirebaseFirestore.instance));
+      runApp(
+        await builder(
+          FirebaseFirestore.instance,
+          FirebaseAuth.instance,
+        ),
+      );
     },
     (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
   );
