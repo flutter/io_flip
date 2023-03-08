@@ -135,7 +135,8 @@ class _GameBoard extends StatelessWidget {
                 children: [
                   for (final card in playerDeck.cards)
                     InkWell(
-                      onTap: allPlayerPlayedCards.contains(card.id)
+                      onTap: allPlayerPlayedCards.contains(card.id) ||
+                              !state.canPlayerPlay()
                           ? null
                           : () {
                               context
