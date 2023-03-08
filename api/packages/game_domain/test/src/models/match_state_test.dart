@@ -24,12 +24,14 @@ void main() {
           matchId: 'matchId',
           guestPlayedCards: const ['1'],
           hostPlayedCards: const ['2'],
+          result: MatchResult.host,
         ).toJson(),
         equals({
           'id': 'id',
           'matchId': 'matchId',
           'guestPlayedCards': ['1'],
           'hostPlayedCards': ['2'],
+          'result': 'host',
         }),
       );
     });
@@ -41,6 +43,7 @@ void main() {
           'matchId': 'matchId',
           'guestPlayedCards': ['1'],
           'hostPlayedCards': ['2'],
+          'result': 'host',
         }),
         equals(
           MatchState(
@@ -48,6 +51,7 @@ void main() {
             matchId: 'matchId',
             guestPlayedCards: const ['1'],
             hostPlayedCards: const ['2'],
+            result: MatchResult.host,
           ),
         ),
       );
@@ -60,6 +64,7 @@ void main() {
           matchId: '',
           guestPlayedCards: const [],
           hostPlayedCards: const [],
+          result: MatchResult.host,
         ),
         equals(
           MatchState(
@@ -67,6 +72,7 @@ void main() {
             matchId: '',
             guestPlayedCards: const [],
             hostPlayedCards: const [],
+            result: MatchResult.host,
           ),
         ),
       );
@@ -146,6 +152,128 @@ void main() {
           ),
         ),
       );
+
+      expect(
+        MatchState(
+          id: '',
+          matchId: '',
+          guestPlayedCards: const [],
+          hostPlayedCards: const [],
+        ),
+        isNot(
+          equals(
+            MatchState(
+              id: '',
+              matchId: '',
+              guestPlayedCards: const [],
+              hostPlayedCards: const [],
+              result: MatchResult.host,
+            ),
+          ),
+        ),
+      );
+    });
+
+    test(
+        'isOver return true when both players reach the correct '
+        'amount of turns', () {
+      final finishedMatchState = MatchState(
+        id: '',
+        matchId: '',
+        hostPlayedCards: const ['', '', ''],
+        guestPlayedCards: const ['', '', ''],
+      );
+      final unfinishedMatchState = MatchState(
+        id: '',
+        matchId: '',
+        hostPlayedCards: const ['', '', ''],
+        guestPlayedCards: const ['', ''],
+      );
+
+      expect(finishedMatchState.isOver(), isTrue);
+      expect(unfinishedMatchState.isOver(), isFalse);
+    });
+
+    test(
+        'addHostPlayedCard adds a new card to the host list '
+        'in a new instance', () {
+      expect(
+        MatchState(
+          id: '',
+          matchId: '',
+          hostPlayedCards: const [],
+          guestPlayedCards: const [],
+        ).addHostPlayedCard(''),
+        equals(
+          MatchState(
+            id: '',
+            matchId: '',
+            hostPlayedCards: const [''],
+            guestPlayedCards: const [],
+          ),
+        ),
+      );
+    });
+
+    test(
+        'addGuestPlayedCard adds a new card to the guest list '
+        'in a new instance', () {
+      expect(
+        MatchState(
+          id: '',
+          matchId: '',
+          hostPlayedCards: const [],
+          guestPlayedCards: const [],
+        ).addGuestPlayedCard(''),
+        equals(
+          MatchState(
+            id: '',
+            matchId: '',
+            hostPlayedCards: const [],
+            guestPlayedCards: const [''],
+          ),
+        ),
+      );
+    });
+
+    test('setResult sets the result', () {
+      expect(
+        MatchState(
+          id: '',
+          matchId: '',
+          hostPlayedCards: const [],
+          guestPlayedCards: const [],
+        ).setResult(MatchResult.host),
+        equals(
+          MatchState(
+            id: '',
+            matchId: '',
+            hostPlayedCards: const [],
+            guestPlayedCards: const [],
+            result: MatchResult.host,
+          ),
+        ),
+      );
+    });
+  });
+
+  group('MatchResult', () {
+    group('valueOf', () {
+      test('can map host', () {
+        expect(MatchResult.valueOf('host'), equals(MatchResult.host));
+      });
+      test('can map guest', () {
+        expect(MatchResult.valueOf('guest'), equals(MatchResult.guest));
+      });
+      test('can map draw', () {
+        expect(MatchResult.valueOf('draw'), equals(MatchResult.draw));
+      });
+      test('returns null when unknown', () {
+        expect(MatchResult.valueOf('a'), isNull);
+      });
+      test('returns null when null', () {
+        expect(MatchResult.valueOf(null), isNull);
+      });
     });
   });
 }

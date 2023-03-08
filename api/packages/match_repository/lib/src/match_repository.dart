@@ -16,11 +16,14 @@ class MatchRepository {
   const MatchRepository({
     required CardsRepository cardsRepository,
     required DbClient dbClient,
+    MatchSolver matchSolver = const MatchSolver(),
   })  : _cardsRepository = cardsRepository,
-        _dbClient = dbClient;
+        _dbClient = dbClient,
+        _matchSolver = matchSolver;
 
   final CardsRepository _cardsRepository;
   final DbClient _dbClient;
+  final MatchSolver _matchSolver;
 
   /// Return the match with the given [matchId].
   Future<Match?> getMatch(String matchId) async {
@@ -76,6 +79,7 @@ class MatchRepository {
             (record.data['hostPlayedCards'] as List).cast<String>(),
         guestPlayedCards:
             (record.data['guestPlayedCards'] as List).cast<String>(),
+        result: MatchResult.valueOf(record.data['result'] as String?),
       );
     }
 
@@ -90,23 +94,35 @@ class MatchRepository {
     required String cardId,
     required bool isHost,
   }) async {
-    final record = await _findMatchStateByMatchId(matchId);
+    final matchState = await getMatchState(matchId);
 
-    if (record == null) {
+    if (matchState == null) {
       throw PlayCardFailure();
     }
 
-    final key = isHost ? 'hostPlayedCards' : 'guestPlayedCards';
+    var newMatchState = isHost
+        ? matchState.addHostPlayedCard(cardId)
+        : matchState.addGuestPlayedCard(cardId);
+
+    if (newMatchState.isOver()) {
+      final match = await getMatch(newMatchState.matchId);
+      if (match == null) {
+        throw PlayCardFailure();
+      }
+
+      final result = _matchSolver.calculateMatchResult(match, newMatchState);
+      newMatchState = newMatchState.setResult(result);
+    }
 
     await _dbClient.update(
       'match_states',
       DbEntityRecord(
-        id: record.id,
+        id: newMatchState.id,
         data: {
-          key: [
-            ...record.data[key] as List,
-            cardId,
-          ],
+          'matchId': matchId,
+          'hostPlayedCards': newMatchState.hostPlayedCards,
+          'guestPlayedCards': newMatchState.guestPlayedCards,
+          'result': newMatchState.result?.name,
         },
       ),
     );
