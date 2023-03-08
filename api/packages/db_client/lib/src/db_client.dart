@@ -1,9 +1,10 @@
+import 'package:equatable/equatable.dart';
 import 'package:firedart/firedart.dart';
 
 /// {@template db_entity_record}
 /// A model representing a record in an entity.
 /// {@endtemplate}
-class DbEntityRecord {
+class DbEntityRecord extends Equatable {
   /// {@macro db_entity_record}
   const DbEntityRecord({
     required this.id,
@@ -15,6 +16,9 @@ class DbEntityRecord {
 
   /// Record's data.
   final Map<String, dynamic> data;
+
+  @override
+  List<Object> get props => [id, data];
 }
 
 /// {@template db_client}

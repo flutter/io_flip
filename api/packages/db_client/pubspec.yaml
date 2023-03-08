@@ -7,6 +7,7 @@ environment:
   sdk: ">=2.19.0 <3.0.0"
 
 dependencies:
+  equatable: ^2.0.5
   firedart: ^0.9.0+1
 
 dev_dependencies:

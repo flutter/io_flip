@@ -15,6 +15,7 @@ MatchState _$MatchStateFromJson(Map<String, dynamic> json) => MatchState(
       guestPlayedCards: (json['guestPlayedCards'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
+      result: $enumDecodeNullable(_$MatchResultEnumMap, json['result']),
     );
 
 Map<String, dynamic> _$MatchStateToJson(MatchState instance) =>
@@ -23,4 +24,11 @@ Map<String, dynamic> _$MatchStateToJson(MatchState instance) =>
       'matchId': instance.matchId,
       'hostPlayedCards': instance.hostPlayedCards,
       'guestPlayedCards': instance.guestPlayedCards,
+      'result': _$MatchResultEnumMap[instance.result],
     };
+
+const _$MatchResultEnumMap = {
+  MatchResult.host: 'host',
+  MatchResult.guest: 'guest',
+  MatchResult.draw: 'draw',
+};

@@ -15,6 +15,25 @@ class _MockDocumentReference extends Mock implements DocumentReference {}
 class _MockQueryReference extends Mock implements QueryReference {}
 
 void main() {
+  group('DbEntityRecord', () {
+    test('supports equality', () {
+      expect(
+        DbEntityRecord(id: 'A', data: const {'name': 'dash'}),
+        equals(DbEntityRecord(id: 'A', data: const {'name': 'dash'})),
+      );
+
+      expect(
+        DbEntityRecord(id: 'A', data: const {'name': 'dash'}),
+        isNot(equals(DbEntityRecord(id: 'B', data: const {'name': 'dash'}))),
+      );
+
+      expect(
+        DbEntityRecord(id: 'A', data: const {'name': 'dash'}),
+        isNot(equals(DbEntityRecord(id: 'A', data: const {'name': 'furn'}))),
+      );
+    });
+  });
+
   group('DbClient', () {
     test('can be instantiated', () {
       expect(DbClient(firestore: _MockFirestore()), isNotNull);
@@ -102,7 +121,7 @@ void main() {
           'birds',
           DbEntityRecord(
             id: '1',
-            data: {
+            data: const {
               'name': 'Dash',
             },
           ),
