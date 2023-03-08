@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:game_domain/game_domain.dart' hide Match;
 import 'package:match_maker_repository/match_maker_repository.dart';
 
 const _emptyKey = 'EMPTY';
@@ -54,6 +55,24 @@ class MatchMakerRepository {
         host: host,
         guest: guest == _emptyKey ? null : guest,
         lastPing: lastPing,
+      );
+    });
+  }
+
+  /// Watches a match state.
+  Stream<MatchState> watchMatchState(String id) {
+    return matchStatesCollection.doc(id).snapshots().map((snapshot) {
+      final id = snapshot.id;
+      final data = snapshot.data()!;
+      final matchId = data['matchId'] as String;
+      final hostCards = (data['hostPlayedCards'] as List).cast<String>();
+      final guestCards = (data['guestPlayedCards'] as List).cast<String>();
+
+      return MatchState(
+        id: id,
+        matchId: matchId,
+        hostPlayedCards: hostCards,
+        guestPlayedCards: guestCards,
       );
     });
   }

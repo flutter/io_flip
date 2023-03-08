@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,14 +20,14 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         super(const MatchLoadingState()) {
     on<MatchRequested>(_onMatchRequested);
     on<PlayerPlayed>(_onPlayerPlayed);
-    on<OpponentPlayed>(_onOpponentPlayed);
+    on<MatchStateUpdated>(_onMatchStateUpdated);
   }
 
   final GameClient _gameClient;
   final MatchMakerRepository _matchMakerRepository;
   final bool isHost;
 
-  StreamSubscription<String>? _opponentSubscription;
+  StreamSubscription<MatchState>? _stateSubscription;
 
   Future<void> _onMatchRequested(
     MatchRequested event,
@@ -51,20 +52,66 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             match: match,
             matchState: matchState,
             turns: const [],
+            playerPlayed: false,
           ),
         );
 
-        final stream = isHost
-            ? _matchMakerRepository.watchGuestCards(matchState.id)
-            : _matchMakerRepository.watchHostCards(matchState.id);
+        final stream = _matchMakerRepository.watchMatchState(matchState.id);
 
-        _opponentSubscription = stream.listen((id) {
-          add(OpponentPlayed(id));
+        _stateSubscription = stream.listen((state) {
+          add(MatchStateUpdated(state));
         });
       }
     } catch (e, s) {
       addError(e, s);
       emit(const MatchLoadFailedState());
+    }
+  }
+
+  Future<void> _onMatchStateUpdated(
+    MatchStateUpdated event,
+    Emitter<GameState> emit,
+  ) async {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+
+      final matchStatePlayerMoves = isHost
+          ? event.updatedState.hostPlayedCards
+          : event.updatedState.guestPlayedCards;
+
+      final matchStateOpponentMoves = isHost
+          ? event.updatedState.guestPlayedCards
+          : event.updatedState.hostPlayedCards;
+
+      final isPlayerMove = matchLoadedState.turns
+              .where((turn) => turn.playerCardId != null)
+              .length !=
+          matchStatePlayerMoves.length;
+
+      final moveLength = max(
+        matchStatePlayerMoves.length,
+        matchStateOpponentMoves.length,
+      );
+
+      final turns = [
+        for (var i = 0; i < moveLength; i++)
+          MatchTurn(
+            playerCardId: i < matchStatePlayerMoves.length
+                ? matchStatePlayerMoves[i]
+                : null,
+            opponentCardId: i < matchStateOpponentMoves.length
+                ? matchStateOpponentMoves[i]
+                : null,
+          ),
+      ];
+
+      emit(
+        matchLoadedState.copyWith(
+          matchState: event.updatedState,
+          turns: turns,
+          playerPlayed: isPlayerMove ? false : null,
+        ),
+      );
     }
   }
 
@@ -74,108 +121,18 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   ) async {
     if (state is MatchLoadedState) {
       final matchState = state as MatchLoadedState;
+      emit(matchState.copyWith(playerPlayed: true));
       await _gameClient.playCard(
         matchId: matchState.match.id,
         cardId: event.cardId,
         isHost: isHost,
       );
-
-      // Improve this code for re use
-      if (matchState.turns.isEmpty) {
-        emit(
-          matchState.copyWith(
-            turns: [
-              MatchTurn(
-                playerCardId: event.cardId,
-                opponentCardId: null,
-              ),
-            ],
-          ),
-        );
-      } else {
-        final lastTurn = matchState.turns.last;
-
-        if (lastTurn.playerCardId == null) {
-          final newTurn = lastTurn.copyWith(playerCardId: event.cardId);
-          emit(
-            matchState.copyWith(
-              turns: matchState.turns
-                  .map(
-                    (turn) => turn == lastTurn ? newTurn : turn,
-                  )
-                  .toList(),
-            ),
-          );
-        } else {
-          emit(
-            matchState.copyWith(
-              turns: [
-                ...matchState.turns,
-                MatchTurn(
-                  playerCardId: event.cardId,
-                  opponentCardId: null,
-                ),
-              ],
-            ),
-          );
-        }
-      }
-    }
-  }
-
-  Future<void> _onOpponentPlayed(
-    OpponentPlayed event,
-    Emitter<GameState> emit,
-  ) async {
-    if (state is MatchLoadedState) {
-      final matchState = state as MatchLoadedState;
-
-      if (matchState.turns.isEmpty) {
-        emit(
-          matchState.copyWith(
-            turns: [
-              MatchTurn(
-                playerCardId: null,
-                opponentCardId: event.cardId,
-              ),
-            ],
-          ),
-        );
-      } else {
-        final lastTurn = matchState.turns.last;
-
-        if (lastTurn.opponentCardId == null) {
-          final newTurn = lastTurn.copyWith(opponentCardId: event.cardId);
-
-          emit(
-            matchState.copyWith(
-              turns: matchState.turns
-                  .map(
-                    (turn) => turn == lastTurn ? newTurn : turn,
-                  )
-                  .toList(),
-            ),
-          );
-        } else {
-          emit(
-            matchState.copyWith(
-              turns: [
-                ...matchState.turns,
-                MatchTurn(
-                  playerCardId: null,
-                  opponentCardId: event.cardId,
-                ),
-              ],
-            ),
-          );
-        }
-      }
     }
   }
 
   @override
   Future<void> close() {
-    _opponentSubscription?.cancel();
+    _stateSubscription?.cancel();
     return super.close();
   }
 }

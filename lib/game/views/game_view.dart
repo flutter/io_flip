@@ -123,9 +123,17 @@ class _GameBoard extends StatelessWidget {
               ),
             ),
           ),
-          const Expanded(
+          Expanded(
             flex: 2,
-            child: SizedBox(),
+            child: state.playerPlayed
+                ? const Align(
+                    child: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: CircularProgressIndicator(),
+                    ),
+                  )
+                : const SizedBox(),
           ),
           Expanded(
             flex: 4,
@@ -136,7 +144,8 @@ class _GameBoard extends StatelessWidget {
                   for (final card in playerDeck.cards)
                     InkWell(
                       onTap: allPlayerPlayedCards.contains(card.id) ||
-                              !state.canPlayerPlay()
+                              !state.canPlayerPlay() ||
+                              state.playerPlayed
                           ? null
                           : () {
                               context

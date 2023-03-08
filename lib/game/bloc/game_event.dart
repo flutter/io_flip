@@ -22,11 +22,11 @@ class PlayerPlayed extends GameEvent {
   List<Object> get props => [cardId];
 }
 
-class OpponentPlayed extends GameEvent {
-  const OpponentPlayed(this.cardId);
+class MatchStateUpdated extends GameEvent {
+  const MatchStateUpdated(this.updatedState);
 
-  final String cardId;
+  final MatchState updatedState;
 
   @override
-  List<Object> get props => [cardId];
+  List<Object?> get props => [updatedState];
 }
