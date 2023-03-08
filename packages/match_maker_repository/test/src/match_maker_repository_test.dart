@@ -1,6 +1,7 @@
 // ignore_for_file: subtype_of_sealed_class, prefer_const_constructors
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -85,7 +86,7 @@ void main() {
         when(doc.data).thenReturn({
           'host': match.host,
           'guest': match.guest == null ? 'EMPTY' : '',
-          'lastPing': match.lastPing,
+          'hostPing': match.hostPing,
         });
         docs.add(doc);
       }
@@ -94,13 +95,14 @@ void main() {
       when(collection.get).thenAnswer((_) async => query);
     }
 
-    void mockAdd(String host, String guest, String id, Timestamp lastPing) {
+    void mockAdd(String host, String guest, String id, Timestamp ping) {
       when(
         () => collection.add(
           {
             'host': host,
             'guest': guest,
-            'lastPing': lastPing,
+            'hostPing': ping,
+            'guestPing': ping,
           },
         ),
       ).thenAnswer(
@@ -188,7 +190,7 @@ void main() {
           Match(
             id: 'matchId',
             host: 'hostId',
-            lastPing: now,
+            hostPing: now,
           ),
         ),
       );
@@ -209,7 +211,7 @@ void main() {
       () async {
         mockQueryResult(
           matches: [
-            Match(id: 'match123', host: 'host123', lastPing: now),
+            Match(id: 'match123', host: 'host123', hostPing: now),
           ],
         );
         mockSuccessfulTransaction('guest123', 'match123');
@@ -222,7 +224,8 @@ void main() {
               id: 'match123',
               host: 'host123',
               guest: 'guest123',
-              lastPing: now,
+              hostPing: now,
+              guestPing: now,
             ),
           ),
         );
@@ -237,7 +240,8 @@ void main() {
         );
         mockQueryResult(
           matches: [
-            Match(id: 'match123', host: 'host123', lastPing: now),
+            Match(
+                id: 'match123', host: 'host123', hostPing: now, guestPing: now),
           ],
         );
         mockSuccessfulTransaction('guest123', 'match123');
@@ -250,7 +254,8 @@ void main() {
               id: 'match123',
               host: 'host123',
               guest: 'guest123',
-              lastPing: now,
+              hostPing: now,
+              guestPing: now,
             ),
           ),
         );
@@ -262,10 +267,10 @@ void main() {
       () async {
         mockQueryResult(
           matches: [
-            Match(id: 'match123', host: 'host123', lastPing: now),
+            Match(id: 'match123', host: 'host123', hostPing: now),
           ],
         );
-        // The mock defaul behavior is to fail the transaction. So no need
+        // The mock default behavior is to fail the transaction. So no need
         // manually mock a failed transaction.
 
         await expectLater(
@@ -290,7 +295,8 @@ void main() {
       when(snapshot.data).thenReturn({
         'host': 'host1',
         'guest': 'guest1',
-        'lastPing': now,
+        'hostPing': now,
+        'guestPing': now,
       });
 
       streamController.add(snapshot);
@@ -304,7 +310,8 @@ void main() {
             id: '123',
             host: 'host1',
             guest: 'guest1',
-            lastPing: now,
+            hostPing: now,
+            guestPing: now,
           )
         ]),
       );
@@ -327,7 +334,7 @@ void main() {
       when(snapshot.data).thenReturn({
         'host': 'host1',
         'guest': 'EMPTY',
-        'lastPing': now,
+        'hostPing': now,
       });
 
       streamController.add(snapshot);
@@ -340,7 +347,7 @@ void main() {
           Match(
             id: '123',
             host: 'host1',
-            lastPing: now,
+            hostPing: now,
           )
         ]),
       );

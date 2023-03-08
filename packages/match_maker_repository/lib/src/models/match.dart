@@ -10,7 +10,7 @@ class Match extends Equatable {
     required this.id,
     required this.host,
     required this.hostPing,
-    required this.guestPing,
+    this.guestPing,
     this.guest,
   });
 
@@ -29,11 +29,12 @@ class Match extends Equatable {
   final Timestamp hostPing;
 
   /// Time when the last ping occurred from the guest.
-  final Timestamp guestPing;
+  final Timestamp? guestPing;
 
   /// Returns a new [Match] object with a new [guest] property.
   Match copyWithGuest({
     required String guest,
+    required Timestamp guestPing,
   }) {
     return Match(
       id: id,

@@ -49,7 +49,7 @@ class MatchMakerRepository {
       final host = data['host'] as String;
       final guest = data['guest'] as String;
       final hostPing = data['hostPing'] as Timestamp;
-      final guestPing = data['guestPing'] as Timestamp;
+      final guestPing = data['guestPing'] as Timestamp?;
 
       return Match(
         id: id,
@@ -106,7 +106,7 @@ class MatchMakerRepository {
         final data = element.data();
         final host = data['host'] as String;
         final hostPing = data['hostPing'] as Timestamp;
-        final guestPing = data['guestPing'] as Timestamp;
+        final guestPing = data['guestPing'] as Timestamp?;
 
         return Match(
           id: id,
@@ -122,7 +122,7 @@ class MatchMakerRepository {
             final ref = collection.doc(match.id);
             return transaction.update(ref, {'guest': id});
           });
-          return match.copyWithGuest(guest: id);
+          return match.copyWithGuest(guest: id, guestPing: _now());
         } catch (e) {
           log('Match "${match.id}" already matched, trying next...');
         }
@@ -146,7 +146,6 @@ class MatchMakerRepository {
       'host': id,
       'guest': _emptyKey,
       'hostPing': now,
-      'guestPing': now,
     });
     await matchStatesCollection.add({
       'matchId': result.id,
@@ -157,7 +156,6 @@ class MatchMakerRepository {
       id: result.id,
       host: id,
       hostPing: now,
-      guestPing: now,
     );
   }
 }
