@@ -21,7 +21,7 @@
       "request": "launch",
       "type": "dart",
       "program": "lib/main_development.dart",
-      "preLaunchTask": "run firebase emulators",
+      "preLaunchTask": "emulate",
       "args": [
         "--flavor",
         "development",
