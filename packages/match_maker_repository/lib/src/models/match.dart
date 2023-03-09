@@ -51,15 +51,12 @@ class Match extends Equatable {
   }
 
   @override
-<<<<<<< HEAD
-  List<Object?> get props => [id, host, guest, hostPing, guestPing];
-=======
   List<Object?> get props => [
         id,
         host,
+        hostPing,
         guest,
-        lastPing,
+        guestPing,
         inviteCode,
       ];
->>>>>>> 9cce6f4 (feat: adding join private match feature)
 }
