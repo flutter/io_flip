@@ -175,6 +175,17 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     return false;
   }
 
+  bool hasPlayerWon() {
+    if (state is MatchLoadedState) {
+      final matchState = (state as MatchLoadedState).matchState;
+
+      return isHost
+          ? matchState.result == MatchResult.host
+          : matchState.result == MatchResult.guest;
+    }
+    return false;
+  }
+
   @override
   Future<void> close() {
     _stateSubscription?.cancel();

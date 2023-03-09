@@ -364,6 +364,7 @@ void main() {
         'matchId': '1234',
         'guestPlayedCards': ['321'],
         'hostPlayedCards': ['322'],
+        'result': 'host',
       });
 
       streamController.add(snapshot);
@@ -378,6 +379,7 @@ void main() {
             matchId: '1234',
             guestPlayedCards: const ['321'],
             hostPlayedCards: const ['322'],
+            result: MatchResult.host,
           )
         ]),
       );
