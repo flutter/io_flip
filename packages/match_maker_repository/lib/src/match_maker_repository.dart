@@ -81,6 +81,18 @@ class MatchMakerRepository {
     });
   }
 
+  /// Updates the `hostPing` on the match object.
+  Future<void> pingHost(String id) async {
+    final ref = collection.doc(id);
+    await ref.update({'hostPing': _now()});
+  }
+
+  /// Updates the `guestPing` on the match object.
+  Future<void> pingGuest(String id) async {
+    final ref = collection.doc(id);
+    await ref.update({'guestPing': _now()});
+  }
+
   /// Finds a match.
   Future<Match> findMatch(String id, {int retryNumber = 0}) async {
     final matchesResult = await collection
@@ -106,13 +118,11 @@ class MatchMakerRepository {
         final data = element.data();
         final host = data['host'] as String;
         final hostPing = data['hostPing'] as Timestamp;
-        final guestPing = data['guestPing'] as Timestamp?;
 
         return Match(
           id: id,
           host: host,
           hostPing: hostPing,
-          guestPing: guestPing,
         );
       }).toList();
 
@@ -120,7 +130,7 @@ class MatchMakerRepository {
         try {
           await db.runTransaction<Transaction>((transaction) async {
             final ref = collection.doc(match.id);
-            return transaction.update(ref, {'guest': id});
+            return transaction.update(ref, {'guest': id, 'guestPing': _now()});
           });
           return match.copyWithGuest(guest: id, guestPing: _now());
         } catch (e) {

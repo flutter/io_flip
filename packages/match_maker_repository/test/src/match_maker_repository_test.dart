@@ -1,7 +1,6 @@
 // ignore_for_file: subtype_of_sealed_class, prefer_const_constructors
 
 import 'dart:async';
-import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -151,7 +150,7 @@ void main() {
       db.mockTransaction = transaction;
     }
 
-    void mockSnapshoots(
+    void mockSnapshots(
       String matchId,
       Stream<DocumentSnapshot<Map<String, dynamic>>> stream,
     ) {
@@ -161,7 +160,7 @@ void main() {
       when(docRef.snapshots).thenAnswer((_) => stream);
     }
 
-    void mockMatchStateSnapshoots(
+    void mockMatchStateSnapshots(
       String matchStateId,
       Stream<DocumentSnapshot<Map<String, dynamic>>> stream,
     ) {
@@ -241,7 +240,11 @@ void main() {
         mockQueryResult(
           matches: [
             Match(
-                id: 'match123', host: 'host123', hostPing: now, guestPing: now),
+              id: 'match123',
+              host: 'host123',
+              hostPing: now,
+              guestPing: now,
+            ),
           ],
         );
         mockSuccessfulTransaction('guest123', 'match123');
@@ -284,7 +287,7 @@ void main() {
       final streamController =
           StreamController<DocumentSnapshot<Map<String, dynamic>>>();
 
-      mockSnapshoots('123', streamController.stream);
+      mockSnapshots('123', streamController.stream);
 
       final values = <Match>[];
       final subscription =
@@ -323,7 +326,7 @@ void main() {
       final streamController =
           StreamController<DocumentSnapshot<Map<String, dynamic>>>();
 
-      mockSnapshoots('123', streamController.stream);
+      mockSnapshots('123', streamController.stream);
 
       final values = <Match>[];
       final subscription =
@@ -359,7 +362,7 @@ void main() {
       final streamController =
           StreamController<DocumentSnapshot<Map<String, dynamic>>>();
 
-      mockMatchStateSnapshoots('123', streamController.stream);
+      mockMatchStateSnapshots('123', streamController.stream);
 
       final values = <MatchState>[];
       final subscription =

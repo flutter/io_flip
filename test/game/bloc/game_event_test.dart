@@ -71,5 +71,23 @@ void main() {
         );
       });
     });
+
+    group('PresenceCheckRequested', () {
+      test('can be instantiated', () {
+        expect(ManagePlayerPresence('match1'), isNotNull);
+      });
+
+      test('supports equality', () {
+        expect(
+          ManagePlayerPresence('match1'),
+          equals(ManagePlayerPresence('match1')),
+        );
+
+        expect(
+          ManagePlayerPresence('match1'),
+          isNot(equals(ManagePlayerPresence('match2'))),
+        );
+      });
+    });
   });
 }

@@ -31,8 +31,8 @@ class MatchStateUpdated extends GameEvent {
   List<Object?> get props => [updatedState];
 }
 
-class PresenceCheckRequested extends GameEvent {
-  const PresenceCheckRequested(this.matchId);
+class ManagePlayerPresence extends GameEvent {
+  const ManagePlayerPresence(this.matchId);
 
   final String matchId;
 

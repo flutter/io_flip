@@ -69,8 +69,15 @@ class OpponentAbsentState extends GameState {
   List<Object> get props => [];
 }
 
-class CheckOpponentPresenceFailedState extends GameState {
-  const CheckOpponentPresenceFailedState();
+class ManagePlayerPresenceFailedState extends GameState {
+  const ManagePlayerPresenceFailedState();
+
+  @override
+  List<Object> get props => [];
+}
+
+class PingFailedState extends GameState {
+  const PingFailedState();
 
   @override
   List<Object> get props => [];
