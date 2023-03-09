@@ -4,6 +4,7 @@
     "env": {
       "FB_APP_ID": "top-dash-dev",
       "CORS_DOMAIN": "http://localhost:8080/",
+      "USE_EMULATOR": "true",
     }
   },
   "tasks": [
