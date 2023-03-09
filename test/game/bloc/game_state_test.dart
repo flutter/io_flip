@@ -274,4 +274,30 @@ void main() {
       );
     });
   });
+
+  group('OpponentAbsentState', () {
+    test('can be instantiated', () {
+      expect(OpponentAbsentState(), isNotNull);
+    });
+
+    test('supports equality', () {
+      expect(
+        OpponentAbsentState(),
+        equals(OpponentAbsentState()),
+      );
+    });
+  });
+
+  group('CheckOpponentPresenceFailedState', () {
+    test('can be instantiated', () {
+      expect(ManagePlayerPresenceFailedState(), isNotNull);
+    });
+
+    test('supports equality', () {
+      expect(
+        ManagePlayerPresenceFailedState(),
+        equals(ManagePlayerPresenceFailedState()),
+      );
+    });
+  });
 }

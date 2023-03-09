@@ -48,13 +48,15 @@ class MatchMakerRepository {
       final data = snapshot.data()!;
       final host = data['host'] as String;
       final guest = data['guest'] as String;
-      final lastPing = data['lastPing'] as Timestamp;
+      final hostPing = data['hostPing'] as Timestamp;
+      final guestPing = data['guestPing'] as Timestamp?;
 
       return Match(
         id: id,
         host: host,
         guest: guest == _emptyKey ? null : guest,
-        lastPing: lastPing,
+        hostPing: hostPing,
+        guestPing: guestPing,
       );
     });
   }
@@ -79,6 +81,18 @@ class MatchMakerRepository {
     });
   }
 
+  /// Updates the `hostPing` on the match object.
+  Future<void> pingHost(String id) async {
+    final ref = collection.doc(id);
+    await ref.update({'hostPing': _now()});
+  }
+
+  /// Updates the `guestPing` on the match object.
+  Future<void> pingGuest(String id) async {
+    final ref = collection.doc(id);
+    await ref.update({'guestPing': _now()});
+  }
+
   /// Finds a match.
   Future<Match> findMatch(String id, {int retryNumber = 0}) async {
     final matchesResult = await collection
@@ -87,7 +101,7 @@ class MatchMakerRepository {
           isEqualTo: _emptyKey,
         )
         .where(
-          'lastPing',
+          'hostPing',
           isGreaterThanOrEqualTo: Timestamp.fromMillisecondsSinceEpoch(
             _now().millisecondsSinceEpoch - 4000,
           ),
@@ -103,18 +117,23 @@ class MatchMakerRepository {
         final id = element.id;
         final data = element.data();
         final host = data['host'] as String;
-        final lastPing = data['lastPing'] as Timestamp;
+        final hostPing = data['hostPing'] as Timestamp;
 
-        return Match(id: id, host: host, lastPing: lastPing);
+        return Match(
+          id: id,
+          host: host,
+          hostPing: hostPing,
+        );
       }).toList();
 
       for (final match in matches) {
         try {
+          final now = _now();
           await db.runTransaction<Transaction>((transaction) async {
             final ref = collection.doc(match.id);
-            return transaction.update(ref, {'guest': id});
+            return transaction.update(ref, {'guest': id, 'guestPing': now});
           });
-          return match.copyWithGuest(guest: id);
+          return match.copyWithGuest(guest: id, guestPing: now);
         } catch (e) {
           log('Match "${match.id}" already matched, trying next...');
         }
@@ -137,7 +156,7 @@ class MatchMakerRepository {
     final result = await collection.add({
       'host': id,
       'guest': _emptyKey,
-      'lastPing': now,
+      'hostPing': now,
     });
     await matchStatesCollection.add({
       'matchId': result.id,
@@ -147,7 +166,7 @@ class MatchMakerRepository {
     return Match(
       id: result.id,
       host: id,
-      lastPing: now,
+      hostPing: now,
     );
   }
 }

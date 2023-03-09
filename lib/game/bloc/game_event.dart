@@ -30,3 +30,12 @@ class MatchStateUpdated extends GameEvent {
   @override
   List<Object?> get props => [updatedState];
 }
+
+class ManagePlayerPresence extends GameEvent {
+  const ManagePlayerPresence(this.matchId);
+
+  final String matchId;
+
+  @override
+  List<Object> get props => [matchId];
+}

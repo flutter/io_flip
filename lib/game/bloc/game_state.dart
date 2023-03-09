@@ -61,3 +61,24 @@ class MatchLoadedState extends GameState {
   @override
   List<Object> get props => [match, matchState, turns, playerPlayed];
 }
+
+class OpponentAbsentState extends GameState {
+  const OpponentAbsentState();
+
+  @override
+  List<Object> get props => [];
+}
+
+class ManagePlayerPresenceFailedState extends GameState {
+  const ManagePlayerPresenceFailedState();
+
+  @override
+  List<Object> get props => [];
+}
+
+class PingFailedState extends GameState {
+  const PingFailedState();
+
+  @override
+  List<Object> get props => [];
+}

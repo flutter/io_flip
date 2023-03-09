@@ -30,6 +30,12 @@ class GameView extends StatelessWidget {
           child = const _GameBoard();
         }
 
+        if (state is OpponentAbsentState) {
+          child = const Center(
+            child: Text('Opponent left the game!'),
+          );
+        }
+
         return Scaffold(
           backgroundColor: TopDashColors.backgroundMain,
           body: child,

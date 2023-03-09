@@ -49,6 +49,10 @@ void main() {
     late MatchMakerRepository matchMakerRepository;
     late Timestamp now;
 
+    setUpAll(() {
+      registerFallbackValue(Timestamp(0, 0));
+    });
+
     setUp(() {
       db = _MockFirebaseFirestore();
       collection = _MockCollectionReference();
@@ -70,7 +74,7 @@ void main() {
           .thenReturn(collection);
       when(
         () => collection.where(
-          'lastPing',
+          'hostPing',
           isGreaterThanOrEqualTo: any(named: 'isGreaterThanOrEqualTo'),
         ),
       ).thenReturn(collection);
@@ -85,7 +89,7 @@ void main() {
         when(doc.data).thenReturn({
           'host': match.host,
           'guest': match.guest == null ? 'EMPTY' : '',
-          'lastPing': match.lastPing,
+          'hostPing': match.hostPing,
         });
         docs.add(doc);
       }
@@ -94,13 +98,13 @@ void main() {
       when(collection.get).thenAnswer((_) async => query);
     }
 
-    void mockAdd(String host, String guest, String id, Timestamp lastPing) {
+    void mockAdd(String host, String guest, String id, Timestamp ping) {
       when(
         () => collection.add(
           {
             'host': host,
             'guest': guest,
-            'lastPing': lastPing,
+            'hostPing': ping,
           },
         ),
       ).thenAnswer(
@@ -138,18 +142,26 @@ void main() {
       );
     }
 
-    void mockSuccessfulTransaction(String guestId, String matchId) {
+    void mockSuccessfulTransaction(
+      String guestId,
+      String matchId,
+      Timestamp guestPing,
+    ) {
       final docRef = _MockDocumentReference<Map<String, dynamic>>();
       when(() => collection.doc(matchId)).thenReturn(docRef);
 
       final transaction = _MockTransaction();
-      when(() => transaction.update(docRef, {'guest': guestId}))
-          .thenReturn(transaction);
+      when(
+        () => transaction.update(
+          docRef,
+          {'guest': guestId, 'guestPing': guestPing},
+        ),
+      ).thenReturn(transaction);
 
       db.mockTransaction = transaction;
     }
 
-    void mockSnapshoots(
+    void mockSnapshots(
       String matchId,
       Stream<DocumentSnapshot<Map<String, dynamic>>> stream,
     ) {
@@ -159,7 +171,7 @@ void main() {
       when(docRef.snapshots).thenAnswer((_) => stream);
     }
 
-    void mockMatchStateSnapshoots(
+    void mockMatchStateSnapshots(
       String matchStateId,
       Stream<DocumentSnapshot<Map<String, dynamic>>> stream,
     ) {
@@ -188,7 +200,7 @@ void main() {
           Match(
             id: 'matchId',
             host: 'hostId',
-            lastPing: now,
+            hostPing: now,
           ),
         ),
       );
@@ -209,10 +221,10 @@ void main() {
       () async {
         mockQueryResult(
           matches: [
-            Match(id: 'match123', host: 'host123', lastPing: now),
+            Match(id: 'match123', host: 'host123', hostPing: now),
           ],
         );
-        mockSuccessfulTransaction('guest123', 'match123');
+        mockSuccessfulTransaction('guest123', 'match123', now);
 
         final match = await matchMakerRepository.findMatch('guest123');
         expect(
@@ -222,35 +234,8 @@ void main() {
               id: 'match123',
               host: 'host123',
               guest: 'guest123',
-              lastPing: now,
-            ),
-          ),
-        );
-      },
-    );
-
-    test(
-      'joins a match when one is available and no concurrence error happens',
-      () async {
-        final now = Timestamp.fromMillisecondsSinceEpoch(
-          Timestamp.now().millisecondsSinceEpoch - 2000,
-        );
-        mockQueryResult(
-          matches: [
-            Match(id: 'match123', host: 'host123', lastPing: now),
-          ],
-        );
-        mockSuccessfulTransaction('guest123', 'match123');
-
-        final match = await matchMakerRepository.findMatch('guest123');
-        expect(
-          match,
-          equals(
-            Match(
-              id: 'match123',
-              host: 'host123',
-              guest: 'guest123',
-              lastPing: now,
+              hostPing: now,
+              guestPing: now,
             ),
           ),
         );
@@ -262,10 +247,10 @@ void main() {
       () async {
         mockQueryResult(
           matches: [
-            Match(id: 'match123', host: 'host123', lastPing: now),
+            Match(id: 'match123', host: 'host123', hostPing: now),
           ],
         );
-        // The mock defaul behavior is to fail the transaction. So no need
+        // The mock default behavior is to fail the transaction. So no need
         // manually mock a failed transaction.
 
         await expectLater(
@@ -279,7 +264,7 @@ void main() {
       final streamController =
           StreamController<DocumentSnapshot<Map<String, dynamic>>>();
 
-      mockSnapshoots('123', streamController.stream);
+      mockSnapshots('123', streamController.stream);
 
       final values = <Match>[];
       final subscription =
@@ -290,7 +275,8 @@ void main() {
       when(snapshot.data).thenReturn({
         'host': 'host1',
         'guest': 'guest1',
-        'lastPing': now,
+        'hostPing': now,
+        'guestPing': now,
       });
 
       streamController.add(snapshot);
@@ -304,7 +290,8 @@ void main() {
             id: '123',
             host: 'host1',
             guest: 'guest1',
-            lastPing: now,
+            hostPing: now,
+            guestPing: now,
           )
         ]),
       );
@@ -316,7 +303,7 @@ void main() {
       final streamController =
           StreamController<DocumentSnapshot<Map<String, dynamic>>>();
 
-      mockSnapshoots('123', streamController.stream);
+      mockSnapshots('123', streamController.stream);
 
       final values = <Match>[];
       final subscription =
@@ -327,7 +314,7 @@ void main() {
       when(snapshot.data).thenReturn({
         'host': 'host1',
         'guest': 'EMPTY',
-        'lastPing': now,
+        'hostPing': now,
       });
 
       streamController.add(snapshot);
@@ -340,7 +327,7 @@ void main() {
           Match(
             id: '123',
             host: 'host1',
-            lastPing: now,
+            hostPing: now,
           )
         ]),
       );
@@ -352,7 +339,7 @@ void main() {
       final streamController =
           StreamController<DocumentSnapshot<Map<String, dynamic>>>();
 
-      mockMatchStateSnapshoots('123', streamController.stream);
+      mockMatchStateSnapshots('123', streamController.stream);
 
       final values = <MatchState>[];
       final subscription =
@@ -385,6 +372,42 @@ void main() {
       );
 
       await subscription.cancel();
+    });
+
+    test('can update the match hostPing', () async {
+      final docRef = _MockDocumentReference<Map<String, dynamic>>();
+      when(() => collection.doc('hostId')).thenReturn(docRef);
+      when(
+        () => docRef.update(
+          {'hostPing': now},
+        ),
+      ).thenAnswer((_) async {});
+
+      await matchMakerRepository.pingHost('hostId');
+
+      verify(
+        () => docRef.update(
+          {'hostPing': now},
+        ),
+      ).called(1);
+    });
+
+    test('can update the match guestPing', () async {
+      final docRef = _MockDocumentReference<Map<String, dynamic>>();
+      when(() => collection.doc('guestId')).thenReturn(docRef);
+      when(
+        () => docRef.update(
+          {'guestPing': now},
+        ),
+      ).thenAnswer((_) async {});
+
+      await matchMakerRepository.pingGuest('guestId');
+
+      verify(
+        () => docRef.update(
+          {'guestPing': now},
+        ),
+      ).called(1);
     });
   });
 }

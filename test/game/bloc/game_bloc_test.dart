@@ -3,16 +3,18 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_client/game_client.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:match_maker_repository/match_maker_repository.dart' hide Match;
+import 'package:match_maker_repository/match_maker_repository.dart' as repo;
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/game/game.dart';
 
 class _MockGameClient extends Mock implements GameClient {}
 
-class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
+class _MockMatchMakerRepository extends Mock
+    implements repo.MatchMakerRepository {}
 
 class _MockMatchSolver extends Mock implements MatchSolver {}
 
@@ -31,8 +33,9 @@ void main() {
     );
 
     late StreamController<MatchState> matchStateController;
+    late StreamController<repo.Match> matchController;
     late GameClient gameClient;
-    late MatchMakerRepository matchMakerRepository;
+    late repo.MatchMakerRepository matchMakerRepository;
     late MatchSolver matchSolver;
     const isHost = true;
 
@@ -51,9 +54,18 @@ void main() {
           .thenAnswer((_) async => matchState);
 
       matchStateController = StreamController();
+      matchController = StreamController();
 
       when(() => matchMakerRepository.watchMatchState(any()))
           .thenAnswer((_) => matchStateController.stream);
+
+      when(() => matchMakerRepository.watchMatch(any()))
+          .thenAnswer((_) => matchController.stream);
+
+      when(() => matchMakerRepository.pingHost(any())).thenAnswer((_) async {});
+
+      when(() => matchMakerRepository.pingGuest(any()))
+          .thenAnswer((_) async {});
     });
 
     test('can be instantiated', () {
@@ -852,6 +864,189 @@ void main() {
           isTrue,
         );
       });
+    });
+
+    group('manage player presence', () {
+      final now = Timestamp.now();
+      final staleDateTime = DateTime.now().subtract(Duration(seconds: 11));
+      final opponentFailPing = Timestamp.fromDate(staleDateTime);
+      final opponentPassPing = now;
+      final playerPing = now;
+
+      blocTest<GameBloc, GameState>(
+        'pings the matching repository as host to show presence',
+        build: () => GameBloc(
+          gameClient: gameClient,
+          matchMakerRepository: matchMakerRepository,
+          isHost: true,
+          timeOutPeriod: Duration(seconds: 10),
+          pingInterval: Duration(microseconds: 1),
+          now: () => now,
+        ),
+        act: (bloc) {
+          bloc.add(ManagePlayerPresence(match.id));
+        },
+        expect: () => <GameState>[],
+        verify: (_) {
+          verify(() => matchMakerRepository.pingHost(match.id)).called(1);
+        },
+      );
+
+      blocTest<GameBloc, GameState>(
+        'pings the matching repository as guest to show presence',
+        build: () => GameBloc(
+          gameClient: gameClient,
+          matchMakerRepository: matchMakerRepository,
+          isHost: false,
+          timeOutPeriod: Duration(seconds: 10),
+          pingInterval: Duration(microseconds: 1),
+          now: () => now,
+        ),
+        act: (bloc) {
+          bloc.add(ManagePlayerPresence(match.id));
+        },
+        expect: () => <GameState>[],
+        verify: (_) {
+          verify(() => matchMakerRepository.pingGuest(match.id)).called(1);
+        },
+      );
+
+      blocTest<GameBloc, GameState>(
+        'notifies when opponent(guest) is absent',
+        build: () => GameBloc(
+          gameClient: gameClient,
+          matchMakerRepository: matchMakerRepository,
+          isHost: true,
+          timeOutPeriod: Duration(seconds: 10),
+          now: () => now,
+        ),
+        act: (bloc) {
+          bloc.add(ManagePlayerPresence(match.id));
+          matchController.add(
+            repo.Match(
+              id: 'matchId',
+              host: 'hostId',
+              guest: 'guestId',
+              hostPing: playerPing,
+              guestPing: opponentFailPing,
+            ),
+          );
+        },
+        expect: () => [OpponentAbsentState()],
+        verify: (_) {
+          verify(() => matchMakerRepository.watchMatch(match.id)).called(1);
+        },
+      );
+
+      blocTest<GameBloc, GameState>(
+        'notifies when opponent(host) is absent',
+        build: () => GameBloc(
+          gameClient: gameClient,
+          matchMakerRepository: matchMakerRepository,
+          isHost: false,
+          now: () => now,
+          timeOutPeriod: Duration(seconds: 10),
+        ),
+        act: (bloc) {
+          bloc.add(ManagePlayerPresence(match.id));
+          matchController.add(
+            repo.Match(
+              id: 'matchId',
+              host: 'hostId',
+              guest: 'guestId',
+              hostPing: opponentFailPing,
+              guestPing: playerPing,
+            ),
+          );
+        },
+        expect: () => [OpponentAbsentState()],
+        verify: (_) {
+          verify(() => matchMakerRepository.watchMatch(match.id)).called(1);
+        },
+      );
+
+      blocTest<GameBloc, GameState>(
+        'does not return a state if opponent is present',
+        build: () => GameBloc(
+          gameClient: gameClient,
+          matchMakerRepository: matchMakerRepository,
+          isHost: true,
+          timeOutPeriod: Duration(seconds: 10),
+          now: () => now,
+        ),
+        act: (bloc) {
+          bloc.add(ManagePlayerPresence(match.id));
+          matchController.add(
+            repo.Match(
+              id: 'matchId',
+              host: 'hostId',
+              guest: 'guestId',
+              hostPing: playerPing,
+              guestPing: opponentPassPing,
+            ),
+          );
+        },
+        expect: () => <GameState>[],
+        verify: (_) {
+          verify(() => matchMakerRepository.watchMatch(match.id)).called(1);
+        },
+      );
+
+      blocTest<GameBloc, GameState>(
+        'fails when fetching the match throws an exception',
+        build: () => GameBloc(
+          gameClient: gameClient,
+          matchMakerRepository: matchMakerRepository,
+          isHost: true,
+          timeOutPeriod: Duration(seconds: 10),
+          now: () => now,
+        ),
+        setUp: () {
+          when(() => matchMakerRepository.watchMatch(any())).thenThrow(
+            Exception('Ops'),
+          );
+        },
+        act: (bloc) {
+          bloc.add(ManagePlayerPresence(match.id));
+          matchController.add(
+            repo.Match(
+              id: 'matchId',
+              host: 'hostId',
+              guest: 'guestId',
+              hostPing: playerPing,
+              guestPing: opponentPassPing,
+            ),
+          );
+        },
+        expect: () => [ManagePlayerPresenceFailedState()],
+        verify: (_) {
+          verify(() => matchMakerRepository.watchMatch(match.id)).called(1);
+        },
+      );
+
+      blocTest<GameBloc, GameState>(
+        'fails when pinging throws an exception',
+        build: () => GameBloc(
+          gameClient: gameClient,
+          matchMakerRepository: matchMakerRepository,
+          isHost: true,
+          timeOutPeriod: Duration(seconds: 10),
+          pingInterval: Duration(microseconds: 1),
+          now: () => now,
+        ),
+        setUp: () {
+          when(() => matchMakerRepository.pingHost(any())).thenThrow(
+            Exception('Ops'),
+          );
+        },
+        act: (bloc) {
+          bloc.add(ManagePlayerPresence(match.id));
+        },
+        expect: () => [PingFailedState()],
+        verify: (_) {
+          verify(() => matchMakerRepository.pingHost(match.id)).called(1);
+        },
+      );
     });
   });
 }
