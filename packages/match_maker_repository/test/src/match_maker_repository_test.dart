@@ -202,6 +202,29 @@ void main() {
       db.mockTransaction = transaction;
     }
 
+    void mockPrivateMatchSuccessfulTransaction(
+      String guestId,
+      String matchId,
+      Timestamp ping,
+    ) {
+      final docRef = _MockDocumentReference<Map<String, dynamic>>();
+      when(() => collection.doc(matchId)).thenReturn(docRef);
+
+      final transaction = _MockTransaction();
+      when(
+        () => transaction.update(
+          docRef,
+          {
+            'guest': guestId,
+            'guestPing': ping,
+            'hostPing': ping,
+          },
+        ),
+      ).thenReturn(transaction);
+
+      db.mockTransaction = transaction;
+    }
+
     void mockSnapshots(
       String matchId,
       Stream<DocumentSnapshot<Map<String, dynamic>>> stream,
@@ -305,7 +328,7 @@ void main() {
           ),
         ],
       );
-      mockSuccessfulTransaction('guestId', 'matchId', now);
+      mockPrivateMatchSuccessfulTransaction('guestId', 'matchId', now);
 
       final match = await matchMakerRepository.joinPrivateMatch(
         inviteCode: 'inviteCode',

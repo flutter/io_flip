@@ -109,12 +109,14 @@ class MatchMakerRepository {
     final data = element.data();
     final host = data['host'] as String;
     final hostPing = data['hostPing'] as Timestamp;
+    final guestPing = data['guestPing'] as Timestamp?;
     final inviteCode = data['inviteCode'] as String?;
 
     return Match(
       id: id,
       host: host,
       hostPing: hostPing,
+      guestPing: guestPing,
       inviteCode: inviteCode,
     );
   }
@@ -191,7 +193,14 @@ class MatchMakerRepository {
       final now = _now();
       await db.runTransaction<Transaction>((transaction) async {
         final ref = collection.doc(match.id);
-        return transaction.update(ref, {'guest': guestId, 'guestPing': now});
+        return transaction.update(ref, {
+          'guest': guestId,
+          'guestPing': now,
+          // Since a private match is a "manual" match making, the host waits
+          // forever, which will render their ping "older", so once a guest
+          // join, they update both pings so they can start counting again.
+          'hostPing': now,
+        });
       });
       return match.copyWithGuest(guest: guestId, guestPing: now);
     }
