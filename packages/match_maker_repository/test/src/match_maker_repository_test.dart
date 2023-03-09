@@ -122,7 +122,7 @@ void main() {
         when(doc.data).thenReturn({
           'host': match.host,
           'guest': match.guest == null ? 'INVITE' : '',
-          'lastPing': match.lastPing,
+          'hostPing': match.hostPing,
           'inviteCode': match.inviteCode,
         });
         docs.add(doc);
@@ -145,7 +145,6 @@ void main() {
             'host': host,
             'guest': guest,
             'hostPing': ping,
-            'lastPing': lastPing,
             if (inviteCode != null) 'inviteCode': inviteCode,
           },
         ),

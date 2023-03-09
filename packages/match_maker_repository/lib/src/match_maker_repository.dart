@@ -90,6 +90,7 @@ class MatchMakerRepository {
     });
   }
 
+  /// Updates the `hostPing` on the match object.
   Future<void> pingHost(String id) async {
     final ref = collection.doc(id);
     await ref.update({'hostPing': _now()});
