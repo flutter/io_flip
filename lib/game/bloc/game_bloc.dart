@@ -1,11 +1,15 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_client/game_client.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:match_maker_repository/match_maker_repository.dart' hide Match;
+import 'package:match_maker_repository/match_maker_repository.dart' as repo
+    show Match;
 
 part 'game_event.dart';
 part 'game_state.dart';
@@ -16,21 +20,32 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     required MatchMakerRepository matchMakerRepository,
     required this.isHost,
     MatchSolver matchSolver = const MatchSolver(),
+    this.timeOutPeriod = defaultTimeOutPeriod,
+    this.pingInterval = defaultPingInterval,
+    ValueGetter<Timestamp> now = Timestamp.now,
   })  : _gameClient = gameClient,
         _matchMakerRepository = matchMakerRepository,
         _matchSolver = matchSolver,
+        _now = now,
         super(const MatchLoadingState()) {
     on<MatchRequested>(_onMatchRequested);
     on<PlayerPlayed>(_onPlayerPlayed);
     on<MatchStateUpdated>(_onMatchStateUpdated);
+    on<ManagePlayerPresence>(_onManagePlayerPresence);
   }
 
   final GameClient _gameClient;
   final MatchMakerRepository _matchMakerRepository;
   final MatchSolver _matchSolver;
   final bool isHost;
+  static const defaultTimeOutPeriod = Duration(seconds: 10);
+  static const defaultPingInterval = Duration(seconds: 5);
+  final Duration timeOutPeriod;
+  final Duration pingInterval;
+  final ValueGetter<Timestamp> _now;
 
   StreamSubscription<MatchState>? _stateSubscription;
+  StreamSubscription<repo.Match>? _opponentPresenceSubscription;
 
   Future<void> _onMatchRequested(
     MatchRequested event,
@@ -59,6 +74,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           ),
         );
 
+        add(ManagePlayerPresence(event.matchId));
         final stream = _matchMakerRepository.watchMatchState(matchState.id);
 
         _stateSubscription = stream.listen((state) {
@@ -133,6 +149,45 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     }
   }
 
+  Future<void> _onManagePlayerPresence(
+    ManagePlayerPresence event,
+    Emitter<GameState> emit,
+  ) async {
+    try {
+      final completer = Completer<void>();
+      final matchStream = _matchMakerRepository.watchMatch(event.matchId);
+      final stalePingMatchStream = matchStream.where(_opponentAbsent);
+
+      var pinging = false;
+      final timer = Timer.periodic(pingInterval, (_) async {
+        try {
+          if (!pinging) {
+            pinging = true;
+            isHost
+                ? await _matchMakerRepository.pingHost(event.matchId)
+                : await _matchMakerRepository.pingGuest(event.matchId);
+            pinging = false;
+          }
+        } catch (e, s) {
+          addError(e, s);
+          emit(const PingFailedState());
+        }
+      });
+
+      _opponentPresenceSubscription =
+          stalePingMatchStream.listen((expiredMatch) {
+        emit(const OpponentAbsentState());
+        if (!isClosed) timer.cancel();
+        completer.complete();
+      });
+
+      return completer.future;
+    } catch (e, s) {
+      addError(e, s);
+      emit(const ManagePlayerPresenceFailedState());
+    }
+  }
+
   bool isWiningCard(Card card, {required bool isPlayer}) {
     if (state is MatchLoadedState) {
       final isCardFromHost = isPlayer ? isHost : !isHost;
@@ -189,7 +244,17 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   @override
   Future<void> close() {
     _stateSubscription?.cancel();
+    _opponentPresenceSubscription?.cancel();
     return super.close();
+  }
+
+  bool _opponentAbsent(repo.Match match) {
+    final now = _now().millisecondsSinceEpoch;
+
+    final opponentPing = isHost
+        ? match.guestPing?.millisecondsSinceEpoch ?? 0
+        : match.hostPing.millisecondsSinceEpoch;
+    return now - opponentPing >= timeOutPeriod.inMilliseconds;
   }
 }
 
