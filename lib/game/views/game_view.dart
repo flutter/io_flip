@@ -100,7 +100,7 @@ class _GameBoard extends StatelessWidget {
                                   width: opponentCardWidth,
                                   height: opponentCardHeight,
                                 ),
-                                if (state.isWiningCard(card))
+                                if (bloc.isWiningCard(card, isPlayer: false))
                                   Positioned(
                                     key: Key('win_badge_${card.id}'),
                                     top: 16,
@@ -123,9 +123,17 @@ class _GameBoard extends StatelessWidget {
               ),
             ),
           ),
-          const Expanded(
+          Expanded(
             flex: 2,
-            child: SizedBox(),
+            child: state.playerPlayed
+                ? const Align(
+                    child: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: CircularProgressIndicator(),
+                    ),
+                  )
+                : const SizedBox(),
           ),
           Expanded(
             flex: 4,
@@ -136,7 +144,8 @@ class _GameBoard extends StatelessWidget {
                   for (final card in playerDeck.cards)
                     InkWell(
                       onTap: allPlayerPlayedCards.contains(card.id) ||
-                              !state.canPlayerPlay()
+                              !bloc.canPlayerPlay() ||
+                              state.playerPlayed
                           ? null
                           : () {
                               context
@@ -159,7 +168,7 @@ class _GameBoard extends StatelessWidget {
                                 width: cardWidth,
                                 height: cardHeight,
                               ),
-                              if (state.isWiningCard(card))
+                              if (bloc.isWiningCard(card, isPlayer: true))
                                 Positioned(
                                   key: Key('win_badge_${card.id}'),
                                   top: 16,

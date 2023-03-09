@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:game_domain/game_domain.dart' hide Match;
 import 'package:match_maker_repository/match_maker_repository.dart';
 
 const _emptyKey = 'EMPTY';
@@ -58,24 +59,22 @@ class MatchMakerRepository {
     });
   }
 
-  /// Watch for the host played cards in a match state.
-  Stream<String> watchHostCards(String matchStateId) {
-    return matchStatesCollection.doc(matchStateId).snapshots().map((snapshot) {
+  /// Watches a match state.
+  Stream<MatchState> watchMatchState(String id) {
+    return matchStatesCollection.doc(id).snapshots().map((snapshot) {
+      final id = snapshot.id;
       final data = snapshot.data()!;
+      final matchId = data['matchId'] as String;
       final hostCards = (data['hostPlayedCards'] as List).cast<String>();
-
-      return hostCards.last;
-    }).distinct();
-  }
-
-  /// Watch for the host played cards in a match state.
-  Stream<String> watchGuestCards(String matchStateId) {
-    return matchStatesCollection.doc(matchStateId).snapshots().map((snapshot) {
-      final data = snapshot.data()!;
       final guestCards = (data['guestPlayedCards'] as List).cast<String>();
 
-      return guestCards.last;
-    }).distinct();
+      return MatchState(
+        id: id,
+        matchId: matchId,
+        hostPlayedCards: hostCards,
+        guestPlayedCards: guestCards,
+      );
+    });
   }
 
   /// Finds a match.

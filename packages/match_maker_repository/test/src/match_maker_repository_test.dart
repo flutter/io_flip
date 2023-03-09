@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:game_domain/game_domain.dart' hide Match;
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -347,48 +348,22 @@ void main() {
       await subscription.cancel();
     });
 
-    test('can watch host cards', () async {
+    test('can watch match states', () async {
       final streamController =
           StreamController<DocumentSnapshot<Map<String, dynamic>>>();
 
       mockMatchStateSnapshoots('123', streamController.stream);
 
-      final values = <String>[];
+      final values = <MatchState>[];
       final subscription =
-          matchMakerRepository.watchHostCards('123').listen(values.add);
+          matchMakerRepository.watchMatchState('123').listen(values.add);
 
       final snapshot = _MockQueryDocumentSnapshot<Map<String, dynamic>>();
       when(() => snapshot.id).thenReturn('123');
       when(snapshot.data).thenReturn({
-        'hostPlayedCards': ['321'],
-      });
-
-      streamController.add(snapshot);
-
-      await Future.microtask(() {});
-
-      expect(
-        values,
-        equals(['321']),
-      );
-
-      await subscription.cancel();
-    });
-
-    test('can watch guest cards', () async {
-      final streamController =
-          StreamController<DocumentSnapshot<Map<String, dynamic>>>();
-
-      mockMatchStateSnapshoots('123', streamController.stream);
-
-      final values = <String>[];
-      final subscription =
-          matchMakerRepository.watchGuestCards('123').listen(values.add);
-
-      final snapshot = _MockQueryDocumentSnapshot<Map<String, dynamic>>();
-      when(() => snapshot.id).thenReturn('123');
-      when(snapshot.data).thenReturn({
+        'matchId': '1234',
         'guestPlayedCards': ['321'],
+        'hostPlayedCards': ['322'],
       });
 
       streamController.add(snapshot);
@@ -397,7 +372,14 @@ void main() {
 
       expect(
         values,
-        equals(['321']),
+        equals([
+          MatchState(
+            id: '123',
+            matchId: '1234',
+            guestPlayedCards: const ['321'],
+            hostPlayedCards: const ['322'],
+          )
+        ]),
       );
 
       await subscription.cancel();
