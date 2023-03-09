@@ -373,5 +373,41 @@ void main() {
 
       await subscription.cancel();
     });
+
+    test('can update the match hostPing', () async {
+      final docRef = _MockDocumentReference<Map<String, dynamic>>();
+      when(() => collection.doc('hostId')).thenReturn(docRef);
+      when(
+        () => docRef.update(
+          {'hostPing': now},
+        ),
+      ).thenAnswer((_) async {});
+
+      await matchMakerRepository.pingHost('hostId');
+
+      verify(
+        () => docRef.update(
+          {'hostPing': now},
+        ),
+      ).called(1);
+    });
+
+    test('can update the match guestPing', () async {
+      final docRef = _MockDocumentReference<Map<String, dynamic>>();
+      when(() => collection.doc('guestId')).thenReturn(docRef);
+      when(
+        () => docRef.update(
+          {'guestPing': now},
+        ),
+      ).thenAnswer((_) async {});
+
+      await matchMakerRepository.pingGuest('guestId');
+
+      verify(
+        () => docRef.update(
+          {'guestPing': now},
+        ),
+      ).called(1);
+    });
   });
 }
