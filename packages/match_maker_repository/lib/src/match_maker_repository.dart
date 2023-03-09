@@ -128,11 +128,12 @@ class MatchMakerRepository {
 
       for (final match in matches) {
         try {
+          final now = _now();
           await db.runTransaction<Transaction>((transaction) async {
             final ref = collection.doc(match.id);
-            return transaction.update(ref, {'guest': id, 'guestPing': _now()});
+            return transaction.update(ref, {'guest': id, 'guestPing': now});
           });
-          return match.copyWithGuest(guest: id, guestPing: _now());
+          return match.copyWithGuest(guest: id, guestPing: now);
         } catch (e) {
           log('Match "${match.id}" already matched, trying next...');
         }

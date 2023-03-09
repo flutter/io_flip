@@ -49,6 +49,10 @@ void main() {
     late MatchMakerRepository matchMakerRepository;
     late Timestamp now;
 
+    setUpAll(() {
+      registerFallbackValue(Timestamp(0, 0));
+    });
+
     setUp(() {
       db = _MockFirebaseFirestore();
       collection = _MockCollectionReference();
@@ -101,7 +105,6 @@ void main() {
             'host': host,
             'guest': guest,
             'hostPing': ping,
-            'guestPing': ping,
           },
         ),
       ).thenAnswer(
@@ -139,13 +142,21 @@ void main() {
       );
     }
 
-    void mockSuccessfulTransaction(String guestId, String matchId) {
+    void mockSuccessfulTransaction(
+      String guestId,
+      String matchId,
+      Timestamp guestPing,
+    ) {
       final docRef = _MockDocumentReference<Map<String, dynamic>>();
       when(() => collection.doc(matchId)).thenReturn(docRef);
 
       final transaction = _MockTransaction();
-      when(() => transaction.update(docRef, {'guest': guestId}))
-          .thenReturn(transaction);
+      when(
+        () => transaction.update(
+          docRef,
+          {'guest': guestId, 'guestPing': guestPing},
+        ),
+      ).thenReturn(transaction);
 
       db.mockTransaction = transaction;
     }
@@ -213,41 +224,7 @@ void main() {
             Match(id: 'match123', host: 'host123', hostPing: now),
           ],
         );
-        mockSuccessfulTransaction('guest123', 'match123');
-
-        final match = await matchMakerRepository.findMatch('guest123');
-        expect(
-          match,
-          equals(
-            Match(
-              id: 'match123',
-              host: 'host123',
-              guest: 'guest123',
-              hostPing: now,
-              guestPing: now,
-            ),
-          ),
-        );
-      },
-    );
-
-    test(
-      'joins a match when one is available and no concurrence error happens',
-      () async {
-        final now = Timestamp.fromMillisecondsSinceEpoch(
-          Timestamp.now().millisecondsSinceEpoch - 2000,
-        );
-        mockQueryResult(
-          matches: [
-            Match(
-              id: 'match123',
-              host: 'host123',
-              hostPing: now,
-              guestPing: now,
-            ),
-          ],
-        );
-        mockSuccessfulTransaction('guest123', 'match123');
+        mockSuccessfulTransaction('guest123', 'match123', now);
 
         final match = await matchMakerRepository.findMatch('guest123');
         expect(
