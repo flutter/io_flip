@@ -12,10 +12,6 @@ import 'package:top_dash/firebase_options_development.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
 
 void main() async {
-  const gameClient = GameClient(
-    endpoint: 'https://top-dash-dev-api-synvj3dcmq-uc.a.run.app',
-  );
-
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -23,14 +19,18 @@ void main() async {
   unawaited(
     bootstrap(
       (firestore, firebaseAuth) async {
+        var endpoint = 'https://top-dash-dev-api-synvj3dcmq-uc.a.run.app';
         if (const bool.hasEnvironment('USE_EMULATORS') && kDebugMode) {
+          endpoint = 'http://localhost:8080';
           try {
-            firestore.useFirestoreEmulator('localhost', 8080);
+            firestore.useFirestoreEmulator('localhost', 8081);
             await firebaseAuth.useAuthEmulator('localhost', 9099);
           } catch (e) {
             debugPrint(e.toString());
           }
         }
+
+        final gameClient = GameClient(endpoint: endpoint);
 
         final authenticationRepository = AuthenticationRepository(
           firebaseAuth: firebaseAuth,
