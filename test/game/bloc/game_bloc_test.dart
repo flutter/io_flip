@@ -315,6 +315,65 @@ void main() {
       );
 
       blocTest<GameBloc, GameState>(
+        'hasPlayerWon returns true if the host won, and the player is the host',
+        build: () => GameBloc(
+          gameClient: gameClient,
+          matchMakerRepository: matchMakerRepository,
+          matchSolver: matchSolver,
+          isHost: true,
+        ),
+        seed: () => baseState.copyWith(
+          matchState: MatchState(
+            id: baseState.matchState.id,
+            matchId: baseState.matchState.id,
+            guestPlayedCards: baseState.matchState.guestPlayedCards,
+            hostPlayedCards: baseState.matchState.hostPlayedCards,
+            result: MatchResult.host,
+          ),
+        ),
+        verify: (bloc) {
+          expect(bloc.hasPlayerWon(), isTrue);
+        },
+      );
+
+      blocTest<GameBloc, GameState>(
+        'hasPlayerWon returns false if the guest won, and the player '
+        'is the guest',
+        build: () => GameBloc(
+          gameClient: gameClient,
+          matchMakerRepository: matchMakerRepository,
+          matchSolver: matchSolver,
+          isHost: false,
+        ),
+        seed: () => baseState.copyWith(
+          matchState: MatchState(
+            id: baseState.matchState.id,
+            matchId: baseState.matchState.id,
+            guestPlayedCards: baseState.matchState.guestPlayedCards,
+            hostPlayedCards: baseState.matchState.hostPlayedCards,
+            result: MatchResult.guest,
+          ),
+        ),
+        verify: (bloc) {
+          expect(bloc.hasPlayerWon(), isTrue);
+        },
+      );
+
+      blocTest<GameBloc, GameState>(
+        'hasPlayerWon returns false if match is still loading',
+        build: () => GameBloc(
+          gameClient: gameClient,
+          matchMakerRepository: matchMakerRepository,
+          matchSolver: matchSolver,
+          isHost: false,
+        ),
+        seed: () => const MatchLoadingState(),
+        verify: (bloc) {
+          expect(bloc.hasPlayerWon(), isFalse);
+        },
+      );
+
+      blocTest<GameBloc, GameState>(
         'isWinningCard return correctly when is guest',
         build: () => GameBloc(
           gameClient: gameClient,
