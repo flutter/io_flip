@@ -36,6 +36,7 @@ void main() {
       when(() => bloc.isWiningCard(any(), isPlayer: any(named: 'isPlayer')))
           .thenReturn(false);
       when(bloc.canPlayerPlay).thenReturn(true);
+      when(bloc.hasPlayerWon).thenReturn(false);
     });
 
     void mockState(GameState state) {
@@ -121,6 +122,77 @@ void main() {
           findsOneWidget,
         );
       });
+
+      testWidgets(
+        'renders the draw message when the player won',
+        (tester) async {
+          mockState(
+            baseState.copyWith(
+              matchState: MatchState(
+                id: '',
+                matchId: '',
+                guestPlayedCards: const [],
+                hostPlayedCards: const [],
+                result: MatchResult.draw,
+              ),
+            ),
+          );
+          await tester.pumpSubject(bloc);
+
+          expect(
+            find.text('Game ended: Draw'),
+            findsOneWidget,
+          );
+        },
+      );
+
+      testWidgets(
+        'renders the win message when the player won',
+        (tester) async {
+          mockState(
+            baseState.copyWith(
+              matchState: MatchState(
+                id: '',
+                matchId: '',
+                guestPlayedCards: const [],
+                hostPlayedCards: const [],
+                result: MatchResult.host,
+              ),
+            ),
+          );
+          when(bloc.hasPlayerWon).thenReturn(true);
+          await tester.pumpSubject(bloc);
+
+          expect(
+            find.text('Game ended: Win'),
+            findsOneWidget,
+          );
+        },
+      );
+
+      testWidgets(
+        'renders the lose message when the player lost',
+        (tester) async {
+          mockState(
+            baseState.copyWith(
+              matchState: MatchState(
+                id: '',
+                matchId: '',
+                guestPlayedCards: const [],
+                hostPlayedCards: const [],
+                result: MatchResult.guest,
+              ),
+            ),
+          );
+          when(bloc.hasPlayerWon).thenReturn(false);
+          await tester.pumpSubject(bloc);
+
+          expect(
+            find.text('Game ended: Lose'),
+            findsOneWidget,
+          );
+        },
+      );
 
       testWidgets(
         'plays a player card on tap',

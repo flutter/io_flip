@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash/widgets/widgets.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
@@ -123,17 +124,9 @@ class _GameBoard extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
+          const Expanded(
             flex: 2,
-            child: state.playerPlayed
-                ? const Align(
-                    child: SizedBox(
-                      width: 50,
-                      height: 50,
-                      child: CircularProgressIndicator(),
-                    ),
-                  )
-                : const SizedBox(),
+            child: _BoardCenter(),
           ),
           Expanded(
             flex: 4,
@@ -191,5 +184,40 @@ class _GameBoard extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _BoardCenter extends StatelessWidget {
+  const _BoardCenter();
+
+  @override
+  Widget build(BuildContext context) {
+    final bloc = context.watch<GameBloc>();
+    final state = bloc.state;
+
+    if (state is MatchLoadedState) {
+      if (state.playerPlayed) {
+        return const Align(
+          child: SizedBox(
+            width: 50,
+            height: 50,
+            child: CircularProgressIndicator(),
+          ),
+        );
+      }
+
+      if (state.matchState.result != null) {
+        final result = state.matchState.result == MatchResult.draw
+            ? 'Draw'
+            : bloc.hasPlayerWon()
+                ? 'Win'
+                : 'Lose';
+        return Center(
+          child: Text('Game ended: $result'),
+        );
+      }
+    }
+
+    return const SizedBox();
   }
 }
