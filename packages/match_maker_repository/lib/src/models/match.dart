@@ -12,6 +12,7 @@ class Match extends Equatable {
     required this.hostPing,
     this.guestPing,
     this.guest,
+    this.inviteCode,
   });
 
   /// Unique identifier of the match.
@@ -31,6 +32,9 @@ class Match extends Equatable {
   /// Time when the last ping occurred from the guest.
   final Timestamp? guestPing;
 
+  /// Code to invite a friend when the match is closed.
+  final String? inviteCode;
+
   /// Returns a new [Match] object with a new [guest] property.
   Match copyWithGuest({
     required String guest,
@@ -42,9 +46,20 @@ class Match extends Equatable {
       guest: guest,
       hostPing: hostPing,
       guestPing: guestPing,
+      inviteCode: inviteCode,
     );
   }
 
   @override
+<<<<<<< HEAD
   List<Object?> get props => [id, host, guest, hostPing, guestPing];
+=======
+  List<Object?> get props => [
+        id,
+        host,
+        guest,
+        lastPing,
+        inviteCode,
+      ];
+>>>>>>> 9cce6f4 (feat: adding join private match feature)
 }

@@ -3,6 +3,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -66,6 +67,88 @@ void main() {
         ).called(1);
       },
     );
+
+    testWidgets(
+      'renders the invite code button when one is available',
+      (tester) async {
+        mockState(
+          MatchMakingState(
+            status: MatchMakingStatus.processing,
+            match: Match(
+              id: 'matchId',
+              host: 'hostId',
+              guest: 'guestId',
+              lastPing: Timestamp.now(),
+              inviteCode: 'hello-join-my-match',
+            ),
+            isHost: true,
+          ),
+        );
+        await tester.pumpSubject(bloc);
+
+        expect(
+          find.text('Copy invite code'),
+          findsOneWidget,
+        );
+      },
+    );
+
+    testWidgets(
+      'renders the invite code button when one is available',
+      (tester) async {
+        mockState(
+          MatchMakingState(
+            status: MatchMakingStatus.processing,
+            match: Match(
+              id: 'matchId',
+              host: 'hostId',
+              guest: 'guestId',
+              lastPing: Timestamp.now(),
+              inviteCode: 'hello-join-my-match',
+            ),
+            isHost: true,
+          ),
+        );
+        await tester.pumpSubject(bloc);
+
+        expect(
+          find.text('Copy invite code'),
+          findsOneWidget,
+        );
+      },
+    );
+
+    testWidgets(
+      'renders the invite code button when one is available',
+      (tester) async {
+        ClipboardData? clipboardData;
+        mockState(
+          MatchMakingState(
+            status: MatchMakingStatus.processing,
+            match: Match(
+              id: 'matchId',
+              host: 'hostId',
+              guest: 'guestId',
+              lastPing: Timestamp.now(),
+              inviteCode: 'hello-join-my-match',
+            ),
+            isHost: true,
+          ),
+        );
+        await tester.pumpSubject(
+          bloc,
+          setClipboardData: (data) async => clipboardData = data,
+        );
+
+        await tester.tap(find.text('Copy invite code'));
+        await tester.pump();
+
+        expect(
+          clipboardData?.text,
+          equals('hello-join-my-match'),
+        );
+      },
+    );
   });
 }
 
@@ -73,13 +156,16 @@ extension MatchMakingViewTest on WidgetTester {
   Future<void> pumpSubject(
     MatchMakingBloc bloc, {
     GoRouter? goRouter,
+    Future<void> Function(ClipboardData)? setClipboardData,
   }) {
     return pumpApp(
       MockGoRouterProvider(
         goRouter: goRouter ?? MockGoRouter(),
         child: BlocProvider<MatchMakingBloc>.value(
           value: bloc,
-          child: MatchMakingView(),
+          child: MatchMakingView(
+            setClipboardData: setClipboardData ?? Clipboard.setData,
+          ),
         ),
       ),
     );
