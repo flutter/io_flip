@@ -70,7 +70,7 @@ void main() {
           .thenReturn(collection);
       when(
         () => collection.where(
-          'lastPing',
+          'hostPing',
           isGreaterThanOrEqualTo: any(named: 'isGreaterThanOrEqualTo'),
         ),
       ).thenReturn(collection);
