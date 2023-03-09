@@ -278,7 +278,7 @@ void main() {
           (_) async => Match(
             id: '',
             host: deckId,
-            lastPing: timestamp,
+            hostPing: timestamp,
           ),
         );
       },
@@ -292,7 +292,7 @@ void main() {
           match: Match(
             id: '',
             host: deckId,
-            lastPing: timestamp,
+            hostPing: timestamp,
           ),
         ),
       ],
@@ -339,7 +339,7 @@ void main() {
             id: '',
             guest: deckId,
             host: 'hostId',
-            lastPing: timestamp,
+            hostPing: timestamp,
           ),
         );
       },
@@ -354,7 +354,7 @@ void main() {
             id: '',
             guest: deckId,
             host: 'hostId',
-            lastPing: timestamp,
+            hostPing: timestamp,
           ),
         ),
       ],
