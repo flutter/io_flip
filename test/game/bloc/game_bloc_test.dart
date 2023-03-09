@@ -7,14 +7,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_client/game_client.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:match_maker_repository/match_maker_repository.dart' hide Match;
 import 'package:match_maker_repository/match_maker_repository.dart' as repo;
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/game/game.dart';
 
 class _MockGameClient extends Mock implements GameClient {}
 
-class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
+class _MockMatchMakerRepository extends Mock
+    implements repo.MatchMakerRepository {}
 
 class _MockMatchSolver extends Mock implements MatchSolver {}
 
@@ -35,7 +35,7 @@ void main() {
     late StreamController<MatchState> matchStateController;
     late StreamController<repo.Match> matchController;
     late GameClient gameClient;
-    late MatchMakerRepository matchMakerRepository;
+    late repo.MatchMakerRepository matchMakerRepository;
     late MatchSolver matchSolver;
     const isHost = true;
 

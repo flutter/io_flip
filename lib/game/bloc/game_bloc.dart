@@ -7,9 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_client/game_client.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:match_maker_repository/match_maker_repository.dart' hide Match;
-import 'package:match_maker_repository/match_maker_repository.dart' as repo
-    show Match;
+import 'package:match_maker_repository/match_maker_repository.dart' as repo;
 
 part 'game_event.dart';
 part 'game_state.dart';
@@ -17,7 +15,7 @@ part 'game_state.dart';
 class GameBloc extends Bloc<GameEvent, GameState> {
   GameBloc({
     required GameClient gameClient,
-    required MatchMakerRepository matchMakerRepository,
+    required repo.MatchMakerRepository matchMakerRepository,
     required this.isHost,
     MatchSolver matchSolver = const MatchSolver(),
     this.timeOutPeriod = defaultTimeOutPeriod,
@@ -35,7 +33,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   }
 
   final GameClient _gameClient;
-  final MatchMakerRepository _matchMakerRepository;
+  final repo.MatchMakerRepository _matchMakerRepository;
   final MatchSolver _matchSolver;
   final bool isHost;
   static const defaultTimeOutPeriod = Duration(seconds: 10);
@@ -156,7 +154,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     try {
       final completer = Completer<void>();
       final matchStream = _matchMakerRepository.watchMatch(event.matchId);
-      final stalePingMatchStream = matchStream.where(_opponentAbsent);
+      final stalePingMatchStream = matchStream.where(_isOpponentAbsent);
 
       var pinging = false;
       final timer = Timer.periodic(pingInterval, (_) async {
@@ -174,12 +172,13 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         }
       });
 
-      _opponentPresenceSubscription =
-          stalePingMatchStream.listen((expiredMatch) {
-        emit(const OpponentAbsentState());
-        if (!isClosed) timer.cancel();
-        completer.complete();
-      });
+      _opponentPresenceSubscription = stalePingMatchStream.listen(
+        (expiredMatch) {
+          emit(const OpponentAbsentState());
+          if (!isClosed) timer.cancel();
+          completer.complete();
+        },
+      );
 
       return completer.future;
     } catch (e, s) {
@@ -248,7 +247,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     return super.close();
   }
 
-  bool _opponentAbsent(repo.Match match) {
+  bool _isOpponentAbsent(repo.Match match) {
     final now = _now().millisecondsSinceEpoch;
 
     final opponentPing = isHost
