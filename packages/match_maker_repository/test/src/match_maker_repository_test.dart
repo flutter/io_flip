@@ -319,6 +319,7 @@ void main() {
             host: 'hostId',
             guest: 'guestId',
             hostPing: now,
+            guestPing: now,
             inviteCode: 'inviteCode',
           ),
         ),

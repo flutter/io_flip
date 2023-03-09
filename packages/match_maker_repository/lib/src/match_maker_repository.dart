@@ -108,13 +108,13 @@ class MatchMakerRepository {
     final id = element.id;
     final data = element.data();
     final host = data['host'] as String;
-    final lastPing = data['lastPing'] as Timestamp;
+    final hostPing = data['hostPing'] as Timestamp;
     final inviteCode = data['inviteCode'] as String?;
 
     return Match(
       id: id,
       host: host,
-      hostPing: lastPing,
+      hostPing: hostPing,
       inviteCode: inviteCode,
     );
   }
@@ -188,11 +188,12 @@ class MatchMakerRepository {
     if (matches.isNotEmpty) {
       final match = matches.first;
 
+      final now = _now();
       await db.runTransaction<Transaction>((transaction) async {
         final ref = collection.doc(match.id);
-        return transaction.update(ref, {'guest': guestId});
+        return transaction.update(ref, {'guest': guestId, 'guestPing': now});
       });
-      return match.copyWithGuest(guest: guestId, guestPing: _now());
+      return match.copyWithGuest(guest: guestId, guestPing: now);
     }
 
     return null;
