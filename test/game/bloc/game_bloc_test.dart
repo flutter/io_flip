@@ -893,6 +893,7 @@ void main() {
           isHost: true,
           timeOutPeriod: Duration(seconds: 10),
           pingInterval: Duration(microseconds: 1),
+          matchSolver: matchSolver,
           now: () => now,
         ),
         act: (bloc) {
@@ -912,6 +913,7 @@ void main() {
           isHost: false,
           timeOutPeriod: Duration(seconds: 10),
           pingInterval: Duration(microseconds: 1),
+          matchSolver: matchSolver,
           now: () => now,
         ),
         act: (bloc) {
@@ -930,6 +932,7 @@ void main() {
           matchMakerRepository: matchMakerRepository,
           isHost: true,
           timeOutPeriod: Duration(seconds: 10),
+          matchSolver: matchSolver,
           now: () => now,
         ),
         act: (bloc) {
@@ -956,6 +959,7 @@ void main() {
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           isHost: false,
+          matchSolver: matchSolver,
           now: () => now,
           timeOutPeriod: Duration(seconds: 10),
         ),
@@ -983,6 +987,7 @@ void main() {
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           isHost: true,
+          matchSolver: matchSolver,
           timeOutPeriod: Duration(seconds: 10),
           now: () => now,
         ),
@@ -1010,6 +1015,7 @@ void main() {
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           isHost: true,
+          matchSolver: matchSolver,
           timeOutPeriod: Duration(seconds: 10),
           now: () => now,
         ),
@@ -1044,6 +1050,7 @@ void main() {
           isHost: true,
           timeOutPeriod: Duration(seconds: 10),
           pingInterval: Duration(microseconds: 1),
+          matchSolver: matchSolver,
           now: () => now,
         ),
         setUp: () {

@@ -21,7 +21,7 @@ void main() async {
   unawaited(
     bootstrap(
       (firestore, firebaseAuth) async {
-        var endpoint = 'https://top-dash-dev-api-synvj3dcmq-uc.a.run.app';
+        var endpoint = 'http://localhost:8080';
         if (const bool.hasEnvironment('USE_EMULATORS') && kDebugMode) {
           endpoint = 'http://localhost:8080';
           try {
