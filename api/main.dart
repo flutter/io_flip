@@ -34,7 +34,7 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
     dbClient: dbClient,
   );
 
-  scriptsRepository = ScriptsRepository();
+  scriptsRepository = ScriptsRepository(dbClient: dbClient);
   final initialScript = await scriptsRepository.getCurrentScript();
 
   gameScriptMachine = GameScriptMachine.initialize(initialScript);
