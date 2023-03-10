@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_client/game_client.dart';
+import 'package:game_domain/game_domain.dart';
+import 'package:game_script_machine/game_script_machine.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/app/app.dart';
@@ -29,6 +31,10 @@ class _MockGameClient extends Mock implements GameClient {}
 
 class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
 
+class _MockMatchSolver extends Mock implements MatchSolver {}
+
+class _MockGameScriptEngine extends Mock implements GameScriptMachine {}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -39,6 +45,8 @@ void main() {
           settingsPersistence: MemoryOnlySettingsPersistence(),
           gameClient: _MockGameClient(),
           matchMakerRepository: _MockMatchMakerRepository(),
+          matchSolver: _MockMatchSolver(),
+          gameScriptMachine: _MockGameScriptEngine(),
         ),
       );
 
@@ -109,6 +117,8 @@ void main() {
           settingsPersistence: MemoryOnlySettingsPersistence(),
           gameClient: _MockGameClient(),
           matchMakerRepository: _MockMatchMakerRepository(),
+          matchSolver: _MockMatchSolver(),
+          gameScriptMachine: _MockGameScriptEngine(),
         ),
       );
 
@@ -121,6 +131,8 @@ void main() {
           settingsPersistence: MemoryOnlySettingsPersistence(),
           gameClient: _MockGameClient(),
           matchMakerRepository: _MockMatchMakerRepository(),
+          matchSolver: _MockMatchSolver(),
+          gameScriptMachine: _MockGameScriptEngine(),
         ),
       );
 
@@ -138,6 +150,8 @@ void main() {
           settingsPersistence: MemoryOnlySettingsPersistence(),
           gameClient: _MockGameClient(),
           matchMakerRepository: _MockMatchMakerRepository(),
+          matchSolver: _MockMatchSolver(),
+          gameScriptMachine: _MockGameScriptEngine(),
         ),
       );
 
@@ -155,6 +169,8 @@ void main() {
             settingsPersistence: MemoryOnlySettingsPersistence(),
             gameClient: _MockGameClient(),
             matchMakerRepository: _MockMatchMakerRepository(),
+            matchSolver: _MockMatchSolver(),
+            gameScriptMachine: _MockGameScriptEngine(),
           ),
         );
 
@@ -176,6 +192,8 @@ void main() {
           settingsPersistence: MemoryOnlySettingsPersistence(),
           gameClient: _MockGameClient(),
           matchMakerRepository: _MockMatchMakerRepository(),
+          matchSolver: _MockMatchSolver(),
+          gameScriptMachine: _MockGameScriptEngine(),
         ),
       );
 
@@ -195,6 +213,8 @@ void main() {
             settingsPersistence: MemoryOnlySettingsPersistence(),
             gameClient: _MockGameClient(),
             matchMakerRepository: _MockMatchMakerRepository(),
+            matchSolver: _MockMatchSolver(),
+            gameScriptMachine: _MockGameScriptEngine(),
           ),
         );
 

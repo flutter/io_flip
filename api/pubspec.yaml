@@ -14,6 +14,8 @@ dependencies:
     path: packages/db_client
   game_domain:
     path: packages/game_domain
+  game_script_machine:
+    path: packages/game_script_machine
   image_model_repository:
     path: packages/image_model_repository
   json_annotation: ^4.8.0
@@ -22,6 +24,8 @@ dependencies:
   logging: ^1.1.1
   match_repository:
     path: packages/match_repository
+  scripts_repository:
+    path: packages/scripts_repository
   shelf_cors_headers: ^0.1.4
 
 dev_dependencies:

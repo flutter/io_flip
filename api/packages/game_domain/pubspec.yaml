@@ -12,6 +12,9 @@ dev_dependencies:
   mocktail: ^0.3.0
   test: ^1.19.2
   very_good_analysis: ^4.0.0
+
 dependencies:
   equatable: ^2.0.5
+  game_script_machine:
+    path: ../game_script_machine
   json_annotation: ^4.8.0
