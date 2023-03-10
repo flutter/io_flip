@@ -4,8 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:game_domain/game_domain.dart' hide Match;
 import 'package:match_maker_repository/match_maker_repository.dart';
+import 'package:uuid/uuid.dart';
 
 const _emptyKey = 'EMPTY';
+
+const _inviteKey = 'INVITE';
 
 /// Represents an error that occurs when a matchmaking process times out.
 class MatchMakingTimeout extends Error {}
@@ -18,8 +21,10 @@ class MatchMakerRepository {
   MatchMakerRepository({
     required this.db,
     ValueGetter<Timestamp> now = Timestamp.now,
+    ValueGetter<String>? inviteCode,
     this.retryDelay = _defaultRetryDelay,
-  }) : _now = now {
+  })  : _now = now,
+        _inviteCode = inviteCode ?? defautInviteCodeGenerator {
     collection = db.collection('matches');
     matchStatesCollection = db.collection('match_states');
   }
@@ -28,6 +33,7 @@ class MatchMakerRepository {
   static const _maxRetries = 3;
 
   final ValueGetter<Timestamp> _now;
+  final ValueGetter<String> _inviteCode;
 
   /// The delay between retries when finding a match.
   final int retryDelay;
@@ -40,6 +46,9 @@ class MatchMakerRepository {
 
   /// The [CollectionReference] for the match_states.
   late final CollectionReference<Map<String, dynamic>> matchStatesCollection;
+
+  /// Default generator of invite codes.
+  static String defautInviteCodeGenerator() => const Uuid().v4();
 
   /// Watches a match.
   Stream<Match> watchMatch(String id) {
@@ -54,7 +63,7 @@ class MatchMakerRepository {
       return Match(
         id: id,
         host: host,
-        guest: guest == _emptyKey ? null : guest,
+        guest: guest == _emptyKey || guest == _inviteKey ? null : guest,
         hostPing: hostPing,
         guestPing: guestPing,
       );
@@ -93,6 +102,25 @@ class MatchMakerRepository {
     await ref.update({'guestPing': _now()});
   }
 
+  Match _mapMatchQueryElement(
+    QueryDocumentSnapshot<Map<String, dynamic>> element,
+  ) {
+    final id = element.id;
+    final data = element.data();
+    final host = data['host'] as String;
+    final hostPing = data['hostPing'] as Timestamp;
+    final guestPing = data['guestPing'] as Timestamp?;
+    final inviteCode = data['inviteCode'] as String?;
+
+    return Match(
+      id: id,
+      host: host,
+      hostPing: hostPing,
+      guestPing: guestPing,
+      inviteCode: inviteCode,
+    );
+  }
+
   /// Finds a match.
   Future<Match> findMatch(String id, {int retryNumber = 0}) async {
     final matchesResult = await collection
@@ -113,18 +141,7 @@ class MatchMakerRepository {
       log('No match available, creating a new one.');
       return _createMatch(id);
     } else {
-      final matches = matchesResult.docs.map((element) {
-        final id = element.id;
-        final data = element.data();
-        final host = data['host'] as String;
-        final hostPing = data['hostPing'] as Timestamp;
-
-        return Match(
-          id: id,
-          host: host,
-          hostPing: hostPing,
-        );
-      }).toList();
+      final matches = matchesResult.docs.map(_mapMatchQueryElement).toList();
 
       for (final match in matches) {
         try {
@@ -151,13 +168,57 @@ class MatchMakerRepository {
     }
   }
 
-  Future<Match> _createMatch(String id) async {
+  /// Creates a private match that can only be joined with an invitation code.
+  Future<Match> createPrivateMatch(String id) => _createMatch(
+        id,
+        inviteOnly: true,
+      );
+
+  /// Searchs for and join a private match. Returns null if none is found.
+  Future<Match?> joinPrivateMatch({
+    required String guestId,
+    required String inviteCode,
+  }) async {
+    final matchesResult = await collection
+        .where('guest', isEqualTo: _inviteKey)
+        .where('inviteCode', isEqualTo: inviteCode)
+        .limit(3)
+        .get();
+
+    final matches = matchesResult.docs.map(_mapMatchQueryElement).toList();
+
+    if (matches.isNotEmpty) {
+      final match = matches.first;
+
+      final now = _now();
+      await db.runTransaction<Transaction>((transaction) async {
+        final ref = collection.doc(match.id);
+        return transaction.update(ref, {
+          'guest': guestId,
+          'guestPing': now,
+          // Since a private match is a "manual" match making, the host waits
+          // forever, which will render their ping "older", so once a guest
+          // join, they update both pings so they can start counting again.
+          'hostPing': now,
+        });
+      });
+      return match.copyWithGuest(guest: guestId, guestPing: now);
+    }
+
+    return null;
+  }
+
+  Future<Match> _createMatch(String id, {bool inviteOnly = false}) async {
     final now = _now();
+
+    final inviteCode = inviteOnly ? _inviteCode() : null;
     final result = await collection.add({
       'host': id,
-      'guest': _emptyKey,
       'hostPing': now,
+      'guest': inviteOnly ? _inviteKey : _emptyKey,
+      if (inviteCode != null) 'inviteCode': inviteCode,
     });
+
     await matchStatesCollection.add({
       'matchId': result.id,
       'hostPlayedCards': const <String>[],
@@ -167,6 +228,7 @@ class MatchMakerRepository {
       id: result.id,
       host: id,
       hostPing: now,
+      inviteCode: inviteCode,
     );
   }
 }

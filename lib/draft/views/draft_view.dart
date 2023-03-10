@@ -6,6 +6,11 @@ import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/widgets/widgets.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
+extension DraftViewX on DraftState {
+  List<String> selectedCardIds() =>
+      selectedCards.map((card) => card.id).toList();
+}
+
 class DraftView extends StatelessWidget {
   const DraftView({super.key});
 
@@ -62,8 +67,8 @@ class DraftView extends StatelessWidget {
                         (i + 1) / state.cards.length,
                       ),
                       child: GameCard(
-                        width: 200,
-                        height: 350,
+                        width: 120,
+                        height: 280,
                         card: state.cards[i],
                       ),
                     ),
@@ -71,20 +76,48 @@ class DraftView extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 60),
-            if (state.status == DraftStateStatus.deckSelected)
+            if (state.status == DraftStateStatus.deckSelected) ...[
+              ElevatedButton(
+                onPressed: () {
+                  GoRouter.of(context).goNamed(
+                    'match_making',
+                    queryParams: {'cardId': state.selectedCardIds()},
+                  );
+                },
+                child: Text(l10n.play),
+              ),
               ElevatedButton(
                 onPressed: () {
                   GoRouter.of(context).goNamed(
                     'match_making',
                     queryParams: {
-                      'cardId':
-                          state.selectedCards.map((card) => card.id).toList(),
+                      'createPrivateMatch': 'true',
+                      'cardId': state.selectedCardIds(),
                     },
                   );
                 },
-                child: Text(l10n.play),
-              )
-            else
+                child: const Text('Create private match'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  final goRouter = GoRouter.of(context);
+                  final inviteCode = await showDialog<String?>(
+                    context: context,
+                    builder: (_) => const _JoinPrivateMatchDialog(),
+                  );
+                  if (inviteCode != null) {
+                    goRouter.goNamed(
+                      'match_making',
+                      queryParams: {
+                        'inviteCode': inviteCode,
+                        'cardId': state.selectedCardIds(),
+                      },
+                    );
+                  }
+                },
+                child: const Text('Join Private match'),
+              ),
+            ] else
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -112,6 +145,56 @@ class DraftView extends StatelessWidget {
                     '${card.name}: ${card.power}',
                   ),
               ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _JoinPrivateMatchDialog extends StatefulWidget {
+  const _JoinPrivateMatchDialog();
+
+  @override
+  State<_JoinPrivateMatchDialog> createState() =>
+      _JoinPrivateMatchDialogState();
+}
+
+class _JoinPrivateMatchDialogState extends State<_JoinPrivateMatchDialog> {
+  String? inviteCode;
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        width: 400,
+        height: 250,
+        child: Column(
+          children: [
+            TextField(
+              decoration: const InputDecoration(
+                labelText: 'Invite code',
+              ),
+              onChanged: (value) {
+                setState(() {
+                  inviteCode = value;
+                });
+              },
+            ),
+            const SizedBox(height: 32),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(inviteCode);
+              },
+              child: const Text('Join'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(null);
+              },
+              child: const Text('Cancel'),
             ),
           ],
         ),

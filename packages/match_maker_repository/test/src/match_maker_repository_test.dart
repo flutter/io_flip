@@ -66,6 +66,7 @@ void main() {
         db: db,
         retryDelay: 0,
         now: () => now,
+        inviteCode: () => 'inviteCode',
       );
     });
 
@@ -98,13 +99,53 @@ void main() {
       when(collection.get).thenAnswer((_) async => query);
     }
 
-    void mockAdd(String host, String guest, String id, Timestamp ping) {
+    void mockInviteQueryResult(
+      String inviteCode, {
+      List<Match> matches = const [],
+    }) {
+      when(() => collection.where('guest', isEqualTo: 'INVITE'))
+          .thenReturn(collection);
+      when(
+        () => collection.where(
+          'inviteCode',
+          isEqualTo: inviteCode,
+        ),
+      ).thenReturn(collection);
+      when(() => collection.limit(3)).thenReturn(collection);
+
+      final query = _MockQuerySnapshot<Map<String, dynamic>>();
+
+      final docs = <QueryDocumentSnapshot<Map<String, dynamic>>>[];
+      for (final match in matches) {
+        final doc = _MockQueryDocumentSnapshot<Map<String, dynamic>>();
+        when(() => doc.id).thenReturn(match.id);
+        when(doc.data).thenReturn({
+          'host': match.host,
+          'guest': match.guest == null ? 'INVITE' : '',
+          'hostPing': match.hostPing,
+          'inviteCode': match.inviteCode,
+        });
+        docs.add(doc);
+      }
+
+      when(() => query.docs).thenReturn(docs);
+      when(collection.get).thenAnswer((_) async => query);
+    }
+
+    void mockAdd(
+      String host,
+      String guest,
+      String id,
+      Timestamp ping, {
+      String? inviteCode,
+    }) {
       when(
         () => collection.add(
           {
             'host': host,
             'guest': guest,
             'hostPing': ping,
+            if (inviteCode != null) 'inviteCode': inviteCode,
           },
         ),
       ).thenAnswer(
@@ -161,6 +202,29 @@ void main() {
       db.mockTransaction = transaction;
     }
 
+    void mockPrivateMatchSuccessfulTransaction(
+      String guestId,
+      String matchId,
+      Timestamp ping,
+    ) {
+      final docRef = _MockDocumentReference<Map<String, dynamic>>();
+      when(() => collection.doc(matchId)).thenReturn(docRef);
+
+      final transaction = _MockTransaction();
+      when(
+        () => transaction.update(
+          docRef,
+          {
+            'guest': guestId,
+            'guestPing': ping,
+            'hostPing': ping,
+          },
+        ),
+      ).thenReturn(transaction);
+
+      db.mockTransaction = transaction;
+    }
+
     void mockSnapshots(
       String matchId,
       Stream<DocumentSnapshot<Map<String, dynamic>>> stream,
@@ -185,6 +249,13 @@ void main() {
       expect(
         MatchMakerRepository(db: db),
         isNotNull,
+      );
+    });
+
+    test('can generate an invite code', () {
+      expect(
+        MatchMakerRepository.defautInviteCodeGenerator(),
+        isA<String>(),
       );
     });
 
@@ -214,6 +285,68 @@ void main() {
           },
         ),
       ).called(1);
+    });
+
+    test('creates a new match as host when creating a private match', () async {
+      mockQueryResult();
+      mockAdd('hostId', 'INVITE', 'matchId', now, inviteCode: 'inviteCode');
+      mockAddState('matchId', const [], const []);
+
+      final match = await matchMakerRepository.createPrivateMatch('hostId');
+      expect(
+        match,
+        equals(
+          Match(
+            id: 'matchId',
+            host: 'hostId',
+            hostPing: now,
+            inviteCode: 'inviteCode',
+          ),
+        ),
+      );
+
+      verify(
+        () => matchStateCollection.add(
+          {
+            'matchId': 'matchId',
+            'hostPlayedCards': const <String>[],
+            'guestPlayedCards': const <String>[],
+          },
+        ),
+      ).called(1);
+    });
+
+    test('joins a private match', () async {
+      mockInviteQueryResult(
+        'inviteCode',
+        matches: [
+          Match(
+            id: 'matchId',
+            host: 'hostId',
+            inviteCode: 'inviteCode',
+            hostPing: now,
+          ),
+        ],
+      );
+      mockPrivateMatchSuccessfulTransaction('guestId', 'matchId', now);
+
+      final match = await matchMakerRepository.joinPrivateMatch(
+        inviteCode: 'inviteCode',
+        guestId: 'guestId',
+      );
+      expect(
+        match,
+        equals(
+          Match(
+            id: 'matchId',
+            host: 'hostId',
+            guest: 'guestId',
+            hostPing: now,
+            guestPing: now,
+            inviteCode: 'inviteCode',
+          ),
+        ),
+      );
     });
 
     test(

@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:bloc_test/bloc_test.dart';
+import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
@@ -184,6 +185,113 @@ void main() {
             },
           ),
         ).called(1);
+      },
+    );
+
+    testWidgets(
+      'navigates to the private match lobby when clicking on create private '
+      'match',
+      (tester) async {
+        final goRouter = MockGoRouter();
+        mockState(
+          [
+            DraftState(
+              cards: const [card1, card2, card3],
+              selectedCards: const [card1, card2, card3],
+              status: DraftStateStatus.deckSelected,
+            )
+          ],
+        );
+        await tester.pumpSubject(
+          draftBloc: draftBloc,
+          goRouter: goRouter,
+        );
+
+        await tester.tap(find.text('Create private match'));
+        verify(
+          () => goRouter.goNamed(
+            'match_making',
+            queryParams: {
+              'cardId': [card1, card2, card3].map((card) => card.id).toList(),
+              'createPrivateMatch': 'true',
+            },
+          ),
+        ).called(1);
+      },
+    );
+
+    testWidgets(
+      'navigates to the private guest match lobby when clicking on '
+      'join private match and has input an invite code',
+      (tester) async {
+        final goRouter = MockGoRouter();
+        mockState(
+          [
+            DraftState(
+              cards: const [card1, card2, card3],
+              selectedCards: const [card1, card2, card3],
+              status: DraftStateStatus.deckSelected,
+            )
+          ],
+        );
+        await tester.pumpSubject(
+          draftBloc: draftBloc,
+          goRouter: goRouter,
+        );
+
+        await tester.tap(find.text('Join Private match'));
+        await tester.pumpAndSettle();
+
+        await tester.enterText(find.byType(TextField), 'invite-code');
+        await tester.tap(find.text('Join'));
+        await tester.pumpAndSettle();
+
+        verify(
+          () => goRouter.goNamed(
+            'match_making',
+            queryParams: {
+              'cardId': [card1, card2, card3].map((card) => card.id).toList(),
+              'inviteCode': 'invite-code',
+            },
+          ),
+        ).called(1);
+      },
+    );
+
+    testWidgets(
+      'stay in the page when cancelling the input of the invite code',
+      (tester) async {
+        final goRouter = MockGoRouter();
+        mockState(
+          [
+            DraftState(
+              cards: const [card1, card2, card3],
+              selectedCards: const [card1, card2, card3],
+              status: DraftStateStatus.deckSelected,
+            )
+          ],
+        );
+        await tester.pumpSubject(
+          draftBloc: draftBloc,
+          goRouter: goRouter,
+        );
+
+        await tester.tap(find.text('Join Private match'));
+        await tester.pumpAndSettle();
+
+        await tester.enterText(find.byType(TextField), 'invite-code');
+        await tester.tap(find.text('Cancel'));
+        await tester.pumpAndSettle();
+
+        verifyNever(
+          () => goRouter.goNamed(
+            'match_making',
+            queryParams: {
+              'cardId': [card1, card2, card3].map((card) => card.id).toList(),
+              'inviteCode': 'invite-code',
+            },
+          ),
+        );
       },
     );
   });

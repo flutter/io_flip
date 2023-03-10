@@ -25,6 +25,7 @@ void main() {
       when(() => goRouterState.queryParametersAll).thenReturn({
         'cardId': ['a', 'b', 'c'],
       });
+      when(() => goRouterState.queryParams).thenReturn({});
     });
 
     test('routeBuilder returns a MatchMakingPage', () {
@@ -32,6 +33,39 @@ void main() {
         MatchMakingPage.routeBuilder(null, goRouterState),
         isA<MatchMakingPage>(),
       );
+    });
+
+    group('mapEvent', () {
+      test('correctly maps to GuestPrivateMatchRequested', () {
+        expect(
+          MatchMakingPage(
+            playerCardIds: const ['a', 'b', 'c'],
+            createPrivateMatch: false,
+            inviteCode: 'inviteCode',
+          ).mapEvent(),
+          equals(GuestPrivateMatchRequested('inviteCode')),
+        );
+      });
+      test('correctly maps to PrivateMatchRequested', () {
+        expect(
+          MatchMakingPage(
+            playerCardIds: const ['a', 'b', 'c'],
+            createPrivateMatch: true,
+            inviteCode: null,
+          ).mapEvent(),
+          equals(PrivateMatchRequested()),
+        );
+      });
+      test('correctly maps to MatchRequested', () {
+        expect(
+          MatchMakingPage(
+            playerCardIds: const ['a', 'b', 'c'],
+            createPrivateMatch: false,
+            inviteCode: null,
+          ).mapEvent(),
+          equals(MatchRequested()),
+        );
+      });
     });
 
     testWidgets('renders a MatchMakingView', (tester) async {
@@ -53,6 +87,8 @@ extension MatchMakingPageTest on WidgetTester {
         ],
         child: MatchMakingPage(
           playerCardIds: const ['a', 'b', 'c'],
+          createPrivateMatch: false,
+          inviteCode: null,
         ),
       ),
     );
