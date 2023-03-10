@@ -1,14 +1,18 @@
+import 'package:db_client/db_client.dart';
+
 /// {@template scripts_repository}
 /// Access to the game scripts data source.
 /// {@endtemplate}
 class ScriptsRepository {
   /// {@macro scripts_repository}
-  ScriptsRepository();
+  ScriptsRepository({
+    required DbClient dbClient,
+  }) : _dbClient = dbClient;
 
-  // TODO(erickzanardo): keeping in memory for now, but moving this
-  // to firebase later.
-  final Map<String, String> _scripts = {
-    '1': '''
+  final DbClient _dbClient;
+
+  /// The default script, used when none is found in the firebase.
+  static const defaultLogic = '''
 fun compareCards(a, b) -> int {
   if (a > b) {
     return 1;
@@ -18,34 +22,58 @@ fun compareCards(a, b) -> int {
     return 0;
   }
 }
-''',
-  };
-
-  String _current = '1';
+''';
 
   /// Returns the current script rule.
   Future<String> getCurrentScript() async {
-    return _scripts[_current]!;
+    final record = await _findCurrent();
+
+    if (record != null) {
+      if (record.data['script'] is String) {
+        return record.data['script'] as String;
+      }
+    }
+
+    return defaultLogic;
   }
 
-  /// Updates the current rule set to the given [key].
-  Future<void> setCurrent(String key) async {
-    _current = key;
-  }
+  Future<DbEntityRecord?> _findCurrent() async {
+    final results = await _dbClient.findBy(
+      'scripts',
+      'selected',
+      true,
+    );
 
-  /// Returns get script of the given [key].
-  Future<String> getScript(String key) async {
-    return _scripts[key]!;
-  }
+    if (results.isNotEmpty) {
+      return results.first;
+    }
 
-  /// Updates the script of the given [key] to the given
-  /// [content].
-  Future<void> updateScript(String key, String content) async {
-    _scripts[key] = content;
+    return null;
   }
 
   /// Updates the current script to the given [content].
   Future<void> updateCurrentScript(String content) async {
-    _scripts[_current] = content;
+    final currentRecord = await _findCurrent();
+
+    if (currentRecord != null) {
+      await _dbClient.update(
+        'scripts',
+        DbEntityRecord(
+          id: currentRecord.id,
+          data: {
+            ...currentRecord.data,
+            'script': content,
+          },
+        ),
+      );
+    } else {
+      await _dbClient.add(
+        'scripts',
+        {
+          'script': content,
+          'selected': true,
+        },
+      );
+    }
   }
 }
