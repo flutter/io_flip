@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_client/game_client.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:match_maker_repository/match_maker_repository.dart' hide Match;
+import 'package:match_maker_repository/match_maker_repository.dart' as repo;
 
 part 'game_event.dart';
 part 'game_state.dart';
@@ -12,21 +15,35 @@ part 'game_state.dart';
 class GameBloc extends Bloc<GameEvent, GameState> {
   GameBloc({
     required GameClient gameClient,
-    required MatchMakerRepository matchMakerRepository,
+    required repo.MatchMakerRepository matchMakerRepository,
     required this.isHost,
+    MatchSolver matchSolver = const MatchSolver(),
+    this.timeOutPeriod = defaultTimeOutPeriod,
+    this.pingInterval = defaultPingInterval,
+    ValueGetter<Timestamp> now = Timestamp.now,
   })  : _gameClient = gameClient,
         _matchMakerRepository = matchMakerRepository,
+        _matchSolver = matchSolver,
+        _now = now,
         super(const MatchLoadingState()) {
     on<MatchRequested>(_onMatchRequested);
     on<PlayerPlayed>(_onPlayerPlayed);
-    on<OpponentPlayed>(_onOpponentPlayed);
+    on<MatchStateUpdated>(_onMatchStateUpdated);
+    on<ManagePlayerPresence>(_onManagePlayerPresence);
   }
 
   final GameClient _gameClient;
-  final MatchMakerRepository _matchMakerRepository;
+  final repo.MatchMakerRepository _matchMakerRepository;
+  final MatchSolver _matchSolver;
   final bool isHost;
+  static const defaultTimeOutPeriod = Duration(seconds: 10);
+  static const defaultPingInterval = Duration(seconds: 5);
+  final Duration timeOutPeriod;
+  final Duration pingInterval;
+  final ValueGetter<Timestamp> _now;
 
-  StreamSubscription<String>? _opponentSubscription;
+  StreamSubscription<MatchState>? _stateSubscription;
+  StreamSubscription<repo.Match>? _opponentPresenceSubscription;
 
   Future<void> _onMatchRequested(
     MatchRequested event,
@@ -51,20 +68,67 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             match: match,
             matchState: matchState,
             turns: const [],
+            playerPlayed: false,
           ),
         );
 
-        final stream = isHost
-            ? _matchMakerRepository.watchGuestCards(matchState.id)
-            : _matchMakerRepository.watchHostCards(matchState.id);
+        add(ManagePlayerPresence(event.matchId));
+        final stream = _matchMakerRepository.watchMatchState(matchState.id);
 
-        _opponentSubscription = stream.listen((id) {
-          add(OpponentPlayed(id));
+        _stateSubscription = stream.listen((state) {
+          add(MatchStateUpdated(state));
         });
       }
     } catch (e, s) {
       addError(e, s);
       emit(const MatchLoadFailedState());
+    }
+  }
+
+  Future<void> _onMatchStateUpdated(
+    MatchStateUpdated event,
+    Emitter<GameState> emit,
+  ) async {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+
+      final matchStatePlayerMoves = isHost
+          ? event.updatedState.hostPlayedCards
+          : event.updatedState.guestPlayedCards;
+
+      final matchStateOpponentMoves = isHost
+          ? event.updatedState.guestPlayedCards
+          : event.updatedState.hostPlayedCards;
+
+      final isPlayerMove = matchLoadedState.turns
+              .where((turn) => turn.playerCardId != null)
+              .length !=
+          matchStatePlayerMoves.length;
+
+      final moveLength = max(
+        matchStatePlayerMoves.length,
+        matchStateOpponentMoves.length,
+      );
+
+      final turns = [
+        for (var i = 0; i < moveLength; i++)
+          MatchTurn(
+            playerCardId: i < matchStatePlayerMoves.length
+                ? matchStatePlayerMoves[i]
+                : null,
+            opponentCardId: i < matchStateOpponentMoves.length
+                ? matchStateOpponentMoves[i]
+                : null,
+          ),
+      ];
+
+      emit(
+        matchLoadedState.copyWith(
+          matchState: event.updatedState,
+          turns: turns,
+          playerPlayed: isPlayerMove ? false : null,
+        ),
+      );
     }
   }
 
@@ -74,109 +138,122 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   ) async {
     if (state is MatchLoadedState) {
       final matchState = state as MatchLoadedState;
+      emit(matchState.copyWith(playerPlayed: true));
       await _gameClient.playCard(
         matchId: matchState.match.id,
         cardId: event.cardId,
         isHost: isHost,
       );
-
-      // Improve this code for re use
-      if (matchState.turns.isEmpty) {
-        emit(
-          matchState.copyWith(
-            turns: [
-              MatchTurn(
-                playerCardId: event.cardId,
-                opponentCardId: null,
-              ),
-            ],
-          ),
-        );
-      } else {
-        final lastTurn = matchState.turns.last;
-
-        if (lastTurn.playerCardId == null) {
-          final newTurn = lastTurn.copyWith(playerCardId: event.cardId);
-          emit(
-            matchState.copyWith(
-              turns: matchState.turns
-                  .map(
-                    (turn) => turn == lastTurn ? newTurn : turn,
-                  )
-                  .toList(),
-            ),
-          );
-        } else {
-          emit(
-            matchState.copyWith(
-              turns: [
-                ...matchState.turns,
-                MatchTurn(
-                  playerCardId: event.cardId,
-                  opponentCardId: null,
-                ),
-              ],
-            ),
-          );
-        }
-      }
     }
   }
 
-  Future<void> _onOpponentPlayed(
-    OpponentPlayed event,
+  Future<void> _onManagePlayerPresence(
+    ManagePlayerPresence event,
     Emitter<GameState> emit,
   ) async {
+    try {
+      final completer = Completer<void>();
+      final matchStream = _matchMakerRepository.watchMatch(event.matchId);
+      final stalePingMatchStream = matchStream.where(_isOpponentAbsent);
+
+      var pinging = false;
+      final timer = Timer.periodic(pingInterval, (_) async {
+        try {
+          if (!pinging) {
+            pinging = true;
+            isHost
+                ? await _matchMakerRepository.pingHost(event.matchId)
+                : await _matchMakerRepository.pingGuest(event.matchId);
+            pinging = false;
+          }
+        } catch (e, s) {
+          addError(e, s);
+          emit(const PingFailedState());
+        }
+      });
+
+      _opponentPresenceSubscription = stalePingMatchStream.listen(
+        (expiredMatch) {
+          emit(const OpponentAbsentState());
+          if (!isClosed) timer.cancel();
+          completer.complete();
+        },
+      );
+
+      return completer.future;
+    } catch (e, s) {
+      addError(e, s);
+      emit(const ManagePlayerPresenceFailedState());
+    }
+  }
+
+  bool isWiningCard(Card card, {required bool isPlayer}) {
     if (state is MatchLoadedState) {
-      final matchState = state as MatchLoadedState;
+      final isCardFromHost = isPlayer ? isHost : !isHost;
 
-      if (matchState.turns.isEmpty) {
-        emit(
-          matchState.copyWith(
-            turns: [
-              MatchTurn(
-                playerCardId: null,
-                opponentCardId: event.cardId,
-              ),
-            ],
-          ),
-        );
-      } else {
-        final lastTurn = matchState.turns.last;
+      final matchLoadedState = state as MatchLoadedState;
+      final matchState = matchLoadedState.matchState;
 
-        if (lastTurn.opponentCardId == null) {
-          final newTurn = lastTurn.copyWith(opponentCardId: event.cardId);
+      final round = isHost
+          ? matchState.hostPlayedCards.indexWhere((id) => id == card.id)
+          : matchState.guestPlayedCards.indexWhere((id) => id == card.id);
 
-          emit(
-            matchState.copyWith(
-              turns: matchState.turns
-                  .map(
-                    (turn) => turn == lastTurn ? newTurn : turn,
-                  )
-                  .toList(),
-            ),
+      if (round >= 0) {
+        final turn = matchLoadedState.turns[round];
+        if (turn.isComplete()) {
+          final result = _matchSolver.calculateRoundResult(
+            matchLoadedState.match,
+            matchLoadedState.matchState,
+            round,
           );
-        } else {
-          emit(
-            matchState.copyWith(
-              turns: [
-                ...matchState.turns,
-                MatchTurn(
-                  playerCardId: null,
-                  opponentCardId: event.cardId,
-                ),
-              ],
-            ),
-          );
+
+          return isCardFromHost
+              ? result == MatchResult.host
+              : result == MatchResult.guest;
         }
       }
     }
+
+    return false;
+  }
+
+  bool canPlayerPlay() {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+      return _matchSolver.canPlayCard(
+        matchLoadedState.matchState,
+        isHost: isHost,
+      );
+    }
+
+    return false;
+  }
+
+  bool hasPlayerWon() {
+    if (state is MatchLoadedState) {
+      final matchState = (state as MatchLoadedState).matchState;
+
+      return isHost
+          ? matchState.result == MatchResult.host
+          : matchState.result == MatchResult.guest;
+    }
+    return false;
   }
 
   @override
   Future<void> close() {
-    _opponentSubscription?.cancel();
+    _stateSubscription?.cancel();
+    _opponentPresenceSubscription?.cancel();
     return super.close();
+  }
+
+  bool _isOpponentAbsent(repo.Match match) {
+    final now = _now().millisecondsSinceEpoch;
+
+    final opponentPing = isHost
+        ? match.guestPing?.millisecondsSinceEpoch ?? 0
+        : match.hostPing.millisecondsSinceEpoch;
+    return now - opponentPing >= timeOutPeriod.inMilliseconds;
   }
 }
 
@@ -195,34 +272,5 @@ extension MatchLoadedStateX on MatchLoadedState {
     }
 
     return false;
-  }
-
-  bool isWiningCard(Card card) {
-    for (final turn in turns) {
-      if ((card.id == turn.playerCardId || card.id == turn.opponentCardId) &&
-          turn.isComplete()) {
-        final allCards = {
-          for (final card in match.hostDeck.cards) card.id: card.power,
-          for (final card in match.guestDeck.cards) card.id: card.power,
-        };
-
-        final opponentId = card.id == turn.playerCardId
-            ? turn.opponentCardId
-            : turn.playerCardId;
-
-        return (allCards[card.id] ?? 0) > (allCards[opponentId] ?? 0);
-      }
-    }
-    return false;
-  }
-
-  bool canPlayerPlay() {
-    if (turns.isEmpty) {
-      return true;
-    }
-
-    final lastTurn = turns.last;
-
-    return lastTurn.isComplete() || lastTurn.playerCardId == null;
   }
 }

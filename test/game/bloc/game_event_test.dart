@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:top_dash/game/game.dart';
 
 void main() {
@@ -41,37 +42,50 @@ void main() {
       });
     });
 
-    group('OpponentPlayed', () {
+    group('MatchStateUpdated', () {
+      const matchState1 = MatchState(
+        id: '1',
+        matchId: '',
+        hostPlayedCards: [],
+        guestPlayedCards: [],
+      );
+      const matchState2 = MatchState(
+        id: '2',
+        matchId: '',
+        hostPlayedCards: [],
+        guestPlayedCards: [],
+      );
       test('can be instantiated', () {
-        expect(OpponentPlayed('cardId'), isNotNull);
+        expect(MatchStateUpdated(matchState1), isNotNull);
       });
 
       test('supports equality', () {
         expect(
-          OpponentPlayed('card1'),
-          equals(OpponentPlayed('card1')),
+          MatchStateUpdated(matchState1),
+          equals(MatchStateUpdated(matchState1)),
         );
 
         expect(
-          OpponentPlayed('card1'),
-          isNot(equals(OpponentPlayed('card2'))),
+          MatchStateUpdated(matchState1),
+          isNot(equals(MatchStateUpdated(matchState2))),
         );
       });
     });
-    group('OpponentPlayed', () {
+
+    group('PresenceCheckRequested', () {
       test('can be instantiated', () {
-        expect(OpponentPlayed('cardId'), isNotNull);
+        expect(ManagePlayerPresence('match1'), isNotNull);
       });
 
       test('supports equality', () {
         expect(
-          OpponentPlayed('card1'),
-          equals(OpponentPlayed('card1')),
+          ManagePlayerPresence('match1'),
+          equals(ManagePlayerPresence('match1')),
         );
 
         expect(
-          OpponentPlayed('card1'),
-          isNot(equals(OpponentPlayed('card2'))),
+          ManagePlayerPresence('match1'),
+          isNot(equals(ManagePlayerPresence('match2'))),
         );
       });
     });

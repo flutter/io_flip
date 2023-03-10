@@ -8,6 +8,8 @@ import 'package:top_dash/match_making/match_making.dart';
 class MatchMakingPage extends StatelessWidget {
   const MatchMakingPage({
     required this.playerCardIds,
+    required this.createPrivateMatch,
+    required this.inviteCode,
     super.key,
   });
 
@@ -15,10 +17,22 @@ class MatchMakingPage extends StatelessWidget {
     return MatchMakingPage(
       key: const Key('match_making'),
       playerCardIds: state.queryParametersAll['cardId'] ?? [],
+      createPrivateMatch: state.queryParams['createPrivateMatch'] == 'true',
+      inviteCode: state.queryParams['inviteCode'],
     );
   }
 
   final List<String> playerCardIds;
+  final bool createPrivateMatch;
+  final String? inviteCode;
+
+  MatchMakingEvent mapEvent() {
+    return inviteCode != null
+        ? GuestPrivateMatchRequested(inviteCode!)
+        : createPrivateMatch
+            ? const PrivateMatchRequested()
+            : const MatchRequested();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +44,7 @@ class MatchMakingPage extends StatelessWidget {
           matchMakerRepository: matchMakerRepository,
           gameClient: gameClient,
           cardIds: playerCardIds,
-        )..add(
-            const MatchRequested(),
-          );
+        )..add(mapEvent());
       },
       child: const MatchMakingView(),
     );

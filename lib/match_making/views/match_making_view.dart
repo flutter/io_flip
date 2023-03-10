@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/match_making/match_making.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class MatchMakingView extends StatelessWidget {
-  const MatchMakingView({super.key});
+  const MatchMakingView({
+    super.key,
+    Future<void> Function(ClipboardData) setClipboardData = Clipboard.setData,
+  }) : _setClipboardData = setClipboardData;
+
+  final Future<void> Function(ClipboardData) _setClipboardData;
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +24,23 @@ class MatchMakingView extends StatelessWidget {
       builder: (context, state) {
         if (state.status == MatchMakingStatus.processing ||
             state.status == MatchMakingStatus.initial) {
-          return const Scaffold(
+          return Scaffold(
             backgroundColor: TopDashColors.backgroundMain,
             body: Center(
-              child: CircularProgressIndicator(),
+              child: Column(
+                children: [
+                  const CircularProgressIndicator(),
+                  if (state.match?.inviteCode != null)
+                    ElevatedButton(
+                      onPressed: () {
+                        _setClipboardData(
+                          ClipboardData(text: state.match?.inviteCode),
+                        );
+                      },
+                      child: const Text('Copy invite code'),
+                    ),
+                ],
+              ),
             ),
           );
         }

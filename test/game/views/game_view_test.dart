@@ -17,9 +17,26 @@ void main() {
   group('GameView', () {
     late GameBloc bloc;
 
+    setUpAll(() {
+      registerFallbackValue(
+        Card(
+          id: '',
+          name: '',
+          description: '',
+          image: '',
+          power: 0,
+          rarity: false,
+        ),
+      );
+    });
+
     setUp(() {
       bloc = _MockGameBloc();
       when(() => bloc.isHost).thenReturn(true);
+      when(() => bloc.isWiningCard(any(), isPlayer: any(named: 'isPlayer')))
+          .thenReturn(false);
+      when(bloc.canPlayerPlay).thenReturn(true);
+      when(bloc.hasPlayerWon).thenReturn(false);
     });
 
     void mockState(GameState state) {
@@ -88,6 +105,7 @@ void main() {
           hostPlayedCards: const [],
         ),
         turns: const [],
+        playerPlayed: false,
       );
 
       testWidgets('renders the game in its initial state', (tester) async {
@@ -104,6 +122,77 @@ void main() {
           findsOneWidget,
         );
       });
+
+      testWidgets(
+        'renders the draw message when the player won',
+        (tester) async {
+          mockState(
+            baseState.copyWith(
+              matchState: MatchState(
+                id: '',
+                matchId: '',
+                guestPlayedCards: const [],
+                hostPlayedCards: const [],
+                result: MatchResult.draw,
+              ),
+            ),
+          );
+          await tester.pumpSubject(bloc);
+
+          expect(
+            find.text('Game ended: Draw'),
+            findsOneWidget,
+          );
+        },
+      );
+
+      testWidgets(
+        'renders the win message when the player won',
+        (tester) async {
+          mockState(
+            baseState.copyWith(
+              matchState: MatchState(
+                id: '',
+                matchId: '',
+                guestPlayedCards: const [],
+                hostPlayedCards: const [],
+                result: MatchResult.host,
+              ),
+            ),
+          );
+          when(bloc.hasPlayerWon).thenReturn(true);
+          await tester.pumpSubject(bloc);
+
+          expect(
+            find.text('Game ended: Win'),
+            findsOneWidget,
+          );
+        },
+      );
+
+      testWidgets(
+        'renders the lose message when the player lost',
+        (tester) async {
+          mockState(
+            baseState.copyWith(
+              matchState: MatchState(
+                id: '',
+                matchId: '',
+                guestPlayedCards: const [],
+                hostPlayedCards: const [],
+                result: MatchResult.guest,
+              ),
+            ),
+          );
+          when(bloc.hasPlayerWon).thenReturn(false);
+          await tester.pumpSubject(bloc);
+
+          expect(
+            find.text('Game ended: Lose'),
+            findsOneWidget,
+          );
+        },
+      );
 
       testWidgets(
         'plays a player card on tap',
@@ -139,8 +228,9 @@ void main() {
       );
 
       testWidgets(
-        "can't play is it is not the player turn",
+        "can't play when it is not the player turn",
         (tester) async {
+          when(bloc.canPlayerPlay).thenReturn(false);
           mockState(
             baseState.copyWith(
               turns: [
@@ -189,6 +279,20 @@ void main() {
       testWidgets(
         'render the win badge on the player winning card',
         (tester) async {
+          when(
+            () => bloc.isWiningCard(
+              Card(
+                id: 'player_card',
+                name: 'host_card',
+                description: '',
+                image: '',
+                rarity: true,
+                power: 2,
+              ),
+              isPlayer: true,
+            ),
+          ).thenReturn(true);
+
           mockState(
             baseState.copyWith(
               turns: [
@@ -211,6 +315,20 @@ void main() {
       testWidgets(
         'render the win badge on the opponent winning card',
         (tester) async {
+          when(
+            () => bloc.isWiningCard(
+              Card(
+                id: 'opponent_card',
+                name: 'guest_card',
+                description: '',
+                image: '',
+                rarity: true,
+                power: 10,
+              ),
+              isPlayer: false,
+            ),
+          ).thenReturn(true);
+
           mockState(
             baseState.copyWith(
               match: Match(

@@ -12,6 +12,9 @@ dependencies:
   equatable: ^2.0.5
   flutter:
     sdk: flutter
+  game_domain:
+    path: ../../api/packages/game_domain
+  uuid: ^3.0.7
 
 dev_dependencies:
   flutter_test:

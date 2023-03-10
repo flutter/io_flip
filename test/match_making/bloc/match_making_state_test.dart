@@ -17,7 +17,7 @@ void main() {
       expect(
         MatchMakingState(
           status: MatchMakingStatus.initial,
-          match: Match(id: '', host: '', lastPing: now),
+          match: Match(id: '', host: '', hostPing: now),
         ),
         isNotNull,
       );
@@ -38,12 +38,12 @@ void main() {
       expect(
         MatchMakingState(
           status: MatchMakingStatus.initial,
-          match: Match(id: '', host: '', lastPing: now),
+          match: Match(id: '', host: '', hostPing: now),
         ),
         equals(
           MatchMakingState(
             status: MatchMakingStatus.initial,
-            match: Match(id: '', host: '', lastPing: now),
+            match: Match(id: '', host: '', hostPing: now),
           ),
         ),
       );
@@ -51,13 +51,13 @@ void main() {
       expect(
         MatchMakingState(
           status: MatchMakingStatus.failed,
-          match: Match(id: '', host: '', lastPing: now),
+          match: Match(id: '', host: '', hostPing: now),
         ),
         isNot(
           equals(
             MatchMakingState(
               status: MatchMakingStatus.initial,
-              match: Match(id: '', host: '', lastPing: now),
+              match: Match(id: '', host: '', hostPing: now),
             ),
           ),
         ),
@@ -66,13 +66,13 @@ void main() {
       expect(
         MatchMakingState(
           status: MatchMakingStatus.initial,
-          match: Match(id: '1', host: '', lastPing: now),
+          match: Match(id: '1', host: '', hostPing: now),
         ),
         isNot(
           equals(
             MatchMakingState(
               status: MatchMakingStatus.initial,
-              match: Match(id: '', host: '', lastPing: now),
+              match: Match(id: '', host: '', hostPing: now),
             ),
           ),
         ),
@@ -83,12 +83,12 @@ void main() {
       expect(
         MatchMakingState(
           status: MatchMakingStatus.initial,
-          match: Match(id: '', host: '', lastPing: now),
+          match: Match(id: '', host: '', hostPing: now),
         ).copyWith(status: MatchMakingStatus.failed),
         equals(
           MatchMakingState(
             status: MatchMakingStatus.failed,
-            match: Match(id: '', host: '', lastPing: now),
+            match: Match(id: '', host: '', hostPing: now),
           ),
         ),
       );
@@ -96,12 +96,12 @@ void main() {
       expect(
         MatchMakingState(
           status: MatchMakingStatus.initial,
-          match: Match(id: '', host: '', lastPing: now),
-        ).copyWith(match: Match(id: '1', host: '', lastPing: now)),
+          match: Match(id: '', host: '', hostPing: now),
+        ).copyWith(match: Match(id: '1', host: '', hostPing: now)),
         equals(
           MatchMakingState(
             status: MatchMakingStatus.initial,
-            match: Match(id: '1', host: '', lastPing: now),
+            match: Match(id: '1', host: '', hostPing: now),
           ),
         ),
       );

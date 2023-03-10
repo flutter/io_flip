@@ -64,6 +64,7 @@ void main() {
           match: match1,
           matchState: matchState1,
           turns: const [],
+          playerPlayed: false,
         ),
         isNotNull,
       );
@@ -75,12 +76,14 @@ void main() {
           match: match1,
           matchState: matchState1,
           turns: const [],
+          playerPlayed: false,
         ),
         equals(
           MatchLoadedState(
             match: match1,
             matchState: matchState1,
             turns: const [],
+            playerPlayed: false,
           ),
         ),
       );
@@ -90,6 +93,7 @@ void main() {
           match: match1,
           matchState: matchState1,
           turns: const [],
+          playerPlayed: false,
         ),
         isNot(
           equals(
@@ -97,6 +101,7 @@ void main() {
               match: match2,
               matchState: matchState1,
               turns: const [],
+              playerPlayed: false,
             ),
           ),
         ),
@@ -107,6 +112,7 @@ void main() {
           match: match1,
           matchState: matchState1,
           turns: const [],
+          playerPlayed: false,
         ),
         isNot(
           equals(
@@ -114,6 +120,7 @@ void main() {
               match: match1,
               matchState: matchState2,
               turns: const [],
+              playerPlayed: false,
             ),
           ),
         ),
@@ -124,6 +131,7 @@ void main() {
           match: match1,
           matchState: matchState1,
           turns: const [],
+          playerPlayed: false,
         ),
         isNot(
           equals(
@@ -136,6 +144,26 @@ void main() {
                   playerCardId: '',
                 ),
               ],
+              playerPlayed: false,
+            ),
+          ),
+        ),
+      );
+
+      expect(
+        MatchLoadedState(
+          match: match1,
+          matchState: matchState1,
+          turns: const [],
+          playerPlayed: false,
+        ),
+        isNot(
+          equals(
+            MatchLoadedState(
+              match: match1,
+              matchState: matchState1,
+              turns: const [],
+              playerPlayed: true,
             ),
           ),
         ),
@@ -148,12 +176,14 @@ void main() {
           match: match1,
           matchState: matchState1,
           turns: const [],
+          playerPlayed: true,
         ).copyWith(match: match2),
         equals(
           MatchLoadedState(
             match: match2,
             matchState: matchState1,
             turns: const [],
+            playerPlayed: true,
           ),
         ),
       );
@@ -163,12 +193,14 @@ void main() {
           match: match1,
           matchState: matchState1,
           turns: const [],
+          playerPlayed: true,
         ).copyWith(matchState: matchState2),
         equals(
           MatchLoadedState(
             match: match1,
             matchState: matchState2,
             turns: const [],
+            playerPlayed: true,
           ),
         ),
       );
@@ -178,12 +210,31 @@ void main() {
           match: match1,
           matchState: matchState1,
           turns: const [],
+          playerPlayed: true,
         ).copyWith(turns: [MatchTurn(playerCardId: '', opponentCardId: '')]),
         equals(
           MatchLoadedState(
             match: match1,
             matchState: matchState1,
             turns: const [MatchTurn(playerCardId: '', opponentCardId: '')],
+            playerPlayed: true,
+          ),
+        ),
+      );
+
+      expect(
+        MatchLoadedState(
+          match: match1,
+          matchState: matchState1,
+          turns: const [],
+          playerPlayed: true,
+        ).copyWith(playerPlayed: false),
+        equals(
+          MatchLoadedState(
+            match: match1,
+            matchState: matchState1,
+            turns: const [],
+            playerPlayed: false,
           ),
         ),
       );
@@ -220,6 +271,32 @@ void main() {
             MatchTurn(playerCardId: null, opponentCardId: '1'),
           ),
         ),
+      );
+    });
+  });
+
+  group('OpponentAbsentState', () {
+    test('can be instantiated', () {
+      expect(OpponentAbsentState(), isNotNull);
+    });
+
+    test('supports equality', () {
+      expect(
+        OpponentAbsentState(),
+        equals(OpponentAbsentState()),
+      );
+    });
+  });
+
+  group('CheckOpponentPresenceFailedState', () {
+    test('can be instantiated', () {
+      expect(ManagePlayerPresenceFailedState(), isNotNull);
+    });
+
+    test('supports equality', () {
+      expect(
+        ManagePlayerPresenceFailedState(),
+        equals(ManagePlayerPresenceFailedState()),
       );
     });
   });

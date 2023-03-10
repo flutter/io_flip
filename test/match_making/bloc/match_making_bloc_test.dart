@@ -71,7 +71,8 @@ void main() {
             id: '',
             host: '',
             guest: deckId,
-            lastPing: timestamp,
+            hostPing: timestamp,
+            guestPing: timestamp,
           ),
         );
       },
@@ -86,7 +87,8 @@ void main() {
             id: '',
             host: '',
             guest: deckId,
-            lastPing: timestamp,
+            hostPing: timestamp,
+            guestPing: timestamp,
           ),
         ),
       ],
@@ -128,7 +130,7 @@ void main() {
           (_) async => Match(
             id: '',
             host: deckId,
-            lastPing: timestamp,
+            hostPing: timestamp,
           ),
         );
       },
@@ -142,7 +144,7 @@ void main() {
           match: Match(
             id: '',
             host: deckId,
-            lastPing: timestamp,
+            hostPing: timestamp,
           ),
         ),
       ],
@@ -153,7 +155,8 @@ void main() {
         (_) async => Match(
           id: '',
           host: deckId,
-          lastPing: timestamp,
+          hostPing: timestamp,
+          guestPing: timestamp,
         ),
       );
 
@@ -171,7 +174,8 @@ void main() {
             match: Match(
               id: '',
               host: deckId,
-              lastPing: timestamp,
+              hostPing: timestamp,
+              guestPing: timestamp,
             ),
           ),
         ),
@@ -182,7 +186,7 @@ void main() {
           id: '',
           host: deckId,
           guest: '',
-          lastPing: timestamp,
+          hostPing: timestamp,
         ),
       );
 
@@ -195,7 +199,7 @@ void main() {
               id: '',
               host: deckId,
               guest: '',
-              lastPing: timestamp,
+              hostPing: timestamp,
             ),
             isHost: true,
           ),
@@ -208,7 +212,7 @@ void main() {
         (_) async => Match(
           id: '',
           host: deckId,
-          lastPing: timestamp,
+          hostPing: timestamp,
         ),
       );
 
@@ -227,7 +231,7 @@ void main() {
             match: Match(
               id: '',
               host: deckId,
-              lastPing: timestamp,
+              hostPing: timestamp,
             ),
           ),
         ),
@@ -241,7 +245,7 @@ void main() {
           id: '',
           host: deckId,
           guest: '',
-          lastPing: timestamp,
+          hostPing: timestamp,
         ),
       );
 
@@ -254,12 +258,132 @@ void main() {
               id: '',
               host: deckId,
               guest: '',
-              lastPing: timestamp,
+              hostPing: timestamp,
             ),
             isHost: true,
           ),
         ),
       );
     });
+
+    blocTest<MatchMakingBloc, MatchMakingState>(
+      'creates a private match when requested',
+      build: () => MatchMakingBloc(
+        matchMakerRepository: matchMakerRepository,
+        gameClient: gameClient,
+        cardIds: cardIds,
+      ),
+      setUp: () {
+        when(() => matchMakerRepository.createPrivateMatch(deckId)).thenAnswer(
+          (_) async => Match(
+            id: '',
+            host: deckId,
+            hostPing: timestamp,
+          ),
+        );
+      },
+      act: (bloc) => bloc.add(PrivateMatchRequested()),
+      expect: () => [
+        MatchMakingState(
+          status: MatchMakingStatus.processing,
+        ),
+        MatchMakingState(
+          status: MatchMakingStatus.processing,
+          match: Match(
+            id: '',
+            host: deckId,
+            hostPing: timestamp,
+          ),
+        ),
+      ],
+    );
+
+    blocTest<MatchMakingBloc, MatchMakingState>(
+      'emits failed when a private match is requested gives an error',
+      build: () => MatchMakingBloc(
+        matchMakerRepository: matchMakerRepository,
+        gameClient: gameClient,
+        cardIds: cardIds,
+      ),
+      setUp: () {
+        when(() => matchMakerRepository.createPrivateMatch(deckId)).thenThrow(
+          Exception('Ops'),
+        );
+      },
+      act: (bloc) => bloc.add(PrivateMatchRequested()),
+      expect: () => [
+        MatchMakingState(
+          status: MatchMakingStatus.processing,
+        ),
+        MatchMakingState(
+          status: MatchMakingStatus.failed,
+        ),
+      ],
+    );
+
+    blocTest<MatchMakingBloc, MatchMakingState>(
+      'joins a private match',
+      build: () => MatchMakingBloc(
+        matchMakerRepository: matchMakerRepository,
+        gameClient: gameClient,
+        cardIds: cardIds,
+      ),
+      setUp: () {
+        when(
+          () => matchMakerRepository.joinPrivateMatch(
+            guestId: deckId,
+            inviteCode: 'invite',
+          ),
+        ).thenAnswer(
+          (_) async => Match(
+            id: '',
+            guest: deckId,
+            host: 'hostId',
+            hostPing: timestamp,
+          ),
+        );
+      },
+      act: (bloc) => bloc.add(GuestPrivateMatchRequested('invite')),
+      expect: () => [
+        MatchMakingState(
+          status: MatchMakingStatus.processing,
+        ),
+        MatchMakingState(
+          status: MatchMakingStatus.completed,
+          match: Match(
+            id: '',
+            guest: deckId,
+            host: 'hostId',
+            hostPing: timestamp,
+          ),
+        ),
+      ],
+    );
+
+    blocTest<MatchMakingBloc, MatchMakingState>(
+      'emits failed when joining a private match gives an error',
+      build: () => MatchMakingBloc(
+        matchMakerRepository: matchMakerRepository,
+        gameClient: gameClient,
+        cardIds: cardIds,
+      ),
+      setUp: () {
+        when(
+          () => matchMakerRepository.joinPrivateMatch(
+            guestId: deckId,
+            inviteCode: 'invite',
+          ),
+        ).thenThrow(Exception('Ops'));
+      },
+      act: (bloc) => bloc.add(GuestPrivateMatchRequested('invite')),
+      expect: () => [
+        MatchMakingState(
+          status: MatchMakingStatus.processing,
+        ),
+        MatchMakingState(
+          status: MatchMakingStatus.failed,
+        ),
+      ],
+    );
   });
 }

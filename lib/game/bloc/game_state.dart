@@ -27,16 +27,6 @@ class MatchTurn extends Equatable {
   final String? playerCardId;
   final String? opponentCardId;
 
-  MatchTurn copyWith({
-    String? playerCardId,
-    String? opponentCardId,
-  }) {
-    return MatchTurn(
-      playerCardId: playerCardId ?? this.playerCardId,
-      opponentCardId: opponentCardId ?? this.opponentCardId,
-    );
-  }
-
   @override
   List<Object?> get props => [playerCardId, opponentCardId];
 }
@@ -46,24 +36,49 @@ class MatchLoadedState extends GameState {
     required this.match,
     required this.matchState,
     required this.turns,
+    required this.playerPlayed,
   });
 
   final Match match;
   final MatchState matchState;
   final List<MatchTurn> turns;
+  final bool playerPlayed;
 
   MatchLoadedState copyWith({
     Match? match,
     MatchState? matchState,
     List<MatchTurn>? turns,
+    bool? playerPlayed,
   }) {
     return MatchLoadedState(
       match: match ?? this.match,
       matchState: matchState ?? this.matchState,
       turns: turns ?? this.turns,
+      playerPlayed: playerPlayed ?? this.playerPlayed,
     );
   }
 
   @override
-  List<Object> get props => [match, matchState, turns];
+  List<Object> get props => [match, matchState, turns, playerPlayed];
+}
+
+class OpponentAbsentState extends GameState {
+  const OpponentAbsentState();
+
+  @override
+  List<Object> get props => [];
+}
+
+class ManagePlayerPresenceFailedState extends GameState {
+  const ManagePlayerPresenceFailedState();
+
+  @override
+  List<Object> get props => [];
+}
+
+class PingFailedState extends GameState {
+  const PingFailedState();
+
+  @override
+  List<Object> get props => [];
 }

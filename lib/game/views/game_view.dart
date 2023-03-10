@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash/widgets/widgets.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
@@ -27,6 +28,12 @@ class GameView extends StatelessWidget {
 
         if (state is MatchLoadedState) {
           child = const _GameBoard();
+        }
+
+        if (state is OpponentAbsentState) {
+          child = const Center(
+            child: Text('Opponent left the game!'),
+          );
         }
 
         return Scaffold(
@@ -100,7 +107,7 @@ class _GameBoard extends StatelessWidget {
                                   width: opponentCardWidth,
                                   height: opponentCardHeight,
                                 ),
-                                if (state.isWiningCard(card))
+                                if (bloc.isWiningCard(card, isPlayer: false))
                                   Positioned(
                                     key: Key('win_badge_${card.id}'),
                                     top: 16,
@@ -125,7 +132,7 @@ class _GameBoard extends StatelessWidget {
           ),
           const Expanded(
             flex: 2,
-            child: SizedBox(),
+            child: _BoardCenter(),
           ),
           Expanded(
             flex: 4,
@@ -136,7 +143,8 @@ class _GameBoard extends StatelessWidget {
                   for (final card in playerDeck.cards)
                     InkWell(
                       onTap: allPlayerPlayedCards.contains(card.id) ||
-                              !state.canPlayerPlay()
+                              !bloc.canPlayerPlay() ||
+                              state.playerPlayed
                           ? null
                           : () {
                               context
@@ -159,7 +167,7 @@ class _GameBoard extends StatelessWidget {
                                 width: cardWidth,
                                 height: cardHeight,
                               ),
-                              if (state.isWiningCard(card))
+                              if (bloc.isWiningCard(card, isPlayer: true))
                                 Positioned(
                                   key: Key('win_badge_${card.id}'),
                                   top: 16,
@@ -182,5 +190,40 @@ class _GameBoard extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _BoardCenter extends StatelessWidget {
+  const _BoardCenter();
+
+  @override
+  Widget build(BuildContext context) {
+    final bloc = context.watch<GameBloc>();
+    final state = bloc.state;
+
+    if (state is MatchLoadedState) {
+      if (state.playerPlayed) {
+        return const Align(
+          child: SizedBox(
+            width: 50,
+            height: 50,
+            child: CircularProgressIndicator(),
+          ),
+        );
+      }
+
+      if (state.matchState.result != null) {
+        final result = state.matchState.result == MatchResult.draw
+            ? 'Draw'
+            : bloc.hasPlayerWon()
+                ? 'Win'
+                : 'Lose';
+        return Center(
+          child: Text('Game ended: $result'),
+        );
+      }
+    }
+
+    return const SizedBox();
   }
 }

@@ -10,3 +10,19 @@ class MatchRequested extends MatchMakingEvent {
   @override
   List<Object> get props => [];
 }
+
+class PrivateMatchRequested extends MatchMakingEvent {
+  const PrivateMatchRequested();
+
+  @override
+  List<Object> get props => [];
+}
+
+class GuestPrivateMatchRequested extends MatchMakingEvent {
+  const GuestPrivateMatchRequested(this.inviteCode);
+
+  final String inviteCode;
+
+  @override
+  List<Object> get props => [inviteCode];
+}

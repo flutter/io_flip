@@ -1,8 +1,38 @@
 {
   "version": "2.0.0",
+  "options": {
+    "env": {
+      "FB_APP_ID": "top-dash-dev",
+      "CORS_DOMAIN": "http://localhost:8080/",
+      "USE_EMULATOR": "true",
+    }
+  },
   "tasks": [
     {
-      "label": "run firebase emulators",
+      "label": "api",
+      "command": "cd api && dart_frog dev",
+      "type": "shell",
+      "isBackground": true,
+      "problemMatcher": [
+        {
+          "pattern": [
+            {
+              "regexp": ".",
+              "file": 1,
+              "location": 2,
+              "message": 3
+            }
+          ],
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": ".",
+            "endsPattern": ".",
+          },
+        }
+      ],
+    },
+    {
+      "label": "firebase",
       "command": "firebase emulators:start",
       "type": "shell",
       "isBackground": true,
@@ -22,6 +52,13 @@
             "endsPattern": ".",
           },
         }
+      ],
+    },
+    {
+      "label": "emulate",
+      "dependsOn": [
+        "api",
+        "firebase",
       ],
     },
   ]
