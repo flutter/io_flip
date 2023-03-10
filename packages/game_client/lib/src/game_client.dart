@@ -233,7 +233,7 @@ class GameClient {
 
     if (response.statusCode != HttpStatus.ok) {
       throw GameClientError(
-        'GET /scripts returned status ${response.statusCode} with the following response: "${response.body}"',
+        'GET /scripts/current returned status ${response.statusCode} with the following response: "${response.body}"',
         StackTrace.current,
       );
     }
@@ -242,7 +242,7 @@ class GameClient {
   }
 
   /// Put /scripts/:id
-  Future<String> updateScript(String id, String content) async {
+  Future<void> updateScript(String id, String content) async {
     final response =
         await _put(Uri.parse('$_endpoint/scripts/$id'), body: content);
 
@@ -252,7 +252,5 @@ class GameClient {
         StackTrace.current,
       );
     }
-
-    return response.body;
   }
 }

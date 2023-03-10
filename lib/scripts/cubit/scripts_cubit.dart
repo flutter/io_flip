@@ -29,11 +29,18 @@ class ScriptsCubit extends Cubit<ScriptsState> {
       gameScriptMachine.currentScript = content;
 
       emit(
-        state.copyWith(status: ScriptsStateStatus.loaded),
+        state.copyWith(
+          status: ScriptsStateStatus.loaded,
+          current: content,
+        ),
       );
     } catch (e, s) {
+      emit(
+        state.copyWith(
+          status: ScriptsStateStatus.failed,
+        ),
+      );
       addError(e, s);
-      state.copyWith(status: ScriptsStateStatus.failed);
     }
   }
 }

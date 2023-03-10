@@ -21,10 +21,10 @@ Handler middleware(Handler handler) {
       .use(
         fromShelfMiddleware(
           corsHeaders(
-              //headers: {
-              //  ACCESS_CONTROL_ALLOW_ORIGIN: _corsDomain,
-              //},
-              ),
+            headers: {
+              ACCESS_CONTROL_ALLOW_ORIGIN: _corsDomain,
+            },
+          ),
         ),
       );
 }

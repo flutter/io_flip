@@ -13,6 +13,7 @@ class _MockResponse extends Mock implements Response {}
 // ignore: one_member_abstracts
 abstract class __HttpClient {
   Future<Response> onPost(Uri uri, {Object? body});
+  Future<Response> onPut(Uri uri, {Object? body});
 }
 
 class _MockHttpClient extends Mock implements __HttpClient {}
@@ -491,6 +492,93 @@ void main() {
               'cause',
               equals(
                 'POST /matches/matchId/move failed with the following message: "Exception: Ops"',
+              ),
+            ),
+          ),
+        );
+      });
+    });
+
+    group('getCurrentScript', () {
+      late GameClient client;
+      late Response response;
+
+      setUp(() {
+        response = _MockResponse();
+
+        client = GameClient(
+          endpoint: '',
+          getCall: (_, {Object? body}) async => response,
+        );
+      });
+
+      test('returns the script', () async {
+        when(() => response.statusCode).thenReturn(HttpStatus.ok);
+        when(() => response.body).thenReturn('script');
+        final returnedScript = await client.getCurrentScript();
+
+        expect(returnedScript, equals('script'));
+      });
+
+      test('throws GameClientError when request fails', () async {
+        when(() => response.statusCode)
+            .thenReturn(HttpStatus.internalServerError);
+        when(() => response.body).thenReturn('Ops');
+
+        await expectLater(
+          client.getCurrentScript,
+          throwsA(
+            isA<GameClientError>().having(
+              (e) => e.cause,
+              'cause',
+              equals(
+                'GET /scripts/current returned status 500 with the following response: "Ops"',
+              ),
+            ),
+          ),
+        );
+      });
+    });
+
+    group('updateScript', () {
+      late __HttpClient httpClient;
+      late GameClient client;
+      late Response response;
+
+      setUp(() {
+        httpClient = _MockHttpClient();
+        response = _MockResponse();
+        when(() => httpClient.onPut(any(), body: any(named: 'body')))
+            .thenAnswer((_) async => response);
+
+        client = GameClient(
+          endpoint: '',
+          putCall: httpClient.onPut,
+        );
+      });
+
+      test('send the correct request', () async {
+        when(() => response.statusCode).thenReturn(HttpStatus.noContent);
+        await client.updateScript('current', 'script');
+
+        verify(
+          () => httpClient.onPut(Uri.parse('/scripts/current'), body: 'script'),
+        );
+      });
+
+      test('throws GameClientError when request fails', () async {
+        when(() => response.statusCode)
+            .thenReturn(HttpStatus.internalServerError);
+        when(() => response.body).thenReturn('Ops');
+
+        await expectLater(
+          () => client.updateScript('current', 'script'),
+          throwsA(
+            isA<GameClientError>().having(
+              (e) => e.cause,
+              'cause',
+              equals(
+                'PUT /scripts/current returned status 500 with the following response: "Ops"',
               ),
             ),
           ),
