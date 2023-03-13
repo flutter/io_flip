@@ -40,7 +40,7 @@ void main() {
     });
 
     test('can be initialized', () {
-      expect(DbClient.initialize('A'), isNotNull);
+      expect(DbClient.initialize('A', useEmulator: true), isNotNull);
     });
 
     group('add', () {

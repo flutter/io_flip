@@ -21,7 +21,7 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   const imageModelRepository = ImageModelRepository();
   const languageModelRepository = LanguageModelRepository();
 
-  final dbClient = DbClient.initialize(_appId);
+  final dbClient = DbClient.initialize(_appId, useEmulator: _useEmulator);
 
   Logger.root.onRecord.listen((record) {
     // ignore: avoid_print
@@ -59,3 +59,5 @@ String get _appId {
   }
   return value;
 }
+
+bool get _useEmulator => Platform.environment['USE_EMULATOR'] == 'true';
