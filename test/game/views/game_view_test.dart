@@ -9,7 +9,6 @@ import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/game/game.dart';
-import 'package:top_dash/main_menu/main_menu_screen.dart';
 
 import '../../helpers/helpers.dart';
 
