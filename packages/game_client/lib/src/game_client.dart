@@ -28,6 +28,9 @@ class GameClientError implements Exception {
 /// Definition of a post call used by this client.
 typedef PostCall = Future<Response> Function(Uri, {Object? body});
 
+/// Definition of a put call used by this client.
+typedef PutCall = Future<Response> Function(Uri, {Object? body});
+
 /// Definition of a get call used by this client.
 typedef GetCall = Future<Response> Function(Uri);
 
@@ -39,14 +42,18 @@ class GameClient {
   const GameClient({
     required String endpoint,
     PostCall postCall = post,
+    PutCall putCall = put,
     GetCall getCall = get,
   })  : _endpoint = endpoint,
         _post = postCall,
+        _put = putCall,
         _get = getCall;
 
   final String _endpoint;
 
   final PostCall _post;
+
+  final PostCall _put;
 
   final GetCall _get;
 
@@ -215,6 +222,33 @@ class GameClient {
     } catch (e) {
       throw GameClientError(
         'POST /matches/$matchId/move failed with the following message: "$e"',
+        StackTrace.current,
+      );
+    }
+  }
+
+  /// Get /scripts/current
+  Future<String> getCurrentScript() async {
+    final response = await _get(Uri.parse('$_endpoint/scripts/current'));
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw GameClientError(
+        'GET /scripts/current returned status ${response.statusCode} with the following response: "${response.body}"',
+        StackTrace.current,
+      );
+    }
+
+    return response.body;
+  }
+
+  /// Put /scripts/:id
+  Future<void> updateScript(String id, String content) async {
+    final response =
+        await _put(Uri.parse('$_endpoint/scripts/$id'), body: content);
+
+    if (response.statusCode != HttpStatus.noContent) {
+      throw GameClientError(
+        'PUT /scripts/$id returned status ${response.statusCode} with the following response: "${response.body}"',
         StackTrace.current,
       );
     }

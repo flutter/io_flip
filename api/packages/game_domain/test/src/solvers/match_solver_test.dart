@@ -1,10 +1,22 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:game_domain/game_domain.dart';
+import 'package:game_script_machine/game_script_machine.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
+
+class _MockGameScriptEngine extends Mock implements GameScriptMachine {}
 
 void main() {
   group('MatchSolver', () {
+    late GameScriptMachine gameScriptMachine;
+    late MatchSolver matchSolver;
+
+    setUp(() {
+      gameScriptMachine = _MockGameScriptEngine();
+      matchSolver = MatchSolver(gameScriptMachine: gameScriptMachine);
+    });
+
     group('calculateMatchResult', () {
       final cards = List.generate(
         6,
@@ -38,7 +50,7 @@ void main() {
         );
 
         expect(
-          () => MatchSolver().calculateMatchResult(
+          () => matchSolver.calculateMatchResult(
             match,
             state,
           ),
@@ -47,6 +59,8 @@ void main() {
       });
 
       test('return host when the host has won', () {
+        when(() => gameScriptMachine.evalCardPower(any(), any())).thenReturn(1);
+
         final match = Match(
           id: '',
           hostDeck: Deck(
@@ -65,7 +79,7 @@ void main() {
           guestPlayedCards: [cards[3].id, cards[1].id, cards[5].id],
         );
 
-        final matchResult = MatchSolver().calculateMatchResult(
+        final matchResult = matchSolver.calculateMatchResult(
           match,
           state,
         );
@@ -73,6 +87,8 @@ void main() {
       });
 
       test('return guest when the guest has won', () {
+        when(() => gameScriptMachine.evalCardPower(any(), any()))
+            .thenReturn(-1);
         final match = Match(
           id: '',
           hostDeck: Deck(
@@ -91,7 +107,7 @@ void main() {
           guestPlayedCards: [cards[3].id, cards[1].id, cards[5].id],
         );
 
-        final matchResult = MatchSolver().calculateMatchResult(
+        final matchResult = matchSolver.calculateMatchResult(
           match,
           state,
         );
@@ -99,6 +115,7 @@ void main() {
       });
 
       test('returns draw when match is draw', () {
+        when(() => gameScriptMachine.evalCardPower(any(), any())).thenReturn(0);
         final cards = List.generate(
           6,
           (i) => Card(
@@ -129,7 +146,7 @@ void main() {
           guestPlayedCards: [cards[3].id, cards[1].id, cards[5].id],
         );
 
-        final matchResult = MatchSolver().calculateMatchResult(
+        final matchResult = matchSolver.calculateMatchResult(
           match,
           state,
         );
@@ -170,7 +187,7 @@ void main() {
         );
 
         expect(
-          () => MatchSolver().calculateRoundResult(
+          () => matchSolver.calculateRoundResult(
             match,
             state,
             2,
@@ -179,7 +196,7 @@ void main() {
         );
       });
 
-      test('return host when the host has won', () {
+      test('correctly call the gameScriptMachine', () {
         final match = Match(
           id: '',
           hostDeck: Deck(
@@ -198,78 +215,16 @@ void main() {
           guestPlayedCards: [cards[3].id, cards[1].id, cards[5].id],
         );
 
-        final matchResult = MatchSolver().calculateRoundResult(
+        when(
+          () => gameScriptMachine.evalCardPower(cards[2].power, cards[1].power),
+        ).thenReturn(1);
+
+        final matchResult = matchSolver.calculateRoundResult(
           match,
           state,
           1,
         );
         expect(matchResult, equals(MatchResult.host));
-      });
-
-      test('return guest when the guest has won', () {
-        final match = Match(
-          id: '',
-          hostDeck: Deck(
-            id: '',
-            cards: [cards[0], cards[2], cards[4]],
-          ),
-          guestDeck: Deck(
-            id: '',
-            cards: [cards[1], cards[3], cards[5]],
-          ),
-        );
-        final state = MatchState(
-          id: '',
-          matchId: '',
-          hostPlayedCards: [cards[0].id, cards[2].id, cards[4].id],
-          guestPlayedCards: [cards[3].id, cards[1].id, cards[5].id],
-        );
-
-        final matchResult = MatchSolver().calculateRoundResult(
-          match,
-          state,
-          2,
-        );
-        expect(matchResult, equals(MatchResult.guest));
-      });
-
-      test('returns draw when match is draw', () {
-        final cards = List.generate(
-          6,
-          (i) => Card(
-            id: 'card_$i',
-            description: '',
-            name: '',
-            image: '',
-            rarity: false,
-            power: 1,
-          ),
-        );
-
-        final match = Match(
-          id: '',
-          hostDeck: Deck(
-            id: '',
-            cards: [cards[0], cards[2], cards[4]],
-          ),
-          guestDeck: Deck(
-            id: '',
-            cards: [cards[1], cards[3], cards[5]],
-          ),
-        );
-        final state = MatchState(
-          id: '',
-          matchId: '',
-          hostPlayedCards: [cards[0].id, cards[2].id, cards[4].id],
-          guestPlayedCards: [cards[3].id, cards[1].id, cards[5].id],
-        );
-
-        final matchResult = MatchSolver().calculateRoundResult(
-          match,
-          state,
-          0,
-        );
-        expect(matchResult, equals(MatchResult.draw));
       });
     });
 
@@ -286,7 +241,7 @@ void main() {
           );
 
           expect(
-            MatchSolver().canPlayCard(matchState, isHost: isHost),
+            matchSolver.canPlayCard(matchState, isHost: isHost),
             isTrue,
           );
         });
@@ -300,7 +255,7 @@ void main() {
           );
 
           expect(
-            MatchSolver().canPlayCard(matchState, isHost: isHost),
+            matchSolver.canPlayCard(matchState, isHost: isHost),
             isTrue,
           );
         });
@@ -314,7 +269,7 @@ void main() {
           );
 
           expect(
-            MatchSolver().canPlayCard(matchState, isHost: isHost),
+            matchSolver.canPlayCard(matchState, isHost: isHost),
             isFalse,
           );
         });
@@ -332,7 +287,7 @@ void main() {
           );
 
           expect(
-            MatchSolver().canPlayCard(matchState, isHost: isHost),
+            matchSolver.canPlayCard(matchState, isHost: isHost),
             isTrue,
           );
         });
@@ -346,7 +301,7 @@ void main() {
           );
 
           expect(
-            MatchSolver().canPlayCard(matchState, isHost: isHost),
+            matchSolver.canPlayCard(matchState, isHost: isHost),
             isTrue,
           );
         });
@@ -360,7 +315,7 @@ void main() {
           );
 
           expect(
-            MatchSolver().canPlayCard(matchState, isHost: isHost),
+            matchSolver.canPlayCard(matchState, isHost: isHost),
             isFalse,
           );
         });

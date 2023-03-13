@@ -38,6 +38,7 @@ void main() {
         MatchRepository(
           cardsRepository: _MockCardRepository(),
           dbClient: _MockDbClient(),
+          matchSolver: _MockMatchSolver(),
         ),
         isNotNull,
       );
@@ -47,6 +48,7 @@ void main() {
       late CardsRepository cardsRepository;
       late DbClient dbClient;
       late MatchRepository matchRepository;
+      late MatchSolver matchSolver;
 
       const matchId = 'matchId';
 
@@ -91,9 +93,12 @@ void main() {
           ),
         );
 
+        matchSolver = _MockMatchSolver();
+
         matchRepository = MatchRepository(
           cardsRepository: cardsRepository,
           dbClient: dbClient,
+          matchSolver: matchSolver,
         );
       });
 
@@ -141,11 +146,13 @@ void main() {
       late CardsRepository cardsRepository;
       late DbClient dbClient;
       late MatchRepository matchRepository;
+      late MatchSolver matchSolver;
 
       const matchId = 'matchId';
       const matchStateId = 'matchStateId';
 
       setUp(() {
+        matchSolver = _MockMatchSolver();
         cardsRepository = _MockCardRepository();
 
         dbClient = _MockDbClient();
@@ -167,6 +174,7 @@ void main() {
         matchRepository = MatchRepository(
           cardsRepository: cardsRepository,
           dbClient: dbClient,
+          matchSolver: matchSolver,
         );
       });
 

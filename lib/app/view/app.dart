@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:game_client/game_client.dart';
+import 'package:game_domain/game_domain.dart';
+import 'package:game_script_machine/game_script_machine.dart';
 import 'package:go_router/go_router.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:provider/provider.dart';
@@ -33,6 +35,8 @@ class App extends StatefulWidget {
     required this.settingsPersistence,
     required this.gameClient,
     required this.matchMakerRepository,
+    required this.matchSolver,
+    required this.gameScriptMachine,
     this.router,
     super.key,
   });
@@ -42,6 +46,10 @@ class App extends StatefulWidget {
   final GameClient gameClient;
 
   final MatchMakerRepository matchMakerRepository;
+
+  final GameScriptMachine gameScriptMachine;
+
+  final MatchSolver matchSolver;
 
   final GoRouter? router;
 
@@ -59,6 +67,8 @@ class _AppState extends State<App> {
         providers: [
           Provider.value(value: widget.gameClient),
           Provider.value(value: widget.matchMakerRepository),
+          Provider.value(value: widget.matchSolver),
+          Provider.value(value: widget.gameScriptMachine),
           Provider<SettingsController>(
             lazy: false,
             create: (context) => SettingsController(
