@@ -1,5 +1,7 @@
+import 'dart:async';
+
 import 'package:authentication_repository/authentication_repository.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,16 +12,20 @@ class _MockFirebaseCore extends Mock
     with MockPlatformInterfaceMixin
     implements FirebasePlatform {}
 
-class _MockFirebaseAuth extends Mock implements FirebaseAuth {}
+class _MockFirebaseAuth extends Mock implements fb.FirebaseAuth {}
 
-class _MockUserCredential extends Mock implements UserCredential {}
+class _MockFirebaseUser extends Mock implements fb.User {}
+
+class _MockUserCredential extends Mock implements fb.UserCredential {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('AuthenticationRepository', () {
-    late FirebaseAuth firebaseAuth;
-    late UserCredential userCredential;
+    const userId = 'mock-uid';
+
+    late fb.FirebaseAuth firebaseAuth;
+    late fb.UserCredential userCredential;
     late AuthenticationRepository authenticationRepository;
 
     setUp(() {
@@ -54,6 +60,31 @@ void main() {
       expect(AuthenticationRepository(), isNotNull);
     });
 
+    group('user', () {
+      test('emits User.unauthenticated when firebase user is null', () async {
+        when(() => firebaseAuth.authStateChanges()).thenAnswer(
+          (_) => Stream.value(null),
+        );
+        await expectLater(
+          authenticationRepository.user,
+          emitsInOrder(const <User>[User.unauthenticated]),
+        );
+      });
+
+      test('emits returning user when firebase user is not null', () async {
+        final firebaseUser = _MockFirebaseUser();
+        when(() => firebaseUser.uid).thenReturn(userId);
+        when(() => firebaseAuth.authStateChanges()).thenAnswer(
+          (_) => Stream.value(firebaseUser),
+        );
+
+        await expectLater(
+          authenticationRepository.user,
+          emitsInOrder(const <User>[User(id: userId)]),
+        );
+      });
+    });
+
     group('signInAnonymously', () {
       test('calls signInAnonymously on FirebaseAuth', () async {
         when(() => firebaseAuth.signInAnonymously()).thenAnswer(
@@ -73,6 +104,31 @@ void main() {
           () => authenticationRepository.signInAnonymously(),
           throwsA(isA<AuthenticationException>()),
         );
+      });
+    });
+
+    group('dispose', () {
+      test('cancels internal subscriptions', () async {
+        final controller = StreamController<fb.User>();
+        final emittedUsers = <User>[];
+        final firebaseUser = _MockFirebaseUser();
+
+        when(() => firebaseUser.uid).thenReturn(userId);
+        when(() => firebaseAuth.authStateChanges()).thenAnswer(
+          (_) => controller.stream,
+        );
+
+        final subscription = authenticationRepository.user.listen(
+          emittedUsers.add,
+        );
+        authenticationRepository.dispose();
+
+        controller.add(firebaseUser);
+        await Future<void>.delayed(Duration.zero);
+
+        expect(emittedUsers, isEmpty);
+
+        await subscription.cancel();
       });
     });
   });
