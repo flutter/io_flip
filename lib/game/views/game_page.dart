@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_client/game_client.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:top_dash/game/game.dart';
@@ -29,9 +30,11 @@ class GamePage extends StatelessWidget {
       create: (context) {
         final gameClient = context.read<GameClient>();
         final matchMakerRepository = context.read<MatchMakerRepository>();
+        final matchSolver = context.read<MatchSolver>();
         return GameBloc(
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
+          matchSolver: matchSolver,
           isHost: isHost,
         )..add(MatchRequested(matchId));
       },

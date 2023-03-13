@@ -1,4 +1,5 @@
 import 'package:game_domain/game_domain.dart';
+import 'package:game_script_machine/game_script_machine.dart';
 
 /// {@template match_resolution_failure}
 /// Throw when a round cannot be resolved.
@@ -24,7 +25,11 @@ class MatchResolutionFailure implements Exception {
 /// {@endtemplate}
 class MatchSolver {
   /// {@macro match_solver}
-  const MatchSolver();
+  const MatchSolver({
+    required GameScriptMachine gameScriptMachine,
+  }) : _gameScriptMachine = gameScriptMachine;
+
+  final GameScriptMachine _gameScriptMachine;
 
   /// Calculates and return the result of a match.
   MatchResult calculateMatchResult(Match match, MatchState state) {
@@ -83,12 +88,15 @@ class MatchSolver {
     final guestCard =
         match.guestDeck.cards.firstWhere((card) => card.id == guestCardId);
 
-    if (hostCard.power == guestCard.power) {
+    final evaluation = _gameScriptMachine.evalCardPower(
+      hostCard.power,
+      guestCard.power,
+    );
+
+    if (evaluation == 0) {
       return MatchResult.draw;
     } else {
-      return hostCard.power > guestCard.power
-          ? MatchResult.host
-          : MatchResult.guest;
+      return evaluation > 0 ? MatchResult.host : MatchResult.guest;
     }
   }
 

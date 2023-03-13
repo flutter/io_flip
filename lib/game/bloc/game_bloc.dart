@@ -16,8 +16,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   GameBloc({
     required GameClient gameClient,
     required repo.MatchMakerRepository matchMakerRepository,
+    required MatchSolver matchSolver,
     required this.isHost,
-    MatchSolver matchSolver = const MatchSolver(),
     this.timeOutPeriod = defaultTimeOutPeriod,
     this.pingInterval = defaultPingInterval,
     ValueGetter<Timestamp> now = Timestamp.now,

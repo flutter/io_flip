@@ -13,6 +13,7 @@ dependencies:
     path: packages/authentication_repository
   bloc: ^8.1.1
   cloud_firestore: ^4.4.3
+  code_text_field: ^1.1.0
   equatable: ^2.0.5
   firebase_auth: ^4.2.9
   firebase_core: ^2.5.0
@@ -21,13 +22,17 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.2
+  flutter_highlight: ^0.7.0
   flutter_localizations:
     sdk: flutter
   game_client:
     path: packages/game_client
   game_domain:
     path: api/packages/game_domain
+  game_script_machine:
+    path: api/packages/game_script_machine
   go_router: ^6.2.0
+  highlight: ^0.7.0
   intl: ^0.17.0
   logging: ^1.1.1
   match_maker_repository:

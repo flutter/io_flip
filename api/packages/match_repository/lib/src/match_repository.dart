@@ -16,7 +16,7 @@ class MatchRepository {
   const MatchRepository({
     required CardsRepository cardsRepository,
     required DbClient dbClient,
-    MatchSolver matchSolver = const MatchSolver(),
+    required MatchSolver matchSolver,
   })  : _cardsRepository = cardsRepository,
         _dbClient = dbClient,
         _matchSolver = matchSolver;
