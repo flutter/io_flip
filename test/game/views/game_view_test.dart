@@ -5,6 +5,7 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/game/game.dart';
@@ -195,6 +196,35 @@ void main() {
       );
 
       testWidgets(
+        'pops navigation when the replay button is tapped',
+        (tester) async {
+          final goRouter = MockGoRouter();
+
+          mockState(
+            baseState.copyWith(
+              matchState: MatchState(
+                id: '',
+                matchId: '',
+                guestPlayedCards: const [],
+                hostPlayedCards: const [],
+                result: MatchResult.guest,
+              ),
+            ),
+          );
+          when(bloc.hasPlayerWon).thenReturn(true);
+          await tester.pumpSubject(
+            bloc,
+            goRouter: goRouter,
+          );
+
+          await tester.tap(find.text('Replay'));
+          await tester.pumpAndSettle();
+
+          verify(goRouter.pop).called(1);
+        },
+      );
+
+      testWidgets(
         'plays a player card on tap',
         (tester) async {
           mockState(baseState);
@@ -369,12 +399,18 @@ void main() {
 }
 
 extension GameViewTest on WidgetTester {
-  Future<void> pumpSubject(GameBloc bloc) {
+  Future<void> pumpSubject(
+    GameBloc bloc, {
+    GoRouter? goRouter,
+  }) {
     return mockNetworkImages(() {
       return pumpApp(
-        BlocProvider<GameBloc>.value(
-          value: bloc,
-          child: GameView(),
+        MockGoRouterProvider(
+          goRouter: goRouter ?? MockGoRouter(),
+          child: BlocProvider<GameBloc>.value(
+            value: bloc,
+            child: GameView(),
+          ),
         ),
       );
     });
