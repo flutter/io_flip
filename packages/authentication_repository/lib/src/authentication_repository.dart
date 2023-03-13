@@ -1,4 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:async';
+
+import 'package:authentication_repository/authentication_repository.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
 
 /// {@template authentication_exception}
 /// Exception thrown when an authentication process fails.
@@ -20,19 +23,52 @@ class AuthenticationException implements Exception {
 class AuthenticationRepository {
   /// {@macro authentication_repository}
   AuthenticationRepository({
-    FirebaseAuth? firebaseAuth,
-  }) : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
+    fb.FirebaseAuth? firebaseAuth,
+  })  : _firebaseAuth = firebaseAuth ?? fb.FirebaseAuth.instance,
+        _userController = StreamController<User>.broadcast();
 
-  final FirebaseAuth _firebaseAuth;
+  final fb.FirebaseAuth _firebaseAuth;
+  final StreamController<User> _userController;
+  StreamSubscription<fb.User?>? _firebaseUserSubscription;
+
+  /// Stream of [User] which will emit the current user when
+  /// the authentication state changes.
+  ///
+  /// Emits [User.unauthenticated] if the user is not authenticated.
+  Stream<User> get user {
+    _firebaseUserSubscription ??=
+        _firebaseAuth.authStateChanges().listen((firebaseUser) {
+      _userController.add(
+        firebaseUser?.toUser ?? User.unauthenticated,
+      );
+    });
+
+    return _userController.stream;
+  }
 
   /// Sign in the user anonymously.
   ///
   /// If the sign in fails, an [AuthenticationException] is thrown.
   Future<void> signInAnonymously() async {
     try {
-      await _firebaseAuth.signInAnonymously();
+      final userCredential = await _firebaseAuth.signInAnonymously();
+      _userController.add(userCredential.toUser);
     } on Exception catch (error, stackTrace) {
       throw AuthenticationException(error, stackTrace);
     }
   }
+
+  /// Disposes any internal resources.
+  void dispose() {
+    _firebaseUserSubscription?.cancel();
+    _userController.close();
+  }
+}
+
+extension on fb.User {
+  User get toUser => User(id: uid);
+}
+
+extension on fb.UserCredential {
+  User get toUser => user?.toUser ?? User.unauthenticated;
 }
