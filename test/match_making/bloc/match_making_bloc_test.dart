@@ -17,7 +17,7 @@ class _MockGameClient extends Mock implements GameClient {}
 
 class _MockUser extends Mock implements User {
   @override
-  String get id => 'mock-id';
+  String get id => 'mock-userId';
 }
 
 void main() {

@@ -118,7 +118,7 @@ void main() {
 
         final id = await client.createDeck(
           cardIds: ['a', 'b', 'c'],
-          userId: 'mock-id',
+          userId: 'mock-userId',
         );
 
         expect(id, equals('deck'));
@@ -136,7 +136,10 @@ void main() {
         );
 
         await expectLater(
-          () => client.createDeck(cardIds: ['a', 'b', 'c'], userId: 'mock-id'),
+          () => client.createDeck(
+            cardIds: ['a', 'b', 'c'],
+            userId: 'mock-userId',
+          ),
           throwsA(
             isA<GameClientError>().having(
               (e) => e.cause,
@@ -154,7 +157,10 @@ void main() {
         when(() => response.body).thenReturn('Ops');
 
         await expectLater(
-          () => client.createDeck(cardIds: ['a', 'b', 'c'], userId: 'mock-id'),
+          () => client.createDeck(
+            cardIds: ['a', 'b', 'c'],
+            userId: 'mock-userId',
+          ),
           throwsA(
             isA<GameClientError>().having(
               (e) => e.cause,

@@ -99,7 +99,7 @@ class CardsRepository {
   }) {
     return _dbClient.add('decks', {
       'cards': cardIds,
-      'uid': userId,
+      'userId': userId,
     });
   }
 
