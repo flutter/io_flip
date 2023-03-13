@@ -47,6 +47,7 @@ void main() async {
           matchMakerRepository: MatchMakerRepository(db: firestore),
           matchSolver: MatchSolver(gameScriptMachine: gameScriptMachine),
           gameScriptMachine: gameScriptMachine,
+          user: await authenticationRepository.user.first,
         );
       },
     ),

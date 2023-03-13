@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_client/game_client.dart';
 import 'package:go_router/go_router.dart';
@@ -13,6 +14,8 @@ import '../../helpers/helpers.dart';
 class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
 
 class _MockGameClient extends Mock implements GameClient {}
+
+class _MockUser extends Mock implements User {}
 
 class _MockGoRouterState extends Mock implements GoRouterState {}
 
@@ -84,6 +87,7 @@ extension MatchMakingPageTest on WidgetTester {
             create: (_) => _MockMatchMakerRepository(),
           ),
           Provider<GameClient>(create: (_) => _MockGameClient()),
+          Provider<User>(create: (_) => _MockUser()),
         ],
         child: MatchMakingPage(
           playerCardIds: const ['a', 'b', 'c'],

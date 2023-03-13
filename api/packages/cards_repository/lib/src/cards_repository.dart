@@ -93,9 +93,13 @@ class CardsRepository {
   }
 
   /// Creates a deck with the given cards.
-  Future<String> createDeck(List<String> cardIds) {
+  Future<String> createDeck({
+    required List<String> cardIds,
+    required String userId,
+  }) {
     return _dbClient.add('decks', {
       'cards': cardIds,
+      'uid': userId,
     });
   }
 

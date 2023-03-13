@@ -1,3 +1,4 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:game_client/game_client.dart';
 import 'package:game_domain/game_domain.dart';
@@ -37,20 +38,17 @@ class App extends StatefulWidget {
     required this.matchMakerRepository,
     required this.matchSolver,
     required this.gameScriptMachine,
+    required this.user,
     this.router,
     super.key,
   });
 
   final SettingsPersistence settingsPersistence;
-
   final GameClient gameClient;
-
   final MatchMakerRepository matchMakerRepository;
-
-  final GameScriptMachine gameScriptMachine;
-
   final MatchSolver matchSolver;
-
+  final GameScriptMachine gameScriptMachine;
+  final User user;
   final GoRouter? router;
 
   @override
@@ -69,6 +67,7 @@ class _AppState extends State<App> {
           Provider.value(value: widget.matchMakerRepository),
           Provider.value(value: widget.matchSolver),
           Provider.value(value: widget.gameScriptMachine),
+          Provider.value(value: widget.user),
           Provider<SettingsController>(
             lazy: false,
             create: (context) => SettingsController(

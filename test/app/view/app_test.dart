@@ -1,3 +1,4 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_client/game_client.dart';
@@ -35,6 +36,8 @@ class _MockMatchSolver extends Mock implements MatchSolver {}
 
 class _MockGameScriptEngine extends Mock implements GameScriptMachine {}
 
+class _MockUser extends Mock implements User {}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -47,6 +50,7 @@ void main() {
           matchMakerRepository: _MockMatchMakerRepository(),
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
+          user: _MockUser(),
         ),
       );
 
@@ -119,6 +123,7 @@ void main() {
           matchMakerRepository: _MockMatchMakerRepository(),
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
+          user: _MockUser(),
         ),
       );
 
@@ -133,6 +138,7 @@ void main() {
           matchMakerRepository: _MockMatchMakerRepository(),
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
+          user: _MockUser(),
         ),
       );
 
@@ -152,6 +158,7 @@ void main() {
           matchMakerRepository: _MockMatchMakerRepository(),
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
+          user: _MockUser(),
         ),
       );
 
@@ -171,6 +178,7 @@ void main() {
             matchMakerRepository: _MockMatchMakerRepository(),
             matchSolver: _MockMatchSolver(),
             gameScriptMachine: _MockGameScriptEngine(),
+            user: _MockUser(),
           ),
         );
 
@@ -194,6 +202,7 @@ void main() {
           matchMakerRepository: _MockMatchMakerRepository(),
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
+          user: _MockUser(),
         ),
       );
 
@@ -215,6 +224,7 @@ void main() {
             matchMakerRepository: _MockMatchMakerRepository(),
             matchSolver: _MockMatchSolver(),
             gameScriptMachine: _MockGameScriptEngine(),
+            user: _MockUser(),
           ),
         );
 
