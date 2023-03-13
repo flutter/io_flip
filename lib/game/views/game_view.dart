@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:go_router/go_router.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash/widgets/widgets.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
@@ -219,7 +220,17 @@ class _BoardCenter extends StatelessWidget {
                 ? 'Win'
                 : 'Lose';
         return Center(
-          child: Text('Game ended: $result'),
+          child: Column(
+            children: [
+              Text('Game ended: $result'),
+              const SizedBox(height: TopDashSpacing.sm),
+              // TODO(willhlas): add to l10n and update design once ready.
+              ElevatedButton(
+                onPressed: () => GoRouter.of(context).pop(),
+                child: const Text('Replay'),
+              ),
+            ],
+          ),
         );
       }
     }
