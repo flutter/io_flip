@@ -31,8 +31,15 @@ class DbClient {
   /// {@macro db_client}
   ///
   /// This factory returns an already initialized instance of the client.
-  factory DbClient.initialize(String projectId) {
-    Firestore.initialize(projectId);
+  factory DbClient.initialize(
+    String projectId, {
+    bool useEmulator = false,
+  }) {
+    Firestore.initialize(
+      projectId,
+      emulator: useEmulator ? Emulator('127.0.0.1', 8081) : null,
+    );
+
     return DbClient(firestore: Firestore.instance);
   }
 

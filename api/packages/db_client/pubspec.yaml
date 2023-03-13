@@ -8,7 +8,10 @@ environment:
 
 dependencies:
   equatable: ^2.0.5
-  firedart: ^0.9.0+1
+  firedart:
+    git:
+      url: https://github.com/willhlas/firedart.git
+      ref: master
 
 dev_dependencies:
   mocktail: ^0.3.0
