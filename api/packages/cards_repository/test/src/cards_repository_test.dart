@@ -34,10 +34,16 @@ void main() {
       when(cardRng.rollRarity).thenReturn(false);
       when(
         () => cardRng.rollAttribute(
-          base: any(named: 'base'),
+          base: 10,
           modifier: any(named: 'modifier'),
         ),
       ).thenReturn(10);
+      when(
+        () => cardRng.rollAttribute(
+          base: Suit.values.length - 1,
+          modifier: any(named: 'modifier'),
+        ),
+      ).thenReturn(Suit.air.index);
       imageModelRepository = _MockImageModelRepository();
       languageModelRepository = _MockLanguageModelRepository();
 
@@ -85,6 +91,7 @@ void main() {
             image: 'https://image.png',
             rarity: false,
             power: 10,
+            suit: Suit.air,
           ),
         );
       });
@@ -116,6 +123,7 @@ void main() {
             image: 'https://image.png',
             rarity: true,
             power: 10,
+            suit: Suit.air,
           ),
         );
 
@@ -162,6 +170,7 @@ void main() {
               'image': cardId,
               'power': 10,
               'rarity': false,
+              'suit': 'air',
             },
           ),
         );
@@ -183,6 +192,7 @@ void main() {
                   image: cardId,
                   power: 10,
                   rarity: false,
+                  suit: Suit.air,
                 ),
               ],
             ),
@@ -210,6 +220,7 @@ void main() {
         image: 'image',
         power: 10,
         rarity: true,
+        suit: Suit.air,
       );
 
       test('returns the card', () async {
@@ -222,6 +233,7 @@ void main() {
               'image': 'image',
               'power': 10,
               'rarity': true,
+              'suit': 'air',
             },
           ),
         );

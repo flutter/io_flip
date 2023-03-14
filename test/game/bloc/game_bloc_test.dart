@@ -165,6 +165,7 @@ void main() {
                 image: '',
                 power: 10,
                 rarity: false,
+                suit: Suit.air,
               ),
               Card(
                 id: 'card2',
@@ -173,6 +174,7 @@ void main() {
                 image: '',
                 power: 10,
                 rarity: false,
+                suit: Suit.air,
               ),
               Card(
                 id: 'card3',
@@ -181,6 +183,7 @@ void main() {
                 image: '',
                 power: 10,
                 rarity: false,
+                suit: Suit.air,
               ),
             ],
           ),
@@ -194,6 +197,7 @@ void main() {
                 image: '',
                 power: 10,
                 rarity: false,
+                suit: Suit.air,
               ),
               Card(
                 id: 'card5',
@@ -202,6 +206,7 @@ void main() {
                 image: '',
                 power: 10,
                 rarity: false,
+                suit: Suit.air,
               ),
               Card(
                 id: 'card6',
@@ -210,6 +215,7 @@ void main() {
                 image: '',
                 power: 10,
                 rarity: false,
+                suit: Suit.air,
               ),
             ],
           ),
@@ -800,6 +806,7 @@ void main() {
           image: '',
           power: 10,
           rarity: false,
+          suit: Suit.air,
         );
 
         final baseState = MatchLoadedState(

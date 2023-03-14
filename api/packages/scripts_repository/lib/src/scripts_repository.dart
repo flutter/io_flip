@@ -13,6 +13,47 @@ class ScriptsRepository {
 
   /// The default script, used when none is found in the firebase.
   static const defaultLogic = '''
+fun compareSuits(suitA, suitB) -> int {
+  when (suitA) {
+    'fire' -> {
+      when (suitB) {
+        'air', 'metal' -> return 1;
+        'water', 'earth' -> return -1;
+        else -> return 0;
+      }
+    }
+    'air' -> {
+      when (suitB) {
+        'water', 'earth' -> return 1;
+        'fire', 'metal' -> return -1;
+        else -> return 0;
+      }
+    }
+    'metal' -> {
+      when (suitB) {
+        'water', 'air' -> return 1;
+        'fire', 'earth' -> return -1;
+        else -> return 0;
+      }
+    }
+    'earth' -> {
+      when (suitB) {
+        'fire', 'metal' -> return 1;
+        'water', 'air' -> return -1;
+        else -> return 0;
+      }
+    }
+    'water' -> {
+      when (suitB) {
+        'fire', 'earth' -> return 1;
+        'metal', 'air' -> return -1;
+        else -> return 0;
+      }
+    }
+    else -> return 0;
+  }
+}
+
 fun compareCards(a, b) -> int {
   if (a > b) {
     return 1;

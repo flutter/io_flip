@@ -12,6 +12,7 @@ void main() {
       image: '',
       rarity: false,
       power: 1,
+      suit: Suit.air,
     );
     const card2 = Card(
       id: 'card2',
@@ -20,6 +21,7 @@ void main() {
       image: '',
       rarity: false,
       power: 1,
+      suit: Suit.air,
     );
 
     test('can be instantiated', () {

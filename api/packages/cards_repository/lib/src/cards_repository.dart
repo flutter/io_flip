@@ -73,6 +73,7 @@ class CardsRepository {
     final image = values.last;
     final rarity = isRare;
     final power = _rng.rollAttribute(base: 10, modifier: modifier);
+    final suit = Suit.values[_rng.rollAttribute(base: Suit.values.length - 1)];
 
     final id = await _dbClient.add('cards', {
       'name': name,
@@ -80,6 +81,7 @@ class CardsRepository {
       'image': image,
       'rarity': rarity,
       'power': power,
+      'suit': suit.name,
     });
 
     return Card(
@@ -89,6 +91,7 @@ class CardsRepository {
       image: image,
       rarity: isRare,
       power: power,
+      suit: suit,
     );
   }
 

@@ -88,10 +88,16 @@ class MatchSolver {
     final guestCard =
         match.guestDeck.cards.firstWhere((card) => card.id == guestCardId);
 
-    final evaluation = _gameScriptMachine.evalCardPower(
-      hostCard.power,
-      guestCard.power,
+    var evaluation = _gameScriptMachine.evalSuits(
+      hostCard.suit.name,
+      guestCard.suit.name,
     );
+    if (evaluation == 0) {
+      evaluation = _gameScriptMachine.evalCardPower(
+        hostCard.power,
+        guestCard.power,
+      );
+    }
 
     if (evaluation == 0) {
       return MatchResult.draw;

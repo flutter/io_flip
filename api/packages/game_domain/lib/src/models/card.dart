@@ -3,6 +3,24 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'card.g.dart';
 
+/// Represents the suit or family of card.
+enum Suit {
+  /// Represents the suit of fire.
+  fire,
+
+  /// Represents the suit of air.
+  air,
+
+  /// Represents the suit of earth.
+  earth,
+
+  /// Represents the suit of metal.
+  metal,
+
+  /// Represents the suit of water.
+  water,
+}
+
 /// {@template card}
 /// Model representing a card.
 /// {@endtemplate}
@@ -16,6 +34,7 @@ class Card extends Equatable {
     required this.image,
     required this.power,
     required this.rarity,
+    required this.suit,
   });
 
   /// {@macro card}
@@ -45,6 +64,10 @@ class Card extends Equatable {
   @JsonKey()
   final bool rarity;
 
+  /// Suit
+  @JsonKey()
+  final Suit suit;
+
   /// Returns a json representation from this instance.
   Map<String, dynamic> toJson() => _$CardToJson(this);
 
@@ -56,5 +79,6 @@ class Card extends Equatable {
         image,
         power,
         rarity,
+        suit,
       ];
 }

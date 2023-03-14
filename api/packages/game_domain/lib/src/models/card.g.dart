@@ -13,6 +13,7 @@ Card _$CardFromJson(Map<String, dynamic> json) => Card(
       image: json['image'] as String,
       power: json['power'] as int,
       rarity: json['rarity'] as bool,
+      suit: $enumDecode(_$SuitEnumMap, json['suit']),
     );
 
 Map<String, dynamic> _$CardToJson(Card instance) => <String, dynamic>{
@@ -22,4 +23,13 @@ Map<String, dynamic> _$CardToJson(Card instance) => <String, dynamic>{
       'image': instance.image,
       'power': instance.power,
       'rarity': instance.rarity,
+      'suit': _$SuitEnumMap[instance.suit]!,
     };
+
+const _$SuitEnumMap = {
+  Suit.fire: 'fire',
+  Suit.air: 'air',
+  Suit.earth: 'earth',
+  Suit.metal: 'metal',
+  Suit.water: 'water',
+};

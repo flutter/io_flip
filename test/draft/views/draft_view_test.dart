@@ -26,6 +26,7 @@ void main() {
       rarity: false,
       image: '',
       power: 1,
+      suit: Suit.air,
     );
 
     const card2 = Card(
@@ -35,6 +36,7 @@ void main() {
       rarity: true,
       image: '',
       power: 1,
+      suit: Suit.air,
     );
 
     const card3 = Card(
@@ -44,6 +46,7 @@ void main() {
       rarity: true,
       image: '',
       power: 1,
+      suit: Suit.air,
     );
 
     void mockState(List<DraftState> states) {
