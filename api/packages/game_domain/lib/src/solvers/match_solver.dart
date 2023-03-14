@@ -89,7 +89,11 @@ class MatchSolver {
         match.guestDeck.cards.firstWhere((card) => card.id == guestCardId);
 
     final comparison = _gameScriptMachine.compare(hostCard, guestCard);
-    return comparison > 0 ? MatchResult.host : MatchResult.guest;
+    if (comparison == 0) {
+      return MatchResult.draw;
+    } else {
+      return comparison > 0 ? MatchResult.host : MatchResult.guest;
+    }
   }
 
   /// Returns true when player, determined by [isHost] can play a card

@@ -8,6 +8,20 @@ import 'package:test/test.dart';
 class _MockGameScriptEngine extends Mock implements GameScriptMachine {}
 
 void main() {
+  setUpAll(() {
+    registerFallbackValue(
+      Card(
+        id: 'card',
+        description: '',
+        name: '',
+        image: '',
+        rarity: false,
+        power: 1,
+        suit: Suit.air,
+      ),
+    );
+  });
+
   group('MatchSolver', () {
     late GameScriptMachine gameScriptMachine;
     late MatchSolver matchSolver;
