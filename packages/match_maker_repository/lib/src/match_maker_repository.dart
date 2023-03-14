@@ -27,6 +27,7 @@ class MatchMakerRepository {
         _inviteCode = inviteCode ?? defautInviteCodeGenerator {
     collection = db.collection('matches');
     matchStatesCollection = db.collection('match_states');
+    scoreCardCollection = db.collection('score_cards');
   }
 
   static const _defaultRetryDelay = 2;
@@ -49,6 +50,9 @@ class MatchMakerRepository {
 
   /// Default generator of invite codes.
   static String defautInviteCodeGenerator() => const Uuid().v4();
+
+  /// The [CollectionReference] for the scoreCards.
+  late final CollectionReference<Map<String, dynamic>> scoreCardCollection;
 
   /// Watches a match.
   Stream<Match> watchMatch(String id) {
@@ -119,6 +123,15 @@ class MatchMakerRepository {
       guestPing: guestPing,
       inviteCode: inviteCode,
     );
+  }
+
+  /// Gets the user's ScoreCard.
+  Future<ScoreCard> getScoreCard(String id) async {
+    final snapshot = await scoreCardCollection.doc(id).get();
+    if (!snapshot.exists) {
+      return _createScoreCard(id);
+    }
+    return ScoreCard.fromJson(snapshot.data()!..addAll({'id': snapshot.id}));
   }
 
   /// Finds a match.
@@ -229,6 +242,18 @@ class MatchMakerRepository {
       host: id,
       hostPing: now,
       inviteCode: inviteCode,
+    );
+  }
+
+  Future<ScoreCard> _createScoreCard(String id) async {
+    print('creating scorecard: $id');
+    await scoreCardCollection.doc(id).set({
+      'wins': 0,
+      'longestStreak': 0,
+      'currentStreak': 0,
+    });
+    return ScoreCard(
+      id: id,
     );
   }
 }

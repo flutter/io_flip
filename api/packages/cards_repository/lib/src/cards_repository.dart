@@ -118,6 +118,7 @@ class CardsRepository {
     );
 
     return Deck.fromJson({
+      'userId': deckData.data['userId'],
       'id': deckData.id,
       'cards': cardsData
           .whereType<DbEntityRecord>()
