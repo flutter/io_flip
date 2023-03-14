@@ -9,34 +9,15 @@
       "request": "launch",
       "type": "dart",
       "program": "lib/main_development.dart",
-      "args": [
-        "--flavor",
-        "development",
-        "--target",
-        "lib/main_development.dart"
-      ]
+      "args": ["--flavor", "development", "--target", "lib/main_development.dart"]
     },
     {
-      "name": "Launch with emulators",
+      "name": "Launch local",
       "request": "launch",
       "type": "dart",
-      "program": "lib/main_development.dart",
+      "program": "lib/main_local.dart",
       "preLaunchTask": "emulate",
-      "args": [
-        "--flavor",
-        "development",
-        "--target",
-        "lib/main_development.dart",
-        "--dart-define",
-        "USE_EMULATORS=true"
-      ],
-    },
-    {
-      "name": "Launch staging",
-      "request": "launch",
-      "type": "dart",
-      "program": "lib/main_staging.dart",
-      "args": ["--flavor", "staging", "--target", "lib/main_staging.dart"]
+      "args": ["--flavor", "development", "--target", "lib/main_local.dart"]
     },
     {
       "name": "Launch production",
