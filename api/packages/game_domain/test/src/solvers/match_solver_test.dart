@@ -59,8 +59,8 @@ void main() {
         );
       });
 
-      test('return host when the host has won by suit', () {
-        when(() => gameScriptMachine.evalSuits(any(), any())).thenReturn(1);
+      test('return host when the host has won', () {
+        when(() => gameScriptMachine.compare(any(), any())).thenReturn(1);
 
         final match = Match(
           id: '',
@@ -87,66 +87,8 @@ void main() {
         expect(matchResult, equals(MatchResult.host));
       });
 
-      test('return host when the host has won by card power', () {
-        when(() => gameScriptMachine.evalSuits(any(), any())).thenReturn(0);
-        when(() => gameScriptMachine.evalCardPower(any(), any())).thenReturn(1);
-
-        final match = Match(
-          id: '',
-          hostDeck: Deck(
-            id: '',
-            cards: [cards[0], cards[2], cards[4]],
-          ),
-          guestDeck: Deck(
-            id: '',
-            cards: [cards[1], cards[3], cards[5]],
-          ),
-        );
-        final state = MatchState(
-          id: '',
-          matchId: '',
-          hostPlayedCards: [cards[4].id, cards[2].id, cards[0].id],
-          guestPlayedCards: [cards[3].id, cards[1].id, cards[5].id],
-        );
-
-        final matchResult = matchSolver.calculateMatchResult(
-          match,
-          state,
-        );
-        expect(matchResult, equals(MatchResult.host));
-      });
-
-      test('return guest when the guest has won by suit', () {
-        when(() => gameScriptMachine.evalSuits(any(), any())).thenReturn(-1);
-        final match = Match(
-          id: '',
-          hostDeck: Deck(
-            id: '',
-            cards: [cards[0], cards[2], cards[4]],
-          ),
-          guestDeck: Deck(
-            id: '',
-            cards: [cards[1], cards[3], cards[5]],
-          ),
-        );
-        final state = MatchState(
-          id: '',
-          matchId: '',
-          hostPlayedCards: [cards[0].id, cards[2].id, cards[4].id],
-          guestPlayedCards: [cards[3].id, cards[1].id, cards[5].id],
-        );
-
-        final matchResult = matchSolver.calculateMatchResult(
-          match,
-          state,
-        );
-        expect(matchResult, equals(MatchResult.guest));
-      });
-
-      test('return guest when the guest has won by card power', () {
-        when(() => gameScriptMachine.evalSuits(any(), any())).thenReturn(0);
-        when(() => gameScriptMachine.evalCardPower(any(), any()))
-            .thenReturn(-1);
+      test('return guest when the guest has won', () {
+        when(() => gameScriptMachine.compare(any(), any())).thenReturn(-1);
         final match = Match(
           id: '',
           hostDeck: Deck(
@@ -173,8 +115,8 @@ void main() {
       });
 
       test('returns draw when match is draw', () {
-        when(() => gameScriptMachine.evalSuits(any(), any())).thenReturn(0);
-        when(() => gameScriptMachine.evalCardPower(any(), any())).thenReturn(0);
+        when(() => gameScriptMachine.compare(any(), any())).thenReturn(0);
+
         final cards = List.generate(
           6,
           (i) => Card(
@@ -276,15 +218,7 @@ void main() {
           guestPlayedCards: [cards[3].id, cards[1].id, cards[5].id],
         );
 
-        when(
-          () => gameScriptMachine.evalSuits(
-            cards[2].suit.name,
-            cards[1].suit.name,
-          ),
-        ).thenReturn(0);
-        when(
-          () => gameScriptMachine.evalCardPower(cards[2].power, cards[1].power),
-        ).thenReturn(1);
+        when(() => gameScriptMachine.compare(cards[2], cards[1])).thenReturn(1);
 
         final matchResult = matchSolver.calculateRoundResult(
           match,
@@ -292,6 +226,7 @@ void main() {
           1,
         );
         expect(matchResult, equals(MatchResult.host));
+        verify(() => gameScriptMachine.compare(cards[2], cards[1])).called(1);
       });
     });
 

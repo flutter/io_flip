@@ -88,22 +88,8 @@ class MatchSolver {
     final guestCard =
         match.guestDeck.cards.firstWhere((card) => card.id == guestCardId);
 
-    var evaluation = _gameScriptMachine.evalSuits(
-      hostCard.suit.name,
-      guestCard.suit.name,
-    );
-    if (evaluation == 0) {
-      evaluation = _gameScriptMachine.evalCardPower(
-        hostCard.power,
-        guestCard.power,
-      );
-    }
-
-    if (evaluation == 0) {
-      return MatchResult.draw;
-    } else {
-      return evaluation > 0 ? MatchResult.host : MatchResult.guest;
-    }
+    final comparison = _gameScriptMachine.compare(hostCard, guestCard);
+    return comparison > 0 ? MatchResult.host : MatchResult.guest;
   }
 
   /// Returns true when player, determined by [isHost] can play a card

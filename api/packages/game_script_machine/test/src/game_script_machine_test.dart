@@ -1,10 +1,18 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:game_domain/game_domain.dart';
 import 'package:game_script_machine/game_script_machine.dart';
-import 'package:hetu_script/hetu_script.dart';
 import 'package:test/test.dart';
 
 const script = '''
-fun compareSuits(suitA, suitB) -> int {
+fun compareCards(valueA: int, valueB: int, suitA: str, suitB: str) -> int {
+  var evaluation = compareSuits(suitA, suitB);
+  if (evaluation == 0) {
+    evaluation = compareValues(valueA, valueB);
+  }
+  return evaluation;
+}
+
+fun compareSuits(suitA: str, suitB: str) -> int {
   when (suitA) {
     'fire' -> {
       when (suitB) {
@@ -45,7 +53,7 @@ fun compareSuits(suitA, suitB) -> int {
   }
 }
 
-fun compareCards(a, b) -> int {
+fun compareValues(a: int, b: int) -> int {
   if (a > b) {
     return 1;
   } else if (a < b) {
@@ -54,6 +62,16 @@ fun compareCards(a, b) -> int {
     return 0;
   }
 }''';
+
+Card _makeCard(Suit suit, [int power = 0]) => Card(
+      id: 'id',
+      name: 'name',
+      description: 'description',
+      image: 'image',
+      power: power,
+      rarity: false,
+      suit: suit,
+    );
 
 void main() {
   group('GameScriptMachine', () {
@@ -68,81 +86,56 @@ void main() {
       );
     });
 
-    group('evalCardPower', () {
-      test('correctly evaluates the values', () {
-        expect(
-          GameScriptMachine.initialize(script).evalCardPower(10, 5),
-          equals(1),
-        );
-
-        expect(
-          GameScriptMachine.initialize(script).evalCardPower(1, 5),
-          equals(-1),
-        );
-
-        expect(
-          GameScriptMachine.initialize(script).evalCardPower(5, 5),
-          equals(0),
-        );
-      });
-    });
-
-    group('evalSuits', () {
-      test('correctly evaluates the suits', () {
+    group('compare', () {
+      test('correctly evaluates the result for different suits', () {
         final m = GameScriptMachine.initialize(script);
-        expect(m.evalSuits('fire', 'air'), equals(1));
-        expect(m.evalSuits('fire', 'metal'), equals(1));
-        expect(m.evalSuits('fire', 'water'), equals(-1));
-        expect(m.evalSuits('fire', 'earth'), equals(-1));
-        expect(m.evalSuits('fire', 'fire'), equals(0));
 
-        expect(m.evalSuits('air', 'water'), equals(1));
-        expect(m.evalSuits('air', 'earth'), equals(1));
-        expect(m.evalSuits('air', 'fire'), equals(-1));
-        expect(m.evalSuits('air', 'metal'), equals(-1));
-        expect(m.evalSuits('air', 'air'), equals(0));
+        // All the possible pairs of suits, where the first item wins.
+        final pairs = [
+          [Suit.fire, Suit.air],
+          [Suit.fire, Suit.metal],
+          [Suit.air, Suit.water],
+          [Suit.air, Suit.earth],
+          [Suit.metal, Suit.water],
+          [Suit.metal, Suit.air],
+          [Suit.earth, Suit.fire],
+          [Suit.earth, Suit.metal],
+          [Suit.water, Suit.fire],
+          [Suit.water, Suit.earth],
+        ];
 
-        expect(m.evalSuits('metal', 'water'), equals(1));
-        expect(m.evalSuits('metal', 'air'), equals(1));
-        expect(m.evalSuits('metal', 'fire'), equals(-1));
-        expect(m.evalSuits('metal', 'earth'), equals(-1));
-        expect(m.evalSuits('metal', 'metal'), equals(0));
-
-        expect(m.evalSuits('earth', 'fire'), equals(1));
-        expect(m.evalSuits('earth', 'metal'), equals(1));
-        expect(m.evalSuits('earth', 'water'), equals(-1));
-        expect(m.evalSuits('earth', 'air'), equals(-1));
-        expect(m.evalSuits('earth', 'earth'), equals(0));
-
-        expect(m.evalSuits('water', 'fire'), equals(1));
-        expect(m.evalSuits('water', 'earth'), equals(1));
-        expect(m.evalSuits('water', 'metal'), equals(-1));
-        expect(m.evalSuits('water', 'air'), equals(-1));
-        expect(m.evalSuits('water', 'water'), equals(0));
-
-        expect(m.evalSuits('invalid', 'invalid'), equals(0));
+        for (final pair in pairs) {
+          final a = _makeCard(pair[0]);
+          final b = _makeCard(pair[1]);
+          expect(m.compare(a, b), equals(1));
+          expect(m.compare(b, a), equals(-1));
+        }
       });
 
-      test('returns 0 when function not found', () {
-        expect(
-          GameScriptMachine.initialize('').evalSuits('fire', 'metal'),
-          equals(0),
-        );
+      test('correctly evaluates the result for the same suit and value', () {
+        final m = GameScriptMachine.initialize(script);
+
+        for (final suit in Suit.values) {
+          final a = _makeCard(suit);
+          final b = _makeCard(suit);
+          expect(m.compare(a, b), equals(0));
+          expect(m.compare(b, a), equals(0));
+        }
       });
 
-      test('throws error from function', () {
-        const throwingScript = '''
-fun compareSuits(suitA, suitB) -> int {
-  throw 'error';
-}''';
-        expect(
-          () => GameScriptMachine.initialize(throwingScript).evalSuits(
-            'fire',
-            'metal',
-          ),
-          throwsA(isA<HTError>()),
-        );
-      });
+      test(
+        'correctly evaluates the result for the same suit and different values',
+        () {
+          final m = GameScriptMachine.initialize(script);
+
+          for (final suit in Suit.values) {
+            final a = _makeCard(suit, 10);
+            final b = _makeCard(suit, 3);
+            expect(m.compare(a, b), equals(1));
+            expect(m.compare(b, a), equals(-1));
+          }
+        },
+      );
     });
   });
 }
