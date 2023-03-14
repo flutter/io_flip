@@ -21,7 +21,7 @@ void main() {
       image: '',
       rarity: false,
       power: 1,
-      suit: Suit.air,
+      suit: Suit.fire,
     );
 
     test('can be instantiated', () {
@@ -44,6 +44,7 @@ void main() {
               'image': '',
               'rarity': false,
               'power': 1,
+              'suit': 'air',
             },
             {
               'id': 'card2',
@@ -52,6 +53,7 @@ void main() {
               'image': '',
               'rarity': false,
               'power': 1,
+              'suit': 'fire',
             },
           ],
         }),
@@ -70,6 +72,7 @@ void main() {
               'image': '',
               'rarity': false,
               'power': 1,
+              'suit': 'air',
             },
             {
               'id': 'card2',
@@ -78,6 +81,7 @@ void main() {
               'image': '',
               'rarity': false,
               'power': 1,
+              'suit': 'fire',
             },
           ],
         }),

@@ -106,6 +106,7 @@ void main() {
             'image': 'https://image.png',
             'rarity': false,
             'power': 10,
+            'suit': 'air',
           }),
         ).called(1);
       });
