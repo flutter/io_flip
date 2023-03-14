@@ -22,7 +22,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('AuthenticationRepository', () {
-    const userId = 'mock-uid';
+    const userId = 'mock-userId';
 
     late fb.FirebaseAuth firebaseAuth;
     late fb.UserCredential userCredential;

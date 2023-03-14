@@ -2,6 +2,7 @@
 
 import 'dart:async';
 
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,10 +15,16 @@ class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
 
 class _MockGameClient extends Mock implements GameClient {}
 
+class _MockUser extends Mock implements User {
+  @override
+  String get id => 'mock-userId';
+}
+
 void main() {
   group('MatchMakingBloc', () {
     late GameClient gameClient;
     late MatchMakerRepository matchMakerRepository;
+    late User user;
     late StreamController<Match> watchController;
     const deckId = 'deckId';
     final cardIds = ['a', 'b', 'c'];
@@ -25,6 +32,7 @@ void main() {
 
     setUp(() {
       matchMakerRepository = _MockMatchMakerRepository();
+      user = _MockUser();
       watchController = StreamController.broadcast();
       when(() => matchMakerRepository.watchMatch(any()))
           .thenAnswer((_) => watchController.stream);
@@ -32,7 +40,12 @@ void main() {
       timestamp = Timestamp.now();
 
       gameClient = _MockGameClient();
-      when(() => gameClient.createDeck(any())).thenAnswer((_) async => deckId);
+      when(
+        () => gameClient.createDeck(
+          cardIds: any(named: 'cardIds'),
+          userId: any(named: 'userId'),
+        ),
+      ).thenAnswer((_) async => deckId);
     });
 
     test('can be instantiated', () {
@@ -41,6 +54,7 @@ void main() {
           matchMakerRepository: _MockMatchMakerRepository(),
           gameClient: gameClient,
           cardIds: cardIds,
+          user: user,
         ),
         isNotNull,
       );
@@ -52,6 +66,7 @@ void main() {
           matchMakerRepository: _MockMatchMakerRepository(),
           gameClient: gameClient,
           cardIds: cardIds,
+          user: user,
         ).state,
         equals(MatchMakingState.initial()),
       );
@@ -63,6 +78,7 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         gameClient: gameClient,
         cardIds: cardIds,
+        user: user,
         hostWaitTime: Duration.zero,
       ),
       setUp: () {
@@ -100,6 +116,7 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         gameClient: gameClient,
         cardIds: cardIds,
+        user: user,
         hostWaitTime: Duration.zero,
       ),
       setUp: () {
@@ -124,6 +141,7 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         gameClient: gameClient,
         cardIds: cardIds,
+        user: user,
       ),
       setUp: () {
         when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
@@ -164,6 +182,7 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         gameClient: gameClient,
         cardIds: cardIds,
+        user: user,
       )..add(MatchRequested());
 
       expect(
@@ -220,6 +239,7 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         gameClient: gameClient,
         cardIds: cardIds,
+        user: user,
         hostWaitTime: const Duration(milliseconds: 200),
       )..add(MatchRequested());
 
@@ -272,6 +292,7 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         gameClient: gameClient,
         cardIds: cardIds,
+        user: user,
       ),
       setUp: () {
         when(() => matchMakerRepository.createPrivateMatch(deckId)).thenAnswer(
@@ -304,6 +325,7 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         gameClient: gameClient,
         cardIds: cardIds,
+        user: user,
       ),
       setUp: () {
         when(() => matchMakerRepository.createPrivateMatch(deckId)).thenThrow(
@@ -327,6 +349,7 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         gameClient: gameClient,
         cardIds: cardIds,
+        user: user,
       ),
       setUp: () {
         when(
@@ -366,6 +389,7 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         gameClient: gameClient,
         cardIds: cardIds,
+        user: user,
       ),
       setUp: () {
         when(

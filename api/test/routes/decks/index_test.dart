@@ -25,14 +25,19 @@ void main() {
 
     setUp(() {
       cardsRepository = _MockCardsRepository();
-      when(() => cardsRepository.createDeck(any()))
-          .thenAnswer((_) async => 'deckId');
+      when(
+        () => cardsRepository.createDeck(
+          cardIds: any(named: 'cardIds'),
+          userId: any(named: 'userId'),
+        ),
+      ).thenAnswer((_) async => 'deckId');
 
       request = _MockRequest();
       when(() => request.method).thenReturn(HttpMethod.post);
       when(request.json).thenAnswer(
         (_) async => {
-          'cards': ['a', 'b', 'c']
+          'cards': ['a', 'b', 'c'],
+          'userId': 'mock-userId',
         },
       );
 

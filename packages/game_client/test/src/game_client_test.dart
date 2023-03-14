@@ -116,7 +116,10 @@ void main() {
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
         when(() => response.body).thenReturn(jsonEncode({'id': 'deck'}));
 
-        final id = await client.createDeck(['a', 'b', 'c']);
+        final id = await client.createDeck(
+          cardIds: ['a', 'b', 'c'],
+          userId: 'mock-userId',
+        );
 
         expect(id, equals('deck'));
       });
@@ -133,7 +136,10 @@ void main() {
         );
 
         await expectLater(
-          () => client.createDeck(['a', 'b', 'c']),
+          () => client.createDeck(
+            cardIds: ['a', 'b', 'c'],
+            userId: 'mock-userId',
+          ),
           throwsA(
             isA<GameClientError>().having(
               (e) => e.cause,
@@ -151,7 +157,10 @@ void main() {
         when(() => response.body).thenReturn('Ops');
 
         await expectLater(
-          () => client.createDeck(['a', 'b', 'c']),
+          () => client.createDeck(
+            cardIds: ['a', 'b', 'c'],
+            userId: 'mock-userId',
+          ),
           throwsA(
             isA<GameClientError>().having(
               (e) => e.cause,

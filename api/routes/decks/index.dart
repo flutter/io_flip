@@ -15,18 +15,22 @@ FutureOr<Response> onRequest(RequestContext context) {
 FutureOr<Response> _createDeck(RequestContext context) async {
   final json = await context.request.json() as Map<String, dynamic>;
   final cards = json['cards'];
+  final userId = json['userId'];
 
-  if (!_isListOfString(cards)) {
+  if (!_isListOfString(cards) || userId is! String) {
     context.read<Logger>().warning(
           'Received invalid payload: $json',
         );
     return Response(statusCode: HttpStatus.badRequest);
   }
-
   final ids = (cards as List).cast<String>();
 
   final cardsRepository = context.read<CardsRepository>();
-  final deckId = await cardsRepository.createDeck(ids);
+  final deckId = await cardsRepository.createDeck(
+    cardIds: ids,
+    userId: userId,
+  );
+
   return Response.json(body: {'id': deckId});
 }
 

@@ -82,10 +82,16 @@ class GameClient {
   /// Post /decks
   ///
   /// Returns the id of the created deck.
-  Future<String> createDeck(List<String> cardIds) async {
+  Future<String> createDeck({
+    required List<String> cardIds,
+    required String userId,
+  }) async {
     final response = await _post(
       Uri.parse('$_endpoint/decks'),
-      body: jsonEncode({'cards': cardIds}),
+      body: jsonEncode({
+        'cards': cardIds,
+        'userId': userId,
+      }),
     );
 
     if (response.statusCode != HttpStatus.ok) {
