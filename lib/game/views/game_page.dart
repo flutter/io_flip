@@ -1,3 +1,4 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_client/game_client.dart';
@@ -31,12 +32,14 @@ class GamePage extends StatelessWidget {
         final gameClient = context.read<GameClient>();
         final matchMakerRepository = context.read<MatchMakerRepository>();
         final matchSolver = context.read<MatchSolver>();
+        final user = context.read<User>();
         return GameBloc(
-          gameClient: gameClient,
-          matchMakerRepository: matchMakerRepository,
-          matchSolver: matchSolver,
-          isHost: isHost,
-        )..add(MatchRequested(matchId));
+            gameClient: gameClient,
+            matchMakerRepository: matchMakerRepository,
+            matchSolver: matchSolver,
+            isHost: isHost,
+            user: user)
+          ..add(MatchRequested(matchId));
       },
       child: const GameView(),
     );

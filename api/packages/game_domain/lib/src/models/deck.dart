@@ -12,6 +12,7 @@ class Deck extends Equatable {
   /// {@macro deck}
   const Deck({
     required this.id,
+    required this.userId,
     required this.cards,
   });
 
@@ -21,6 +22,10 @@ class Deck extends Equatable {
   /// Deck id.
   @JsonKey()
   final String id;
+
+  /// User id.
+  @JsonKey()
+  final String userId;
 
   /// Card list.
   @JsonKey()

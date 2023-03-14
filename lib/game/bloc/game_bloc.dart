@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -14,6 +15,7 @@ part 'game_state.dart';
 
 class GameBloc extends Bloc<GameEvent, GameState> {
   GameBloc({
+    required this.user,
     required GameClient gameClient,
     required repo.MatchMakerRepository matchMakerRepository,
     required MatchSolver matchSolver,
@@ -37,10 +39,11 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   final MatchSolver _matchSolver;
   final bool isHost;
   static const defaultTimeOutPeriod = Duration(seconds: 10);
-  static const defaultPingInterval = Duration(seconds: 5);
+  static const defaultPingInterval = Duration(seconds: 3);
   final Duration timeOutPeriod;
   final Duration pingInterval;
   final ValueGetter<Timestamp> _now;
+  final User user;
 
   StreamSubscription<MatchState>? _stateSubscription;
   StreamSubscription<repo.Match>? _opponentPresenceSubscription;
@@ -63,12 +66,14 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       if (match == null || matchState == null) {
         emit(const MatchLoadFailedState());
       } else {
+        final scoreCard = await _matchMakerRepository.getScoreCard(user.id);
         emit(
           MatchLoadedState(
             match: match,
             matchState: matchState,
             turns: const [],
             playerPlayed: false,
+            playerScoreCard: scoreCard,
           ),
         );
 
