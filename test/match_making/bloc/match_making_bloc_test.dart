@@ -226,8 +226,16 @@ void main() {
       );
     });
 
-    test('tries again when the guest wait times out', () async {
+    test('pings host while waiting for guest to join', () async {
       when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
+        (_) async => Match(
+          id: '',
+          host: deckId,
+          hostPing: timestamp,
+        ),
+      );
+
+      when(() => matchMakerRepository.pingHost(any())).thenAnswer(
         (_) async => Match(
           id: '',
           host: deckId,
@@ -258,7 +266,8 @@ void main() {
       );
 
       await Future<void>.delayed(Duration(milliseconds: 200));
-      await Future<void>.delayed(Duration(milliseconds: 10));
+
+      verify(() => matchMakerRepository.pingHost(any())).called(1);
 
       watchController.add(
         Match(
@@ -284,6 +293,10 @@ void main() {
           ),
         ),
       );
+
+      await Future<void>.delayed(Duration(milliseconds: 200));
+
+      verifyNever(() => matchMakerRepository.pingHost(any()));
     });
 
     blocTest<MatchMakingBloc, MatchMakingState>(

@@ -57,7 +57,6 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
         await _waitGuestToJoin(
           match: match,
           emit: emit,
-          waitForever: false,
         );
       }
     } catch (e, s) {
@@ -81,7 +80,6 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
       await _waitGuestToJoin(
         match: match,
         emit: emit,
-        waitForever: true,
       );
     } catch (e, s) {
       addError(e, s);
@@ -120,7 +118,6 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   Future<void> _waitGuestToJoin({
     required Match match,
     required Emitter<MatchMakingState> emit,
-    required bool waitForever,
   }) async {
     final stream = _matchMakerRepository
         .watchMatch(match.id)
@@ -128,21 +125,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
 
     emit(state.copyWith(match: match));
 
-    final completer = Completer<void>();
-
     late StreamSubscription<Match> subscription;
-
-    if (!waitForever) {
-      Future<void>.delayed(hostWaitTime, () {
-        if (!isClosed) {
-          if (state.status == MatchMakingStatus.processing) {
-            subscription.cancel();
-            completer.complete();
-            add(const MatchRequested());
-          }
-        }
-      });
-    }
 
     subscription = stream.listen((newMatch) {
       emit(
@@ -152,10 +135,20 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
           isHost: true,
         ),
       );
-      completer.complete();
       subscription.cancel();
     });
 
-    return completer.future;
+    // TODO(willhlas): Add timeout to doWhile loop
+    //  indicating that the host has not been able to find a guest.
+    await Future.doWhile(() async {
+      await Future<void>.delayed(hostWaitTime);
+
+      if (!isClosed && state.status == MatchMakingStatus.processing) {
+        await _matchMakerRepository.pingHost(match.id);
+        return Future.value(true);
+      }
+
+      return Future.value(false);
+    });
   }
 }
