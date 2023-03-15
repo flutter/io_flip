@@ -35,6 +35,7 @@ void main() {
 
     late StreamController<MatchState> matchStateController;
     late StreamController<repo.Match> matchController;
+    late StreamController<ScoreCard> scoreController;
     late GameClient gameClient;
     late repo.MatchMakerRepository matchMakerRepository;
     late MatchSolver matchSolver;
@@ -56,9 +57,13 @@ void main() {
 
       matchStateController = StreamController();
       matchController = StreamController();
+      scoreController = StreamController();
 
       when(() => matchMakerRepository.watchMatchState(any()))
           .thenAnswer((_) => matchStateController.stream);
+
+      when(() => matchMakerRepository.watchScoreCard(any()))
+          .thenAnswer((_) => scoreController.stream);
 
       when(() => matchMakerRepository.watchMatch(any()))
           .thenAnswer((_) => matchController.stream);
@@ -289,6 +294,33 @@ void main() {
               ),
             ],
           ),
+        );
+      });
+
+      test('adds a new state change when the score changes', () async {
+        final bloc = GameBloc(
+          user: User(id: 'userId'),
+          gameClient: gameClient,
+          matchMakerRepository: matchMakerRepository,
+          matchSolver: matchSolver,
+          isHost: true,
+        )..add(MatchRequested(baseState.match.id));
+
+        await Future.microtask(() {});
+
+        scoreController.add(
+          ScoreCard(id: 'scoreCardId', wins: 5),
+        );
+
+        await Future<void>.delayed(Duration(milliseconds: 20));
+
+        final state = bloc.state;
+        expect(state, isA<MatchLoadedState>());
+
+        final matchLoadedState = state as MatchLoadedState;
+        expect(
+          matchLoadedState.playerScoreCard.wins,
+          equals(5),
         );
       });
 

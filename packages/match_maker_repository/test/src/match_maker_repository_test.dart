@@ -571,6 +571,45 @@ void main() {
       );
     });
 
+    test('can watch a ScoreCard', () async {
+      final streamController =
+          StreamController<DocumentSnapshot<Map<String, dynamic>>>();
+
+      final snapshot = _MockDocumentSnapshot<Map<String, dynamic>>();
+      final ref = _MockDocumentReference<Map<String, dynamic>>();
+
+      when(() => scoreCardsCollection.doc(any())).thenReturn(ref);
+      when(ref.snapshots).thenAnswer((_) => streamController.stream);
+      when(() => snapshot.id).thenReturn('123');
+      when(snapshot.data).thenReturn({
+        'wins': 1,
+        'currentStreak': 1,
+        'longestStreak': 1,
+      });
+
+      final values = <ScoreCard>[];
+      final subscription =
+          matchMakerRepository.watchScoreCard('123').listen(values.add);
+
+      streamController.add(snapshot);
+
+      await Future.microtask(() {});
+
+      expect(
+        values,
+        equals([
+          ScoreCard(
+            id: '123',
+            wins: 1,
+            currentStreak: 1,
+            longestStreak: 1,
+          )
+        ]),
+      );
+
+      await subscription.cancel();
+    });
+
     test('creates a ScoreCard when one does not exist', () async {
       final ref = _MockDocumentReference<Map<String, dynamic>>();
       final doc = _MockDocumentSnapshot<Map<String, dynamic>>();

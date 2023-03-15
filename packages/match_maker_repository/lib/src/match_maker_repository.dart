@@ -94,6 +94,17 @@ class MatchMakerRepository {
     });
   }
 
+  /// Watches a match state.
+  Stream<ScoreCard> watchScoreCard(String id) {
+    final ref = scoreCardCollection.doc(id);
+    final docStream = ref.snapshots();
+    return docStream.map((snapshot) {
+      final id = snapshot.id;
+      final data = {...snapshot.data()!, 'id': id};
+      return ScoreCard.fromJson(data);
+    });
+  }
+
   /// Updates the `hostPing` on the match object.
   Future<void> pingHost(String id) async {
     final ref = collection.doc(id);

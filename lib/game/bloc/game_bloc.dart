@@ -32,6 +32,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     on<PlayerPlayed>(_onPlayerPlayed);
     on<MatchStateUpdated>(_onMatchStateUpdated);
     on<ManagePlayerPresence>(_onManagePlayerPresence);
+    on<ScoreCardUpdated>(_onScoreCardUpdated);
   }
 
   final GameClient _gameClient;
@@ -46,6 +47,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   final User user;
 
   StreamSubscription<MatchState>? _stateSubscription;
+  StreamSubscription<ScoreCard>? _scoreSubscription;
   StreamSubscription<repo.Match>? _opponentPresenceSubscription;
 
   Future<void> _onMatchRequested(
@@ -58,15 +60,16 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       final values = await Future.wait([
         _gameClient.getMatch(event.matchId),
         _gameClient.getMatchState(event.matchId),
+        _matchMakerRepository.getScoreCard(user.id),
       ]);
 
       final match = values.first as Match?;
-      final matchState = values.last as MatchState?;
+      final matchState = values[1] as MatchState?;
+      final scoreCard = values.last as ScoreCard?;
 
-      if (match == null || matchState == null) {
+      if (match == null || matchState == null || scoreCard == null) {
         emit(const MatchLoadFailedState());
       } else {
-        final scoreCard = await _matchMakerRepository.getScoreCard(user.id);
         emit(
           MatchLoadedState(
             match: match,
@@ -78,10 +81,16 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         );
 
         add(ManagePlayerPresence(event.matchId));
-        final stream = _matchMakerRepository.watchMatchState(matchState.id);
 
-        _stateSubscription = stream.listen((state) {
+        final stateStream =
+            _matchMakerRepository.watchMatchState(matchState.id);
+        _stateSubscription = stateStream.listen((state) {
           add(MatchStateUpdated(state));
+        });
+
+        final scoreStream = _matchMakerRepository.watchScoreCard(scoreCard.id);
+        _scoreSubscription = scoreStream.listen((state) {
+          add(ScoreCardUpdated(state));
         });
       }
     } catch (e, s) {
@@ -133,6 +142,19 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           turns: turns,
           playerPlayed: isPlayerMove ? false : null,
         ),
+      );
+    }
+  }
+
+  Future<void> _onScoreCardUpdated(
+    ScoreCardUpdated event,
+    Emitter<GameState> emit,
+  ) async {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+
+      emit(
+        matchLoadedState.copyWith(playerScoreCard: event.updatedScore),
       );
     }
   }
@@ -248,6 +270,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   @override
   Future<void> close() {
     _stateSubscription?.cancel();
+    _scoreSubscription?.cancel();
     _opponentPresenceSubscription?.cancel();
     return super.close();
   }
