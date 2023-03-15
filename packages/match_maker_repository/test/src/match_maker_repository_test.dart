@@ -257,7 +257,7 @@ void main() {
 
     test('can generate an invite code', () {
       expect(
-        MatchMakerRepository.defautInviteCodeGenerator(),
+        MatchMakerRepository.defaultInviteCodeGenerator(),
         isA<String>(),
       );
     });

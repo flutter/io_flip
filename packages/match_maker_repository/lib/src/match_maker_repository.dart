@@ -24,7 +24,7 @@ class MatchMakerRepository {
     ValueGetter<String>? inviteCode,
     this.retryDelay = _defaultRetryDelay,
   })  : _now = now,
-        _inviteCode = inviteCode ?? defautInviteCodeGenerator {
+        _inviteCode = inviteCode ?? defaultInviteCodeGenerator {
     collection = db.collection('matches');
     matchStatesCollection = db.collection('match_states');
     scoreCardCollection = db.collection('score_cards');
@@ -49,7 +49,7 @@ class MatchMakerRepository {
   late final CollectionReference<Map<String, dynamic>> matchStatesCollection;
 
   /// Default generator of invite codes.
-  static String defautInviteCodeGenerator() => const Uuid().v4();
+  static String defaultInviteCodeGenerator() => const Uuid().v4();
 
   /// The [CollectionReference] for the scoreCards.
   late final CollectionReference<Map<String, dynamic>> scoreCardCollection;
@@ -249,7 +249,6 @@ class MatchMakerRepository {
   }
 
   Future<ScoreCard> _createScoreCard(String id) async {
-    print('creating scorecard: $id');
     await scoreCardCollection.doc(id).set({
       'wins': 0,
       'longestStreak': 0,

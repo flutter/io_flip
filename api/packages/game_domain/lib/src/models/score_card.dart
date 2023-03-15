@@ -36,9 +36,6 @@ class ScoreCard extends Equatable {
   @JsonKey()
   final int currentStreak;
 
-  /// Returns a json representation from this instance.
-  Map<String, dynamic> toJson() => _$ScoreCardToJson(this);
-
   /// {@macro score_card}
   ScoreCard copyWith({
     String? id,

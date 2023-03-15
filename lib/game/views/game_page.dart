@@ -34,12 +34,12 @@ class GamePage extends StatelessWidget {
         final matchSolver = context.read<MatchSolver>();
         final user = context.read<User>();
         return GameBloc(
-            gameClient: gameClient,
-            matchMakerRepository: matchMakerRepository,
-            matchSolver: matchSolver,
-            isHost: isHost,
-            user: user)
-          ..add(MatchRequested(matchId));
+          gameClient: gameClient,
+          matchMakerRepository: matchMakerRepository,
+          matchSolver: matchSolver,
+          isHost: isHost,
+          user: user,
+        )..add(MatchRequested(matchId));
       },
       child: const GameView(),
     );
