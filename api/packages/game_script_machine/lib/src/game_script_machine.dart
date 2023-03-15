@@ -1,4 +1,5 @@
-import 'package:hetu_script/hetu/hetu.dart';
+import 'package:game_domain/game_domain.dart';
+import 'package:hetu_script/hetu_script.dart';
 
 /// {@template game_script_machine}
 /// Holds and proccess the scripts responsible for calculating the result of a
@@ -28,10 +29,13 @@ class GameScriptMachine {
   /// Returns the running script of the machine.
   String get currentScript => _currentScript;
 
-  /// Evaluates the the power of card [a] agains the value of card [b].
+  /// Evaluates the two cards against each other.
   /// Returns 1 if bigger, -1 if smaller, 0 is equals.
-  int evalCardPower(int a, int b) {
-    final value = _hetu.invoke('compareCards', positionalArgs: [a, b]) as int;
+  int compare(Card a, Card b) {
+    final value = _hetu.invoke(
+      'compareCards',
+      positionalArgs: [a.power, b.power, a.suit.name, b.suit.name],
+    ) as int;
     return value;
   }
 }

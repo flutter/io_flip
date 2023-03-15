@@ -27,6 +27,7 @@ void main() {
       rarity: true,
       image: '',
       power: 1,
+      suit: Suit.air,
     );
     setUp(() {
       cardsRepository = _MockCardsRepository();
@@ -58,6 +59,7 @@ void main() {
           'rarity': true,
           'image': '',
           'power': 1,
+          'suit': 'air',
         }),
       );
     });

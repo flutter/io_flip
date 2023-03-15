@@ -14,6 +14,7 @@ void main() {
           image: '',
           rarity: false,
           power: 1,
+          suit: Suit.air,
         ),
         isNotNull,
       );
@@ -28,6 +29,7 @@ void main() {
           image: '',
           rarity: false,
           power: 1,
+          suit: Suit.air,
         ).toJson(),
         equals({
           'id': '',
@@ -36,6 +38,7 @@ void main() {
           'image': '',
           'rarity': false,
           'power': 1,
+          'suit': 'air',
         }),
       );
     });
@@ -49,6 +52,7 @@ void main() {
           'image': '',
           'rarity': false,
           'power': 1,
+          'suit': 'air',
         }),
         equals(
           Card(
@@ -58,6 +62,7 @@ void main() {
             image: '',
             rarity: false,
             power: 1,
+            suit: Suit.air,
           ),
         ),
       );
@@ -72,6 +77,7 @@ void main() {
           image: '',
           rarity: false,
           power: 1,
+          suit: Suit.air,
         ),
         equals(
           Card(
@@ -81,6 +87,7 @@ void main() {
             image: '',
             rarity: false,
             power: 1,
+            suit: Suit.air,
           ),
         ),
       );
@@ -93,6 +100,7 @@ void main() {
           image: '',
           rarity: false,
           power: 1,
+          suit: Suit.air,
         ),
         isNot(
           equals(
@@ -103,6 +111,7 @@ void main() {
               image: '',
               rarity: false,
               power: 1,
+              suit: Suit.air,
             ),
           ),
         ),
@@ -116,6 +125,7 @@ void main() {
           image: '',
           rarity: false,
           power: 1,
+          suit: Suit.air,
         ),
         isNot(
           equals(
@@ -126,6 +136,7 @@ void main() {
               image: '',
               rarity: false,
               power: 1,
+              suit: Suit.air,
             ),
           ),
         ),
@@ -139,6 +150,7 @@ void main() {
           image: '',
           rarity: false,
           power: 1,
+          suit: Suit.air,
         ),
         isNot(
           equals(
@@ -149,6 +161,7 @@ void main() {
               image: '',
               rarity: false,
               power: 1,
+              suit: Suit.air,
             ),
           ),
         ),
@@ -162,6 +175,7 @@ void main() {
           image: '',
           rarity: false,
           power: 1,
+          suit: Suit.air,
         ),
         isNot(
           equals(
@@ -172,6 +186,7 @@ void main() {
               image: 'a',
               rarity: false,
               power: 1,
+              suit: Suit.air,
             ),
           ),
         ),
@@ -185,6 +200,7 @@ void main() {
           image: '',
           rarity: false,
           power: 1,
+          suit: Suit.air,
         ),
         isNot(
           equals(
@@ -195,6 +211,32 @@ void main() {
               image: '',
               rarity: false,
               power: 2,
+              suit: Suit.air,
+            ),
+          ),
+        ),
+      );
+
+      expect(
+        Card(
+          id: '',
+          name: '',
+          description: '',
+          image: '',
+          rarity: false,
+          power: 1,
+          suit: Suit.fire,
+        ),
+        isNot(
+          equals(
+            Card(
+              id: '',
+              name: '',
+              description: '',
+              image: '',
+              rarity: false,
+              power: 1,
+              suit: Suit.air,
             ),
           ),
         ),

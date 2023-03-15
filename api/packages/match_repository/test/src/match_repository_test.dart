@@ -61,6 +61,7 @@ void main() {
           image: 'card_$i',
           power: 10,
           rarity: false,
+          suit: Suit.values[i % Suit.values.length],
         ),
       );
 
@@ -223,6 +224,7 @@ void main() {
           image: 'card_$i',
           power: 10,
           rarity: false,
+          suit: Suit.values[i % Suit.values.length],
         ),
       );
 
