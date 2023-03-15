@@ -1,6 +1,7 @@
 {
   "version": "2.0.0",
   "options": {
+    "cwd": "${workspaceFolder}/api",
     "env": {
       "FB_APP_ID": "top-dash-dev",
       "CORS_DOMAIN": "http://localhost:8080/",
@@ -10,32 +11,40 @@
   "tasks": [
     {
       "label": "api",
-      "command": "cd api && dart_frog dev",
+      "command": "dart_frog dev",
       "type": "shell",
       "isBackground": true,
-      "problemMatcher": [
-        {
-          "pattern": [
-            {
+      "presentation": {
+        "close": true,
+      },
+      "problemMatcher": {
+          "owner": "dart",
+          "fileLocation": ["relative", "${workspaceFolder}/api"],
+          "pattern": {
               "regexp": ".",
               "file": 1,
-              "location": 2,
-              "message": 3
-            }
-          ],
-          "background": {
-            "activeOnStart": true,
-            "beginsPattern": ".",
-            "endsPattern": ".",
+              "line": 2,
+              "column": 3,
           },
-        }
-      ],
+          "background": {
+              "activeOnStart": true,
+              "beginsPattern": {
+                  "regexp": "."
+              },
+              "endsPattern": {
+                  "regexp": "^\\[hotreload\\] (\\d{2}:\\d{2}:\\d{2} - Application reloaded\\.|Hot reload is enabled\\.)$"
+              }
+          }
+      },
     },
     {
       "label": "firebase",
       "command": "firebase emulators:start",
       "type": "shell",
       "isBackground": true,
+      "presentation": {
+        "close": true,
+      },
       "problemMatcher": [
         {
           "pattern": [
@@ -57,9 +66,19 @@
     {
       "label": "emulate",
       "dependsOn": [
-        "api",
         "firebase",
+        "api",
       ],
     },
+    {
+      "label": "stop emulate",
+      "type": "shell",
+      "command": "pkill -f \"sh $HOME/.pub-cache/bin/dart_frog dev\" && pkill -f \"firebase emulators:start\"",
+      "presentation": {
+          "reveal": "silent",
+          "panel": "dedicated",
+          "close": true,
+      }
+    }
   ]
 }

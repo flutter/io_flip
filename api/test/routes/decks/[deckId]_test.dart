@@ -35,6 +35,7 @@ void main() {
           image: '',
           power: 10,
           rarity: false,
+          suit: Suit.air,
         ),
       ],
     );

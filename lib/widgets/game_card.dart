@@ -31,6 +31,11 @@ class GameCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(card.name),
           const SizedBox(height: 8),
+          Text(
+            card.suit.name,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          const SizedBox(height: 8),
           Image.network(
             card.image,
           ),

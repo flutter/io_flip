@@ -20,6 +20,7 @@ void main() {
         image: '',
         rarity: false,
         power: 20,
+        suit: Suit.values[i % Suit.values.length],
       ),
     );
 

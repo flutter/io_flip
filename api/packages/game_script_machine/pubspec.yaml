@@ -6,9 +6,12 @@ publish_to: none
 environment:
   sdk: ">=2.19.0 <3.0.0"
 
+dependencies:
+  game_domain:
+    path: ../game_domain
+  hetu_script: ^0.4.2+1
+
 dev_dependencies:
   mocktail: ^0.3.0
   test: ^1.19.2
   very_good_analysis: ^4.0.0
-dependencies:
-  hetu_script: ^0.4.2+1

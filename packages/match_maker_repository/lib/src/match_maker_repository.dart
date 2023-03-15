@@ -137,6 +137,8 @@ class MatchMakerRepository {
 
   /// Finds a match.
   Future<Match> findMatch(String id, {int retryNumber = 0}) async {
+    /// Find a match that is not full and has
+    /// been updated in the last 4 seconds.
     final matchesResult = await collection
         .where(
           'guest',

@@ -8,6 +8,20 @@ import 'package:test/test.dart';
 class _MockGameScriptEngine extends Mock implements GameScriptMachine {}
 
 void main() {
+  setUpAll(() {
+    registerFallbackValue(
+      Card(
+        id: 'card',
+        description: '',
+        name: '',
+        image: '',
+        rarity: false,
+        power: 1,
+        suit: Suit.air,
+      ),
+    );
+  });
+
   group('MatchSolver', () {
     late GameScriptMachine gameScriptMachine;
     late MatchSolver matchSolver;
@@ -27,6 +41,7 @@ void main() {
           image: '',
           rarity: false,
           power: 1 + i,
+          suit: Suit.values[i % Suit.values.length],
         ),
       );
 
@@ -61,7 +76,7 @@ void main() {
       });
 
       test('return host when the host has won', () {
-        when(() => gameScriptMachine.evalCardPower(any(), any())).thenReturn(1);
+        when(() => gameScriptMachine.compare(any(), any())).thenReturn(1);
 
         final match = Match(
           id: '',
@@ -91,8 +106,7 @@ void main() {
       });
 
       test('return guest when the guest has won', () {
-        when(() => gameScriptMachine.evalCardPower(any(), any()))
-            .thenReturn(-1);
+        when(() => gameScriptMachine.compare(any(), any())).thenReturn(-1);
         final match = Match(
           id: '',
           hostDeck: Deck(
@@ -121,7 +135,8 @@ void main() {
       });
 
       test('returns draw when match is draw', () {
-        when(() => gameScriptMachine.evalCardPower(any(), any())).thenReturn(0);
+        when(() => gameScriptMachine.compare(any(), any())).thenReturn(0);
+
         final cards = List.generate(
           6,
           (i) => Card(
@@ -131,6 +146,7 @@ void main() {
             image: '',
             rarity: false,
             power: 1,
+            suit: Suit.values[i % Suit.values.length],
           ),
         );
 
@@ -172,6 +188,7 @@ void main() {
           image: '',
           rarity: false,
           power: 1 + i,
+          suit: Suit.values[i % Suit.values.length],
         ),
       );
 
@@ -227,9 +244,7 @@ void main() {
           guestPlayedCards: [cards[3].id, cards[1].id, cards[5].id],
         );
 
-        when(
-          () => gameScriptMachine.evalCardPower(cards[2].power, cards[1].power),
-        ).thenReturn(1);
+        when(() => gameScriptMachine.compare(cards[2], cards[1])).thenReturn(1);
 
         final matchResult = matchSolver.calculateRoundResult(
           match,
@@ -237,6 +252,7 @@ void main() {
           1,
         );
         expect(matchResult, equals(MatchResult.host));
+        verify(() => gameScriptMachine.compare(cards[2], cards[1])).called(1);
       });
     });
 

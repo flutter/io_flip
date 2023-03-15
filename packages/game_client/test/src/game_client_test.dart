@@ -52,6 +52,7 @@ void main() {
           image: 'image.png',
           rarity: true,
           power: 1,
+          suit: Suit.air,
         );
 
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
@@ -195,6 +196,7 @@ void main() {
           image: 'image.png',
           rarity: true,
           power: 1,
+          suit: Suit.air,
         );
 
         const deck = Deck(
@@ -269,6 +271,7 @@ void main() {
           image: 'image.png',
           rarity: true,
           power: 1,
+          suit: Suit.air,
         );
 
         const hostDeck = Deck(
