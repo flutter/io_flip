@@ -128,7 +128,7 @@ class MatchMakerRepository {
   /// Gets the user's ScoreCard.
   Future<ScoreCard> getScoreCard(String id) async {
     final snapshot = await scoreCardCollection.doc(id).get();
-    if (!snapshot.exists && snapshot.data() != null) {
+    if (!snapshot.exists || snapshot.data() == null) {
       return _createScoreCard(id);
     }
     final data = {...snapshot.data()!, 'id': id};

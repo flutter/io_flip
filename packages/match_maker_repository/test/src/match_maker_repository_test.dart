@@ -39,6 +39,8 @@ class _MockQueryDocumentSnapshot<T> extends Mock
 
 class _MockDocumentReference<T> extends Mock implements DocumentReference<T> {}
 
+class _MockDocumentSnapshot<T> extends Mock implements DocumentSnapshot<T> {}
+
 class _MockTransaction extends Mock implements Transaction {}
 
 void main() {
@@ -544,6 +546,53 @@ void main() {
           {'guestPing': now},
         ),
       ).called(1);
+    });
+
+    test('can get a ScoreCard', () async {
+      final ref = _MockDocumentReference<Map<String, dynamic>>();
+      final doc = _MockDocumentSnapshot<Map<String, dynamic>>();
+      when(() => scoreCardsCollection.doc('id')).thenReturn(ref);
+      when(ref.get).thenAnswer((invocation) async => doc);
+      when(() => doc.exists).thenReturn(true);
+      when(doc.data).thenReturn({
+        'wins': 1,
+        'currentStreak': 1,
+        'longestStreak': 1,
+      });
+      final result = await matchMakerRepository.getScoreCard('id');
+      expect(
+        result,
+        ScoreCard(
+          id: 'id',
+          wins: 1,
+          currentStreak: 1,
+          longestStreak: 1,
+        ),
+      );
+    });
+
+    test('creates a ScoreCard when one does not exist', () async {
+      final ref = _MockDocumentReference<Map<String, dynamic>>();
+      final doc = _MockDocumentSnapshot<Map<String, dynamic>>();
+      when(() => scoreCardsCollection.doc('id')).thenReturn(ref);
+      when(ref.get).thenAnswer((_) async => doc);
+      when(() => doc.exists).thenReturn(false);
+      when(doc.data).thenReturn(null);
+      when(() => ref.set(any())).thenAnswer((_) async {});
+      final result = await matchMakerRepository.getScoreCard('id');
+      verify(
+        () => ref.set({
+          'wins': 0,
+          'currentStreak': 0,
+          'longestStreak': 0,
+        }),
+      ).called(1);
+      expect(
+        result,
+        ScoreCard(
+          id: 'id',
+        ),
+      );
     });
   });
 }
