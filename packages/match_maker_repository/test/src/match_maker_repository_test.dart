@@ -46,6 +46,7 @@ void main() {
     late _MockFirebaseFirestore db;
     late CollectionReference<Map<String, dynamic>> collection;
     late CollectionReference<Map<String, dynamic>> matchStateCollection;
+    late CollectionReference<Map<String, dynamic>> scoreCardsCollection;
     late MatchMakerRepository matchMakerRepository;
     late Timestamp now;
 
@@ -57,11 +58,13 @@ void main() {
       db = _MockFirebaseFirestore();
       collection = _MockCollectionReference();
       matchStateCollection = _MockCollectionReference();
+      scoreCardsCollection = _MockCollectionReference();
       now = Timestamp.now();
 
       when(() => db.collection('matches')).thenReturn(collection);
       when(() => db.collection('match_states'))
           .thenReturn(matchStateCollection);
+      when(() => db.collection('score_cards')).thenReturn(scoreCardsCollection);
       matchMakerRepository = MatchMakerRepository(
         db: db,
         retryDelay: 0,

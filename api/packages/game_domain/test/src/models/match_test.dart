@@ -23,11 +23,13 @@ void main() {
     );
 
     const hostDeck = Deck(
+      userId: 'hostId',
       id: 'hostDeck',
       cards: [card1],
     );
 
     const guestDeck = Deck(
+      userId: 'guestId',
       id: 'guestDeck',
       cards: [card2],
     );
@@ -53,6 +55,7 @@ void main() {
         equals({
           'id': 'matchId',
           'hostDeck': {
+            'userId': 'hostId',
             'id': 'hostDeck',
             'cards': [
               {
@@ -66,6 +69,7 @@ void main() {
             ],
           },
           'guestDeck': {
+            'userId': 'guestId',
             'id': 'guestDeck',
             'cards': [
               {
@@ -87,6 +91,7 @@ void main() {
         Match.fromJson(const {
           'id': 'matchId',
           'hostDeck': {
+            'userId': 'hostId',
             'id': 'hostDeck',
             'cards': [
               {
@@ -100,6 +105,7 @@ void main() {
             ],
           },
           'guestDeck': {
+            'userId': 'guestId',
             'id': 'guestDeck',
             'cards': [
               {

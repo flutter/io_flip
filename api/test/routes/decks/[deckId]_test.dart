@@ -25,6 +25,7 @@ void main() {
     late Logger logger;
 
     const deck = Deck(
+      userId: 'userId',
       id: 'deckId',
       cards: [
         Card(

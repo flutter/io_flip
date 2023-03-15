@@ -44,14 +44,9 @@ class MatchRepository {
       return ScoreCard(id: scoreCardId);
     }
 
-    final data = scoreData.data;
+    final data = {...scoreData.data, 'id': scoreCardId};
 
-    return ScoreCard(
-      id: scoreCardId,
-      wins: data['wins'] as int,
-      currentStreak: data['currentStreak'] as int,
-      longestStreak: data['longestStreak'] as int,
-    );
+    return ScoreCard.fromJson(data);
   }
 
   /// Return the match with the given [matchId].

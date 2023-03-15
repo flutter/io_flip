@@ -34,10 +34,12 @@ void main() {
         final match = Match(
           id: '',
           hostDeck: Deck(
+            userId: 'hostId',
             id: '',
             cards: [cards[0], cards[2], cards[4]],
           ),
           guestDeck: Deck(
+            userId: 'guestId',
             id: '',
             cards: [cards[1], cards[3], cards[5]],
           ),
@@ -64,10 +66,12 @@ void main() {
         final match = Match(
           id: '',
           hostDeck: Deck(
+            userId: 'hostId',
             id: '',
             cards: [cards[0], cards[2], cards[4]],
           ),
           guestDeck: Deck(
+            userId: 'guestId',
             id: '',
             cards: [cards[1], cards[3], cards[5]],
           ),
@@ -92,10 +96,12 @@ void main() {
         final match = Match(
           id: '',
           hostDeck: Deck(
+            userId: 'hostId',
             id: '',
             cards: [cards[0], cards[2], cards[4]],
           ),
           guestDeck: Deck(
+            userId: 'guestId',
             id: '',
             cards: [cards[1], cards[3], cards[5]],
           ),
@@ -131,10 +137,12 @@ void main() {
         final match = Match(
           id: '',
           hostDeck: Deck(
+            userId: 'hostId',
             id: '',
             cards: [cards[0], cards[2], cards[4]],
           ),
           guestDeck: Deck(
+            userId: 'guestId',
             id: '',
             cards: [cards[1], cards[3], cards[5]],
           ),
@@ -171,10 +179,12 @@ void main() {
         final match = Match(
           id: '',
           hostDeck: Deck(
+            userId: 'hostId',
             id: '',
             cards: [cards[0], cards[2], cards[4]],
           ),
           guestDeck: Deck(
+            userId: 'guestId',
             id: '',
             cards: [cards[1], cards[3], cards[5]],
           ),
@@ -200,10 +210,12 @@ void main() {
         final match = Match(
           id: '',
           hostDeck: Deck(
+            userId: 'hostId',
             id: '',
             cards: [cards[0], cards[2], cards[4]],
           ),
           guestDeck: Deck(
+            userId: 'guestId',
             id: '',
             cards: [cards[1], cards[3], cards[5]],
           ),
