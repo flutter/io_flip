@@ -190,7 +190,7 @@ class MatchMakerRepository {
         inviteOnly: true,
       );
 
-  /// Searchs for and join a private match. Returns null if none is found.
+  /// Searches for and join a private match. Returns null if none is found.
   Future<Match?> joinPrivateMatch({
     required String guestId,
     required String inviteCode,
