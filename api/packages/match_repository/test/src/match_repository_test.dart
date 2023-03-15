@@ -19,8 +19,8 @@ void main() {
       registerFallbackValue(
         Match(
           id: '',
-          guestDeck: Deck(id: '', cards: const []),
-          hostDeck: Deck(id: '', cards: const []),
+          guestDeck: Deck(userId: 'guestId', id: '', cards: const []),
+          hostDeck: Deck(userId: 'hostId', id: '', cards: const []),
         ),
       );
       registerFallbackValue(
@@ -66,11 +66,13 @@ void main() {
       );
 
       final hostDeck = Deck(
+        userId: 'hostId',
         id: 'hostDeckId',
         cards: [cards[0], cards[1], cards[2]],
       );
 
       final guestDeck = Deck(
+        userId: 'guestId',
         id: 'guestDeckId',
         cards: [cards[3], cards[4], cards[5]],
       );
@@ -229,11 +231,13 @@ void main() {
       );
 
       final hostDeck = Deck(
+        userId: 'hostId',
         id: 'hostDeckId',
         cards: [cards[0], cards[1], cards[2]],
       );
 
       final guestDeck = Deck(
+        userId: 'guestId',
         id: 'guestDeckId',
         cards: [cards[3], cards[4], cards[5]],
       );
@@ -254,6 +258,16 @@ void main() {
               'host': hostDeck.id,
               'guest': guestDeck.id,
             },
+          ),
+        );
+
+        when(() => dbClient.getById('score_cards', any())).thenAnswer(
+          (_) async => DbEntityRecord(
+            id: 'scoreCardId',
+            // data: {
+            //   'host': hostDeck.id,
+            //   'guest': guestDeck.id,
+            // },
           ),
         );
 

@@ -128,10 +128,11 @@ class MatchMakerRepository {
   /// Gets the user's ScoreCard.
   Future<ScoreCard> getScoreCard(String id) async {
     final snapshot = await scoreCardCollection.doc(id).get();
-    if (!snapshot.exists) {
+    if (!snapshot.exists && snapshot.data() != null) {
       return _createScoreCard(id);
     }
-    return ScoreCard.fromJson(snapshot.data()!..addAll({'id': snapshot.id}));
+    final data = {...snapshot.data()!, 'id': id};
+    return ScoreCard.fromJson(data);
   }
 
   /// Finds a match.

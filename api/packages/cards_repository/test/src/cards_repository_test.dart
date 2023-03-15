@@ -151,12 +151,14 @@ void main() {
     group('getDeck', () {
       const deckId = 'deckId';
       const cardId = 'card1';
+      const userId = 'userId';
 
       setUp(() {
         when(() => dbClient.getById('decks', any())).thenAnswer(
           (_) async => DbEntityRecord(
             id: deckId,
             data: const {
+              'userId': userId,
               'cards': [cardId],
             },
           ),
@@ -184,6 +186,7 @@ void main() {
           deck,
           equals(
             Deck(
+              userId: userId,
               id: deckId,
               cards: const [
                 Card(

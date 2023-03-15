@@ -25,6 +25,7 @@ void main() {
     late Logger logger;
 
     const hostDeck = Deck(
+      userId: 'hostId',
       id: 'hostDeckId',
       cards: [
         Card(
@@ -40,6 +41,7 @@ void main() {
     );
 
     const guestDeck = Deck(
+      userId: 'guestId',
       id: 'guestDeckId',
       cards: [
         Card(

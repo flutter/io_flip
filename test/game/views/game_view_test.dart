@@ -66,6 +66,7 @@ void main() {
         match: Match(
           id: '',
           hostDeck: Deck(
+            userId: 'hostId',
             id: '',
             cards: const [
               Card(
@@ -89,6 +90,7 @@ void main() {
             ],
           ),
           guestDeck: Deck(
+            userId: 'guestId',
             id: '',
             cards: const [
               Card(
@@ -111,6 +113,7 @@ void main() {
         ),
         turns: const [],
         playerPlayed: false,
+        playerScoreCard: ScoreCard(id: 'scoreCardId'),
       );
 
       testWidgets('renders the game in its initial state', (tester) async {
@@ -371,6 +374,7 @@ void main() {
                 id: '',
                 hostDeck: baseState.match.hostDeck,
                 guestDeck: Deck(
+                  userId: 'guestId',
                   id: '',
                   cards: const [
                     Card(
