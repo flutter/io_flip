@@ -14,17 +14,24 @@ FutureOr<Response> onRequest(RequestContext context) async {
   if (context.request.method == HttpMethod.post) {
     final matchId = context.request.uri.queryParameters['matchId'];
     final cardId = context.request.uri.queryParameters['cardId'];
-    final host = context.request.uri.queryParameters['host'];
-    if (matchId == null || cardId == null || host == null) {
+    final deckId = context.request.uri.queryParameters['deckId'];
+    final userId = context.request.uri.queryParameters['userId'];
+    if (matchId == null || cardId == null || deckId == null) {
       return Response(statusCode: HttpStatus.badRequest);
     }
 
+    if (userId == null) {
+      return Response(statusCode: HttpStatus.unauthorized);
+    }
+
     final matchRepository = context.read<MatchRepository>();
+
     try {
       await matchRepository.playCard(
         matchId: matchId,
         cardId: cardId,
-        isHost: host == 'true',
+        deckId: deckId,
+        userId: userId,
       );
     } catch (e, s) {
       context.read<Logger>().severe('Error playing a move', e, s);

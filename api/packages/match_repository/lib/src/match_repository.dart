@@ -116,24 +116,26 @@ class MatchRepository {
   Future<void> playCard({
     required String matchId,
     required String cardId,
-    required bool isHost,
+    required String deckId,
+    required String userId,
   }) async {
+    final match = await getMatch(matchId);
+
+    if (match == null) throw PlayCardFailure();
+
+    final deck = await _cardsRepository.getDeck(deckId);
+
+    if (deck == null || deck.userId != userId) throw PlayCardFailure();
+
     final matchState = await getMatchState(matchId);
 
-    if (matchState == null) {
-      throw PlayCardFailure();
-    }
+    if (matchState == null) throw PlayCardFailure();
 
-    var newMatchState = isHost
+    var newMatchState = match.hostDeck.id == deckId
         ? matchState.addHostPlayedCard(cardId)
         : matchState.addGuestPlayedCard(cardId);
 
     if (newMatchState.isOver()) {
-      final match = await getMatch(newMatchState.matchId);
-      if (match == null) {
-        throw PlayCardFailure();
-      }
-
       final result = _matchSolver.calculateMatchResult(match, newMatchState);
       newMatchState = newMatchState.setResult(result);
 

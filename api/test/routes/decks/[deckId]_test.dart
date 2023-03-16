@@ -27,6 +27,7 @@ void main() {
     const deck = Deck(
       userId: 'userId',
       id: 'deckId',
+      userId: 'userId',
       cards: [
         Card(
           id: '',

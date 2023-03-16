@@ -35,5 +35,5 @@ class Deck extends Equatable {
   Map<String, dynamic> toJson() => _$DeckToJson(this);
 
   @override
-  List<Object> get props => [id, cards];
+  List<Object> get props => [id, cards, userId];
 }

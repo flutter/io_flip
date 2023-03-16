@@ -27,6 +27,7 @@ void main() {
     const hostDeck = Deck(
       userId: 'hostId',
       id: 'hostDeckId',
+      userId: 'hostUserId',
       cards: [
         Card(
           id: '',
@@ -43,6 +44,7 @@ void main() {
     const guestDeck = Deck(
       userId: 'guestId',
       id: 'guestDeckId',
+      userId: 'guestUserId',
       cards: [
         Card(
           id: '',
