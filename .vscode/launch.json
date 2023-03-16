@@ -12,11 +12,18 @@
       "args": ["--flavor", "development", "--target", "lib/main_development.dart"]
     },
     {
+      "name": "Launch server",
+      "request": "attach",
+      "type": "dart",
+      "preLaunchTask": "emulate",
+      "postDebugTask": "stop emulate",
+      "cwd": "${workspaceFolder}/api",
+    },
+    {
       "name": "Launch local",
       "request": "launch",
       "type": "dart",
       "program": "lib/main_local.dart",
-      "preLaunchTask": "emulate",
       "args": ["--flavor", "development", "--target", "lib/main_local.dart"]
     },
     {
