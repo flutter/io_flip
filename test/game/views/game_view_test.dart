@@ -415,13 +415,11 @@ extension GameViewTest on WidgetTester {
   }) {
     return mockNetworkImages(() {
       return pumpApp(
-        MockGoRouterProvider(
-          goRouter: goRouter ?? MockGoRouter(),
-          child: BlocProvider<GameBloc>.value(
-            value: bloc,
-            child: GameView(),
-          ),
+        BlocProvider<GameBloc>.value(
+          value: bloc,
+          child: GameView(),
         ),
+        router: goRouter,
       );
     });
   }
