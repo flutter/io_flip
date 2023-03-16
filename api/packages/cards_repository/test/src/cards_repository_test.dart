@@ -150,7 +150,6 @@ void main() {
 
     group('getDeck', () {
       const deckId = 'deckId';
-      const userId = 'userId';
       const cardId = 'card1';
       const userId = 'userId';
 
@@ -189,7 +188,6 @@ void main() {
             Deck(
               userId: userId,
               id: deckId,
-              userId: userId,
               cards: const [
                 Card(
                   id: cardId,

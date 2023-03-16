@@ -68,14 +68,12 @@ void main() {
       final hostDeck = Deck(
         userId: 'hostId',
         id: 'hostDeckId',
-        userId: 'hostUserId',
         cards: [cards[0], cards[1], cards[2]],
       );
 
       final guestDeck = Deck(
         userId: 'guestId',
         id: 'guestDeckId',
-        userId: 'guestUserId',
         cards: [cards[3], cards[4], cards[5]],
       );
 
@@ -304,14 +302,12 @@ void main() {
       final hostDeck = Deck(
         userId: 'hostId',
         id: 'hostDeckId',
-        userId: 'hostUserId',
         cards: [cards[0], cards[1], cards[2]],
       );
 
       final guestDeck = Deck(
         userId: 'guestId',
         id: 'guestDeckId',
-        userId: 'guestUserId',
         cards: [cards[3], cards[4], cards[5]],
       );
 
@@ -369,8 +365,7 @@ void main() {
         await matchRepository.playCard(
           matchId: matchId,
           cardId: 'A',
-          deckId: guestDeck.id,
-          userId: guestDeck.userId,
+          isHost: false,
         );
 
         verify(
@@ -393,8 +388,7 @@ void main() {
         await matchRepository.playCard(
           matchId: matchId,
           cardId: 'A',
-          deckId: hostDeck.id,
-          userId: hostDeck.userId,
+          isHost: true,
         );
 
         verify(
@@ -434,8 +428,7 @@ void main() {
         await matchRepository.playCard(
           matchId: matchId,
           cardId: 'F',
-          deckId: hostDeck.id,
-          userId: hostDeck.userId,
+          isHost: true,
         );
 
         verify(
@@ -462,8 +455,7 @@ void main() {
           () => matchRepository.playCard(
             matchId: matchId,
             cardId: 'F',
-            deckId: hostDeck.id,
-            userId: hostDeck.userId,
+            isHost: true,
           ),
           throwsA(isA<PlayCardFailure>()),
         );
@@ -495,8 +487,7 @@ void main() {
             () => matchRepository.playCard(
               matchId: matchId,
               cardId: 'F',
-              deckId: hostDeck.id,
-              userId: hostDeck.userId,
+              isHost: true,
             ),
             throwsA(isA<PlayCardFailure>()),
           );

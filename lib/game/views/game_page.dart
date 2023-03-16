@@ -37,7 +37,6 @@ class GamePage extends StatelessWidget {
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
-          user: user,
           isHost: isHost,
           user: user,
         )..add(MatchRequested(matchId));

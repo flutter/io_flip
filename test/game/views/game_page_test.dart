@@ -60,7 +60,9 @@ extension GamePageTest on WidgetTester {
           Provider<MatchSolver>(
             create: (_) => _MockMatchSolver(),
           ),
-          Provider<User>(create: (_) => _MockUser()),
+          Provider<User>(
+            create: (_) => _MockUser(),
+          ),
         ],
         child: GamePage(
           matchId: 'matchId',

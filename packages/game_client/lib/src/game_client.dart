@@ -208,13 +208,12 @@ class GameClient {
   Future<void> playCard({
     required String matchId,
     required String cardId,
-    required String deckId,
-    required String userId,
+    required bool isHost,
   }) async {
     try {
       final response = await _post(
         Uri.parse(
-          '$_endpoint/matches/move?matchId=$matchId&cardId=$cardId&deckId=$deckId&userId=$userId',
+          '$_endpoint/matches/move?matchId=$matchId&cardId=$cardId&host=$isHost',
         ),
       );
 
