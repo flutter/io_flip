@@ -6,7 +6,7 @@ import 'package:test/test.dart';
 
 class _MockFirestore extends Mock implements Firestore {}
 
-class _MockCollectionRefrence extends Mock implements CollectionReference {}
+class _MockCollectionReference extends Mock implements CollectionReference {}
 
 class _MockDocument extends Mock implements Document {}
 
@@ -46,7 +46,7 @@ void main() {
     group('add', () {
       test('insert into firestore', () async {
         final firestore = _MockFirestore();
-        final collection = _MockCollectionRefrence();
+        final collection = _MockCollectionReference();
 
         when(() => firestore.collection('birds')).thenReturn(collection);
 
@@ -63,10 +63,34 @@ void main() {
       });
     });
 
+    group('create', () {
+      test('insert into firestore', () async {
+        final firestore = _MockFirestore();
+        final collection = _MockCollectionReference();
+        final ref = _MockDocumentReference();
+
+        when(() => firestore.collection('birds')).thenReturn(collection);
+
+        final document = _MockDocument();
+
+        when(() => collection.document(any())).thenAnswer((_) => ref);
+        when(() => ref.set(any())).thenAnswer((_) async => document);
+
+        final client = DbClient(firestore: firestore);
+        await client.create(
+          'birds',
+          DbEntityRecord(id: 'id', data: const {'name': 'Dash'}),
+        );
+        verify(() => firestore.collection('birds')).called(1);
+        verify(() => collection.document('id')).called(1);
+        verify(() => ref.set({'name': 'Dash'})).called(1);
+      });
+    });
+
     group('getById', () {
       test('gets an entity in firestore', () async {
         final firestore = _MockFirestore();
-        final collection = _MockCollectionRefrence();
+        final collection = _MockCollectionReference();
 
         when(() => firestore.collection('birds')).thenReturn(collection);
 
@@ -90,7 +114,7 @@ void main() {
 
       test("returns null when the entity doesn't exists", () async {
         final firestore = _MockFirestore();
-        final collection = _MockCollectionRefrence();
+        final collection = _MockCollectionReference();
 
         when(() => firestore.collection('birds')).thenReturn(collection);
 
@@ -109,7 +133,7 @@ void main() {
     group('update', () {
       test('updates and entity ad firestore', () async {
         final firestore = _MockFirestore();
-        final collection = _MockCollectionRefrence();
+        final collection = _MockCollectionReference();
         final reference = _MockDocumentReference();
         when(() => reference.update(any())).thenAnswer((_) async {});
 
@@ -134,7 +158,7 @@ void main() {
     group('findBy', () {
       test('returns the found records', () async {
         final firestore = _MockFirestore();
-        final collection = _MockCollectionRefrence();
+        final collection = _MockCollectionReference();
         when(() => firestore.collection('birds')).thenReturn(collection);
 
         final queryReference = _MockQueryReference();
@@ -173,7 +197,7 @@ void main() {
 
       test('returns empty when no results are returned', () async {
         final firestore = _MockFirestore();
-        final collection = _MockCollectionRefrence();
+        final collection = _MockCollectionReference();
         when(() => firestore.collection('birds')).thenReturn(collection);
 
         final queryReference = _MockQueryReference();

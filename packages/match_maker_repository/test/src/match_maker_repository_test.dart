@@ -32,6 +32,8 @@ class _MockFirebaseFirestore extends Mock implements FirebaseFirestore {
 class _MockCollectionReference<T> extends Mock
     implements CollectionReference<T> {}
 
+class _MockDocumentSnapshot<T> extends Mock implements DocumentSnapshot<T> {}
+
 class _MockQuerySnapshot<T> extends Mock implements QuerySnapshot<T> {}
 
 class _MockQueryDocumentSnapshot<T> extends Mock
@@ -46,6 +48,7 @@ void main() {
     late _MockFirebaseFirestore db;
     late CollectionReference<Map<String, dynamic>> collection;
     late CollectionReference<Map<String, dynamic>> matchStateCollection;
+    late CollectionReference<Map<String, dynamic>> scoreCardsCollection;
     late MatchMakerRepository matchMakerRepository;
     late Timestamp now;
 
@@ -57,6 +60,7 @@ void main() {
       db = _MockFirebaseFirestore();
       collection = _MockCollectionReference();
       matchStateCollection = _MockCollectionReference();
+      scoreCardsCollection = _MockCollectionReference();
       now = Timestamp.now();
 
       when(() => db.collection('matches')).thenReturn(collection);
@@ -254,7 +258,7 @@ void main() {
 
     test('can generate an invite code', () {
       expect(
-        MatchMakerRepository.defautInviteCodeGenerator(),
+        MatchMakerRepository.defaultInviteCodeGenerator(),
         isA<String>(),
       );
     });
@@ -541,6 +545,92 @@ void main() {
           {'guestPing': now},
         ),
       ).called(1);
+    });
+
+    test('can get a ScoreCard', () async {
+      final ref = _MockDocumentReference<Map<String, dynamic>>();
+      final doc = _MockDocumentSnapshot<Map<String, dynamic>>();
+      when(() => scoreCardsCollection.doc('id')).thenReturn(ref);
+      when(ref.get).thenAnswer((invocation) async => doc);
+      when(() => doc.exists).thenReturn(true);
+      when(doc.data).thenReturn({
+        'wins': 1,
+        'currentStreak': 1,
+        'longestStreak': 1,
+      });
+      final result = await matchMakerRepository.getScoreCard('id');
+      expect(
+        result,
+        ScoreCard(
+          id: 'id',
+          wins: 1,
+          currentStreak: 1,
+          longestStreak: 1,
+        ),
+      );
+    });
+
+    test('can watch a ScoreCard', () async {
+      final streamController =
+          StreamController<DocumentSnapshot<Map<String, dynamic>>>();
+
+      final snapshot = _MockDocumentSnapshot<Map<String, dynamic>>();
+      final ref = _MockDocumentReference<Map<String, dynamic>>();
+
+      when(() => scoreCardsCollection.doc(any())).thenReturn(ref);
+      when(ref.snapshots).thenAnswer((_) => streamController.stream);
+      when(() => snapshot.id).thenReturn('123');
+      when(snapshot.data).thenReturn({
+        'wins': 1,
+        'currentStreak': 1,
+        'longestStreak': 1,
+      });
+
+      final values = <ScoreCard>[];
+      final subscription =
+          matchMakerRepository.watchScoreCard('123').listen(values.add);
+
+      streamController.add(snapshot);
+
+      await Future.microtask(() {});
+
+      expect(
+        values,
+        equals([
+          ScoreCard(
+            id: '123',
+            wins: 1,
+            currentStreak: 1,
+            longestStreak: 1,
+          )
+        ]),
+      );
+
+      await subscription.cancel();
+    });
+
+    test('creates a ScoreCard when one does not exist', () async {
+      final ref = _MockDocumentReference<Map<String, dynamic>>();
+      final doc = _MockDocumentSnapshot<Map<String, dynamic>>();
+      when(() => scoreCardsCollection.doc('id')).thenReturn(ref);
+      when(ref.get).thenAnswer((_) async => doc);
+      when(() => doc.exists).thenReturn(false);
+      when(doc.data).thenReturn(null);
+      when(() => ref.set(any())).thenAnswer((_) async {});
+      final result = await matchMakerRepository.getScoreCard('id');
+      verify(
+        () => ref.set({
+          'wins': 0,
+          'currentStreak': 0,
+          'longestStreak': 0,
+        }),
+      ).called(1);
+      expect(
+        result,
+        ScoreCard(
+          id: 'id',
+        ),
+      );
     });
   });
 }

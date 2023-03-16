@@ -24,9 +24,10 @@ class MatchMakerRepository {
     ValueGetter<String>? inviteCode,
     this.retryDelay = _defaultRetryDelay,
   })  : _now = now,
-        _inviteCode = inviteCode ?? defautInviteCodeGenerator {
+        _inviteCode = inviteCode ?? defaultInviteCodeGenerator {
     collection = db.collection('matches');
     matchStatesCollection = db.collection('match_states');
+    scoreCardCollection = db.collection('score_cards');
   }
 
   static const _defaultRetryDelay = 2;
@@ -47,8 +48,11 @@ class MatchMakerRepository {
   /// The [CollectionReference] for the match_states.
   late final CollectionReference<Map<String, dynamic>> matchStatesCollection;
 
+  /// The [CollectionReference] for the score_cards.
+  late final CollectionReference<Map<String, dynamic>> scoreCardCollection;
+
   /// Default generator of invite codes.
-  static String defautInviteCodeGenerator() => const Uuid().v4();
+  static String defaultInviteCodeGenerator() => const Uuid().v4();
 
   /// Watches a match.
   Stream<Match> watchMatch(String id) {
@@ -90,6 +94,17 @@ class MatchMakerRepository {
     });
   }
 
+  /// Watches a ScoreCard.
+  Stream<ScoreCard> watchScoreCard(String id) {
+    final ref = scoreCardCollection.doc(id);
+    final docStream = ref.snapshots();
+    return docStream.map((snapshot) {
+      final id = snapshot.id;
+      final data = {...snapshot.data()!, 'id': id};
+      return ScoreCard.fromJson(data);
+    });
+  }
+
   /// Updates the `hostPing` on the match object.
   Future<void> pingHost(String id) async {
     final ref = collection.doc(id);
@@ -119,6 +134,16 @@ class MatchMakerRepository {
       guestPing: guestPing,
       inviteCode: inviteCode,
     );
+  }
+
+  /// Gets the user's ScoreCard.
+  Future<ScoreCard> getScoreCard(String id) async {
+    final snapshot = await scoreCardCollection.doc(id).get();
+    if (!snapshot.exists || snapshot.data() == null) {
+      return _createScoreCard(id);
+    }
+    final data = {...snapshot.data()!, 'id': id};
+    return ScoreCard.fromJson(data);
   }
 
   /// Finds a match.
@@ -176,7 +201,7 @@ class MatchMakerRepository {
         inviteOnly: true,
       );
 
-  /// Searchs for and join a private match. Returns null if none is found.
+  /// Searches for and join a private match. Returns null if none is found.
   Future<Match?> joinPrivateMatch({
     required String guestId,
     required String inviteCode,
@@ -231,6 +256,17 @@ class MatchMakerRepository {
       host: id,
       hostPing: now,
       inviteCode: inviteCode,
+    );
+  }
+
+  Future<ScoreCard> _createScoreCard(String id) async {
+    await scoreCardCollection.doc(id).set({
+      'wins': 0,
+      'longestStreak': 0,
+      'currentStreak': 0,
+    });
+    return ScoreCard(
+      id: id,
     );
   }
 }

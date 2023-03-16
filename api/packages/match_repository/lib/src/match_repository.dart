@@ -25,6 +25,30 @@ class MatchRepository {
   final DbClient _dbClient;
   final MatchSolver _matchSolver;
 
+  /// Return the ScoreCard with the given [scoreCardId].
+  Future<ScoreCard> getScoreCard(String scoreCardId) async {
+    final scoreData = await _dbClient.getById('score_cards', scoreCardId);
+
+    if (scoreData == null) {
+      await _dbClient.create(
+        'score_cards',
+        DbEntityRecord(
+          id: scoreCardId,
+          data: const {
+            'wins': 0,
+            'currentStreak': 0,
+            'longestStreak': 0,
+          },
+        ),
+      );
+      return ScoreCard(id: scoreCardId);
+    }
+
+    final data = {...scoreData.data, 'id': scoreCardId};
+
+    return ScoreCard.fromJson(data);
+  }
+
   /// Return the match with the given [matchId].
   Future<Match?> getMatch(String matchId) async {
     final matchData = await _dbClient.getById('matches', matchId);
@@ -114,6 +138,16 @@ class MatchRepository {
     if (newMatchState.isOver()) {
       final result = _matchSolver.calculateMatchResult(match, newMatchState);
       newMatchState = newMatchState.setResult(result);
+
+      final host = await getScoreCard(match.hostDeck.userId);
+      final guest = await getScoreCard(match.guestDeck.userId);
+      if (result == MatchResult.host) {
+        await _playerWon(host);
+        await _playerLost(guest);
+      } else if (result == MatchResult.guest) {
+        await _playerWon(guest);
+        await _playerLost(host);
+      }
     }
 
     await _dbClient.update(
@@ -125,6 +159,37 @@ class MatchRepository {
           'hostPlayedCards': newMatchState.hostPlayedCards,
           'guestPlayedCards': newMatchState.guestPlayedCards,
           'result': newMatchState.result?.name,
+        },
+      ),
+    );
+  }
+
+  Future<void> _playerWon(ScoreCard scoreCard) async {
+    var newStreak = scoreCard.longestStreak;
+    if (scoreCard.currentStreak + 1 > scoreCard.longestStreak) {
+      newStreak = scoreCard.currentStreak + 1;
+    }
+
+    await _dbClient.update(
+      'score_cards',
+      DbEntityRecord(
+        id: scoreCard.id,
+        data: {
+          'wins': scoreCard.wins + 1,
+          'currentStreak': scoreCard.currentStreak + 1,
+          'longestStreak': newStreak,
+        },
+      ),
+    );
+  }
+
+  Future<void> _playerLost(ScoreCard scoreCard) async {
+    await _dbClient.update(
+      'score_cards',
+      DbEntityRecord(
+        id: scoreCard.id,
+        data: const {
+          'currentStreak': 0,
         },
       ),
     );
