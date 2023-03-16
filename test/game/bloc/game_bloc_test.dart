@@ -2,6 +2,7 @@
 
 import 'dart:async';
 
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,12 +19,17 @@ class _MockMatchMakerRepository extends Mock
 
 class _MockMatchSolver extends Mock implements MatchSolver {}
 
+class _MockUser extends Mock implements User {
+  @override
+  String get id => 'mock-id';
+}
+
 void main() {
   group('GameBloc', () {
     final match = Match(
       id: 'matchId',
-      hostDeck: Deck(id: '', cards: const []),
-      guestDeck: Deck(id: '', cards: const []),
+      hostDeck: Deck(id: '', userId: '', cards: const []),
+      guestDeck: Deck(id: '', userId: '', cards: const []),
     );
     final matchState = MatchState(
       id: 'matchStateId',
@@ -37,6 +43,7 @@ void main() {
     late GameClient gameClient;
     late repo.MatchMakerRepository matchMakerRepository;
     late MatchSolver matchSolver;
+    late User user;
     const isHost = true;
 
     setUpAll(() {
@@ -48,6 +55,7 @@ void main() {
       matchSolver = _MockMatchSolver();
       gameClient = _MockGameClient();
       matchMakerRepository = _MockMatchMakerRepository();
+      user = _MockUser();
 
       when(() => gameClient.getMatch(match.id)).thenAnswer((_) async => match);
       when(() => gameClient.getMatchState(match.id))
@@ -74,6 +82,7 @@ void main() {
           gameClient: _MockGameClient(),
           matchMakerRepository: _MockMatchMakerRepository(),
           matchSolver: matchSolver,
+          user: user,
           isHost: true,
         ),
         isNotNull,
@@ -86,6 +95,7 @@ void main() {
           gameClient: _MockGameClient(),
           matchMakerRepository: _MockMatchMakerRepository(),
           matchSolver: matchSolver,
+          user: user,
           isHost: false,
         ).state,
         equals(MatchLoadingState()),
@@ -98,6 +108,7 @@ void main() {
         gameClient: gameClient,
         matchMakerRepository: matchMakerRepository,
         matchSolver: matchSolver,
+        user: user,
         isHost: isHost,
       ),
       act: (bloc) => bloc.add(MatchRequested(match.id)),
@@ -121,6 +132,7 @@ void main() {
         gameClient: gameClient,
         matchMakerRepository: matchMakerRepository,
         matchSolver: matchSolver,
+        user: user,
         isHost: isHost,
       ),
       setUp: () {
@@ -139,6 +151,7 @@ void main() {
         gameClient: gameClient,
         matchMakerRepository: matchMakerRepository,
         matchSolver: matchSolver,
+        user: user,
         isHost: isHost,
       ),
       setUp: () {
@@ -157,6 +170,7 @@ void main() {
           id: 'matchId',
           hostDeck: Deck(
             id: 'hostDeck',
+            userId: 'hostUserId',
             cards: [
               Card(
                 id: 'card1',
@@ -189,6 +203,7 @@ void main() {
           ),
           guestDeck: Deck(
             id: 'guestDeck',
+            userId: 'guestUserId',
             cards: [
               Card(
                 id: 'card4',
@@ -235,7 +250,8 @@ void main() {
           () => gameClient.playCard(
             matchId: 'matchId',
             cardId: any(named: 'cardId'),
-            isHost: any(named: 'isHost'),
+            deckId: any(named: 'deckId'),
+            userId: any(named: 'userId'),
           ),
         ).thenAnswer((_) async {});
       });
@@ -245,6 +261,7 @@ void main() {
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
+          user: user,
           isHost: true,
         )..add(MatchRequested(baseState.match.id));
 
@@ -284,6 +301,7 @@ void main() {
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
+          user: user,
           isHost: true,
         ),
         setUp: () {
@@ -306,6 +324,7 @@ void main() {
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
+          user: user,
           isHost: true,
         ),
         setUp: () {
@@ -344,6 +363,7 @@ void main() {
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
+          user: user,
           isHost: true,
         ),
         seed: () => baseState.copyWith(
@@ -367,6 +387,7 @@ void main() {
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
+          user: user,
           isHost: false,
         ),
         seed: () => baseState.copyWith(
@@ -390,6 +411,7 @@ void main() {
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
           isHost: false,
+          user: user,
         ),
         seed: () => const MatchLoadingState(),
         verify: (bloc) {
@@ -404,6 +426,7 @@ void main() {
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
           isHost: false,
+          user: user,
         ),
         setUp: () {
           when(() => matchSolver.calculateRoundResult(any(), any(), any()))
@@ -441,6 +464,7 @@ void main() {
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
+          user: user,
           isHost: true,
         ),
         seed: () => baseState,
@@ -466,6 +490,7 @@ void main() {
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
+          user: user,
           isHost: false,
         ),
         seed: () => baseState,
@@ -491,6 +516,7 @@ void main() {
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
+          user: user,
           isHost: true,
         ),
         seed: () => baseState,
@@ -546,6 +572,7 @@ void main() {
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
+          user: user,
           isHost: false,
         ),
         seed: () => baseState,
@@ -601,6 +628,7 @@ void main() {
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
+          user: user,
           isHost: true,
         ),
         seed: () => baseState,
@@ -681,6 +709,7 @@ void main() {
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
+          user: user,
           isHost: true,
         ),
         seed: () => baseState,
@@ -790,8 +819,8 @@ void main() {
       group('isCardTurnComplete', () {
         final match1 = Match(
           id: 'match1',
-          hostDeck: Deck(id: '', cards: const []),
-          guestDeck: Deck(id: '', cards: const []),
+          hostDeck: Deck(id: '', userId: '', cards: const []),
+          guestDeck: Deck(id: '', userId: '', cards: const []),
         );
         final matchState1 = MatchState(
           id: 'matchState1',
@@ -897,6 +926,7 @@ void main() {
         build: () => GameBloc(
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
+          user: user,
           isHost: true,
           timeOutPeriod: Duration(seconds: 10),
           pingInterval: Duration(microseconds: 1),
@@ -917,6 +947,7 @@ void main() {
         build: () => GameBloc(
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
+          user: user,
           isHost: false,
           timeOutPeriod: Duration(seconds: 10),
           pingInterval: Duration(microseconds: 1),
@@ -937,6 +968,7 @@ void main() {
         build: () => GameBloc(
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
+          user: user,
           isHost: true,
           timeOutPeriod: Duration(seconds: 10),
           matchSolver: matchSolver,
@@ -965,6 +997,7 @@ void main() {
         build: () => GameBloc(
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
+          user: user,
           isHost: false,
           matchSolver: matchSolver,
           now: () => now,
@@ -993,6 +1026,7 @@ void main() {
         build: () => GameBloc(
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
+          user: user,
           isHost: true,
           matchSolver: matchSolver,
           timeOutPeriod: Duration(seconds: 10),
@@ -1021,6 +1055,7 @@ void main() {
         build: () => GameBloc(
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
+          user: user,
           isHost: true,
           matchSolver: matchSolver,
           timeOutPeriod: Duration(seconds: 10),
@@ -1054,6 +1089,7 @@ void main() {
         build: () => GameBloc(
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
+          user: user,
           isHost: true,
           timeOutPeriod: Duration(seconds: 10),
           pingInterval: Duration(microseconds: 1),

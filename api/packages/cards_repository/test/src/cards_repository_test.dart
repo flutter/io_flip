@@ -150,6 +150,7 @@ void main() {
 
     group('getDeck', () {
       const deckId = 'deckId';
+      const userId = 'userId';
       const cardId = 'card1';
 
       setUp(() {
@@ -157,6 +158,7 @@ void main() {
           (_) async => DbEntityRecord(
             id: deckId,
             data: const {
+              'userId': userId,
               'cards': [cardId],
             },
           ),
@@ -185,6 +187,7 @@ void main() {
           equals(
             Deck(
               id: deckId,
+              userId: userId,
               cards: const [
                 Card(
                   id: cardId,

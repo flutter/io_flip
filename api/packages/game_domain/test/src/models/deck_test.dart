@@ -26,16 +26,25 @@ void main() {
 
     test('can be instantiated', () {
       expect(
-        Deck(id: 'deckId', cards: const [card1, card2]),
+        Deck(
+          id: 'deckId',
+          userId: 'userId',
+          cards: const [card1, card2],
+        ),
         isNotNull,
       );
     });
 
     test('toJson returns the instance as json', () {
       expect(
-        Deck(id: 'deckId', cards: const [card1, card2]).toJson(),
+        Deck(
+          id: 'deckId',
+          userId: 'userId',
+          cards: const [card1, card2],
+        ).toJson(),
         equals({
           'id': 'deckId',
+          'userId': 'userId',
           'cards': [
             {
               'id': 'card1',
@@ -64,6 +73,7 @@ void main() {
       expect(
         Deck.fromJson(const {
           'id': 'deckId',
+          'userId': 'userId',
           'cards': [
             {
               'id': 'card1',
@@ -86,24 +96,44 @@ void main() {
           ],
         }),
         equals(
-          Deck(id: 'deckId', cards: const [card1, card2]),
+          Deck(
+            id: 'deckId',
+            userId: 'userId',
+            cards: const [card1, card2],
+          ),
         ),
       );
     });
 
     test('supports equality', () {
       expect(
-        Deck(id: 'deckId', cards: const [card1, card2]),
+        Deck(
+          id: 'deckId',
+          userId: 'userId',
+          cards: const [card1, card2],
+        ),
         equals(
-          Deck(id: 'deckId', cards: const [card1, card2]),
+          Deck(
+            id: 'deckId',
+            userId: 'userId',
+            cards: const [card1, card2],
+          ),
         ),
       );
 
       expect(
-        Deck(id: 'deckId', cards: const [card1, card2]),
+        Deck(
+          id: 'deckId',
+          userId: 'userId',
+          cards: const [card1, card2],
+        ),
         isNot(
           equals(
-            Deck(id: 'deckId2', cards: const [card2, card1]),
+            Deck(
+              id: 'deckId2',
+              userId: 'userId',
+              cards: const [card2, card1],
+            ),
           ),
         ),
       );

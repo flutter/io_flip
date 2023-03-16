@@ -67,6 +67,7 @@ void main() {
           id: '',
           hostDeck: Deck(
             id: '',
+            userId: '',
             cards: const [
               Card(
                 id: 'player_card',
@@ -90,6 +91,7 @@ void main() {
           ),
           guestDeck: Deck(
             id: '',
+            userId: '',
             cards: const [
               Card(
                 id: 'opponent_card',
@@ -372,6 +374,7 @@ void main() {
                 hostDeck: baseState.match.hostDeck,
                 guestDeck: Deck(
                   id: '',
+                  userId: '',
                   cards: const [
                     Card(
                       id: 'opponent_card',

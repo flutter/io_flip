@@ -12,6 +12,7 @@ class Deck extends Equatable {
   /// {@macro deck}
   const Deck({
     required this.id,
+    required this.userId,
     required this.cards,
   });
 
@@ -22,6 +23,10 @@ class Deck extends Equatable {
   @JsonKey()
   final String id;
 
+  /// User id.
+  @JsonKey()
+  final String userId;
+
   /// Card list.
   @JsonKey()
   final List<Card> cards;
@@ -30,5 +35,5 @@ class Deck extends Equatable {
   Map<String, dynamic> toJson() => _$DeckToJson(this);
 
   @override
-  List<Object> get props => [id, cards];
+  List<Object> get props => [id, cards, userId];
 }

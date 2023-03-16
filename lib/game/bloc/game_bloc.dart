@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -17,6 +18,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     required GameClient gameClient,
     required repo.MatchMakerRepository matchMakerRepository,
     required MatchSolver matchSolver,
+    required User user,
     required this.isHost,
     this.timeOutPeriod = defaultTimeOutPeriod,
     this.pingInterval = defaultPingInterval,
@@ -24,6 +26,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   })  : _gameClient = gameClient,
         _matchMakerRepository = matchMakerRepository,
         _matchSolver = matchSolver,
+        _user = user,
         _now = now,
         super(const MatchLoadingState()) {
     on<MatchRequested>(_onMatchRequested);
@@ -35,6 +38,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   final GameClient _gameClient;
   final repo.MatchMakerRepository _matchMakerRepository;
   final MatchSolver _matchSolver;
+  final User _user;
   final bool isHost;
   static const defaultTimeOutPeriod = Duration(seconds: 10);
   static const defaultPingInterval = Duration(seconds: 5);
@@ -139,10 +143,15 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     if (state is MatchLoadedState) {
       final matchState = state as MatchLoadedState;
       emit(matchState.copyWith(playerPlayed: true));
+
+      final deckId =
+          isHost ? matchState.match.hostDeck.id : matchState.match.guestDeck.id;
+
       await _gameClient.playCard(
         matchId: matchState.match.id,
         cardId: event.cardId,
-        isHost: isHost,
+        deckId: deckId,
+        userId: _user.id,
       );
     }
   }

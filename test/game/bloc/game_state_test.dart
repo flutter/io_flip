@@ -34,14 +34,14 @@ void main() {
   group('MatchLoadedState', () {
     final match1 = Match(
       id: 'match1',
-      hostDeck: Deck(id: '', cards: const []),
-      guestDeck: Deck(id: '', cards: const []),
+      hostDeck: Deck(id: '', userId: '', cards: const []),
+      guestDeck: Deck(id: '', userId: '', cards: const []),
     );
 
     final match2 = Match(
       id: 'match2',
-      hostDeck: Deck(id: '', cards: const []),
-      guestDeck: Deck(id: '', cards: const []),
+      hostDeck: Deck(id: '', userId: '', cards: const []),
+      guestDeck: Deck(id: '', userId: '', cards: const []),
     );
 
     final matchState1 = MatchState(
