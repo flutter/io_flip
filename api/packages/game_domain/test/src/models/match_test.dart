@@ -26,11 +26,13 @@ void main() {
 
     const hostDeck = Deck(
       id: 'hostDeck',
+      userId: 'hostUserId',
       cards: [card1],
     );
 
     const guestDeck = Deck(
       id: 'guestDeck',
+      userId: 'guestUserId',
       cards: [card2],
     );
 
@@ -56,6 +58,7 @@ void main() {
           'id': 'matchId',
           'hostDeck': {
             'id': 'hostDeck',
+            'userId': 'hostUserId',
             'cards': [
               {
                 'id': 'card1',
@@ -70,6 +73,7 @@ void main() {
           },
           'guestDeck': {
             'id': 'guestDeck',
+            'userId': 'guestUserId',
             'cards': [
               {
                 'id': 'card2',
@@ -92,6 +96,7 @@ void main() {
           'id': 'matchId',
           'hostDeck': {
             'id': 'hostDeck',
+            'userId': 'hostUserId',
             'cards': [
               {
                 'id': 'card1',
@@ -106,6 +111,7 @@ void main() {
           },
           'guestDeck': {
             'id': 'guestDeck',
+            'userId': 'guestUserId',
             'cards': [
               {
                 'id': 'card2',

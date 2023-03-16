@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_client/game_client.dart';
 import 'package:game_domain/game_domain.dart';
@@ -18,6 +19,8 @@ class _MockGameClient extends Mock implements GameClient {}
 class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
 
 class _MockMatchSolver extends Mock implements MatchSolver {}
+
+class _MockUser extends Mock implements User {}
 
 void main() {
   group('GamePage', () {
@@ -57,6 +60,7 @@ extension GamePageTest on WidgetTester {
           Provider<MatchSolver>(
             create: (_) => _MockMatchSolver(),
           ),
+          Provider<User>(create: (_) => _MockUser()),
         ],
         child: GamePage(
           matchId: 'matchId',

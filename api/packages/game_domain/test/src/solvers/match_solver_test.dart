@@ -50,10 +50,12 @@ void main() {
           id: '',
           hostDeck: Deck(
             id: '',
+            userId: '',
             cards: [cards[0], cards[2], cards[4]],
           ),
           guestDeck: Deck(
             id: '',
+            userId: '',
             cards: [cards[1], cards[3], cards[5]],
           ),
         );
@@ -80,10 +82,12 @@ void main() {
           id: '',
           hostDeck: Deck(
             id: '',
+            userId: '',
             cards: [cards[0], cards[2], cards[4]],
           ),
           guestDeck: Deck(
             id: '',
+            userId: '',
             cards: [cards[1], cards[3], cards[5]],
           ),
         );
@@ -107,10 +111,12 @@ void main() {
           id: '',
           hostDeck: Deck(
             id: '',
+            userId: '',
             cards: [cards[0], cards[2], cards[4]],
           ),
           guestDeck: Deck(
             id: '',
+            userId: '',
             cards: [cards[1], cards[3], cards[5]],
           ),
         );
@@ -148,10 +154,12 @@ void main() {
           id: '',
           hostDeck: Deck(
             id: '',
+            userId: '',
             cards: [cards[0], cards[2], cards[4]],
           ),
           guestDeck: Deck(
             id: '',
+            userId: '',
             cards: [cards[1], cards[3], cards[5]],
           ),
         );
@@ -189,10 +197,12 @@ void main() {
           id: '',
           hostDeck: Deck(
             id: '',
+            userId: '',
             cards: [cards[0], cards[2], cards[4]],
           ),
           guestDeck: Deck(
             id: '',
+            userId: '',
             cards: [cards[1], cards[3], cards[5]],
           ),
         );
@@ -218,10 +228,12 @@ void main() {
           id: '',
           hostDeck: Deck(
             id: '',
+            userId: '',
             cards: [cards[0], cards[2], cards[4]],
           ),
           guestDeck: Deck(
             id: '',
+            userId: '',
             cards: [cards[1], cards[3], cards[5]],
           ),
         );
