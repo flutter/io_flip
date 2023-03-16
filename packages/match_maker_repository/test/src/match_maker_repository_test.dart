@@ -64,6 +64,7 @@ void main() {
       now = Timestamp.now();
 
       when(() => db.collection('matches')).thenReturn(collection);
+      when(() => db.collection('score_cards')).thenReturn(scoreCardsCollection);
       when(() => db.collection('match_states'))
           .thenReturn(matchStateCollection);
       matchMakerRepository = MatchMakerRepository(
