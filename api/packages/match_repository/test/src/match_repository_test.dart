@@ -365,7 +365,8 @@ void main() {
         await matchRepository.playCard(
           matchId: matchId,
           cardId: 'A',
-          isHost: false,
+          deckId: guestDeck.id,
+          userId: guestDeck.userId,
         );
 
         verify(
@@ -388,7 +389,8 @@ void main() {
         await matchRepository.playCard(
           matchId: matchId,
           cardId: 'A',
-          isHost: true,
+          deckId: hostDeck.id,
+          userId: hostDeck.userId,
         );
 
         verify(
@@ -428,7 +430,8 @@ void main() {
         await matchRepository.playCard(
           matchId: matchId,
           cardId: 'F',
-          isHost: true,
+          deckId: hostDeck.id,
+          userId: hostDeck.userId,
         );
 
         verify(
@@ -455,7 +458,8 @@ void main() {
           () => matchRepository.playCard(
             matchId: matchId,
             cardId: 'F',
-            isHost: true,
+            deckId: hostDeck.id,
+            userId: hostDeck.userId,
           ),
           throwsA(isA<PlayCardFailure>()),
         );
@@ -487,7 +491,8 @@ void main() {
             () => matchRepository.playCard(
               matchId: matchId,
               cardId: 'F',
-              isHost: true,
+              deckId: hostDeck.id,
+              userId: hostDeck.userId,
             ),
             throwsA(isA<PlayCardFailure>()),
           );

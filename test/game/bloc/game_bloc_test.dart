@@ -19,6 +19,11 @@ class _MockMatchMakerRepository extends Mock
 
 class _MockMatchSolver extends Mock implements MatchSolver {}
 
+class _MockUser extends Mock implements User {
+  @override
+  String get id => 'userId';
+}
+
 void main() {
   group('GameBloc', () {
     final match = Match(
@@ -39,6 +44,7 @@ void main() {
     late GameClient gameClient;
     late repo.MatchMakerRepository matchMakerRepository;
     late MatchSolver matchSolver;
+    late User user;
     const isHost = true;
 
     setUpAll(() {
@@ -50,6 +56,7 @@ void main() {
       matchSolver = _MockMatchSolver();
       gameClient = _MockGameClient();
       matchMakerRepository = _MockMatchMakerRepository();
+      user = _MockUser();
 
       when(() => gameClient.getMatch(match.id)).thenAnswer((_) async => match);
       when(() => gameClient.getMatchState(match.id))
@@ -80,10 +87,10 @@ void main() {
     test('can be instantiated', () {
       expect(
         GameBloc(
-          user: User(id: 'userId'),
           gameClient: _MockGameClient(),
           matchMakerRepository: _MockMatchMakerRepository(),
           matchSolver: matchSolver,
+          user: user,
           isHost: true,
         ),
         isNotNull,
@@ -93,10 +100,10 @@ void main() {
     test('has the correct initial state', () {
       expect(
         GameBloc(
-          user: User(id: 'userId'),
           gameClient: _MockGameClient(),
           matchMakerRepository: _MockMatchMakerRepository(),
           matchSolver: matchSolver,
+          user: user,
           isHost: false,
         ).state,
         equals(MatchLoadingState()),
@@ -106,10 +113,10 @@ void main() {
     blocTest<GameBloc, GameState>(
       'loads a match',
       build: () => GameBloc(
-        user: User(id: 'userId'),
         gameClient: gameClient,
         matchMakerRepository: matchMakerRepository,
         matchSolver: matchSolver,
+        user: user,
         isHost: isHost,
       ),
       act: (bloc) => bloc.add(MatchRequested(match.id)),
@@ -131,10 +138,10 @@ void main() {
     blocTest<GameBloc, GameState>(
       'fails when the match is not found',
       build: () => GameBloc(
-        user: User(id: 'userId'),
         gameClient: gameClient,
         matchMakerRepository: matchMakerRepository,
         matchSolver: matchSolver,
+        user: user,
         isHost: isHost,
       ),
       setUp: () {
@@ -150,10 +157,10 @@ void main() {
     blocTest<GameBloc, GameState>(
       'fails when fetching the match throws an exception',
       build: () => GameBloc(
-        user: User(id: 'userId'),
         gameClient: gameClient,
         matchMakerRepository: matchMakerRepository,
         matchSolver: matchSolver,
+        user: user,
         isHost: isHost,
       ),
       setUp: () {
@@ -253,17 +260,18 @@ void main() {
           () => gameClient.playCard(
             matchId: 'matchId',
             cardId: any(named: 'cardId'),
-            isHost: any(named: 'isHost'),
+            deckId: any(named: 'deckId'),
+            userId: any(named: 'userId'),
           ),
         ).thenAnswer((_) async {});
       });
 
       test('adds a new state change when the entity changes', () async {
         final bloc = GameBloc(
-          user: User(id: 'userId'),
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
+          user: user,
           isHost: true,
         )..add(MatchRequested(baseState.match.id));
 
@@ -299,7 +307,7 @@ void main() {
 
       test('adds a new state change when the score changes', () async {
         final bloc = GameBloc(
-          user: User(id: 'userId'),
+          user: user,
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
@@ -327,10 +335,10 @@ void main() {
       blocTest<GameBloc, GameState>(
         'canPlayerPlay calls match solver correctly',
         build: () => GameBloc(
-          user: User(id: 'userId'),
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
+          user: user,
           isHost: true,
         ),
         setUp: () {
@@ -350,10 +358,10 @@ void main() {
       blocTest<GameBloc, GameState>(
         'isWinningCard return correctly when is host',
         build: () => GameBloc(
-          user: User(id: 'userId'),
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
+          user: user,
           isHost: true,
         ),
         setUp: () {
@@ -389,10 +397,10 @@ void main() {
       blocTest<GameBloc, GameState>(
         'hasPlayerWon returns true if the host won, and the player is the host',
         build: () => GameBloc(
-          user: User(id: 'userId'),
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
+          user: user,
           isHost: true,
         ),
         seed: () => baseState.copyWith(
@@ -413,10 +421,10 @@ void main() {
         'hasPlayerWon returns false if the guest won, and the player '
         'is the guest',
         build: () => GameBloc(
-          user: User(id: 'userId'),
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
+          user: user,
           isHost: false,
         ),
         seed: () => baseState.copyWith(
@@ -436,11 +444,11 @@ void main() {
       blocTest<GameBloc, GameState>(
         'hasPlayerWon returns false if match is still loading',
         build: () => GameBloc(
-          user: User(id: 'userId'),
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
           isHost: false,
+          user: user,
         ),
         seed: () => const MatchLoadingState(),
         verify: (bloc) {
@@ -451,11 +459,11 @@ void main() {
       blocTest<GameBloc, GameState>(
         'isWinningCard return correctly when is guest',
         build: () => GameBloc(
-          user: User(id: 'userId'),
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
           isHost: false,
+          user: user,
         ),
         setUp: () {
           when(() => matchSolver.calculateRoundResult(any(), any(), any()))
@@ -490,10 +498,10 @@ void main() {
       blocTest<GameBloc, GameState>(
         'plays a player card',
         build: () => GameBloc(
-          user: User(id: 'userId'),
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
+          user: user,
           isHost: true,
         ),
         seed: () => baseState,
@@ -517,10 +525,10 @@ void main() {
       blocTest<GameBloc, GameState>(
         'plays a player card when being the guest',
         build: () => GameBloc(
-          user: User(id: 'userId'),
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
+          user: user,
           isHost: false,
         ),
         seed: () => baseState,
@@ -544,10 +552,10 @@ void main() {
       blocTest<GameBloc, GameState>(
         'marks the playerPlayer as false on receive the new state',
         build: () => GameBloc(
-          user: User(id: 'userId'),
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
+          user: user,
           isHost: true,
         ),
         seed: () => baseState,
@@ -602,10 +610,10 @@ void main() {
         'marks the playerPlayer as false on receive the new state when being '
         'the guest',
         build: () => GameBloc(
-          user: User(id: 'userId'),
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
+          user: user,
           isHost: false,
         ),
         seed: () => baseState,
@@ -660,10 +668,10 @@ void main() {
         'plays a player card, receives confirmation and then receives an '
         'opponent card',
         build: () => GameBloc(
-          user: User(id: 'userId'),
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
+          user: user,
           isHost: true,
         ),
         seed: () => baseState,
@@ -744,10 +752,10 @@ void main() {
       blocTest<GameBloc, GameState>(
         'plays a player card and opponent card and another opponent one',
         build: () => GameBloc(
-          user: User(id: 'userId'),
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
+          user: user,
           isHost: true,
         ),
         seed: () => baseState,
@@ -967,9 +975,9 @@ void main() {
       blocTest<GameBloc, GameState>(
         'pings the matching repository as host to show presence',
         build: () => GameBloc(
-          user: User(id: 'userId'),
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
+          user: user,
           isHost: true,
           timeOutPeriod: Duration(seconds: 10),
           pingInterval: Duration(microseconds: 1),
@@ -988,9 +996,9 @@ void main() {
       blocTest<GameBloc, GameState>(
         'pings the matching repository as guest to show presence',
         build: () => GameBloc(
-          user: User(id: 'userId'),
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
+          user: user,
           isHost: false,
           timeOutPeriod: Duration(seconds: 10),
           pingInterval: Duration(microseconds: 1),
@@ -1009,9 +1017,9 @@ void main() {
       blocTest<GameBloc, GameState>(
         'notifies when opponent(guest) is absent',
         build: () => GameBloc(
-          user: User(id: 'userId'),
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
+          user: user,
           isHost: true,
           timeOutPeriod: Duration(seconds: 10),
           matchSolver: matchSolver,
@@ -1038,9 +1046,9 @@ void main() {
       blocTest<GameBloc, GameState>(
         'notifies when opponent(host) is absent',
         build: () => GameBloc(
-          user: User(id: 'userId'),
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
+          user: user,
           isHost: false,
           matchSolver: matchSolver,
           now: () => now,
@@ -1067,9 +1075,9 @@ void main() {
       blocTest<GameBloc, GameState>(
         'does not return a state if opponent is present',
         build: () => GameBloc(
-          user: User(id: 'userId'),
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
+          user: user,
           isHost: true,
           matchSolver: matchSolver,
           timeOutPeriod: Duration(seconds: 10),
@@ -1096,9 +1104,9 @@ void main() {
       blocTest<GameBloc, GameState>(
         'fails when fetching the match throws an exception',
         build: () => GameBloc(
-          user: User(id: 'userId'),
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
+          user: user,
           isHost: true,
           matchSolver: matchSolver,
           timeOutPeriod: Duration(seconds: 10),
@@ -1130,9 +1138,9 @@ void main() {
       blocTest<GameBloc, GameState>(
         'fails when pinging throws an exception',
         build: () => GameBloc(
-          user: User(id: 'userId'),
           gameClient: gameClient,
           matchMakerRepository: matchMakerRepository,
+          user: user,
           isHost: true,
           timeOutPeriod: Duration(seconds: 10),
           pingInterval: Duration(microseconds: 1),

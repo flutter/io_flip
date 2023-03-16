@@ -123,6 +123,7 @@ class CardsRepository {
     return Deck.fromJson({
       'userId': deckData.data['userId'],
       'id': deckData.id,
+      'userId': deckData.data['userId'],
       'cards': cardsData
           .whereType<DbEntityRecord>()
           .map(

@@ -68,6 +68,7 @@ void main() {
           hostDeck: Deck(
             userId: 'hostId',
             id: '',
+            userId: '',
             cards: const [
               Card(
                 id: 'player_card',
@@ -92,6 +93,7 @@ void main() {
           guestDeck: Deck(
             userId: 'guestId',
             id: '',
+            userId: '',
             cards: const [
               Card(
                 id: 'opponent_card',
@@ -376,6 +378,7 @@ void main() {
                 guestDeck: Deck(
                   userId: 'guestId',
                   id: '',
+                  userId: '',
                   cards: const [
                     Card(
                       id: 'opponent_card',

@@ -202,6 +202,7 @@ void main() {
         const deck = Deck(
           userId: 'userId',
           id: 'deckId',
+          userId: 'userId',
           cards: [card],
         );
 
@@ -277,12 +278,14 @@ void main() {
         const hostDeck = Deck(
           userId: 'hostId',
           id: 'hostDeckId',
+          userId: 'hostUserId',
           cards: [card],
         );
 
         const guestDeck = Deck(
           userId: 'guestId',
           id: 'guestDeckId',
+          userId: 'guestUserId',
           cards: [card],
         );
 
@@ -433,13 +436,14 @@ void main() {
         await client.playCard(
           matchId: 'matchId',
           cardId: 'cardId',
-          isHost: true,
+          deckId: 'deckId',
+          userId: 'userId',
         );
 
         verify(
           () => httpClient.onPost(
             Uri.parse(
-              '/matches/move?matchId=matchId&cardId=cardId&host=true',
+              '/matches/move?matchId=matchId&cardId=cardId&deckId=deckId&userId=userId',
             ),
           ),
         ).called(1);
@@ -453,7 +457,8 @@ void main() {
           () => client.playCard(
             matchId: 'matchId',
             cardId: 'cardId',
-            isHost: true,
+            deckId: 'deckId',
+            userId: 'userId',
           ),
           throwsA(
             isA<GameClientError>().having(
@@ -477,7 +482,8 @@ void main() {
           () => client.playCard(
             matchId: 'matchId',
             cardId: 'cardId',
-            isHost: true,
+            deckId: 'deckId',
+            userId: 'userId',
           ),
           throwsA(
             isA<GameClientError>().having(
@@ -499,7 +505,8 @@ void main() {
           () => client.playCard(
             matchId: 'matchId',
             cardId: 'cardId',
-            isHost: true,
+            deckId: 'deckId',
+            userId: 'userId',
           ),
           throwsA(
             isA<GameClientError>().having(
