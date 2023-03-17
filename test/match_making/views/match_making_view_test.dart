@@ -94,32 +94,7 @@ void main() {
     );
 
     testWidgets(
-      'renders the invite code button when one is available',
-      (tester) async {
-        mockState(
-          MatchMakingState(
-            status: MatchMakingStatus.processing,
-            match: Match(
-              id: 'matchId',
-              host: 'hostId',
-              guest: 'guestId',
-              hostPing: Timestamp.now(),
-              inviteCode: 'hello-join-my-match',
-            ),
-            isHost: true,
-          ),
-        );
-        await tester.pumpSubject(bloc);
-
-        expect(
-          find.text('Copy invite code'),
-          findsOneWidget,
-        );
-      },
-    );
-
-    testWidgets(
-      'renders the invite code button when one is available',
+      'copies invite code on invite code button tap',
       (tester) async {
         ClipboardData? clipboardData;
         mockState(

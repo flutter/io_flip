@@ -72,6 +72,26 @@ void main() {
       });
     });
 
+    group('ScoreUpdated', () {
+      const scoreCard1 = ScoreCard(id: '1');
+      const scoreCard2 = ScoreCard(id: '2');
+      test('can be instantiated', () {
+        expect(ScoreCardUpdated(scoreCard1), isNotNull);
+      });
+
+      test('supports equality', () {
+        expect(
+          ScoreCardUpdated(scoreCard1),
+          equals(ScoreCardUpdated(scoreCard1)),
+        );
+
+        expect(
+          ScoreCardUpdated(scoreCard1),
+          isNot(equals(ScoreCardUpdated(scoreCard2))),
+        );
+      });
+    });
+
     group('PresenceCheckRequested', () {
       test('can be instantiated', () {
         expect(ManagePlayerPresence('match1'), isNotNull);

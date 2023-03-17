@@ -61,6 +61,7 @@ void main() {
     test('can be instantiated', () {
       expect(
         MatchLoadedState(
+          playerScoreCard: ScoreCard(id: 'scoreCardId'),
           match: match1,
           matchState: matchState1,
           turns: const [],
@@ -73,6 +74,7 @@ void main() {
     test('supports equality', () {
       expect(
         MatchLoadedState(
+          playerScoreCard: ScoreCard(id: 'scoreCardId'),
           match: match1,
           matchState: matchState1,
           turns: const [],
@@ -80,6 +82,7 @@ void main() {
         ),
         equals(
           MatchLoadedState(
+            playerScoreCard: ScoreCard(id: 'scoreCardId'),
             match: match1,
             matchState: matchState1,
             turns: const [],
@@ -90,6 +93,7 @@ void main() {
 
       expect(
         MatchLoadedState(
+          playerScoreCard: ScoreCard(id: 'scoreCardId'),
           match: match1,
           matchState: matchState1,
           turns: const [],
@@ -98,6 +102,7 @@ void main() {
         isNot(
           equals(
             MatchLoadedState(
+              playerScoreCard: ScoreCard(id: 'scoreCardId'),
               match: match2,
               matchState: matchState1,
               turns: const [],
@@ -109,6 +114,7 @@ void main() {
 
       expect(
         MatchLoadedState(
+          playerScoreCard: ScoreCard(id: 'scoreCardId'),
           match: match1,
           matchState: matchState1,
           turns: const [],
@@ -117,6 +123,7 @@ void main() {
         isNot(
           equals(
             MatchLoadedState(
+              playerScoreCard: ScoreCard(id: 'scoreCardId'),
               match: match1,
               matchState: matchState2,
               turns: const [],
@@ -128,6 +135,7 @@ void main() {
 
       expect(
         MatchLoadedState(
+          playerScoreCard: ScoreCard(id: 'scoreCardId'),
           match: match1,
           matchState: matchState1,
           turns: const [],
@@ -136,6 +144,7 @@ void main() {
         isNot(
           equals(
             MatchLoadedState(
+              playerScoreCard: ScoreCard(id: 'scoreCardId'),
               match: match1,
               matchState: matchState1,
               turns: const [
@@ -152,6 +161,7 @@ void main() {
 
       expect(
         MatchLoadedState(
+          playerScoreCard: ScoreCard(id: 'scoreCardId'),
           match: match1,
           matchState: matchState1,
           turns: const [],
@@ -160,6 +170,7 @@ void main() {
         isNot(
           equals(
             MatchLoadedState(
+              playerScoreCard: ScoreCard(id: 'scoreCardId'),
               match: match1,
               matchState: matchState1,
               turns: const [],
@@ -173,6 +184,7 @@ void main() {
     test('copyWith returns a new instance with the copied values', () {
       expect(
         MatchLoadedState(
+          playerScoreCard: ScoreCard(id: 'scoreCardId'),
           match: match1,
           matchState: matchState1,
           turns: const [],
@@ -180,6 +192,7 @@ void main() {
         ).copyWith(match: match2),
         equals(
           MatchLoadedState(
+            playerScoreCard: ScoreCard(id: 'scoreCardId'),
             match: match2,
             matchState: matchState1,
             turns: const [],
@@ -190,6 +203,7 @@ void main() {
 
       expect(
         MatchLoadedState(
+          playerScoreCard: ScoreCard(id: 'scoreCardId'),
           match: match1,
           matchState: matchState1,
           turns: const [],
@@ -197,6 +211,7 @@ void main() {
         ).copyWith(matchState: matchState2),
         equals(
           MatchLoadedState(
+            playerScoreCard: ScoreCard(id: 'scoreCardId'),
             match: match1,
             matchState: matchState2,
             turns: const [],
@@ -207,6 +222,7 @@ void main() {
 
       expect(
         MatchLoadedState(
+          playerScoreCard: ScoreCard(id: 'scoreCardId'),
           match: match1,
           matchState: matchState1,
           turns: const [],
@@ -214,6 +230,7 @@ void main() {
         ).copyWith(turns: [MatchTurn(playerCardId: '', opponentCardId: '')]),
         equals(
           MatchLoadedState(
+            playerScoreCard: ScoreCard(id: 'scoreCardId'),
             match: match1,
             matchState: matchState1,
             turns: const [MatchTurn(playerCardId: '', opponentCardId: '')],
@@ -224,6 +241,7 @@ void main() {
 
       expect(
         MatchLoadedState(
+          playerScoreCard: ScoreCard(id: 'scoreCardId'),
           match: match1,
           matchState: matchState1,
           turns: const [],
@@ -231,6 +249,7 @@ void main() {
         ).copyWith(playerPlayed: false),
         equals(
           MatchLoadedState(
+            playerScoreCard: ScoreCard(id: 'scoreCardId'),
             match: match1,
             matchState: matchState1,
             turns: const [],
