@@ -307,13 +307,11 @@ extension DraftViewTest on WidgetTester {
   }) async {
     await mockNetworkImages(() {
       return pumpApp(
-        MockGoRouterProvider(
-          goRouter: goRouter ?? MockGoRouter(),
-          child: BlocProvider.value(
-            value: draftBloc,
-            child: DraftView(),
-          ),
+        BlocProvider.value(
+          value: draftBloc,
+          child: DraftView(),
         ),
+        router: goRouter,
       );
     });
   }

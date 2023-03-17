@@ -1,21 +1,11 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:game_client/game_client.dart';
 import 'package:go_router/go_router.dart';
-import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:provider/provider.dart';
 import 'package:top_dash/match_making/match_making.dart';
 
 import '../../helpers/helpers.dart';
-
-class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
-
-class _MockGameClient extends Mock implements GameClient {}
-
-class _MockUser extends Mock implements User {}
 
 class _MockGoRouterState extends Mock implements GoRouterState {}
 
@@ -72,29 +62,15 @@ void main() {
     });
 
     testWidgets('renders a MatchMakingView', (tester) async {
-      await tester.pumpSubject();
-      expect(find.byType(MatchMakingView), findsOneWidget);
-    });
-  });
-}
-
-extension MatchMakingPageTest on WidgetTester {
-  Future<void> pumpSubject() {
-    return pumpApp(
-      MultiProvider(
-        providers: [
-          Provider<MatchMakerRepository>(
-            create: (_) => _MockMatchMakerRepository(),
-          ),
-          Provider<GameClient>(create: (_) => _MockGameClient()),
-          Provider<User>(create: (_) => _MockUser()),
-        ],
-        child: MatchMakingPage(
+      await tester.pumpApp(
+        MatchMakingPage(
           playerCardIds: const ['a', 'b', 'c'],
           createPrivateMatch: false,
           inviteCode: null,
         ),
-      ),
-    );
-  }
+      );
+
+      expect(find.byType(MatchMakingView), findsOneWidget);
+    });
+  });
 }

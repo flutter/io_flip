@@ -134,15 +134,13 @@ extension MatchMakingViewTest on WidgetTester {
     Future<void> Function(ClipboardData)? setClipboardData,
   }) {
     return pumpApp(
-      MockGoRouterProvider(
-        goRouter: goRouter ?? MockGoRouter(),
-        child: BlocProvider<MatchMakingBloc>.value(
-          value: bloc,
-          child: MatchMakingView(
-            setClipboardData: setClipboardData ?? Clipboard.setData,
-          ),
+      BlocProvider<MatchMakingBloc>.value(
+        value: bloc,
+        child: MatchMakingView(
+          setClipboardData: setClipboardData ?? Clipboard.setData,
         ),
       ),
+      router: goRouter,
     );
   }
 }

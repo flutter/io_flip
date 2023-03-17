@@ -20,8 +20,14 @@ class _MockHttpClient extends Mock implements __HttpClient {}
 
 void main() {
   group('GameClient', () {
+    late Response response;
+
     setUpAll(() {
       registerFallbackValue(Uri());
+    });
+
+    setUp(() {
+      response = _MockResponse();
     });
 
     test('can be instantiated', () {
@@ -33,11 +39,8 @@ void main() {
 
     group('generateCard', () {
       late GameClient client;
-      late Response response;
 
       setUp(() {
-        response = _MockResponse();
-
         client = GameClient(
           endpoint: '',
           postCall: (_, {Object? body}) async => response,
@@ -102,11 +105,8 @@ void main() {
 
     group('createDeck', () {
       late GameClient client;
-      late Response response;
 
       setUp(() {
-        response = _MockResponse();
-
         client = GameClient(
           endpoint: '',
           postCall: (_, {Object? body}) async => response,
@@ -177,11 +177,8 @@ void main() {
 
     group('getDeck', () {
       late GameClient client;
-      late Response response;
 
       setUp(() {
-        response = _MockResponse();
-
         client = GameClient(
           endpoint: '',
           getCall: (_) async => response,
@@ -252,11 +249,8 @@ void main() {
 
     group('getMatch', () {
       late GameClient client;
-      late Response response;
 
       setUp(() {
-        response = _MockResponse();
-
         client = GameClient(
           endpoint: '',
           getCall: (_) async => response,
@@ -339,11 +333,8 @@ void main() {
 
     group('getMatchState', () {
       late GameClient client;
-      late Response response;
 
       setUp(() {
-        response = _MockResponse();
-
         client = GameClient(
           endpoint: '',
           getCall: (_) async => response,
@@ -413,12 +404,9 @@ void main() {
     group('playCard', () {
       late __HttpClient httpClient;
       late GameClient client;
-      late Response response;
 
       setUp(() {
         httpClient = _MockHttpClient();
-
-        response = _MockResponse();
         when(() => httpClient.onPost(any(), body: any(named: 'body')))
             .thenAnswer((_) async => response);
 
@@ -520,11 +508,8 @@ void main() {
 
     group('getCurrentScript', () {
       late GameClient client;
-      late Response response;
 
       setUp(() {
-        response = _MockResponse();
-
         client = GameClient(
           endpoint: '',
           getCall: (_, {Object? body}) async => response,
@@ -562,11 +547,9 @@ void main() {
     group('updateScript', () {
       late __HttpClient httpClient;
       late GameClient client;
-      late Response response;
 
       setUp(() {
         httpClient = _MockHttpClient();
-        response = _MockResponse();
         when(() => httpClient.onPut(any(), body: any(named: 'body')))
             .thenAnswer((_) async => response);
 
