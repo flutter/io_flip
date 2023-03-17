@@ -40,6 +40,7 @@ void main() {
 
     late StreamController<MatchState> matchStateController;
     late StreamController<repo.Match> matchController;
+    late StreamController<ScoreCard> scoreController;
     late GameClient gameClient;
     late repo.MatchMakerRepository matchMakerRepository;
     late MatchSolver matchSolver;
@@ -63,9 +64,13 @@ void main() {
 
       matchStateController = StreamController();
       matchController = StreamController();
+      scoreController = StreamController();
 
       when(() => matchMakerRepository.watchMatchState(any()))
           .thenAnswer((_) => matchStateController.stream);
+
+      when(() => matchMakerRepository.watchScoreCard(any()))
+          .thenAnswer((_) => scoreController.stream);
 
       when(() => matchMakerRepository.watchMatch(any()))
           .thenAnswer((_) => matchController.stream);
@@ -74,6 +79,9 @@ void main() {
 
       when(() => matchMakerRepository.pingGuest(any()))
           .thenAnswer((_) async {});
+
+      when(() => matchMakerRepository.getScoreCard(any()))
+          .thenAnswer((_) async => ScoreCard(id: 'scoreCardId'));
     });
 
     test('can be instantiated', () {
@@ -115,6 +123,7 @@ void main() {
       expect: () => [
         MatchLoadingState(),
         MatchLoadedState(
+          playerScoreCard: ScoreCard(id: 'scoreCardId'),
           match: match,
           matchState: matchState,
           turns: const [],
@@ -166,6 +175,7 @@ void main() {
 
     group('register player and opponent moves', () {
       const baseState = MatchLoadedState(
+        playerScoreCard: ScoreCard(id: 'scoreCardId'),
         match: Match(
           id: 'matchId',
           hostDeck: Deck(
@@ -292,6 +302,33 @@ void main() {
               ),
             ],
           ),
+        );
+      });
+
+      test('adds a new state change when the score changes', () async {
+        final bloc = GameBloc(
+          user: User(id: 'userId'),
+          gameClient: gameClient,
+          matchMakerRepository: matchMakerRepository,
+          matchSolver: matchSolver,
+          isHost: true,
+        )..add(MatchRequested(baseState.match.id));
+
+        await Future.microtask(() {});
+
+        scoreController.add(
+          ScoreCard(id: 'scoreCardId', wins: 5),
+        );
+
+        await Future<void>.delayed(Duration(milliseconds: 20));
+
+        final state = bloc.state;
+        expect(state, isA<MatchLoadedState>());
+
+        final matchLoadedState = state as MatchLoadedState;
+        expect(
+          matchLoadedState.playerScoreCard.wins,
+          equals(5),
         );
       });
 
@@ -471,6 +508,7 @@ void main() {
         act: (bloc) => bloc.add(PlayerPlayed('new_card_1')),
         expect: () => [
           MatchLoadedState(
+            playerScoreCard: ScoreCard(id: 'scoreCardId'),
             match: baseState.match,
             matchState: MatchState(
               id: 'matchStateId',
@@ -497,6 +535,7 @@ void main() {
         act: (bloc) => bloc.add(PlayerPlayed('new_card_1')),
         expect: () => [
           MatchLoadedState(
+            playerScoreCard: ScoreCard(id: 'scoreCardId'),
             match: baseState.match,
             matchState: MatchState(
               id: 'matchStateId',
@@ -536,6 +575,7 @@ void main() {
         },
         expect: () => [
           MatchLoadedState(
+            playerScoreCard: ScoreCard(id: 'scoreCardId'),
             match: baseState.match,
             matchState: MatchState(
               id: 'matchStateId',
@@ -547,6 +587,7 @@ void main() {
             playerPlayed: true,
           ),
           MatchLoadedState(
+            playerScoreCard: ScoreCard(id: 'scoreCardId'),
             match: baseState.match,
             matchState: MatchState(
               id: 'matchStateId',
@@ -592,6 +633,7 @@ void main() {
         },
         expect: () => [
           MatchLoadedState(
+            playerScoreCard: ScoreCard(id: 'scoreCardId'),
             match: baseState.match,
             matchState: MatchState(
               id: 'matchStateId',
@@ -603,6 +645,7 @@ void main() {
             playerPlayed: true,
           ),
           MatchLoadedState(
+            playerScoreCard: ScoreCard(id: 'scoreCardId'),
             match: baseState.match,
             matchState: MatchState(
               id: 'matchStateId',
@@ -658,6 +701,7 @@ void main() {
         },
         expect: () => [
           MatchLoadedState(
+            playerScoreCard: ScoreCard(id: 'scoreCardId'),
             match: baseState.match,
             matchState: MatchState(
               id: 'matchStateId',
@@ -669,6 +713,7 @@ void main() {
             playerPlayed: true,
           ),
           MatchLoadedState(
+            playerScoreCard: ScoreCard(id: 'scoreCardId'),
             match: baseState.match,
             matchState: MatchState(
               id: 'matchStateId',
@@ -685,6 +730,7 @@ void main() {
             playerPlayed: false,
           ),
           MatchLoadedState(
+            playerScoreCard: ScoreCard(id: 'scoreCardId'),
             match: baseState.match,
             matchState: MatchState(
               id: 'matchStateId',
@@ -749,6 +795,7 @@ void main() {
         },
         expect: () => [
           MatchLoadedState(
+            playerScoreCard: ScoreCard(id: 'scoreCardId'),
             match: baseState.match,
             matchState: MatchState(
               id: 'matchStateId',
@@ -760,6 +807,7 @@ void main() {
             playerPlayed: true,
           ),
           MatchLoadedState(
+            playerScoreCard: ScoreCard(id: 'scoreCardId'),
             match: baseState.match,
             matchState: MatchState(
               id: 'matchStateId',
@@ -776,6 +824,7 @@ void main() {
             playerPlayed: false,
           ),
           MatchLoadedState(
+            playerScoreCard: ScoreCard(id: 'scoreCardId'),
             match: baseState.match,
             matchState: MatchState(
               id: 'matchStateId',
@@ -792,6 +841,7 @@ void main() {
             playerPlayed: false,
           ),
           MatchLoadedState(
+            playerScoreCard: ScoreCard(id: 'scoreCardId'),
             match: baseState.match,
             matchState: MatchState(
               id: 'matchStateId',
@@ -839,6 +889,7 @@ void main() {
         );
 
         final baseState = MatchLoadedState(
+          playerScoreCard: ScoreCard(id: 'scoreCardId'),
           match: match1,
           matchState: matchState1,
           turns: const [],

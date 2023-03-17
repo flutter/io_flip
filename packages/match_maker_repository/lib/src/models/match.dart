@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 /// A class representing a match between a host and a guest.
 /// {@endtemplate}
 class Match extends Equatable {
-  /// {@macro math}
+  /// {@macro match}
   const Match({
     required this.id,
     required this.host,
