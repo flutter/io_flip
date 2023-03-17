@@ -145,6 +145,75 @@ void main() {
       );
     });
 
+    group('getScoreCard', () {
+      late CardsRepository cardsRepository;
+      late DbClient dbClient;
+      late MatchRepository matchRepository;
+      late MatchSolver matchSolver;
+      const scoreCardId = 'scoreCardId';
+      final scoreCard = ScoreCard(
+        id: scoreCardId,
+        wins: 1,
+        currentStreak: 1,
+        longestStreak: 1,
+      );
+
+      setUp(() {
+        cardsRepository = _MockCardRepository();
+
+        dbClient = _MockDbClient();
+
+        when(() => dbClient.getById('score_cards', scoreCardId)).thenAnswer(
+          (_) async => DbEntityRecord(
+            id: scoreCardId,
+            data: {
+              'wins': scoreCard.wins,
+              'currentStreak': scoreCard.currentStreak,
+              'longestStreak': scoreCard.longestStreak,
+            },
+          ),
+        );
+
+        matchSolver = _MockMatchSolver();
+
+        matchRepository = MatchRepository(
+          cardsRepository: cardsRepository,
+          dbClient: dbClient,
+          matchSolver: matchSolver,
+        );
+      });
+
+      test('returns the correct ScoreCard', () async {
+        final result = await matchRepository.getScoreCard(scoreCardId);
+
+        expect(result, equals(scoreCard));
+      });
+
+      test('returns empty score card when there is no match', () async {
+        when(() => dbClient.getById('score_cards', scoreCardId)).thenAnswer(
+          (_) async => null,
+        );
+        when(
+          () => dbClient.set(
+            'score_cards',
+            DbEntityRecord(
+              id: scoreCardId,
+              data: const {
+                'wins': 0,
+                'currentStreak': 0,
+                'longestStreak': 0,
+              },
+            ),
+          ),
+        ).thenAnswer(
+          (_) async {},
+        );
+        final result = await matchRepository.getScoreCard(scoreCardId);
+
+        expect(result, ScoreCard(id: scoreCardId));
+      });
+    });
+
     group('getMatchState', () {
       late CardsRepository cardsRepository;
       late DbClient dbClient;
@@ -251,6 +320,12 @@ void main() {
 
         dbClient = _MockDbClient();
 
+        when(() => dbClient.getById('score_cards', any())).thenAnswer(
+          (_) async => DbEntityRecord(
+            id: 'scoreCardId',
+          ),
+        );
+
         when(() => dbClient.getById('matches', matchId)).thenAnswer(
           (_) async => DbEntityRecord(
             id: matchId,
@@ -286,7 +361,7 @@ void main() {
         );
       });
 
-      test('correctly updates the match state', () async {
+      test('correctly updates the match state when is guest', () async {
         await matchRepository.playCard(
           matchId: matchId,
           cardId: 'A',
@@ -423,6 +498,118 @@ void main() {
           );
         },
       );
+      group('score card', () {
+        setUp(() {
+          when(() => dbClient.findBy('match_states', 'matchId', matchId))
+              .thenAnswer(
+            (_) async => [
+              DbEntityRecord(
+                id: matchStateId,
+                data: const {
+                  'matchId': matchId,
+                  'guestPlayedCards': <String>['A', 'B', 'C'],
+                  'hostPlayedCards': <String>['D', 'E'],
+                },
+              ),
+            ],
+          );
+        });
+
+        test('updates correctly when host wins', () async {
+          when(() => matchSolver.calculateMatchResult(any(), any()))
+              .thenReturn(MatchResult.host);
+
+          await matchRepository.playCard(
+            matchId: matchId,
+            cardId: 'F',
+            deckId: hostDeck.id,
+            userId: hostDeck.userId,
+          );
+
+          verify(
+            () => dbClient.update(
+              'score_cards',
+              DbEntityRecord(
+                id: hostDeck.userId,
+                data: const {
+                  'wins': 1,
+                  'currentStreak': 1,
+                  'longestStreak': 1,
+                },
+              ),
+            ),
+          ).called(1);
+
+          verify(
+            () => dbClient.update(
+              'score_cards',
+              DbEntityRecord(
+                id: guestDeck.userId,
+                data: const {
+                  'currentStreak': 0,
+                },
+              ),
+            ),
+          ).called(1);
+        });
+
+        test('updates correctly when guest wins', () async {
+          when(() => matchSolver.calculateMatchResult(any(), any()))
+              .thenReturn(MatchResult.guest);
+
+          await matchRepository.playCard(
+            matchId: matchId,
+            cardId: 'F',
+            deckId: hostDeck.id,
+            userId: hostDeck.userId,
+          );
+
+          verify(
+            () => dbClient.update(
+              'score_cards',
+              DbEntityRecord(
+                id: guestDeck.userId,
+                data: const {
+                  'wins': 1,
+                  'currentStreak': 1,
+                  'longestStreak': 1,
+                },
+              ),
+            ),
+          ).called(1);
+
+          verify(
+            () => dbClient.update(
+              'score_cards',
+              DbEntityRecord(
+                id: hostDeck.userId,
+                data: const {
+                  'currentStreak': 0,
+                },
+              ),
+            ),
+          ).called(1);
+        });
+
+        test('do not update when there is a draw', () async {
+          when(() => matchSolver.calculateMatchResult(any(), any()))
+              .thenReturn(MatchResult.draw);
+
+          await matchRepository.playCard(
+            matchId: matchId,
+            cardId: 'F',
+            deckId: hostDeck.id,
+            userId: hostDeck.userId,
+          );
+
+          verifyNever(
+            () => dbClient.update(
+              'score_cards',
+              any(),
+            ),
+          );
+        });
+      });
     });
   });
 }

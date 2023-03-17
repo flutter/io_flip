@@ -37,29 +37,39 @@ class MatchLoadedState extends GameState {
     required this.matchState,
     required this.turns,
     required this.playerPlayed,
+    required this.playerScoreCard,
   });
 
   final Match match;
   final MatchState matchState;
   final List<MatchTurn> turns;
   final bool playerPlayed;
+  final ScoreCard playerScoreCard;
 
   MatchLoadedState copyWith({
     Match? match,
     MatchState? matchState,
     List<MatchTurn>? turns,
     bool? playerPlayed,
+    ScoreCard? playerScoreCard,
   }) {
     return MatchLoadedState(
       match: match ?? this.match,
       matchState: matchState ?? this.matchState,
       turns: turns ?? this.turns,
       playerPlayed: playerPlayed ?? this.playerPlayed,
+      playerScoreCard: playerScoreCard ?? this.playerScoreCard,
     );
   }
 
   @override
-  List<Object> get props => [match, matchState, turns, playerPlayed];
+  List<Object> get props => [
+        match,
+        matchState,
+        turns,
+        playerPlayed,
+        playerScoreCard,
+      ];
 }
 
 class OpponentAbsentState extends GameState {

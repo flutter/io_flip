@@ -63,6 +63,7 @@ void main() {
 
     group('Gameplay', () {
       final baseState = MatchLoadedState(
+        playerScoreCard: ScoreCard(id: 'scoreCardId'),
         match: Match(
           id: '',
           hostDeck: Deck(
@@ -196,6 +197,19 @@ void main() {
 
           expect(
             find.text('Game ended: Lose'),
+            findsOneWidget,
+          );
+        },
+      );
+
+      testWidgets(
+        'renders the players score',
+        (tester) async {
+          mockState(baseState);
+          await tester.pumpSubject(bloc);
+
+          expect(
+            find.text('Score: 0 Streak: 0'),
             findsOneWidget,
           );
         },
@@ -415,13 +429,11 @@ extension GameViewTest on WidgetTester {
   }) {
     return mockNetworkImages(() {
       return pumpApp(
-        MockGoRouterProvider(
-          goRouter: goRouter ?? MockGoRouter(),
-          child: BlocProvider<GameBloc>.value(
-            value: bloc,
-            child: GameView(),
-          ),
+        BlocProvider<GameBloc>.value(
+          value: bloc,
+          child: GameView(),
         ),
+        router: goRouter,
       );
     });
   }

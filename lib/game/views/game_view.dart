@@ -87,6 +87,10 @@ class _GameBoard extends StatelessWidget {
       child: Column(
         children: [
           Expanded(
+            child: Text('Score: ${state.playerScoreCard.wins} '
+                'Streak: ${state.playerScoreCard.longestStreak}'),
+          ),
+          Expanded(
             flex: 2,
             child: Center(
               child: Row(

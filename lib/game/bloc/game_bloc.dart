@@ -33,6 +33,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     on<PlayerPlayed>(_onPlayerPlayed);
     on<MatchStateUpdated>(_onMatchStateUpdated);
     on<ManagePlayerPresence>(_onManagePlayerPresence);
+    on<ScoreCardUpdated>(_onScoreCardUpdated);
   }
 
   final GameClient _gameClient;
@@ -41,13 +42,14 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   final User _user;
   final bool isHost;
   static const defaultTimeOutPeriod = Duration(seconds: 10);
-  static const defaultPingInterval = Duration(seconds: 5);
+  static const defaultPingInterval = Duration(seconds: 3);
   final Duration timeOutPeriod;
   final Duration pingInterval;
   final ValueGetter<Timestamp> _now;
 
   StreamSubscription<MatchState>? _stateSubscription;
   StreamSubscription<repo.Match>? _opponentPresenceSubscription;
+  StreamSubscription<ScoreCard>? _scoreSubscription;
 
   Future<void> _onMatchRequested(
     MatchRequested event,
@@ -59,12 +61,14 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       final values = await Future.wait([
         _gameClient.getMatch(event.matchId),
         _gameClient.getMatchState(event.matchId),
+        _matchMakerRepository.getScoreCard(_user.id),
       ]);
 
       final match = values.first as Match?;
-      final matchState = values.last as MatchState?;
+      final matchState = values[1] as MatchState?;
+      final scoreCard = values.last as ScoreCard?;
 
-      if (match == null || matchState == null) {
+      if (match == null || matchState == null || scoreCard == null) {
         emit(const MatchLoadFailedState());
       } else {
         emit(
@@ -73,14 +77,21 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             matchState: matchState,
             turns: const [],
             playerPlayed: false,
+            playerScoreCard: scoreCard,
           ),
         );
 
         add(ManagePlayerPresence(event.matchId));
-        final stream = _matchMakerRepository.watchMatchState(matchState.id);
 
-        _stateSubscription = stream.listen((state) {
+        final stateStream =
+            _matchMakerRepository.watchMatchState(matchState.id);
+        _stateSubscription = stateStream.listen((state) {
           add(MatchStateUpdated(state));
+        });
+
+        final scoreStream = _matchMakerRepository.watchScoreCard(scoreCard.id);
+        _scoreSubscription = scoreStream.listen((state) {
+          add(ScoreCardUpdated(state));
         });
       }
     } catch (e, s) {
@@ -132,6 +143,19 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           turns: turns,
           playerPlayed: isPlayerMove ? false : null,
         ),
+      );
+    }
+  }
+
+  Future<void> _onScoreCardUpdated(
+    ScoreCardUpdated event,
+    Emitter<GameState> emit,
+  ) async {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+
+      emit(
+        matchLoadedState.copyWith(playerScoreCard: event.updatedScore),
       );
     }
   }
@@ -253,6 +277,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   Future<void> close() {
     _stateSubscription?.cancel();
     _opponentPresenceSubscription?.cancel();
+    _scoreSubscription?.cancel();
     return super.close();
   }
 
