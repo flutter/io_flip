@@ -194,7 +194,7 @@ void main() {
           (_) async => null,
         );
         when(
-          () => dbClient.create(
+          () => dbClient.set(
             'score_cards',
             DbEntityRecord(
               id: scoreCardId,

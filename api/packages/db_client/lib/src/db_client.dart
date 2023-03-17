@@ -63,8 +63,8 @@ class DbClient {
     await reference.update(record.data);
   }
 
-  /// Creates a record with the given data and document id.
-  Future<void> create(String entity, DbEntityRecord record) async {
+  /// Creates or updates a record with the given data and document id.
+  Future<void> set(String entity, DbEntityRecord record) async {
     final collection = _firestore.collection(entity);
 
     final reference = collection.document(record.id);

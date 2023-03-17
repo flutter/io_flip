@@ -30,7 +30,7 @@ class MatchRepository {
     final scoreData = await _dbClient.getById('score_cards', scoreCardId);
 
     if (scoreData == null) {
-      await _dbClient.create(
+      await _dbClient.set(
         'score_cards',
         DbEntityRecord(
           id: scoreCardId,

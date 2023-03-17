@@ -63,7 +63,7 @@ void main() {
       });
     });
 
-    group('create', () {
+    group('set', () {
       test('insert into firestore', () async {
         final firestore = _MockFirestore();
         final collection = _MockCollectionReference();
@@ -77,7 +77,7 @@ void main() {
         when(() => ref.set(any())).thenAnswer((_) async => document);
 
         final client = DbClient(firestore: firestore);
-        await client.create(
+        await client.set(
           'birds',
           DbEntityRecord(id: 'id', data: const {'name': 'Dash'}),
         );
