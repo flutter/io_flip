@@ -17,7 +17,7 @@ dependencies:
   equatable: ^2.0.5
   firebase_auth: ^4.2.9
   firebase_core: ^2.5.0
-  firebase_crashlytics: ^3.0.15
+  firebase_crashlytics: ^3.0.17
   firebase_storage: ^11.0.15
   flutter:
     sdk: flutter
