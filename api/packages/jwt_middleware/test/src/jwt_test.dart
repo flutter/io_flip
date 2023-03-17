@@ -103,10 +103,13 @@ void main() {
     });
 
     group('validate', () {
-      test('returns true when valid', () {
-        final jwt = buildSubject();
-        expect(jwt.validate(projectId), isTrue);
-      });
+      test(
+        'returns true when valid',
+        () => withClock(clock, () {
+          final jwt = buildSubject();
+          expect(jwt.validate(projectId), isTrue);
+        }),
+      );
 
       group('returns false', () {
         test('when alg is not RS256', () {
