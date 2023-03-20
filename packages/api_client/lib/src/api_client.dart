@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:api_client/src/resources/resources.dart';
 import 'package:http/http.dart' as http;
 
@@ -26,16 +29,21 @@ class ApiClientError implements Exception {
 typedef PostCall = Future<http.Response> Function(
   Uri, {
   Object? body,
+  Map<String, String>? headers,
 });
 
 /// Definition of a put call used by this client.
 typedef PutCall = Future<http.Response> Function(
   Uri, {
   Object? body,
+  Map<String, String>? headers,
 });
 
 /// Definition of a get call used by this client.
-typedef GetCall = Future<http.Response> Function(Uri);
+typedef GetCall = Future<http.Response> Function(
+  Uri, {
+  Map<String, String>? headers,
+});
 
 /// {@template api_client}
 /// Client to access the api
@@ -44,21 +52,33 @@ class ApiClient {
   /// {@macro api_client}
   ApiClient({
     required String baseUrl,
+    required Stream<String?> idTokenStream,
+    required Future<String?> Function() refreshIdToken,
     PostCall postCall = http.post,
     PutCall putCall = http.put,
     GetCall getCall = http.get,
   })  : _base = Uri.parse(baseUrl),
         _post = postCall,
         _put = putCall,
-        _get = getCall;
+        _get = getCall,
+        _refreshIdToken = refreshIdToken {
+    _idTokenSubscription = idTokenStream.listen((idToken) {
+      _idToken = idToken;
+    });
+  }
 
   final Uri _base;
-
   final PostCall _post;
-
   final PostCall _put;
-
   final GetCall _get;
+  final Future<String?> Function() _refreshIdToken;
+
+  late final StreamSubscription<String?> _idTokenSubscription;
+  String? _idToken;
+
+  Map<String, String> get _headers => {
+        if (_idToken != null) 'Authorization': 'Bearer $_idToken',
+      };
 
   /// {@macro game_resource}
   late final GameResource gameResource = GameResource(apiClient: this);
@@ -66,18 +86,38 @@ class ApiClient {
   /// {@macro scripts_resource}
   late final ScriptsResource scriptsResource = ScriptsResource(apiClient: this);
 
+  Future<http.Response> _handleUnauthorized(
+    Future<http.Response> Function() sendRequest,
+  ) async {
+    final response = await sendRequest();
+
+    if (response.statusCode == HttpStatus.unauthorized) {
+      _idToken = await _refreshIdToken();
+      return sendRequest();
+    }
+    return response;
+  }
+
+  /// Dispose of resources used by this client.
+  Future<void> dispose() async {
+    await _idTokenSubscription.cancel();
+  }
+
   /// Sends a POST request to the specified [path] with the given [body].
   Future<http.Response> post(
     String path, {
     Object? body,
-    Map<String, String>? queryParameters = const {},
+    Map<String, String>? queryParameters,
   }) async {
-    return _post(
-      _base.replace(
-        path: path,
-        queryParameters: queryParameters,
+    return _handleUnauthorized(
+      () => _post(
+        _base.replace(
+          path: path,
+          queryParameters: queryParameters,
+        ),
+        body: body,
+        headers: _headers,
       ),
-      body: body,
     );
   }
 
@@ -86,21 +126,27 @@ class ApiClient {
     String path, {
     Object? body,
   }) async {
-    return _put(
-      _base.replace(path: path),
-      body: body,
+    return _handleUnauthorized(
+      () => _put(
+        _base.replace(path: path),
+        body: body,
+        headers: _headers,
+      ),
     );
   }
 
   /// Sends a GET request to the specified [path].
   Future<http.Response> get(
     String path, {
-    Map<String, String>? queryParameters = const {},
+    Map<String, String>? queryParameters,
   }) async {
-    return _get(
-      _base.replace(
-        path: path,
-        queryParameters: queryParameters,
+    return _handleUnauthorized(
+      () => _get(
+        _base.replace(
+          path: path,
+          queryParameters: queryParameters,
+        ),
+        headers: _headers,
       ),
     );
   }
