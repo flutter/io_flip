@@ -6,6 +6,7 @@ import 'package:db_client/db_client.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:game_script_machine/game_script_machine.dart';
 import 'package:image_model_repository/image_model_repository.dart';
+import 'package:jwt_middleware/jwt_middleware.dart';
 import 'package:language_model_repository/language_model_repository.dart';
 import 'package:logging/logging.dart';
 import 'package:match_repository/match_repository.dart';
@@ -16,10 +17,15 @@ late MatchRepository matchRepository;
 late ScriptsRepository scriptsRepository;
 late DbClient dbClient;
 late GameScriptMachine gameScriptMachine;
+late JwtMiddleware jwtMiddleware;
 
 Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   const imageModelRepository = ImageModelRepository();
   const languageModelRepository = LanguageModelRepository();
+  jwtMiddleware = JwtMiddleware(
+    projectId: _appId,
+    isEmulator: _useEmulator,
+  );
 
   final dbClient = DbClient.initialize(_appId, useEmulator: _useEmulator);
 

@@ -19,6 +19,8 @@ dependencies:
   image_model_repository:
     path: packages/image_model_repository
   json_annotation: ^4.8.0
+  jwt_middleware:
+    path: packages/jwt_middleware
   language_model_repository:
     path: packages/language_model_repository
   logging: ^1.1.1
