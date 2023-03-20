@@ -22,7 +22,7 @@ class JWT {
   /// {@macro jwt}
   JWT({
     required Uint8List body,
-    required Signature signature,
+    required Signature? signature,
     required Map<String, dynamic> payload,
     required Map<String, dynamic> header,
   })  : _body = body,
@@ -36,7 +36,8 @@ class JWT {
     final header = _jsonBase64Decode(segments[0]);
 
     final body = utf8.encode('${segments[0]}.${segments[1]}');
-    final signature = Signature(_base64Decode(segments[2]));
+    final signature =
+        segments[2].isNotEmpty ? Signature(_base64Decode(segments[2])) : null;
 
     return JWT(
       body: Uint8List.fromList(body),
@@ -47,7 +48,7 @@ class JWT {
   }
 
   final Uint8List _body;
-  final Signature _signature;
+  final Signature? _signature;
   final Map<String, dynamic> _payload;
   final Map<String, dynamic> _header;
 
@@ -59,7 +60,9 @@ class JWT {
 
   /// Verifies the signature of this token with the given [verifier].
   bool verifyWith(Verifier<PublicKey> verifier) {
-    return verifier.verify(_body, _signature);
+    if (_signature == null) return false;
+
+    return verifier.verify(_body, _signature!);
   }
 
   /// Validates the fields of this token.
