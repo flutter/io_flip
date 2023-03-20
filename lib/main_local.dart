@@ -30,11 +30,14 @@ void main() async {
         final authenticationRepository = AuthenticationRepository(
           firebaseAuth: firebaseAuth,
         );
-        await authenticationRepository.signInAnonymously();
 
         final apiClient = ApiClient(
           baseUrl: 'http://localhost:8080',
+          idTokenStream: authenticationRepository.idToken,
+          refreshIdToken: authenticationRepository.refreshIdToken,
         );
+
+        await authenticationRepository.signInAnonymously();
 
         final currentScript =
             await apiClient.scriptsResource.getCurrentScript();

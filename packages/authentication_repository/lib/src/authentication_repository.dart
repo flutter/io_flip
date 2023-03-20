@@ -46,6 +46,19 @@ class AuthenticationRepository {
     return _userController.stream;
   }
 
+  /// Stream of id tokens that can be used to authenticate with Firebase.
+  Stream<String?> get idToken {
+    return _firebaseAuth
+        .idTokenChanges()
+        .asyncMap((user) => user?.getIdToken());
+  }
+
+  /// Refreshes the id token.
+  Future<String?> refreshIdToken() async {
+    final user = _firebaseAuth.currentUser;
+    return user?.getIdToken(true);
+  }
+
   /// Sign in the user anonymously.
   ///
   /// If the sign in fails, an [AuthenticationException] is thrown.

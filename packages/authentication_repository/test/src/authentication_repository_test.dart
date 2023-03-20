@@ -85,6 +85,38 @@ void main() {
       });
     });
 
+    group('idToken', () {
+      test('returns stream of idTokens from FirebaseAuth', () async {
+        final user1 = _MockFirebaseUser();
+        final user2 = _MockFirebaseUser();
+        when(user1.getIdToken).thenAnswer((_) async => 'token1');
+        when(user2.getIdToken).thenAnswer((_) async => 'token2');
+        when(() => firebaseAuth.idTokenChanges()).thenAnswer(
+          (_) => Stream.fromIterable([user1, null, user2]),
+        );
+        await expectLater(
+          authenticationRepository.idToken,
+          emitsInOrder(['token1', null, 'token2']),
+        );
+
+        verify(user1.getIdToken).called(1);
+        verify(user2.getIdToken).called(1);
+      });
+    });
+
+    group('refreshIdToken', () {
+      test('calls getIdToken on firebase user', () async {
+        final user = _MockFirebaseUser();
+        when(() => firebaseAuth.currentUser).thenReturn(user);
+        when(() => user.getIdToken(true)).thenAnswer((_) async => 'token');
+
+        final result = await authenticationRepository.refreshIdToken();
+
+        expect(result, 'token');
+        verify(() => user.getIdToken(true)).called(1);
+      });
+    });
+
     group('signInAnonymously', () {
       test('calls signInAnonymously on FirebaseAuth', () async {
         when(() => firebaseAuth.signInAnonymously()).thenAnswer(
