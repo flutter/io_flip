@@ -21,6 +21,15 @@ void main() {
       '9dd8g0-FDagc0GbYFrGVRvwe5gcEDxRrAOMsbZoJ3D3IJAIiDTYFrQSAyF8LY_Cy6hMrBvdv'
       'cpt29UML0rjcWdU5gB6u80rjOg_cgo5y3eWZOsOrYnKQd8iarrKDXFGRzPLgfDWEKJcRduXv'
       'H_wIKqaprx2eK3FXiCDfhZDbwANzrfiVuI2HUcrqtdx78ylXTMMWPv4GNqJDodw';
+  const noSignatureToken =
+      'eyJhbGciOiJSUzI1NiIsImtpZCI6IjFlOTczZWUwZTE2ZjdlZWY0ZjkyM'
+      'WQ1MGRjNjFkNzBiMmVmZWZjMTkiLCJ0eXAiOiJKV1QifQ.eyJwcm92aWRlcl9pZCI6ImFub2'
+      '55bW91cyIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS90b3AtZGFzaC'
+      '1kZXYiLCJhdWQiOiJ0b3AtZGFzaC1kZXYiLCJhdXRoX3RpbWUiOjE2NzkwNjUwNTEsInVzZX'
+      'JfaWQiOiJVUHlnNURKWHFuTmw0OWQ0YUJKV1Z6dmFKeDEyIiwic3ViIjoiVVB5ZzVESlhxbk'
+      '5sNDlkNGFCSldWenZhSngxMiIsImlhdCI6MTY3OTA2NTA1MiwiZXhwIjoxNjc5MDY4NjUyLC'
+      'JmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7fSwic2lnbl9pbl9wcm92aWRlciI6ImFub255bW'
+      '91cyJ9fQ.';
 
   group('JWT', () {
     final body = Uint8List(4);
@@ -65,6 +74,12 @@ void main() {
         expect(jwt.keyId, equals('1e973ee0e16f7eef4f921d50dc61d70b2efefc19'));
         expect(jwt.userId, equals('UPyg5DJXqnNl49d4aBJWVzvaJx12'));
       });
+
+      test('parses a token without a signature', () {
+        final jwt = JWT.from(noSignatureToken);
+        expect(jwt.keyId, equals('1e973ee0e16f7eef4f921d50dc61d70b2efefc19'));
+        expect(jwt.userId, equals('UPyg5DJXqnNl49d4aBJWVzvaJx12'));
+      });
     });
 
     group('userId', () {
@@ -99,6 +114,13 @@ void main() {
         final result = jwt.verifyWith(verifier);
         expect(result, isTrue);
         verify(() => verifier.verify(body, signature)).called(1);
+      });
+
+      test('returns false when there is no signature', () {
+        final jwt = JWT.from(noSignatureToken);
+        final verifier = _MockVerifier();
+        final result = jwt.verifyWith(verifier);
+        expect(result, isFalse);
       });
     });
 
