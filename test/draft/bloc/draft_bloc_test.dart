@@ -1,13 +1,13 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:api_client/api_client.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:game_client/game_client.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/draft/draft.dart';
 
-class _MockGameClient extends Mock implements GameClient {}
+class _MockGameResource extends Mock implements GameResource {}
 
 void main() {
   group('DraftBloc', () {
@@ -24,24 +24,24 @@ void main() {
       ),
     );
 
-    late GameClient gameClient;
+    late GameResource gameResource;
 
     setUp(() {
-      gameClient = _MockGameClient();
+      gameResource = _MockGameResource();
       var last = 0;
-      when(gameClient.generateCard).thenAnswer((_) async => cards[last++]);
+      when(gameResource.generateCard).thenAnswer((_) async => cards[last++]);
     });
 
     test('has the correct initial state', () {
       expect(
-        DraftBloc(gameClient: _MockGameClient()).state,
+        DraftBloc(gameResource: _MockGameResource()).state,
         equals(DraftState.initial()),
       );
     });
 
     blocTest<DraftBloc, DraftState>(
       'can request a deck',
-      build: () => DraftBloc(gameClient: gameClient),
+      build: () => DraftBloc(gameResource: gameResource),
       act: (bloc) => bloc.add(DeckRequested()),
       expect: () => [
         DraftState(
@@ -59,7 +59,7 @@ void main() {
 
     blocTest<DraftBloc, DraftState>(
       'change the cards order on NextCard',
-      build: () => DraftBloc(gameClient: gameClient),
+      build: () => DraftBloc(gameResource: gameResource),
       seed: () => DraftState(
         cards: cards,
         selectedCards: const [],
@@ -82,7 +82,7 @@ void main() {
 
     blocTest<DraftBloc, DraftState>(
       'status is complete when the deck is full',
-      build: () => DraftBloc(gameClient: gameClient),
+      build: () => DraftBloc(gameResource: gameResource),
       seed: () => DraftState(
         cards: cards,
         selectedCards: [cards[0], cards[1]],
@@ -103,9 +103,9 @@ void main() {
     blocTest<DraftBloc, DraftState>(
       'emits failure when an error occured',
       setUp: () {
-        when(gameClient.generateCard).thenThrow(Exception('Error'));
+        when(gameResource.generateCard).thenThrow(Exception('Error'));
       },
-      build: () => DraftBloc(gameClient: gameClient),
+      build: () => DraftBloc(gameResource: gameResource),
       act: (bloc) => bloc.add(DeckRequested()),
       expect: () => [
         DraftState(

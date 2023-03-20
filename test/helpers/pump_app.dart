@@ -1,7 +1,7 @@
+import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:game_client/game_client.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:game_script_machine/game_script_machine.dart';
 import 'package:go_router/go_router.dart';
@@ -16,7 +16,9 @@ import 'helpers.dart';
 
 class _MockSettingsPersistence extends Mock implements SettingsPersistence {}
 
-class _MockGameClient extends Mock implements GameClient {}
+class _MockGameResource extends Mock implements GameResource {}
+
+class _MockScriptsResource extends Mock implements ScriptsResource {}
 
 class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
 
@@ -32,7 +34,8 @@ extension PumpApp on WidgetTester {
   Future<void> pumpApp(
     Widget widget, {
     SettingsPersistence? settingsPersistence,
-    GameClient? gameClient,
+    GameResource? gameResource,
+    ScriptsResource? scriptsResource,
     MatchMakerRepository? matchMakerRepository,
     MatchSolver? matchSolver,
     GameScriptMachine? gameScriptMachine,
@@ -46,7 +49,10 @@ extension PumpApp on WidgetTester {
             value: settingsPersistence ?? _MockSettingsPersistence(),
           ),
           Provider.value(
-            value: gameClient ?? _MockGameClient(),
+            value: gameResource ?? _MockGameResource(),
+          ),
+          Provider.value(
+            value: scriptsResource ?? _MockScriptsResource(),
           ),
           Provider.value(
             value: matchMakerRepository ?? _MockMatchMakerRepository(),

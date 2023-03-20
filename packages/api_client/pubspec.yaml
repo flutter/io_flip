@@ -1,5 +1,5 @@
-name: game_client
-description: Client to access the game api
+name: api_client
+description: Client to access the api
 version: 0.1.0+1
 publish_to: none
 

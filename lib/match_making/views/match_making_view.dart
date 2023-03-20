@@ -45,6 +45,15 @@ class MatchMakingView extends StatelessWidget {
           );
         }
 
+        if (state.status == MatchMakingStatus.timeout) {
+          return const Scaffold(
+            backgroundColor: TopDashColors.backgroundMain,
+            body: Center(
+              child: Text('Match making timed out, sorry!'),
+            ),
+          );
+        }
+
         if (state.status == MatchMakingStatus.failed) {
           return const Scaffold(
             backgroundColor: TopDashColors.backgroundMain,

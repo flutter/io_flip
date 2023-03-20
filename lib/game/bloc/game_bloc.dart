@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:game_client/game_client.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:match_maker_repository/match_maker_repository.dart' as repo;
 
@@ -15,7 +15,7 @@ part 'game_state.dart';
 
 class GameBloc extends Bloc<GameEvent, GameState> {
   GameBloc({
-    required GameClient gameClient,
+    required GameResource gameResource,
     required repo.MatchMakerRepository matchMakerRepository,
     required MatchSolver matchSolver,
     required User user,
@@ -23,7 +23,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     this.timeOutPeriod = defaultTimeOutPeriod,
     this.pingInterval = defaultPingInterval,
     ValueGetter<Timestamp> now = Timestamp.now,
-  })  : _gameClient = gameClient,
+  })  : _gameResource = gameResource,
         _matchMakerRepository = matchMakerRepository,
         _matchSolver = matchSolver,
         _user = user,
@@ -36,7 +36,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     on<ScoreCardUpdated>(_onScoreCardUpdated);
   }
 
-  final GameClient _gameClient;
+  final GameResource _gameResource;
   final repo.MatchMakerRepository _matchMakerRepository;
   final MatchSolver _matchSolver;
   final User _user;
@@ -59,8 +59,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       emit(const MatchLoadingState());
 
       final values = await Future.wait([
-        _gameClient.getMatch(event.matchId),
-        _gameClient.getMatchState(event.matchId),
+        _gameResource.getMatch(event.matchId),
+        _gameResource.getMatchState(event.matchId),
         _matchMakerRepository.getScoreCard(_user.id),
       ]);
 
@@ -171,7 +171,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       final deckId =
           isHost ? matchState.match.hostDeck.id : matchState.match.guestDeck.id;
 
-      await _gameClient.playCard(
+      await _gameResource.playCard(
         matchId: matchState.match.id,
         cardId: event.cardId,
         deckId: deckId,

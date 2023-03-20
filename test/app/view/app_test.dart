@@ -1,7 +1,7 @@
+import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:game_client/game_client.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:game_script_machine/game_script_machine.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
@@ -28,7 +28,11 @@ class _MockSettingsController extends Mock implements SettingsController {}
 class _MockLifecycleNotifier extends Mock
     implements ValueNotifier<AppLifecycleState> {}
 
-class _MockGameClient extends Mock implements GameClient {}
+class _MockApiClient extends Mock implements ApiClient {}
+
+class _MockGameResource extends Mock implements GameResource {}
+
+class _MockScriptsResource extends Mock implements ScriptsResource {}
 
 class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
 
@@ -42,11 +46,19 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('App', () {
+    late ApiClient apiClient;
+
+    setUp(() {
+      apiClient = _MockApiClient();
+      when(() => apiClient.gameResource).thenReturn(_MockGameResource());
+      when(() => apiClient.scriptsResource).thenReturn(_MockScriptsResource());
+    });
+
     testWidgets('can show a snackbar', (tester) async {
       await tester.pumpWidget(
         App(
           settingsPersistence: MemoryOnlySettingsPersistence(),
-          gameClient: _MockGameClient(),
+          apiClient: apiClient,
           matchMakerRepository: _MockMatchMakerRepository(),
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
@@ -119,7 +131,7 @@ void main() {
       await tester.pumpWidget(
         App(
           settingsPersistence: MemoryOnlySettingsPersistence(),
-          gameClient: _MockGameClient(),
+          apiClient: apiClient,
           matchMakerRepository: _MockMatchMakerRepository(),
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
@@ -134,7 +146,7 @@ void main() {
       await tester.pumpWidget(
         App(
           settingsPersistence: MemoryOnlySettingsPersistence(),
-          gameClient: _MockGameClient(),
+          apiClient: apiClient,
           matchMakerRepository: _MockMatchMakerRepository(),
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
@@ -154,7 +166,7 @@ void main() {
       await tester.pumpWidget(
         App(
           settingsPersistence: MemoryOnlySettingsPersistence(),
-          gameClient: _MockGameClient(),
+          apiClient: apiClient,
           matchMakerRepository: _MockMatchMakerRepository(),
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
@@ -174,7 +186,7 @@ void main() {
         await tester.pumpWidget(
           App(
             settingsPersistence: MemoryOnlySettingsPersistence(),
-            gameClient: _MockGameClient(),
+            apiClient: apiClient,
             matchMakerRepository: _MockMatchMakerRepository(),
             matchSolver: _MockMatchSolver(),
             gameScriptMachine: _MockGameScriptEngine(),
@@ -198,7 +210,7 @@ void main() {
       await tester.pumpWidget(
         App(
           settingsPersistence: MemoryOnlySettingsPersistence(),
-          gameClient: _MockGameClient(),
+          apiClient: apiClient,
           matchMakerRepository: _MockMatchMakerRepository(),
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
@@ -220,7 +232,7 @@ void main() {
         await tester.pumpWidget(
           App(
             settingsPersistence: MemoryOnlySettingsPersistence(),
-            gameClient: _MockGameClient(),
+            apiClient: apiClient,
             matchMakerRepository: _MockMatchMakerRepository(),
             matchSolver: _MockMatchSolver(),
             gameScriptMachine: _MockGameScriptEngine(),

@@ -1,9 +1,9 @@
 import 'dart:async';
 
+import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:game_client/game_client.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 
 part 'match_making_event.dart';
@@ -12,12 +12,12 @@ part 'match_making_state.dart';
 class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   MatchMakingBloc({
     required MatchMakerRepository matchMakerRepository,
-    required GameClient gameClient,
+    required GameResource gameResource,
     required User user,
     required this.cardIds,
     this.hostWaitTime = defaultHostWaitTime,
   })  : _matchMakerRepository = matchMakerRepository,
-        _gameClient = gameClient,
+        _gameResource = gameResource,
         _user = user,
         super(const MatchMakingState.initial()) {
     on<MatchRequested>(_onMatchRequested);
@@ -26,7 +26,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   }
 
   final MatchMakerRepository _matchMakerRepository;
-  final GameClient _gameClient;
+  final GameResource _gameResource;
   final User _user;
   final List<String> cardIds;
 
@@ -39,7 +39,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   ) async {
     try {
       emit(state.copyWith(status: MatchMakingStatus.processing));
-      final playerId = await _gameClient.createDeck(
+      final playerId = await _gameResource.createDeck(
         cardIds: cardIds,
         userId: _user.id,
       );
@@ -71,7 +71,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   ) async {
     try {
       emit(state.copyWith(status: MatchMakingStatus.processing));
-      final playerId = await _gameClient.createDeck(
+      final playerId = await _gameResource.createDeck(
         cardIds: cardIds,
         userId: _user.id,
       );
@@ -93,7 +93,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   ) async {
     try {
       emit(state.copyWith(status: MatchMakingStatus.processing));
-      final playerId = await _gameClient.createDeck(
+      final playerId = await _gameResource.createDeck(
         cardIds: cardIds,
         userId: _user.id,
       );
@@ -138,8 +138,6 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
       subscription.cancel();
     });
 
-    // TODO(willhlas): Add timeout to doWhile loop
-    //  indicating that the host has not been able to find a guest.
     await Future.doWhile(() async {
       await Future<void>.delayed(hostWaitTime);
 
@@ -149,6 +147,12 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
       }
 
       return Future.value(false);
-    });
+    }).timeout(
+      const Duration(seconds: 30),
+      onTimeout: () {
+        subscription.cancel();
+        emit(state.copyWith(status: MatchMakingStatus.timeout));
+      },
+    );
   }
 }
