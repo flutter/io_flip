@@ -1,7 +1,7 @@
+import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:game_client/game_client.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
@@ -29,12 +29,12 @@ class GamePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) {
-        final gameClient = context.read<GameClient>();
+        final gameResource = context.read<GameResource>();
         final matchMakerRepository = context.read<MatchMakerRepository>();
         final matchSolver = context.read<MatchSolver>();
         final user = context.read<User>();
         return GameBloc(
-          gameClient: gameClient,
+          gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
           user: user,

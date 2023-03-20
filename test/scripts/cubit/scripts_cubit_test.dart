@@ -1,23 +1,23 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:api_client/api_client.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:game_client/game_client.dart';
 import 'package:game_script_machine/game_script_machine.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/scripts/cubit/scripts_cubit.dart';
 
-class _MockGameClient extends Mock implements GameClient {}
+class _MockScriptsResource extends Mock implements ScriptsResource {}
 
 class _MockGameScriptMachine extends Mock implements GameScriptMachine {}
 
 void main() {
   group('ScriptsCubit', () {
-    late GameClient gameClient;
+    late ScriptsResource scriptsResource;
     late GameScriptMachine gameScriptMachine;
 
     setUp(() {
-      gameClient = _MockGameClient();
+      scriptsResource = _MockScriptsResource();
       gameScriptMachine = _MockGameScriptMachine();
       when(() => gameScriptMachine.currentScript).thenReturn('script');
     });
@@ -25,7 +25,7 @@ void main() {
     test('has the correct initial value', () {
       expect(
         ScriptsCubit(
-          gameClient: gameClient,
+          scriptsResource: scriptsResource,
           gameScriptMachine: gameScriptMachine,
         ).state,
         equals(
@@ -40,11 +40,11 @@ void main() {
     blocTest<ScriptsCubit, ScriptsState>(
       'updates the script',
       build: () => ScriptsCubit(
-        gameClient: gameClient,
+        scriptsResource: scriptsResource,
         gameScriptMachine: gameScriptMachine,
       ),
       setUp: () {
-        when(() => gameClient.updateScript('current', 'script 2'))
+        when(() => scriptsResource.updateScript('current', 'script 2'))
             .thenAnswer((_) async {});
       },
       act: (cubit) {
@@ -61,7 +61,8 @@ void main() {
         ),
       ],
       verify: (_) {
-        verify(() => gameClient.updateScript('current', 'script 2')).called(1);
+        verify(() => scriptsResource.updateScript('current', 'script 2'))
+            .called(1);
         verify(() => gameScriptMachine.currentScript = 'script 2').called(1);
       },
     );
@@ -69,11 +70,11 @@ void main() {
     blocTest<ScriptsCubit, ScriptsState>(
       'emits failure when an error happens',
       build: () => ScriptsCubit(
-        gameClient: gameClient,
+        scriptsResource: scriptsResource,
         gameScriptMachine: gameScriptMachine,
       ),
       setUp: () {
-        when(() => gameClient.updateScript('current', 'script 2'))
+        when(() => scriptsResource.updateScript('current', 'script 2'))
             .thenThrow(Exception('Ops'));
       },
       act: (cubit) {

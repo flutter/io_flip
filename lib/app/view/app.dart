@@ -1,6 +1,6 @@
+import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:game_client/game_client.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:game_script_machine/game_script_machine.dart';
 import 'package:go_router/go_router.dart';
@@ -34,7 +34,7 @@ AudioController updateAudioController(
 class App extends StatefulWidget {
   const App({
     required this.settingsPersistence,
-    required this.gameClient,
+    required this.apiClient,
     required this.matchMakerRepository,
     required this.matchSolver,
     required this.gameScriptMachine,
@@ -44,7 +44,7 @@ class App extends StatefulWidget {
   });
 
   final SettingsPersistence settingsPersistence;
-  final GameClient gameClient;
+  final ApiClient apiClient;
   final MatchMakerRepository matchMakerRepository;
   final MatchSolver matchSolver;
   final GameScriptMachine gameScriptMachine;
@@ -63,7 +63,8 @@ class _AppState extends State<App> {
     return AppLifecycleObserver(
       child: MultiProvider(
         providers: [
-          Provider.value(value: widget.gameClient),
+          Provider.value(value: widget.apiClient.gameResource),
+          Provider.value(value: widget.apiClient.scriptsResource),
           Provider.value(value: widget.matchMakerRepository),
           Provider.value(value: widget.matchSolver),
           Provider.value(value: widget.gameScriptMachine),

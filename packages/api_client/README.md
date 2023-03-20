@@ -4,17 +4,17 @@
 [![Powered by Mason](https://img.shields.io/endpoint?url=https%3A%2F%2Ftinyurl.com%2Fmason-badge)](https://github.com/felangel/mason)
 [![License: MIT][license_badge]][license_link]
 
-Client to access the game api
+Client to access the api
 
 ## Installation 💻
 
 **❗ In order to start using Game Client you must have the [Dart SDK][dart_install_link] installed on your machine.**
 
-Add `game_client` to your `pubspec.yaml`:
+Add `api_client` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  game_client:
+  api_client:
 ```
 
 Install it:

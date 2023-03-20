@@ -1,6 +1,6 @@
+import 'package:api_client/api_client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:game_client/game_client.dart';
 import 'package:game_domain/game_domain.dart';
 
 part 'draft_event.dart';
@@ -8,15 +8,15 @@ part 'draft_state.dart';
 
 class DraftBloc extends Bloc<DraftEvent, DraftState> {
   DraftBloc({
-    required GameClient gameClient,
-  })  : _gameClient = gameClient,
+    required GameResource gameResource,
+  })  : _gameResource = gameResource,
         super(const DraftState.initial()) {
     on<DeckRequested>(_onDeckRequested);
     on<NextCard>(_onNextCard);
     on<SelectCard>(_onSelectCard);
   }
 
-  final GameClient _gameClient;
+  final GameResource _gameResource;
 
   Future<void> _onDeckRequested(
     DeckRequested event,
@@ -29,7 +29,7 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
       final cards = await Future.wait(
         List.generate(
           deckSize,
-          (_) => _gameClient.generateCard(),
+          (_) => _gameResource.generateCard(),
         ),
       );
 

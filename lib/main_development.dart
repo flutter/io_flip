@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:game_client/game_client.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:game_script_machine/game_script_machine.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
@@ -12,10 +12,6 @@ import 'package:top_dash/firebase_options_development.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
 
 void main() async {
-  const gameClient = GameClient(
-    endpoint: 'https://top-dash-dev-api-synvj3dcmq-uc.a.run.app',
-  );
-
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -23,17 +19,22 @@ void main() async {
   unawaited(
     bootstrap(
       (firestore, firebaseAuth) async {
-        final currentScript = await gameClient.getCurrentScript();
-        final gameScriptMachine = GameScriptMachine.initialize(currentScript);
-
         final authenticationRepository = AuthenticationRepository(
           firebaseAuth: firebaseAuth,
         );
         await authenticationRepository.signInAnonymously();
 
+        final apiClient = ApiClient(
+          baseUrl: 'https://top-dash-dev-api-synvj3dcmq-uc.a.run.app',
+        );
+
+        final currentScript =
+            await apiClient.scriptsResource.getCurrentScript();
+        final gameScriptMachine = GameScriptMachine.initialize(currentScript);
+
         return App(
           settingsPersistence: LocalStorageSettingsPersistence(),
-          gameClient: gameClient,
+          apiClient: apiClient,
           matchMakerRepository: MatchMakerRepository(db: firestore),
           matchSolver: MatchSolver(gameScriptMachine: gameScriptMachine),
           gameScriptMachine: gameScriptMachine,
