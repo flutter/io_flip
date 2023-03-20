@@ -3,6 +3,7 @@ part of 'match_making_bloc.dart';
 enum MatchMakingStatus {
   initial,
   processing,
+  timeout,
   failed,
   completed,
 }

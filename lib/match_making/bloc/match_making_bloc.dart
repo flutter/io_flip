@@ -138,8 +138,6 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
       subscription.cancel();
     });
 
-    // TODO(willhlas): Add timeout to doWhile loop
-    //  indicating that the host has not been able to find a guest.
     await Future.doWhile(() async {
       await Future<void>.delayed(hostWaitTime);
 
@@ -149,6 +147,12 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
       }
 
       return Future.value(false);
-    });
+    }).timeout(
+      const Duration(seconds: 30),
+      onTimeout: () {
+        subscription.cancel();
+        emit(state.copyWith(status: MatchMakingStatus.timeout));
+      },
+    );
   }
 }

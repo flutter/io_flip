@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_client/game_client.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
@@ -297,6 +298,50 @@ void main() {
       await Future<void>.delayed(Duration(milliseconds: 200));
 
       verifyNever(() => matchMakerRepository.pingHost(any()));
+    });
+
+    test('emits timeout when guest never joins host', () async {
+      fakeAsync((async) {
+        when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
+          (_) async => Match(
+            id: '',
+            host: deckId,
+            hostPing: timestamp,
+          ),
+        );
+
+        when(() => matchMakerRepository.pingHost(any())).thenAnswer(
+          (_) async => Match(
+            id: '',
+            host: deckId,
+            hostPing: timestamp,
+          ),
+        );
+
+        final bloc = MatchMakingBloc(
+          matchMakerRepository: matchMakerRepository,
+          gameClient: gameClient,
+          cardIds: cardIds,
+          user: user,
+          hostWaitTime: const Duration(milliseconds: 200),
+        )..add(MatchRequested());
+
+        async.elapse(const Duration(seconds: 30));
+
+        expect(
+          bloc.state,
+          equals(
+            MatchMakingState(
+              status: MatchMakingStatus.timeout,
+              match: Match(
+                id: '',
+                host: deckId,
+                hostPing: timestamp,
+              ),
+            ),
+          ),
+        );
+      });
     });
 
     blocTest<MatchMakingBloc, MatchMakingState>(

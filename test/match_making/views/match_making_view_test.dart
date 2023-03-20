@@ -37,6 +37,15 @@ void main() {
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
     });
 
+    testWidgets(
+      'renders a timeout message when match times out',
+      (tester) async {
+        mockState(MatchMakingState(status: MatchMakingStatus.timeout));
+        await tester.pumpSubject(bloc);
+        expect(find.text('Match making timed out, sorry!'), findsOneWidget);
+      },
+    );
+
     testWidgets('renders an error message when it fails', (tester) async {
       mockState(MatchMakingState(status: MatchMakingStatus.failed));
       await tester.pumpSubject(bloc);
