@@ -8,6 +8,8 @@ environment:
   flutter: 3.7.2
 
 dependencies:
+  api_client:
+    path: packages/api_client
   audioplayers: ^3.0.1
   authentication_repository:
     path: packages/authentication_repository
@@ -25,8 +27,6 @@ dependencies:
   flutter_highlight: ^0.7.0
   flutter_localizations:
     sdk: flutter
-  game_client:
-    path: packages/game_client
   game_domain:
     path: api/packages/game_domain
   game_script_machine:

@@ -2,19 +2,19 @@
 
 import 'dart:async';
 
+import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:game_client/game_client.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/match_making/match_making.dart';
 
 class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
 
-class _MockGameClient extends Mock implements GameClient {}
+class _MockGameResource extends Mock implements GameResource {}
 
 class _MockUser extends Mock implements User {
   @override
@@ -23,7 +23,7 @@ class _MockUser extends Mock implements User {
 
 void main() {
   group('MatchMakingBloc', () {
-    late GameClient gameClient;
+    late GameResource gameResource;
     late MatchMakerRepository matchMakerRepository;
     late User user;
     late StreamController<Match> watchController;
@@ -40,9 +40,9 @@ void main() {
 
       timestamp = Timestamp.now();
 
-      gameClient = _MockGameClient();
+      gameResource = _MockGameResource();
       when(
-        () => gameClient.createDeck(
+        () => gameResource.createDeck(
           cardIds: any(named: 'cardIds'),
           userId: any(named: 'userId'),
         ),
@@ -53,7 +53,7 @@ void main() {
       expect(
         MatchMakingBloc(
           matchMakerRepository: _MockMatchMakerRepository(),
-          gameClient: gameClient,
+          gameResource: gameResource,
           cardIds: cardIds,
           user: user,
         ),
@@ -65,7 +65,7 @@ void main() {
       expect(
         MatchMakingBloc(
           matchMakerRepository: _MockMatchMakerRepository(),
-          gameClient: gameClient,
+          gameResource: gameResource,
           cardIds: cardIds,
           user: user,
         ).state,
@@ -77,7 +77,7 @@ void main() {
       'can find a match as a guest',
       build: () => MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
-        gameClient: gameClient,
+        gameResource: gameResource,
         cardIds: cardIds,
         user: user,
         hostWaitTime: Duration.zero,
@@ -115,7 +115,7 @@ void main() {
       'emits a failure when an error happens',
       build: () => MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
-        gameClient: gameClient,
+        gameResource: gameResource,
         cardIds: cardIds,
         user: user,
         hostWaitTime: Duration.zero,
@@ -140,7 +140,7 @@ void main() {
       "creates a match when there isn't one open",
       build: () => MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
-        gameClient: gameClient,
+        gameResource: gameResource,
         cardIds: cardIds,
         user: user,
       ),
@@ -181,7 +181,7 @@ void main() {
 
       final bloc = MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
-        gameClient: gameClient,
+        gameResource: gameResource,
         cardIds: cardIds,
         user: user,
       )..add(MatchRequested());
@@ -246,7 +246,7 @@ void main() {
 
       final bloc = MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
-        gameClient: gameClient,
+        gameResource: gameResource,
         cardIds: cardIds,
         user: user,
         hostWaitTime: const Duration(milliseconds: 200),
@@ -320,7 +320,7 @@ void main() {
 
         final bloc = MatchMakingBloc(
           matchMakerRepository: matchMakerRepository,
-          gameClient: gameClient,
+          gameResource: gameResource,
           cardIds: cardIds,
           user: user,
           hostWaitTime: const Duration(milliseconds: 200),
@@ -348,7 +348,7 @@ void main() {
       'creates a private match when requested',
       build: () => MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
-        gameClient: gameClient,
+        gameResource: gameResource,
         cardIds: cardIds,
         user: user,
       ),
@@ -381,7 +381,7 @@ void main() {
       'emits failed when a private match is requested gives an error',
       build: () => MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
-        gameClient: gameClient,
+        gameResource: gameResource,
         cardIds: cardIds,
         user: user,
       ),
@@ -405,7 +405,7 @@ void main() {
       'joins a private match',
       build: () => MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
-        gameClient: gameClient,
+        gameResource: gameResource,
         cardIds: cardIds,
         user: user,
       ),
@@ -445,7 +445,7 @@ void main() {
       'emits failed when joining a private match gives an error',
       build: () => MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
-        gameClient: gameClient,
+        gameResource: gameResource,
         cardIds: cardIds,
         user: user,
       ),

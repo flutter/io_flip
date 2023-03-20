@@ -25,6 +25,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.7.1"
+  api_client:
+    dependency: "direct main"
+    description:
+      path: "packages/api_client"
+      relative: true
+    source: path
+    version: "0.1.0+1"
   args:
     dependency: transitive
     description:
@@ -396,13 +403,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.0"
-  game_client:
-    dependency: "direct main"
-    description:
-      path: "packages/game_client"
-      relative: true
-    source: path
-    version: "0.1.0+1"
   game_domain:
     dependency: "direct main"
     description:

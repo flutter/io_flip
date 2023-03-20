@@ -1,6 +1,6 @@
+import 'package:api_client/api_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:game_client/game_client.dart';
 import 'package:top_dash/draft/draft.dart';
 
 class DraftPage extends StatelessWidget {
@@ -14,9 +14,9 @@ class DraftPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) {
-        final gameClient = context.read<GameClient>();
+        final gameResource = context.read<GameResource>();
         return DraftBloc(
-          gameClient: gameClient,
+          gameResource: gameResource,
         )..add(const DeckRequested());
       },
       child: const DraftView(),

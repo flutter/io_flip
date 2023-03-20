@@ -1,52 +1,50 @@
-// ignore_for_file: prefer_const_constructors
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:game_client/game_client.dart';
+import 'package:api_client/api_client.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class _MockResponse extends Mock implements Response {}
+class _MockApiClient extends Mock implements ApiClient {}
 
-// ignore: one_member_abstracts
-abstract class __HttpClient {
-  Future<Response> onPost(Uri uri, {Object? body});
-  Future<Response> onPut(Uri uri, {Object? body});
-}
-
-class _MockHttpClient extends Mock implements __HttpClient {}
+class _MockResponse extends Mock implements http.Response {}
 
 void main() {
-  group('GameClient', () {
-    late Response response;
-
-    setUpAll(() {
-      registerFallbackValue(Uri());
-    });
+  group('GameResource', () {
+    late ApiClient apiClient;
+    late http.Response response;
+    late GameResource resource;
 
     setUp(() {
+      apiClient = _MockApiClient();
       response = _MockResponse();
-    });
 
-    test('can be instantiated', () {
-      expect(
-        GameClient(endpoint: ''),
-        isNotNull,
-      );
+      when(
+        () => apiClient.get(
+          any(),
+          queryParameters: any(named: 'queryParameters'),
+        ),
+      ).thenAnswer((_) async => response);
+      when(
+        () => apiClient.post(
+          any(),
+          queryParameters: any(named: 'queryParameters'),
+          body: any(named: 'body'),
+        ),
+      ).thenAnswer((_) async => response);
+      when(
+        () => apiClient.put(
+          any(),
+          body: any(named: 'body'),
+        ),
+      ).thenAnswer((_) async => response);
+
+      resource = GameResource(apiClient: apiClient);
     });
 
     group('generateCard', () {
-      late GameClient client;
-
-      setUp(() {
-        client = GameClient(
-          endpoint: '',
-          postCall: (_, {Object? body}) async => response,
-        );
-      });
-
       test('returns a Card', () async {
         const card = Card(
           id: '',
@@ -60,20 +58,20 @@ void main() {
 
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
         when(() => response.body).thenReturn(jsonEncode(card.toJson()));
-        final returnedCard = await client.generateCard();
+        final returnedCard = await resource.generateCard();
 
         expect(returnedCard, equals(card));
       });
 
-      test('throws GameClientError when request fails', () async {
+      test('throws ApiClientError when request fails', () async {
         when(() => response.statusCode)
             .thenReturn(HttpStatus.internalServerError);
         when(() => response.body).thenReturn('Ops');
 
         await expectLater(
-          client.generateCard,
+          resource.generateCard,
           throwsA(
-            isA<GameClientError>().having(
+            isA<ApiClientError>().having(
               (e) => e.cause,
               'cause',
               equals(
@@ -84,14 +82,14 @@ void main() {
         );
       });
 
-      test('throws GameClientError when request response is invalid', () async {
+      test('throws ApiClientError when request response is invalid', () async {
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
         when(() => response.body).thenReturn('Ops');
 
         await expectLater(
-          client.generateCard,
+          resource.generateCard,
           throwsA(
-            isA<GameClientError>().having(
+            isA<ApiClientError>().having(
               (e) => e.cause,
               'cause',
               equals(
@@ -104,20 +102,11 @@ void main() {
     });
 
     group('createDeck', () {
-      late GameClient client;
-
-      setUp(() {
-        client = GameClient(
-          endpoint: '',
-          postCall: (_, {Object? body}) async => response,
-        );
-      });
-
       test('returns the deck id', () async {
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
         when(() => response.body).thenReturn(jsonEncode({'id': 'deck'}));
 
-        final id = await client.createDeck(
+        final id = await resource.createDeck(
           cardIds: ['a', 'b', 'c'],
           userId: 'mock-userId',
         );
@@ -125,24 +114,22 @@ void main() {
         expect(id, equals('deck'));
       });
 
-      test('throws GameClientError when request fails', () async {
-        final response = _MockResponse();
+      test('throws ApiClientError when request fails', () async {
         when(() => response.statusCode)
             .thenReturn(HttpStatus.internalServerError);
         when(() => response.body).thenReturn('Ops');
 
-        final client = GameClient(
-          endpoint: '',
-          postCall: (_, {Object? body}) async => response,
+        final resource = GameResource(
+          apiClient: apiClient,
         );
 
         await expectLater(
-          () => client.createDeck(
+          () => resource.createDeck(
             cardIds: ['a', 'b', 'c'],
             userId: 'mock-userId',
           ),
           throwsA(
-            isA<GameClientError>().having(
+            isA<ApiClientError>().having(
               (e) => e.cause,
               'cause',
               equals(
@@ -153,17 +140,17 @@ void main() {
         );
       });
 
-      test('throws GameClientError when request response is invalid', () async {
+      test('throws ApiClientError when request response is invalid', () async {
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
         when(() => response.body).thenReturn('Ops');
 
         await expectLater(
-          () => client.createDeck(
+          () => resource.createDeck(
             cardIds: ['a', 'b', 'c'],
             userId: 'mock-userId',
           ),
           throwsA(
-            isA<GameClientError>().having(
+            isA<ApiClientError>().having(
               (e) => e.cause,
               'cause',
               equals(
@@ -176,15 +163,6 @@ void main() {
     });
 
     group('getDeck', () {
-      late GameClient client;
-
-      setUp(() {
-        client = GameClient(
-          endpoint: '',
-          getCall: (_) async => response,
-        );
-      });
-
       test('returns a deck', () async {
         const card = Card(
           id: '',
@@ -204,20 +182,20 @@ void main() {
 
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
         when(() => response.body).thenReturn(jsonEncode(deck.toJson()));
-        final returnedDeck = await client.getDeck('deckId');
+        final returnedDeck = await resource.getDeck('deckId');
 
         expect(returnedDeck, equals(deck));
       });
 
-      test('throws GameClientError when request fails', () async {
+      test('throws ApiClientError when request fails', () async {
         when(() => response.statusCode)
             .thenReturn(HttpStatus.internalServerError);
         when(() => response.body).thenReturn('Ops');
 
         await expectLater(
-          () => client.getDeck('deckId'),
+          () => resource.getDeck('deckId'),
           throwsA(
-            isA<GameClientError>().having(
+            isA<ApiClientError>().having(
               (e) => e.cause,
               'cause',
               equals(
@@ -228,14 +206,14 @@ void main() {
         );
       });
 
-      test('throws GameClientError when request response is invalid', () async {
+      test('throws ApiClientError when request response is invalid', () async {
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
         when(() => response.body).thenReturn('Ops');
 
         await expectLater(
-          () => client.getDeck('deckId'),
+          () => resource.getDeck('deckId'),
           throwsA(
-            isA<GameClientError>().having(
+            isA<ApiClientError>().having(
               (e) => e.cause,
               'cause',
               equals(
@@ -248,15 +226,6 @@ void main() {
     });
 
     group('getMatch', () {
-      late GameClient client;
-
-      setUp(() {
-        client = GameClient(
-          endpoint: '',
-          getCall: (_) async => response,
-        );
-      });
-
       test('returns a match', () async {
         const card = Card(
           id: '',
@@ -288,20 +257,20 @@ void main() {
 
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
         when(() => response.body).thenReturn(jsonEncode(match.toJson()));
-        final returnedMatch = await client.getMatch('matchId');
+        final returnedMatch = await resource.getMatch('matchId');
 
         expect(returnedMatch, equals(match));
       });
 
-      test('throws GameClientError when request fails', () async {
+      test('throws ApiClientError when request fails', () async {
         when(() => response.statusCode)
             .thenReturn(HttpStatus.internalServerError);
         when(() => response.body).thenReturn('Ops');
 
         await expectLater(
-          () => client.getMatch('matchId'),
+          () => resource.getMatch('matchId'),
           throwsA(
-            isA<GameClientError>().having(
+            isA<ApiClientError>().having(
               (e) => e.cause,
               'cause',
               equals(
@@ -312,14 +281,14 @@ void main() {
         );
       });
 
-      test('throws GameClientError when request response is invalid', () async {
+      test('throws ApiClientError when request response is invalid', () async {
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
         when(() => response.body).thenReturn('Ops');
 
         await expectLater(
-          () => client.getMatch('matchId'),
+          () => resource.getMatch('matchId'),
           throwsA(
-            isA<GameClientError>().having(
+            isA<ApiClientError>().having(
               (e) => e.cause,
               'cause',
               equals(
@@ -332,15 +301,6 @@ void main() {
     });
 
     group('getMatchState', () {
-      late GameClient client;
-
-      setUp(() {
-        client = GameClient(
-          endpoint: '',
-          getCall: (_) async => response,
-        );
-      });
-
       test('returns a match state', () async {
         const matchState = MatchState(
           id: 'matchStateId',
@@ -351,27 +311,27 @@ void main() {
 
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
         when(() => response.body).thenReturn(jsonEncode(matchState.toJson()));
-        final returnedMatchState = await client.getMatchState('matchId');
+        final returnedMatchState = await resource.getMatchState('matchId');
 
         expect(returnedMatchState, equals(matchState));
       });
 
       test('returns null when is not found', () async {
         when(() => response.statusCode).thenReturn(HttpStatus.notFound);
-        final returnedMatchState = await client.getMatchState('matchId');
+        final returnedMatchState = await resource.getMatchState('matchId');
 
         expect(returnedMatchState, isNull);
       });
 
-      test('throws GameClientError when request fails', () async {
+      test('throws ApiClientError when request fails', () async {
         when(() => response.statusCode)
             .thenReturn(HttpStatus.internalServerError);
         when(() => response.body).thenReturn('Ops');
 
         await expectLater(
-          () => client.getMatchState('matchId'),
+          () => resource.getMatchState('matchId'),
           throwsA(
-            isA<GameClientError>().having(
+            isA<ApiClientError>().having(
               (e) => e.cause,
               'cause',
               equals(
@@ -382,14 +342,14 @@ void main() {
         );
       });
 
-      test('throws GameClientError when request response is invalid', () async {
+      test('throws ApiClientError when request response is invalid', () async {
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
         when(() => response.body).thenReturn('Ops');
 
         await expectLater(
-          () => client.getMatchState('matchId'),
+          () => resource.getMatchState('matchId'),
           throwsA(
-            isA<GameClientError>().having(
+            isA<ApiClientError>().having(
               (e) => e.cause,
               'cause',
               equals(
@@ -402,23 +362,9 @@ void main() {
     });
 
     group('playCard', () {
-      late __HttpClient httpClient;
-      late GameClient client;
-
-      setUp(() {
-        httpClient = _MockHttpClient();
-        when(() => httpClient.onPost(any(), body: any(named: 'body')))
-            .thenAnswer((_) async => response);
-
-        client = GameClient(
-          endpoint: '',
-          postCall: httpClient.onPost,
-        );
-      });
-
       test('makes the correct call', () async {
         when(() => response.statusCode).thenReturn(HttpStatus.noContent);
-        await client.playCard(
+        await resource.playCard(
           matchId: 'matchId',
           cardId: 'cardId',
           deckId: 'deckId',
@@ -426,27 +372,36 @@ void main() {
         );
 
         verify(
-          () => httpClient.onPost(
-            Uri.parse(
-              '/matches/move?matchId=matchId&cardId=cardId&deckId=deckId&userId=userId',
-            ),
+          () => apiClient.post(
+            '/matches/move',
+            queryParameters: {
+              'matchId': 'matchId',
+              'cardId': 'cardId',
+              'deckId': 'deckId',
+              'userId': 'userId',
+            },
           ),
         ).called(1);
       });
 
-      test('makes the correct call', () async {
-        when(() => httpClient.onPost(any(), body: any(named: 'body')))
-            .thenThrow(Exception('Ops'));
+      test('throws an ApiClientError when the request fails', () async {
+        when(
+          () => apiClient.post(
+            any(),
+            body: any(named: 'body'),
+            queryParameters: any(named: 'queryParameters'),
+          ),
+        ).thenThrow(Exception('Ops'));
 
         await expectLater(
-          () => client.playCard(
+          () => resource.playCard(
             matchId: 'matchId',
             cardId: 'cardId',
             deckId: 'deckId',
             userId: 'userId',
           ),
           throwsA(
-            isA<GameClientError>().having(
+            isA<ApiClientError>().having(
               (e) => e.cause,
               'cause',
               equals(
@@ -457,21 +412,21 @@ void main() {
         );
       });
 
-      test('throws GameClientError when the returns error code', () async {
+      test('throws ApiClientError when the returns error code', () async {
         when(() => response.statusCode).thenReturn(
           HttpStatus.internalServerError,
         );
         when(() => response.body).thenReturn('Ops');
 
         await expectLater(
-          () => client.playCard(
+          () => resource.playCard(
             matchId: 'matchId',
             cardId: 'cardId',
             deckId: 'deckId',
             userId: 'userId',
           ),
           throwsA(
-            isA<GameClientError>().having(
+            isA<ApiClientError>().having(
               (e) => e.cause,
               'cause',
               equals(
@@ -482,19 +437,24 @@ void main() {
         );
       });
 
-      test('throws GameClientError when the request breaks', () async {
-        when(() => httpClient.onPost(any(), body: any(named: 'body')))
-            .thenThrow(Exception('Ops'));
+      test('throws ApiClientError when the request breaks', () async {
+        when(
+          () => apiClient.post(
+            any(),
+            body: any(named: 'body'),
+            queryParameters: any(named: 'queryParameters'),
+          ),
+        ).thenThrow(Exception('Ops'));
 
         await expectLater(
-          () => client.playCard(
+          () => resource.playCard(
             matchId: 'matchId',
             cardId: 'cardId',
             deckId: 'deckId',
             userId: 'userId',
           ),
           throwsA(
-            isA<GameClientError>().having(
+            isA<ApiClientError>().having(
               (e) => e.cause,
               'cause',
               equals(
@@ -502,97 +462,6 @@ void main() {
               ),
             ),
           ),
-        );
-      });
-    });
-
-    group('getCurrentScript', () {
-      late GameClient client;
-
-      setUp(() {
-        client = GameClient(
-          endpoint: '',
-          getCall: (_, {Object? body}) async => response,
-        );
-      });
-
-      test('returns the script', () async {
-        when(() => response.statusCode).thenReturn(HttpStatus.ok);
-        when(() => response.body).thenReturn('script');
-        final returnedScript = await client.getCurrentScript();
-
-        expect(returnedScript, equals('script'));
-      });
-
-      test('throws GameClientError when request fails', () async {
-        when(() => response.statusCode)
-            .thenReturn(HttpStatus.internalServerError);
-        when(() => response.body).thenReturn('Ops');
-
-        await expectLater(
-          client.getCurrentScript,
-          throwsA(
-            isA<GameClientError>().having(
-              (e) => e.cause,
-              'cause',
-              equals(
-                'GET /scripts/current returned status 500 with the following response: "Ops"',
-              ),
-            ),
-          ),
-        );
-      });
-    });
-
-    group('updateScript', () {
-      late __HttpClient httpClient;
-      late GameClient client;
-
-      setUp(() {
-        httpClient = _MockHttpClient();
-        when(() => httpClient.onPut(any(), body: any(named: 'body')))
-            .thenAnswer((_) async => response);
-
-        client = GameClient(
-          endpoint: '',
-          putCall: httpClient.onPut,
-        );
-      });
-
-      test('send the correct request', () async {
-        when(() => response.statusCode).thenReturn(HttpStatus.noContent);
-        await client.updateScript('current', 'script');
-
-        verify(
-          () => httpClient.onPut(Uri.parse('/scripts/current'), body: 'script'),
-        );
-      });
-
-      test('throws GameClientError when request fails', () async {
-        when(() => response.statusCode)
-            .thenReturn(HttpStatus.internalServerError);
-        when(() => response.body).thenReturn('Ops');
-
-        await expectLater(
-          () => client.updateScript('current', 'script'),
-          throwsA(
-            isA<GameClientError>().having(
-              (e) => e.cause,
-              'cause',
-              equals(
-                'PUT /scripts/current returned status 500 with the following response: "Ops"',
-              ),
-            ),
-          ),
-        );
-      });
-    });
-
-    group('GameClientError', () {
-      test('toString returns the cause', () {
-        expect(
-          GameClientError('Ops', StackTrace.empty).toString(),
-          equals('Ops'),
         );
       });
     });
