@@ -6,7 +6,6 @@ import 'package:clock/clock.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_middleware/jwt_middleware.dart';
-import 'package:jwt_middleware/src/authenticated_user.dart';
 import 'package:jwt_middleware/src/jwt.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
