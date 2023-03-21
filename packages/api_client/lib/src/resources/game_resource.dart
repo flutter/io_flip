@@ -40,16 +40,10 @@ class GameResource {
   /// Post /decks
   ///
   /// Returns the id of the created deck.
-  Future<String> createDeck({
-    required List<String> cardIds,
-    required String userId,
-  }) async {
+  Future<String> createDeck(List<String> cardIds) async {
     final response = await _apiClient.post(
       '/decks',
-      body: jsonEncode({
-        'cards': cardIds,
-        'userId': userId,
-      }),
+      body: jsonEncode({'cards': cardIds}),
     );
 
     if (response.statusCode != HttpStatus.ok) {
@@ -166,7 +160,6 @@ class GameResource {
     required String matchId,
     required String cardId,
     required String deckId,
-    required String userId,
   }) async {
     try {
       final response = await _apiClient.post(
@@ -175,7 +168,6 @@ class GameResource {
           'matchId': matchId,
           'cardId': cardId,
           'deckId': deckId,
-          'userId': userId,
         },
       );
 
