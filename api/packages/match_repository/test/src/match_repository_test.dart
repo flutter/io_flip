@@ -354,6 +354,14 @@ void main() {
 
         matchSolver = _MockMatchSolver();
 
+        when(
+          () => matchSolver.canPlayCard(
+            any(),
+            any(),
+            isHost: any(named: 'isHost'),
+          ),
+        ).thenReturn(true);
+
         matchRepository = MatchRepository(
           cardsRepository: cardsRepository,
           dbClient: dbClient,
@@ -498,6 +506,28 @@ void main() {
           );
         },
       );
+
+      test('throws PlayCardFailure when card has already been played',
+          () async {
+        when(
+          () => matchSolver.canPlayCard(
+            any(),
+            any(),
+            isHost: any(named: 'isHost'),
+          ),
+        ).thenReturn(false);
+
+        await expectLater(
+          () => matchRepository.playCard(
+            matchId: matchId,
+            cardId: 'F',
+            deckId: hostDeck.id,
+            userId: hostDeck.userId,
+          ),
+          throwsA(isA<PlayCardFailure>()),
+        );
+      });
+
       group('score card', () {
         setUp(() {
           when(() => dbClient.findBy('match_states', 'matchId', matchId))

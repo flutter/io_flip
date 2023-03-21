@@ -96,9 +96,18 @@ class MatchSolver {
     }
   }
 
-  /// Returns true when player, determined by [isHost] can play a card
-  /// or if they need to await for their opponent to play first.
-  bool canPlayCard(MatchState state, {required bool isHost}) {
+  /// Returns true when player, determined by [isHost], can play the card
+  /// with id [cardId] or if they need to either
+  /// wait for their opponent to play first or play another card.
+  bool canPlayCard(MatchState state, String cardId, {required bool isHost}) {
+    if (isHost && state.hostPlayedCards.contains(cardId)) {
+      return false;
+    }
+
+    if (!isHost && state.guestPlayedCards.contains(cardId)) {
+      return false;
+    }
+
     if (state.hostPlayedCards.length == state.guestPlayedCards.length) {
       return true;
     }

@@ -37,7 +37,7 @@ void main() {
       when(() => bloc.isHost).thenReturn(true);
       when(() => bloc.isWiningCard(any(), isPlayer: any(named: 'isPlayer')))
           .thenReturn(false);
-      when(bloc.canPlayerPlay).thenReturn(true);
+      when(() => bloc.canPlayerPlay(any())).thenReturn(true);
       when(bloc.hasPlayerWon).thenReturn(false);
     });
 
@@ -280,7 +280,7 @@ void main() {
       testWidgets(
         "can't play when it is not the player turn",
         (tester) async {
-          when(bloc.canPlayerPlay).thenReturn(false);
+          when(() => bloc.canPlayerPlay(any())).thenReturn(false);
           mockState(
             baseState.copyWith(
               turns: [
