@@ -202,7 +202,7 @@ void main() {
           'when iat is current',
           () => withClock(clock, () {
             final jwt = buildSubject(iat: nowSeconds);
-            expect(jwt.validate(projectId), isFalse);
+            expect(jwt.validate(projectId), isTrue);
           }),
         );
 
@@ -218,7 +218,7 @@ void main() {
           'when auth_time is current',
           () => withClock(clock, () {
             final jwt = buildSubject(authTime: nowSeconds);
-            expect(jwt.validate(projectId), isFalse);
+            expect(jwt.validate(projectId), isTrue);
           }),
         );
 

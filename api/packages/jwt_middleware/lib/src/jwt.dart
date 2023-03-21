@@ -90,7 +90,7 @@ class JWT {
     if (exp <= nowSeconds) {
       return false;
     }
-    if (iat >= nowSeconds) {
+    if (iat > nowSeconds) {
       return false;
     }
     if (aud != projectId) {
@@ -99,7 +99,7 @@ class JWT {
     if (iss != 'https://securetoken.google.com/$projectId') {
       return false;
     }
-    if (authTime >= nowSeconds) {
+    if (authTime > nowSeconds) {
       return false;
     }
     if (sub != userId) {
