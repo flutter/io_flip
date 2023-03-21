@@ -57,6 +57,25 @@ class _InitialsFormState extends State<_InitialsForm> {
   final _initialRegex = RegExp('[A-Z]{3}');
   bool isValidForm = false;
 
+  static const initialsBlacklist = [
+    'FUK',
+    'FUC',
+    'COK',
+    'DIK',
+    'KKK',
+    'SHT',
+    'CNT',
+    'ASS',
+    'CUM',
+    'FAG',
+    'GAY',
+    'GOD',
+    'JEW',
+    'SEX',
+    'TIT',
+    'WTF',
+  ];
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -71,7 +90,8 @@ class _InitialsFormState extends State<_InitialsForm> {
               validator: (inputValue) {
                 if (inputValue == null ||
                     inputValue.isEmpty ||
-                    !_initialRegex.hasMatch(inputValue)) {
+                    !_initialRegex.hasMatch(inputValue) ||
+                    initialsBlacklist.contains(inputValue)) {
                   return l10n.enterInitialsError;
                 }
                 return null;

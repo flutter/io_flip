@@ -56,6 +56,21 @@ void main() {
         expect(find.text(l10n.enterInitialsError), findsOneWidget);
       });
 
+      testWidgets(
+        'shows error text on failed validation due to blacklisted initials',
+        (tester) async {
+          await tester.pumpSubject();
+
+          final l10n = tester.element(find.byType(LeaderboardEntryView)).l10n;
+
+          await tester.enterText(find.byType(TextField), 'WTF');
+          await tester.tap(find.byType(OutlinedButton));
+          await tester.pumpAndSettle();
+
+          expect(find.text(l10n.enterInitialsError), findsOneWidget);
+        },
+      );
+
       testWidgets('capitalizes lowercase letters', (tester) async {
         await tester.pumpSubject();
 
