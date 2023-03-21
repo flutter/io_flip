@@ -106,10 +106,7 @@ void main() {
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
         when(() => response.body).thenReturn(jsonEncode({'id': 'deck'}));
 
-        final id = await resource.createDeck(
-          cardIds: ['a', 'b', 'c'],
-          userId: 'mock-userId',
-        );
+        final id = await resource.createDeck(['a', 'b', 'c']);
 
         expect(id, equals('deck'));
       });
@@ -124,10 +121,7 @@ void main() {
         );
 
         await expectLater(
-          () => resource.createDeck(
-            cardIds: ['a', 'b', 'c'],
-            userId: 'mock-userId',
-          ),
+          () => resource.createDeck(['a', 'b', 'c']),
           throwsA(
             isA<ApiClientError>().having(
               (e) => e.cause,
@@ -145,10 +139,7 @@ void main() {
         when(() => response.body).thenReturn('Ops');
 
         await expectLater(
-          () => resource.createDeck(
-            cardIds: ['a', 'b', 'c'],
-            userId: 'mock-userId',
-          ),
+          () => resource.createDeck(['a', 'b', 'c']),
           throwsA(
             isA<ApiClientError>().having(
               (e) => e.cause,
@@ -368,7 +359,6 @@ void main() {
           matchId: 'matchId',
           cardId: 'cardId',
           deckId: 'deckId',
-          userId: 'userId',
         );
 
         verify(
@@ -378,7 +368,6 @@ void main() {
               'matchId': 'matchId',
               'cardId': 'cardId',
               'deckId': 'deckId',
-              'userId': 'userId',
             },
           ),
         ).called(1);
@@ -398,7 +387,6 @@ void main() {
             matchId: 'matchId',
             cardId: 'cardId',
             deckId: 'deckId',
-            userId: 'userId',
           ),
           throwsA(
             isA<ApiClientError>().having(
@@ -423,7 +411,6 @@ void main() {
             matchId: 'matchId',
             cardId: 'cardId',
             deckId: 'deckId',
-            userId: 'userId',
           ),
           throwsA(
             isA<ApiClientError>().having(
@@ -451,7 +438,6 @@ void main() {
             matchId: 'matchId',
             cardId: 'cardId',
             deckId: 'deckId',
-            userId: 'userId',
           ),
           throwsA(
             isA<ApiClientError>().having(

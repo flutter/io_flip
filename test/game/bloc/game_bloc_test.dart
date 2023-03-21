@@ -263,7 +263,6 @@ void main() {
             matchId: 'matchId',
             cardId: any(named: 'cardId'),
             deckId: any(named: 'deckId'),
-            userId: any(named: 'userId'),
           ),
         ).thenAnswer((_) async {});
       });

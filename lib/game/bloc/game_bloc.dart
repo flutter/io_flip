@@ -175,7 +175,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         matchId: matchState.match.id,
         cardId: event.cardId,
         deckId: deckId,
-        userId: _user.id,
       );
     }
   }

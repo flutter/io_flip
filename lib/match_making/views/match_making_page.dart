@@ -1,5 +1,4 @@
 import 'package:api_client/api_client.dart';
-import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -41,11 +40,9 @@ class MatchMakingPage extends StatelessWidget {
       create: (context) {
         final matchMakerRepository = context.read<MatchMakerRepository>();
         final gameResource = context.read<GameResource>();
-        final user = context.read<User>();
         return MatchMakingBloc(
           matchMakerRepository: matchMakerRepository,
           gameResource: gameResource,
-          user: user,
           cardIds: playerCardIds,
         )..add(mapEvent());
       },
