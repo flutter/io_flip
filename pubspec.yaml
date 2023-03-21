@@ -41,6 +41,7 @@ dependencies:
   shared_preferences: ^2.0.17
   top_dash_ui:
     path: packages/top_dash_ui
+  web_socket_channel: ^2.3.0
 
 dev_dependencies:
   bloc_test: ^9.1.1

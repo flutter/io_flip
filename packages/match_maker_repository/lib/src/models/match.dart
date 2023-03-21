@@ -9,10 +9,10 @@ class Match extends Equatable {
   const Match({
     required this.id,
     required this.host,
-    required this.hostPing,
-    this.guestPing,
     this.guest,
     this.inviteCode,
+    this.guestConnected = false,
+    this.hostConnected = false,
   });
 
   /// Unique identifier of the match.
@@ -26,26 +26,23 @@ class Match extends Equatable {
   /// Defaults to `null`.
   final String? guest;
 
-  /// Time when the last ping occurred from the host.
-  final Timestamp hostPing;
-
-  /// Time when the last ping occurred from the guest.
-  final Timestamp? guestPing;
-
   /// Code to invite a friend when the match is closed.
   final String? inviteCode;
+
+  /// If the host is connected or disconnected from the match.
+  final bool hostConnected;
+
+  /// If the guest is connected or disconnected from the match.
+  final bool guestConnected;
 
   /// Returns a new [Match] object with a new [guest] property.
   Match copyWithGuest({
     required String guest,
-    required Timestamp guestPing,
   }) {
     return Match(
       id: id,
       host: host,
       guest: guest,
-      hostPing: hostPing,
-      guestPing: guestPing,
       inviteCode: inviteCode,
     );
   }
@@ -54,9 +51,9 @@ class Match extends Equatable {
   List<Object?> get props => [
         id,
         host,
-        hostPing,
+        hostConnected,
         guest,
-        guestPing,
+        guestConnected,
         inviteCode,
       ];
 }

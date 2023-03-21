@@ -10,6 +10,7 @@ dependencies:
   cards_repository:
     path: packages/cards_repository
   dart_frog: ^0.3.0
+  dart_frog_web_socket: ^0.1.0-dev.3
   db_client:
     path: packages/db_client
   game_domain:
@@ -27,6 +28,7 @@ dependencies:
   scripts_repository:
     path: packages/scripts_repository
   shelf_cors_headers: ^0.1.4
+  shelf_web_socket: ^1.0.3
 
 dev_dependencies:
   build_runner: ^2.3.3

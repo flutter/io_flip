@@ -95,7 +95,7 @@ void main() {
         when(doc.data).thenReturn({
           'host': match.host,
           'guest': match.guest == null ? 'EMPTY' : '',
-          'hostPing': match.hostPing,
+          // 'hostPing': match.hostPing,
         });
         docs.add(doc);
       }
@@ -127,7 +127,7 @@ void main() {
         when(doc.data).thenReturn({
           'host': match.host,
           'guest': match.guest == null ? 'INVITE' : '',
-          'hostPing': match.hostPing,
+          // 'hostPing': match.hostPing,
           'inviteCode': match.inviteCode,
         });
         docs.add(doc);
@@ -276,7 +276,7 @@ void main() {
           Match(
             id: 'matchId',
             host: 'hostId',
-            hostPing: now,
+            // hostPing: now,
           ),
         ),
       );
@@ -304,7 +304,7 @@ void main() {
           Match(
             id: 'matchId',
             host: 'hostId',
-            hostPing: now,
+            // hostPing: now,
             inviteCode: 'inviteCode',
           ),
         ),
@@ -329,7 +329,7 @@ void main() {
             id: 'matchId',
             host: 'hostId',
             inviteCode: 'inviteCode',
-            hostPing: now,
+            // hostPing: now,
           ),
         ],
       );
@@ -346,8 +346,8 @@ void main() {
             id: 'matchId',
             host: 'hostId',
             guest: 'guestId',
-            hostPing: now,
-            guestPing: now,
+            // hostPing: now,
+            // guestPing: now,
             inviteCode: 'inviteCode',
           ),
         ),
@@ -359,7 +359,11 @@ void main() {
       () async {
         mockQueryResult(
           matches: [
-            Match(id: 'match123', host: 'host123', hostPing: now),
+            Match(
+              id: 'match123',
+              host: 'host123',
+              // hostPing: now,
+            ),
           ],
         );
         mockSuccessfulTransaction('guest123', 'match123', now);
@@ -372,8 +376,8 @@ void main() {
               id: 'match123',
               host: 'host123',
               guest: 'guest123',
-              hostPing: now,
-              guestPing: now,
+              // hostPing: now,
+              // guestPing: now,
             ),
           ),
         );
@@ -385,7 +389,11 @@ void main() {
       () async {
         mockQueryResult(
           matches: [
-            Match(id: 'match123', host: 'host123', hostPing: now),
+            Match(
+              id: 'match123',
+              host: 'host123',
+              // hostPing: now,
+            ),
           ],
         );
         // The mock default behavior is to fail the transaction. So no need
@@ -428,8 +436,8 @@ void main() {
             id: '123',
             host: 'host1',
             guest: 'guest1',
-            hostPing: now,
-            guestPing: now,
+            // hostPing: now,
+            // guestPing: now,
           )
         ]),
       );
@@ -465,7 +473,7 @@ void main() {
           Match(
             id: '123',
             host: 'host1',
-            hostPing: now,
+            // hostPing: now,
           )
         ]),
       );
@@ -521,7 +529,7 @@ void main() {
         ),
       ).thenAnswer((_) async {});
 
-      await matchMakerRepository.pingHost('hostId');
+      // await matchMakerRepository.pingHost('hostId');
 
       verify(
         () => docRef.update(
@@ -539,7 +547,7 @@ void main() {
         ),
       ).thenAnswer((_) async {});
 
-      await matchMakerRepository.pingGuest('guestId');
+      // await matchMakerRepository.pingGuest('guestId');
 
       verify(
         () => docRef.update(

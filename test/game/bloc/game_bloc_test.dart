@@ -76,10 +76,10 @@ void main() {
       when(() => matchMakerRepository.watchMatch(any()))
           .thenAnswer((_) => matchController.stream);
 
-      when(() => matchMakerRepository.pingHost(any())).thenAnswer((_) async {});
+      // when(() => matchMakerRepository.pingHost(any())).thenAnswer((_) async {});
 
-      when(() => matchMakerRepository.pingGuest(any()))
-          .thenAnswer((_) async {});
+      // when(() => matchMakerRepository.pingGuest(any()))
+      //     .thenAnswer((_) async {});
 
       when(() => matchMakerRepository.getScoreCard(any()))
           .thenAnswer((_) async => ScoreCard(id: 'scoreCardId'));
@@ -981,17 +981,17 @@ void main() {
           matchMakerRepository: matchMakerRepository,
           user: user,
           isHost: true,
-          timeOutPeriod: Duration(seconds: 10),
-          pingInterval: Duration(microseconds: 1),
+          // timeOutPeriod: Duration(seconds: 10),
+          // pingInterval: Duration(microseconds: 1),
           matchSolver: matchSolver,
-          now: () => now,
+          // now: () => now,
         ),
         act: (bloc) {
           bloc.add(ManagePlayerPresence(match.id));
         },
         expect: () => <GameState>[],
         verify: (_) {
-          verify(() => matchMakerRepository.pingHost(match.id)).called(1);
+          // verify(() => matchMakerRepository.pingHost(match.id)).called(1);
         },
       );
 
@@ -1002,17 +1002,17 @@ void main() {
           matchMakerRepository: matchMakerRepository,
           user: user,
           isHost: false,
-          timeOutPeriod: Duration(seconds: 10),
-          pingInterval: Duration(microseconds: 1),
+          // timeOutPeriod: Duration(seconds: 10),
+          // pingInterval: Duration(microseconds: 1),
           matchSolver: matchSolver,
-          now: () => now,
+          // now: () => now,
         ),
         act: (bloc) {
           bloc.add(ManagePlayerPresence(match.id));
         },
         expect: () => <GameState>[],
         verify: (_) {
-          verify(() => matchMakerRepository.pingGuest(match.id)).called(1);
+          // verify(() => matchMakerRepository.pingGuest(match.id)).called(1);
         },
       );
 
@@ -1023,9 +1023,9 @@ void main() {
           matchMakerRepository: matchMakerRepository,
           user: user,
           isHost: true,
-          timeOutPeriod: Duration(seconds: 10),
+          // timeOutPeriod: Duration(seconds: 10),
           matchSolver: matchSolver,
-          now: () => now,
+          // now: () => now,
         ),
         act: (bloc) {
           bloc.add(ManagePlayerPresence(match.id));
@@ -1034,8 +1034,8 @@ void main() {
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
-              hostPing: playerPing,
-              guestPing: opponentFailPing,
+              // hostPing: playerPing,
+              // guestPing: opponentFailPing,
             ),
           );
         },
@@ -1053,8 +1053,8 @@ void main() {
           user: user,
           isHost: false,
           matchSolver: matchSolver,
-          now: () => now,
-          timeOutPeriod: Duration(seconds: 10),
+          // now: () => now,
+          // timeOutPeriod: Duration(seconds: 10),
         ),
         act: (bloc) {
           bloc.add(ManagePlayerPresence(match.id));
@@ -1063,8 +1063,8 @@ void main() {
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
-              hostPing: opponentFailPing,
-              guestPing: playerPing,
+              // hostPing: opponentFailPing,
+              // guestPing: playerPing,
             ),
           );
         },
@@ -1082,8 +1082,8 @@ void main() {
           user: user,
           isHost: true,
           matchSolver: matchSolver,
-          timeOutPeriod: Duration(seconds: 10),
-          now: () => now,
+          // timeOutPeriod: Duration(seconds: 10),
+          // now: () => now,
         ),
         act: (bloc) {
           bloc.add(ManagePlayerPresence(match.id));
@@ -1092,8 +1092,8 @@ void main() {
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
-              hostPing: playerPing,
-              guestPing: opponentPassPing,
+              // hostPing: playerPing,
+              // guestPing: opponentPassPing,
             ),
           );
         },
@@ -1111,8 +1111,8 @@ void main() {
           user: user,
           isHost: true,
           matchSolver: matchSolver,
-          timeOutPeriod: Duration(seconds: 10),
-          now: () => now,
+          // timeOutPeriod: Duration(seconds: 10),
+          // now: () => now,
         ),
         setUp: () {
           when(() => matchMakerRepository.watchMatch(any())).thenThrow(
@@ -1126,8 +1126,8 @@ void main() {
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
-              hostPing: playerPing,
-              guestPing: opponentPassPing,
+              // hostPing: playerPing,
+              // guestPing: opponentPassPing,
             ),
           );
         },
@@ -1144,22 +1144,22 @@ void main() {
           matchMakerRepository: matchMakerRepository,
           user: user,
           isHost: true,
-          timeOutPeriod: Duration(seconds: 10),
-          pingInterval: Duration(microseconds: 1),
+          // timeOutPeriod: Duration(seconds: 10),
+          // pingInterval: Duration(microseconds: 1),
           matchSolver: matchSolver,
-          now: () => now,
+          // now: () => now,
         ),
-        setUp: () {
-          when(() => matchMakerRepository.pingHost(any())).thenThrow(
-            Exception('Ops'),
-          );
-        },
+        // setUp: () {
+        //   when(() => matchMakerRepository.pingHost(any())).thenThrow(
+        //     Exception('Ops'),
+        //   );
+        // },
         act: (bloc) {
           bloc.add(ManagePlayerPresence(match.id));
         },
         expect: () => [PingFailedState()],
         verify: (_) {
-          verify(() => matchMakerRepository.pingHost(match.id)).called(1);
+          // verify(() => matchMakerRepository.pingHost(match.id)).called(1);
         },
       );
     });

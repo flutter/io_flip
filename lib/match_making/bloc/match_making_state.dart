@@ -13,6 +13,7 @@ class MatchMakingState extends Equatable {
     required this.status,
     this.isHost = false,
     this.match,
+    this.matchConnection,
   });
 
   const MatchMakingState.initial()
@@ -23,16 +24,19 @@ class MatchMakingState extends Equatable {
   final Match? match;
   final MatchMakingStatus status;
   final bool isHost;
+  final WebSocketChannel? matchConnection;
 
   MatchMakingState copyWith({
     Match? match,
     MatchMakingStatus? status,
     bool? isHost,
+    WebSocketChannel? matchConnection,
   }) {
     return MatchMakingState(
       match: match ?? this.match,
       status: status ?? this.status,
       isHost: isHost ?? this.isHost,
+      matchConnection: matchConnection ?? this.matchConnection,
     );
   }
 
@@ -41,5 +45,6 @@ class MatchMakingState extends Equatable {
         status,
         match,
         isHost,
+        matchConnection,
       ];
 }

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:api_client/api_client.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 /// {@template game_resource}
 /// An api resource for interacting with the game.
@@ -193,5 +194,32 @@ class GameResource {
         StackTrace.current,
       );
     }
+  }
+
+  /// Webhook connect to  matches/connect/
+  Future<WebSocketChannel> connectToMatch({
+    required String matchId,
+    required bool isHost,
+  }) async {
+    final channel = _apiClient.connect(
+      '/matches/connect',
+      queryParameters: {
+        'matchId': matchId,
+        'host': isHost.toString(),
+      },
+    );
+
+    channel.stream.listen(
+      null,
+      onError: (Object error) {
+        throw ApiClientError(
+          'websocket matches/connect/ returned with the following error: "$error"',
+          StackTrace.current,
+        );
+      },
+    );
+
+    await channel.ready;
+    return channel;
   }
 }

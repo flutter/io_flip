@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:api_client/src/resources/resources.dart';
 import 'package:http/http.dart' as http;
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 /// {@template api_client_error}
 /// Error throw when accessing api failed.
@@ -147,6 +148,20 @@ class ApiClient {
           queryParameters: queryParameters,
         ),
         headers: _headers,
+      ),
+    );
+  }
+
+  /// Sends a GET request to the specified [path].
+  WebSocketChannel connect(
+    String path, {
+    Map<String, String>? queryParameters,
+  }) {
+    return WebSocketChannel.connect(
+      _base.replace(
+        scheme: 'ws',
+        path: path,
+        queryParameters: queryParameters,
       ),
     );
   }

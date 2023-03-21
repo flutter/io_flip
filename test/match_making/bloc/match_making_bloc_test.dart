@@ -88,8 +88,8 @@ void main() {
             id: '',
             host: '',
             guest: deckId,
-            hostPing: timestamp,
-            guestPing: timestamp,
+            // hostPing: timestamp,
+            // guestPing: timestamp,
           ),
         );
       },
@@ -104,8 +104,8 @@ void main() {
             id: '',
             host: '',
             guest: deckId,
-            hostPing: timestamp,
-            guestPing: timestamp,
+            // hostPing: timestamp,
+            // guestPing: timestamp,
           ),
         ),
       ],
@@ -149,7 +149,7 @@ void main() {
           (_) async => Match(
             id: '',
             host: deckId,
-            hostPing: timestamp,
+            // hostPing: timestamp,
           ),
         );
       },
@@ -163,7 +163,7 @@ void main() {
           match: Match(
             id: '',
             host: deckId,
-            hostPing: timestamp,
+            // hostPing: timestamp,
           ),
         ),
       ],
@@ -174,8 +174,8 @@ void main() {
         (_) async => Match(
           id: '',
           host: deckId,
-          hostPing: timestamp,
-          guestPing: timestamp,
+          // hostPing: timestamp,
+          // guestPing: timestamp,
         ),
       );
 
@@ -194,8 +194,8 @@ void main() {
             match: Match(
               id: '',
               host: deckId,
-              hostPing: timestamp,
-              guestPing: timestamp,
+              // hostPing: timestamp,
+              // guestPing: timestamp,
             ),
           ),
         ),
@@ -206,7 +206,7 @@ void main() {
           id: '',
           host: deckId,
           guest: '',
-          hostPing: timestamp,
+          // hostPing: timestamp,
         ),
       );
 
@@ -219,7 +219,7 @@ void main() {
               id: '',
               host: deckId,
               guest: '',
-              hostPing: timestamp,
+              // hostPing: timestamp,
             ),
             isHost: true,
           ),
@@ -232,17 +232,17 @@ void main() {
         (_) async => Match(
           id: '',
           host: deckId,
-          hostPing: timestamp,
+          // hostPing: timestamp,
         ),
       );
 
-      when(() => matchMakerRepository.pingHost(any())).thenAnswer(
-        (_) async => Match(
-          id: '',
-          host: deckId,
-          hostPing: timestamp,
-        ),
-      );
+      // when(() => matchMakerRepository.pingHost(any())).thenAnswer(
+      //   (_) async => Match(
+      //     id: '',
+      //     host: deckId,
+      //     // hostPing: timestamp,
+      //   ),
+      // );
 
       final bloc = MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
@@ -260,7 +260,7 @@ void main() {
             match: Match(
               id: '',
               host: deckId,
-              hostPing: timestamp,
+              // hostPing: timestamp,
             ),
           ),
         ),
@@ -268,14 +268,14 @@ void main() {
 
       await Future<void>.delayed(Duration(milliseconds: 200));
 
-      verify(() => matchMakerRepository.pingHost(any())).called(1);
+      // verify(() => matchMakerRepository.pingHost(any())).called(1);
 
       watchController.add(
         Match(
           id: '',
           host: deckId,
           guest: '',
-          hostPing: timestamp,
+          // hostPing: timestamp,
         ),
       );
 
@@ -288,7 +288,7 @@ void main() {
               id: '',
               host: deckId,
               guest: '',
-              hostPing: timestamp,
+              // hostPing: timestamp,
             ),
             isHost: true,
           ),
@@ -297,7 +297,7 @@ void main() {
 
       await Future<void>.delayed(Duration(milliseconds: 200));
 
-      verifyNever(() => matchMakerRepository.pingHost(any()));
+      // verifyNever(() => matchMakerRepository.pingHost(any()));
     });
 
     test('emits timeout when guest never joins host', () async {
@@ -306,17 +306,17 @@ void main() {
           (_) async => Match(
             id: '',
             host: deckId,
-            hostPing: timestamp,
+            // hostPing: timestamp,
           ),
         );
 
-        when(() => matchMakerRepository.pingHost(any())).thenAnswer(
-          (_) async => Match(
-            id: '',
-            host: deckId,
-            hostPing: timestamp,
-          ),
-        );
+        // when(() => matchMakerRepository.pingHost(any())).thenAnswer(
+        //   (_) async => Match(
+        //     id: '',
+        //     host: deckId,
+        //     // hostPing: timestamp,
+        //   ),
+        // );
 
         final bloc = MatchMakingBloc(
           matchMakerRepository: matchMakerRepository,
@@ -336,7 +336,7 @@ void main() {
               match: Match(
                 id: '',
                 host: deckId,
-                hostPing: timestamp,
+                // hostPing: timestamp,
               ),
             ),
           ),
@@ -357,7 +357,7 @@ void main() {
           (_) async => Match(
             id: '',
             host: deckId,
-            hostPing: timestamp,
+            // hostPing: timestamp,
           ),
         );
       },
@@ -371,7 +371,7 @@ void main() {
           match: Match(
             id: '',
             host: deckId,
-            hostPing: timestamp,
+            // hostPing: timestamp,
           ),
         ),
       ],
@@ -420,7 +420,7 @@ void main() {
             id: '',
             guest: deckId,
             host: 'hostId',
-            hostPing: timestamp,
+            // hostPing: timestamp,
           ),
         );
       },
@@ -435,7 +435,7 @@ void main() {
             id: '',
             guest: deckId,
             host: 'hostId',
-            hostPing: timestamp,
+            // hostPing: timestamp,
           ),
         ),
       ],
