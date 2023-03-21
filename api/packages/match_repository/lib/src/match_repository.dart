@@ -131,6 +131,12 @@ class MatchRepository {
 
     if (matchState == null) throw PlayCardFailure();
 
+    final isHost = userId == match.hostDeck.userId;
+
+    if (!_matchSolver.canPlayCard(matchState, cardId, isHost: isHost)) {
+      throw PlayCardFailure();
+    }
+
     var newMatchState = match.hostDeck.id == deckId
         ? matchState.addHostPlayedCard(cardId)
         : matchState.addGuestPlayedCard(cardId);
