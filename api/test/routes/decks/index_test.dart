@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cards_repository/cards_repository.dart';
 import 'package:dart_frog/dart_frog.dart';
+import 'package:jwt_middleware/jwt_middleware.dart';
 import 'package:logging/logging.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -12,6 +13,8 @@ class _MockRequestContext extends Mock implements RequestContext {}
 
 class _MockCardsRepository extends Mock implements CardsRepository {}
 
+class _MockAuthenticatedUser extends Mock implements AuthenticatedUser {}
+
 class _MockRequest extends Mock implements Request {}
 
 class _MockLogger extends Mock implements Logger {}
@@ -19,6 +22,7 @@ class _MockLogger extends Mock implements Logger {}
 void main() {
   group('POST /', () {
     late CardsRepository cardsRepository;
+    late AuthenticatedUser user;
     late Request request;
     late RequestContext context;
     late Logger logger;
@@ -31,6 +35,9 @@ void main() {
           userId: any(named: 'userId'),
         ),
       ).thenAnswer((_) async => 'deckId');
+
+      user = _MockAuthenticatedUser();
+      when(() => user.id).thenReturn('mock-userId');
 
       request = _MockRequest();
       when(() => request.method).thenReturn(HttpMethod.post);
@@ -46,6 +53,7 @@ void main() {
       context = _MockRequestContext();
       when(() => context.request).thenReturn(request);
       when(() => context.read<CardsRepository>()).thenReturn(cardsRepository);
+      when(() => context.read<AuthenticatedUser>()).thenReturn(user);
       when(() => context.read<Logger>()).thenReturn(logger);
     });
 

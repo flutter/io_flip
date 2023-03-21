@@ -3,7 +3,6 @@
 import 'dart:async';
 
 import 'package:api_client/api_client.dart';
-import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_async/fake_async.dart';
@@ -16,16 +15,10 @@ class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
 
 class _MockGameResource extends Mock implements GameResource {}
 
-class _MockUser extends Mock implements User {
-  @override
-  String get id => 'mock-userId';
-}
-
 void main() {
   group('MatchMakingBloc', () {
     late GameResource gameResource;
     late MatchMakerRepository matchMakerRepository;
-    late User user;
     late StreamController<Match> watchController;
     const deckId = 'deckId';
     final cardIds = ['a', 'b', 'c'];
@@ -33,7 +26,6 @@ void main() {
 
     setUp(() {
       matchMakerRepository = _MockMatchMakerRepository();
-      user = _MockUser();
       watchController = StreamController.broadcast();
       when(() => matchMakerRepository.watchMatch(any()))
           .thenAnswer((_) => watchController.stream);
@@ -42,10 +34,7 @@ void main() {
 
       gameResource = _MockGameResource();
       when(
-        () => gameResource.createDeck(
-          cardIds: any(named: 'cardIds'),
-          userId: any(named: 'userId'),
-        ),
+        () => gameResource.createDeck(cardIds),
       ).thenAnswer((_) async => deckId);
     });
 
@@ -55,7 +44,6 @@ void main() {
           matchMakerRepository: _MockMatchMakerRepository(),
           gameResource: gameResource,
           cardIds: cardIds,
-          user: user,
         ),
         isNotNull,
       );
@@ -67,7 +55,6 @@ void main() {
           matchMakerRepository: _MockMatchMakerRepository(),
           gameResource: gameResource,
           cardIds: cardIds,
-          user: user,
         ).state,
         equals(MatchMakingState.initial()),
       );
@@ -79,7 +66,6 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         gameResource: gameResource,
         cardIds: cardIds,
-        user: user,
         hostWaitTime: Duration.zero,
       ),
       setUp: () {
@@ -117,7 +103,6 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         gameResource: gameResource,
         cardIds: cardIds,
-        user: user,
         hostWaitTime: Duration.zero,
       ),
       setUp: () {
@@ -142,7 +127,6 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         gameResource: gameResource,
         cardIds: cardIds,
-        user: user,
       ),
       setUp: () {
         when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
@@ -183,7 +167,6 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         gameResource: gameResource,
         cardIds: cardIds,
-        user: user,
       )..add(MatchRequested());
 
       expect(
@@ -248,7 +231,6 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         gameResource: gameResource,
         cardIds: cardIds,
-        user: user,
         hostWaitTime: const Duration(milliseconds: 200),
       )..add(MatchRequested());
 
@@ -322,7 +304,6 @@ void main() {
           matchMakerRepository: matchMakerRepository,
           gameResource: gameResource,
           cardIds: cardIds,
-          user: user,
           hostWaitTime: const Duration(milliseconds: 200),
         )..add(MatchRequested());
 
@@ -350,7 +331,6 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         gameResource: gameResource,
         cardIds: cardIds,
-        user: user,
       ),
       setUp: () {
         when(() => matchMakerRepository.createPrivateMatch(deckId)).thenAnswer(
@@ -383,7 +363,6 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         gameResource: gameResource,
         cardIds: cardIds,
-        user: user,
       ),
       setUp: () {
         when(() => matchMakerRepository.createPrivateMatch(deckId)).thenThrow(
@@ -407,7 +386,6 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         gameResource: gameResource,
         cardIds: cardIds,
-        user: user,
       ),
       setUp: () {
         when(
@@ -447,7 +425,6 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         gameResource: gameResource,
         cardIds: cardIds,
-        user: user,
       ),
       setUp: () {
         when(

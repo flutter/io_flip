@@ -7,6 +7,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
+import 'package:jwt_middleware/jwt_middleware.dart';
 import 'package:logging/logging.dart';
 import 'package:match_repository/match_repository.dart';
 
@@ -15,23 +16,19 @@ FutureOr<Response> onRequest(RequestContext context) async {
     final matchId = context.request.uri.queryParameters['matchId'];
     final cardId = context.request.uri.queryParameters['cardId'];
     final deckId = context.request.uri.queryParameters['deckId'];
-    final userId = context.request.uri.queryParameters['userId'];
     if (matchId == null || cardId == null || deckId == null) {
       return Response(statusCode: HttpStatus.badRequest);
     }
 
-    if (userId == null) {
-      return Response(statusCode: HttpStatus.unauthorized);
-    }
-
     final matchRepository = context.read<MatchRepository>();
+    final user = context.read<AuthenticatedUser>();
 
     try {
       await matchRepository.playCard(
         matchId: matchId,
         cardId: cardId,
         deckId: deckId,
-        userId: userId,
+        userId: user.id,
       );
     } catch (e, s) {
       context.read<Logger>().severe('Error playing a move', e, s);
