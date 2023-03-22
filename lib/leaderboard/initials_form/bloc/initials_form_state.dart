@@ -19,5 +19,5 @@ class InitialsFormState extends Equatable with FormzMixin {
   List<Object> get props => [initials];
 
   @override
-  List<FormzInput> get inputs => [initials];
+  List<FormzInput<dynamic, dynamic>> get inputs => [initials];
 }
