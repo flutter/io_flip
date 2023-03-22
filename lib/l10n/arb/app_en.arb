@@ -87,30 +87,34 @@
   },
   "cardGenerationError": "Error generating cards, please try again in a few moments",
   "@cardGenerationError": {
-      "description": "Label show when there is an error generating a deck"
+    "description": "Label show when there is an error generating a deck"
   },
   "nextCard": "Next card",
   "@nextCard": {
-      "description": "Label show on the draft page to show the next card"
+    "description": "Label show on the draft page to show the next card"
   },
   "useCard": "Use card",
   "@useCard": {
-      "description": "Label show on the draft page to use the card"
+    "description": "Label show on the draft page to use the card"
   },
   "youMadeItToTheLeaderboard": "You made it to the leaderboard!",
   "@youMadeItToTheLeaderboard": {
-      "description": "Title shown on the Leaderboard Entry page"
+    "description": "Title shown on the Leaderboard Entry page"
   },
   "enterYourInitials": "Enter your initials to get the glory you deserve!",
   "@enterYourInitials": {
-      "description": "Sub title on the leaderboard entry page to prompt users to enter their initials"
+    "description": "Sub title on the leaderboard entry page to prompt users to enter their initials"
   },
   "continueButton": "Continue",
   "@continueButton": {
-      "description": "Continue button label"
-    },
-    "enterInitialsError": "Please enter three initials",
-    "@enterInitialsError": {
-        "description": "Leaderboard initials textfeild validation error text"
-    }
+    "description": "Continue button label"
+  },
+  "enterInitialsError": "Please enter three initials",
+  "@enterInitialsError": {
+    "description": "Leaderboard initials textfeild validation error text"
+  },
+  "sharePageTitle": "Share your hand!",
+  "@sharePageTitle": {
+    "description": "Title shown on the share page"
+  }
 }
