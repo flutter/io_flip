@@ -52,12 +52,12 @@ class SharePage extends StatelessWidget {
             const SizedBox(height: TopDashSpacing.lg),
             ElevatedButton(
               onPressed: () => _share(context),
-              child: const Text('Share'),
+              child: Text(context.l10n.sharePageShareButton),
             ),
             const SizedBox(height: TopDashSpacing.lg),
             ElevatedButton(
               onPressed: () => GoRouter.of(context).go('/'),
-              child: const Text('Main Menu'),
+              child: Text(context.l10n.sharePageMainMenuButton),
             ),
           ],
         ),

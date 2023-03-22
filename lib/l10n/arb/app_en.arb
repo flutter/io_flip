@@ -20,18 +20,6 @@
       }
     }
   },
-  "cardGenerationError": "Error generating cards, please try again in a few moments",
-  "@cardGenerationError": {
-    "description": "Label show when there is an error generating a deck"
-  },
-  "nextCard": "Next card",
-  "@nextCard": {
-    "description": "Label show on the draft page to show the next card"
-  },
-  "useCard": "Use card",
-  "@useCard": {
-    "description": "Label show on the draft page to use the card"
-  },
   "leaderboardLongestStreak": "Longest Streak",
   "@leaderboardLongestStreak": {
     "description": "Label shown on the leaderboard for the longest streak category tab"
@@ -116,5 +104,17 @@
   "sharePageTitle": "Share your hand!",
   "@sharePageTitle": {
     "description": "Title shown on the share page"
+  },
+  "sharePageShareButton": "Share",
+  "@sharePageShareButton": {
+    "description": "Button text for the share button on the share page",
+    "type": "text",
+    "placeholders": {}
+  },
+  "sharePageMainMenuButton": "Main Menu",
+  "@sharePageMainMenuButton": {
+    "description": "Button text for the main menu button on the share page",
+    "type": "text",
+    "placeholders": {}
   }
 }

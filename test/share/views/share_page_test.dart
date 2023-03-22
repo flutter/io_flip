@@ -28,7 +28,7 @@ void main() {
     testWidgets('contains share button', (tester) async {
       await tester.pumpApp(const SharePage());
 
-      expect(find.text('Share'), findsOneWidget);
+      expect(find.text(tester.l10n.sharePageShareButton), findsOneWidget);
     });
 
     testWidgets('opens native share dialog on ios', (tester) async {
@@ -43,7 +43,9 @@ void main() {
 
       await tester.pumpApp(SharePage(nativeShare: mockNativeShare));
 
-      await tester.tap(find.widgetWithText(ElevatedButton, 'Share'));
+      await tester.tap(
+        find.widgetWithText(ElevatedButton, tester.l10n.sharePageShareButton),
+      );
 
       expect(nativeShareCalled, isTrue);
 
@@ -62,7 +64,9 @@ void main() {
 
       await tester.pumpApp(SharePage(nativeShare: mockNativeShare));
 
-      await tester.tap(find.widgetWithText(ElevatedButton, 'Share'));
+      await tester.tap(
+        find.widgetWithText(ElevatedButton, tester.l10n.sharePageShareButton),
+      );
 
       expect(nativeShareCalled, isTrue);
 
@@ -74,7 +78,9 @@ void main() {
 
       await tester.pumpApp(const SharePage());
 
-      await tester.tap(find.widgetWithText(ElevatedButton, 'Share'));
+      await tester.tap(
+        find.widgetWithText(ElevatedButton, tester.l10n.sharePageShareButton),
+      );
       await tester.pumpAndSettle();
 
       expect(find.byType(ShareDialog), findsOneWidget);
@@ -85,7 +91,7 @@ void main() {
     testWidgets('contains main menu button', (tester) async {
       await tester.pumpApp(const SharePage());
 
-      expect(find.text('Main Menu'), findsOneWidget);
+      expect(find.text(tester.l10n.sharePageMainMenuButton), findsOneWidget);
     });
 
     testWidgets('navigates to main menu on main menu button tap',
@@ -93,7 +99,12 @@ void main() {
       final goRouter = MockGoRouter();
       await tester.pumpApp(const SharePage(), router: goRouter);
 
-      await tester.tap(find.widgetWithText(ElevatedButton, 'Main Menu'));
+      await tester.tap(
+        find.widgetWithText(
+          ElevatedButton,
+          tester.l10n.sharePageMainMenuButton,
+        ),
+      );
 
       verify(() => goRouter.go('/')).called(1);
     });
