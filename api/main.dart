@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:db_client/db_client.dart';
+import 'package:encryption_middleware/encryption_middleware.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:game_script_machine/game_script_machine.dart';
 import 'package:image_model_repository/image_model_repository.dart';
@@ -18,6 +19,7 @@ late ScriptsRepository scriptsRepository;
 late DbClient dbClient;
 late GameScriptMachine gameScriptMachine;
 late JwtMiddleware jwtMiddleware;
+late EncryptionMiddleware encryptionMiddleware;
 
 Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   const imageModelRepository = ImageModelRepository();
@@ -26,6 +28,7 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
     projectId: _appId,
     isEmulator: _useEmulator,
   );
+  encryptionMiddleware = const EncryptionMiddleware();
 
   final dbClient = DbClient.initialize(_appId, useEmulator: _useEmulator);
 

@@ -12,7 +12,8 @@ dependencies:
   dart_frog: ^0.3.0
   db_client:
     path: packages/db_client
-  encrypt: ^5.0.1
+  encryption_middleware:
+    path: packages/encryption_middleware
   game_domain:
     path: packages/game_domain
   game_script_machine:
