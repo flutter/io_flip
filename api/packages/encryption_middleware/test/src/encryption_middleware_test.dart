@@ -63,6 +63,9 @@ void main() {
       final mockResponse = _MockResponse();
 
       when(mockResponse.body).thenAnswer((_) async => '');
+      when(
+        () => mockResponse.copyWith(body: any(named: 'body')),
+      ).thenAnswer((_) => mockResponse);
 
       final handler = EncryptionMiddleware().middleware(
         (_) async => mockResponse,
