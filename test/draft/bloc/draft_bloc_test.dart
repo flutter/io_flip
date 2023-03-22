@@ -94,7 +94,7 @@ void main() {
       expect: () => [
         DraftState(
           cards: cards,
-          selectedCards: [cards[0], cards[1], cards.last],
+          selectedCards: [cards[0], cards[1], cards.first],
           status: DraftStateStatus.deckSelected,
         ),
       ],
