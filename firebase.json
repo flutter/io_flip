@@ -50,7 +50,7 @@
   "emulators": {
     "hosting": {
       "name": "app",
-      "port": 5000,
+      "port": 5003,
       "host": "0.0.0.0"
     },
     "functions": {
