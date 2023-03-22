@@ -245,6 +245,35 @@ void main() {
       );
 
       testWidgets(
+        'goes to share page when the share button is tapped',
+        (tester) async {
+          final goRouter = MockGoRouter();
+
+          mockState(
+            baseState.copyWith(
+              matchState: MatchState(
+                id: '',
+                matchId: '',
+                guestPlayedCards: const [],
+                hostPlayedCards: const [],
+                result: MatchResult.guest,
+              ),
+            ),
+          );
+          when(bloc.hasPlayerWon).thenReturn(true);
+          await tester.pumpSubject(
+            bloc,
+            goRouter: goRouter,
+          );
+
+          await tester.tap(find.byIcon(Icons.share));
+          await tester.pumpAndSettle();
+
+          verify(() => goRouter.goNamed('share')).called(1);
+        },
+      );
+
+      testWidgets(
         'plays a player card on tap',
         (tester) async {
           mockState(baseState);

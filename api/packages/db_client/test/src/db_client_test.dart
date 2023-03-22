@@ -43,6 +43,11 @@ void main() {
       expect(DbClient.initialize('A', useEmulator: true), isNotNull);
     });
 
+    test('returns instance anyway if firestore is already initialized', () {
+      expect(DbClient.initialize('A', useEmulator: true), isNotNull);
+      expect(DbClient.initialize('A', useEmulator: true), isNotNull);
+    });
+
     group('add', () {
       test('insert into firestore', () async {
         final firestore = _MockFirestore();

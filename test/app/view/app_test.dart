@@ -10,7 +10,6 @@ import 'package:top_dash/app/app.dart';
 import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
-import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/main_menu/main_menu_screen.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
 import 'package:top_dash/settings/settings.dart';
@@ -154,9 +153,7 @@ void main() {
         ),
       );
 
-      final l10n = tester.element(find.byType(MainMenuScreen)).l10n;
-
-      await tester.tap(find.text(l10n.play));
+      await tester.tap(find.text(tester.l10n.play));
       await tester.pumpAndSettle();
 
       expect(find.byType(DraftPage), findsOneWidget);
@@ -197,9 +194,7 @@ void main() {
         await tester.tap(find.byIcon(Icons.help_outline));
         await tester.pumpAndSettle();
 
-        final l10n = tester.element(find.byType(HowToPlayPage)).l10n;
-
-        await tester.tap(find.text(l10n.howToPlayButtonText));
+        await tester.tap(find.text(tester.l10n.howToPlayButtonText));
         await tester.pumpAndSettle();
 
         expect(find.byType(DraftPage), findsOneWidget);
