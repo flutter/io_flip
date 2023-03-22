@@ -9,7 +9,6 @@ class InitialsFormState extends Equatable with FormzMixin {
 
   InitialsFormState copyWith({
     Initials? initials,
-    FormzSubmissionStatus? status,
   }) {
     return InitialsFormState(
       initials: initials ?? this.initials,
