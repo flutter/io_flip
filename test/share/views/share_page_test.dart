@@ -22,7 +22,7 @@ void main() {
     testWidgets('contains title', (tester) async {
       await tester.pumpApp(const SharePage());
 
-      expect(find.text('Share your hand!'), findsOneWidget);
+      expect(find.text(tester.l10n.sharePageTitle), findsOneWidget);
     });
 
     testWidgets('contains share button', (tester) async {
