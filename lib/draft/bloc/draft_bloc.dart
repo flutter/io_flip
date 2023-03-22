@@ -61,11 +61,11 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     SelectCard event,
     Emitter<DraftState> emit,
   ) {
-    final lastCard = state.cards.last;
+    final topCard = state.cards.first;
 
     final selectedCards = [
       ...state.selectedCards,
-      lastCard,
+      topCard,
     ];
 
     emit(
