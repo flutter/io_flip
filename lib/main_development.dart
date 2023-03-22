@@ -24,7 +24,8 @@ void main() async {
         );
 
         final apiClient = ApiClient(
-          baseUrl: 'https://top-dash-dev-api-synvj3dcmq-uc.a.run.app',
+          //baseUrl: 'https://top-dash-dev-api-synvj3dcmq-uc.a.run.app',
+          baseUrl: 'http://localhost:8080',
           idTokenStream: authenticationRepository.idToken,
           refreshIdToken: authenticationRepository.refreshIdToken,
         );

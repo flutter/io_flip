@@ -21,30 +21,16 @@ void main() {
       apiClient = _MockApiClient();
       response = _MockResponse();
 
-      when(
-        () => apiClient.get(
-          any(),
-          queryParameters: any(named: 'queryParameters'),
-        ),
-      ).thenAnswer((_) async => response);
-      when(
-        () => apiClient.post(
-          any(),
-          queryParameters: any(named: 'queryParameters'),
-          body: any(named: 'body'),
-        ),
-      ).thenAnswer((_) async => response);
-      when(
-        () => apiClient.put(
-          any(),
-          body: any(named: 'body'),
-        ),
-      ).thenAnswer((_) async => response);
-
       resource = GameResource(apiClient: apiClient);
     });
 
     group('generateCard', () {
+      setUp(() {
+        when(
+          () => apiClient.post(any()),
+        ).thenAnswer((_) async => response);
+      });
+
       test('returns a Card', () async {
         const card = Card(
           id: '',
@@ -102,6 +88,12 @@ void main() {
     });
 
     group('createDeck', () {
+      setUp(() {
+        when(
+          () => apiClient.post(any(), body: any(named: 'body')),
+        ).thenAnswer((_) async => response);
+      });
+
       test('returns the deck id', () async {
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
         when(() => response.body).thenReturn(jsonEncode({'id': 'deck'}));
@@ -154,6 +146,12 @@ void main() {
     });
 
     group('getDeck', () {
+      setUp(() {
+        when(
+          () => apiClient.get(any()),
+        ).thenAnswer((_) async => response);
+      });
+
       test('returns a deck', () async {
         const card = Card(
           id: '',
@@ -217,6 +215,12 @@ void main() {
     });
 
     group('getMatch', () {
+      setUp(() {
+        when(
+          () => apiClient.get(any()),
+        ).thenAnswer((_) async => response);
+      });
+
       test('returns a match', () async {
         const card = Card(
           id: '',
@@ -292,6 +296,12 @@ void main() {
     });
 
     group('getMatchState', () {
+      setUp(() {
+        when(
+          () => apiClient.get(any()),
+        ).thenAnswer((_) async => response);
+      });
+
       test('returns a match state', () async {
         const matchState = MatchState(
           id: 'matchStateId',
@@ -353,6 +363,12 @@ void main() {
     });
 
     group('playCard', () {
+      setUp(() {
+        when(
+          () => apiClient.post(any()),
+        ).thenAnswer((_) async => response);
+      });
+
       test('makes the correct call', () async {
         when(() => response.statusCode).thenReturn(HttpStatus.noContent);
         await resource.playCard(
@@ -363,12 +379,7 @@ void main() {
 
         verify(
           () => apiClient.post(
-            '/matches/move',
-            queryParameters: {
-              'matchId': 'matchId',
-              'cardId': 'cardId',
-              'deckId': 'deckId',
-            },
+            '/matches/matchId/decks/deckId/cards/cardId',
           ),
         ).called(1);
       });
@@ -378,7 +389,6 @@ void main() {
           () => apiClient.post(
             any(),
             body: any(named: 'body'),
-            queryParameters: any(named: 'queryParameters'),
           ),
         ).thenThrow(Exception('Ops'));
 
@@ -393,7 +403,7 @@ void main() {
               (e) => e.cause,
               'cause',
               equals(
-                'POST /matches/matchId/move failed with the following message: "Exception: Ops"',
+                'POST /matches/matchId/decks/deckId/cards/cardId failed with the following message: "Exception: Ops"',
               ),
             ),
           ),
@@ -417,7 +427,7 @@ void main() {
               (e) => e.cause,
               'cause',
               equals(
-                'POST /matches/matchId/move returned status 500 with the following response: "Ops"',
+                'POST /matches/matchId/decks/deckId/cards/cardId returned status 500 with the following response: "Ops"',
               ),
             ),
           ),
@@ -429,7 +439,6 @@ void main() {
           () => apiClient.post(
             any(),
             body: any(named: 'body'),
-            queryParameters: any(named: 'queryParameters'),
           ),
         ).thenThrow(Exception('Ops'));
 
@@ -444,7 +453,7 @@ void main() {
               (e) => e.cause,
               'cause',
               equals(
-                'POST /matches/matchId/move failed with the following message: "Exception: Ops"',
+                'POST /matches/matchId/decks/deckId/cards/cardId failed with the following message: "Exception: Ops"',
               ),
             ),
           ),
