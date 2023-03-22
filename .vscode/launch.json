@@ -9,22 +9,36 @@
       "request": "launch",
       "type": "dart",
       "program": "lib/main_development.dart",
-      "args": ["--flavor", "development", "--target", "lib/main_development.dart"]
+      "args": [
+        "--flavor",
+        "development",
+        "--target",
+        "lib/main_development.dart"
+      ]
     },
     {
       "name": "Launch server",
       "request": "attach",
       "type": "dart",
-      "preLaunchTask": "emulate",
-      "postDebugTask": "stop emulate",
-      "cwd": "${workspaceFolder}/api",
+      "preLaunchTask": "api:start",
+      "postDebugTask": "api:stop",
+      "cwd": "${workspaceFolder}/api"
     },
     {
       "name": "Launch local",
       "request": "launch",
       "type": "dart",
       "program": "lib/main_local.dart",
-      "args": ["--flavor", "development", "--target", "lib/main_local.dart"]
+      "args": [
+        "--flavor",
+        "development",
+        "--target",
+        "lib/main_local.dart",
+        "--dart-define",
+        "ENCRYPTION_KEY=X9YTchZdcnyZTNBSBgzj29p7RMBAIubD",
+        "--dart-define",
+        "ENCRYPTION_IV=FxC21ctRg9SgiXuZ"
+      ]
     },
     {
       "name": "Launch production",

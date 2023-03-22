@@ -19,6 +19,7 @@ Handler middleware(Handler handler) {
       .use(provider<ScriptsRepository>((_) => scriptsRepository))
       .use(provider<GameScriptMachine>((_) => gameScriptMachine))
       .use(jwtMiddleware.middleware)
+      .use(encryptionMiddleware.middleware)
       .use(
         fromShelfMiddleware(
           corsHeaders(
