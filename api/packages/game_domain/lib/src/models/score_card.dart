@@ -14,6 +14,8 @@ class ScoreCard extends Equatable {
     this.wins = 0,
     this.longestStreak = 0,
     this.currentStreak = 0,
+    this.currentDeck = '',
+    this.longestStreakDeck = '',
   });
 
   /// {@macro score_card}
@@ -36,6 +38,21 @@ class ScoreCard extends Equatable {
   @JsonKey()
   final int currentStreak;
 
+  /// Unique identifier of the deck played in the session
+  @JsonKey()
+  final String currentDeck;
+
+  @JsonKey()
+  /// Unique identifier of the deck which was used to set the [longestStreak]
+  final String longestStreakDeck;
+
   @override
-  List<Object?> get props => [id, wins, longestStreak, currentStreak];
+  List<Object?> get props => [
+    id,
+    wins,
+    longestStreak,
+    currentStreak,
+    currentDeck,
+    longestStreakDeck,
+  ];
 }

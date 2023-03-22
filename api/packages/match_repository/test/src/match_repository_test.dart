@@ -151,6 +151,7 @@ void main() {
       late MatchRepository matchRepository;
       late MatchSolver matchSolver;
       const scoreCardId = 'scoreCardId';
+      const deckId = 'deckId';
       final scoreCard = ScoreCard(
         id: scoreCardId,
         wins: 1,
@@ -184,7 +185,7 @@ void main() {
       });
 
       test('returns the correct ScoreCard', () async {
-        final result = await matchRepository.getScoreCard(scoreCardId);
+        final result = await matchRepository.getScoreCard(scoreCardId, deckId);
 
         expect(result, equals(scoreCard));
       });
@@ -208,7 +209,7 @@ void main() {
         ).thenAnswer(
           (_) async {},
         );
-        final result = await matchRepository.getScoreCard(scoreCardId);
+        final result = await matchRepository.getScoreCard(scoreCardId, deckId);
 
         expect(result, ScoreCard(id: scoreCardId));
       });
