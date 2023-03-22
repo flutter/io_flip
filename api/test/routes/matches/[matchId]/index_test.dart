@@ -7,7 +7,7 @@ import 'package:match_repository/match_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-import '../../../routes/matches/[matchId].dart' as route;
+import '../../../../routes/matches/[matchId]/index.dart' as route;
 
 class _MockRequestContext extends Mock implements RequestContext {}
 
