@@ -1,8 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:api_client/api_client.dart';
+import 'package:encrypt/encrypt.dart';
 import 'package:http/http.dart' as http;
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -28,7 +30,20 @@ void main() {
 
   group('ApiClient', () {
     const baseUrl = 'http://baseurl.com';
-    final expectedResponse = http.Response('{"data": "test"}', 200);
+
+    // Since the key and iv are set from the environment variables, we can
+    // reference the default values here.
+    final key = Key.fromUtf8('encryption_key_not_set_123456789');
+    final iv = IV.fromUtf8('iv_not_set_12345');
+    final encrypter = Encrypter(AES(key));
+
+    final testJson = {'data': 'test'};
+
+    final encrypted = encrypter.encrypt(jsonEncode(testJson), iv: iv).base64;
+
+    final encryptedResponse = http.Response(encrypted, 200);
+    final expectedResponse = http.Response(testJson.toString(), 200);
+
     late ApiClient subject;
     late _MockHttpClient httpClient;
     late StreamController<String?> idTokenStreamController;
@@ -43,7 +58,7 @@ void main() {
           any(),
           headers: any(named: 'headers'),
         ),
-      ).thenAnswer((_) async => expectedResponse);
+      ).thenAnswer((_) async => encryptedResponse);
 
       when(
         () => httpClient.post(
@@ -51,7 +66,7 @@ void main() {
           body: any(named: 'body'),
           headers: any(named: 'headers'),
         ),
-      ).thenAnswer((_) async => expectedResponse);
+      ).thenAnswer((_) async => encryptedResponse);
 
       when(
         () => httpClient.put(
@@ -59,7 +74,7 @@ void main() {
           body: any(named: 'body'),
           headers: any(named: 'headers'),
         ),
-      ).thenAnswer((_) async => expectedResponse);
+      ).thenAnswer((_) async => encryptedResponse);
 
       idTokenStreamController = StreamController();
 
@@ -110,7 +125,8 @@ void main() {
       test('returns the response', () async {
         final response = await subject.get('/');
 
-        expect(response, equals(expectedResponse));
+        expect(response.statusCode, equals(expectedResponse.statusCode));
+        expect(response.body, equals(expectedResponse.body));
       });
 
       test('sends the request correctly', () async {
@@ -183,7 +199,8 @@ void main() {
       test('returns the response', () async {
         final response = await subject.post('/');
 
-        expect(response, equals(expectedResponse));
+        expect(response.statusCode, equals(expectedResponse.statusCode));
+        expect(response.body, equals(expectedResponse.body));
       });
 
       test('sends the request correctly', () async {
@@ -255,7 +272,8 @@ void main() {
       test('returns the response', () async {
         final response = await subject.put('/');
 
-        expect(response, equals(expectedResponse));
+        expect(response.statusCode, equals(expectedResponse.statusCode));
+        expect(response.body, equals(expectedResponse.body));
       });
 
       test('sends the request correctly', () async {
