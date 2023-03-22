@@ -4,8 +4,6 @@ import 'dart:io';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:encrypt/encrypt.dart';
 
-// TODO(willhlas): add workflow yaml file.
-
 /// {@template encryption_middleware}
 /// A dart_frog middleware for encrypting responses.
 /// {@endtemplate}
