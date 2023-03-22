@@ -3,13 +3,11 @@ import 'package:top_dash/l10n/l10n.dart';
 
 enum InitialsValidationError { invalid }
 
-extension InitialsValidationErrorX on InitialsValidationError? {
-  String? text(AppLocalizations l10n) {
+extension InitialsValidationErrorX on InitialsValidationError {
+  String text(AppLocalizations l10n) {
     switch (this) {
       case InitialsValidationError.invalid:
         return l10n.enterInitialsError;
-      case null:
-        return null;
     }
   }
 }
