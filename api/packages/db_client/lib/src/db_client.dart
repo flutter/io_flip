@@ -35,10 +35,19 @@ class DbClient {
     String projectId, {
     bool useEmulator = false,
   }) {
-    Firestore.initialize(
-      projectId,
-      emulator: useEmulator ? Emulator('127.0.0.1', 8081) : null,
-    );
+    try {
+      Firestore.initialize(
+        projectId,
+        emulator: useEmulator ? Emulator('127.0.0.1', 8081) : null,
+      );
+    } on Exception catch (e) {
+      if (e.toString() ==
+          'Exception: Firestore instance was already initialized') {
+        // ignore
+      } else {
+        rethrow;
+      }
+    }
 
     return DbClient(firestore: Firestore.instance);
   }
