@@ -25,7 +25,7 @@ class EncryptionMiddleware {
           final body = await response.body();
 
           if (body.isEmpty) {
-            return response;
+            return response.copyWith(body: body);
           }
 
           final key = Key.fromUtf8(_key ?? _encryptionKey);
