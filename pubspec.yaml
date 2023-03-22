@@ -38,9 +38,11 @@ dependencies:
   match_maker_repository:
     path: packages/match_maker_repository
   provider: ^6.0.5
-  shared_preferences: ^2.0.17
+  share_plus: ^6.3.1
+  shared_preferences: ^2.0.20
   top_dash_ui:
     path: packages/top_dash_ui
+  url_launcher: ^6.1.10
 
 dev_dependencies:
   bloc_test: ^9.1.1
