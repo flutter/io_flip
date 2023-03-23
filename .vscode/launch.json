@@ -13,7 +13,11 @@
         "--flavor",
         "development",
         "--target",
-        "lib/main_development.dart"
+        "lib/main_development.dart",
+        "--dart-define",
+        "ENCRYPTION_KEY=Bx677bkZEXvmiqzKXoph2mp3kDoqexkV",
+        "--dart-define",
+        "ENCRYPTION_IV=rPMNKz2YzWQjjjMi"
       ]
     },
     {
