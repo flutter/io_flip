@@ -1,5 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="development" type="FlutterRunConfigurationType" factoryName="Flutter">
+    <option name="additionalArgs" value="--dart-define=ENCRYPTION_KEY=Bx677bkZEXvmiqzKXoph2mp3kDoqexkV --dart-define=ENCRYPTION_IV=rPMNKz2YzWQjjjMi" />
     <option name="buildFlavor" value="development" />
     <option name="filePath" value="$PROJECT_DIR$/lib/main_development.dart" />
     <method v="2" />
