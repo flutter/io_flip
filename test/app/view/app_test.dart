@@ -33,6 +33,8 @@ class _MockGameResource extends Mock implements GameResource {}
 
 class _MockScriptsResource extends Mock implements ScriptsResource {}
 
+class _MockLeaderboardResource extends Mock implements LeaderboardResource {}
+
 class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
 
 class _MockMatchSolver extends Mock implements MatchSolver {}
@@ -51,6 +53,8 @@ void main() {
       apiClient = _MockApiClient();
       when(() => apiClient.gameResource).thenReturn(_MockGameResource());
       when(() => apiClient.scriptsResource).thenReturn(_MockScriptsResource());
+      when(() => apiClient.leaderboardResource)
+          .thenReturn(_MockLeaderboardResource());
     });
 
     testWidgets('can show a snackbar', (tester) async {

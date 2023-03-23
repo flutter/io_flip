@@ -1,3 +1,4 @@
+import 'package:api_client/api_client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -5,17 +6,21 @@ part 'initials_form_event.dart';
 part 'initials_form_state.dart';
 
 class InitialsFormBloc extends Bloc<InitialsFormEvent, InitialsFormState> {
-  InitialsFormBloc() : super(const InitialsFormState()) {
+  InitialsFormBloc({
+    required LeaderboardResource leaderboardResource,
+  })  : _leaderboardResource = leaderboardResource,
+        super(const InitialsFormState()) {
     _setBlacklist();
     on<InitialsChanged>(_onInitialsChanged);
     on<InitialsSubmitted>(_onInitialsSubmitted);
   }
 
+  final LeaderboardResource _leaderboardResource;
   final initialsRegex = RegExp('[A-Z]{3}');
   late final List<String> blacklist;
 
   Future<void> _setBlacklist() async {
-    blacklist = ['WTF'];
+    blacklist = await _leaderboardResource.getInitialsBlacklist();
   }
 
   void _onInitialsChanged(
