@@ -14,11 +14,6 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@main
-      - name: Download Artifact
-        uses: actions/download-artifact@main
-        with:
-          name: dist
-          path: dist
       - name: GitHub Action for Firebase
         uses: w9jds/firebase-action@v11.24.1
         with:
