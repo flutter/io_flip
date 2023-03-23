@@ -1,0 +1,28 @@
+name: deploy_firestore_rules_dev
+
+on:
+  push:
+    paths:
+      - "firestore.rules"
+    branches:
+      - main
+
+jobs:
+  deploy-dev:
+    runs-on: ubuntu-latest
+    name: Deploy Dev Firestore Rules
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@main
+      - name: Download Artifact
+        uses: actions/download-artifact@main
+        with:
+          name: dist
+          path: dist
+      - name: GitHub Action for Firebase
+        uses: w9jds/firebase-action@v11.24.1
+        with:
+          args: deploy --only firestore:rules
+        env:
+          GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DEV }}
+          PROJECT_ID: top-dash-dev
