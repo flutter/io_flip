@@ -43,16 +43,17 @@ class ScoreCard extends Equatable {
   final String currentDeck;
 
   @JsonKey()
+
   /// Unique identifier of the deck which was used to set the [longestStreak]
   final String longestStreakDeck;
 
   @override
   List<Object?> get props => [
-    id,
-    wins,
-    longestStreak,
-    currentStreak,
-    currentDeck,
-    longestStreakDeck,
-  ];
+        id,
+        wins,
+        longestStreak,
+        currentStreak,
+        currentDeck,
+        longestStreakDeck,
+      ];
 }

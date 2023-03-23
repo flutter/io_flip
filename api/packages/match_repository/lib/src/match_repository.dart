@@ -151,8 +151,8 @@ class MatchRepository {
 
       final host = await getScoreCard(match.hostDeck.userId, match.hostDeck.id);
       final guest = await getScoreCard(
-          match.guestDeck.userId,
-          match.guestDeck.id,
+        match.guestDeck.userId,
+        match.guestDeck.id,
       );
       if (result == MatchResult.host) {
         await _playerWon(host);
@@ -192,7 +192,8 @@ class MatchRepository {
           'currentStreak': scoreCard.currentStreak + 1,
           'longestStreak': newStreak,
           'longestStreakDeck': newStreak > scoreCard.longestStreak
-              ? scoreCard.currentDeck : scoreCard.longestStreakDeck,
+              ? scoreCard.currentDeck
+              : scoreCard.longestStreakDeck,
         },
       ),
     );
