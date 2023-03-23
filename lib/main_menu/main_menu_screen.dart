@@ -27,15 +27,12 @@ class MainMenuScreen extends StatelessWidget {
       body: Align(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1200),
-          child: Padding(
-            padding: const EdgeInsets.all(TopDashSpacing.xlg),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                _MainMenuScreenView(key: Key('main menu view')),
-                _Footer(key: Key('main menu footer')),
-              ],
-            ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: const [
+              _MainMenuScreenView(key: Key('main menu view')),
+              _Footer(key: Key('main menu footer')),
+            ],
           ),
         ),
       ),
@@ -48,22 +45,49 @@ class _MainMenuScreenView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: const [
-        /// Todo(hugo): Replace with Hero image
-        Expanded(
-          flex: 6,
-          child: DecoratedBox(decoration: BoxDecoration(color: Colors.red)),
-        ),
-        Expanded(
-          flex: 6,
-          child: LeaderboardView(),
-        ),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isPortrait = MediaQuery.of(context).size.width <
+            MediaQuery.of(context).size.height;
+        return isPortrait
+            ? Column(
+                children: const [
+                  _MainImage(),
+                  LeaderboardView(),
+                ],
+              )
+            : Padding(
+          padding: const EdgeInsets.all(TopDashSpacing.lg),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: const [
+              _MainImage(),
+              LeaderboardView(),
+            ],
+          ),
+        );
+      },
     );
   }
 }
 
+class _MainImage extends StatelessWidget {
+  const _MainImage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 590),
+          child: Image.asset('assets/images/bird.png'),
+        ),
+        const SizedBox(height: TopDashSpacing.lg),
+        const Text('zeazeez'),
+      ],
+    );
+  }
+}
 
 class _Footer extends StatelessWidget {
   const _Footer({super.key});
@@ -95,4 +119,3 @@ class _Footer extends StatelessWidget {
     );
   }
 }
-
