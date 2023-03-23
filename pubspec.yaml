@@ -31,7 +31,7 @@ dependencies:
     path: api/packages/game_domain
   game_script_machine:
     path: api/packages/game_script_machine
-  go_router: ^6.2.0
+  go_router: ^6.4.1
   highlight: ^0.7.0
   intl: ^0.17.0
   logging: ^1.1.1
