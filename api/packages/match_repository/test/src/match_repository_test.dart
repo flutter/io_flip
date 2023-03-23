@@ -659,7 +659,7 @@ void main() {
               .thenReturn(MatchResult.guest);
           when(() => dbClient.getById('score_cards', guestDeck.userId))
               .thenAnswer(
-                (_) async => DbEntityRecord(
+            (_) async => DbEntityRecord(
               id: guestDeck.userId,
               data: {
                 'wins': 0,
@@ -679,7 +679,7 @@ void main() {
           );
 
           verify(
-                () => dbClient.update(
+            () => dbClient.update(
               'score_cards',
               DbEntityRecord(
                 id: guestDeck.userId,
@@ -694,7 +694,7 @@ void main() {
           ).called(1);
 
           verify(
-                () => dbClient.update(
+            () => dbClient.update(
               'score_cards',
               DbEntityRecord(
                 id: hostDeck.userId,
