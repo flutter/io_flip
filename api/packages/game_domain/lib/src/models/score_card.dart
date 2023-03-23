@@ -42,8 +42,8 @@ class ScoreCard extends Equatable {
   @JsonKey()
   final String currentDeck;
 
-  @JsonKey()
   /// Unique identifier of the deck which was used to set the [longestStreak]
+  @JsonKey()
   final String longestStreakDeck;
 
   @override
