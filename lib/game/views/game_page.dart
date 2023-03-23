@@ -18,7 +18,7 @@ class GamePage extends StatelessWidget {
     return GamePage(
       key: const Key('game'),
       matchId: state.params['matchId'] ?? '',
-      isHost: state.params['isHost'] == 'true',
+      isHost: state.extra == true,
     );
   }
 
