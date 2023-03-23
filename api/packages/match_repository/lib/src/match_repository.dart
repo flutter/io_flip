@@ -45,8 +45,11 @@ class MatchRepository {
       return ScoreCard(id: scoreCardId, currentDeck: deckId);
     }
 
-    final data = {...scoreData.data, 'id': scoreCardId, 'currentDeck': deckId};
-
+    final data = {...scoreData.data, 'id': scoreCardId};
+    if (data['currentDeck'] != deckId) {
+      data['currentStreak'] = 0;
+    }
+    data['currentDeck'] = deckId;
     return ScoreCard.fromJson(data);
   }
 

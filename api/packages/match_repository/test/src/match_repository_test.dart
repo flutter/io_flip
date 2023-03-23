@@ -172,6 +172,7 @@ void main() {
               'wins': scoreCard.wins,
               'currentStreak': scoreCard.currentStreak,
               'longestStreak': scoreCard.longestStreak,
+              'currentDeck': deckId,
             },
           ),
         );
