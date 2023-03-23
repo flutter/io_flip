@@ -18,6 +18,8 @@ void main() {
       wins: 1,
       longestStreak: 1,
       currentStreak: 1,
+      currentDeck: 'deckId',
+      longestStreakDeck: 'longestId',
     );
 
     test('fromJson returns the correct instance', () {
@@ -27,6 +29,8 @@ void main() {
           'wins': 1,
           'longestStreak': 1,
           'currentStreak': 1,
+          'currentDeck': 'deckId',
+          'longestStreakDeck': 'longestId',
         }),
         equals(scoreCard),
       );
@@ -44,6 +48,8 @@ void main() {
           wins: 1,
           currentStreak: 1,
           longestStreak: 1,
+          currentDeck: 'deckId',
+          longestStreakDeck: 'longestId',
         ),
         isNot(
           equals(scoreCard),
@@ -55,6 +61,8 @@ void main() {
           wins: 2,
           currentStreak: 1,
           longestStreak: 1,
+          currentDeck: 'deckId',
+          longestStreakDeck: 'longestId',
         ),
         isNot(
           equals(scoreCard),
@@ -66,6 +74,8 @@ void main() {
           wins: 1,
           currentStreak: 2,
           longestStreak: 1,
+          currentDeck: 'deckId',
+          longestStreakDeck: 'longestId',
         ),
         isNot(
           equals(scoreCard),
@@ -77,6 +87,32 @@ void main() {
           wins: 1,
           currentStreak: 1,
           longestStreak: 2,
+          currentDeck: 'deckId',
+          longestStreakDeck: 'longestId',
+        ),
+        isNot(
+          equals(scoreCard),
+        ),
+      );
+      expect(
+        ScoreCard(
+          id: 'id',
+          wins: 1,
+          currentStreak: 1,
+          longestStreak: 1,
+          longestStreakDeck: 'longestId',
+        ),
+        isNot(
+          equals(scoreCard),
+        ),
+      );
+      expect(
+        ScoreCard(
+          id: 'id',
+          wins: 1,
+          currentStreak: 1,
+          longestStreak: 1,
+          currentDeck: 'deckId',
         ),
         isNot(
           equals(scoreCard),
