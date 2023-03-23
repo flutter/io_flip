@@ -653,6 +653,59 @@ void main() {
           ).called(1);
         });
 
+        test('updates correctly when any player wins but is not longest streak',
+            () async {
+          when(() => matchSolver.calculateMatchResult(any(), any()))
+              .thenReturn(MatchResult.guest);
+          when(() => dbClient.getById('score_cards', guestDeck.userId))
+              .thenAnswer(
+                (_) async => DbEntityRecord(
+              id: guestDeck.userId,
+              data: {
+                'wins': 0,
+                'currentStreak': 0,
+                'longestStreak': 2,
+                'currentDeck': guestDeck.id,
+                'longestStreakDeck': 'longestStreakDeckId'
+              },
+            ),
+          );
+
+          await matchRepository.playCard(
+            matchId: matchId,
+            cardId: 'F',
+            deckId: hostDeck.id,
+            userId: hostDeck.userId,
+          );
+
+          verify(
+                () => dbClient.update(
+              'score_cards',
+              DbEntityRecord(
+                id: guestDeck.userId,
+                data: const {
+                  'wins': 1,
+                  'currentStreak': 1,
+                  'longestStreak': 2,
+                  'longestStreakDeck': 'longestStreakDeckId',
+                },
+              ),
+            ),
+          ).called(1);
+
+          verify(
+                () => dbClient.update(
+              'score_cards',
+              DbEntityRecord(
+                id: hostDeck.userId,
+                data: const {
+                  'currentStreak': 0,
+                },
+              ),
+            ),
+          ).called(1);
+        });
+
         test('do not update when there is a draw', () async {
           when(() => matchSolver.calculateMatchResult(any(), any()))
               .thenReturn(MatchResult.draw);
