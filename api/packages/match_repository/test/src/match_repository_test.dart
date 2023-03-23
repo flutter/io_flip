@@ -562,7 +562,7 @@ void main() {
                 'wins': 0,
                 'currentStreak': 0,
                 'longestStreak': 0,
-                'currentDeck': 'deckId',
+                'currentDeck': 'anyId',
               },
             ),
           );
@@ -584,6 +584,7 @@ void main() {
                   'currentStreak': 1,
                   'longestStreak': 1,
                   'longestStreakDeck': hostDeck.id,
+                  'currentDeck': hostDeck.id,
                 },
               ),
             ),
@@ -613,7 +614,7 @@ void main() {
                 'wins': 0,
                 'currentStreak': 0,
                 'longestStreak': 0,
-                'currentDeck': 'deckId',
+                'currentDeck': 'anyId',
               },
             ),
           );
@@ -634,6 +635,7 @@ void main() {
                   'wins': 1,
                   'currentStreak': 1,
                   'longestStreak': 1,
+                  'currentDeck': guestDeck.id,
                   'longestStreakDeck': guestDeck.id,
                 },
               ),
@@ -683,10 +685,11 @@ void main() {
               'score_cards',
               DbEntityRecord(
                 id: guestDeck.userId,
-                data: const {
+                data: {
                   'wins': 1,
                   'currentStreak': 1,
                   'longestStreak': 2,
+                  'currentDeck': guestDeck.id,
                   'longestStreakDeck': 'longestStreakDeckId',
                 },
               ),

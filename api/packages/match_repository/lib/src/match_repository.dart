@@ -191,6 +191,7 @@ class MatchRepository {
           'wins': scoreCard.wins + 1,
           'currentStreak': scoreCard.currentStreak + 1,
           'longestStreak': newStreak,
+          'currentDeck': scoreCard.currentDeck,
           'longestStreakDeck': newStreak > scoreCard.longestStreak
               ? scoreCard.currentDeck
               : scoreCard.longestStreakDeck,
