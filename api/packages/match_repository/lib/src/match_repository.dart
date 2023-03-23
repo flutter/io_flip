@@ -39,14 +39,13 @@ class MatchRepository {
             'currentStreak': 0,
             'longestStreak': 0,
             'currentDeck': deckId,
-            'longestStreakDeck': '',
           },
         ),
       );
       return ScoreCard(id: scoreCardId, currentDeck: deckId);
     }
 
-    final data = {...scoreData.data, 'id': scoreCardId};
+    final data = {...scoreData.data, 'id': scoreCardId, 'currentDeck': deckId};
 
     return ScoreCard.fromJson(data);
   }
@@ -189,6 +188,8 @@ class MatchRepository {
           'wins': scoreCard.wins + 1,
           'currentStreak': scoreCard.currentStreak + 1,
           'longestStreak': newStreak,
+          'longestStreakDeck': newStreak > scoreCard.longestStreak
+              ? scoreCard.currentDeck : scoreCard.longestStreakDeck,
         },
       ),
     );

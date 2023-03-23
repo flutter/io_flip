@@ -157,6 +157,7 @@ void main() {
         wins: 1,
         currentStreak: 1,
         longestStreak: 1,
+        currentDeck: deckId,
       );
 
       setUp(() {
@@ -203,6 +204,7 @@ void main() {
                 'wins': 0,
                 'currentStreak': 0,
                 'longestStreak': 0,
+                'currentDeck': deckId,
               },
             ),
           ),
@@ -211,7 +213,7 @@ void main() {
         );
         final result = await matchRepository.getScoreCard(scoreCardId, deckId);
 
-        expect(result, ScoreCard(id: scoreCardId));
+        expect(result, ScoreCard(id: scoreCardId, currentDeck: deckId));
       });
     });
 
@@ -222,6 +224,7 @@ void main() {
       late MatchSolver matchSolver;
 
       const matchId = 'matchId';
+      const deckId = 'deckId';
       const matchStateId = 'matchStateId';
 
       setUp(() {
@@ -239,6 +242,7 @@ void main() {
                 'matchId': matchId,
                 'guestPlayedCards': ['A', 'B'],
                 'hostPlayedCards': ['C', 'D'],
+                'currentDeck': deckId,
               },
             ),
           ],
@@ -562,10 +566,11 @@ void main() {
               'score_cards',
               DbEntityRecord(
                 id: hostDeck.userId,
-                data: const {
+                data: {
                   'wins': 1,
                   'currentStreak': 1,
                   'longestStreak': 1,
+                  'longestStreakDeck': hostDeck.id,
                 },
               ),
             ),
@@ -600,10 +605,11 @@ void main() {
               'score_cards',
               DbEntityRecord(
                 id: guestDeck.userId,
-                data: const {
+                data: {
                   'wins': 1,
                   'currentStreak': 1,
                   'longestStreak': 1,
+                  'longestStreakDeck': guestDeck.id,
                 },
               ),
             ),
