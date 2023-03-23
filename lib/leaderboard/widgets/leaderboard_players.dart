@@ -7,16 +7,16 @@ class LeaderboardPlayers extends StatelessWidget {
 
   // TODO(willhlas): replace with real data once available.
   static const _playerList = [
-    _Player(initials: 'AAA', wins: 220),
-    _Player(initials: 'BBB', wins: 218),
-    _Player(initials: 'CCC', wins: 172),
-    _Player(initials: 'DDD', wins: 154),
-    _Player(initials: 'EEE', wins: 152),
-    _Player(initials: 'FFF', wins: 144),
-    _Player(initials: 'GGG', wins: 127),
-    _Player(initials: 'HHH', wins: 99),
-    _Player(initials: 'III', wins: 97),
-    _Player(initials: 'JJJ', wins: 81),
+    _Player(index: 0, initials: 'AAA', wins: 220),
+    _Player(index: 1, initials: 'BBB', wins: 218),
+    _Player(index: 2, initials: 'CCC', wins: 172),
+    _Player(index: 3, initials: 'DDD', wins: 154),
+    _Player(index: 4, initials: 'EEE', wins: 152),
+    _Player(index: 5, initials: 'FFF', wins: 144),
+    _Player(index: 6, initials: 'GGG', wins: 127),
+    _Player(index: 7, initials: 'HHH', wins: 99),
+    _Player(index: 8, initials: 'III', wins: 97),
+    _Player(index: 9, initials: 'JJJ', wins: 81),
   ];
 
   @override
@@ -25,7 +25,7 @@ class LeaderboardPlayers extends StatelessWidget {
       children: [
         for (final player in _playerList) ...[
           player,
-          const SizedBox(height: TopDashSpacing.xxs),
+          const SizedBox(height: TopDashSpacing.md),
         ],
       ],
     );
@@ -34,22 +34,45 @@ class LeaderboardPlayers extends StatelessWidget {
 
 class _Player extends StatelessWidget {
   const _Player({
+    required this.index,
     required this.initials,
     required this.wins,
   });
 
   final String initials;
   final int wins;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
+    var color = Colors.transparent;
+
+    switch (index) {
+      case 0:
+        color = const Color(0xFFF9A52F);
+        break;
+      case 1:
+        color = Colors.grey;
+        break;
+      case 2:
+        color = const Color(0xFFC47542);
+        break;
+    }
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
+        Container(
+          width: 20,
+          height: 20,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+          ),
+          child: Text((index + 1).toString()),
+        ),
         Text(initials),
-        Text(l10n.leaderboardPlayerWins(wins)),
       ],
     );
   }

@@ -159,48 +159,6 @@ void main() {
       expect(find.byType(DraftPage), findsOneWidget);
     });
 
-    testWidgets('can navigate to the how to play page', (tester) async {
-      await tester.pumpWidget(
-        App(
-          settingsPersistence: MemoryOnlySettingsPersistence(),
-          apiClient: apiClient,
-          matchMakerRepository: _MockMatchMakerRepository(),
-          matchSolver: _MockMatchSolver(),
-          gameScriptMachine: _MockGameScriptEngine(),
-          user: _MockUser(),
-        ),
-      );
-
-      await tester.tap(find.byIcon(Icons.help_outline));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(HowToPlayPage), findsOneWidget);
-    });
-
-    testWidgets(
-      'can navigate to the game page from the how to play page',
-      (tester) async {
-        await tester.pumpWidget(
-          App(
-            settingsPersistence: MemoryOnlySettingsPersistence(),
-            apiClient: apiClient,
-            matchMakerRepository: _MockMatchMakerRepository(),
-            matchSolver: _MockMatchSolver(),
-            gameScriptMachine: _MockGameScriptEngine(),
-            user: _MockUser(),
-          ),
-        );
-
-        await tester.tap(find.byIcon(Icons.help_outline));
-        await tester.pumpAndSettle();
-
-        await tester.tap(find.text(tester.l10n.howToPlayButtonText));
-        await tester.pumpAndSettle();
-
-        expect(find.byType(DraftPage), findsOneWidget);
-      },
-    );
-
     testWidgets('can navigate to the settings page', (tester) async {
       await tester.pumpWidget(
         App(
@@ -213,7 +171,7 @@ void main() {
         ),
       );
 
-      await tester.tap(find.text('Settings'));
+      await tester.tap(find.byIcon(Icons.settings));
       await tester.pumpAndSettle();
 
       expect(find.byType(SettingsScreen), findsOneWidget);
@@ -235,7 +193,7 @@ void main() {
           ),
         );
 
-        await tester.tap(find.text('Settings'));
+        await tester.tap(find.byIcon(Icons.settings));
         await tester.pumpAndSettle();
 
         await tester.tap(find.text('Back'));
