@@ -64,6 +64,8 @@ flutter:
     - assets/sfx/
 
   fonts:
-    - family: Permanent Marker
+    - family: Google Sans
       fonts:
-        - asset: assets/Permanent_Marker/PermanentMarker-Regular.ttf
+        - asset: assets/fonts/GoogleSansText-Regular.ttf
+        - asset: assets/fonts/GoogleSansText-Italic.ttf
+          style: italic

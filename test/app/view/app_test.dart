@@ -13,7 +13,6 @@ import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/main_menu/main_menu_screen.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
 import 'package:top_dash/settings/settings.dart';
-import 'package:top_dash/settings/settings_screen.dart';
 import 'package:top_dash/style/snack_bar.dart';
 
 import '../../helpers/helpers.dart';
@@ -238,7 +237,7 @@ void main() {
         await tester.tap(find.text('Settings'));
         await tester.pumpAndSettle();
 
-        await tester.tap(find.text('Back'));
+        await tester.tap(find.byType(BackButton));
         await tester.pumpAndSettle();
 
         expect(find.byType(SettingsScreen), findsNothing);
