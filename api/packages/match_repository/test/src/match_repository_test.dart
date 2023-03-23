@@ -554,10 +554,11 @@ void main() {
         test('updates correctly when host wins', () async {
           when(() => matchSolver.calculateMatchResult(any(), any()))
               .thenReturn(MatchResult.host);
-          when(() => dbClient.getById('score_cards', hostDeck.userId)).thenAnswer(
-                (_) async => DbEntityRecord(
+          when(() => dbClient.getById('score_cards', hostDeck.userId))
+              .thenAnswer(
+            (_) async => DbEntityRecord(
               id: hostDeck.userId,
-              data:const {
+              data: const {
                 'wins': 0,
                 'currentStreak': 0,
                 'longestStreak': 0,
@@ -604,10 +605,11 @@ void main() {
         test('updates correctly when guest wins', () async {
           when(() => matchSolver.calculateMatchResult(any(), any()))
               .thenReturn(MatchResult.guest);
-          when(() => dbClient.getById('score_cards', guestDeck.userId)).thenAnswer(
-                (_) async => DbEntityRecord(
+          when(() => dbClient.getById('score_cards', guestDeck.userId))
+              .thenAnswer(
+            (_) async => DbEntityRecord(
               id: guestDeck.userId,
-              data:const {
+              data: const {
                 'wins': 0,
                 'currentStreak': 0,
                 'longestStreak': 0,
