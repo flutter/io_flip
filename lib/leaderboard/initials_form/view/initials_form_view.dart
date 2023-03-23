@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:formz/formz.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/leaderboard/initials_form/initials_form.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
@@ -37,9 +36,8 @@ class InitialsFormView extends StatelessWidget {
                   ),
                   hintText: 'AAA',
                   hintStyle: const TextStyle(color: white),
-                  errorText: state.initials.isNotValid
-                      ? state.initials.displayError?.text(l10n)
-                      : null,
+                  errorText:
+                      state.status.isInvalid ? l10n.enterInitialsError : null,
                 ),
                 textAlign: TextAlign.center,
                 style: const TextStyle(color: white),
@@ -53,7 +51,7 @@ class InitialsFormView extends StatelessWidget {
             const SizedBox(height: TopDashSpacing.xxlg),
             OutlinedButton(
               onPressed: () {
-                if (Formz.validate(state.inputs)) {}
+                context.read<InitialsFormBloc>().add(InitialsSubmitted());
               },
               style: OutlinedButton.styleFrom(
                 side: const BorderSide(color: white),

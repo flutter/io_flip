@@ -9,7 +9,35 @@ void main() {
     build: InitialsFormBloc.new,
     act: (bloc) => bloc.add(InitialsChanged(initials: 'ABC')),
     expect: () => <InitialsFormState>[
-      InitialsFormState(initials: Initials.dirty('ABC')),
+      InitialsFormState(initials: 'ABC'),
+    ],
+  );
+
+  blocTest<InitialsFormBloc, InitialsFormState>(
+    'emits state with validated field when initials are valid and submitted',
+    build: InitialsFormBloc.new,
+    act: (bloc) {
+      bloc
+        ..add(InitialsChanged(initials: 'ABC'))
+        ..add(InitialsSubmitted());
+    },
+    expect: () => <InitialsFormState>[
+      InitialsFormState(initials: 'ABC'),
+      InitialsFormState(initials: 'ABC', status: InitialsFormStatus.valid),
+    ],
+  );
+
+  blocTest<InitialsFormBloc, InitialsFormState>(
+    'emits state with invalid field when initials are not valid and submitted',
+    build: InitialsFormBloc.new,
+    act: (bloc) {
+      bloc
+        ..add(InitialsChanged(initials: 'WTF'))
+        ..add(InitialsSubmitted());
+    },
+    expect: () => <InitialsFormState>[
+      InitialsFormState(initials: 'WTF'),
+      InitialsFormState(initials: 'WTF', status: InitialsFormStatus.invalid),
     ],
   );
 }
