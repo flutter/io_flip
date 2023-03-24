@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:game_domain/game_domain.dart';
 import 'package:game_script_machine/game_script_machine.dart';
 
@@ -96,6 +98,42 @@ class MatchSolver {
     }
   }
 
+  /// Returns true when player, determined by [isHost], can select a card
+  /// to play
+  bool isPlayerTurn(MatchState state, {required bool isHost}) {
+    final hostStarts = state.hostStartsMatch;
+    final isPlayer1 = (isHost && hostStarts) || (!isHost && !hostStarts);
+
+    final hostPlayedCardsLength = state.hostPlayedCards.length;
+    final guestPlayedCardsLength = state.guestPlayedCards.length;
+
+    final player1PlayedCardsLength =
+        hostStarts ? hostPlayedCardsLength : guestPlayedCardsLength;
+    final player2PlayedCardsLength =
+        hostStarts ? guestPlayedCardsLength : hostPlayedCardsLength;
+
+    final round = math.min(hostPlayedCardsLength, guestPlayedCardsLength) + 1;
+
+    if (round.isOdd) {
+      if (isPlayer1 && player1PlayedCardsLength == player2PlayedCardsLength) {
+        return true;
+      }
+      if (!isPlayer1 && player1PlayedCardsLength > player2PlayedCardsLength) {
+        return true;
+      }
+    }
+
+    if (round.isEven) {
+      if (isPlayer1 && player1PlayedCardsLength < player2PlayedCardsLength) {
+        return true;
+      }
+      if (!isPlayer1 && player1PlayedCardsLength == player2PlayedCardsLength) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   /// Returns true when player, determined by [isHost], can play the card
   /// with id [cardId] or if they need to either
   /// wait for their opponent to play first or play another card.
@@ -108,20 +146,6 @@ class MatchSolver {
       return false;
     }
 
-    if (state.hostPlayedCards.length == state.guestPlayedCards.length) {
-      return true;
-    }
-
-    if (isHost &&
-        state.hostPlayedCards.length < state.guestPlayedCards.length) {
-      return true;
-    }
-
-    if (!isHost &&
-        state.hostPlayedCards.length > state.guestPlayedCards.length) {
-      return true;
-    }
-
-    return false;
+    return isPlayerTurn(state, isHost: isHost);
   }
 }
