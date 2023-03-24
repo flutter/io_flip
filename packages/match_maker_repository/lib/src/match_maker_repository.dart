@@ -24,8 +24,10 @@ class MatchMakerRepository {
     ValueGetter<Timestamp> now = Timestamp.now,
     ValueGetter<String>? inviteCode,
     this.retryDelay = _defaultRetryDelay,
+    math.Random? randomGenerator,
   })  : _now = now,
-        _inviteCode = inviteCode ?? defaultInviteCodeGenerator {
+        _inviteCode = inviteCode ?? defaultInviteCodeGenerator,
+        _randomGenerator = randomGenerator ?? math.Random() {
     collection = db.collection('matches');
     matchStatesCollection = db.collection('match_states');
     scoreCardCollection = db.collection('score_cards');
@@ -56,7 +58,7 @@ class MatchMakerRepository {
   static String defaultInviteCodeGenerator() => const Uuid().v4();
 
   /// Random generator
-  final rng = math.Random();
+  late final math.Random _randomGenerator;
 
   /// Watches a match.
   Stream<Match> watchMatch(String id) {
@@ -256,7 +258,7 @@ class MatchMakerRepository {
       'matchId': result.id,
       'hostPlayedCards': const <String>[],
       'guestPlayedCards': const <String>[],
-      'hostStartsMatch': rng.nextBool(),
+      'hostStartsMatch': _randomGenerator.nextBool(),
     });
     return Match(
       id: result.id,
