@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/match_making/match_making.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:top_dash/game/views/game_page.dart';
 
 class MatchMakingView extends StatelessWidget {
   const MatchMakingView({
@@ -20,11 +21,11 @@ class MatchMakingView extends StatelessWidget {
         if (current.status == MatchMakingStatus.completed) {
           context.goNamed(
             'game',
-            params: {
-              'matchId': '${current.match?.id}',
-              'isHost': '${current.isHost}',
-            },
-            extra: current.matchConnection,
+            extra: GamePageData(
+              isHost: current.isHost,
+              matchId: current.match?.id ?? '',
+              matchConnection: current.matchConnection,
+            ),
           );
         }
       },

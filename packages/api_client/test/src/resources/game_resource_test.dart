@@ -52,6 +52,12 @@ void main() {
     });
 
     group('generateCard', () {
+      setUp(() {
+        when(
+          () => apiClient.post(any()),
+        ).thenAnswer((_) async => response);
+      });
+
       test('returns a Card', () async {
         const card = Card(
           id: '',
@@ -109,14 +115,17 @@ void main() {
     });
 
     group('createDeck', () {
+      setUp(() {
+        when(
+          () => apiClient.post(any(), body: any(named: 'body')),
+        ).thenAnswer((_) async => response);
+      });
+
       test('returns the deck id', () async {
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
         when(() => response.body).thenReturn(jsonEncode({'id': 'deck'}));
 
-        final id = await resource.createDeck(
-          cardIds: ['a', 'b', 'c'],
-          userId: 'mock-userId',
-        );
+        final id = await resource.createDeck(['a', 'b', 'c']);
 
         expect(id, equals('deck'));
       });
@@ -131,10 +140,7 @@ void main() {
         );
 
         await expectLater(
-          () => resource.createDeck(
-            cardIds: ['a', 'b', 'c'],
-            userId: 'mock-userId',
-          ),
+          () => resource.createDeck(['a', 'b', 'c']),
           throwsA(
             isA<ApiClientError>().having(
               (e) => e.cause,
@@ -152,10 +158,7 @@ void main() {
         when(() => response.body).thenReturn('Ops');
 
         await expectLater(
-          () => resource.createDeck(
-            cardIds: ['a', 'b', 'c'],
-            userId: 'mock-userId',
-          ),
+          () => resource.createDeck(['a', 'b', 'c']),
           throwsA(
             isA<ApiClientError>().having(
               (e) => e.cause,
@@ -170,6 +173,12 @@ void main() {
     });
 
     group('getDeck', () {
+      setUp(() {
+        when(
+          () => apiClient.get(any()),
+        ).thenAnswer((_) async => response);
+      });
+
       test('returns a deck', () async {
         const card = Card(
           id: '',
@@ -233,6 +242,12 @@ void main() {
     });
 
     group('getMatch', () {
+      setUp(() {
+        when(
+          () => apiClient.get(any()),
+        ).thenAnswer((_) async => response);
+      });
+
       test('returns a match', () async {
         const card = Card(
           id: '',
@@ -308,12 +323,19 @@ void main() {
     });
 
     group('getMatchState', () {
+      setUp(() {
+        when(
+          () => apiClient.get(any()),
+        ).thenAnswer((_) async => response);
+      });
+
       test('returns a match state', () async {
         const matchState = MatchState(
           id: 'matchStateId',
           matchId: 'matchId',
           guestPlayedCards: ['a'],
           hostPlayedCards: ['b'],
+          hostStartsMatch: true,
         );
 
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
@@ -369,24 +391,23 @@ void main() {
     });
 
     group('playCard', () {
+      setUp(() {
+        when(
+          () => apiClient.post(any()),
+        ).thenAnswer((_) async => response);
+      });
+
       test('makes the correct call', () async {
         when(() => response.statusCode).thenReturn(HttpStatus.noContent);
         await resource.playCard(
           matchId: 'matchId',
           cardId: 'cardId',
           deckId: 'deckId',
-          userId: 'userId',
         );
 
         verify(
           () => apiClient.post(
-            '/matches/move',
-            queryParameters: {
-              'matchId': 'matchId',
-              'cardId': 'cardId',
-              'deckId': 'deckId',
-              'userId': 'userId',
-            },
+            '/game/matches/matchId/decks/deckId/cards/cardId',
           ),
         ).called(1);
       });
@@ -396,7 +417,6 @@ void main() {
           () => apiClient.post(
             any(),
             body: any(named: 'body'),
-            queryParameters: any(named: 'queryParameters'),
           ),
         ).thenThrow(Exception('Ops'));
 
@@ -405,14 +425,13 @@ void main() {
             matchId: 'matchId',
             cardId: 'cardId',
             deckId: 'deckId',
-            userId: 'userId',
           ),
           throwsA(
             isA<ApiClientError>().having(
               (e) => e.cause,
               'cause',
               equals(
-                'POST /matches/matchId/move failed with the following message: "Exception: Ops"',
+                'POST /matches/matchId/decks/deckId/cards/cardId failed with the following message: "Exception: Ops"',
               ),
             ),
           ),
@@ -430,14 +449,13 @@ void main() {
             matchId: 'matchId',
             cardId: 'cardId',
             deckId: 'deckId',
-            userId: 'userId',
           ),
           throwsA(
             isA<ApiClientError>().having(
               (e) => e.cause,
               'cause',
               equals(
-                'POST /matches/matchId/move returned status 500 with the following response: "Ops"',
+                'POST /matches/matchId/decks/deckId/cards/cardId returned status 500 with the following response: "Ops"',
               ),
             ),
           ),
@@ -449,7 +467,6 @@ void main() {
           () => apiClient.post(
             any(),
             body: any(named: 'body'),
-            queryParameters: any(named: 'queryParameters'),
           ),
         ).thenThrow(Exception('Ops'));
 
@@ -458,14 +475,13 @@ void main() {
             matchId: 'matchId',
             cardId: 'cardId',
             deckId: 'deckId',
-            userId: 'userId',
           ),
           throwsA(
             isA<ApiClientError>().having(
               (e) => e.cause,
               'cause',
               equals(
-                'POST /matches/matchId/move failed with the following message: "Exception: Ops"',
+                'POST /matches/matchId/decks/deckId/cards/cardId failed with the following message: "Exception: Ops"',
               ),
             ),
           ),

@@ -38,6 +38,7 @@ void main() {
       matchId: match.id,
       guestPlayedCards: const [],
       hostPlayedCards: const [],
+      hostStartsMatch: true,
     );
 
     late StreamController<MatchState> matchStateController;
@@ -256,6 +257,7 @@ void main() {
           matchId: 'matchId',
           hostPlayedCards: [],
           guestPlayedCards: [],
+          hostStartsMatch: true,
         ),
         turns: [],
         playerPlayed: false,
@@ -267,7 +269,6 @@ void main() {
             matchId: 'matchId',
             cardId: any(named: 'cardId'),
             deckId: any(named: 'deckId'),
-            userId: any(named: 'userId'),
           ),
         ).thenAnswer((_) async {});
       });
@@ -290,6 +291,7 @@ void main() {
             matchId: baseState.matchState.matchId,
             hostPlayedCards: baseState.matchState.hostPlayedCards,
             guestPlayedCards: const ['card6'],
+            hostStartsMatch: true,
           ),
         );
 
@@ -341,6 +343,29 @@ void main() {
       });
 
       blocTest<GameBloc, GameState>(
+        'isPlayerTurn calls match solver correctly',
+        build: () => GameBloc(
+          gameResource: gameResource,
+          matchMakerRepository: matchMakerRepository,
+          matchSolver: matchSolver,
+          user: user,
+          isHost: true,
+        ),
+        setUp: () {
+          when(
+            () => matchSolver.isPlayerTurn(baseState.matchState, isHost: true),
+          ).thenReturn(true);
+        },
+        seed: () => baseState,
+        act: (bloc) => bloc.isPlayerTurn,
+        verify: (_) {
+          verify(
+            () => matchSolver.isPlayerTurn(baseState.matchState, isHost: true),
+          ).called(1);
+        },
+      );
+
+      blocTest<GameBloc, GameState>(
         'canPlayerPlay calls match solver correctly',
         build: () => GameBloc(
           gameResource: gameResource,
@@ -352,14 +377,22 @@ void main() {
         ),
         setUp: () {
           when(
-            () => matchSolver.canPlayCard(baseState.matchState, isHost: true),
+            () => matchSolver.canPlayCard(
+              baseState.matchState,
+              any(),
+              isHost: true,
+            ),
           ).thenReturn(true);
         },
         seed: () => baseState,
-        act: (bloc) => bloc.canPlayerPlay(),
+        act: (bloc) => bloc.canPlayerPlay(''),
         verify: (_) {
           verify(
-            () => matchSolver.canPlayCard(baseState.matchState, isHost: true),
+            () => matchSolver.canPlayCard(
+              baseState.matchState,
+              any(),
+              isHost: true,
+            ),
           ).called(1);
         },
       );
@@ -384,6 +417,7 @@ void main() {
             matchId: 'matchId',
             hostPlayedCards: const ['card1'],
             guestPlayedCards: const ['card6'],
+            hostStartsMatch: true,
           ),
           turns: [
             MatchTurn(
@@ -420,6 +454,7 @@ void main() {
             matchId: baseState.matchState.id,
             guestPlayedCards: baseState.matchState.guestPlayedCards,
             hostPlayedCards: baseState.matchState.hostPlayedCards,
+            hostStartsMatch: true,
             result: MatchResult.host,
           ),
         ),
@@ -445,6 +480,7 @@ void main() {
             matchId: baseState.matchState.id,
             guestPlayedCards: baseState.matchState.guestPlayedCards,
             hostPlayedCards: baseState.matchState.hostPlayedCards,
+            hostStartsMatch: true,
             result: MatchResult.guest,
           ),
         ),
@@ -489,6 +525,7 @@ void main() {
             matchId: 'matchId',
             hostPlayedCards: const ['card1'],
             guestPlayedCards: const ['card6'],
+            hostStartsMatch: true,
           ),
           turns: [
             MatchTurn(
@@ -530,6 +567,7 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const [],
               hostPlayedCards: const [],
+              hostStartsMatch: true,
             ),
             turns: const [],
             playerPlayed: true,
@@ -558,6 +596,7 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const [],
               hostPlayedCards: const [],
+              hostStartsMatch: true,
             ),
             turns: const [],
             playerPlayed: true,
@@ -586,6 +625,7 @@ void main() {
                   matchId: baseState.matchState.matchId,
                   hostPlayedCards: const ['new_card_1'],
                   guestPlayedCards: baseState.matchState.guestPlayedCards,
+                  hostStartsMatch: true,
                 ),
               ),
             );
@@ -599,6 +639,7 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const [],
               hostPlayedCards: const [],
+              hostStartsMatch: true,
             ),
             turns: const [],
             playerPlayed: true,
@@ -611,6 +652,7 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const [],
               hostPlayedCards: const ['new_card_1'],
+              hostStartsMatch: true,
             ),
             turns: const [
               MatchTurn(
@@ -645,6 +687,7 @@ void main() {
                   matchId: baseState.matchState.matchId,
                   hostPlayedCards: baseState.matchState.hostPlayedCards,
                   guestPlayedCards: const ['new_card_1'],
+                  hostStartsMatch: true,
                 ),
               ),
             );
@@ -658,6 +701,7 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const [],
               hostPlayedCards: const [],
+              hostStartsMatch: true,
             ),
             turns: const [],
             playerPlayed: true,
@@ -670,6 +714,7 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const ['new_card_1'],
               hostPlayedCards: const [],
+              hostStartsMatch: true,
             ),
             turns: const [
               MatchTurn(
@@ -704,6 +749,7 @@ void main() {
                   matchId: baseState.matchState.matchId,
                   hostPlayedCards: const ['new_card_1'],
                   guestPlayedCards: baseState.matchState.guestPlayedCards,
+                  hostStartsMatch: true,
                 ),
               ),
             )
@@ -714,6 +760,7 @@ void main() {
                   matchId: baseState.matchState.matchId,
                   hostPlayedCards: const ['new_card_1'],
                   guestPlayedCards: const ['new_card_2'],
+                  hostStartsMatch: true,
                 ),
               ),
             );
@@ -727,6 +774,7 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const [],
               hostPlayedCards: const [],
+              hostStartsMatch: true,
             ),
             turns: const [],
             playerPlayed: true,
@@ -739,6 +787,7 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const [],
               hostPlayedCards: const ['new_card_1'],
+              hostStartsMatch: true,
             ),
             turns: const [
               MatchTurn(
@@ -756,6 +805,7 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const ['new_card_2'],
               hostPlayedCards: const ['new_card_1'],
+              hostStartsMatch: true,
             ),
             turns: const [
               MatchTurn(
@@ -789,6 +839,7 @@ void main() {
                   matchId: baseState.matchState.matchId,
                   hostPlayedCards: const ['new_card_1'],
                   guestPlayedCards: baseState.matchState.guestPlayedCards,
+                  hostStartsMatch: true,
                 ),
               ),
             )
@@ -799,6 +850,7 @@ void main() {
                   matchId: baseState.matchState.matchId,
                   hostPlayedCards: const ['new_card_1'],
                   guestPlayedCards: const ['new_card_2'],
+                  hostStartsMatch: true,
                 ),
               ),
             )
@@ -809,6 +861,7 @@ void main() {
                   matchId: baseState.matchState.matchId,
                   hostPlayedCards: const ['new_card_1'],
                   guestPlayedCards: const ['new_card_2', 'new_card_3'],
+                  hostStartsMatch: true,
                 ),
               ),
             );
@@ -822,6 +875,7 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const [],
               hostPlayedCards: const [],
+              hostStartsMatch: true,
             ),
             turns: const [],
             playerPlayed: true,
@@ -834,6 +888,7 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const [],
               hostPlayedCards: const ['new_card_1'],
+              hostStartsMatch: true,
             ),
             turns: const [
               MatchTurn(
@@ -851,6 +906,7 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const ['new_card_2'],
               hostPlayedCards: const ['new_card_1'],
+              hostStartsMatch: true,
             ),
             turns: const [
               MatchTurn(
@@ -868,6 +924,7 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const ['new_card_2', 'new_card_3'],
               hostPlayedCards: const ['new_card_1'],
+              hostStartsMatch: true,
             ),
             turns: const [
               MatchTurn(
@@ -897,6 +954,7 @@ void main() {
           matchId: match1.id,
           hostPlayedCards: const [],
           guestPlayedCards: const [],
+          hostStartsMatch: true,
         );
         final card = Card(
           id: '1',

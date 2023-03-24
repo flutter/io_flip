@@ -26,7 +26,7 @@ class MatchRepository {
   final MatchSolver _matchSolver;
 
   /// Return the ScoreCard with the given [scoreCardId].
-  Future<ScoreCard> getScoreCard(String scoreCardId) async {
+  Future<ScoreCard> getScoreCard(String scoreCardId, String deckId) async {
     final scoreData = await _dbClient.getById('score_cards', scoreCardId);
 
     if (scoreData == null) {
@@ -34,18 +34,22 @@ class MatchRepository {
         'score_cards',
         DbEntityRecord(
           id: scoreCardId,
-          data: const {
+          data: {
             'wins': 0,
             'currentStreak': 0,
             'longestStreak': 0,
+            'currentDeck': deckId,
           },
         ),
       );
-      return ScoreCard(id: scoreCardId);
+      return ScoreCard(id: scoreCardId, currentDeck: deckId);
     }
 
     final data = {...scoreData.data, 'id': scoreCardId};
-
+    if (data['currentDeck'] != deckId) {
+      data['currentStreak'] = 0;
+    }
+    data['currentDeck'] = deckId;
     return ScoreCard.fromJson(data);
   }
 
@@ -103,6 +107,7 @@ class MatchRepository {
             (record.data['hostPlayedCards'] as List).cast<String>(),
         guestPlayedCards:
             (record.data['guestPlayedCards'] as List).cast<String>(),
+        hostStartsMatch: record.data['hostStartsMatch'] as bool,
         result: MatchResult.valueOf(record.data['result'] as String?),
       );
     }
@@ -131,6 +136,12 @@ class MatchRepository {
 
     if (matchState == null) throw PlayCardFailure();
 
+    final isHost = userId == match.hostDeck.userId;
+
+    if (!_matchSolver.canPlayCard(matchState, cardId, isHost: isHost)) {
+      throw PlayCardFailure();
+    }
+
     var newMatchState = match.hostDeck.id == deckId
         ? matchState.addHostPlayedCard(cardId)
         : matchState.addGuestPlayedCard(cardId);
@@ -139,8 +150,11 @@ class MatchRepository {
       final result = _matchSolver.calculateMatchResult(match, newMatchState);
       newMatchState = newMatchState.setResult(result);
 
-      final host = await getScoreCard(match.hostDeck.userId);
-      final guest = await getScoreCard(match.guestDeck.userId);
+      final host = await getScoreCard(match.hostDeck.userId, match.hostDeck.id);
+      final guest = await getScoreCard(
+        match.guestDeck.userId,
+        match.guestDeck.id,
+      );
       if (result == MatchResult.host) {
         await _playerWon(host);
         await _playerLost(guest);
@@ -178,6 +192,10 @@ class MatchRepository {
           'wins': scoreCard.wins + 1,
           'currentStreak': scoreCard.currentStreak + 1,
           'longestStreak': newStreak,
+          'currentDeck': scoreCard.currentDeck,
+          'longestStreakDeck': newStreak > scoreCard.longestStreak
+              ? scoreCard.currentDeck
+              : scoreCard.longestStreakDeck,
         },
       ),
     );

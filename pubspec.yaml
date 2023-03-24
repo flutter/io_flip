@@ -31,17 +31,19 @@ dependencies:
     path: api/packages/game_domain
   game_script_machine:
     path: api/packages/game_script_machine
-  go_router: ^6.2.0
+  go_router: ^6.5.0
   highlight: ^0.7.0
   intl: ^0.17.0
   logging: ^1.1.1
   match_maker_repository:
     path: packages/match_maker_repository
   provider: ^6.0.5
-  shared_preferences: ^2.0.17
+  share_plus: ^6.3.1
+  shared_preferences: ^2.0.20
   top_dash_ui:
     path: packages/top_dash_ui
   web_socket_client: ^0.1.0-dev.3
+  url_launcher: ^6.1.10
 
 dev_dependencies:
   bloc_test: ^9.1.1
@@ -62,6 +64,8 @@ flutter:
     - assets/sfx/
 
   fonts:
-    - family: Permanent Marker
+    - family: Google Sans
       fonts:
-        - asset: assets/Permanent_Marker/PermanentMarker-Regular.ttf
+        - asset: assets/fonts/GoogleSansText-Regular.ttf
+        - asset: assets/fonts/GoogleSansText-Italic.ttf
+          style: italic

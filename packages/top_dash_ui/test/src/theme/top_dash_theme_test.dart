@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -13,6 +14,51 @@ void main() {
           TopDashTheme.themeData.colorScheme.background,
           TopDashColors.backgroundMain,
         );
+      });
+
+      test('uses mobile text theme on android', () {
+        debugDefaultTargetPlatformOverride = TargetPlatform.android;
+        expect(
+          TopDashTheme.themeData.textTheme.displayLarge?.fontSize,
+          equals(TopDashTextStyles.mobile.textTheme.displayLarge?.fontSize),
+        );
+        debugDefaultTargetPlatformOverride = null;
+      });
+
+      test('uses mobile text theme on ios', () {
+        debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+        expect(
+          TopDashTheme.themeData.textTheme.displayLarge?.fontSize,
+          equals(TopDashTextStyles.mobile.textTheme.displayLarge?.fontSize),
+        );
+        debugDefaultTargetPlatformOverride = null;
+      });
+
+      test('uses desktop text theme on macOS', () {
+        debugDefaultTargetPlatformOverride = TargetPlatform.macOS;
+        expect(
+          TopDashTheme.themeData.textTheme.displayLarge?.fontSize,
+          equals(TopDashTextStyles.desktop.textTheme.displayLarge?.fontSize),
+        );
+        debugDefaultTargetPlatformOverride = null;
+      });
+
+      test('uses desktop text theme on windows', () {
+        debugDefaultTargetPlatformOverride = TargetPlatform.windows;
+        expect(
+          TopDashTheme.themeData.textTheme.displayLarge?.fontSize,
+          equals(TopDashTextStyles.desktop.textTheme.displayLarge?.fontSize),
+        );
+        debugDefaultTargetPlatformOverride = null;
+      });
+
+      test('uses desktop text theme on linux', () {
+        debugDefaultTargetPlatformOverride = TargetPlatform.linux;
+        expect(
+          TopDashTheme.themeData.textTheme.displayLarge?.fontSize,
+          equals(TopDashTextStyles.desktop.textTheme.displayLarge?.fontSize),
+        );
+        debugDefaultTargetPlatformOverride = null;
       });
     });
   });

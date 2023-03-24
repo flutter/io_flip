@@ -37,7 +37,8 @@ void main() {
       when(() => bloc.isHost).thenReturn(true);
       when(() => bloc.isWiningCard(any(), isPlayer: any(named: 'isPlayer')))
           .thenReturn(false);
-      when(bloc.canPlayerPlay).thenReturn(true);
+      when(() => bloc.canPlayerPlay(any())).thenReturn(true);
+      when(() => bloc.isPlayerTurn).thenReturn(true);
       when(bloc.hasPlayerWon).thenReturn(false);
     });
 
@@ -111,6 +112,7 @@ void main() {
           matchId: '',
           guestPlayedCards: const [],
           hostPlayedCards: const [],
+          hostStartsMatch: true,
         ),
         turns: const [],
         playerPlayed: false,
@@ -141,6 +143,7 @@ void main() {
                 matchId: '',
                 guestPlayedCards: const [],
                 hostPlayedCards: const [],
+                hostStartsMatch: true,
                 result: MatchResult.draw,
               ),
             ),
@@ -164,6 +167,7 @@ void main() {
                 matchId: '',
                 guestPlayedCards: const [],
                 hostPlayedCards: const [],
+                hostStartsMatch: true,
                 result: MatchResult.host,
               ),
             ),
@@ -188,6 +192,7 @@ void main() {
                 matchId: '',
                 guestPlayedCards: const [],
                 hostPlayedCards: const [],
+                hostStartsMatch: true,
                 result: MatchResult.guest,
               ),
             ),
@@ -227,6 +232,7 @@ void main() {
                 matchId: '',
                 guestPlayedCards: const [],
                 hostPlayedCards: const [],
+                hostStartsMatch: true,
                 result: MatchResult.guest,
               ),
             ),
@@ -241,6 +247,36 @@ void main() {
           await tester.pumpAndSettle();
 
           verify(goRouter.pop).called(1);
+        },
+      );
+
+      testWidgets(
+        'goes to share page when the share button is tapped',
+        (tester) async {
+          final goRouter = MockGoRouter();
+
+          mockState(
+            baseState.copyWith(
+              matchState: MatchState(
+                id: '',
+                matchId: '',
+                guestPlayedCards: const [],
+                hostPlayedCards: const [],
+                hostStartsMatch: true,
+                result: MatchResult.guest,
+              ),
+            ),
+          );
+          when(bloc.hasPlayerWon).thenReturn(true);
+          await tester.pumpSubject(
+            bloc,
+            goRouter: goRouter,
+          );
+
+          await tester.tap(find.byIcon(Icons.share));
+          await tester.pumpAndSettle();
+
+          verify(() => goRouter.goNamed('share')).called(1);
         },
       );
 
@@ -280,7 +316,7 @@ void main() {
       testWidgets(
         "can't play when it is not the player turn",
         (tester) async {
-          when(bloc.canPlayerPlay).thenReturn(false);
+          when(() => bloc.canPlayerPlay(any())).thenReturn(false);
           mockState(
             baseState.copyWith(
               turns: [
@@ -300,13 +336,13 @@ void main() {
       );
 
       testWidgets(
-        'render the opponent card revealed when the turn is over',
+        'render the opponent card instantly when played',
         (tester) async {
           mockState(
             baseState.copyWith(
               turns: [
                 MatchTurn(
-                  playerCardId: 'player_card',
+                  playerCardId: null,
                   opponentCardId: 'opponent_card',
                 )
               ],

@@ -6,14 +6,17 @@
       "FB_APP_ID": "top-dash-dev",
       "CORS_DOMAIN": "http://localhost:8080/",
       "USE_EMULATOR": "true",
+      "ENCRYPTION_KEY": "X9YTchZdcnyZTNBSBgzj29p7RMBAIubD",
+      "ENCRYPTION_IV": "FxC21ctRg9SgiXuZ"
     }
   },
   "tasks": [
     {
-      "label": "api",
+      "label": "api:start",
       "command": "dart_frog dev",
       "type": "shell",
       "isBackground": true,
+      "dependsOn": "firebase:emulate",
       "presentation": {
         "close": true,
       },
@@ -38,7 +41,7 @@
       },
     },
     {
-      "label": "firebase",
+      "label": "firebase:emulate",
       "command": "firebase emulators:start",
       "type": "shell",
       "isBackground": true,
@@ -58,20 +61,13 @@
           "background": {
             "activeOnStart": true,
             "beginsPattern": ".",
-            "endsPattern": ".",
+            "endsPattern": "^.+All emulators ready! It is now safe to connect your app\\..*$",
           },
         }
       ],
     },
     {
-      "label": "emulate",
-      "dependsOn": [
-        "firebase",
-        "api",
-      ],
-    },
-    {
-      "label": "stop emulate",
+      "label": "api:stop",
       "type": "shell",
       "command": "pkill -f \"sh $HOME/.pub-cache/bin/dart_frog dev\" && pkill -f \"firebase emulators:start\"",
       "presentation": {

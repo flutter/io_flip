@@ -111,8 +111,7 @@ class _GameBoard extends StatelessWidget {
                         0,
                         card.id == opponentLastPlayedCard ? 16 : 0,
                       ),
-                      child: allOpponentPlayedCards.contains(card.id) &&
-                              state.isCardTurnComplete(card)
+                      child: allOpponentPlayedCards.contains(card.id)
                           ? Stack(
                               children: [
                                 GameCard(
@@ -148,6 +147,7 @@ class _GameBoard extends StatelessWidget {
             flex: 2,
             child: _BoardCenter(),
           ),
+          Expanded(child: Text(bloc.isPlayerTurn ? 'Your turn' : 'Their turn')),
           Expanded(
             flex: 4,
             child: Center(
@@ -156,15 +156,13 @@ class _GameBoard extends StatelessWidget {
                 children: [
                   for (final card in playerDeck.cards)
                     InkWell(
-                      onTap: allPlayerPlayedCards.contains(card.id) ||
-                              !bloc.canPlayerPlay() ||
-                              state.playerPlayed
-                          ? null
-                          : () {
-                              context
-                                  .read<GameBloc>()
-                                  .add(PlayerPlayed(card.id));
-                            },
+                      onTap: () {
+                        if (!allPlayerPlayedCards.contains(card.id) &&
+                            bloc.canPlayerPlay(card.id) &&
+                            !state.playerPlayed) {
+                          context.read<GameBloc>().add(PlayerPlayed(card.id));
+                        }
+                      },
                       child: Transform.translate(
                         offset: Offset(
                           0,
@@ -238,9 +236,19 @@ class _BoardCenter extends StatelessWidget {
               Text('Game ended: $result'),
               const SizedBox(height: TopDashSpacing.sm),
               // TODO(willhlas): add to l10n and update design once ready.
-              ElevatedButton(
-                onPressed: () => GoRouter.of(context).pop(),
-                child: const Text('Replay'),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    onPressed: () => GoRouter.of(context).goNamed('share'),
+                    icon: const Icon(Icons.share),
+                  ),
+                  const SizedBox(width: TopDashSpacing.sm),
+                  ElevatedButton(
+                    onPressed: () => GoRouter.of(context).pop(),
+                    child: const Text('Replay'),
+                  ),
+                ],
               ),
             ],
           ),

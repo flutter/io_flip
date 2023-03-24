@@ -4,8 +4,9 @@ import 'package:top_dash/game/game.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/main_menu/main_menu_screen.dart';
 import 'package:top_dash/match_making/match_making.dart';
-import 'package:top_dash/scripts/views/views.dart';
+import 'package:top_dash/scripts/scripts.dart';
 import 'package:top_dash/settings/settings_screen.dart';
+import 'package:top_dash/share/share.dart';
 
 GoRouter createRouter() {
   return GoRouter(
@@ -21,6 +22,12 @@ GoRouter createRouter() {
           GoRoute(
             path: 'settings',
             builder: SettingsScreen.routeBuilder,
+            routes: [
+              GoRoute(
+                path: 'how_to_play',
+                builder: HowToPlayPage.routeBuilder,
+              ),
+            ],
           ),
           GoRoute(
             path: 'draft',
@@ -33,8 +40,13 @@ GoRouter createRouter() {
           ),
           GoRoute(
             name: 'game',
-            path: 'game/:matchId/:isHost',
+            path: 'game/:matchId',
             builder: GamePage.routeBuilder,
+          ),
+          GoRoute(
+            name: 'share',
+            path: 'share',
+            builder: SharePage.routeBuilder,
           ),
           GoRoute(
             path: '_super_secret_scripts_page',

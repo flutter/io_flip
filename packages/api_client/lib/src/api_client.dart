@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:api_client/src/resources/resources.dart';
+import 'package:encrypt/encrypt.dart';
 import 'package:http/http.dart' as http;
 
 /// {@template api_client_error}
@@ -86,6 +88,10 @@ class ApiClient {
   /// {@macro scripts_resource}
   late final ScriptsResource scriptsResource = ScriptsResource(apiClient: this);
 
+  /// {@macro leaderboard_resource}
+  late final LeaderboardResource leaderboardResource =
+      LeaderboardResource(apiClient: this);
+
   Future<http.Response> _handleUnauthorized(
     Future<http.Response> Function() sendRequest,
   ) async {
@@ -109,16 +115,18 @@ class ApiClient {
     Object? body,
     Map<String, String>? queryParameters,
   }) async {
-    return _handleUnauthorized(
-      () => _post(
+    return _handleUnauthorized(() async {
+      final response = await _post(
         _base.replace(
           path: path,
           queryParameters: queryParameters,
         ),
         body: body,
         headers: _headers,
-      ),
-    );
+      );
+
+      return response.decrypted;
+    });
   }
 
   /// Sends a PUT request to the specified [path] with the given [body].
@@ -126,13 +134,15 @@ class ApiClient {
     String path, {
     Object? body,
   }) async {
-    return _handleUnauthorized(
-      () => _put(
+    return _handleUnauthorized(() async {
+      final response = await _put(
         _base.replace(path: path),
         body: body,
         headers: _headers,
-      ),
-    );
+      );
+
+      return response.decrypted;
+    });
   }
 
   /// Sends a GET request to the specified [path].
@@ -140,14 +150,39 @@ class ApiClient {
     String path, {
     Map<String, String>? queryParameters,
   }) async {
-    return _handleUnauthorized(
-      () => _get(
+    return _handleUnauthorized(() async {
+      final response = await _get(
         _base.replace(
           path: path,
           queryParameters: queryParameters,
         ),
         headers: _headers,
-      ),
+      );
+
+      return response.decrypted;
+    });
+  }
+}
+
+extension on http.Response {
+  http.Response get decrypted {
+    if (body.isEmpty) return this;
+
+    final key = Key.fromUtf8(_encryptionKey);
+    final iv = IV.fromUtf8(_encryptionIV);
+
+    final encrypter = Encrypter(AES(key));
+
+    final decrypted = encrypter.decrypt64(body, iv: iv);
+
+    return http.Response(
+      jsonDecode(decrypted).toString(),
+      statusCode,
+      headers: headers,
+      isRedirect: isRedirect,
+      persistentConnection: persistentConnection,
+      reasonPhrase: reasonPhrase,
+      request: request,
     );
   }
 
@@ -162,4 +197,24 @@ class ApiClient {
       queryParameters: queryParameters,
     );
   }
+}
+
+String get _encryptionKey {
+  const value = String.fromEnvironment(
+    'ENCRYPTION_KEY',
+    // Default value is set at 32 characters to match required length of
+    // AES key. The default value can then be used for testing purposes.
+    defaultValue: 'encryption_key_not_set_123456789',
+  );
+  return value;
+}
+
+String get _encryptionIV {
+  const value = String.fromEnvironment(
+    'ENCRYPTION_IV',
+    // Default value is set at 116 characters to match required length of
+    // IV key. The default value can then be used for testing purposes.
+    defaultValue: 'iv_not_set_12345',
+  );
+  return value;
 }

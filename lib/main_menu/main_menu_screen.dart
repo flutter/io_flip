@@ -52,7 +52,7 @@ class MainMenuScreen extends StatelessWidget {
                   const LeaderboardView(),
                   _gap,
                   OutlinedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       audioController.playSfx(SfxType.buttonTap);
                       GoRouter.of(context).go('/draft');
                     },

@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:db_client/db_client.dart';
+import 'package:game_script_machine/game_script_machine.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:scripts_repository/scripts_repository.dart';
 import 'package:test/test.dart';
@@ -47,7 +48,7 @@ void main() {
         mockQuery([]);
 
         final script = await scriptsRepository.getCurrentScript();
-        expect(script, equals(ScriptsRepository.defaultLogic));
+        expect(script, equals(defaultGameLogic));
       });
 
       test('returns the db result', () async {

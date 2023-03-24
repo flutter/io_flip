@@ -29,6 +29,7 @@ void main() {
           matchId: '',
           guestPlayedCards: const [],
           hostPlayedCards: const [],
+          hostStartsMatch: true,
         ),
       );
     });
@@ -151,11 +152,13 @@ void main() {
       late MatchRepository matchRepository;
       late MatchSolver matchSolver;
       const scoreCardId = 'scoreCardId';
+      const deckId = 'deckId';
       final scoreCard = ScoreCard(
         id: scoreCardId,
         wins: 1,
         currentStreak: 1,
         longestStreak: 1,
+        currentDeck: deckId,
       );
 
       setUp(() {
@@ -170,6 +173,7 @@ void main() {
               'wins': scoreCard.wins,
               'currentStreak': scoreCard.currentStreak,
               'longestStreak': scoreCard.longestStreak,
+              'currentDeck': deckId,
             },
           ),
         );
@@ -184,7 +188,7 @@ void main() {
       });
 
       test('returns the correct ScoreCard', () async {
-        final result = await matchRepository.getScoreCard(scoreCardId);
+        final result = await matchRepository.getScoreCard(scoreCardId, deckId);
 
         expect(result, equals(scoreCard));
       });
@@ -202,15 +206,16 @@ void main() {
                 'wins': 0,
                 'currentStreak': 0,
                 'longestStreak': 0,
+                'currentDeck': deckId,
               },
             ),
           ),
         ).thenAnswer(
           (_) async {},
         );
-        final result = await matchRepository.getScoreCard(scoreCardId);
+        final result = await matchRepository.getScoreCard(scoreCardId, deckId);
 
-        expect(result, ScoreCard(id: scoreCardId));
+        expect(result, ScoreCard(id: scoreCardId, currentDeck: deckId));
       });
     });
 
@@ -221,6 +226,7 @@ void main() {
       late MatchSolver matchSolver;
 
       const matchId = 'matchId';
+      const deckId = 'deckId';
       const matchStateId = 'matchStateId';
 
       setUp(() {
@@ -238,6 +244,8 @@ void main() {
                 'matchId': matchId,
                 'guestPlayedCards': ['A', 'B'],
                 'hostPlayedCards': ['C', 'D'],
+                'hostStartsMatch': true,
+                'currentDeck': deckId,
               },
             ),
           ],
@@ -261,6 +269,7 @@ void main() {
               matchId: matchId,
               guestPlayedCards: const ['A', 'B'],
               hostPlayedCards: const ['C', 'D'],
+              hostStartsMatch: true,
             ),
           ),
         );
@@ -345,6 +354,7 @@ void main() {
                 'matchId': matchId,
                 'guestPlayedCards': <String>[],
                 'hostPlayedCards': <String>[],
+                'hostStartsMatch': true,
               },
             ),
           ],
@@ -353,6 +363,14 @@ void main() {
         when(() => dbClient.update(any(), any())).thenAnswer((_) async {});
 
         matchSolver = _MockMatchSolver();
+
+        when(
+          () => matchSolver.canPlayCard(
+            any(),
+            any(),
+            isHost: any(named: 'isHost'),
+          ),
+        ).thenReturn(true);
 
         matchRepository = MatchRepository(
           cardsRepository: cardsRepository,
@@ -419,6 +437,7 @@ void main() {
                 'matchId': matchId,
                 'guestPlayedCards': <String>['A', 'B', 'C'],
                 'hostPlayedCards': <String>['D', 'E'],
+                'hostStartsMatch': true,
               },
             ),
           ],
@@ -498,6 +517,28 @@ void main() {
           );
         },
       );
+
+      test('throws PlayCardFailure when card has already been played',
+          () async {
+        when(
+          () => matchSolver.canPlayCard(
+            any(),
+            any(),
+            isHost: any(named: 'isHost'),
+          ),
+        ).thenReturn(false);
+
+        await expectLater(
+          () => matchRepository.playCard(
+            matchId: matchId,
+            cardId: 'F',
+            deckId: hostDeck.id,
+            userId: hostDeck.userId,
+          ),
+          throwsA(isA<PlayCardFailure>()),
+        );
+      });
+
       group('score card', () {
         setUp(() {
           when(() => dbClient.findBy('match_states', 'matchId', matchId))
@@ -509,6 +550,7 @@ void main() {
                   'matchId': matchId,
                   'guestPlayedCards': <String>['A', 'B', 'C'],
                   'hostPlayedCards': <String>['D', 'E'],
+                  'hostStartsMatch': true,
                 },
               ),
             ],
@@ -518,6 +560,18 @@ void main() {
         test('updates correctly when host wins', () async {
           when(() => matchSolver.calculateMatchResult(any(), any()))
               .thenReturn(MatchResult.host);
+          when(() => dbClient.getById('score_cards', hostDeck.userId))
+              .thenAnswer(
+            (_) async => DbEntityRecord(
+              id: hostDeck.userId,
+              data: const {
+                'wins': 0,
+                'currentStreak': 0,
+                'longestStreak': 0,
+                'currentDeck': 'anyId',
+              },
+            ),
+          );
 
           await matchRepository.playCard(
             matchId: matchId,
@@ -531,10 +585,12 @@ void main() {
               'score_cards',
               DbEntityRecord(
                 id: hostDeck.userId,
-                data: const {
+                data: {
                   'wins': 1,
                   'currentStreak': 1,
                   'longestStreak': 1,
+                  'longestStreakDeck': hostDeck.id,
+                  'currentDeck': hostDeck.id,
                 },
               ),
             ),
@@ -556,6 +612,18 @@ void main() {
         test('updates correctly when guest wins', () async {
           when(() => matchSolver.calculateMatchResult(any(), any()))
               .thenReturn(MatchResult.guest);
+          when(() => dbClient.getById('score_cards', guestDeck.userId))
+              .thenAnswer(
+            (_) async => DbEntityRecord(
+              id: guestDeck.userId,
+              data: const {
+                'wins': 0,
+                'currentStreak': 0,
+                'longestStreak': 0,
+                'currentDeck': 'anyId',
+              },
+            ),
+          );
 
           await matchRepository.playCard(
             matchId: matchId,
@@ -569,10 +637,66 @@ void main() {
               'score_cards',
               DbEntityRecord(
                 id: guestDeck.userId,
-                data: const {
+                data: {
                   'wins': 1,
                   'currentStreak': 1,
                   'longestStreak': 1,
+                  'currentDeck': guestDeck.id,
+                  'longestStreakDeck': guestDeck.id,
+                },
+              ),
+            ),
+          ).called(1);
+
+          verify(
+            () => dbClient.update(
+              'score_cards',
+              DbEntityRecord(
+                id: hostDeck.userId,
+                data: const {
+                  'currentStreak': 0,
+                },
+              ),
+            ),
+          ).called(1);
+        });
+
+        test('updates correctly when any player wins but is not longest streak',
+            () async {
+          when(() => matchSolver.calculateMatchResult(any(), any()))
+              .thenReturn(MatchResult.guest);
+          when(() => dbClient.getById('score_cards', guestDeck.userId))
+              .thenAnswer(
+            (_) async => DbEntityRecord(
+              id: guestDeck.userId,
+              data: {
+                'wins': 0,
+                'currentStreak': 0,
+                'longestStreak': 2,
+                'currentDeck': guestDeck.id,
+                'longestStreakDeck': 'longestStreakDeckId'
+              },
+            ),
+          );
+
+          await matchRepository.playCard(
+            matchId: matchId,
+            cardId: 'F',
+            deckId: hostDeck.id,
+            userId: hostDeck.userId,
+          );
+
+          verify(
+            () => dbClient.update(
+              'score_cards',
+              DbEntityRecord(
+                id: guestDeck.userId,
+                data: {
+                  'wins': 1,
+                  'currentStreak': 1,
+                  'longestStreak': 2,
+                  'currentDeck': guestDeck.id,
+                  'longestStreakDeck': 'longestStreakDeckId',
                 },
               ),
             ),

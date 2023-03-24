@@ -17,13 +17,13 @@ class GamePage extends StatelessWidget {
   });
 
   factory GamePage.routeBuilder(_, GoRouterState state) {
-    final matchConnection = state.extra as WebSocket?;
+    final data = state.extra as GamePageData?;
 
     return GamePage(
       key: const Key('game'),
-      matchId: state.params['matchId'] ?? '',
-      isHost: state.params['isHost'] == 'true',
-      matchConnection: matchConnection,
+      matchId: data?.matchId ?? '',
+      isHost: data?.isHost ?? false,
+      matchConnection: data?.matchConnection,
     );
   }
 
@@ -51,4 +51,16 @@ class GamePage extends StatelessWidget {
       child: const GameView(),
     );
   }
+}
+
+class GamePageData {
+  const GamePageData({
+    required this.isHost,
+    required this.matchId,
+    required this.matchConnection,
+  });
+
+  final bool isHost;
+  final String? matchId;
+  final WebSocket? matchConnection;
 }

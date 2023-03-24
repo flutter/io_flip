@@ -12,6 +12,7 @@ dev_dependencies:
   very_good_analysis: ^4.0.0
 
 dependencies:
+  encrypt: ^5.0.1
   game_domain:
     path: ../../api/packages/game_domain
   http: ^0.13.5

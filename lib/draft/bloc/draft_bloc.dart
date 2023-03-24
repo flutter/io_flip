@@ -49,11 +49,7 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     NextCard event,
     Emitter<DraftState> emit,
   ) {
-    final cards = [...state.cards];
-
-    final lastCard = cards.removeLast();
-    cards.insert(0, lastCard);
-
+    final cards = _dismissTopCard();
     emit(state.copyWith(cards: cards));
   }
 
@@ -61,20 +57,33 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     SelectCard event,
     Emitter<DraftState> emit,
   ) {
-    final lastCard = state.cards.last;
+    final topCard = state.cards.first;
 
     final selectedCards = [
       ...state.selectedCards,
-      lastCard,
+      topCard,
     ];
+
+    final selectionCompleted = selectedCards.length == 3;
+
+    final cards = selectionCompleted ? null : _dismissTopCard();
 
     emit(
       state.copyWith(
+        cards: cards,
         selectedCards: selectedCards,
-        status: selectedCards.length == 3
+        status: selectionCompleted
             ? DraftStateStatus.deckSelected
             : DraftStateStatus.deckLoaded,
       ),
     );
+  }
+
+  List<Card> _dismissTopCard() {
+    final cards = [...state.cards];
+
+    final lastCard = cards.removeLast();
+    cards.insert(0, lastCard);
+    return cards;
   }
 }

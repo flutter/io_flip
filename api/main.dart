@@ -3,10 +3,13 @@ import 'dart:io';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:db_client/db_client.dart';
+import 'package:encryption_middleware/encryption_middleware.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:game_script_machine/game_script_machine.dart';
 import 'package:image_model_repository/image_model_repository.dart';
+import 'package:jwt_middleware/jwt_middleware.dart';
 import 'package:language_model_repository/language_model_repository.dart';
+import 'package:leaderboard_repository/leaderboard_repository.dart';
 import 'package:logging/logging.dart';
 import 'package:match_repository/match_repository.dart';
 import 'package:scripts_repository/scripts_repository.dart';
@@ -14,12 +17,20 @@ import 'package:scripts_repository/scripts_repository.dart';
 late CardsRepository cardsRepository;
 late MatchRepository matchRepository;
 late ScriptsRepository scriptsRepository;
+late LeaderboardRepository leaderboardRepository;
 late DbClient dbClient;
 late GameScriptMachine gameScriptMachine;
+late JwtMiddleware jwtMiddleware;
+late EncryptionMiddleware encryptionMiddleware;
 
 Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   const imageModelRepository = ImageModelRepository();
   const languageModelRepository = LanguageModelRepository();
+  jwtMiddleware = JwtMiddleware(
+    projectId: _appId,
+    isEmulator: _useEmulator,
+  );
+  encryptionMiddleware = const EncryptionMiddleware();
 
   final dbClient = DbClient.initialize(_appId, useEmulator: _useEmulator);
 
@@ -43,6 +54,11 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
     cardsRepository: cardsRepository,
     dbClient: dbClient,
     matchSolver: MatchSolver(gameScriptMachine: gameScriptMachine),
+  );
+
+  leaderboardRepository = LeaderboardRepository(
+    dbClient: dbClient,
+    blacklistDocumentId: 'MdOoZMhusnJTcwfYE0nL',
   );
 
   return serve(

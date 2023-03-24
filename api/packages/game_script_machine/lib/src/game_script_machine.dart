@@ -38,4 +38,14 @@ class GameScriptMachine {
     ) as int;
     return value;
   }
+
+  /// Evaluates the two suits against each other.
+  /// Returns 1 if `a` is bigger, -1 if `a` is smaller, 0 if both are equal.
+  int compareSuits(Suit a, Suit b) {
+    final value = _hetu.invoke(
+      'compareSuits',
+      positionalArgs: [a.name, b.name],
+    ) as int;
+    return value;
+  }
 }
