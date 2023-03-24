@@ -8,7 +8,7 @@ packages:
       sha256: d74f051467a841ce893a50ebeb420b7a5695f985d2781e22b3927fbc849aea45
       url: "https://pub.dev"
     source: hosted
-    version: "57.0.0"
+    version: "58.0.0"
   _flutterfire_internals:
     dependency: transitive
     description:
@@ -24,7 +24,7 @@ packages:
       sha256: b665679cdccab0c754e65021f01087c6fab07a0b13659dd58827f765739b40f8
       url: "https://pub.dev"
     source: hosted
-    version: "5.9.0"
+    version: "5.10.0"
   api_client:
     dependency: "direct main"
     description:
@@ -426,7 +426,7 @@ packages:
       sha256: "40a8a8487a640c54156b5aed9642e55e84e53772e15d14f60644d05beaa0781b"
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.0+1"
+    version: "0.6.0"
   frontend_server_client:
     dependency: transitive
     description:
@@ -464,7 +464,7 @@ packages:
       sha256: e2a90e1d4eed378ea12e0771be9e32766a2f8d2de3064e42f3a55f1b04fb8af8
       url: "https://pub.dev"
     source: hosted
-    version: "6.4.1"
+    version: "6.5.0"
   hetu_script:
     dependency: transitive
     description:
@@ -711,7 +711,7 @@ packages:
       sha256: ae73e842cdd27a3467a71d70cefd9b198538aab4fc7dde1d0e8c78c96225abf0
       url: "https://pub.dev"
     source: hosted
-    version: "3.7.1"
+    version: "3.7.2"
   pool:
     dependency: transitive
     description:
