@@ -350,6 +350,7 @@ void main() {
           matchSolver: matchSolver,
           user: user,
           isHost: true,
+          matchConnection: webSocket,
         ),
         setUp: () {
           when(
