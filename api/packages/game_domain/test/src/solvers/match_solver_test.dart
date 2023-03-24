@@ -64,6 +64,7 @@ void main() {
           matchId: '',
           hostPlayedCards: [cards[4].id, cards[2].id, cards[0].id],
           guestPlayedCards: [cards[3].id, cards[1].id],
+          hostStartsMatch: true,
         );
 
         expect(
@@ -96,6 +97,7 @@ void main() {
           matchId: '',
           hostPlayedCards: [cards[4].id, cards[2].id, cards[0].id],
           guestPlayedCards: [cards[3].id, cards[1].id, cards[5].id],
+          hostStartsMatch: true,
         );
 
         final matchResult = matchSolver.calculateMatchResult(
@@ -125,6 +127,7 @@ void main() {
           matchId: '',
           hostPlayedCards: [cards[0].id, cards[2].id, cards[4].id],
           guestPlayedCards: [cards[3].id, cards[1].id, cards[5].id],
+          hostStartsMatch: true,
         );
 
         final matchResult = matchSolver.calculateMatchResult(
@@ -168,6 +171,7 @@ void main() {
           matchId: '',
           hostPlayedCards: [cards[0].id, cards[2].id, cards[4].id],
           guestPlayedCards: [cards[3].id, cards[1].id, cards[5].id],
+          hostStartsMatch: true,
         );
 
         final matchResult = matchSolver.calculateMatchResult(
@@ -211,6 +215,7 @@ void main() {
           matchId: '',
           hostPlayedCards: [cards[4].id, cards[2].id, cards[0].id],
           guestPlayedCards: [cards[3].id, cards[1].id],
+          hostStartsMatch: true,
         );
 
         expect(
@@ -242,6 +247,7 @@ void main() {
           matchId: '',
           hostPlayedCards: [cards[4].id, cards[2].id, cards[0].id],
           guestPlayedCards: [cards[3].id, cards[1].id, cards[5].id],
+          hostStartsMatch: true,
         );
 
         when(() => gameScriptMachine.compare(cards[2], cards[1])).thenReturn(1);
@@ -256,51 +262,159 @@ void main() {
       });
     });
 
+    group('isPlayerTurn', () {
+      group('when the host starts the match', () {
+        const hostStarts = true;
+
+        group('when is the first round', () {
+          group('first move', () {
+            final matchState = MatchState(
+              id: '',
+              matchId: '',
+              hostPlayedCards: const [],
+              guestPlayedCards: const [],
+              hostStartsMatch: hostStarts,
+            );
+            test('returns true when is the host', () {
+              expect(
+                matchSolver.isPlayerTurn(matchState, isHost: true),
+                isTrue,
+              );
+            });
+
+            test('returns false when is the guest', () {
+              expect(
+                matchSolver.isPlayerTurn(matchState, isHost: false),
+                isFalse,
+              );
+            });
+          });
+
+          group('second move', () {
+            final matchState = MatchState(
+              id: '',
+              matchId: '',
+              hostPlayedCards: const [''],
+              guestPlayedCards: const [],
+              hostStartsMatch: hostStarts,
+            );
+            test('returns false when is the host', () {
+              expect(
+                matchSolver.isPlayerTurn(matchState, isHost: true),
+                isFalse,
+              );
+            });
+
+            test('returns true when is the guest', () {
+              expect(
+                matchSolver.isPlayerTurn(matchState, isHost: false),
+                isTrue,
+              );
+            });
+          });
+        });
+
+        group('when is the second round', () {
+          group('first move', () {
+            final matchState = MatchState(
+              id: '',
+              matchId: '',
+              hostPlayedCards: const [''],
+              guestPlayedCards: const [''],
+              hostStartsMatch: hostStarts,
+            );
+            test('returns false when is the host', () {
+              expect(
+                matchSolver.isPlayerTurn(matchState, isHost: true),
+                isFalse,
+              );
+            });
+
+            test('returns true when is the guest', () {
+              expect(
+                matchSolver.isPlayerTurn(matchState, isHost: false),
+                isTrue,
+              );
+            });
+          });
+
+          group('second move', () {
+            final matchState = MatchState(
+              id: '',
+              matchId: '',
+              hostPlayedCards: const [''],
+              guestPlayedCards: const ['', ''],
+              hostStartsMatch: hostStarts,
+            );
+            test('returns true when is the host', () {
+              expect(
+                matchSolver.isPlayerTurn(matchState, isHost: true),
+                true,
+              );
+            });
+
+            test('returns false when is the guest', () {
+              expect(
+                matchSolver.isPlayerTurn(matchState, isHost: false),
+                isFalse,
+              );
+            });
+          });
+        });
+
+        group('when is the third round', () {
+          group('first move', () {
+            final matchState = MatchState(
+              id: '',
+              matchId: '',
+              hostPlayedCards: const ['', ''],
+              guestPlayedCards: const ['', ''],
+              hostStartsMatch: hostStarts,
+            );
+            test('returns true when is the host', () {
+              expect(
+                matchSolver.isPlayerTurn(matchState, isHost: true),
+                isTrue,
+              );
+            });
+
+            test('returns false when is the guest', () {
+              expect(
+                matchSolver.isPlayerTurn(matchState, isHost: false),
+                isFalse,
+              );
+            });
+          });
+
+          group('second move', () {
+            final matchState = MatchState(
+              id: '',
+              matchId: '',
+              hostPlayedCards: const ['', '', ''],
+              guestPlayedCards: const ['', ''],
+              hostStartsMatch: hostStarts,
+            );
+            test('returns false when is the host', () {
+              expect(
+                matchSolver.isPlayerTurn(matchState, isHost: true),
+                isFalse,
+              );
+            });
+
+            test('returns true when is the guest', () {
+              expect(
+                matchSolver.isPlayerTurn(matchState, isHost: false),
+                isTrue,
+              );
+            });
+          });
+        });
+      });
+    });
+
     group('canPlayCard', () {
       group('when is the host', () {
         const isHost = true;
-
-        test('returns true when nobody has played yet', () {
-          final matchState = MatchState(
-            id: '',
-            matchId: '',
-            hostPlayedCards: const [],
-            guestPlayedCards: const [],
-          );
-
-          expect(
-            matchSolver.canPlayCard(matchState, '', isHost: isHost),
-            isTrue,
-          );
-        });
-
-        test('returns true when guest played, but host not', () {
-          final matchState = MatchState(
-            id: '',
-            matchId: '',
-            hostPlayedCards: const [],
-            guestPlayedCards: const [''],
-          );
-
-          expect(
-            matchSolver.canPlayCard(matchState, '', isHost: isHost),
-            isTrue,
-          );
-        });
-
-        test('returns false when host has played but guest not', () {
-          final matchState = MatchState(
-            id: '',
-            matchId: '',
-            hostPlayedCards: const ['', ''],
-            guestPlayedCards: const [''],
-          );
-
-          expect(
-            matchSolver.canPlayCard(matchState, '', isHost: isHost),
-            isFalse,
-          );
-        });
 
         test('returns false when host has already played card', () {
           const cardId = 'test';
@@ -309,6 +423,7 @@ void main() {
             matchId: '',
             hostPlayedCards: const [cardId],
             guestPlayedCards: const ['', ''],
+            hostStartsMatch: true,
           );
 
           expect(
@@ -316,52 +431,25 @@ void main() {
             isFalse,
           );
         });
-      });
 
-      group('when is the guest', () {
-        const isHost = false;
-
-        test('returns true when nobody has played yet', () {
+        test('returns value based on turn', () {
           final matchState = MatchState(
             id: '',
             matchId: '',
             hostPlayedCards: const [],
             guestPlayedCards: const [],
+            hostStartsMatch: true,
           );
 
           expect(
             matchSolver.canPlayCard(matchState, '', isHost: isHost),
-            isTrue,
+            matchSolver.isPlayerTurn(matchState, isHost: isHost),
           );
         });
+      });
 
-        test('returns true when host played, but guest not', () {
-          final matchState = MatchState(
-            id: '',
-            matchId: '',
-            hostPlayedCards: const [''],
-            guestPlayedCards: const [],
-          );
-
-          expect(
-            matchSolver.canPlayCard(matchState, '', isHost: isHost),
-            isTrue,
-          );
-        });
-
-        test('returns false when guest has played but host not', () {
-          final matchState = MatchState(
-            id: '',
-            matchId: '',
-            hostPlayedCards: const [''],
-            guestPlayedCards: const ['', ''],
-          );
-
-          expect(
-            matchSolver.canPlayCard(matchState, '', isHost: isHost),
-            isFalse,
-          );
-        });
+      group('when is the guest', () {
+        const isHost = false;
 
         test('returns false when guest has already played card', () {
           const cardId = 'test';
@@ -370,11 +458,27 @@ void main() {
             matchId: '',
             hostPlayedCards: const ['', ''],
             guestPlayedCards: const [cardId],
+            hostStartsMatch: true,
           );
 
           expect(
             matchSolver.canPlayCard(matchState, cardId, isHost: isHost),
             isFalse,
+          );
+        });
+
+        test('returns value based on turn', () {
+          final matchState = MatchState(
+            id: '',
+            matchId: '',
+            hostPlayedCards: const [],
+            guestPlayedCards: const [],
+            hostStartsMatch: true,
+          );
+
+          expect(
+            matchSolver.canPlayCard(matchState, '', isHost: isHost),
+            matchSolver.isPlayerTurn(matchState, isHost: isHost),
           );
         });
       });

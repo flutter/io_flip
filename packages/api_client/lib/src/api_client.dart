@@ -88,6 +88,10 @@ class ApiClient {
   /// {@macro scripts_resource}
   late final ScriptsResource scriptsResource = ScriptsResource(apiClient: this);
 
+  /// {@macro leaderboard_resource}
+  late final LeaderboardResource leaderboardResource =
+      LeaderboardResource(apiClient: this);
+
   Future<http.Response> _handleUnauthorized(
     Future<http.Response> Function() sendRequest,
   ) async {
