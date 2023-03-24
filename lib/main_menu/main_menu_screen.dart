@@ -161,7 +161,7 @@ class _Footer extends StatelessWidget {
             _RoundedButton(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: TopDashSpacing.sm,
+                  horizontal: TopDashSpacing.sm,
                 ),
                 child: Text(
                   l10n.play,
