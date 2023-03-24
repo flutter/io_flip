@@ -359,7 +359,7 @@ void main() {
           ).thenReturn(true);
         },
         seed: () => baseState,
-        act: (bloc) => bloc.canPlayerPlay(''),
+        act: (bloc) => bloc.canPlayerPlay(),
         verify: (_) {
           verify(
             () => matchSolver.canPlayCard(
