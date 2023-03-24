@@ -9,6 +9,7 @@ import 'package:game_script_machine/game_script_machine.dart';
 import 'package:image_model_repository/image_model_repository.dart';
 import 'package:jwt_middleware/jwt_middleware.dart';
 import 'package:language_model_repository/language_model_repository.dart';
+import 'package:leaderboard_repository/leaderboard_repository.dart';
 import 'package:logging/logging.dart';
 import 'package:match_repository/match_repository.dart';
 import 'package:scripts_repository/scripts_repository.dart';
@@ -16,6 +17,7 @@ import 'package:scripts_repository/scripts_repository.dart';
 late CardsRepository cardsRepository;
 late MatchRepository matchRepository;
 late ScriptsRepository scriptsRepository;
+late LeaderboardRepository leaderboardRepository;
 late DbClient dbClient;
 late GameScriptMachine gameScriptMachine;
 late JwtMiddleware jwtMiddleware;
@@ -52,6 +54,11 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
     cardsRepository: cardsRepository,
     dbClient: dbClient,
     matchSolver: MatchSolver(gameScriptMachine: gameScriptMachine),
+  );
+
+  leaderboardRepository = LeaderboardRepository(
+    dbClient: dbClient,
+    blacklistDocumentId: 'MdOoZMhusnJTcwfYE0nL',
   );
 
   return serve(

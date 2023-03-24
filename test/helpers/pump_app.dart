@@ -20,6 +20,8 @@ class _MockGameResource extends Mock implements GameResource {}
 
 class _MockScriptsResource extends Mock implements ScriptsResource {}
 
+class _MockLeaderboardResource extends Mock implements LeaderboardResource {}
+
 class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
 
 class _MockMatchSolver extends Mock implements MatchSolver {}
@@ -36,6 +38,7 @@ extension PumpApp on WidgetTester {
     SettingsController? settingsController,
     GameResource? gameResource,
     ScriptsResource? scriptsResource,
+    LeaderboardResource? leaderboardResource,
     MatchMakerRepository? matchMakerRepository,
     MatchSolver? matchSolver,
     GameScriptMachine? gameScriptMachine,
@@ -53,6 +56,9 @@ extension PumpApp on WidgetTester {
           ),
           Provider.value(
             value: scriptsResource ?? _MockScriptsResource(),
+          ),
+          Provider.value(
+            value: leaderboardResource ?? _MockLeaderboardResource(),
           ),
           Provider.value(
             value: matchMakerRepository ?? _MockMatchMakerRepository(),

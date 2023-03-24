@@ -1,14 +1,26 @@
+import 'package:api_client/api_client.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/leaderboard/initials_form/initials_form.dart';
 import 'package:top_dash/leaderboard/leaderboard.dart';
 
 import '../../helpers/helpers.dart';
 
+class _MockLeaderboardResource extends Mock implements LeaderboardResource {}
+
 void main() {
+  late LeaderboardResource leaderboardResource;
+
+  setUp(() {
+    leaderboardResource = _MockLeaderboardResource();
+    when(() => leaderboardResource.getInitialsBlacklist())
+        .thenAnswer((_) async => []);
+  });
+
   group('LeaderboardEntryView', () {
     testWidgets('renders correct title and subtitle', (tester) async {
-      await tester.pumpSubject();
+      await tester.pumpSubject(leaderboardResource);
 
       final l10n = tester.element(find.byType(LeaderboardEntryView)).l10n;
 
@@ -17,7 +29,7 @@ void main() {
     });
 
     testWidgets('renders initials form', (tester) async {
-      await tester.pumpSubject();
+      await tester.pumpSubject(leaderboardResource);
 
       expect(find.byType(InitialsForm), findsOneWidget);
     });
@@ -25,9 +37,10 @@ void main() {
 }
 
 extension LeaderboardEntryViewTest on WidgetTester {
-  Future<void> pumpSubject() async {
+  Future<void> pumpSubject(LeaderboardResource leaderboardResource) async {
     return pumpApp(
       const LeaderboardEntryView(),
+      leaderboardResource: leaderboardResource,
     );
   }
 }

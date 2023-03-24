@@ -65,6 +65,7 @@ class _AppState extends State<App> {
         providers: [
           Provider.value(value: widget.apiClient.gameResource),
           Provider.value(value: widget.apiClient.scriptsResource),
+          Provider.value(value: widget.apiClient.leaderboardResource),
           Provider.value(value: widget.matchMakerRepository),
           Provider.value(value: widget.matchSolver),
           Provider.value(value: widget.gameScriptMachine),
