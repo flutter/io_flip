@@ -7,7 +7,7 @@ packages:
       name: _fe_analyzer_shared
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "57.0.0"
+    version: "58.0.0"
   _flutterfire_internals:
     dependency: transitive
     description:
@@ -21,7 +21,7 @@ packages:
       name: analyzer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.9.0"
+    version: "5.10.0"
   api_client:
     dependency: "direct main"
     description:
@@ -377,7 +377,7 @@ packages:
       name: formz
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.0+1"
+    version: "0.6.0"
   frontend_server_client:
     dependency: transitive
     description:
@@ -412,7 +412,7 @@ packages:
       name: go_router
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.4.1"
+    version: "6.5.0"
   hetu_script:
     dependency: transitive
     description:
@@ -629,7 +629,7 @@ packages:
       name: pointycastle
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.7.1"
+    version: "3.7.2"
   pool:
     dependency: transitive
     description:
