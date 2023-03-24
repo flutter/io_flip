@@ -49,6 +49,7 @@ void main() {
       matchId: match1.id,
       hostPlayedCards: const [],
       guestPlayedCards: const [],
+      hostStartsMatch: true,
     );
 
     final matchState2 = MatchState(
@@ -56,6 +57,7 @@ void main() {
       matchId: match2.id,
       hostPlayedCards: const [],
       guestPlayedCards: const [],
+      hostStartsMatch: true,
     );
 
     test('can be instantiated', () {
