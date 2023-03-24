@@ -21,6 +21,8 @@ void main() {
       when(() => settingsController.toggleSoundsOn()).thenAnswer((_) {});
       when(() => settingsController.musicOn).thenReturn(ValueNotifier(false));
       when(() => settingsController.toggleMusicOn()).thenAnswer((_) {});
+
+      when(() => router.push('/settings/how_to_play')).thenAnswer((_) {});
     });
 
     Future<void> pumpSubjectWith(WidgetTester tester) => tester.pumpApp(
