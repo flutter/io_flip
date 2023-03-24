@@ -7,7 +7,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:scripts_repository/scripts_repository.dart';
 import 'package:test/test.dart';
 
-import '../../../routes/scripts/[scriptId].dart' as route;
+import '../../../../routes/game/scripts/[scriptId].dart' as route;
 
 class _MockRequestContext extends Mock implements RequestContext {}
 
@@ -20,7 +20,7 @@ class _MockRequest extends Mock implements Request {}
 class _MockLogger extends Mock implements Logger {}
 
 void main() {
-  group('GET /scripts/[scriptId]', () {
+  group('GET /game/scripts/[scriptId]', () {
     late ScriptsRepository scriptsRepository;
     late Request request;
     late RequestContext context;

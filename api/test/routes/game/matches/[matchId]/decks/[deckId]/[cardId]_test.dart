@@ -7,7 +7,7 @@ import 'package:match_repository/match_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-import '../../../../../../routes/matches/[matchId]/decks/[deckId]/cards/[cardId].dart'
+import '../../../../../../../routes/game/matches/[matchId]/decks/[deckId]/cards/[cardId].dart'
     as route;
 
 class _MockRequestContext extends Mock implements RequestContext {}
@@ -19,7 +19,7 @@ class _MockRequest extends Mock implements Request {}
 class _MockLogger extends Mock implements Logger {}
 
 void main() {
-  group('POST /matches/[matchId]/decks/[deckId]/cards/[cardId]', () {
+  group('POST /game/matches/[matchId]/decks/[deckId]/cards/[cardId]', () {
     late MatchRepository matchRepository;
     late Request request;
     late RequestContext context;

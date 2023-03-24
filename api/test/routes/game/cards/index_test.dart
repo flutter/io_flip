@@ -6,7 +6,7 @@ import 'package:game_domain/game_domain.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-import '../../../routes/cards/index.dart' as route;
+import '../../../../routes/game/cards/index.dart' as route;
 
 class _MockRequestContext extends Mock implements RequestContext {}
 
@@ -15,7 +15,7 @@ class _MockCardsRepository extends Mock implements CardsRepository {}
 class _MockRequest extends Mock implements Request {}
 
 void main() {
-  group('POST /', () {
+  group('POST /game/cards', () {
     late CardsRepository cardsRepository;
     late Request request;
     late RequestContext context;
