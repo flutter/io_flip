@@ -81,6 +81,29 @@ void main() {
     );
 
     blocTest<DraftBloc, DraftState>(
+      'selects a card and changes deck on SelectCard',
+      build: () => DraftBloc(gameResource: gameResource),
+      seed: () => DraftState(
+        cards: cards,
+        selectedCards: const [],
+        status: DraftStateStatus.deckLoaded,
+      ),
+      act: (bloc) {
+        bloc.add(SelectCard());
+      },
+      expect: () => [
+        DraftState(
+          cards: [
+            cards.last,
+            ...List.generate(9, (i) => cards[i]),
+          ],
+          selectedCards: [cards.first],
+          status: DraftStateStatus.deckLoaded,
+        ),
+      ],
+    );
+
+    blocTest<DraftBloc, DraftState>(
       'status is complete when the deck is full',
       build: () => DraftBloc(gameResource: gameResource),
       seed: () => DraftState(
