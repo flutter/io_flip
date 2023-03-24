@@ -7,11 +7,13 @@ class LeaderboardRepository {
   /// {@macro leaderboard_repository}
   const LeaderboardRepository({
     required DbClient dbClient,
-  }) : _dbClient = dbClient;
+    required String blacklistDocumentId,
+  })  : _dbClient = dbClient,
+        _blacklistDocumentId = blacklistDocumentId;
 
   final DbClient _dbClient;
 
-  static const String _blacklistDocumentId = 'MdOoZMhusnJTcwfYE0nL';
+  final String _blacklistDocumentId;
 
   /// Retrieves the blacklist for player initials.
   Future<List<String>> getInitialsBlacklist() async {

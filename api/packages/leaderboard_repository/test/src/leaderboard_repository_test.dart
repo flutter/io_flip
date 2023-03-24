@@ -11,21 +11,27 @@ void main() {
     late DbClient dbClient;
     late LeaderboardRepository leaderboardRepository;
 
+    const blacklistDocumentId = 'id';
+
     setUp(() {
       dbClient = _MockDbClient();
-      leaderboardRepository = LeaderboardRepository(dbClient: dbClient);
+      leaderboardRepository = LeaderboardRepository(
+        dbClient: dbClient,
+        blacklistDocumentId: blacklistDocumentId,
+      );
     });
 
     test('can be instantiated', () {
       expect(
-        LeaderboardRepository(dbClient: dbClient),
+        LeaderboardRepository(
+          dbClient: dbClient,
+          blacklistDocumentId: blacklistDocumentId,
+        ),
         isNotNull,
       );
     });
 
     group('getInitialsBlacklist', () {
-      const blacklistDocumentId = 'MdOoZMhusnJTcwfYE0nL';
-
       const blacklist = ['AAA', 'BBB', 'CCC'];
 
       test('returns the blacklist', () async {
