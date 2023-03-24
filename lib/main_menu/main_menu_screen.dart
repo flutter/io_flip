@@ -2,7 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:api_client/api_client.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -32,7 +31,6 @@ class MainMenuScreen extends StatelessWidget {
     final l10n = context.l10n;
     final settingsController = context.watch<SettingsController>();
     final audioController = context.watch<AudioController>();
-    final leaderboardResource = context.read<LeaderboardResource>();
 
     return Scaffold(
       backgroundColor: TopDashColors.backgroundMain,
@@ -56,11 +54,7 @@ class MainMenuScreen extends StatelessWidget {
                   OutlinedButton(
                     onPressed: () async {
                       audioController.playSfx(SfxType.buttonTap);
-                      // GoRouter.of(context).go('/draft');
-                      print('object');
-                      final res =
-                          await leaderboardResource.getInitialsBlacklist();
-                      print(res);
+                      GoRouter.of(context).go('/draft');
                     },
                     child: Text(l10n.play),
                   ),
