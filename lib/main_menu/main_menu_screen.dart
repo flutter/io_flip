@@ -51,13 +51,13 @@ class _MainMenuScreenView extends StatelessWidget {
         final isPortrait = size.width < size.height || size.width < 1050;
         return isPortrait
             ? SingleChildScrollView(
-          child: Column(
-            children: const [
-              _MainImage(key: Key('main menu image')),
-              LeaderboardView(),
-            ],
-          ),
-        )
+                child: Column(
+                  children: const [
+                    _MainImage(key: Key('main menu image')),
+                    LeaderboardView(),
+                  ],
+                ),
+              )
             : Padding(
                 padding: const EdgeInsets.all(TopDashSpacing.lg),
                 child: Row(
