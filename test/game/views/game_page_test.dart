@@ -4,18 +4,23 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/game/game.dart';
+import 'package:web_socket_client/web_socket_client.dart';
 
 import '../../helpers/pump_app.dart';
 
 class _MockGoRouterState extends Mock implements GoRouterState {}
 
+class _MockWebSocket extends Mock implements WebSocket {}
+
 void main() {
   group('GamePage', () {
     late GoRouterState goRouterState;
+    late WebSocket webSocket;
     const matchId = 'matchId';
 
     setUp(() {
       goRouterState = _MockGoRouterState();
+      webSocket = _MockWebSocket();
       when(() => goRouterState.params).thenReturn({
         'matchId': matchId,
       });
@@ -33,6 +38,7 @@ void main() {
         GamePage(
           matchId: 'matchId',
           isHost: false,
+          matchConnection: webSocket,
         ),
       );
 

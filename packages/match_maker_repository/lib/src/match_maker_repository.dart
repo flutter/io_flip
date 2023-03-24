@@ -20,11 +20,9 @@ class MatchMakerRepository {
   /// {@macro match_maker_repository}
   MatchMakerRepository({
     required this.db,
-    ValueGetter<Timestamp> now = Timestamp.now,
     ValueGetter<String>? inviteCode,
     this.retryDelay = _defaultRetryDelay,
-  })  : _now = now,
-        _inviteCode = inviteCode ?? defaultInviteCodeGenerator {
+  }) : _inviteCode = inviteCode ?? defaultInviteCodeGenerator {
     collection = db.collection('matches');
     matchStatesCollection = db.collection('match_states');
     scoreCardCollection = db.collection('score_cards');
@@ -33,7 +31,6 @@ class MatchMakerRepository {
   static const _defaultRetryDelay = 2;
   static const _maxRetries = 3;
 
-  final ValueGetter<Timestamp> _now;
   final ValueGetter<String> _inviteCode;
 
   /// The delay between retries when finding a match.
@@ -158,7 +155,6 @@ class MatchMakerRepository {
 
       for (final match in matches) {
         try {
-          final now = _now();
           await db.runTransaction<Transaction>((transaction) async {
             final ref = collection.doc(match.id);
             return transaction.update(ref, {'guest': id});

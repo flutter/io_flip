@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:api_client/api_client.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:web_socket_client/web_socket_client.dart';
 
 /// {@template game_resource}
 /// An api resource for interacting with the game.
@@ -12,9 +12,12 @@ class GameResource {
   /// {@macro game_resource}
   GameResource({
     required ApiClient apiClient,
-  }) : _apiClient = apiClient;
+    WebSocket? websocket,
+  })  : _apiClient = apiClient,
+        _websocket = websocket;
 
   final ApiClient _apiClient;
+  final WebSocket? _websocket;
 
   /// Post /cards
   Future<Card> generateCard() async {
@@ -197,29 +200,28 @@ class GameResource {
   }
 
   /// Webhook connect to  matches/connect/
-  Future<WebSocketChannel> connectToMatch({
+  Future<WebSocket> connectToMatch({
     required String matchId,
     required bool isHost,
   }) async {
-    final channel = _apiClient.connect(
-      '/matches/connect',
-      queryParameters: {
-        'matchId': matchId,
-        'host': isHost.toString(),
-      },
-    );
+    try {
+      final uri = _apiClient.getWebsocketURI(
+        '/matches/connect',
+        queryParameters: {
+          'matchId': matchId,
+          'host': isHost.toString(),
+        },
+      );
+      final socket = _websocket ?? WebSocket(uri);
 
-    channel.stream.listen(
-      null,
-      onError: (Object error) {
-        throw ApiClientError(
-          'websocket matches/connect/ returned with the following error: "$error"',
-          StackTrace.current,
-        );
-      },
-    );
+      await socket.connection.firstWhere((state) => state is Connected);
 
-    await channel.ready;
-    return channel;
+      return socket;
+    } catch (error) {
+      throw ApiClientError(
+        'websocket matches/connect/ returned with the following error: "$error"',
+        StackTrace.current,
+      );
+    }
   }
 }

@@ -24,13 +24,13 @@ class MatchMakingState extends Equatable {
   final Match? match;
   final MatchMakingStatus status;
   final bool isHost;
-  final WebSocketChannel? matchConnection;
+  final WebSocket? matchConnection;
 
   MatchMakingState copyWith({
     Match? match,
     MatchMakingStatus? status,
     bool? isHost,
-    WebSocketChannel? matchConnection,
+    WebSocket? matchConnection,
   }) {
     return MatchMakingState(
       match: match ?? this.match,

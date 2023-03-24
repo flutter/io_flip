@@ -5,14 +5,16 @@ import 'dart:async';
 import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc_test/bloc_test.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/match_making/match_making.dart';
+import 'package:web_socket_client/web_socket_client.dart';
 
 class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
+
+class _MockWebSocket extends Mock implements WebSocket {}
 
 class _MockGameResource extends Mock implements GameResource {}
 
@@ -25,20 +27,19 @@ void main() {
   group('MatchMakingBloc', () {
     late GameResource gameResource;
     late MatchMakerRepository matchMakerRepository;
+    late WebSocket webSocket;
     late User user;
     late StreamController<Match> watchController;
     const deckId = 'deckId';
     final cardIds = ['a', 'b', 'c'];
-    late Timestamp timestamp;
 
     setUp(() {
       matchMakerRepository = _MockMatchMakerRepository();
+      webSocket = _MockWebSocket();
       user = _MockUser();
       watchController = StreamController.broadcast();
       when(() => matchMakerRepository.watchMatch(any()))
           .thenAnswer((_) => watchController.stream);
-
-      timestamp = Timestamp.now();
 
       gameResource = _MockGameResource();
       when(
@@ -47,6 +48,13 @@ void main() {
           userId: any(named: 'userId'),
         ),
       ).thenAnswer((_) async => deckId);
+
+      when(
+        () => gameResource.connectToMatch(
+          matchId: any(named: 'matchId'),
+          isHost: any<bool>(named: 'isHost'),
+        ),
+      ).thenAnswer((_) async => webSocket);
     });
 
     test('can be instantiated', () {
@@ -88,8 +96,6 @@ void main() {
             id: '',
             host: '',
             guest: deckId,
-            // hostPing: timestamp,
-            // guestPing: timestamp,
           ),
         );
       },
@@ -104,9 +110,8 @@ void main() {
             id: '',
             host: '',
             guest: deckId,
-            // hostPing: timestamp,
-            // guestPing: timestamp,
           ),
+          matchConnection: webSocket,
         ),
       ],
     );
@@ -149,7 +154,6 @@ void main() {
           (_) async => Match(
             id: '',
             host: deckId,
-            // hostPing: timestamp,
           ),
         );
       },
@@ -163,7 +167,6 @@ void main() {
           match: Match(
             id: '',
             host: deckId,
-            // hostPing: timestamp,
           ),
         ),
       ],
@@ -174,8 +177,6 @@ void main() {
         (_) async => Match(
           id: '',
           host: deckId,
-          // hostPing: timestamp,
-          // guestPing: timestamp,
         ),
       );
 
@@ -194,8 +195,6 @@ void main() {
             match: Match(
               id: '',
               host: deckId,
-              // hostPing: timestamp,
-              // guestPing: timestamp,
             ),
           ),
         ),
@@ -206,7 +205,6 @@ void main() {
           id: '',
           host: deckId,
           guest: '',
-          // hostPing: timestamp,
         ),
       );
 
@@ -219,85 +217,12 @@ void main() {
               id: '',
               host: deckId,
               guest: '',
-              // hostPing: timestamp,
             ),
             isHost: true,
+            matchConnection: webSocket,
           ),
         ),
       );
-    });
-
-    test('pings host while waiting for guest to join', () async {
-      when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
-        (_) async => Match(
-          id: '',
-          host: deckId,
-          // hostPing: timestamp,
-        ),
-      );
-
-      // when(() => matchMakerRepository.pingHost(any())).thenAnswer(
-      //   (_) async => Match(
-      //     id: '',
-      //     host: deckId,
-      //     // hostPing: timestamp,
-      //   ),
-      // );
-
-      final bloc = MatchMakingBloc(
-        matchMakerRepository: matchMakerRepository,
-        gameResource: gameResource,
-        cardIds: cardIds,
-        user: user,
-        hostWaitTime: const Duration(milliseconds: 200),
-      )..add(MatchRequested());
-
-      expect(
-        await bloc.stream.take(2).last,
-        equals(
-          MatchMakingState(
-            status: MatchMakingStatus.processing,
-            match: Match(
-              id: '',
-              host: deckId,
-              // hostPing: timestamp,
-            ),
-          ),
-        ),
-      );
-
-      await Future<void>.delayed(Duration(milliseconds: 200));
-
-      // verify(() => matchMakerRepository.pingHost(any())).called(1);
-
-      watchController.add(
-        Match(
-          id: '',
-          host: deckId,
-          guest: '',
-          // hostPing: timestamp,
-        ),
-      );
-
-      expect(
-        await bloc.stream.take(1).last,
-        equals(
-          MatchMakingState(
-            status: MatchMakingStatus.completed,
-            match: Match(
-              id: '',
-              host: deckId,
-              guest: '',
-              // hostPing: timestamp,
-            ),
-            isHost: true,
-          ),
-        ),
-      );
-
-      await Future<void>.delayed(Duration(milliseconds: 200));
-
-      // verifyNever(() => matchMakerRepository.pingHost(any()));
     });
 
     test('emits timeout when guest never joins host', () async {
@@ -306,17 +231,8 @@ void main() {
           (_) async => Match(
             id: '',
             host: deckId,
-            // hostPing: timestamp,
           ),
         );
-
-        // when(() => matchMakerRepository.pingHost(any())).thenAnswer(
-        //   (_) async => Match(
-        //     id: '',
-        //     host: deckId,
-        //     // hostPing: timestamp,
-        //   ),
-        // );
 
         final bloc = MatchMakingBloc(
           matchMakerRepository: matchMakerRepository,
@@ -336,7 +252,6 @@ void main() {
               match: Match(
                 id: '',
                 host: deckId,
-                // hostPing: timestamp,
               ),
             ),
           ),
@@ -357,7 +272,6 @@ void main() {
           (_) async => Match(
             id: '',
             host: deckId,
-            // hostPing: timestamp,
           ),
         );
       },
@@ -371,7 +285,6 @@ void main() {
           match: Match(
             id: '',
             host: deckId,
-            // hostPing: timestamp,
           ),
         ),
       ],
@@ -420,7 +333,6 @@ void main() {
             id: '',
             guest: deckId,
             host: 'hostId',
-            // hostPing: timestamp,
           ),
         );
       },
@@ -435,7 +347,6 @@ void main() {
             id: '',
             guest: deckId,
             host: 'hostId',
-            // hostPing: timestamp,
           ),
         ),
       ],

@@ -1,18 +1,11 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:top_dash/match_making/match_making.dart';
 
 void main() {
   group('MatchMakingState', () {
-    late Timestamp now;
-
-    setUp(() {
-      now = Timestamp.now();
-    });
-
     test('can be instantiated', () {
       expect(
         MatchMakingState(
@@ -20,7 +13,6 @@ void main() {
           match: Match(
             id: '',
             host: '',
-            // hostPing: now,
           ),
         ),
         isNotNull,
@@ -45,7 +37,6 @@ void main() {
           match: Match(
             id: '',
             host: '',
-            // hostPing: now,
           ),
         ),
         equals(
@@ -54,7 +45,6 @@ void main() {
             match: Match(
               id: '',
               host: '',
-              // hostPing: now,
             ),
           ),
         ),
@@ -66,7 +56,6 @@ void main() {
           match: Match(
             id: '',
             host: '',
-            // hostPing: now,
           ),
         ),
         isNot(
@@ -76,7 +65,6 @@ void main() {
               match: Match(
                 id: '',
                 host: '',
-                // hostPing: now,
               ),
             ),
           ),
@@ -89,7 +77,6 @@ void main() {
           match: Match(
             id: '1',
             host: '',
-            // hostPing: now,
           ),
         ),
         isNot(
@@ -99,7 +86,6 @@ void main() {
               match: Match(
                 id: '',
                 host: '',
-                // hostPing: now,
               ),
             ),
           ),
@@ -114,7 +100,6 @@ void main() {
           match: Match(
             id: '',
             host: '',
-            // hostPing: now,
           ),
         ).copyWith(status: MatchMakingStatus.failed),
         equals(
@@ -123,7 +108,6 @@ void main() {
             match: Match(
               id: '',
               host: '',
-              // hostPing: now,
             ),
           ),
         ),
@@ -135,21 +119,19 @@ void main() {
           match: Match(
             id: '',
             host: '',
-            // hostPing: now,
           ),
         ).copyWith(
-            match: Match(
-          id: '1',
-          host: '',
-          // hostPing: now,
-        )),
+          match: Match(
+            id: '1',
+            host: '',
+          ),
+        ),
         equals(
           MatchMakingState(
             status: MatchMakingStatus.initial,
             match: Match(
               id: '1',
               host: '',
-              // hostPing: now,
             ),
           ),
         ),

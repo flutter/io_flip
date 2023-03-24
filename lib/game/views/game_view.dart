@@ -32,8 +32,17 @@ class GameView extends StatelessWidget {
         }
 
         if (state is OpponentAbsentState) {
-          child = const Center(
-            child: Text('Opponent left the game!'),
+          child = Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('Opponent left the game!'),
+                ElevatedButton(
+                  onPressed: () => GoRouter.of(context).pop(),
+                  child: const Text('Replay'),
+                ),
+              ],
+            ),
           );
         }
 

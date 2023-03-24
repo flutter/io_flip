@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:bloc_test/bloc_test.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -62,8 +61,6 @@ void main() {
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
-              // hostPing: Timestamp.now(),
-              // guestPing: Timestamp.now(),
             ),
             isHost: true,
           ),
@@ -87,7 +84,6 @@ void main() {
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
-              // hostPing: Timestamp.now(),
               inviteCode: 'hello-join-my-match',
             ),
             isHost: true,
@@ -113,7 +109,6 @@ void main() {
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
-              // hostPing: Timestamp.now(),
               inviteCode: 'hello-join-my-match',
             ),
             isHost: true,

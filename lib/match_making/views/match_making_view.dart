@@ -18,13 +18,14 @@ class MatchMakingView extends StatelessWidget {
     return BlocConsumer<MatchMakingBloc, MatchMakingState>(
       listener: (previous, current) {
         if (current.status == MatchMakingStatus.completed) {
-          context.go('/game/${current.match?.id}/${current.isHost}');
-          context.goNamed('game',
-              params: {
-                'matchId': '${current.match?.id}',
-                'isHost': '${current.isHost}',
-              },
-              extra: current.matchConnection);
+          context.goNamed(
+            'game',
+            params: {
+              'matchId': '${current.match?.id}',
+              'isHost': '${current.isHost}',
+            },
+            extra: current.matchConnection,
+          );
         }
       },
       builder: (context, state) {

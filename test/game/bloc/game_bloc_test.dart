@@ -5,14 +5,16 @@ import 'dart:async';
 import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc_test/bloc_test.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:match_maker_repository/match_maker_repository.dart' as repo;
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/game/game.dart';
+import 'package:web_socket_client/web_socket_client.dart';
 
 class _MockGameResource extends Mock implements GameResource {}
+
+class _MockWebSocket extends Mock implements WebSocket {}
 
 class _MockMatchMakerRepository extends Mock
     implements repo.MatchMakerRepository {}
@@ -45,6 +47,7 @@ void main() {
     late repo.MatchMakerRepository matchMakerRepository;
     late MatchSolver matchSolver;
     late User user;
+    late WebSocket webSocket;
     const isHost = true;
 
     setUpAll(() {
@@ -53,6 +56,7 @@ void main() {
     });
 
     setUp(() {
+      webSocket = _MockWebSocket();
       matchSolver = _MockMatchSolver();
       gameResource = _MockGameResource();
       matchMakerRepository = _MockMatchMakerRepository();
@@ -76,11 +80,6 @@ void main() {
       when(() => matchMakerRepository.watchMatch(any()))
           .thenAnswer((_) => matchController.stream);
 
-      // when(() => matchMakerRepository.pingHost(any())).thenAnswer((_) async {});
-
-      // when(() => matchMakerRepository.pingGuest(any()))
-      //     .thenAnswer((_) async {});
-
       when(() => matchMakerRepository.getScoreCard(any()))
           .thenAnswer((_) async => ScoreCard(id: 'scoreCardId'));
     });
@@ -93,6 +92,7 @@ void main() {
           matchSolver: matchSolver,
           user: user,
           isHost: true,
+          matchConnection: webSocket,
         ),
         isNotNull,
       );
@@ -106,6 +106,7 @@ void main() {
           matchSolver: matchSolver,
           user: user,
           isHost: false,
+          matchConnection: webSocket,
         ).state,
         equals(MatchLoadingState()),
       );
@@ -119,6 +120,7 @@ void main() {
         matchSolver: matchSolver,
         user: user,
         isHost: isHost,
+        matchConnection: webSocket,
       ),
       act: (bloc) => bloc.add(MatchRequested(match.id)),
       expect: () => [
@@ -144,6 +146,7 @@ void main() {
         matchSolver: matchSolver,
         user: user,
         isHost: isHost,
+        matchConnection: webSocket,
       ),
       setUp: () {
         when(() => gameResource.getMatch(match.id))
@@ -164,6 +167,7 @@ void main() {
         matchSolver: matchSolver,
         user: user,
         isHost: isHost,
+        matchConnection: webSocket,
       ),
       setUp: () {
         when(() => gameResource.getMatch(match.id)).thenThrow(Exception('Ops'));
@@ -275,6 +279,7 @@ void main() {
           matchSolver: matchSolver,
           user: user,
           isHost: true,
+          matchConnection: webSocket,
         )..add(MatchRequested(baseState.match.id));
 
         await Future.microtask(() {});
@@ -314,6 +319,7 @@ void main() {
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
           isHost: true,
+          matchConnection: webSocket,
         )..add(MatchRequested(baseState.match.id));
 
         await Future.microtask(() {});
@@ -342,6 +348,7 @@ void main() {
           matchSolver: matchSolver,
           user: user,
           isHost: true,
+          matchConnection: webSocket,
         ),
         setUp: () {
           when(
@@ -365,6 +372,7 @@ void main() {
           matchSolver: matchSolver,
           user: user,
           isHost: true,
+          matchConnection: webSocket,
         ),
         setUp: () {
           when(() => matchSolver.calculateRoundResult(any(), any(), any()))
@@ -399,6 +407,7 @@ void main() {
       blocTest<GameBloc, GameState>(
         'hasPlayerWon returns true if the host won, and the player is the host',
         build: () => GameBloc(
+          matchConnection: webSocket,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
@@ -423,6 +432,7 @@ void main() {
         'hasPlayerWon returns false if the guest won, and the player '
         'is the guest',
         build: () => GameBloc(
+          matchConnection: webSocket,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
@@ -446,6 +456,7 @@ void main() {
       blocTest<GameBloc, GameState>(
         'hasPlayerWon returns false if match is still loading',
         build: () => GameBloc(
+          matchConnection: webSocket,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
@@ -461,6 +472,7 @@ void main() {
       blocTest<GameBloc, GameState>(
         'isWinningCard return correctly when is guest',
         build: () => GameBloc(
+          matchConnection: webSocket,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
@@ -500,6 +512,7 @@ void main() {
       blocTest<GameBloc, GameState>(
         'plays a player card',
         build: () => GameBloc(
+          matchConnection: webSocket,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
@@ -527,6 +540,7 @@ void main() {
       blocTest<GameBloc, GameState>(
         'plays a player card when being the guest',
         build: () => GameBloc(
+          matchConnection: webSocket,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
@@ -554,6 +568,7 @@ void main() {
       blocTest<GameBloc, GameState>(
         'marks the playerPlayer as false on receive the new state',
         build: () => GameBloc(
+          matchConnection: webSocket,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
@@ -612,6 +627,7 @@ void main() {
         'marks the playerPlayer as false on receive the new state when being '
         'the guest',
         build: () => GameBloc(
+          matchConnection: webSocket,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
@@ -670,6 +686,7 @@ void main() {
         'plays a player card, receives confirmation and then receives an '
         'opponent card',
         build: () => GameBloc(
+          matchConnection: webSocket,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
@@ -754,6 +771,7 @@ void main() {
       blocTest<GameBloc, GameState>(
         'plays a player card and opponent card and another opponent one',
         build: () => GameBloc(
+          matchConnection: webSocket,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
@@ -968,64 +986,15 @@ void main() {
     });
 
     group('manage player presence', () {
-      final now = Timestamp.now();
-      final staleDateTime = DateTime.now().subtract(Duration(seconds: 11));
-      final opponentFailPing = Timestamp.fromDate(staleDateTime);
-      final opponentPassPing = now;
-      final playerPing = now;
-
-      blocTest<GameBloc, GameState>(
-        'pings the matching repository as host to show presence',
-        build: () => GameBloc(
-          gameResource: gameResource,
-          matchMakerRepository: matchMakerRepository,
-          user: user,
-          isHost: true,
-          // timeOutPeriod: Duration(seconds: 10),
-          // pingInterval: Duration(microseconds: 1),
-          matchSolver: matchSolver,
-          // now: () => now,
-        ),
-        act: (bloc) {
-          bloc.add(ManagePlayerPresence(match.id));
-        },
-        expect: () => <GameState>[],
-        verify: (_) {
-          // verify(() => matchMakerRepository.pingHost(match.id)).called(1);
-        },
-      );
-
-      blocTest<GameBloc, GameState>(
-        'pings the matching repository as guest to show presence',
-        build: () => GameBloc(
-          gameResource: gameResource,
-          matchMakerRepository: matchMakerRepository,
-          user: user,
-          isHost: false,
-          // timeOutPeriod: Duration(seconds: 10),
-          // pingInterval: Duration(microseconds: 1),
-          matchSolver: matchSolver,
-          // now: () => now,
-        ),
-        act: (bloc) {
-          bloc.add(ManagePlayerPresence(match.id));
-        },
-        expect: () => <GameState>[],
-        verify: (_) {
-          // verify(() => matchMakerRepository.pingGuest(match.id)).called(1);
-        },
-      );
-
       blocTest<GameBloc, GameState>(
         'notifies when opponent(guest) is absent',
         build: () => GameBloc(
+          matchConnection: webSocket,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           user: user,
           isHost: true,
-          // timeOutPeriod: Duration(seconds: 10),
           matchSolver: matchSolver,
-          // now: () => now,
         ),
         act: (bloc) {
           bloc.add(ManagePlayerPresence(match.id));
@@ -1034,8 +1003,7 @@ void main() {
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
-              // hostPing: playerPing,
-              // guestPing: opponentFailPing,
+              hostConnected: true,
             ),
           );
         },
@@ -1048,13 +1016,12 @@ void main() {
       blocTest<GameBloc, GameState>(
         'notifies when opponent(host) is absent',
         build: () => GameBloc(
+          matchConnection: webSocket,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           user: user,
           isHost: false,
           matchSolver: matchSolver,
-          // now: () => now,
-          // timeOutPeriod: Duration(seconds: 10),
         ),
         act: (bloc) {
           bloc.add(ManagePlayerPresence(match.id));
@@ -1063,8 +1030,7 @@ void main() {
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
-              // hostPing: opponentFailPing,
-              // guestPing: playerPing,
+              guestConnected: true,
             ),
           );
         },
@@ -1077,13 +1043,12 @@ void main() {
       blocTest<GameBloc, GameState>(
         'does not return a state if opponent is present',
         build: () => GameBloc(
+          matchConnection: webSocket,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           user: user,
           isHost: true,
           matchSolver: matchSolver,
-          // timeOutPeriod: Duration(seconds: 10),
-          // now: () => now,
         ),
         act: (bloc) {
           bloc.add(ManagePlayerPresence(match.id));
@@ -1092,8 +1057,8 @@ void main() {
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
-              // hostPing: playerPing,
-              // guestPing: opponentPassPing,
+              hostConnected: true,
+              guestConnected: true,
             ),
           );
         },
@@ -1106,13 +1071,12 @@ void main() {
       blocTest<GameBloc, GameState>(
         'fails when fetching the match throws an exception',
         build: () => GameBloc(
+          matchConnection: webSocket,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           user: user,
           isHost: true,
           matchSolver: matchSolver,
-          // timeOutPeriod: Duration(seconds: 10),
-          // now: () => now,
         ),
         setUp: () {
           when(() => matchMakerRepository.watchMatch(any())).thenThrow(
@@ -1126,40 +1090,12 @@ void main() {
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
-              // hostPing: playerPing,
-              // guestPing: opponentPassPing,
             ),
           );
         },
         expect: () => [ManagePlayerPresenceFailedState()],
         verify: (_) {
           verify(() => matchMakerRepository.watchMatch(match.id)).called(1);
-        },
-      );
-
-      blocTest<GameBloc, GameState>(
-        'fails when pinging throws an exception',
-        build: () => GameBloc(
-          gameResource: gameResource,
-          matchMakerRepository: matchMakerRepository,
-          user: user,
-          isHost: true,
-          // timeOutPeriod: Duration(seconds: 10),
-          // pingInterval: Duration(microseconds: 1),
-          matchSolver: matchSolver,
-          // now: () => now,
-        ),
-        // setUp: () {
-        //   when(() => matchMakerRepository.pingHost(any())).thenThrow(
-        //     Exception('Ops'),
-        //   );
-        // },
-        act: (bloc) {
-          bloc.add(ManagePlayerPresence(match.id));
-        },
-        expect: () => [PingFailedState()],
-        verify: (_) {
-          // verify(() => matchMakerRepository.pingHost(match.id)).called(1);
         },
       );
     });

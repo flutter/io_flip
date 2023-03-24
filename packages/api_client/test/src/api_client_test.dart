@@ -322,6 +322,21 @@ void main() {
       });
     });
 
+    group('ws getWebsocketURI', () {
+      test('returns the connection', () async {
+        const path = '/';
+        const params = {'test': 'test'};
+        final response = subject.getWebsocketURI(path, queryParameters: params);
+        expect(
+          response,
+          equals(
+            Uri.parse(baseUrl)
+                .replace(scheme: 'ws', path: path, queryParameters: params),
+          ),
+        );
+      });
+    });
+
     group('ApiClientError', () {
       test('toString returns the cause', () {
         expect(

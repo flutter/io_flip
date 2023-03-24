@@ -6,7 +6,7 @@ import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:top_dash/game/game.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:web_socket_client/web_socket_client.dart';
 
 class GamePage extends StatelessWidget {
   const GamePage({
@@ -17,9 +17,7 @@ class GamePage extends StatelessWidget {
   });
 
   factory GamePage.routeBuilder(_, GoRouterState state) {
-    final matchConnection =
-        state.extra as WebSocketChannel?; // -> casting is important
-    // return GoToScreen(object: sample);
+    final matchConnection = state.extra as WebSocket?;
 
     return GamePage(
       key: const Key('game'),
@@ -31,7 +29,7 @@ class GamePage extends StatelessWidget {
 
   final String matchId;
   final bool isHost;
-  final WebSocketChannel? matchConnection;
+  final WebSocket? matchConnection;
 
   @override
   Widget build(BuildContext context) {

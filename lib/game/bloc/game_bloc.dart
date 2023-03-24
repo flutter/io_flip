@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:match_maker_repository/match_maker_repository.dart' as repo;
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:web_socket_client/web_socket_client.dart';
 
 part 'game_event.dart';
 part 'game_state.dart';
@@ -29,6 +30,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     on<PlayerPlayed>(_onPlayerPlayed);
     on<MatchStateUpdated>(_onMatchStateUpdated);
     on<ScoreCardUpdated>(_onScoreCardUpdated);
+    on<ManagePlayerPresence>(_onManagePlayerPresence);
   }
 
   final GameResource _gameResource;
@@ -36,7 +38,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   final MatchSolver _matchSolver;
   final User _user;
   final bool isHost;
-  final WebSocketChannel? matchConnection;
+  final WebSocket? matchConnection;
 
   StreamSubscription<MatchState>? _stateSubscription;
   StreamSubscription<repo.Match>? _opponentDisconnectSubscription;
@@ -83,16 +85,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           add(ScoreCardUpdated(state));
         });
 
-        final opponentDisconnectStream =
-            _matchMakerRepository.watchMatch(event.matchId).where(
-                  (match) => isHost
-                      ? match.guestConnected == false
-                      : match.hostConnected == false,
-                );
-        _opponentDisconnectSubscription =
-            opponentDisconnectStream.listen((state) {
-          emit(const OpponentAbsentState());
-        });
+        add(ManagePlayerPresence(event.matchId));
       }
     } catch (e, s) {
       addError(e, s);
@@ -177,6 +170,32 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         deckId: deckId,
         userId: _user.id,
       );
+    }
+  }
+
+  Future<void> _onManagePlayerPresence(
+    ManagePlayerPresence event,
+    Emitter<GameState> emit,
+  ) async {
+    try {
+      final completer = Completer<void>();
+
+      final opponentDisconnectStream =
+          _matchMakerRepository.watchMatch(event.matchId).where(
+                (match) => isHost
+                    ? match.guestConnected == false
+                    : match.hostConnected == false,
+              );
+      _opponentDisconnectSubscription =
+          opponentDisconnectStream.listen((state) {
+        emit(const OpponentAbsentState());
+        completer.complete();
+      });
+
+      return completer.future;
+    } catch (e, s) {
+      addError(e, s);
+      emit(const ManagePlayerPresenceFailedState());
     }
   }
 

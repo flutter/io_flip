@@ -5,7 +5,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:web_socket_client/web_socket_client.dart';
 
 part 'match_making_event.dart';
 part 'match_making_state.dart';
@@ -30,7 +30,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   final GameResource _gameResource;
   final User _user;
   final List<String> cardIds;
-  late WebSocketChannel _matchConnection;
+  late WebSocket _matchConnection;
 
   static const defaultHostWaitTime = Duration(seconds: 4);
   final Duration hostWaitTime;

@@ -70,7 +70,6 @@ void main() {
       matchMakerRepository = MatchMakerRepository(
         db: db,
         retryDelay: 0,
-        now: () => now,
         inviteCode: () => 'inviteCode',
       );
     });
@@ -80,8 +79,8 @@ void main() {
           .thenReturn(collection);
       when(
         () => collection.where(
-          'hostPing',
-          isGreaterThanOrEqualTo: any(named: 'isGreaterThanOrEqualTo'),
+          'hostConnected',
+          isEqualTo: true,
         ),
       ).thenReturn(collection);
       when(() => collection.limit(3)).thenReturn(collection);
@@ -95,7 +94,6 @@ void main() {
         when(doc.data).thenReturn({
           'host': match.host,
           'guest': match.guest == null ? 'EMPTY' : '',
-          // 'hostPing': match.hostPing,
         });
         docs.add(doc);
       }
@@ -127,7 +125,6 @@ void main() {
         when(doc.data).thenReturn({
           'host': match.host,
           'guest': match.guest == null ? 'INVITE' : '',
-          // 'hostPing': match.hostPing,
           'inviteCode': match.inviteCode,
         });
         docs.add(doc);
@@ -140,8 +137,7 @@ void main() {
     void mockAdd(
       String host,
       String guest,
-      String id,
-      Timestamp ping, {
+      String id, {
       String? inviteCode,
     }) {
       when(
@@ -149,7 +145,6 @@ void main() {
           {
             'host': host,
             'guest': guest,
-            'hostPing': ping,
             if (inviteCode != null) 'inviteCode': inviteCode,
           },
         ),
@@ -191,7 +186,6 @@ void main() {
     void mockSuccessfulTransaction(
       String guestId,
       String matchId,
-      Timestamp guestPing,
     ) {
       final docRef = _MockDocumentReference<Map<String, dynamic>>();
       when(() => collection.doc(matchId)).thenReturn(docRef);
@@ -200,30 +194,7 @@ void main() {
       when(
         () => transaction.update(
           docRef,
-          {'guest': guestId, 'guestPing': guestPing},
-        ),
-      ).thenReturn(transaction);
-
-      db.mockTransaction = transaction;
-    }
-
-    void mockPrivateMatchSuccessfulTransaction(
-      String guestId,
-      String matchId,
-      Timestamp ping,
-    ) {
-      final docRef = _MockDocumentReference<Map<String, dynamic>>();
-      when(() => collection.doc(matchId)).thenReturn(docRef);
-
-      final transaction = _MockTransaction();
-      when(
-        () => transaction.update(
-          docRef,
-          {
-            'guest': guestId,
-            'guestPing': ping,
-            'hostPing': ping,
-          },
+          {'guest': guestId},
         ),
       ).thenReturn(transaction);
 
@@ -266,7 +237,7 @@ void main() {
 
     test('returns a new match as host when there are no matches', () async {
       mockQueryResult();
-      mockAdd('hostId', 'EMPTY', 'matchId', now);
+      mockAdd('hostId', 'EMPTY', 'matchId');
       mockAddState('matchId', const [], const []);
 
       final match = await matchMakerRepository.findMatch('hostId');
@@ -276,7 +247,6 @@ void main() {
           Match(
             id: 'matchId',
             host: 'hostId',
-            // hostPing: now,
           ),
         ),
       );
@@ -294,7 +264,7 @@ void main() {
 
     test('creates a new match as host when creating a private match', () async {
       mockQueryResult();
-      mockAdd('hostId', 'INVITE', 'matchId', now, inviteCode: 'inviteCode');
+      mockAdd('hostId', 'INVITE', 'matchId', inviteCode: 'inviteCode');
       mockAddState('matchId', const [], const []);
 
       final match = await matchMakerRepository.createPrivateMatch('hostId');
@@ -304,7 +274,6 @@ void main() {
           Match(
             id: 'matchId',
             host: 'hostId',
-            // hostPing: now,
             inviteCode: 'inviteCode',
           ),
         ),
@@ -329,11 +298,10 @@ void main() {
             id: 'matchId',
             host: 'hostId',
             inviteCode: 'inviteCode',
-            // hostPing: now,
           ),
         ],
       );
-      mockPrivateMatchSuccessfulTransaction('guestId', 'matchId', now);
+      mockSuccessfulTransaction('guestId', 'matchId');
 
       final match = await matchMakerRepository.joinPrivateMatch(
         inviteCode: 'inviteCode',
@@ -346,8 +314,6 @@ void main() {
             id: 'matchId',
             host: 'hostId',
             guest: 'guestId',
-            // hostPing: now,
-            // guestPing: now,
             inviteCode: 'inviteCode',
           ),
         ),
@@ -362,11 +328,10 @@ void main() {
             Match(
               id: 'match123',
               host: 'host123',
-              // hostPing: now,
             ),
           ],
         );
-        mockSuccessfulTransaction('guest123', 'match123', now);
+        mockSuccessfulTransaction('guest123', 'match123');
 
         final match = await matchMakerRepository.findMatch('guest123');
         expect(
@@ -376,8 +341,6 @@ void main() {
               id: 'match123',
               host: 'host123',
               guest: 'guest123',
-              // hostPing: now,
-              // guestPing: now,
             ),
           ),
         );
@@ -392,7 +355,6 @@ void main() {
             Match(
               id: 'match123',
               host: 'host123',
-              // hostPing: now,
             ),
           ],
         );
@@ -421,8 +383,8 @@ void main() {
       when(snapshot.data).thenReturn({
         'host': 'host1',
         'guest': 'guest1',
-        'hostPing': now,
-        'guestPing': now,
+        'hostConnected': true,
+        'guestConnected': true,
       });
 
       streamController.add(snapshot);
@@ -436,8 +398,8 @@ void main() {
             id: '123',
             host: 'host1',
             guest: 'guest1',
-            // hostPing: now,
-            // guestPing: now,
+            hostConnected: true,
+            guestConnected: true,
           )
         ]),
       );
@@ -460,7 +422,6 @@ void main() {
       when(snapshot.data).thenReturn({
         'host': 'host1',
         'guest': 'EMPTY',
-        'hostPing': now,
       });
 
       streamController.add(snapshot);
@@ -473,7 +434,6 @@ void main() {
           Match(
             id: '123',
             host: 'host1',
-            // hostPing: now,
           )
         ]),
       );
@@ -518,42 +478,6 @@ void main() {
       );
 
       await subscription.cancel();
-    });
-
-    test('can update the match hostPing', () async {
-      final docRef = _MockDocumentReference<Map<String, dynamic>>();
-      when(() => collection.doc('hostId')).thenReturn(docRef);
-      when(
-        () => docRef.update(
-          {'hostPing': now},
-        ),
-      ).thenAnswer((_) async {});
-
-      // await matchMakerRepository.pingHost('hostId');
-
-      verify(
-        () => docRef.update(
-          {'hostPing': now},
-        ),
-      ).called(1);
-    });
-
-    test('can update the match guestPing', () async {
-      final docRef = _MockDocumentReference<Map<String, dynamic>>();
-      when(() => collection.doc('guestId')).thenReturn(docRef);
-      when(
-        () => docRef.update(
-          {'guestPing': now},
-        ),
-      ).thenAnswer((_) async {});
-
-      // await matchMakerRepository.pingGuest('guestId');
-
-      verify(
-        () => docRef.update(
-          {'guestPing': now},
-        ),
-      ).called(1);
     });
 
     test('can get a ScoreCard', () async {
