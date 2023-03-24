@@ -184,6 +184,25 @@ class _RoundedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return SizedBox(
+      width: 40,
+      height: 40,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            //borderRadius: BorderRadius.circular(10),
+            border: Border.all(width: 2),
+            color: Colors.white,
+            boxShadow: const [
+              BoxShadow(
+                offset: Offset(2, 2),
+                spreadRadius: 1,
+              )
+            ]
+        ),
+        child: icon,
+      ),
+    );
     return OutlinedButton(
       style: OutlinedButton.styleFrom(
         foregroundColor: Colors.black,

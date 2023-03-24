@@ -12,8 +12,7 @@ import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/main_menu/main_menu_screen.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
 import 'package:top_dash/settings/settings.dart';
-import 'package:top_dash/settings/settings_screen.dart';
-import 'package:top_dash/share/views/views.dart';
+import 'package:top_dash/share/share.dart';
 import 'package:top_dash/style/snack_bar.dart';
 
 import '../../helpers/helpers.dart';
@@ -237,7 +236,7 @@ void main() {
         await tester.tap(find.byIcon(Icons.settings));
         await tester.pumpAndSettle();
 
-        await tester.tap(find.text('Back'));
+        await tester.tap(find.byType(BackButton));
         await tester.pumpAndSettle();
 
         expect(find.byType(SettingsScreen), findsNothing);

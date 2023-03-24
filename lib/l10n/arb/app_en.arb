@@ -120,5 +120,35 @@
     "description": "Button text for the main menu button on the share page",
     "type": "text",
     "placeholders": {}
+  },
+  "settingsPageTitle": "Settings",
+  "@settingsPageTitle": {
+    "description": "Title shown on the settings page",
+    "type": "text",
+    "placeholders": {}
+  },
+  "settingsHowToPlayItem": "How to play",
+  "@settingsHowToPlayItem": {
+    "description": "Title of the how to play item in settings",
+    "type": "text",
+    "placeholders": {}
+  },
+  "settingsSoundEffectsItem": "Sound Effects",
+  "@settingsSoundEffectsItem": {
+    "description": "Title of the sound effects item in settings",
+    "type": "text",
+    "placeholders": {}
+  },
+  "settingsMusicItem": "Music",
+  "@settingsMusicItem": {
+    "description": "Title of the music item in settings",
+    "type": "text",
+    "placeholders": {}
+  },
+  "settingsCreditsItem": "Credits, Legal, Links...",
+  "@settingsCreditsItem": {
+    "description": "Title of the credits item in settings",
+    "type": "text",
+    "placeholders": {}
   }
 }
