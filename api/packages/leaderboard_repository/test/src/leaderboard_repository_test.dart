@@ -47,7 +47,7 @@ void main() {
           (_) async => null,
         );
         final response = await leaderboardRepository.getInitialsBlacklist();
-        expect(response, equals([]));
+        expect(response, isEmpty);
       });
     });
   });
