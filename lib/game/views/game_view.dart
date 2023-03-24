@@ -139,6 +139,7 @@ class _GameBoard extends StatelessWidget {
             flex: 2,
             child: _BoardCenter(),
           ),
+          Expanded(child: Text(bloc.isPlayerTurn ? 'Your turn' : 'Their turn')),
           Expanded(
             flex: 4,
             child: Center(
