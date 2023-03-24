@@ -64,6 +64,7 @@ class PortraitMenuView extends StatelessWidget {
         children: const [
           _MainImage(key: Key('main menu image')),
           LeaderboardView(),
+          SizedBox(height: TopDashSpacing.xxlg),
         ],
       ),
     );
@@ -108,8 +109,13 @@ class _MainImage extends StatelessWidget {
             'assets/images/bird.png',
           ),
         ),
-        const SizedBox(height: TopDashSpacing.lg),
-        const Text('A global, AI-powered card collection game.'),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: TopDashSpacing.xxlg),
+          child: Text(
+            context.l10n.menuCatchPhrase,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          ),
+        )
       ],
     );
   }
@@ -126,7 +132,7 @@ class _Footer extends StatelessWidget {
     return ColoredBox(
       color: Colors.white,
       child: Padding(
-        padding: const EdgeInsets.all(TopDashSpacing.md),
+        padding: const EdgeInsets.all(TopDashSpacing.sm),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

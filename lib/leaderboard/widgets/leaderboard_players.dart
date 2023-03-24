@@ -64,8 +64,8 @@ class _Player extends StatelessWidget {
         Row(
           children: [
             Container(
-              width: 20,
-              height: 20,
+              width: 24,
+              height: 24,
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: color,
