@@ -1,7 +1,3 @@
-// Copyright 2022, the Flutter project authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// BSD-style license that can be found in the LICENSE file.
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -54,18 +50,20 @@ class _MainMenuScreenView extends StatelessWidget {
         final size = MediaQuery.of(context).size;
         final isPortrait = size.width < size.height || size.width < 1050;
         return isPortrait
-            ? Column(
-                children: const [
-                  _MainImage(),
-                  LeaderboardView(),
-                ],
-              )
+            ? SingleChildScrollView(
+          child: Column(
+            children: const [
+              _MainImage(key: Key('main menu image')),
+              LeaderboardView(),
+            ],
+          ),
+        )
             : Padding(
                 padding: const EdgeInsets.all(TopDashSpacing.lg),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
-                    _MainImage(),
+                    _MainImage(key: Key('main menu image')),
                     LeaderboardView(),
                   ],
                 ),
@@ -109,7 +107,6 @@ class _Footer extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(TopDashSpacing.md),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             IconButton(
               onPressed: () => GoRouter.of(context).push('/settings'),

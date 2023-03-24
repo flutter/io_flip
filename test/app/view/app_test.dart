@@ -13,6 +13,7 @@ import 'package:top_dash/main_menu/main_menu_screen.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
 import 'package:top_dash/settings/settings.dart';
 import 'package:top_dash/settings/settings_screen.dart';
+import 'package:top_dash/share/views/views.dart';
 import 'package:top_dash/style/snack_bar.dart';
 
 import '../../helpers/helpers.dart';
@@ -125,7 +126,23 @@ void main() {
       });
     });
 
-    testWidgets('renders the app', (tester) async {
+    testWidgets('renders the app in landscape', (tester) async {
+      await tester.pumpWidget(
+        App(
+          settingsPersistence: MemoryOnlySettingsPersistence(),
+          apiClient: apiClient,
+          matchMakerRepository: _MockMatchMakerRepository(),
+          matchSolver: _MockMatchSolver(),
+          gameScriptMachine: _MockGameScriptEngine(),
+          user: _MockUser(),
+        ),
+      );
+
+      expect(find.byType(MainMenuScreen), findsOneWidget);
+    });
+
+    testWidgets('renders the app in portrait', (tester) async {
+      tester.binding.window.physicalSizeTestValue = const Size(800, 1200);
       await tester.pumpWidget(
         App(
           settingsPersistence: MemoryOnlySettingsPersistence(),
@@ -156,6 +173,24 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(DraftPage), findsOneWidget);
+    });
+
+    testWidgets('can navigate to the share page', (tester) async {
+      await tester.pumpWidget(
+        App(
+          settingsPersistence: MemoryOnlySettingsPersistence(),
+          apiClient: apiClient,
+          matchMakerRepository: _MockMatchMakerRepository(),
+          matchSolver: _MockMatchSolver(),
+          gameScriptMachine: _MockGameScriptEngine(),
+          user: _MockUser(),
+        ),
+      );
+
+      await tester.tap(find.byIcon(Icons.share));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SharePage), findsOneWidget);
     });
 
     testWidgets('can navigate to the settings page', (tester) async {
