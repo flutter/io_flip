@@ -21,7 +21,7 @@ void main() {
 
   group('InitialsFormView', () {
     testWidgets('renders continue button', (tester) async {
-      when(() => initialsFormBloc.state).thenReturn(InitialsFormState());
+      when(() => initialsFormBloc.state).thenReturn(const InitialsFormState());
       await tester.pumpSubject(initialsFormBloc);
 
       final l10n = tester.element(find.byType(InitialsFormView)).l10n;
@@ -32,7 +32,8 @@ void main() {
 
     group('initials textfield', () {
       testWidgets('renders correctly', (tester) async {
-        when(() => initialsFormBloc.state).thenReturn(InitialsFormState());
+        when(() => initialsFormBloc.state)
+            .thenReturn(const InitialsFormState());
         await tester.pumpSubject(initialsFormBloc);
 
         expect(find.byType(TextFormField), findsOneWidget);
@@ -40,7 +41,10 @@ void main() {
 
       testWidgets('validates initials', (tester) async {
         when(() => initialsFormBloc.state).thenReturn(
-          InitialsFormState(initials: Initials.dirty('AAA')),
+          const InitialsFormState(
+            initials: 'AAA',
+            status: InitialsFormStatus.valid,
+          ),
         );
         await tester.pumpSubject(initialsFormBloc);
 
@@ -54,7 +58,10 @@ void main() {
 
       testWidgets('shows error text on failed validation', (tester) async {
         when(() => initialsFormBloc.state).thenReturn(
-          InitialsFormState(initials: Initials.dirty('AA')),
+          const InitialsFormState(
+            initials: 'AA',
+            status: InitialsFormStatus.invalid,
+          ),
         );
         await tester.pumpSubject(initialsFormBloc);
 
@@ -70,7 +77,10 @@ void main() {
         'shows error text on failed validation due to blacklisted initials',
         (tester) async {
           when(() => initialsFormBloc.state).thenReturn(
-            InitialsFormState(initials: Initials.dirty('WTF')),
+            const InitialsFormState(
+              initials: 'WTF',
+              status: InitialsFormStatus.invalid,
+            ),
           );
           await tester.pumpSubject(initialsFormBloc);
 
@@ -84,7 +94,8 @@ void main() {
       );
 
       testWidgets('capitalizes lowercase letters', (tester) async {
-        when(() => initialsFormBloc.state).thenReturn(InitialsFormState());
+        when(() => initialsFormBloc.state)
+            .thenReturn(const InitialsFormState());
         await tester.pumpSubject(initialsFormBloc);
 
         final l10n = tester.element(find.byType(InitialsFormView)).l10n;

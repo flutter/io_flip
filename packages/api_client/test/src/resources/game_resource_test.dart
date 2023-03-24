@@ -308,6 +308,7 @@ void main() {
           matchId: 'matchId',
           guestPlayedCards: ['a'],
           hostPlayedCards: ['b'],
+          hostStartsMatch: true,
         );
 
         when(() => response.statusCode).thenReturn(HttpStatus.ok);

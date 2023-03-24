@@ -1,23 +1,32 @@
 part of 'initials_form_bloc.dart';
 
-class InitialsFormState extends Equatable with FormzMixin {
-  InitialsFormState({
-    Initials? initials,
-  }) : initials = initials ?? Initials.pure();
+enum InitialsFormStatus {
+  initial,
+  valid,
+  invalid;
 
-  final Initials initials;
+  bool get isInvalid => this == InitialsFormStatus.invalid;
+}
+
+class InitialsFormState extends Equatable {
+  const InitialsFormState({
+    String? initials,
+    this.status = InitialsFormStatus.initial,
+  }) : initials = initials ?? '';
+
+  final String initials;
+  final InitialsFormStatus status;
 
   InitialsFormState copyWith({
-    Initials? initials,
+    String? initials,
+    InitialsFormStatus? status,
   }) {
     return InitialsFormState(
       initials: initials ?? this.initials,
+      status: status ?? this.status,
     );
   }
 
   @override
-  List<Object> get props => [initials];
-
-  @override
-  List<FormzInput<dynamic, dynamic>> get inputs => [initials];
+  List<Object> get props => [initials, status];
 }

@@ -25,6 +25,8 @@ dependencies:
     path: packages/jwt_middleware
   language_model_repository:
     path: packages/language_model_repository
+  leaderboard_repository:
+    path: packages/leaderboard_repository
   logging: ^1.1.1
   match_repository:
     path: packages/match_repository
