@@ -3,66 +3,6 @@ import 'package:game_domain/game_domain.dart';
 import 'package:game_script_machine/game_script_machine.dart';
 import 'package:test/test.dart';
 
-const script = '''
-fun compareCards(valueA: int, valueB: int, suitA: str, suitB: str) -> int {
-  var evaluation = compareSuits(suitA, suitB);
-  if (evaluation == 0) {
-    evaluation = compareValues(valueA, valueB);
-  }
-  return evaluation;
-}
-
-fun compareSuits(suitA: str, suitB: str) -> int {
-  when (suitA) {
-    'fire' -> {
-      when (suitB) {
-        'air', 'metal' -> return 1;
-        'water', 'earth' -> return -1;
-        else -> return 0;
-      }
-    }
-    'air' -> {
-      when (suitB) {
-        'water', 'earth' -> return 1;
-        'fire', 'metal' -> return -1;
-        else -> return 0;
-      }
-    }
-    'metal' -> {
-      when (suitB) {
-        'water', 'air' -> return 1;
-        'fire', 'earth' -> return -1;
-        else -> return 0;
-      }
-    }
-    'earth' -> {
-      when (suitB) {
-        'fire', 'metal' -> return 1;
-        'water', 'air' -> return -1;
-        else -> return 0;
-      }
-    }
-    'water' -> {
-      when (suitB) {
-        'fire', 'earth' -> return 1;
-        'metal', 'air' -> return -1;
-        else -> return 0;
-      }
-    }
-    else -> return 0;
-  }
-}
-
-fun compareValues(a: int, b: int) -> int {
-  if (a > b) {
-    return 1;
-  } else if (a < b) {
-    return -1;
-  } else {
-    return 0;
-  }
-}''';
-
 Card _makeCard(Suit suit, [int power = 0]) => Card(
       id: 'id',
       name: 'name',
@@ -72,48 +12,47 @@ Card _makeCard(Suit suit, [int power = 0]) => Card(
       rarity: false,
       suit: suit,
     );
+// All the possible pairs of suits, where the first item wins.
+const pairs = [
+  [Suit.fire, Suit.air],
+  [Suit.fire, Suit.metal],
+  [Suit.air, Suit.water],
+  [Suit.air, Suit.earth],
+  [Suit.metal, Suit.water],
+  [Suit.metal, Suit.air],
+  [Suit.earth, Suit.fire],
+  [Suit.earth, Suit.metal],
+  [Suit.water, Suit.fire],
+  [Suit.water, Suit.earth],
+];
 
 void main() {
   group('GameScriptMachine', () {
     test('can be instantiated', () {
-      expect(GameScriptMachine.initialize(script), isNotNull);
+      expect(GameScriptMachine.initialize(defaultGameLogic), isNotNull);
     });
 
     test('returns the currentScript', () {
       expect(
-        GameScriptMachine.initialize(script).currentScript,
-        equals(script),
+        GameScriptMachine.initialize(defaultGameLogic).currentScript,
+        equals(defaultGameLogic),
       );
     });
 
     group('compare', () {
       test('correctly evaluates the result for different suits', () {
-        final m = GameScriptMachine.initialize(script);
-
-        // All the possible pairs of suits, where the first item wins.
-        final pairs = [
-          [Suit.fire, Suit.air],
-          [Suit.fire, Suit.metal],
-          [Suit.air, Suit.water],
-          [Suit.air, Suit.earth],
-          [Suit.metal, Suit.water],
-          [Suit.metal, Suit.air],
-          [Suit.earth, Suit.fire],
-          [Suit.earth, Suit.metal],
-          [Suit.water, Suit.fire],
-          [Suit.water, Suit.earth],
-        ];
+        final m = GameScriptMachine.initialize(defaultGameLogic);
 
         for (final pair in pairs) {
-          final a = _makeCard(pair[0]);
-          final b = _makeCard(pair[1]);
-          expect(m.compare(a, b), equals(1));
-          expect(m.compare(b, a), equals(-1));
+          final a = pair[0];
+          final b = pair[1];
+          expect(m.compareSuits(a, b), equals(1));
+          expect(m.compareSuits(b, a), equals(-1));
         }
       });
 
       test('correctly evaluates the result for the same suit and value', () {
-        final m = GameScriptMachine.initialize(script);
+        final m = GameScriptMachine.initialize(defaultGameLogic);
 
         for (final suit in Suit.values) {
           final a = _makeCard(suit);
@@ -124,13 +63,50 @@ void main() {
       });
 
       test(
-        'correctly evaluates the result for the same suit and different values',
+        'correctly evaluates the result for the same suit and different values '
+        'when winning suit has higher value',
         () {
-          final m = GameScriptMachine.initialize(script);
+          final m = GameScriptMachine.initialize(defaultGameLogic);
 
           for (final suit in Suit.values) {
             final a = _makeCard(suit, 10);
             final b = _makeCard(suit, 3);
+            expect(m.compare(a, b), equals(1));
+            expect(m.compare(b, a), equals(-1));
+          }
+        },
+      );
+
+      test(
+        'correctly evaluates the result for different suits and different '
+        'values when winning suit has the lower value but modifier is not '
+        'enough',
+        () {
+          final m = GameScriptMachine.initialize(defaultGameLogic);
+
+          for (final pair in pairs) {
+            final aSuit = pair[0];
+            final bSuit = pair[1];
+            final a = _makeCard(aSuit, 10);
+            final b = _makeCard(bSuit, 22);
+            expect(m.compare(a, b), equals(-1));
+            expect(m.compare(b, a), equals(1));
+          }
+        },
+      );
+
+      test(
+        'correctly evaluates the result for different suits and different '
+        'values when winning suit has the lower value and the notfier is '
+        'enough',
+        () {
+          final m = GameScriptMachine.initialize(defaultGameLogic);
+
+          for (final pair in pairs) {
+            final aSuit = pair[0];
+            final bSuit = pair[1];
+            final a = _makeCard(aSuit, 19);
+            final b = _makeCard(bSuit, 20);
             expect(m.compare(a, b), equals(1));
             expect(m.compare(b, a), equals(-1));
           }
