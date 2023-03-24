@@ -43,8 +43,7 @@ class MatchState extends Equatable {
     required this.matchId,
     required this.hostPlayedCards,
     required this.guestPlayedCards,
-    // TODO(jaime): change to required field.
-    this.hostStartsMatch = false,
+    required this.hostStartsMatch,
     this.result,
   });
 

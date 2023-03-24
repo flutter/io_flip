@@ -29,6 +29,7 @@ void main() {
           matchId: '',
           guestPlayedCards: const [],
           hostPlayedCards: const [],
+          hostStartsMatch: true,
         ),
       );
     });
@@ -267,6 +268,7 @@ void main() {
               matchId: matchId,
               guestPlayedCards: const ['A', 'B'],
               hostPlayedCards: const ['C', 'D'],
+              hostStartsMatch: true,
             ),
           ),
         );

@@ -504,6 +504,7 @@ void main() {
             matchId: '1234',
             guestPlayedCards: const ['321'],
             hostPlayedCards: const ['322'],
+            hostStartsMatch: true,
             result: MatchResult.host,
           )
         ]),
