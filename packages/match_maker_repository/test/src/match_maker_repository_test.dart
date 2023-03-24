@@ -1,6 +1,7 @@
 // ignore_for_file: subtype_of_sealed_class, prefer_const_constructors
 
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -43,6 +44,8 @@ class _MockDocumentReference<T> extends Mock implements DocumentReference<T> {}
 
 class _MockTransaction extends Mock implements Transaction {}
 
+class _MockRandom extends Mock implements math.Random {}
+
 void main() {
   group('MatchMakerRepository', () {
     late _MockFirebaseFirestore db;
@@ -50,6 +53,7 @@ void main() {
     late CollectionReference<Map<String, dynamic>> matchStateCollection;
     late CollectionReference<Map<String, dynamic>> scoreCardsCollection;
     late MatchMakerRepository matchMakerRepository;
+    late math.Random randomGenerator;
 
     setUpAll(() {
       registerFallbackValue(Timestamp(0, 0));
@@ -60,15 +64,18 @@ void main() {
       collection = _MockCollectionReference();
       matchStateCollection = _MockCollectionReference();
       scoreCardsCollection = _MockCollectionReference();
+      randomGenerator = _MockRandom();
 
       when(() => db.collection('matches')).thenReturn(collection);
       when(() => db.collection('score_cards')).thenReturn(scoreCardsCollection);
       when(() => db.collection('match_states'))
           .thenReturn(matchStateCollection);
+      when(() => randomGenerator.nextBool()).thenReturn(true);
       matchMakerRepository = MatchMakerRepository(
         db: db,
         retryDelay: 0,
         inviteCode: () => 'inviteCode',
+        randomGenerator: randomGenerator,
       );
     });
 
@@ -160,14 +167,16 @@ void main() {
     void mockAddState(
       String matchId,
       List<String> hostPlayedCards,
-      List<String> guestPlayedCards,
-    ) {
+      List<String> guestPlayedCards, {
+      required bool hostStartsMatch,
+    }) {
       when(
         () => matchStateCollection.add(
           {
             'matchId': matchId,
             'hostPlayedCards': hostPlayedCards,
             'guestPlayedCards': guestPlayedCards,
+            'hostStartsMatch': hostStartsMatch,
           },
         ),
       ).thenAnswer(
@@ -236,7 +245,7 @@ void main() {
     test('returns a new match as host when there are no matches', () async {
       mockQueryResult();
       mockAdd('hostId', 'EMPTY', 'matchId');
-      mockAddState('matchId', const [], const []);
+      mockAddState('matchId', const [], const [], hostStartsMatch: true);
 
       final match = await matchMakerRepository.findMatch('hostId');
       expect(
@@ -255,6 +264,7 @@ void main() {
             'matchId': 'matchId',
             'hostPlayedCards': const <String>[],
             'guestPlayedCards': const <String>[],
+            'hostStartsMatch': true,
           },
         ),
       ).called(1);
@@ -263,7 +273,7 @@ void main() {
     test('creates a new match as host when creating a private match', () async {
       mockQueryResult();
       mockAdd('hostId', 'INVITE', 'matchId', inviteCode: 'inviteCode');
-      mockAddState('matchId', const [], const []);
+      mockAddState('matchId', const [], const [], hostStartsMatch: true);
 
       final match = await matchMakerRepository.createPrivateMatch('hostId');
       expect(
@@ -283,6 +293,7 @@ void main() {
             'matchId': 'matchId',
             'hostPlayedCards': const <String>[],
             'guestPlayedCards': const <String>[],
+            'hostStartsMatch': true,
           },
         ),
       ).called(1);
@@ -455,6 +466,7 @@ void main() {
         'matchId': '1234',
         'guestPlayedCards': ['321'],
         'hostPlayedCards': ['322'],
+        'hostStartsMatch': true,
         'result': 'host',
       });
 
@@ -470,6 +482,7 @@ void main() {
             matchId: '1234',
             guestPlayedCards: const ['321'],
             hostPlayedCards: const ['322'],
+            hostStartsMatch: true,
             result: MatchResult.host,
           )
         ]),
