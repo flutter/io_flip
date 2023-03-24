@@ -29,7 +29,9 @@ class MainMenuScreen extends StatelessWidget {
             bottom: 0,
             left: 0,
             right: 0,
-            child: _Footer(key: Key('main menu footer')),
+            child: Align(
+              child: _Footer(key: Key('main menu footer')),
+            ),
           )
         ],
       ),
@@ -124,6 +126,8 @@ class _MainImage extends StatelessWidget {
 class _Footer extends StatelessWidget {
   const _Footer({super.key});
 
+  static const Widget _gap = SizedBox(width: TopDashSpacing.sm);
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -134,22 +138,36 @@ class _Footer extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(TopDashSpacing.sm),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            IconButton(
-              onPressed: () => GoRouter.of(context).push('/settings'),
+            _RoundedButton(
               icon: const Icon(Icons.settings),
+              onPressed: () => GoRouter.of(context).push('/settings'),
             ),
+            _gap,
+            _RoundedButton(
+              icon: const Icon(Icons.share),
+              onPressed: () => GoRouter.of(context).goNamed('share'),
+            ),
+            _gap,
             OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                backgroundColor: TopDashColors.mainBlue,
+                elevation: 2,
+                side: const BorderSide(),
+                shadowColor: Colors.black,
+              ),
               onPressed: () {
                 audioController.playSfx(SfxType.buttonTap);
                 GoRouter.of(context).go('/draft');
               },
-              child: Text(l10n.play),
-            ),
-            IconButton(
-              onPressed: () => GoRouter.of(context).goNamed('share'),
-              icon: const Icon(Icons.share),
+              child: Text(
+                l10n.play,
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ],
         ),
@@ -157,3 +175,26 @@ class _Footer extends StatelessWidget {
     );
   }
 }
+
+class _RoundedButton extends StatelessWidget {
+  const _RoundedButton({required this.icon, required this.onPressed});
+
+  final Icon icon;
+  final Function onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        foregroundColor: Colors.black,
+        backgroundColor: Colors.white,
+        side: const BorderSide(width: 2),
+        shadowColor: Colors.black,
+        shape: const CircleBorder(),
+      ),
+      onPressed: () => onPressed,
+      child: icon,
+    );
+  }
+}
+

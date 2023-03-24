@@ -8,6 +8,9 @@ abstract class TopDashColors {
   /// White.
   static const Color white = Color(0xFFFFFFFF);
 
+  /// Blue
+  static const Color mainBlue = Color(0xFF72AAFF);
+
   /// Ink.
   static const Color ink = Color(0xee352b42);
 
