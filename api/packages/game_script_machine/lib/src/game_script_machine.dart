@@ -40,7 +40,7 @@ class GameScriptMachine {
   }
 
   /// Evaluates the two suits against each other.
-  /// Returns 1 if bigger, -1 if smaller, 0 is equals.
+  /// Returns 1 if `a` is bigger, -1 if `a` is smaller, 0 if both are equal.
   int compareSuits(Suit a, Suit b) {
     final value = _hetu.invoke(
       'compareSuits',
