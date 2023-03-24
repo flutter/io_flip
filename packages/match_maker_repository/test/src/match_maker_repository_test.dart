@@ -50,7 +50,6 @@ void main() {
     late CollectionReference<Map<String, dynamic>> matchStateCollection;
     late CollectionReference<Map<String, dynamic>> scoreCardsCollection;
     late MatchMakerRepository matchMakerRepository;
-    late Timestamp now;
 
     setUpAll(() {
       registerFallbackValue(Timestamp(0, 0));
@@ -61,7 +60,6 @@ void main() {
       collection = _MockCollectionReference();
       matchStateCollection = _MockCollectionReference();
       scoreCardsCollection = _MockCollectionReference();
-      now = Timestamp.now();
 
       when(() => db.collection('matches')).thenReturn(collection);
       when(() => db.collection('score_cards')).thenReturn(scoreCardsCollection);

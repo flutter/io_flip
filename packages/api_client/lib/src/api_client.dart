@@ -158,6 +158,18 @@ class ApiClient {
       return response.decrypted;
     });
   }
+
+  /// Returns a WebSocket uri for the specified [path] and [queryParameters].
+  Uri getWebsocketURI(
+    String path, {
+    Map<String, String>? queryParameters,
+  }) {
+    return _base.replace(
+      scheme: 'ws',
+      path: path,
+      queryParameters: queryParameters,
+    );
+  }
 }
 
 extension on http.Response {
@@ -182,35 +194,23 @@ extension on http.Response {
     );
   }
 
-  /// Returns a WebSocket uri for the specified [path] and [queryParameters].
-  Uri getWebsocketURI(
-    String path, {
-    Map<String, String>? queryParameters,
-  }) {
-    return _base.replace(
-      scheme: 'ws',
-      path: path,
-      queryParameters: queryParameters,
+  String get _encryptionKey {
+    const value = String.fromEnvironment(
+      'ENCRYPTION_KEY',
+      // Default value is set at 32 characters to match required length of
+      // AES key. The default value can then be used for testing purposes.
+      defaultValue: 'encryption_key_not_set_123456789',
     );
+    return value;
   }
-}
 
-String get _encryptionKey {
-  const value = String.fromEnvironment(
-    'ENCRYPTION_KEY',
-    // Default value is set at 32 characters to match required length of
-    // AES key. The default value can then be used for testing purposes.
-    defaultValue: 'encryption_key_not_set_123456789',
-  );
-  return value;
-}
-
-String get _encryptionIV {
-  const value = String.fromEnvironment(
-    'ENCRYPTION_IV',
-    // Default value is set at 116 characters to match required length of
-    // IV key. The default value can then be used for testing purposes.
-    defaultValue: 'iv_not_set_12345',
-  );
-  return value;
+  String get _encryptionIV {
+    const value = String.fromEnvironment(
+      'ENCRYPTION_IV',
+      // Default value is set at 116 characters to match required length of
+      // IV key. The default value can then be used for testing purposes.
+      defaultValue: 'iv_not_set_12345',
+    );
+    return value;
+  }
 }
