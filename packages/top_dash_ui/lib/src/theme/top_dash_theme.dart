@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -22,10 +23,11 @@ class TopDashTheme {
   }
 
   static TextTheme get _textTheme {
-    return const TextTheme(
-      bodyMedium: TextStyle(
-        color: TopDashColors.ink,
-      ),
-    );
+    final isMobile = defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS;
+
+    return isMobile
+        ? TopDashTextStyles.mobile.textTheme
+        : TopDashTextStyles.desktop.textTheme;
   }
 }

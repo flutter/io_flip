@@ -22,6 +22,12 @@ GoRouter createRouter() {
           GoRoute(
             path: 'settings',
             builder: SettingsScreen.routeBuilder,
+            routes: [
+              GoRoute(
+                path: 'how_to_play',
+                builder: HowToPlayPage.routeBuilder,
+              ),
+            ],
           ),
           GoRoute(
             path: 'draft',
