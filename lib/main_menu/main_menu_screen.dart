@@ -47,7 +47,7 @@ class _MainMenuScreenView extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final isPortrait = constraints.maxWidth < constraints.maxHeight ||
-            constraints.maxWidth < 1050;
+            constraints.maxWidth < 1150;
         return isPortrait
             ? const PortraitMenuView()
             : const LandscapeMenuView();
@@ -82,7 +82,7 @@ class LandscapeMenuView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(TopDashSpacing.lg),
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 1200),
+        constraints: const BoxConstraints(maxWidth: 1300),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: const [
@@ -126,7 +126,7 @@ class _MainImage extends StatelessWidget {
 class _Footer extends StatelessWidget {
   const _Footer({super.key});
 
-  static const Widget _gap = SizedBox(width: TopDashSpacing.sm);
+  static const Widget _gap = SizedBox(width: TopDashSpacing.md);
 
   @override
   Widget build(BuildContext context) {
@@ -141,33 +141,41 @@ class _Footer extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _RoundedButton(
-              icon: const Icon(Icons.settings),
+              backgroundColor: Colors.white,
+              child: const Icon(Icons.more_horiz_rounded),
               onPressed: () => GoRouter.of(context).push('/settings'),
             ),
             _gap,
             _RoundedButton(
-              icon: const Icon(Icons.share),
+              backgroundColor: Colors.white,
+              child: const Icon(Icons.share),
               onPressed: () => GoRouter.of(context).goNamed('share'),
             ),
             _gap,
-            OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                backgroundColor: TopDashColors.mainBlue,
-                elevation: 2,
-                side: const BorderSide(),
-                shadowColor: Colors.black,
+            _RoundedButton(
+              backgroundColor: Colors.white,
+              child: const Icon(Icons.question_mark_rounded),
+              onPressed: () => GoRouter.of(context).go('/how_to_play'),
+            ),
+            _gap,
+            _RoundedButton(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: TopDashSpacing.sm,
+                ),
+                child: Text(
+                  l10n.play,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
               ),
               onPressed: () {
                 audioController.playSfx(SfxType.buttonTap);
                 GoRouter.of(context).go('/draft');
               },
-              child: Text(
-                l10n.play,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
             ),
           ],
         ),
@@ -177,32 +185,36 @@ class _Footer extends StatelessWidget {
 }
 
 class _RoundedButton extends StatelessWidget {
-  const _RoundedButton({required this.icon, required this.onPressed});
+  const _RoundedButton({
+    required this.child,
+    required this.onPressed,
+    this.backgroundColor = TopDashColors.mainBlue,
+  });
 
-  final Icon icon;
-  final Function onPressed;
+  final Widget child;
+  final GestureTapCallback onPressed;
+  final Color backgroundColor;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 40,
-      height: 40,
-      child: GestureDetector(
-        onTap: () => onPressed,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            //borderRadius: BorderRadius.circular(10),
-            border: Border.all(width: 2),
-            color: Colors.white,
-            boxShadow: const [
-              BoxShadow(
-                offset: Offset(2, 2),
-                spreadRadius: 1,
-              )
-            ],
-          ),
-          child: icon,
+    return GestureDetector(
+      onTap: onPressed,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          ///shape: BoxShape.circle,
+          borderRadius: BorderRadius.circular(40),
+          border: Border.all(width: 2),
+          color: backgroundColor,
+          boxShadow: const [
+            BoxShadow(
+              offset: Offset(2, 2),
+              spreadRadius: 1,
+            )
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(TopDashSpacing.md),
+          child: child,
         ),
       ),
     );

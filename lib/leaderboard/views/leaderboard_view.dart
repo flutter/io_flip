@@ -22,19 +22,22 @@ class LeaderboardViewState extends State<LeaderboardView> {
       l10n.leaderboardMostWins: const LeaderboardPlayers(),
     };
 
-    return DefaultTabController(
-      length: tabs.length,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 400),
-        child: Column(
-          children: [
-            TabBar(
-              tabs: [for (final tab in tabs.keys) Tab(text: tab)],
-              onTap: (i) => setState(() => index = i),
-            ),
-            const SizedBox(height: TopDashSpacing.lg),
-            tabs.values.elementAt(index),
-          ],
+    return Padding(
+      padding: const EdgeInsets.all(TopDashSpacing.md),
+      child: DefaultTabController(
+        length: tabs.length,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 500),
+          child: Column(
+            children: [
+              TabBar(
+                tabs: [for (final tab in tabs.keys) Tab(text: tab)],
+                onTap: (i) => setState(() => index = i),
+              ),
+              const SizedBox(height: TopDashSpacing.lg),
+              tabs.values.elementAt(index),
+            ],
+          ),
         ),
       ),
     );
