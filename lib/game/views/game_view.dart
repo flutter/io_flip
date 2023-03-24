@@ -147,15 +147,13 @@ class _GameBoard extends StatelessWidget {
                 children: [
                   for (final card in playerDeck.cards)
                     InkWell(
-                      onTap: allPlayerPlayedCards.contains(card.id) ||
-                              !bloc.canPlayerPlay(card.id) ||
-                              state.playerPlayed
-                          ? null
-                          : () {
-                              context
-                                  .read<GameBloc>()
-                                  .add(PlayerPlayed(card.id));
-                            },
+                      onTap: () {
+                        if (!allPlayerPlayedCards.contains(card.id) &&
+                            bloc.canPlayerPlay(card.id) &&
+                            !state.playerPlayed) {
+                          context.read<GameBloc>().add(PlayerPlayed(card.id));
+                        }
+                      },
                       child: Transform.translate(
                         offset: Offset(
                           0,
