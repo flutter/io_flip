@@ -33,7 +33,7 @@ void main() {
           'matchId': 'matchId',
           'guestPlayedCards': ['1'],
           'hostPlayedCards': ['2'],
-          'hostStartsMatch': 'true',
+          'hostStartsMatch': true,
           'result': 'host',
         }),
       );
@@ -46,7 +46,7 @@ void main() {
           'matchId': 'matchId',
           'guestPlayedCards': ['1'],
           'hostPlayedCards': ['2'],
-          'hostStartsMatch': 'true',
+          'hostStartsMatch': true,
           'result': 'host',
         }),
         equals(

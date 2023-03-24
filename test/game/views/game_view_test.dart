@@ -38,6 +38,7 @@ void main() {
       when(() => bloc.isWiningCard(any(), isPlayer: any(named: 'isPlayer')))
           .thenReturn(false);
       when(() => bloc.canPlayerPlay(any())).thenReturn(true);
+      when(() => bloc.isPlayerTurn).thenReturn(true);
       when(bloc.hasPlayerWon).thenReturn(false);
     });
 

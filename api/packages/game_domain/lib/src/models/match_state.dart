@@ -126,6 +126,7 @@ class MatchState extends Equatable {
         matchId,
         hostPlayedCards,
         guestPlayedCards,
+        hostStartsMatch,
         result,
       ];
 }
