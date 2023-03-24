@@ -21,14 +21,11 @@ class MainMenuScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: TopDashColors.backgroundMain,
       body: Stack(
-        children: [
+        children: const [
           Align(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 1200),
-              child: const _MainMenuScreenView(key: Key('main menu view')),
-            ),
+            child: _MainMenuScreenView(key: Key('main menu view')),
           ),
-          const Positioned(
+          Positioned(
             bottom: 0,
             left: 0,
             right: 0,
@@ -47,28 +44,52 @@ class _MainMenuScreenView extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final size = MediaQuery.of(context).size;
-        final isPortrait = size.width < size.height || size.width < 1050;
+        final isPortrait = constraints.maxWidth < constraints.maxHeight ||
+            constraints.maxWidth < 1050;
         return isPortrait
-            ? SingleChildScrollView(
-                child: Column(
-                  children: const [
-                    _MainImage(key: Key('main menu image')),
-                    LeaderboardView(),
-                  ],
-                ),
-              )
-            : Padding(
-                padding: const EdgeInsets.all(TopDashSpacing.lg),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    _MainImage(key: Key('main menu image')),
-                    LeaderboardView(),
-                  ],
-                ),
-              );
+            ? const PortraitMenuView()
+            : const LandscapeMenuView();
       },
+    );
+  }
+}
+
+class PortraitMenuView extends StatelessWidget {
+  const PortraitMenuView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: const [
+          _MainImage(key: Key('main menu image')),
+          LeaderboardView(),
+        ],
+      ),
+    );
+  }
+}
+
+@visibleForTesting
+class LandscapeMenuView extends StatelessWidget {
+  const LandscapeMenuView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(TopDashSpacing.lg),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1200),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: const [
+            _MainImage(key: Key('main menu image')),
+            SingleChildScrollView(
+              child: LeaderboardView(),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -79,12 +100,12 @@ class _MainImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 590),
           child: Image.asset(
             'assets/images/bird.png',
-            fit: BoxFit.fitWidth,
           ),
         ),
         const SizedBox(height: TopDashSpacing.lg),
@@ -107,6 +128,7 @@ class _Footer extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(TopDashSpacing.md),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             IconButton(
               onPressed: () => GoRouter.of(context).push('/settings'),
