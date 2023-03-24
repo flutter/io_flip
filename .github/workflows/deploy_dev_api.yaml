@@ -53,6 +53,8 @@ jobs:
           env_vars: |
             FB_APP_ID=${{ env.PROJECT_ID }}
             CORS_DOMAIN=${{ env.DEV_CORS }}
+            ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }}
+            ENCRYPTION_IV=${{ secrets.ENCRYPTION_IV }}
 
       - name: Show Output
         run: echo ${{ steps.deploy.outputs.url }}

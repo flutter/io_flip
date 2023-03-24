@@ -157,7 +157,7 @@ class _GameBoard extends StatelessWidget {
                   for (final card in playerDeck.cards)
                     InkWell(
                       onTap: allPlayerPlayedCards.contains(card.id) ||
-                              !bloc.canPlayerPlay() ||
+                              !bloc.canPlayerPlay(card.id) ||
                               state.playerPlayed
                           ? null
                           : () {
@@ -238,9 +238,19 @@ class _BoardCenter extends StatelessWidget {
               Text('Game ended: $result'),
               const SizedBox(height: TopDashSpacing.sm),
               // TODO(willhlas): add to l10n and update design once ready.
-              ElevatedButton(
-                onPressed: () => GoRouter.of(context).pop(),
-                child: const Text('Replay'),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    onPressed: () => GoRouter.of(context).goNamed('share'),
+                    icon: const Icon(Icons.share),
+                  ),
+                  const SizedBox(width: TopDashSpacing.sm),
+                  ElevatedButton(
+                    onPressed: () => GoRouter.of(context).pop(),
+                    child: const Text('Replay'),
+                  ),
+                ],
               ),
             ],
           ),

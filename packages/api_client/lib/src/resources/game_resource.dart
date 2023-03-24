@@ -44,16 +44,10 @@ class GameResource {
   /// Post /decks
   ///
   /// Returns the id of the created deck.
-  Future<String> createDeck({
-    required List<String> cardIds,
-    required String userId,
-  }) async {
+  Future<String> createDeck(List<String> cardIds) async {
     final response = await _apiClient.post(
       '/decks',
-      body: jsonEncode({
-        'cards': cardIds,
-        'userId': userId,
-      }),
+      body: jsonEncode({'cards': cardIds}),
     );
 
     if (response.statusCode != HttpStatus.ok) {
@@ -134,12 +128,7 @@ class GameResource {
   ///
   /// Returns a [MatchState], if any to be found.
   Future<MatchState?> getMatchState(String matchId) async {
-    final response = await _apiClient.get(
-      '/matches/state',
-      queryParameters: {
-        'matchId': matchId,
-      },
-    );
+    final response = await _apiClient.get('/matches/$matchId/state');
 
     if (response.statusCode == HttpStatus.notFound) {
       return null;
@@ -170,22 +159,14 @@ class GameResource {
     required String matchId,
     required String cardId,
     required String deckId,
-    required String userId,
   }) async {
     try {
-      final response = await _apiClient.post(
-        '/matches/move',
-        queryParameters: {
-          'matchId': matchId,
-          'cardId': cardId,
-          'deckId': deckId,
-          'userId': userId,
-        },
-      );
+      final response = await _apiClient
+          .post('/matches/$matchId/decks/$deckId/cards/$cardId');
 
       if (response.statusCode != HttpStatus.noContent) {
         throw ApiClientError(
-          'POST /matches/$matchId/move returned status ${response.statusCode} with the following response: "${response.body}"',
+          'POST /matches/$matchId/decks/$deckId/cards/$cardId returned status ${response.statusCode} with the following response: "${response.body}"',
           StackTrace.current,
         );
       }
@@ -193,7 +174,7 @@ class GameResource {
       rethrow;
     } catch (e) {
       throw ApiClientError(
-        'POST /matches/$matchId/move failed with the following message: "$e"',
+        'POST /matches/$matchId/decks/$deckId/cards/$cardId failed with the following message: "$e"',
         StackTrace.current,
       );
     }

@@ -267,7 +267,6 @@ void main() {
             matchId: 'matchId',
             cardId: any(named: 'cardId'),
             deckId: any(named: 'deckId'),
-            userId: any(named: 'userId'),
           ),
         ).thenAnswer((_) async {});
       });
@@ -352,14 +351,22 @@ void main() {
         ),
         setUp: () {
           when(
-            () => matchSolver.canPlayCard(baseState.matchState, isHost: true),
+            () => matchSolver.canPlayCard(
+              baseState.matchState,
+              any(),
+              isHost: true,
+            ),
           ).thenReturn(true);
         },
         seed: () => baseState,
-        act: (bloc) => bloc.canPlayerPlay(),
+        act: (bloc) => bloc.canPlayerPlay(''),
         verify: (_) {
           verify(
-            () => matchSolver.canPlayCard(baseState.matchState, isHost: true),
+            () => matchSolver.canPlayCard(
+              baseState.matchState,
+              any(),
+              isHost: true,
+            ),
           ).called(1);
         },
       );

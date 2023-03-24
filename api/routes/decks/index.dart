@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:cards_repository/cards_repository.dart';
 import 'package:dart_frog/dart_frog.dart';
+import 'package:jwt_middleware/jwt_middleware.dart';
 import 'package:logging/logging.dart';
 
 FutureOr<Response> onRequest(RequestContext context) {
@@ -15,9 +16,8 @@ FutureOr<Response> onRequest(RequestContext context) {
 FutureOr<Response> _createDeck(RequestContext context) async {
   final json = await context.request.json() as Map<String, dynamic>;
   final cards = json['cards'];
-  final userId = json['userId'];
 
-  if (!_isListOfString(cards) || userId is! String) {
+  if (!_isListOfString(cards)) {
     context.read<Logger>().warning(
           'Received invalid payload: $json',
         );
@@ -26,9 +26,11 @@ FutureOr<Response> _createDeck(RequestContext context) async {
   final ids = (cards as List).cast<String>();
 
   final cardsRepository = context.read<CardsRepository>();
+  final user = context.read<AuthenticatedUser>();
+
   final deckId = await cardsRepository.createDeck(
     cardIds: ids,
-    userId: userId,
+    userId: user.id,
   );
 
   return Response.json(body: {'id': deckId});

@@ -20,18 +20,6 @@
       }
     }
   },
-  "cardGenerationError": "Error generating cards, please try again in a few moments",
-  "@cardGenerationError": {
-    "description": "Label show when there is an error generating a deck"
-  },
-  "nextCard": "Next card",
-  "@nextCard": {
-    "description": "Label show on the draft page to show the next card"
-  },
-  "useCard": "Use card",
-  "@useCard": {
-    "description": "Label show on the draft page to use the card"
-  },
   "leaderboardLongestStreak": "Longest Streak",
   "@leaderboardLongestStreak": {
     "description": "Label shown on the leaderboard for the longest streak category tab"
@@ -87,30 +75,76 @@
   },
   "cardGenerationError": "Error generating cards, please try again in a few moments",
   "@cardGenerationError": {
-      "description": "Label show when there is an error generating a deck"
+    "description": "Label show when there is an error generating a deck"
   },
   "nextCard": "Next card",
   "@nextCard": {
-      "description": "Label show on the draft page to show the next card"
+    "description": "Label show on the draft page to show the next card"
   },
   "useCard": "Use card",
   "@useCard": {
-      "description": "Label show on the draft page to use the card"
+    "description": "Label show on the draft page to use the card"
   },
   "youMadeItToTheLeaderboard": "You made it to the leaderboard!",
   "@youMadeItToTheLeaderboard": {
-      "description": "Title shown on the Leaderboard Entry page"
+    "description": "Title shown on the Leaderboard Entry page"
   },
   "enterYourInitials": "Enter your initials to get the glory you deserve!",
   "@enterYourInitials": {
-      "description": "Sub title on the leaderboard entry page to prompt users to enter their initials"
+    "description": "Sub title on the leaderboard entry page to prompt users to enter their initials"
   },
   "continueButton": "Continue",
   "@continueButton": {
-      "description": "Continue button label"
-    },
-    "enterInitialsError": "Please enter three initials",
-    "@enterInitialsError": {
-        "description": "Leaderboard initials textfeild validation error text"
-    }
+    "description": "Continue button label"
+  },
+  "enterInitialsError": "Please enter three initials",
+  "@enterInitialsError": {
+    "description": "Leaderboard initials textfeild validation error text"
+  },
+  "sharePageTitle": "Share your hand!",
+  "@sharePageTitle": {
+    "description": "Title shown on the share page"
+  },
+  "sharePageShareButton": "Share",
+  "@sharePageShareButton": {
+    "description": "Button text for the share button on the share page",
+    "type": "text",
+    "placeholders": {}
+  },
+  "sharePageMainMenuButton": "Main Menu",
+  "@sharePageMainMenuButton": {
+    "description": "Button text for the main menu button on the share page",
+    "type": "text",
+    "placeholders": {}
+  },
+  "settingsPageTitle": "Settings",
+  "@settingsPageTitle": {
+    "description": "Title shown on the settings page",
+    "type": "text",
+    "placeholders": {}
+  },
+  "settingsHowToPlayItem": "How to play",
+  "@settingsHowToPlayItem": {
+    "description": "Title of the how to play item in settings",
+    "type": "text",
+    "placeholders": {}
+  },
+  "settingsSoundEffectsItem": "Sound Effects",
+  "@settingsSoundEffectsItem": {
+    "description": "Title of the sound effects item in settings",
+    "type": "text",
+    "placeholders": {}
+  },
+  "settingsMusicItem": "Music",
+  "@settingsMusicItem": {
+    "description": "Title of the music item in settings",
+    "type": "text",
+    "placeholders": {}
+  },
+  "settingsCreditsItem": "Credits, Legal, Links...",
+  "@settingsCreditsItem": {
+    "description": "Title of the credits item in settings",
+    "type": "text",
+    "placeholders": {}
+  }
 }

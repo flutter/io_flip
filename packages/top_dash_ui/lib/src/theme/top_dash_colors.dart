@@ -14,9 +14,6 @@ abstract class TopDashColors {
   /// Background Main.
   static const Color backgroundMain = Color(0xFFF9F9F9);
 
-  /// Background Settings.xx
-  static const Color backgroundSettings = Color(0xffbfc8e3);
-
   /// Background Leaderboard Entry.
   static const Color backgroundLeaderboardEntry = Color(0x80232326);
 }

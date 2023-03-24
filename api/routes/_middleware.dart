@@ -18,6 +18,8 @@ Handler middleware(Handler handler) {
       .use(provider<MatchRepository>((_) => matchRepository))
       .use(provider<ScriptsRepository>((_) => scriptsRepository))
       .use(provider<GameScriptMachine>((_) => gameScriptMachine))
+      .use(jwtMiddleware.middleware)
+      .use(encryptionMiddleware.middleware)
       .use(
         fromShelfMiddleware(
           corsHeaders(

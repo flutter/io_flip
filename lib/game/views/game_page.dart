@@ -17,13 +17,15 @@ class GamePage extends StatelessWidget {
   });
 
   factory GamePage.routeBuilder(_, GoRouterState state) {
-    final matchConnection = state.extra as WebSocket?;
+    final extras = state.extra as List<Object>?;
+    final matchConnection = extras?.first as WebSocket?;
+    final isHost = extras?.last as bool?;
 
     return GamePage(
       key: const Key('game'),
       matchId: state.params['matchId'] ?? '',
-      isHost: state.params['isHost'] == 'true',
       matchConnection: matchConnection,
+      isHost: state.extra == true,
     );
   }
 

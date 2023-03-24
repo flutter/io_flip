@@ -269,7 +269,7 @@ void main() {
           );
 
           expect(
-            matchSolver.canPlayCard(matchState, isHost: isHost),
+            matchSolver.canPlayCard(matchState, '', isHost: isHost),
             isTrue,
           );
         });
@@ -283,7 +283,7 @@ void main() {
           );
 
           expect(
-            matchSolver.canPlayCard(matchState, isHost: isHost),
+            matchSolver.canPlayCard(matchState, '', isHost: isHost),
             isTrue,
           );
         });
@@ -297,7 +297,22 @@ void main() {
           );
 
           expect(
-            matchSolver.canPlayCard(matchState, isHost: isHost),
+            matchSolver.canPlayCard(matchState, '', isHost: isHost),
+            isFalse,
+          );
+        });
+
+        test('returns false when host has already played card', () {
+          const cardId = 'test';
+          final matchState = MatchState(
+            id: '',
+            matchId: '',
+            hostPlayedCards: const [cardId],
+            guestPlayedCards: const ['', ''],
+          );
+
+          expect(
+            matchSolver.canPlayCard(matchState, cardId, isHost: isHost),
             isFalse,
           );
         });
@@ -315,7 +330,7 @@ void main() {
           );
 
           expect(
-            matchSolver.canPlayCard(matchState, isHost: isHost),
+            matchSolver.canPlayCard(matchState, '', isHost: isHost),
             isTrue,
           );
         });
@@ -329,7 +344,7 @@ void main() {
           );
 
           expect(
-            matchSolver.canPlayCard(matchState, isHost: isHost),
+            matchSolver.canPlayCard(matchState, '', isHost: isHost),
             isTrue,
           );
         });
@@ -343,7 +358,22 @@ void main() {
           );
 
           expect(
-            matchSolver.canPlayCard(matchState, isHost: isHost),
+            matchSolver.canPlayCard(matchState, '', isHost: isHost),
+            isFalse,
+          );
+        });
+
+        test('returns false when guest has already played card', () {
+          const cardId = 'test';
+          final matchState = MatchState(
+            id: '',
+            matchId: '',
+            hostPlayedCards: const ['', ''],
+            guestPlayedCards: const [cardId],
+          );
+
+          expect(
+            matchSolver.canPlayCard(matchState, cardId, isHost: isHost),
             isFalse,
           );
         });

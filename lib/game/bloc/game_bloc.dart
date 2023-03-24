@@ -168,7 +168,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         matchId: matchState.match.id,
         cardId: event.cardId,
         deckId: deckId,
-        userId: _user.id,
       );
     }
   }
@@ -229,11 +228,12 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     return false;
   }
 
-  bool canPlayerPlay() {
+  bool canPlayerPlay(String cardId) {
     if (state is MatchLoadedState) {
       final matchLoadedState = state as MatchLoadedState;
       return _matchSolver.canPlayCard(
         matchLoadedState.matchState,
+        cardId,
         isHost: isHost,
       );
     }

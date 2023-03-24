@@ -69,7 +69,7 @@ void main() {
         await tester.pumpSubject(bloc, goRouter: goRouter);
 
         verify(
-          () => goRouter.go('/game/matchId/true'),
+          () => goRouter.go('/game/matchId', extra: true),
         ).called(1);
       },
     );

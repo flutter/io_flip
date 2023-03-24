@@ -9,12 +9,12 @@ import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
 import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/settings/persistence/persistence.dart';
+import 'package:top_dash/settings/settings.dart';
 import 'package:top_dash/style/snack_bar.dart';
 
 import 'helpers.dart';
 
-class _MockSettingsPersistence extends Mock implements SettingsPersistence {}
+class _MockSettingsController extends Mock implements SettingsController {}
 
 class _MockGameResource extends Mock implements GameResource {}
 
@@ -33,7 +33,7 @@ class _MockGoRouter extends Mock implements GoRouter {}
 extension PumpApp on WidgetTester {
   Future<void> pumpApp(
     Widget widget, {
-    SettingsPersistence? settingsPersistence,
+    SettingsController? settingsController,
     GameResource? gameResource,
     ScriptsResource? scriptsResource,
     MatchMakerRepository? matchMakerRepository,
@@ -46,7 +46,7 @@ extension PumpApp on WidgetTester {
       MultiProvider(
         providers: [
           Provider.value(
-            value: settingsPersistence ?? _MockSettingsPersistence(),
+            value: settingsController ?? _MockSettingsController(),
           ),
           Provider.value(
             value: gameResource ?? _MockGameResource(),

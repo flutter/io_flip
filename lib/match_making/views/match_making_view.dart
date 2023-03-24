@@ -17,6 +17,7 @@ class MatchMakingView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<MatchMakingBloc, MatchMakingState>(
       listener: (previous, current) {
+        final extras = [current.matchConnection, current.isHost];
         if (current.status == MatchMakingStatus.completed) {
           context.goNamed(
             'game',
@@ -24,7 +25,7 @@ class MatchMakingView extends StatelessWidget {
               'matchId': '${current.match?.id}',
               'isHost': '${current.isHost}',
             },
-            extra: current.matchConnection,
+            extra: extras,
           );
         }
       },
