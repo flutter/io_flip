@@ -187,8 +187,10 @@ class _RoundedButton extends StatelessWidget {
     return SizedBox(
       width: 40,
       height: 40,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
+      child: GestureDetector(
+        onTap: () => onPressed,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
             shape: BoxShape.circle,
             //borderRadius: BorderRadius.circular(10),
             border: Border.all(width: 2),
@@ -198,22 +200,11 @@ class _RoundedButton extends StatelessWidget {
                 offset: Offset(2, 2),
                 spreadRadius: 1,
               )
-            ]
+            ],
+          ),
+          child: icon,
         ),
-        child: icon,
       ),
-    );
-    return OutlinedButton(
-      style: OutlinedButton.styleFrom(
-        foregroundColor: Colors.black,
-        backgroundColor: Colors.white,
-        side: const BorderSide(width: 2),
-        shadowColor: Colors.black,
-        shape: const CircleBorder(),
-      ),
-      onPressed: () => onPressed,
-      child: icon,
     );
   }
 }
-
