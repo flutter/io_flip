@@ -27,7 +27,7 @@ dependencies:
   flutter_highlight: ^0.7.0
   flutter_localizations:
     sdk: flutter
-  formz: ^0.5.0+1
+  formz: ^0.6.0
   game_domain:
     path: api/packages/game_domain
   game_script_machine:
