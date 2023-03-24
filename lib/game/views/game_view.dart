@@ -102,8 +102,7 @@ class _GameBoard extends StatelessWidget {
                         0,
                         card.id == opponentLastPlayedCard ? 16 : 0,
                       ),
-                      child: allOpponentPlayedCards.contains(card.id) &&
-                              state.isCardTurnComplete(card)
+                      child: allOpponentPlayedCards.contains(card.id)
                           ? Stack(
                               children: [
                                 GameCard(

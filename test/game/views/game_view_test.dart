@@ -336,13 +336,13 @@ void main() {
       );
 
       testWidgets(
-        'render the opponent card revealed when the turn is over',
+        'render the opponent card instantly when played',
         (tester) async {
           mockState(
             baseState.copyWith(
               turns: [
                 MatchTurn(
-                  playerCardId: 'player_card',
+                  playerCardId: null,
                   opponentCardId: 'opponent_card',
                 )
               ],
