@@ -43,6 +43,8 @@ class MatchState extends Equatable {
     required this.matchId,
     required this.hostPlayedCards,
     required this.guestPlayedCards,
+    // TODO(jaime): change to required field.
+    this.hostStartsMatch = false,
     this.result,
   });
 
@@ -66,6 +68,10 @@ class MatchState extends Equatable {
   @JsonKey()
   final List<String> guestPlayedCards;
 
+  ///
+  @JsonKey()
+  final bool hostStartsMatch;
+
   /// Result of the match.
   @JsonKey()
   final MatchResult? result;
@@ -83,6 +89,7 @@ class MatchState extends Equatable {
       matchId: matchId,
       guestPlayedCards: guestPlayedCards,
       hostPlayedCards: [...hostPlayedCards, cardId],
+      hostStartsMatch: hostStartsMatch,
       result: result,
     );
   }
@@ -94,6 +101,7 @@ class MatchState extends Equatable {
       matchId: matchId,
       guestPlayedCards: [...guestPlayedCards, cardId],
       hostPlayedCards: hostPlayedCards,
+      hostStartsMatch: hostStartsMatch,
       result: result,
     );
   }
@@ -105,6 +113,7 @@ class MatchState extends Equatable {
       matchId: matchId,
       guestPlayedCards: guestPlayedCards,
       hostPlayedCards: hostPlayedCards,
+      hostStartsMatch: hostStartsMatch,
       result: result,
     );
   }

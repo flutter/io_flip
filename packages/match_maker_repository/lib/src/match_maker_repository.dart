@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -54,6 +55,9 @@ class MatchMakerRepository {
   /// Default generator of invite codes.
   static String defaultInviteCodeGenerator() => const Uuid().v4();
 
+  /// Random generator
+  final rng = math.Random();
+
   /// Watches a match.
   Stream<Match> watchMatch(String id) {
     return collection.doc(id).snapshots().map((snapshot) {
@@ -82,6 +86,7 @@ class MatchMakerRepository {
       final matchId = data['matchId'] as String;
       final hostCards = (data['hostPlayedCards'] as List).cast<String>();
       final guestCards = (data['guestPlayedCards'] as List).cast<String>();
+      final hostStartsMatch = data['hostStartsMatch'] as bool;
       final result = MatchResult.valueOf(data['result'] as String?);
 
       return MatchState(
@@ -89,6 +94,7 @@ class MatchMakerRepository {
         matchId: matchId,
         hostPlayedCards: hostCards,
         guestPlayedCards: guestCards,
+        hostStartsMatch: hostStartsMatch,
         result: result,
       );
     });
@@ -250,6 +256,7 @@ class MatchMakerRepository {
       'matchId': result.id,
       'hostPlayedCards': const <String>[],
       'guestPlayedCards': const <String>[],
+      'hostStartsMatch': rng.nextBool(),
     });
     return Match(
       id: result.id,
