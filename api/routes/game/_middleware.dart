@@ -9,7 +9,7 @@ import 'package:match_repository/match_repository.dart';
 import 'package:scripts_repository/scripts_repository.dart';
 import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 
-import '../main.dart';
+import '../../main.dart';
 
 Handler middleware(Handler handler) {
   return handler

@@ -15,7 +15,7 @@ class ScriptsResource {
 
   /// Get /scripts/current
   Future<String> getCurrentScript() async {
-    final response = await _apiClient.get('/scripts/current');
+    final response = await _apiClient.get('/game/scripts/current');
 
     if (response.statusCode != HttpStatus.ok) {
       throw ApiClientError(
@@ -30,7 +30,7 @@ class ScriptsResource {
   /// Put /scripts/:id
   Future<void> updateScript(String id, String content) async {
     final response = await _apiClient.put(
-      '/scripts/$id',
+      '/game/scripts/$id',
       body: content,
     );
 

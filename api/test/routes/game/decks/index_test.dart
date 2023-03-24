@@ -7,7 +7,7 @@ import 'package:logging/logging.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-import '../../../routes/decks/index.dart' as route;
+import '../../../../routes/game/decks/index.dart' as route;
 
 class _MockRequestContext extends Mock implements RequestContext {}
 
@@ -20,7 +20,7 @@ class _MockRequest extends Mock implements Request {}
 class _MockLogger extends Mock implements Logger {}
 
 void main() {
-  group('POST /', () {
+  group('POST /game/decks', () {
     late CardsRepository cardsRepository;
     late AuthenticatedUser user;
     late Request request;

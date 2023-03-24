@@ -14,11 +14,11 @@ class LeaderboardResource {
 
   final ApiClient _apiClient;
 
-  /// Get /leaderboard/initials_blacklist
+  /// Get /game/leaderboard/initials_blacklist
   ///
   /// Returns a [List<String>].
   Future<List<String>> getInitialsBlacklist() async {
-    final response = await _apiClient.get('/leaderboard/initials_blacklist');
+    final response = await _apiClient.get('/game/leaderboard/initials_blacklist');
 
     if (response.statusCode == HttpStatus.notFound) {
       return [];
