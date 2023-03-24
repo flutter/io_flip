@@ -63,7 +63,7 @@ void main() {
       expect(find.text(tester.l10n.settingsSoundEffectsItem), findsOneWidget);
     });
 
-    testWidgets('tapping the sound effects item toggles the sounds on',
+    testWidgets('tapping the sound effects item toggles the sounds',
         (tester) async {
       await pumpSubjectWith(tester);
 
@@ -78,7 +78,7 @@ void main() {
       expect(find.text(tester.l10n.settingsMusicItem), findsOneWidget);
     });
 
-    testWidgets('tapping the music item toggles the music on', (tester) async {
+    testWidgets('tapping the music item toggles the music', (tester) async {
       await pumpSubjectWith(tester);
 
       await tester.tap(find.text(tester.l10n.settingsMusicItem));
