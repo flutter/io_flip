@@ -99,7 +99,7 @@ class MatchSolver {
   }
 
   /// Returns true when player, determined by [isHost], can select a card
-  /// to play
+  /// to play.
   bool isPlayerTurn(MatchState state, {required bool isHost}) {
     final hostStarts = state.hostStartsMatch;
     final isPlayer1 = (isHost && hostStarts) || (!isHost && !hostStarts);
