@@ -18,7 +18,8 @@ class LeaderboardResource {
   ///
   /// Returns a [List<String>].
   Future<List<String>> getInitialsBlacklist() async {
-    final response = await _apiClient.get('/game/leaderboard/initials_blacklist');
+    final response =
+        await _apiClient.get('/game/leaderboard/initials_blacklist');
 
     if (response.statusCode == HttpStatus.notFound) {
       return [];
