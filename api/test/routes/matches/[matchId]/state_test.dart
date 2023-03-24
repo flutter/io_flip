@@ -29,6 +29,7 @@ void main() {
       matchId: 'matchId',
       guestPlayedCards: [],
       hostPlayedCards: [],
+      hostStartsMatch: true,
     );
 
     setUp(() {

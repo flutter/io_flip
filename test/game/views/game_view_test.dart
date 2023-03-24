@@ -38,6 +38,7 @@ void main() {
       when(() => bloc.isWiningCard(any(), isPlayer: any(named: 'isPlayer')))
           .thenReturn(false);
       when(() => bloc.canPlayerPlay(any())).thenReturn(true);
+      when(() => bloc.isPlayerTurn).thenReturn(true);
       when(bloc.hasPlayerWon).thenReturn(false);
     });
 
@@ -111,6 +112,7 @@ void main() {
           matchId: '',
           guestPlayedCards: const [],
           hostPlayedCards: const [],
+          hostStartsMatch: true,
         ),
         turns: const [],
         playerPlayed: false,
@@ -141,6 +143,7 @@ void main() {
                 matchId: '',
                 guestPlayedCards: const [],
                 hostPlayedCards: const [],
+                hostStartsMatch: true,
                 result: MatchResult.draw,
               ),
             ),
@@ -164,6 +167,7 @@ void main() {
                 matchId: '',
                 guestPlayedCards: const [],
                 hostPlayedCards: const [],
+                hostStartsMatch: true,
                 result: MatchResult.host,
               ),
             ),
@@ -188,6 +192,7 @@ void main() {
                 matchId: '',
                 guestPlayedCards: const [],
                 hostPlayedCards: const [],
+                hostStartsMatch: true,
                 result: MatchResult.guest,
               ),
             ),
@@ -227,6 +232,7 @@ void main() {
                 matchId: '',
                 guestPlayedCards: const [],
                 hostPlayedCards: const [],
+                hostStartsMatch: true,
                 result: MatchResult.guest,
               ),
             ),
@@ -256,6 +262,7 @@ void main() {
                 matchId: '',
                 guestPlayedCards: const [],
                 hostPlayedCards: const [],
+                hostStartsMatch: true,
                 result: MatchResult.guest,
               ),
             ),
@@ -329,13 +336,13 @@ void main() {
       );
 
       testWidgets(
-        'render the opponent card revealed when the turn is over',
+        'render the opponent card instantly when played',
         (tester) async {
           mockState(
             baseState.copyWith(
               turns: [
                 MatchTurn(
-                  playerCardId: 'player_card',
+                  playerCardId: null,
                   opponentCardId: 'opponent_card',
                 )
               ],
