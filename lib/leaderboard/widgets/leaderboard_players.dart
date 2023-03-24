@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class LeaderboardPlayers extends StatelessWidget {
@@ -52,7 +51,7 @@ class _Player extends StatelessWidget {
         color = const Color(0xFFF9A52F);
         break;
       case 1:
-        color = Colors.grey;
+        color = const Color(0xFFE0E4E3);
         break;
       case 2:
         color = const Color(0xFFC47542);
@@ -62,17 +61,26 @@ class _Player extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Container(
-          width: 20,
-          height: 20,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-          ),
-          child: Text((index + 1).toString()),
+        Row(
+          children: [
+            Container(
+              width: 20,
+              height: 20,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: color,
+                shape: BoxShape.circle,
+              ),
+              child: Text((index + 1).toString()),
+            ),
+            const SizedBox(width: TopDashSpacing.lg),
+            Text(initials, style: const TextStyle(fontWeight: FontWeight.bold)),
+          ],
         ),
-        Text(initials),
+        Text(
+          wins.toString(),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
       ],
     );
   }

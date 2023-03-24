@@ -24,17 +24,21 @@ class MainMenuScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: TopDashColors.backgroundMain,
-      body: Align(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              _MainMenuScreenView(key: Key('main menu view')),
-              _Footer(key: Key('main menu footer')),
-            ],
+      body: Stack(
+        children: [
+          Align(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 1200),
+              child: const _MainMenuScreenView(key: Key('main menu view')),
+            ),
           ),
-        ),
+          const Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: _Footer(key: Key('main menu footer')),
+          )
+        ],
       ),
     );
   }
@@ -47,8 +51,8 @@ class _MainMenuScreenView extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isPortrait = MediaQuery.of(context).size.width <
-            MediaQuery.of(context).size.height;
+        final size = MediaQuery.of(context).size;
+        final isPortrait = size.width < size.height || size.width < 1050;
         return isPortrait
             ? Column(
                 children: const [
@@ -57,15 +61,15 @@ class _MainMenuScreenView extends StatelessWidget {
                 ],
               )
             : Padding(
-          padding: const EdgeInsets.all(TopDashSpacing.lg),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              _MainImage(),
-              LeaderboardView(),
-            ],
-          ),
-        );
+                padding: const EdgeInsets.all(TopDashSpacing.lg),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: const [
+                    _MainImage(),
+                    LeaderboardView(),
+                  ],
+                ),
+              );
       },
     );
   }
@@ -80,10 +84,13 @@ class _MainImage extends StatelessWidget {
       children: [
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 590),
-          child: Image.asset('assets/images/bird.png'),
+          child: Image.asset(
+            'assets/images/bird.png',
+            fit: BoxFit.fitWidth,
+          ),
         ),
         const SizedBox(height: TopDashSpacing.lg),
-        const Text('zeazeez'),
+        const Text('A global, AI-powered card collection game.'),
       ],
     );
   }
@@ -97,25 +104,31 @@ class _Footer extends StatelessWidget {
     final l10n = context.l10n;
     final audioController = context.watch<AudioController>();
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        IconButton(
-          onPressed: () => GoRouter.of(context).push('/settings'),
-          icon: const Icon(Icons.settings),
+    return ColoredBox(
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.all(TopDashSpacing.md),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              onPressed: () => GoRouter.of(context).push('/settings'),
+              icon: const Icon(Icons.settings),
+            ),
+            OutlinedButton(
+              onPressed: () {
+                audioController.playSfx(SfxType.buttonTap);
+                GoRouter.of(context).go('/draft');
+              },
+              child: Text(l10n.play),
+            ),
+            IconButton(
+              onPressed: () => GoRouter.of(context).goNamed('share'),
+              icon: const Icon(Icons.share),
+            ),
+          ],
         ),
-        OutlinedButton(
-          onPressed: () {
-            audioController.playSfx(SfxType.buttonTap);
-            GoRouter.of(context).go('/draft');
-          },
-          child: Text(l10n.play),
-        ),
-        IconButton(
-          onPressed: () => GoRouter.of(context).goNamed('share'),
-          icon: const Icon(Icons.share),
-        ),
-      ],
+      ),
     );
   }
 }
