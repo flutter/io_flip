@@ -337,6 +337,29 @@ void main() {
       });
 
       blocTest<GameBloc, GameState>(
+        'isPlayerTurn calls match solver correctly',
+        build: () => GameBloc(
+          gameResource: gameResource,
+          matchMakerRepository: matchMakerRepository,
+          matchSolver: matchSolver,
+          user: user,
+          isHost: true,
+        ),
+        setUp: () {
+          when(
+            () => matchSolver.isPlayerTurn(baseState.matchState, isHost: true),
+          ).thenReturn(true);
+        },
+        seed: () => baseState,
+        act: (bloc) => bloc.isPlayerTurn,
+        verify: (_) {
+          verify(
+            () => matchSolver.isPlayerTurn(baseState.matchState, isHost: true),
+          ).called(1);
+        },
+      );
+
+      blocTest<GameBloc, GameState>(
         'canPlayerPlay calls match solver correctly',
         build: () => GameBloc(
           gameResource: gameResource,
