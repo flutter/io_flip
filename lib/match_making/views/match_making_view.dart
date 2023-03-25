@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:top_dash/game/views/game_page.dart';
 import 'package:top_dash/match_making/match_making.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
-import 'package:top_dash/game/views/game_page.dart';
 
 class MatchMakingView extends StatelessWidget {
   const MatchMakingView({

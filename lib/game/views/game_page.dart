@@ -1,5 +1,6 @@
 import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
@@ -53,7 +54,7 @@ class GamePage extends StatelessWidget {
   }
 }
 
-class GamePageData {
+class GamePageData extends Equatable {
   const GamePageData({
     required this.isHost,
     required this.matchId,
@@ -63,4 +64,7 @@ class GamePageData {
   final bool isHost;
   final String? matchId;
   final WebSocket? matchConnection;
+
+  @override
+  List<Object?> get props => [isHost, matchId, matchConnection];
 }

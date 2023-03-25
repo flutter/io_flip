@@ -7,19 +7,21 @@ void main() {
   group('WebSocketMessage', () {
     test('can be instantiated', () {
       expect(
-        WebSocketMessage(message: ''),
+        WebSocketMessage(),
         isNotNull,
       );
     });
 
-    final message =
-        WebSocketMessage(message: '', error: ErrorType.firebaseException);
+    final message = WebSocketMessage(
+      message: MessageType.connected,
+      error: ErrorType.firebaseException,
+    );
 
     test('fromJson returns the correct instance', () {
       expect(
         WebSocketMessage.fromJson(const {
-          'message': '',
-          'error': 'FirebaseException',
+          'message': 'connected',
+          'error': 'firebaseException',
         }),
         equals(message),
       );
@@ -29,8 +31,8 @@ void main() {
       expect(
         message.toJson(),
         equals(const {
-          'message': '',
-          'error': 'FirebaseException',
+          'message': 'connected',
+          'error': 'firebaseException',
         }),
       );
     });
@@ -39,20 +41,23 @@ void main() {
       expect(
         message,
         equals(
-          WebSocketMessage(message: '', error: ErrorType.firebaseException),
+          WebSocketMessage(
+            message: MessageType.connected,
+            error: ErrorType.firebaseException,
+          ),
         ),
       );
 
       expect(
         WebSocketMessage(
-          message: '',
+          message: MessageType.connected,
         ),
         isNot(
           equals(message),
         ),
       );
       expect(
-        WebSocketMessage(message: 'test', error: ErrorType.firebaseException),
+        WebSocketMessage(error: ErrorType.firebaseException),
         isNot(
           equals(message),
         ),

@@ -10,6 +10,18 @@ enum ErrorType {
 
   /// Represents an Exception thrown by Firebase.
   firebaseException,
+
+  /// Represents a player that is already connect to the socket.
+  playerAlreadyConnected,
+}
+
+/// Represents the message passed from the websocket.
+enum MessageType {
+  /// Represents a successful connection.
+  connected,
+
+  /// Represents a disconnect from the socket.
+  disconnected,
 }
 
 /// {@template web_socket_message}
@@ -18,7 +30,7 @@ enum ErrorType {
 @JsonSerializable(ignoreUnannotated: true)
 class WebSocketMessage extends Equatable {
   /// {@macro web_socket_message}
-  const WebSocketMessage({required this.message, this.error});
+  const WebSocketMessage({this.message, this.error});
 
   /// {@macro web_socket_message}
   factory WebSocketMessage.fromJson(Map<String, dynamic> json) =>
@@ -26,7 +38,7 @@ class WebSocketMessage extends Equatable {
 
   /// Message
   @JsonKey()
-  final String message;
+  final MessageType? message;
 
   /// Error
   @JsonKey()

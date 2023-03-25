@@ -7,7 +7,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:match_maker_repository/match_maker_repository.dart' as repo;
-import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
 part 'game_event.dart';

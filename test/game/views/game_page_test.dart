@@ -17,19 +17,26 @@ void main() {
     late GoRouterState goRouterState;
     late WebSocket webSocket;
     const matchId = 'matchId';
+    final data =
+        GamePageData(isHost: true, matchConnection: null, matchId: matchId);
 
     setUp(() {
       goRouterState = _MockGoRouterState();
       webSocket = _MockWebSocket();
-      when(() => goRouterState.params).thenReturn({
-        'matchId': matchId,
-      });
+      when(() => goRouterState.extra).thenReturn(data);
     });
 
     test('routeBuilder returns a GamePage', () {
       expect(
         GamePage.routeBuilder(null, goRouterState),
-        isA<GamePage>(),
+        isA<GamePage>()
+            .having((page) => page.isHost, 'isHost', equals(data.isHost))
+            .having(
+              (page) => page.matchConnection,
+              'matchConnection',
+              equals(data.matchConnection),
+            )
+            .having((page) => page.matchId, 'matchId', equals(data.matchId)),
       );
     });
 

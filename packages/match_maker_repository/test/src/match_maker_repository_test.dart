@@ -53,7 +53,6 @@ void main() {
     late CollectionReference<Map<String, dynamic>> matchStateCollection;
     late CollectionReference<Map<String, dynamic>> scoreCardsCollection;
     late MatchMakerRepository matchMakerRepository;
-    late Timestamp now;
     late math.Random randomGenerator;
 
     setUpAll(() {
@@ -65,7 +64,6 @@ void main() {
       collection = _MockCollectionReference();
       matchStateCollection = _MockCollectionReference();
       scoreCardsCollection = _MockCollectionReference();
-      now = Timestamp.now();
       randomGenerator = _MockRandom();
 
       when(() => db.collection('matches')).thenReturn(collection);

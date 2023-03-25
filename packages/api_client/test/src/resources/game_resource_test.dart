@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -48,7 +49,10 @@ void main() {
         ),
       ).thenAnswer((_) async => response);
 
-      resource = GameResource(apiClient: apiClient, websocket: webSocket);
+      resource = GameResource(
+        apiClient: apiClient,
+        webSocketTimeout: const Duration(milliseconds: 10),
+      );
     });
 
     group('generateCard', () {
@@ -493,11 +497,11 @@ void main() {
       final connection = _MockConnection();
       setUp(() {
         when(
-          () => apiClient.getWebsocketURI(
+          () => apiClient.connect(
             any(),
             queryParameters: any(named: 'queryParameters'),
           ),
-        ).thenReturn(Uri());
+        ).thenAnswer((_) async => webSocket);
 
         when(
           () => webSocket.connection,
@@ -510,8 +514,9 @@ void main() {
         ).thenAnswer((_) async => const Connected());
 
         resource.connectToMatch(matchId: '', isHost: true);
+
         verify(
-          () => apiClient.getWebsocketURI(
+          () => apiClient.connect(
             any(),
             queryParameters: any(named: 'queryParameters'),
           ),
@@ -525,15 +530,32 @@ void main() {
 
         await expectLater(
           () => resource.connectToMatch(matchId: '', isHost: true),
-          throwsA(
-            isA<ApiClientError>().having(
-              (e) => e.cause,
-              'cause',
-              equals(
-                'websocket matches/connect/ returned with the following error: "Exception: oops"',
-              ),
-            ),
+          throwsA(isA<ApiClientError>()),
+        );
+      });
+
+      test('throws on error on timeout', () async {
+        when(
+          () => apiClient.connect(
+            any(),
+            queryParameters: any(named: 'queryParameters'),
           ),
+        ).thenAnswer((_) async => webSocket);
+
+        when(
+          () => webSocket.connection,
+        ).thenAnswer((_) => connection);
+        when(
+          () => connection.firstWhere(any()),
+        ).thenAnswer((_) async {
+          return Future.delayed(const Duration(seconds: 3), () {
+            return const Connecting();
+          });
+        });
+
+        expect(
+          () => resource.connectToMatch(matchId: '', isHost: true),
+          throwsA(isA<ApiClientError>()),
         );
       });
     });

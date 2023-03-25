@@ -244,4 +244,17 @@ class MatchRepository {
       ),
     );
   }
+
+  /// Return the match with the given [matchId].
+  Future<bool> getPlayerConnectivity({
+    required String matchId,
+    required bool isHost,
+  }) async {
+    final matchData = await _dbClient.getById('matches', matchId);
+
+    final hostConnected = (matchData?.data['hostConnected'] as bool?) ?? false;
+    final guestConnected =
+        (matchData?.data['guestConnected'] as bool?) ?? false;
+    return isHost ? hostConnected : guestConnected;
+  }
 }

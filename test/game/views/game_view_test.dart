@@ -208,6 +208,41 @@ void main() {
       );
 
       testWidgets(
+        'renders the opponent absent message when the opponent leaves',
+        (tester) async {
+          mockState(OpponentAbsentState());
+          await tester.pumpSubject(bloc);
+
+          expect(
+            find.text('Opponent left the game!'),
+            findsOneWidget,
+          );
+          expect(
+            find.widgetWithText(ElevatedButton, 'Replay'),
+            findsOneWidget,
+          );
+        },
+      );
+      testWidgets(
+        'pops navigation when the replay button is tapped on opponent absent',
+        (tester) async {
+          final goRouter = MockGoRouter();
+
+          mockState(OpponentAbsentState());
+
+          await tester.pumpSubject(
+            bloc,
+            goRouter: goRouter,
+          );
+
+          await tester.tap(find.text('Replay'));
+          await tester.pumpAndSettle();
+
+          verify(goRouter.pop).called(1);
+        },
+      );
+
+      testWidgets(
         'renders the players score',
         (tester) async {
           mockState(baseState);
