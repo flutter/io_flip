@@ -6,6 +6,8 @@ import 'package:api_client/src/resources/resources.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:web_socket_client/web_socket_client.dart';
+
 /// {@template api_client_error}
 /// Error throw when accessing api failed.
 ///
@@ -59,10 +61,12 @@ class ApiClient {
     PostCall postCall = http.post,
     PutCall putCall = http.put,
     GetCall getCall = http.get,
+    WebSocket? websocket,
   })  : _base = Uri.parse(baseUrl),
         _post = postCall,
         _put = putCall,
         _get = getCall,
+        _websocket = websocket,
         _refreshIdToken = refreshIdToken {
     _idTokenSubscription = idTokenStream.listen((idToken) {
       _idToken = idToken;
@@ -74,6 +78,7 @@ class ApiClient {
   final PostCall _put;
   final GetCall _get;
   final Future<String?> Function() _refreshIdToken;
+  final WebSocket? _websocket;
 
   late final StreamSubscription<String?> _idTokenSubscription;
   String? _idToken;
@@ -169,6 +174,22 @@ class ApiClient {
       path: path,
       queryParameters: queryParameters,
     );
+  }
+
+  Future<WebSocket> connect(
+    String path, {
+    Map<String, String>? queryParameters,
+  }) async {
+    final uri = _base.replace(
+      scheme: 'ws',
+      path: path,
+      queryParameters: queryParameters,
+    );
+    final socket = _websocket ?? WebSocket(uri);
+
+    await socket.connection.firstWhere((state) => state is Connected);
+
+    return socket;
   }
 }
 
