@@ -181,7 +181,7 @@ class GameResource {
     }
   }
 
-  /// WebSocket connect to  matches/connect/
+  /// WebSocket connect to  matches/connect
   Future<WebSocket> connectToMatch({
     required String matchId,
     required bool isHost,
@@ -206,7 +206,7 @@ class GameResource {
       return socket;
     } catch (error) {
       throw ApiClientError(
-        'websocket public/matches/connect/ returned with the following error: "$error"',
+        'websocket public/matches/connect returned with the following error: "$error"',
         StackTrace.current,
       );
     }
