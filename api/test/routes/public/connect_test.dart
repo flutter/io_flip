@@ -123,6 +123,7 @@ void main() {
       //     ),
       //   ),
       // );
+      await socket.connection.firstWhere((state) => state is Connected);
 
       socket.close();
 
