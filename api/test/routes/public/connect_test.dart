@@ -115,7 +115,7 @@ void main() {
 
       // verifyNever(
       //   () =>
-      //       matchRepository.setHostConnectivity(match: matchId, active: false),
+      //     matchRepository.setHostConnectivity(match: matchId, active: false),
       // );
     });
 
