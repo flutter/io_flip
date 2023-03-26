@@ -116,7 +116,10 @@ void main() {
 
       // socket.messages.listen(print);
 
-      final message = await socket.messages.first;
+      final message = WebSocketMessage.fromJson(
+        jsonDecode(await socket.messages.first as String)
+            as Map<String, dynamic>,
+      );
       // print(message);
 
       // await expectLater(
@@ -139,10 +142,7 @@ void main() {
       expect(
         message,
         equals(
-          jsonEncode(
-            const WebSocketMessage(error: ErrorType.playerAlreadyConnected)
-                .toJson(),
-          ),
+          const WebSocketMessage(error: ErrorType.playerAlreadyConnected),
         ),
       );
 
@@ -177,16 +177,27 @@ void main() {
         () => matchRepository.setHostConnectivity(match: matchId, active: true),
       ).called(1);
 
-      await expectLater(
-        socket.messages,
-        emits(
-          jsonEncode(
-            const WebSocketMessage(
-              error: ErrorType.firebaseException,
-            ).toJson(),
-          ),
+      final message = WebSocketMessage.fromJson(
+        jsonDecode(await socket.messages.first as String)
+            as Map<String, dynamic>,
+      );
+      expect(
+        message,
+        equals(
+          const WebSocketMessage(error: ErrorType.firebaseException),
         ),
       );
+
+      // await expectLater(
+      //   socket.messages,
+      //   emits(
+      //     jsonEncode(
+      //       const WebSocketMessage(
+      //         error: ErrorType.firebaseException,
+      //       ).toJson(),
+      //     ),
+      //   ),
+      // );
 
       socket.close();
     });
