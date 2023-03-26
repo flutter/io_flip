@@ -114,6 +114,13 @@ void main() {
         ),
       ).called(1);
 
+      socket.messages.listen((message) {
+        print(message);
+      });
+
+      final message = await socket.messages.first;
+      print(message);
+
       // await expectLater(
       //   socket.messages,
       //   emits(
@@ -123,7 +130,23 @@ void main() {
       //     ),
       //   ),
       // );
-      await socket.connection.firstWhere((state) => state is Connected);
+      // await socket.connection.firstWhere((state) => state is Connected);
+      // final message = await socket.messages.firstWhere(
+      //   (message) {
+      //     print(message);
+      //     return true;
+      //   },
+      // );
+
+      expect(
+        message,
+        equals(
+          jsonEncode(
+            const WebSocketMessage(error: ErrorType.playerAlreadyConnected)
+                .toJson(),
+          ),
+        ),
+      );
 
       socket.close();
 
