@@ -49,7 +49,7 @@ FutureOr<Response> onRequest(RequestContext context) async {
         );
       }
       channel.stream.listen(
-        (_) {},
+        null,
         onDone: () {
           isHost
               ? matchRepository.setHostConnectivity(
