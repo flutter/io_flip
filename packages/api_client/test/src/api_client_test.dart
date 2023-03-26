@@ -345,7 +345,7 @@ void main() {
       });
     });
 
-    group('ws getWebsocketURI', () {
+    group('ws connect', () {
       test('returns the connection', () async {
         const path = '/';
         const params = {'test': 'test'};

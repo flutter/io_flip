@@ -267,6 +267,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     _stateSubscription?.cancel();
     _opponentDisconnectSubscription?.cancel();
     _scoreSubscription?.cancel();
+    matchConnection?.close();
     return super.close();
   }
 }
