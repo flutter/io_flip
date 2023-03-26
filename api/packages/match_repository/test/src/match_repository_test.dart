@@ -854,14 +854,15 @@ void main() {
           matchSolver: matchSolver,
         );
 
-        when(() => dbClient.getById(any(), any()))
-            .thenAnswer((_) async => DbEntityRecord(
-                  id: '',
-                  data: const {
-                    'hostConnected': true,
-                    'guestConnected': false,
-                  },
-                ));
+        when(() => dbClient.getById(any(), any())).thenAnswer(
+          (_) async => DbEntityRecord(
+            id: '',
+            data: const {
+              'hostConnected': true,
+              'guestConnected': false,
+            },
+          ),
+        );
       });
 
       test('returns the correct field', () async {
