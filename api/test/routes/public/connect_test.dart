@@ -20,7 +20,7 @@ void main() {
 
   const matchId = 'matchId';
 
-  Future<WebSocket> startSocket() async {
+  Future<WebSocket> startSocket({bool host = true}) async {
     server = await serve(
       (context) => route.onRequest(
         context.provide<MatchRepository>(() => matchRepository),
@@ -29,7 +29,7 @@ void main() {
       0,
     );
     final socket = WebSocket(
-      Uri.parse('ws://localhost:${server.port}?host=true&matchId=$matchId'),
+      Uri.parse('ws://localhost:${server.port}?host=$host&matchId=$matchId'),
     );
     return socket;
   }
@@ -39,7 +39,7 @@ void main() {
       matchRepository = _MockMatchRepository();
     });
 
-    test('establishes connection and updates player connectivity', () async {
+    test('establishes connection and updates host connectivity', () async {
       when(
         () => matchRepository.setHostConnectivity(
           match: matchId,
@@ -64,6 +64,8 @@ void main() {
         () => matchRepository.setHostConnectivity(match: matchId, active: true),
       ).called(1);
 
+      socket.send('test');
+
       await expectLater(
         socket.messages,
         emits(
@@ -82,6 +84,56 @@ void main() {
       verify(
         () =>
             matchRepository.setHostConnectivity(match: matchId, active: false),
+      ).called(1);
+    });
+
+    test('establishes connection and updates guest connectivity', () async {
+      when(
+        () => matchRepository.setGuestConnectivity(
+          match: matchId,
+          active: any<bool>(named: 'active'),
+        ),
+      ).thenAnswer(
+        (_) async {},
+      );
+      when(
+        () => matchRepository.getPlayerConnectivity(
+          matchId: matchId,
+          isHost: false,
+        ),
+      ).thenAnswer((_) async => false);
+
+      final socket = await startSocket(host: false);
+
+      await untilCalled(
+        () =>
+            matchRepository.setGuestConnectivity(match: matchId, active: true),
+      );
+      verify(
+        () =>
+            matchRepository.setGuestConnectivity(match: matchId, active: true),
+      ).called(1);
+
+      socket.send('test');
+
+      await expectLater(
+        socket.messages,
+        emits(
+          jsonEncode(
+            const WebSocketMessage(message: MessageType.connected).toJson(),
+          ),
+        ),
+      );
+
+      socket.close();
+
+      await untilCalled(
+        () =>
+            matchRepository.setGuestConnectivity(match: matchId, active: false),
+      );
+      verify(
+        () =>
+            matchRepository.setGuestConnectivity(match: matchId, active: false),
       ).called(1);
     });
 
