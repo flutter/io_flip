@@ -200,6 +200,15 @@ void main() {
       // );
 
       socket.close();
+
+      await untilCalled(
+        () =>
+            matchRepository.setHostConnectivity(match: matchId, active: false),
+      );
+      verify(
+        () =>
+            matchRepository.setHostConnectivity(match: matchId, active: false),
+      ).called(1);
     });
   });
 }
