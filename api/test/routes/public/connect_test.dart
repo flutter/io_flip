@@ -114,12 +114,10 @@ void main() {
         ),
       ).called(1);
 
-      socket.messages.listen((message) {
-        print(message);
-      });
+      // socket.messages.listen(print);
 
       final message = await socket.messages.first;
-      print(message);
+      // print(message);
 
       // await expectLater(
       //   socket.messages,
