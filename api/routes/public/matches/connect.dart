@@ -1,4 +1,3 @@
-// ignore_for_file: lines_longer_than_80_chars
 import 'dart:async';
 import 'dart:convert';
 
@@ -18,8 +17,13 @@ FutureOr<Response> onRequest(RequestContext context) async {
   );
 
   if (playerConnected) {
-    final playerAlreadyConnectedHandler = webSocketHandler((channel, protocol) {
-      const message = WebSocketMessage(error: ErrorType.playerAlreadyConnected);
+    final playerAlreadyConnectedHandler = webSocketHandler((
+      channel,
+      protocol,
+    ) {
+      const message = WebSocketMessage(
+        error: ErrorType.playerAlreadyConnected,
+      );
       final json = jsonEncode(message);
       channel.sink.add(json);
     });
@@ -29,14 +33,19 @@ FutureOr<Response> onRequest(RequestContext context) async {
     final handler = webSocketHandler((channel, protocol) {
       try {
         isHost
-            ? matchRepository.setHostConnectivity(match: matchId, active: true)
+            ? matchRepository.setHostConnectivity(
+                match: matchId,
+                active: true,
+              )
             : matchRepository.setGuestConnectivity(
                 match: matchId,
                 active: true,
               );
         channel.sink.add(
           jsonEncode(
-            const WebSocketMessage(message: MessageType.connected).toJson(),
+            const WebSocketMessage(
+              message: MessageType.connected,
+            ).toJson(),
           ),
         );
       } catch (e) {
