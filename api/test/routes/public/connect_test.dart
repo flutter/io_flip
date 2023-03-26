@@ -1,3 +1,5 @@
+// ignore_for_file: lines_longer_than_80_chars
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -154,13 +156,82 @@ void main() {
       // );
     });
 
+    // test('throws when cannot update player connectivity', () async {
+    //   when(
+    //     () => matchRepository.setHostConnectivity(
+    //       match: matchId,
+    //       active: any<bool>(named: 'active'),
+    //     ),
+    //   ).thenThrow(Exception('oops'));
+    //   when(
+    //     () => matchRepository.getPlayerConnectivity(
+    //       matchId: matchId,
+    //       isHost: true,
+    //     ),
+    //   ).thenAnswer((_) async => false);
+
+    //   final socket = await startSocket();
+
+    //   await untilCalled(
+    //     () => matchRepository.setHostConnectivity(match: matchId, active: true),
+    //   );
+    //   verify(
+    //     () => matchRepository.setHostConnectivity(match: matchId, active: true),
+    //   ).called(1);
+
+    //   final message = WebSocketMessage.fromJson(
+    //     jsonDecode(await socket.messages.first as String)
+    //         as Map<String, dynamic>,
+    //   );
+    //   expect(
+    //     message,
+    //     equals(
+    //       const WebSocketMessage(error: ErrorType.firebaseException),
+    //     ),
+    //   );
+
+    //   // await expectLater(
+    //   //   socket.messages,
+    //   //   emits(
+    //   //     jsonEncode(
+    //   //       const WebSocketMessage(
+    //   //         error: ErrorType.firebaseException,
+    //   //       ).toJson(),
+    //   //     ),
+    //   //   ),
+    //   // );
+
+    //   socket.close();
+
+    //   await socket.connection.firstWhere((state) => state is Disconnected);
+
+    //   // await untilCalled(
+    //   //   () =>
+    //   //     matchRepository.setHostConnectivity(match: matchId, active: false),
+    //   // );
+    //   // verify(
+    //   //   () =>
+    //   //     matchRepository.setHostConnectivity(match: matchId, active: false),
+    //   // ).called(1);
+    // });
+
     test('throws when cannot update player connectivity', () async {
       when(
         () => matchRepository.setHostConnectivity(
           match: matchId,
-          active: any<bool>(named: 'active'),
+          active: true,
         ),
       ).thenThrow(Exception('oops'));
+
+      when(
+        () => matchRepository.setHostConnectivity(
+          match: matchId,
+          active: false,
+        ),
+      ).thenAnswer(
+        (_) async {},
+      );
+
       when(
         () => matchRepository.getPlayerConnectivity(
           matchId: matchId,
@@ -177,40 +248,25 @@ void main() {
         () => matchRepository.setHostConnectivity(match: matchId, active: true),
       ).called(1);
 
-      final message = WebSocketMessage.fromJson(
-        jsonDecode(await socket.messages.first as String)
-            as Map<String, dynamic>,
-      );
-      expect(
-        message,
-        equals(
-          const WebSocketMessage(error: ErrorType.firebaseException),
+      await expectLater(
+        socket.messages,
+        emits(
+          jsonEncode(
+            const WebSocketMessage(error: ErrorType.firebaseException).toJson(),
+          ),
         ),
       );
 
-      // await expectLater(
-      //   socket.messages,
-      //   emits(
-      //     jsonEncode(
-      //       const WebSocketMessage(
-      //         error: ErrorType.firebaseException,
-      //       ).toJson(),
-      //     ),
-      //   ),
-      // );
-
       socket.close();
 
-      await socket.connection.firstWhere((state) => state is Disconnected);
-
-      // await untilCalled(
-      //   () =>
-      //     matchRepository.setHostConnectivity(match: matchId, active: false),
-      // );
-      // verify(
-      //   () =>
-      //     matchRepository.setHostConnectivity(match: matchId, active: false),
-      // ).called(1);
+      await untilCalled(
+        () =>
+            matchRepository.setHostConnectivity(match: matchId, active: false),
+      );
+      verify(
+        () =>
+            matchRepository.setHostConnectivity(match: matchId, active: false),
+      ).called(1);
     });
   });
 }
