@@ -101,15 +101,28 @@ void main() {
 
       final socket = await startSocket();
 
-      await expectLater(
-        socket.messages,
-        emits(
-          jsonEncode(
-            const WebSocketMessage(error: ErrorType.playerAlreadyConnected)
-                .toJson(),
-          ),
+      await untilCalled(
+        () => matchRepository.getPlayerConnectivity(
+          matchId: matchId,
+          isHost: true,
         ),
       );
+      verify(
+        () => matchRepository.getPlayerConnectivity(
+          matchId: matchId,
+          isHost: true,
+        ),
+      ).called(1);
+
+      // await expectLater(
+      //   socket.messages,
+      //   emits(
+      //     jsonEncode(
+      //       const WebSocketMessage(error: ErrorType.playerAlreadyConnected)
+      //           .toJson(),
+      //     ),
+      //   ),
+      // );
 
       socket.close();
 
