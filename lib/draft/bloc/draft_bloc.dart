@@ -57,6 +57,8 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     SelectCard event,
     Emitter<DraftState> emit,
   ) {
+    if (state.selectedCards.length == 3) return;
+
     final topCard = state.cards.first;
 
     final selectedCards = [
