@@ -10,7 +10,7 @@ const _template = '''
 ''';
 
 /// Builds the HMTL page for the sare card link.
-String buildShareCardContent({ required Card card }) {
+String buildShareCardContent({required Card card}) {
   return Template(_template).renderString({
     'card': card.toJson(),
   });
