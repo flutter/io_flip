@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/audio/sounds.dart';
+import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/leaderboard/leaderboard.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
@@ -108,7 +109,7 @@ class _MainImage extends StatelessWidget {
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 590),
           child: Image.asset(
-            'assets/images/bird.png',
+            Assets.images.main.path,
           ),
         ),
         Padding(
@@ -140,25 +141,25 @@ class _Footer extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _RoundedButton(
+            RoundedButton(
               backgroundColor: Colors.white,
               child: const Icon(Icons.more_horiz_rounded),
               onPressed: () => GoRouter.of(context).push('/settings'),
             ),
             _gap,
-            _RoundedButton(
+            RoundedButton(
               backgroundColor: Colors.white,
               child: const Icon(Icons.share),
               onPressed: () => GoRouter.of(context).goNamed('share'),
             ),
             _gap,
-            _RoundedButton(
+            RoundedButton(
               backgroundColor: Colors.white,
               child: const Icon(Icons.question_mark_rounded),
               onPressed: () => GoRouter.of(context).go('/how_to_play'),
             ),
             _gap,
-            _RoundedButton(
+            RoundedButton(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: TopDashSpacing.sm,
@@ -178,43 +179,6 @@ class _Footer extends StatelessWidget {
               },
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _RoundedButton extends StatelessWidget {
-  const _RoundedButton({
-    required this.child,
-    required this.onPressed,
-    this.backgroundColor = TopDashColors.mainBlue,
-  });
-
-  final Widget child;
-  final GestureTapCallback onPressed;
-  final Color backgroundColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          ///shape: BoxShape.circle,
-          borderRadius: BorderRadius.circular(40),
-          border: Border.all(width: 2),
-          color: backgroundColor,
-          boxShadow: const [
-            BoxShadow(
-              offset: Offset(2, 2),
-              spreadRadius: 1,
-            )
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(TopDashSpacing.md),
-          child: child,
         ),
       ),
     );

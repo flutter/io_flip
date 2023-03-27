@@ -48,13 +48,13 @@ class _Player extends StatelessWidget {
 
     switch (index) {
       case 0:
-        color = const Color(0xFFF9A52F);
+        color = TopDashColors.gold;
         break;
       case 1:
-        color = const Color(0xFFE0E4E3);
+        color = TopDashColors.silver;
         break;
       case 2:
-        color = const Color(0xFFC47542);
+        color = TopDashColors.bronze;
         break;
     }
 

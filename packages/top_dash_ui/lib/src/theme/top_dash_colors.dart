@@ -11,6 +11,15 @@ abstract class TopDashColors {
   /// Blue
   static const Color mainBlue = Color(0xFF72AAFF);
 
+  /// Gold
+  static const Color gold = Color(0xFFF9A52F);
+
+  /// Silver
+  static const Color silver = Color(0xFFE0E4E3);
+
+  /// Bronze
+  static const Color bronze = Color(0xFFC47542);
+
   /// Ink.
   static const Color ink = Color(0xee352b42);
 
