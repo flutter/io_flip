@@ -173,10 +173,11 @@ class ApiClient {
     Map<String, String>? queryParameters,
   }) async {
     final uri = _base.replace(
-      scheme: 'ws',
+      scheme: 'wss',
       path: path,
       queryParameters: queryParameters,
     );
+    print(uri);
 
     final socket = _websocket ?? WebSocket(uri);
 
