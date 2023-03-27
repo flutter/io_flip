@@ -25,5 +25,14 @@ void main() {
         expect(find.text('${step.key}. ${step.value}'), findsOneWidget);
       }
     });
+
+    testWidgets('can navigate to the how to play page', (tester) async {
+      await tester.pumpApp(buildSubject());
+
+      await tester.tap(find.text(tester.l10n.howToPlayButtonText));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(HowToPlayPage), findsOneWidget);
+    });
   });
 }
