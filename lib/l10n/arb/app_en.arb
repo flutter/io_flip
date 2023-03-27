@@ -20,11 +20,11 @@
       }
     }
   },
-  "leaderboardLongestStreak": "Longest Streak",
+  "leaderboardLongestStreak": "HIGHEST WIN STREAK",
   "@leaderboardLongestStreak": {
     "description": "Label shown on the leaderboard for the longest streak category tab"
   },
-  "leaderboardMostWins": "Most Wins",
+  "leaderboardMostWins": "HIGHEST TOTAL WINS",
   "@leaderboardMostWins": {
     "description": "Label shown on the leaderboard for the most wins category tab"
   },
@@ -36,6 +36,10 @@
         "type": "int"
       }
     }
+  },
+  "menuCatchPhrase": "A global, AI-powered card collection game.",
+  "@menuCatchPhrase": {
+    "description": "Sentence shown on the main menu screen"
   },
   "howToPlayHeader": "is a Flutter-powered, worldwide, card competition game.",
   "@howToPlayHeader": {

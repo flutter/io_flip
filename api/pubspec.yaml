@@ -31,6 +31,7 @@ dependencies:
   logging: ^1.1.1
   match_repository:
     path: packages/match_repository
+  mustache_template: ^2.0.0
   scripts_repository:
     path: packages/scripts_repository
   shelf_cors_headers: ^0.1.4
