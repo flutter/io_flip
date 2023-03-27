@@ -5,7 +5,7 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 /// Top Dash Rounded Button.
 /// {@endtemplate}
 class RoundedButton extends StatelessWidget {
-  /// Basic [RoundedButton] with black shadow shadow.
+  /// Basic [RoundedButton] with black shadow.
   /// Contains an [icon] as child
   const RoundedButton.icon(
     Icon icon, {
