@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cards_repository/cards_repository.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:game_script_machine/game_script_machine.dart';
@@ -26,17 +24,9 @@ Handler middleware(Handler handler) {
         fromShelfMiddleware(
           corsHeaders(
             headers: {
-              ACCESS_CONTROL_ALLOW_ORIGIN: _corsDomain,
+              ACCESS_CONTROL_ALLOW_ORIGIN: gameUrl.url,
             },
           ),
         ),
       );
-}
-
-String get _corsDomain {
-  final value = Platform.environment['CORS_DOMAIN'];
-  if (value == null) {
-    throw ArgumentError('CORS_DOMAIN is required to run the API');
-  }
-  return value;
 }

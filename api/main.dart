@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:api/game_url.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:db_client/db_client.dart';
@@ -22,6 +23,7 @@ late DbClient dbClient;
 late GameScriptMachine gameScriptMachine;
 late JwtMiddleware jwtMiddleware;
 late EncryptionMiddleware encryptionMiddleware;
+late GameUrl gameUrl;
 
 Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   const imageModelRepository = ImageModelRepository();
@@ -61,12 +63,16 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
     blacklistDocumentId: 'MdOoZMhusnJTcwfYE0nL',
   );
 
+  gameUrl = GameUrl(_gameUrl);
+
   return serve(
     handler,
     ip,
     port,
   );
 }
+
+// https://a16e0900d-fe2c-3609-b43c-87093e447b78.web.app/
 
 String get _appId {
   final value = Platform.environment['FB_APP_ID'];
@@ -77,3 +83,11 @@ String get _appId {
 }
 
 bool get _useEmulator => Platform.environment['USE_EMULATOR'] == 'true';
+
+String get _gameUrl {
+  final value = Platform.environment['GAME_URL'];
+  if (value == null) {
+    throw ArgumentError('GAME_URL is required to run the API');
+  }
+  return value;
+}
