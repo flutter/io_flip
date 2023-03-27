@@ -141,38 +141,26 @@ class _Footer extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            RoundedButton(
+            RoundedButton.icon(
+              const Icon(Icons.more_horiz_rounded),
               backgroundColor: Colors.white,
-              child: const Icon(Icons.more_horiz_rounded),
               onPressed: () => GoRouter.of(context).push('/settings'),
             ),
             _gap,
-            RoundedButton(
+            RoundedButton.icon(
+              const Icon(Icons.share),
               backgroundColor: Colors.white,
-              child: const Icon(Icons.share),
               onPressed: () => GoRouter.of(context).goNamed('share'),
             ),
             _gap,
-            RoundedButton(
+            RoundedButton.icon(
+              const Icon(Icons.question_mark_rounded),
               backgroundColor: Colors.white,
-              child: const Icon(Icons.question_mark_rounded),
               onPressed: () => GoRouter.of(context).go('/how_to_play'),
             ),
             _gap,
-            RoundedButton(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: TopDashSpacing.sm,
-                ),
-                child: Text(
-                  l10n.play,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
+            RoundedButton.text(
+              l10n.play,
               onPressed: () {
                 audioController.playSfx(SfxType.buttonTap);
                 GoRouter.of(context).go('/draft');

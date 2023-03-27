@@ -4,14 +4,34 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 
 void main() {
   group('RoundedButton', () {
-    testWidgets('renders the given child and responds to taps', (tester) async {
+    testWidgets('renders the given icon and responds to taps', (tester) async {
       var wasTapped = false;
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
             body: Center(
-              child: RoundedButton(
-                child: const Text('test'),
+              child: RoundedButton.icon(
+                const Icon(Icons.settings),
+                onPressed: () {
+                  wasTapped = true;
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.byIcon(Icons.settings));
+      expect(wasTapped, isTrue);
+    });
+
+    testWidgets('renders the given text and responds to taps', (tester) async {
+      var wasTapped = false;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: RoundedButton.text(
+                'test',
                 onPressed: () {
                   wasTapped = true;
                 },
