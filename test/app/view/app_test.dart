@@ -13,6 +13,7 @@ import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/main_menu/main_menu_screen.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
 import 'package:top_dash/settings/settings.dart';
+import 'package:top_dash/share/share.dart';
 import 'package:top_dash/style/snack_bar.dart';
 
 import '../../helpers/helpers.dart';
@@ -129,7 +130,8 @@ void main() {
       });
     });
 
-    testWidgets('renders the app', (tester) async {
+    testWidgets('renders the app in landscape', (tester) async {
+      tester.binding.window.devicePixelRatioTestValue = 1;
       await tester.pumpWidget(
         App(
           settingsPersistence: MemoryOnlySettingsPersistence(),
@@ -140,8 +142,30 @@ void main() {
           user: _MockUser(),
         ),
       );
+      tester.binding.window.clearDevicePixelRatioTestValue();
 
       expect(find.byType(MainMenuScreen), findsOneWidget);
+      expect(find.byType(LandscapeMenuView), findsOneWidget);
+    });
+
+    testWidgets('renders the app in portrait', (tester) async {
+      tester.binding.window.devicePixelRatioTestValue = 1;
+      tester.binding.window.physicalSizeTestValue = const Size(1200, 1600);
+      await tester.pumpWidget(
+        App(
+          settingsPersistence: MemoryOnlySettingsPersistence(),
+          apiClient: apiClient,
+          matchMakerRepository: _MockMatchMakerRepository(),
+          matchSolver: _MockMatchSolver(),
+          gameScriptMachine: _MockGameScriptEngine(),
+          user: _MockUser(),
+        ),
+      );
+      tester.binding.window.clearPhysicalSizeTestValue();
+      tester.binding.window.clearDevicePixelRatioTestValue();
+
+      expect(find.byType(MainMenuScreen), findsOneWidget);
+      expect(find.byType(PortraitMenuView), findsOneWidget);
     });
 
     testWidgets('can navigate to the game page', (tester) async {
@@ -162,6 +186,24 @@ void main() {
       expect(find.byType(DraftPage), findsOneWidget);
     });
 
+    testWidgets('can navigate to the settings', (tester) async {
+      await tester.pumpWidget(
+        App(
+          settingsPersistence: MemoryOnlySettingsPersistence(),
+          apiClient: apiClient,
+          matchMakerRepository: _MockMatchMakerRepository(),
+          matchSolver: _MockMatchSolver(),
+          gameScriptMachine: _MockGameScriptEngine(),
+          user: _MockUser(),
+        ),
+      );
+
+      await tester.tap(find.byIcon(Icons.more_horiz_rounded));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SettingsScreen), findsOneWidget);
+    });
+
     testWidgets('can navigate to the how to play page', (tester) async {
       await tester.pumpWidget(
         App(
@@ -174,37 +216,13 @@ void main() {
         ),
       );
 
-      await tester.tap(find.byIcon(Icons.help_outline));
+      await tester.tap(find.byIcon(Icons.question_mark_rounded));
       await tester.pumpAndSettle();
 
       expect(find.byType(HowToPlayPage), findsOneWidget);
     });
 
-    testWidgets(
-      'can navigate to the game page from the how to play page',
-      (tester) async {
-        await tester.pumpWidget(
-          App(
-            settingsPersistence: MemoryOnlySettingsPersistence(),
-            apiClient: apiClient,
-            matchMakerRepository: _MockMatchMakerRepository(),
-            matchSolver: _MockMatchSolver(),
-            gameScriptMachine: _MockGameScriptEngine(),
-            user: _MockUser(),
-          ),
-        );
-
-        await tester.tap(find.byIcon(Icons.help_outline));
-        await tester.pumpAndSettle();
-
-        await tester.tap(find.text(tester.l10n.howToPlayButtonText));
-        await tester.pumpAndSettle();
-
-        expect(find.byType(DraftPage), findsOneWidget);
-      },
-    );
-
-    testWidgets('can navigate to the settings page', (tester) async {
+    testWidgets('can navigate to the share page', (tester) async {
       await tester.pumpWidget(
         App(
           settingsPersistence: MemoryOnlySettingsPersistence(),
@@ -216,36 +234,10 @@ void main() {
         ),
       );
 
-      await tester.tap(find.text('Settings'));
+      await tester.tap(find.byIcon(Icons.share));
       await tester.pumpAndSettle();
 
-      expect(find.byType(SettingsScreen), findsOneWidget);
+      expect(find.byType(SharePage), findsOneWidget);
     });
-
-    testWidgets(
-      'can navigate to the settings page and go back',
-      (tester) async {
-        tester.setPortraitDisplaySize();
-
-        await tester.pumpWidget(
-          App(
-            settingsPersistence: MemoryOnlySettingsPersistence(),
-            apiClient: apiClient,
-            matchMakerRepository: _MockMatchMakerRepository(),
-            matchSolver: _MockMatchSolver(),
-            gameScriptMachine: _MockGameScriptEngine(),
-            user: _MockUser(),
-          ),
-        );
-
-        await tester.tap(find.text('Settings'));
-        await tester.pumpAndSettle();
-
-        await tester.tap(find.byType(BackButton));
-        await tester.pumpAndSettle();
-
-        expect(find.byType(SettingsScreen), findsNothing);
-      },
-    );
   });
 }
