@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:api/game_url.dart';
 import 'package:api/templates/templates.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:dart_frog/dart_frog.dart';
@@ -18,12 +19,13 @@ Future<Response> onRequest(RequestContext context) async {
     return Response(statusCode: HttpStatus.notFound);
   }
 
-  const meta = TemplateMetadata(
+  final meta = TemplateMetadata(
     title: '',
     description: '',
     shareUrl: '',
     favIconUrl: '',
     ga: '',
+    gameUrl: context.read<GameUrl>().url,
   );
 
   return Response.bytes(

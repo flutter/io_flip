@@ -14,6 +14,7 @@ class TemplateMetadata {
     required this.shareUrl,
     required this.favIconUrl,
     required this.ga,
+    required this.gameUrl,
   });
 
   /// The title of the page.
@@ -30,6 +31,9 @@ class TemplateMetadata {
 
   /// The Google Analytics code.
   final String ga;
+
+  /// The game url.
+  final String gameUrl;
 
   /// Returns this instance as a json.
   Map<String, dynamic> toJson() {

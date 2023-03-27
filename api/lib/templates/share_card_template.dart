@@ -23,6 +23,7 @@ const _template = '''
     <meta name="twitter:image" content="{{{card.image}}}">
     <meta name="twitter:site" content="@flutterdev">
     <link href="https://fonts.googleapis.com/css?family=Google+Sans:400,500" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans+Text:400,500" rel="stylesheet">
     <style>
       body {
         margin: 0;
@@ -34,19 +35,70 @@ const _template = '''
       }
       main {
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         height: 100vh;
       }
 
+      h3 {
+        font-family: 'Google Sans';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 24px;
+        line-height: 32px;
+        text-align: center;
+        color: #202124;
+      }
+
+      p {
+        font-family: 'Google Sans Text';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 24px;
+        text-align: center;
+        color: #202124;
+        maring: 8px 32px;
+      }
+
       .card-img {
         max-width: 400px;
+        margin-bottom: 32px;
+      }
+
+      .btn {
+        padding: 8px 24px;
+        background: #A1C6FF;
+        box-shadow: 3px 4px 0px #000000;
+        border: 2px solid #202124;
+        border-radius: 100px;
+
+        font-family: 'Google Sans';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 24px;
+
+        display: flex;
+        align-items: center;
+        text-align: center;
+        letter-spacing: 0.25px;
+        text-transform: uppercase;
+        text-decoration: none;
+
+        color: #202124;
       }
     </style>
   </head>
   <body>
     <main>
       <img class="card-img" src="{{{card.image}}}" alt="{{card.name}}">
+      <h3>Check out my card from I/O Bash!</h3>
+      <p>Play I/O Bash and use AI to create cards and compete against players from around the globe.</p>
+      <a class="btn" href="{{{meta.gameUrl}}}">
+        PLAY NOW
+      </a>
     </main>
   </body>
 </html>
