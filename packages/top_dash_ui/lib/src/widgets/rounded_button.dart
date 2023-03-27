@@ -14,7 +14,7 @@ class RoundedButton extends StatelessWidget {
     this.backgroundColor = TopDashColors.mainBlue,
   }) : child = icon;
 
-  /// Basic [RoundedButton] with black shadow shadow.
+  /// Basic [RoundedButton] with black shadow.
   /// Contains a [text] as child
   RoundedButton.text(
     String text, {
