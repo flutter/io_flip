@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:api_client/src/resources/resources.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:http/http.dart' as http;
+import 'package:web_socket_client/web_socket_client.dart';
 
 /// {@template api_client_error}
 /// Error throw when accessing api failed.
@@ -59,10 +60,12 @@ class ApiClient {
     PostCall postCall = http.post,
     PutCall putCall = http.put,
     GetCall getCall = http.get,
+    WebSocket? websocket,
   })  : _base = Uri.parse(baseUrl),
         _post = postCall,
         _put = putCall,
         _get = getCall,
+        _websocket = websocket,
         _refreshIdToken = refreshIdToken {
     _idTokenSubscription = idTokenStream.listen((idToken) {
       _idToken = idToken;
@@ -74,6 +77,7 @@ class ApiClient {
   final PostCall _put;
   final GetCall _get;
   final Future<String?> Function() _refreshIdToken;
+  final WebSocket? _websocket;
 
   late final StreamSubscription<String?> _idTokenSubscription;
   String? _idToken;
@@ -162,6 +166,22 @@ class ApiClient {
       return response.decrypted;
     });
   }
+
+  /// Returns a WebSocket for the specified [path] and [queryParameters].
+  Future<WebSocket> connect(
+    String path, {
+    Map<String, String>? queryParameters,
+  }) async {
+    final uri = _base.replace(
+      scheme: 'wss',
+      path: path,
+      queryParameters: queryParameters,
+    );
+
+    final socket = _websocket ?? WebSocket(uri);
+
+    return socket;
+  }
 }
 
 extension on http.Response {
@@ -185,24 +205,24 @@ extension on http.Response {
       request: request,
     );
   }
-}
 
-String get _encryptionKey {
-  const value = String.fromEnvironment(
-    'ENCRYPTION_KEY',
-    // Default value is set at 32 characters to match required length of
-    // AES key. The default value can then be used for testing purposes.
-    defaultValue: 'encryption_key_not_set_123456789',
-  );
-  return value;
-}
+  String get _encryptionKey {
+    const value = String.fromEnvironment(
+      'ENCRYPTION_KEY',
+      // Default value is set at 32 characters to match required length of
+      // AES key. The default value can then be used for testing purposes.
+      defaultValue: 'encryption_key_not_set_123456789',
+    );
+    return value;
+  }
 
-String get _encryptionIV {
-  const value = String.fromEnvironment(
-    'ENCRYPTION_IV',
-    // Default value is set at 116 characters to match required length of
-    // IV key. The default value can then be used for testing purposes.
-    defaultValue: 'iv_not_set_12345',
-  );
-  return value;
+  String get _encryptionIV {
+    const value = String.fromEnvironment(
+      'ENCRYPTION_IV',
+      // Default value is set at 116 characters to match required length of
+      // IV key. The default value can then be used for testing purposes.
+      defaultValue: 'iv_not_set_12345',
+    );
+    return value;
+  }
 }

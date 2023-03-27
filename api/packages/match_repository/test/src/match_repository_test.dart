@@ -735,5 +735,149 @@ void main() {
         });
       });
     });
+
+    group('setGuestConnectivity', () {
+      late final MatchRepository matchRepository;
+      final dbClient = _MockDbClient();
+      final cardsRepository = _MockCardRepository();
+      final matchSolver = _MockMatchSolver();
+      const matchId = 'matchId';
+
+      setUp(() {
+        matchRepository = MatchRepository(
+          cardsRepository: cardsRepository,
+          dbClient: dbClient,
+          matchSolver: matchSolver,
+        );
+        when(() => dbClient.update(any(), any<DbEntityRecord>()))
+            .thenAnswer((_) async {});
+      });
+
+      test('updates the correct field', () async {
+        await matchRepository.setGuestConnectivity(
+          match: matchId,
+          active: true,
+        );
+        verify(
+          () => dbClient.update(
+            'matches',
+            DbEntityRecord(
+              id: matchId,
+              data: const {
+                'guestConnected': true,
+              },
+            ),
+          ),
+        );
+
+        await matchRepository.setGuestConnectivity(
+          match: matchId,
+          active: false,
+        );
+        verify(
+          () => dbClient.update(
+            'matches',
+            DbEntityRecord(
+              id: matchId,
+              data: const {
+                'guestConnected': false,
+              },
+            ),
+          ),
+        );
+      });
+    });
+
+    group('setHostConnectivity', () {
+      late final MatchRepository matchRepository;
+      final dbClient = _MockDbClient();
+      final cardsRepository = _MockCardRepository();
+      final matchSolver = _MockMatchSolver();
+      const matchId = 'matchId';
+
+      setUp(() {
+        matchRepository = MatchRepository(
+          cardsRepository: cardsRepository,
+          dbClient: dbClient,
+          matchSolver: matchSolver,
+        );
+        when(() => dbClient.update(any(), any<DbEntityRecord>()))
+            .thenAnswer((_) async {});
+      });
+
+      test('updates the correct field', () async {
+        await matchRepository.setHostConnectivity(
+          match: matchId,
+          active: true,
+        );
+        verify(
+          () => dbClient.update(
+            'matches',
+            DbEntityRecord(
+              id: matchId,
+              data: const {
+                'hostConnected': true,
+              },
+            ),
+          ),
+        );
+
+        await matchRepository.setHostConnectivity(
+          match: matchId,
+          active: false,
+        );
+        verify(
+          () => dbClient.update(
+            'matches',
+            DbEntityRecord(
+              id: matchId,
+              data: const {
+                'hostConnected': false,
+              },
+            ),
+          ),
+        );
+      });
+    });
+
+    group('getPlayerConnectivity', () {
+      late final MatchRepository matchRepository;
+      final dbClient = _MockDbClient();
+      final cardsRepository = _MockCardRepository();
+      final matchSolver = _MockMatchSolver();
+      const matchId = 'matchId';
+
+      setUp(() {
+        matchRepository = MatchRepository(
+          cardsRepository: cardsRepository,
+          dbClient: dbClient,
+          matchSolver: matchSolver,
+        );
+
+        when(() => dbClient.getById(any(), any())).thenAnswer(
+          (_) async => DbEntityRecord(
+            id: '',
+            data: const {
+              'hostConnected': true,
+              'guestConnected': false,
+            },
+          ),
+        );
+      });
+
+      test('returns the correct field', () async {
+        final host = await matchRepository.getPlayerConnectivity(
+          matchId: matchId,
+          isHost: true,
+        );
+        expect(host, isTrue);
+
+        final guest = await matchRepository.getPlayerConnectivity(
+          matchId: matchId,
+          isHost: false,
+        );
+        expect(guest, isFalse);
+      });
+    });
   });
 }
