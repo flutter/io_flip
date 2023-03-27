@@ -85,10 +85,3 @@ class ManagePlayerPresenceFailedState extends GameState {
   @override
   List<Object> get props => [];
 }
-
-class PingFailedState extends GameState {
-  const PingFailedState();
-
-  @override
-  List<Object> get props => [];
-}

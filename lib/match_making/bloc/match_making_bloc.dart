@@ -4,6 +4,7 @@ import 'package:api_client/api_client.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
+import 'package:web_socket_client/web_socket_client.dart';
 
 part 'match_making_event.dart';
 part 'match_making_state.dart';
@@ -25,6 +26,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   final MatchMakerRepository _matchMakerRepository;
   final GameResource _gameResource;
   final List<String> cardIds;
+  late WebSocket _matchConnection;
 
   static const defaultHostWaitTime = Duration(seconds: 4);
   final Duration hostWaitTime;
@@ -39,14 +41,23 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
       final match = await _matchMakerRepository.findMatch(playerId);
 
       if (match.guest != null) {
+        _matchConnection = await _gameResource.connectToMatch(
+          matchId: match.id,
+          isHost: false,
+        );
         emit(
           state.copyWith(
             match: match,
             status: MatchMakingStatus.completed,
             isHost: false,
+            matchConnection: _matchConnection,
           ),
         );
       } else {
+        _matchConnection = await _gameResource.connectToMatch(
+          matchId: match.id,
+          isHost: true,
+        );
         await _waitGuestToJoin(
           match: match,
           emit: emit,
@@ -120,6 +131,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
           match: newMatch,
           status: MatchMakingStatus.completed,
           isHost: true,
+          matchConnection: _matchConnection,
         ),
       );
       subscription.cancel();
@@ -129,7 +141,6 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
       await Future<void>.delayed(hostWaitTime);
 
       if (!isClosed && state.status == MatchMakingStatus.processing) {
-        await _matchMakerRepository.pingHost(match.id);
         return Future.value(true);
       }
 

@@ -21,12 +21,10 @@ class MatchMakerRepository {
   /// {@macro match_maker_repository}
   MatchMakerRepository({
     required this.db,
-    ValueGetter<Timestamp> now = Timestamp.now,
     ValueGetter<String>? inviteCode,
     this.retryDelay = _defaultRetryDelay,
     math.Random? randomGenerator,
-  })  : _now = now,
-        _inviteCode = inviteCode ?? defaultInviteCodeGenerator,
+  })  : _inviteCode = inviteCode ?? defaultInviteCodeGenerator,
         _randomGenerator = randomGenerator ?? math.Random() {
     collection = db.collection('matches');
     matchStatesCollection = db.collection('match_states');
@@ -36,7 +34,6 @@ class MatchMakerRepository {
   static const _defaultRetryDelay = 2;
   static const _maxRetries = 3;
 
-  final ValueGetter<Timestamp> _now;
   final ValueGetter<String> _inviteCode;
 
   /// The delay between retries when finding a match.
@@ -67,15 +64,15 @@ class MatchMakerRepository {
       final data = snapshot.data()!;
       final host = data['host'] as String;
       final guest = data['guest'] as String;
-      final hostPing = data['hostPing'] as Timestamp;
-      final guestPing = data['guestPing'] as Timestamp?;
+      final hostConnected = data['hostConnected'] as bool?;
+      final guestConnected = data['guestConnected'] as bool?;
 
       return Match(
         id: id,
         host: host,
         guest: guest == _emptyKey || guest == _inviteKey ? null : guest,
-        hostPing: hostPing,
-        guestPing: guestPing,
+        hostConnected: hostConnected ?? false,
+        guestConnected: guestConnected ?? false,
       );
     });
   }
@@ -113,33 +110,21 @@ class MatchMakerRepository {
     });
   }
 
-  /// Updates the `hostPing` on the match object.
-  Future<void> pingHost(String id) async {
-    final ref = collection.doc(id);
-    await ref.update({'hostPing': _now()});
-  }
-
-  /// Updates the `guestPing` on the match object.
-  Future<void> pingGuest(String id) async {
-    final ref = collection.doc(id);
-    await ref.update({'guestPing': _now()});
-  }
-
   Match _mapMatchQueryElement(
     QueryDocumentSnapshot<Map<String, dynamic>> element,
   ) {
     final id = element.id;
     final data = element.data();
     final host = data['host'] as String;
-    final hostPing = data['hostPing'] as Timestamp;
-    final guestPing = data['guestPing'] as Timestamp?;
+    final hostConnected = data['hostConnected'] as bool?;
+    final guestConnected = data['guestConnected'] as bool?;
     final inviteCode = data['inviteCode'] as String?;
 
     return Match(
       id: id,
       host: host,
-      hostPing: hostPing,
-      guestPing: guestPing,
+      hostConnected: hostConnected ?? false,
+      guestConnected: guestConnected ?? false,
       inviteCode: inviteCode,
     );
   }
@@ -164,10 +149,8 @@ class MatchMakerRepository {
           isEqualTo: _emptyKey,
         )
         .where(
-          'hostPing',
-          isGreaterThanOrEqualTo: Timestamp.fromMillisecondsSinceEpoch(
-            _now().millisecondsSinceEpoch - 4000,
-          ),
+          'hostConnected',
+          isEqualTo: true,
         )
         .limit(3)
         .get();
@@ -180,12 +163,11 @@ class MatchMakerRepository {
 
       for (final match in matches) {
         try {
-          final now = _now();
           await db.runTransaction<Transaction>((transaction) async {
             final ref = collection.doc(match.id);
-            return transaction.update(ref, {'guest': id, 'guestPing': now});
+            return transaction.update(ref, {'guest': id});
           });
-          return match.copyWithGuest(guest: id, guestPing: now);
+          return match.copyWithGuest(guest: id);
         } catch (e) {
           log('Match "${match.id}" already matched, trying next...');
         }
@@ -225,31 +207,22 @@ class MatchMakerRepository {
     if (matches.isNotEmpty) {
       final match = matches.first;
 
-      final now = _now();
       await db.runTransaction<Transaction>((transaction) async {
         final ref = collection.doc(match.id);
         return transaction.update(ref, {
           'guest': guestId,
-          'guestPing': now,
-          // Since a private match is a "manual" match making, the host waits
-          // forever, which will render their ping "older", so once a guest
-          // join, they update both pings so they can start counting again.
-          'hostPing': now,
         });
       });
-      return match.copyWithGuest(guest: guestId, guestPing: now);
+      return match.copyWithGuest(guest: guestId);
     }
 
     return null;
   }
 
   Future<Match> _createMatch(String id, {bool inviteOnly = false}) async {
-    final now = _now();
-
     final inviteCode = inviteOnly ? _inviteCode() : null;
     final result = await collection.add({
       'host': id,
-      'hostPing': now,
       'guest': inviteOnly ? _inviteKey : _emptyKey,
       if (inviteCode != null) 'inviteCode': inviteCode,
     });
@@ -263,7 +236,6 @@ class MatchMakerRepository {
     return Match(
       id: result.id,
       host: id,
-      hostPing: now,
       inviteCode: inviteCode,
     );
   }

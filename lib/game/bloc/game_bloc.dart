@@ -3,12 +3,11 @@ import 'dart:math';
 
 import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:match_maker_repository/match_maker_repository.dart' as repo;
+import 'package:web_socket_client/web_socket_client.dart';
 
 part 'game_event.dart';
 part 'game_state.dart';
@@ -20,20 +19,17 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     required MatchSolver matchSolver,
     required User user,
     required this.isHost,
-    this.timeOutPeriod = defaultTimeOutPeriod,
-    this.pingInterval = defaultPingInterval,
-    ValueGetter<Timestamp> now = Timestamp.now,
+    required this.matchConnection,
   })  : _gameResource = gameResource,
         _matchMakerRepository = matchMakerRepository,
         _matchSolver = matchSolver,
         _user = user,
-        _now = now,
         super(const MatchLoadingState()) {
     on<MatchRequested>(_onMatchRequested);
     on<PlayerPlayed>(_onPlayerPlayed);
     on<MatchStateUpdated>(_onMatchStateUpdated);
-    on<ManagePlayerPresence>(_onManagePlayerPresence);
     on<ScoreCardUpdated>(_onScoreCardUpdated);
+    on<ManagePlayerPresence>(_onManagePlayerPresence);
   }
 
   final GameResource _gameResource;
@@ -41,14 +37,10 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   final MatchSolver _matchSolver;
   final User _user;
   final bool isHost;
-  static const defaultTimeOutPeriod = Duration(seconds: 10);
-  static const defaultPingInterval = Duration(seconds: 3);
-  final Duration timeOutPeriod;
-  final Duration pingInterval;
-  final ValueGetter<Timestamp> _now;
+  final WebSocket? matchConnection;
 
   StreamSubscription<MatchState>? _stateSubscription;
-  StreamSubscription<repo.Match>? _opponentPresenceSubscription;
+  StreamSubscription<repo.Match>? _opponentDisconnectSubscription;
   StreamSubscription<ScoreCard>? _scoreSubscription;
 
   Future<void> _onMatchRequested(
@@ -81,8 +73,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           ),
         );
 
-        add(ManagePlayerPresence(event.matchId));
-
         final stateStream =
             _matchMakerRepository.watchMatchState(matchState.id);
         _stateSubscription = stateStream.listen((state) {
@@ -93,6 +83,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         _scoreSubscription = scoreStream.listen((state) {
           add(ScoreCardUpdated(state));
         });
+
+        add(ManagePlayerPresence(event.matchId));
       }
     } catch (e, s) {
       addError(e, s);
@@ -185,32 +177,18 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   ) async {
     try {
       final completer = Completer<void>();
-      final matchStream = _matchMakerRepository.watchMatch(event.matchId);
-      final stalePingMatchStream = matchStream.where(_isOpponentAbsent);
 
-      var pinging = false;
-      final timer = Timer.periodic(pingInterval, (_) async {
-        try {
-          if (!pinging) {
-            pinging = true;
-            isHost
-                ? await _matchMakerRepository.pingHost(event.matchId)
-                : await _matchMakerRepository.pingGuest(event.matchId);
-            pinging = false;
-          }
-        } catch (e, s) {
-          addError(e, s);
-          emit(const PingFailedState());
-        }
+      final opponentDisconnectStream =
+          _matchMakerRepository.watchMatch(event.matchId).where(
+                (match) => isHost
+                    ? match.guestConnected == false
+                    : match.hostConnected == false,
+              );
+      _opponentDisconnectSubscription =
+          opponentDisconnectStream.listen((state) {
+        emit(const OpponentAbsentState());
+        completer.complete();
       });
-
-      _opponentPresenceSubscription = stalePingMatchStream.listen(
-        (expiredMatch) {
-          emit(const OpponentAbsentState());
-          if (!isClosed) timer.cancel();
-          completer.complete();
-        },
-      );
 
       return completer.future;
     } catch (e, s) {
@@ -287,18 +265,10 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   @override
   Future<void> close() {
     _stateSubscription?.cancel();
-    _opponentPresenceSubscription?.cancel();
+    _opponentDisconnectSubscription?.cancel();
     _scoreSubscription?.cancel();
+    matchConnection?.close();
     return super.close();
-  }
-
-  bool _isOpponentAbsent(repo.Match match) {
-    final now = _now().millisecondsSinceEpoch;
-
-    final opponentPing = isHost
-        ? match.guestPing?.millisecondsSinceEpoch ?? 0
-        : match.hostPing.millisecondsSinceEpoch;
-    return now - opponentPing >= timeOutPeriod.inMilliseconds;
   }
 }
 
