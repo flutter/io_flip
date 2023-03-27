@@ -15,6 +15,7 @@ class TemplateMetadata {
     required this.favIconUrl,
     required this.ga,
     required this.gameUrl,
+    required this.image,
   });
 
   /// The title of the page.
@@ -34,6 +35,9 @@ class TemplateMetadata {
 
   /// The game url.
   final String gameUrl;
+
+  /// The image url.
+  final String image;
 
   /// Returns this instance as a json.
   Map<String, dynamic> toJson() {
