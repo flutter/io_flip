@@ -9,6 +9,8 @@ environment:
 dependencies:
   db_client:
     path: ../db_client
+  game_domain:
+    path: ../game_domain
 
 dev_dependencies:
   mocktail: ^0.3.0
