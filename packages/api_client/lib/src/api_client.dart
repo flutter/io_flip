@@ -177,7 +177,6 @@ class ApiClient {
       path: path,
       queryParameters: queryParameters,
     );
-    print(uri);
 
     final socket = _websocket ?? WebSocket(uri);
 
