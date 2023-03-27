@@ -380,7 +380,7 @@ void main() {
 
         verify(
           () => apiClient.post(
-            '/matches/matchId/decks/deckId/cards/cardId',
+            '/game/matches/matchId/decks/deckId/cards/cardId',
           ),
         ).called(1);
       });

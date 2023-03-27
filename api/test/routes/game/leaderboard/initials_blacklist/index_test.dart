@@ -5,7 +5,8 @@ import 'package:leaderboard_repository/leaderboard_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-import '../../../../routes/leaderboard/initials_blacklist/index.dart' as route;
+import '../../../../../routes/game/leaderboard/initials_blacklist/index.dart'
+    as route;
 
 class _MockLeaderboardRepository extends Mock
     implements LeaderboardRepository {}

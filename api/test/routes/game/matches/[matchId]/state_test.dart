@@ -1,88 +1,84 @@
 import 'dart:io';
 
-import 'package:cards_repository/cards_repository.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:logging/logging.dart';
+import 'package:match_repository/match_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-import '../../../routes/decks/[deckId].dart' as route;
+import '../../../../../routes/game/matches/[matchId]/state.dart' as route;
 
 class _MockRequestContext extends Mock implements RequestContext {}
 
-class _MockCardsRepository extends Mock implements CardsRepository {}
+class _MockMatchRepository extends Mock implements MatchRepository {}
 
 class _MockRequest extends Mock implements Request {}
 
 class _MockLogger extends Mock implements Logger {}
 
 void main() {
-  group('GET /decks/[deckId]', () {
-    late CardsRepository cardsRepository;
+  group('GET /game/matches/[matchId]/state', () {
+    late MatchRepository matchRepository;
     late Request request;
     late RequestContext context;
     late Logger logger;
 
-    const deck = Deck(
-      id: 'deckId',
-      userId: 'userId',
-      cards: [
-        Card(
-          id: '',
-          name: '',
-          description: '',
-          image: '',
-          power: 10,
-          rarity: false,
-          suit: Suit.air,
-        ),
-      ],
+    const matchState = MatchState(
+      id: 'matchStateId',
+      matchId: 'matchId',
+      guestPlayedCards: [],
+      hostPlayedCards: [],
+      hostStartsMatch: true,
     );
 
     setUp(() {
-      cardsRepository = _MockCardsRepository();
-      when(() => cardsRepository.getDeck(any())).thenAnswer((_) async => deck);
+      matchRepository = _MockMatchRepository();
+      when(() => matchRepository.getMatchState(any())).thenAnswer(
+        (_) async => matchState,
+      );
 
       request = _MockRequest();
       when(() => request.method).thenReturn(HttpMethod.get);
       when(request.json).thenAnswer(
-        (_) async => deck.toJson(),
+        (_) async => matchState.toJson(),
       );
 
       logger = _MockLogger();
 
       context = _MockRequestContext();
       when(() => context.request).thenReturn(request);
-      when(() => context.read<CardsRepository>()).thenReturn(cardsRepository);
+      when(() => context.read<MatchRepository>()).thenReturn(matchRepository);
       when(() => context.read<Logger>()).thenReturn(logger);
     });
 
     test('responds with a 200', () async {
-      final response = await route.onRequest(context, deck.id);
+      final response = await route.onRequest(context, matchState.matchId);
       expect(response.statusCode, equals(HttpStatus.ok));
     });
 
-    test('responds with the deck', () async {
-      final response = await route.onRequest(context, deck.id);
+    test('responds with the match state', () async {
+      final response = await route.onRequest(context, matchState.matchId);
 
       final json = await response.json() as Map<String, dynamic>;
       expect(
         json,
-        equals(deck.toJson()),
+        equals(matchState.toJson()),
       );
     });
 
-    test("responds 404 when the deck doesn't exists", () async {
-      when(() => cardsRepository.getDeck(any())).thenAnswer((_) async => null);
-      final response = await route.onRequest(context, deck.id);
+    test("responds 404 when the match doesn't exists", () async {
+      when(() => matchRepository.getMatchState(any())).thenAnswer(
+        (_) async => null,
+      );
+      final response = await route.onRequest(context, matchState.id);
 
       expect(response.statusCode, equals(HttpStatus.notFound));
     });
 
     test('allows only get methods', () async {
       when(() => request.method).thenReturn(HttpMethod.post);
-      final response = await route.onRequest(context, deck.id);
+      final response = await route.onRequest(context, matchState.id);
       expect(response.statusCode, equals(HttpStatus.methodNotAllowed));
     });
   });

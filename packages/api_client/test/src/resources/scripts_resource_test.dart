@@ -65,7 +65,7 @@ void main() {
         await resource.updateScript('current', 'script');
 
         verify(
-          () => apiClient.put('/scripts/current', body: 'script'),
+          () => apiClient.put('/game/scripts/current', body: 'script'),
         );
       });
 

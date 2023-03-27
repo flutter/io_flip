@@ -17,7 +17,7 @@ class GameResource {
 
   /// Post /cards
   Future<Card> generateCard() async {
-    final response = await _apiClient.post('/cards');
+    final response = await _apiClient.post('/game/cards');
 
     if (response.statusCode != HttpStatus.ok) {
       throw ApiClientError(
@@ -42,7 +42,7 @@ class GameResource {
   /// Returns the id of the created deck.
   Future<String> createDeck(List<String> cardIds) async {
     final response = await _apiClient.post(
-      '/decks',
+      '/game/decks',
       body: jsonEncode({'cards': cardIds}),
     );
 
@@ -68,7 +68,7 @@ class GameResource {
   ///
   /// Returns a [Deck], if any to be found.
   Future<Deck?> getDeck(String deckId) async {
-    final response = await _apiClient.get('/decks/$deckId');
+    final response = await _apiClient.get('/game/decks/$deckId');
 
     if (response.statusCode == HttpStatus.notFound) {
       return null;
@@ -96,7 +96,7 @@ class GameResource {
   ///
   /// Returns a [Match], if any to be found.
   Future<Match?> getMatch(String matchId) async {
-    final response = await _apiClient.get('/matches/$matchId');
+    final response = await _apiClient.get('/game/matches/$matchId');
 
     if (response.statusCode == HttpStatus.notFound) {
       return null;
@@ -124,7 +124,7 @@ class GameResource {
   ///
   /// Returns a [MatchState], if any to be found.
   Future<MatchState?> getMatchState(String matchId) async {
-    final response = await _apiClient.get('/matches/$matchId/state');
+    final response = await _apiClient.get('/game/matches/$matchId/state');
 
     if (response.statusCode == HttpStatus.notFound) {
       return null;
@@ -158,7 +158,7 @@ class GameResource {
   }) async {
     try {
       final response = await _apiClient
-          .post('/matches/$matchId/decks/$deckId/cards/$cardId');
+          .post('/game/matches/$matchId/decks/$deckId/cards/$cardId');
 
       if (response.statusCode != HttpStatus.noContent) {
         throw ApiClientError(
