@@ -870,13 +870,13 @@ void main() {
           matchId: matchId,
           isHost: true,
         );
-        expect(host, equals(true));
+        expect(host, isTrue);
 
         final guest = await matchRepository.getPlayerConnectivity(
           matchId: matchId,
           isHost: false,
         );
-        expect(guest, equals(false));
+        expect(guest, isFalse);
       });
     });
   });

@@ -252,9 +252,8 @@ class MatchRepository {
   }) async {
     final matchData = await _dbClient.getById('matches', matchId);
 
-    final hostConnected = (matchData?.data['hostConnected'] as bool?) ?? false;
-    final guestConnected =
-        (matchData?.data['guestConnected'] as bool?) ?? false;
-    return isHost ? hostConnected : guestConnected;
+    return (matchData?.data[isHost ? 'hostConnected' : 'guestConnected']
+            as bool?) ??
+        false;
   }
 }
