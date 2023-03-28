@@ -69,8 +69,6 @@ class DraftView extends StatelessWidget {
   }
 }
 
-// TODO(jaime): add arrows to go to next/prev card.
-// TODO(jaime): add swipe capability to go to next/prev card.
 class _DraftDeck extends StatelessWidget {
   const _DraftDeck();
 
@@ -124,10 +122,22 @@ class _DraftDeck extends StatelessWidget {
                     scale: scaleTween.transform(
                       (i + 1) / state.cards.length,
                     ),
-                    child: GameCard(
-                      width: cardWidth,
-                      height: cardHeight,
-                      card: state.cards[i],
+                    child: Dismissible(
+                      key: ValueKey(state.cards[i].id),
+                      onDismissed: (direction) {
+                        bloc.add(const CardSwiped());
+                      },
+                      onUpdate: (details) {
+                        bloc.add(CardSwipeStarted(details.progress));
+                      },
+                      child: Opacity(
+                        opacity: i == 0 ? state.firstCardOpacity : 1,
+                        child: GameCard(
+                          width: cardWidth,
+                          height: cardHeight,
+                          card: state.cards[i],
+                        ),
+                      ),
                     ),
                   ),
                 ),

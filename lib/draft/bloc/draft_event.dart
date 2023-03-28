@@ -25,6 +25,22 @@ class NextCard extends DraftEvent {
   List<Object> get props => [];
 }
 
+class CardSwiped extends DraftEvent {
+  const CardSwiped();
+
+  @override
+  List<Object> get props => [];
+}
+
+class CardSwipeStarted extends DraftEvent {
+  const CardSwipeStarted(this.progress);
+
+  final double progress;
+
+  @override
+  List<Object> get props => [progress];
+}
+
 class SelectCard extends DraftEvent {
   const SelectCard();
 

@@ -14,6 +14,8 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     on<DeckRequested>(_onDeckRequested);
     on<PreviousCard>(_onPreviousCard);
     on<NextCard>(_onNextCard);
+    on<CardSwiped>(_onCardSwiped);
+    on<CardSwipeStarted>(_onCardSwipeStarted);
     on<SelectCard>(_onSelectCard);
   }
 
@@ -60,6 +62,27 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
   ) {
     final cards = _dismissTopCard();
     emit(state.copyWith(cards: cards));
+  }
+
+  void _onCardSwiped(
+    CardSwiped event,
+    Emitter<DraftState> emit,
+  ) {
+    final cards = _dismissTopCard();
+    emit(
+      state.copyWith(
+        cards: cards,
+        firstCardOpacity: 1,
+      ),
+    );
+  }
+
+  void _onCardSwipeStarted(
+    CardSwipeStarted event,
+    Emitter<DraftState> emit,
+  ) {
+    final opacity = 1 - event.progress;
+    emit(state.copyWith(firstCardOpacity: opacity));
   }
 
   void _onSelectCard(
