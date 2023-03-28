@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
-/// {@template flipped_game_card}
-/// Top Dash Flipped Game Card.
+/// {@template game_card_overlay_type}
+/// Top Dash Game Card Overlay Type.
 /// {@endtemplate}
 enum CardOverlayType {
   /// Win

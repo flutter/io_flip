@@ -12,7 +12,10 @@ class FlippedGameCard extends StatelessWidget {
     this.height,
   });
 
+  /// Width
   final double? width;
+
+  /// Height
   final double? height;
 
   @override
