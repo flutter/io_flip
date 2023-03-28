@@ -204,7 +204,7 @@ class _BottomBar extends StatelessWidget {
       child: Stack(
         children: [
           Align(
-            alignment: Alignment.centerLeft,
+            alignment: Alignment.centerRight,
             child: RoundedButton.icon(
               const Icon(Icons.question_mark_rounded),
               backgroundColor: Colors.white,
@@ -212,6 +212,10 @@ class _BottomBar extends StatelessWidget {
             ),
           ),
           if (state.status == DraftStateStatus.deckSelected) ...[
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: _PrivateMatchButton(),
+            ),
             Center(
               child: RoundedButton.text(
                 l10n.joinMatch.toUpperCase(),
@@ -247,55 +251,39 @@ class _BottomBar extends StatelessWidget {
   }
 }
 
-// TODO(jaime): check if private match feature is still required.
-class _BottomBar2 extends StatelessWidget {
-  const _BottomBar2();
+class _PrivateMatchButton extends StatelessWidget {
+  const _PrivateMatchButton();
 
   @override
   Widget build(BuildContext context) {
     final bloc = context.watch<DraftBloc>();
     final state = bloc.state;
-
-    return Column(
-      children: [
-        ElevatedButton(
-          onPressed: () {
-            GoRouter.of(context).goNamed(
-              'match_making',
-              queryParams: {
-                'createPrivateMatch': 'true',
-                'cardId': state.selectedCardIds(),
-              },
-            );
-          },
-          child: const Text('Create private match'),
-        ),
-        ElevatedButton(
-          onPressed: () async {
-            final goRouter = GoRouter.of(context);
-            final inviteCode = await showDialog<String?>(
-              context: context,
-              builder: (_) => const _JoinPrivateMatchDialog(),
-            );
-            if (inviteCode != null) {
-              goRouter.goNamed(
-                'match_making',
-                queryParams: {
-                  'inviteCode': inviteCode,
-                  'cardId': state.selectedCardIds(),
-                },
-              );
-            }
-          },
-          child: const Text('Join Private match'),
-        ),
-      ],
+    return ElevatedButton(
+      onPressed: () async {
+        final goRouter = GoRouter.of(context);
+        final inviteCode = await showDialog<String?>(
+          context: context,
+          builder: (_) => _JoinPrivateMatchDialog(state.selectedCardIds()),
+        );
+        if (inviteCode != null) {
+          goRouter.goNamed(
+            'match_making',
+            queryParams: {
+              'inviteCode': inviteCode,
+              'cardId': state.selectedCardIds(),
+            },
+          );
+        }
+      },
+      child: const Text('Private match'),
     );
   }
 }
 
 class _JoinPrivateMatchDialog extends StatefulWidget {
-  const _JoinPrivateMatchDialog();
+  const _JoinPrivateMatchDialog(this.selectedCardIds);
+
+  final List<String> selectedCardIds;
 
   @override
   State<_JoinPrivateMatchDialog> createState() =>
@@ -336,6 +324,19 @@ class _JoinPrivateMatchDialogState extends State<_JoinPrivateMatchDialog> {
                 Navigator.of(context).pop(null);
               },
               child: const Text('Cancel'),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () {
+                GoRouter.of(context).goNamed(
+                  'match_making',
+                  queryParams: {
+                    'createPrivateMatch': 'true',
+                    'cardId': widget.selectedCardIds,
+                  },
+                );
+              },
+              child: const Text('Create private match'),
             ),
           ],
         ),
