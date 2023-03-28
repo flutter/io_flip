@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:game_domain/game_domain.dart';
-import 'package:go_router/go_router.dart';
 import 'package:top_dash/game/game.dart';
+import 'package:top_dash/game/views/game_summary.dart';
 import 'package:top_dash/widgets/widgets.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -28,6 +27,9 @@ class GameView extends StatelessWidget {
         }
 
         if (state is MatchLoadedState) {
+          if (state.matchState.result != null) {
+            return const GameSummaryView();
+          }
           child = const _GameBoard();
         }
 
@@ -211,37 +213,6 @@ class _BoardCenter extends StatelessWidget {
             width: 50,
             height: 50,
             child: CircularProgressIndicator(),
-          ),
-        );
-      }
-
-      if (state.matchState.result != null) {
-        final result = state.matchState.result == MatchResult.draw
-            ? 'Draw'
-            : bloc.hasPlayerWon()
-                ? 'Win'
-                : 'Lose';
-        return Center(
-          child: Column(
-            children: [
-              Text('Game ended: $result'),
-              const SizedBox(height: TopDashSpacing.sm),
-              // TODO(willhlas): add to l10n and update design once ready.
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    onPressed: () => GoRouter.of(context).goNamed('share'),
-                    icon: const Icon(Icons.share),
-                  ),
-                  const SizedBox(width: TopDashSpacing.sm),
-                  ElevatedButton(
-                    onPressed: () => GoRouter.of(context).pop(),
-                    child: const Text('Replay'),
-                  ),
-                ],
-              ),
-            ],
           ),
         );
       }
