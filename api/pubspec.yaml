@@ -7,6 +7,8 @@ environment:
   sdk: ">=2.19.0 <3.0.0"
 
 dependencies:
+  card_renderer:
+    path: packages/card_renderer
   cards_repository:
     path: packages/cards_repository
   dart_frog: ^0.3.0
