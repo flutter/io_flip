@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/widgets/widgets.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 extension DraftViewX on DraftState {
@@ -139,7 +138,10 @@ class _DraftDeck extends StatelessWidget {
                         child: GameCard(
                           width: cardWidth,
                           height: cardHeight,
-                          card: state.cards[i],
+                          image: state.cards[i].image,
+                          name: state.cards[i].name,
+                          power: state.cards[i].power,
+                          suitName: state.cards[i].suit.name,
                         ),
                       ),
                     ),

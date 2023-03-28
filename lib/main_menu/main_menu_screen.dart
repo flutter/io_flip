@@ -45,14 +45,9 @@ class _MainMenuScreenView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final isPortrait = constraints.maxWidth < constraints.maxHeight ||
-            constraints.maxWidth < 1150;
-        return isPortrait
-            ? const PortraitMenuView()
-            : const LandscapeMenuView();
-      },
+    return ResponsiveLayoutBuilder(
+      small: (context, widget) => const PortraitMenuView(),
+      large: (context, widget) => const LandscapeMenuView(),
     );
   }
 }
