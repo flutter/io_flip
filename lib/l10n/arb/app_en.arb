@@ -150,5 +150,17 @@
     "description": "Title of the credits item in settings",
     "type": "text",
     "placeholders": {}
+  },
+  "joinMatch": "Join a match",
+  "@joinMatch": {
+    "description": "Label join a match"
+  },
+  "deckBuildingTitle": "Build your best hand",
+  "@deckBuildingTitle": {
+    "description": "Title of the deck building page"
+  },
+  "deckBuildingSubtitle": "Swipe to see the rest of your deck",
+  "@deckBuildingSubtitle": {
+    "description": "Subtitle of the deck building page"
   }
 }

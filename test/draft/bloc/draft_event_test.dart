@@ -20,6 +20,22 @@ void main() {
     });
   });
 
+  group('PreviousCard', () {
+    test('can be instantiated', () {
+      expect(
+        PreviousCard(),
+        isNotNull,
+      );
+    });
+
+    test('supports equality', () {
+      expect(
+        PreviousCard(),
+        equals(PreviousCard()),
+      );
+    });
+  });
+
   group('NextCard', () {
     test('can be instantiated', () {
       expect(
@@ -32,6 +48,43 @@ void main() {
       expect(
         NextCard(),
         equals(NextCard()),
+      );
+    });
+  });
+
+  group('CardSwiped', () {
+    test('can be instantiated', () {
+      expect(
+        CardSwiped(),
+        isNotNull,
+      );
+    });
+
+    test('supports equality', () {
+      expect(
+        CardSwiped(),
+        equals(CardSwiped()),
+      );
+    });
+  });
+
+  group('CardSwipeStarted', () {
+    test('can be instantiated', () {
+      expect(
+        CardSwipeStarted(0),
+        isNotNull,
+      );
+    });
+
+    test('supports equality', () {
+      expect(
+        CardSwipeStarted(.8),
+        equals(CardSwipeStarted(.8)),
+      );
+
+      expect(
+        CardSwipeStarted(.8),
+        isNot(equals(CardSwipeStarted(.9))),
       );
     });
   });

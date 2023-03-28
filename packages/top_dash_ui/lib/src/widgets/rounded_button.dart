@@ -46,23 +46,26 @@ class RoundedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(40),
-          border: Border.all(width: 2),
-          color: backgroundColor,
-          boxShadow: const [
-            BoxShadow(
-              offset: Offset(2, 2),
-              spreadRadius: 1,
-            )
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(TopDashSpacing.md),
-          child: child,
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: onPressed,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(40),
+            border: Border.all(width: 2),
+            color: backgroundColor,
+            boxShadow: const [
+              BoxShadow(
+                offset: Offset(2, 2),
+                spreadRadius: 1,
+              )
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(TopDashSpacing.md),
+            child: child,
+          ),
         ),
       ),
     );

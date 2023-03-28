@@ -135,7 +135,7 @@ class _Footer extends StatelessWidget {
     final audioController = context.watch<AudioController>();
 
     return ColoredBox(
-      color: Colors.white,
+      color: TopDashColors.white,
       child: Padding(
         padding: const EdgeInsets.all(TopDashSpacing.sm),
         child: Row(
@@ -143,19 +143,19 @@ class _Footer extends StatelessWidget {
           children: [
             RoundedButton.icon(
               const Icon(Icons.more_horiz_rounded),
-              backgroundColor: Colors.white,
+              backgroundColor: TopDashColors.white,
               onPressed: () => GoRouter.of(context).push('/settings'),
             ),
             _gap,
             RoundedButton.icon(
               const Icon(Icons.share),
-              backgroundColor: Colors.white,
+              backgroundColor: TopDashColors.white,
               onPressed: () => GoRouter.of(context).goNamed('share'),
             ),
             _gap,
             RoundedButton.icon(
               const Icon(Icons.question_mark_rounded),
-              backgroundColor: Colors.white,
+              backgroundColor: TopDashColors.white,
               onPressed: () => GoRouter.of(context).go('/how_to_play'),
             ),
             _gap,
