@@ -53,6 +53,7 @@ jobs:
           env_vars: |
             FB_APP_ID=${{ env.PROJECT_ID }}
             GAME_URL=${{ env.GAME_URL }}
+            INITIALS_BLACKLIST_ID=${{ env.INITIALS_BLACKLIST_ID }}
             ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }}
             ENCRYPTION_IV=${{ secrets.ENCRYPTION_IV }}
 
