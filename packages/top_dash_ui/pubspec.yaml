@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  mocktail_image_network: ^0.3.1
 
 dev_dependencies:
   flutter_test:
