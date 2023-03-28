@@ -1,8 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:top_dash/widgets/game_card.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
+/// {@template flipped_game_card}
+/// Top Dash Flipped Game Card.
+/// {@endtemplate}
+enum CardOverlayType {
+  /// Win
+  win,
+
+  /// Lose
+  lose,
+
+  /// Draw
+  draw,
+}
+
+/// {@template card_overlay}
+/// Top Dash Card Overlay.
+/// {@endtemplate}
 class CardOverlay extends StatelessWidget {
+  /// {@macro card_overlay}
   factory CardOverlay.ofType(
     CardOverlayType type,
     double? width,
@@ -24,16 +41,16 @@ class CardOverlay extends StatelessWidget {
   })  : color = TopDashColors.seedBlue,
         child = const Icon(
           Icons.check,
-          color: Colors.white,
+          color: TopDashColors.white,
         );
 
   const CardOverlay._lose({
     required this.width,
     required this.height,
-  })  : color = Colors.red,
+  })  : color = TopDashColors.seedRed,
         child = const Icon(
           Icons.close,
-          color: Colors.white,
+          color: TopDashColors.white,
         );
 
   const CardOverlay._draw({
@@ -42,12 +59,19 @@ class CardOverlay extends StatelessWidget {
   })  : color = TopDashColors.drawGrey,
         child = const Text(
           '=',
-          style: TextStyle(color: Colors.white, fontSize: 24),
+          style: TextStyle(color: TopDashColors.white, fontSize: 24),
         );
 
+  /// Color
   final Color color;
+
+  /// Child widget
   final Widget child;
+
+  /// Width
   final double? width;
+
+  /// Height
   final double? height;
 
   @override
@@ -56,7 +80,9 @@ class CardOverlay extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: color != TopDashColors.darkPen ? const Color(0x89FFFFFF) : null,
+        color: color != TopDashColors.darkPen
+            ? TopDashColors.trasnparentWhite
+            : null,
         border: Border.all(width: 2, color: color),
         borderRadius: BorderRadius.circular(10),
       ),
@@ -64,7 +90,7 @@ class CardOverlay extends StatelessWidget {
         children: [
           CustomPaint(
             size: const Size(40, 40),
-            painter: DrawTriangle(color),
+            painter: OverlayTriangle(color),
           ),
           child,
         ],
@@ -73,9 +99,15 @@ class CardOverlay extends StatelessWidget {
   }
 }
 
-class DrawTriangle extends CustomPainter {
-  DrawTriangle(this.color);
+/// {@template card_overlay_triangle}
+/// Top Dash Card Overlay Triangle.
+/// {@endtemplate}
+@visibleForTesting
+class OverlayTriangle extends CustomPainter {
+  /// {@macro card_overlay_triangle}
+  OverlayTriangle(this.color);
 
+  /// Color
   final Color color;
 
   @override

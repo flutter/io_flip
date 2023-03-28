@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:top_dash/widgets/card_overlay.dart';
-import 'package:top_dash/widgets/widgets.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
+
+class _FakeCustomPainter extends Fake implements CustomPainter {}
 
 void main() {
   group('CardOverlay', () {
@@ -73,5 +74,12 @@ void main() {
         );
       },
     );
+  });
+
+  group('OverlayTriangle', () {
+    test('shouldRepaint', () {
+      final customPaint = OverlayTriangle(TopDashColors.darkPen);
+      expect(customPaint.shouldRepaint(_FakeCustomPainter()), isFalse);
+    });
   });
 }

@@ -151,6 +151,25 @@ void main() {
       );
 
       testWidgets(
+        'pops navigation when the replay button is tapped on opponent absent',
+        (tester) async {
+          final goRouter = MockGoRouter();
+
+          mockState(OpponentAbsentState());
+
+          await tester.pumpSubject(
+            bloc,
+            goRouter: goRouter,
+          );
+
+          await tester.tap(find.text('Replay'));
+          await tester.pumpAndSettle();
+
+          verify(goRouter.pop).called(1);
+        },
+      );
+
+      testWidgets(
         'renders the players score',
         (tester) async {
           mockState(baseState);

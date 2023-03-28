@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
+
 /// Colors used in the Top Dash UI.
 abstract class TopDashColors {
   /// Dark Pen.
@@ -14,8 +16,14 @@ abstract class TopDashColors {
   /// Blue
   static const Color mainBlue = Color(0xFF72AAFF);
 
+  /// Red
+  static const Color mainRed = Color(0xFFDA0F00);
+
   /// Seed Blue
   static const Color drawGrey = Color(0xFF80868B);
+
+  /// Red
+  static const Color seedRed = Color(0xFFFF5145);
 
   /// Gold
   static const Color gold = Color(0xFFF9A52F);
@@ -25,6 +33,9 @@ abstract class TopDashColors {
 
   /// Bronze
   static const Color bronze = Color(0xFFC47542);
+
+  /// Transparent White
+  static const Color trasnparentWhite = Color(0x89FFFFFF);
 
   /// Ink.
   static const Color ink = Color(0xee352b42);

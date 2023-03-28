@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/widgets/widgets.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 extension DraftViewX on DraftState {
@@ -69,7 +68,10 @@ class DraftView extends StatelessWidget {
                       child: GameCard(
                         width: 120,
                         height: 280,
-                        card: state.cards[i],
+                        image: state.cards[i].image,
+                        name: state.cards[i].name,
+                        power: state.cards[i].power,
+                        suitName: state.cards[i].suit.name,
                       ),
                     ),
                   ),

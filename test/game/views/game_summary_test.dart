@@ -10,7 +10,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash/game/views/game_summary.dart';
-import 'package:top_dash/widgets/game_card.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
 

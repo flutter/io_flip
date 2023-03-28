@@ -1,26 +1,46 @@
 import 'package:flutter/material.dart' hide Card;
-import 'package:game_domain/game_domain.dart';
-import 'package:top_dash/widgets/card_overlay.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
 
-enum CardOverlayType {
-  win,
-  lose,
-  draw,
-}
-
+/// {@template game_card}
+/// Top Dash Game Card.
+/// {@endtemplate}
 class GameCard extends StatelessWidget {
+  /// {@macro game_card}
   const GameCard({
-    required this.card,
+    required this.image,
+    required this.name,
+    required this.suitName,
+    required this.power,
+    this.isRare = false,
     this.width,
     this.height,
     this.overlay,
     super.key,
   });
 
-  final Card card;
+  /// [CardOverlayType] type of overlay or null if no overlay
   final CardOverlayType? overlay;
+
+  /// Optional width
   final double? width;
+
+  /// Optional height
   final double? height;
+
+  /// Image
+  final String image;
+
+  /// Name
+  final String name;
+
+  /// Suit name
+  final String suitName;
+
+  ///Power
+  final int power;
+
+  /// Is a rare card
+  final bool isRare;
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +48,10 @@ class GameCard extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: card.rarity ? Colors.yellow.shade200 : Colors.blue.shade200,
+            color: isRare ? TopDashColors.gold : TopDashColors.mainBlue,
             border: Border.all(
               width: 2,
-              color: Colors.blue.shade100,
+              color: TopDashColors.mainBlue,
             ),
             borderRadius: BorderRadius.circular(10),
           ),
@@ -40,20 +60,20 @@ class GameCard extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 8),
-              Text(card.name),
+              Text(name),
               const SizedBox(height: 8),
               Text(
-                card.suit.name,
+                suitName,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 8),
               Image.network(
-                card.image,
+                image,
               ),
               Expanded(
                 child: Center(
                   child: Text(
-                    '${card.power}',
+                    power.toString(),
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
                 ),
@@ -63,33 +83,6 @@ class GameCard extends StatelessWidget {
         ),
         if (overlay != null) CardOverlay.ofType(overlay!, width, height)
       ],
-    );
-  }
-}
-
-class FlippedGameCard extends StatelessWidget {
-  const FlippedGameCard({
-    super.key,
-    this.width,
-    this.height,
-  });
-
-  final double? width;
-  final double? height;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.blue.shade400,
-        border: Border.all(
-          width: 2,
-          color: Colors.blue.shade200,
-        ),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      width: width,
-      height: height,
     );
   }
 }

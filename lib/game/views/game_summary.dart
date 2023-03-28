@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:top_dash/game/bloc/game_bloc.dart';
 import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/widgets/game_card.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class GameSummaryView extends StatelessWidget {
@@ -97,7 +96,7 @@ class _ResultView extends StatelessWidget {
       color = TopDashColors.darkPen;
     } else if ((bloc.isHost && state.matchState.result == MatchResult.guest) ||
         (!bloc.isHost && state.matchState.result == MatchResult.host)) {
-      color = Colors.red;
+      color = TopDashColors.mainRed;
       title = context.l10n.gameLostTitle;
     } else {
       color = TopDashColors.drawGrey;
@@ -133,7 +132,10 @@ class _CardsView extends StatelessWidget {
       return GameCard(
         width: 120,
         height: 180,
-        card: card,
+        image: card.image,
+        name: card.name,
+        power: card.power,
+        suitName: card.suit.name,
         overlay: bloc.isWiningCard(card, isPlayer: bloc.isHost)
             ? CardOverlayType.win
             : CardOverlayType.lose,
@@ -146,7 +148,10 @@ class _CardsView extends StatelessWidget {
       return GameCard(
         width: 120,
         height: 180,
-        card: card,
+        image: card.image,
+        name: card.name,
+        power: card.power,
+        suitName: card.suit.name,
         overlay: bloc.isWiningCard(card, isPlayer: !bloc.isHost)
             ? CardOverlayType.win
             : CardOverlayType.lose,
@@ -182,7 +187,7 @@ class _Footer extends StatelessWidget {
     final l10n = context.l10n;
 
     return ColoredBox(
-      color: Colors.white,
+      color: TopDashColors.white,
       child: Padding(
         padding: const EdgeInsets.all(TopDashSpacing.sm),
         child: Row(
@@ -195,7 +200,7 @@ class _Footer extends StatelessWidget {
             _gap,
             RoundedButton.text(
               l10n.quit,
-              backgroundColor: Colors.white,
+              backgroundColor: TopDashColors.white,
               onPressed: () => GoRouter.of(context).go('/'),
             ),
           ],
