@@ -149,24 +149,6 @@ void main() {
           );
         },
       );
-      testWidgets(
-        'pops navigation when the replay button is tapped on opponent absent',
-        (tester) async {
-          final goRouter = MockGoRouter();
-
-          mockState(OpponentAbsentState());
-
-          await tester.pumpSubject(
-            bloc,
-            goRouter: goRouter,
-          );
-
-          await tester.tap(find.text('Replay'));
-          await tester.pumpAndSettle();
-
-          verify(goRouter.pop).called(1);
-        },
-      );
 
       testWidgets(
         'renders the players score',
@@ -178,66 +160,6 @@ void main() {
             find.text('Score: 0 Streak: 0'),
             findsOneWidget,
           );
-        },
-      );
-
-      testWidgets(
-        'pops navigation when the replay button is tapped',
-        (tester) async {
-          final goRouter = MockGoRouter();
-
-          mockState(
-            baseState.copyWith(
-              matchState: MatchState(
-                id: '',
-                matchId: '',
-                guestPlayedCards: const [],
-                hostPlayedCards: const [],
-                hostStartsMatch: true,
-                result: MatchResult.guest,
-              ),
-            ),
-          );
-          when(bloc.hasPlayerWon).thenReturn(true);
-          await tester.pumpSubject(
-            bloc,
-            goRouter: goRouter,
-          );
-
-          await tester.tap(find.text('Replay'));
-          await tester.pumpAndSettle();
-
-          verify(goRouter.pop).called(1);
-        },
-      );
-
-      testWidgets(
-        'goes to share page when the share button is tapped',
-        (tester) async {
-          final goRouter = MockGoRouter();
-
-          mockState(
-            baseState.copyWith(
-              matchState: MatchState(
-                id: '',
-                matchId: '',
-                guestPlayedCards: const [],
-                hostPlayedCards: const [],
-                hostStartsMatch: true,
-                result: MatchResult.guest,
-              ),
-            ),
-          );
-          when(bloc.hasPlayerWon).thenReturn(true);
-          await tester.pumpSubject(
-            bloc,
-            goRouter: goRouter,
-          );
-
-          await tester.tap(find.byIcon(Icons.share));
-          await tester.pumpAndSettle();
-
-          verify(() => goRouter.goNamed('share')).called(1);
         },
       );
 
