@@ -12,6 +12,9 @@ import 'package:flutter/widgets.dart';
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/add.png
+  AssetGenImage get add => const AssetGenImage('assets/images/add.png');
+
   /// File path: assets/images/back.png
   AssetGenImage get back => const AssetGenImage('assets/images/back.png');
 
@@ -26,7 +29,7 @@ class $AssetsImagesGen {
       const AssetGenImage('assets/images/settings.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [back, main, restart, settings];
+  List<AssetGenImage> get values => [add, back, main, restart, settings];
 }
 
 class $AssetsMusicGen {

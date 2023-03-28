@@ -48,11 +48,38 @@ void main() {
           cards: const [],
           selectedCards: const [],
           status: DraftStateStatus.deckLoading,
+          firstCardOpacity: 1,
         ),
         DraftState(
           cards: cards,
           selectedCards: const [],
           status: DraftStateStatus.deckLoaded,
+          firstCardOpacity: 1,
+        ),
+      ],
+    );
+
+    blocTest<DraftBloc, DraftState>(
+      'change the cards order on PreviousCard',
+      build: () => DraftBloc(gameResource: gameResource),
+      seed: () => DraftState(
+        cards: cards,
+        selectedCards: const [],
+        status: DraftStateStatus.deckLoaded,
+        firstCardOpacity: 1,
+      ),
+      act: (bloc) {
+        bloc.add(PreviousCard());
+      },
+      expect: () => [
+        DraftState(
+          cards: [
+            cards.last,
+            ...cards.getRange(0, cards.length - 1),
+          ],
+          selectedCards: const [],
+          status: DraftStateStatus.deckLoaded,
+          firstCardOpacity: 1,
         ),
       ],
     );
@@ -64,6 +91,7 @@ void main() {
         cards: cards,
         selectedCards: const [],
         status: DraftStateStatus.deckLoaded,
+        firstCardOpacity: 1,
       ),
       act: (bloc) {
         bloc.add(NextCard());
@@ -71,11 +99,59 @@ void main() {
       expect: () => [
         DraftState(
           cards: [
-            cards.last,
-            ...List.generate(9, (i) => cards[i]),
+            ...cards.getRange(1, cards.length),
+            cards.first,
           ],
           selectedCards: const [],
           status: DraftStateStatus.deckLoaded,
+          firstCardOpacity: 1,
+        ),
+      ],
+    );
+
+    blocTest<DraftBloc, DraftState>(
+      'change the cards order on CardSwiped',
+      build: () => DraftBloc(gameResource: gameResource),
+      seed: () => DraftState(
+        cards: cards,
+        selectedCards: const [],
+        status: DraftStateStatus.deckLoaded,
+        firstCardOpacity: .2,
+      ),
+      act: (bloc) {
+        bloc.add(CardSwiped());
+      },
+      expect: () => [
+        DraftState(
+          cards: [
+            ...cards.getRange(1, cards.length),
+            cards.first,
+          ],
+          selectedCards: const [],
+          status: DraftStateStatus.deckLoaded,
+          firstCardOpacity: 1,
+        ),
+      ],
+    );
+
+    blocTest<DraftBloc, DraftState>(
+      'changes opacity order on CardSwipeStarted',
+      build: () => DraftBloc(gameResource: gameResource),
+      seed: () => DraftState(
+        cards: cards,
+        selectedCards: const [],
+        status: DraftStateStatus.deckLoaded,
+        firstCardOpacity: 1,
+      ),
+      act: (bloc) {
+        bloc.add(CardSwipeStarted(.1));
+      },
+      expect: () => [
+        DraftState(
+          cards: cards,
+          selectedCards: const [],
+          status: DraftStateStatus.deckLoaded,
+          firstCardOpacity: .9,
         ),
       ],
     );
@@ -87,6 +163,7 @@ void main() {
         cards: cards,
         selectedCards: const [],
         status: DraftStateStatus.deckLoaded,
+        firstCardOpacity: 1,
       ),
       act: (bloc) {
         bloc.add(SelectCard());
@@ -94,11 +171,12 @@ void main() {
       expect: () => [
         DraftState(
           cards: [
-            cards.last,
-            ...List.generate(9, (i) => cards[i]),
+            ...cards.getRange(1, cards.length),
+            cards.first,
           ],
           selectedCards: [cards.first],
           status: DraftStateStatus.deckLoaded,
+          firstCardOpacity: 1,
         ),
       ],
     );
@@ -110,6 +188,7 @@ void main() {
         cards: cards,
         selectedCards: [cards[0], cards[1]],
         status: DraftStateStatus.deckLoaded,
+        firstCardOpacity: 1,
       ),
       act: (bloc) {
         bloc.add(SelectCard());
@@ -119,6 +198,7 @@ void main() {
           cards: cards,
           selectedCards: [cards[0], cards[1], cards.first],
           status: DraftStateStatus.deckSelected,
+          firstCardOpacity: 1,
         ),
       ],
     );
@@ -135,11 +215,13 @@ void main() {
           cards: const [],
           selectedCards: const [],
           status: DraftStateStatus.deckLoading,
+          firstCardOpacity: 1,
         ),
         DraftState(
           cards: const [],
           selectedCards: const [],
           status: DraftStateStatus.deckFailed,
+          firstCardOpacity: 1,
         ),
       ],
     );
