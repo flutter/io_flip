@@ -14,6 +14,7 @@ TemplateMetadata _$TemplateMetadataFromJson(Map<String, dynamic> json) =>
       favIconUrl: json['favIconUrl'] as String,
       ga: json['ga'] as String,
       gameUrl: json['gameUrl'] as String,
+      image: json['image'] as String,
     );
 
 Map<String, dynamic> _$TemplateMetadataToJson(TemplateMetadata instance) =>
@@ -24,4 +25,5 @@ Map<String, dynamic> _$TemplateMetadataToJson(TemplateMetadata instance) =>
       'favIconUrl': instance.favIconUrl,
       'ga': instance.ga,
       'gameUrl': instance.gameUrl,
+      'image': instance.image,
     };

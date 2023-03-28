@@ -134,6 +134,138 @@ void main() {
       });
 
       testWidgets(
+        'renders the draw message when the player won',
+        (tester) async {
+          mockState(
+            baseState.copyWith(
+              matchState: MatchState(
+                id: '',
+                matchId: '',
+                guestPlayedCards: const [],
+                hostPlayedCards: const [],
+                hostStartsMatch: true,
+                result: MatchResult.draw,
+              ),
+            ),
+          );
+          await tester.pumpSubject(bloc);
+
+          expect(
+            find.text('Game ended: Draw'),
+            findsOneWidget,
+          );
+        },
+      );
+
+      testWidgets(
+        'renders the opponent absent message when the opponent leaves',
+        (tester) async {
+          mockState(OpponentAbsentState());
+          await tester.pumpSubject(bloc);
+
+          expect(
+            find.text('Opponent left the game!'),
+            findsOneWidget,
+          );
+          expect(
+            find.widgetWithText(ElevatedButton, 'Replay'),
+            findsOneWidget,
+          );
+        },
+      );
+      testWidgets(
+        'pops navigation when the replay button is tapped on opponent absent',
+        (tester) async {
+          final goRouter = MockGoRouter();
+
+          mockState(OpponentAbsentState());
+
+          await tester.pumpSubject(
+            bloc,
+            goRouter: goRouter,
+          );
+
+          await tester.tap(find.text('Replay'));
+          await tester.pumpAndSettle();
+
+          verify(goRouter.pop).called(1);
+        },
+      );
+
+      testWidgets(
+        'renders the players score',
+        (tester) async {
+          mockState(baseState);
+          await tester.pumpSubject(bloc);
+
+          expect(
+            find.text('Score: 0 Streak: 0'),
+            findsOneWidget,
+          );
+        },
+      );
+
+      testWidgets(
+        'pops navigation when the replay button is tapped',
+        (tester) async {
+          final goRouter = MockGoRouter();
+
+          mockState(
+            baseState.copyWith(
+              matchState: MatchState(
+                id: '',
+                matchId: '',
+                guestPlayedCards: const [],
+                hostPlayedCards: const [],
+                hostStartsMatch: true,
+                result: MatchResult.guest,
+              ),
+            ),
+          );
+          when(bloc.hasPlayerWon).thenReturn(true);
+          await tester.pumpSubject(
+            bloc,
+            goRouter: goRouter,
+          );
+
+          await tester.tap(find.text('Replay'));
+          await tester.pumpAndSettle();
+
+          verify(goRouter.pop).called(1);
+        },
+      );
+
+      testWidgets(
+        'goes to share page when the share button is tapped',
+        (tester) async {
+          final goRouter = MockGoRouter();
+
+          mockState(
+            baseState.copyWith(
+              matchState: MatchState(
+                id: '',
+                matchId: '',
+                guestPlayedCards: const [],
+                hostPlayedCards: const [],
+                hostStartsMatch: true,
+                result: MatchResult.guest,
+              ),
+            ),
+          );
+          when(bloc.hasPlayerWon).thenReturn(true);
+          await tester.pumpSubject(
+            bloc,
+            goRouter: goRouter,
+          );
+
+          await tester.tap(find.byIcon(Icons.share));
+          await tester.pumpAndSettle();
+
+          verify(() => goRouter.goNamed('share')).called(1);
+        },
+      );
+
+      testWidgets(
         'plays a player card on tap',
         (tester) async {
           mockState(baseState);

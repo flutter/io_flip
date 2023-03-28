@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:bloc_test/bloc_test.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,20 +8,33 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:top_dash/game/game.dart';
 import 'package:top_dash/match_making/match_making.dart';
+import 'package:web_socket_client/web_socket_client.dart';
 
 import '../../helpers/helpers.dart';
 
 class _MockMatchMakingBloc extends Mock implements MatchMakingBloc {}
 
+class _MockWebSocket extends Mock implements WebSocket {}
+
 void main() {
   group('MatchMakingView', () {
     late MatchMakingBloc bloc;
+    final webSocket = _MockWebSocket();
 
     setUp(() {
       bloc = _MockMatchMakingBloc();
     });
-
+    setUpAll(() {
+      registerFallbackValue(
+        GamePageData(
+          isHost: true,
+          matchId: null,
+          matchConnection: webSocket,
+        ),
+      );
+    });
     void mockState(MatchMakingState state) {
       whenListen(
         bloc,
@@ -62,17 +74,23 @@ void main() {
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
-              hostPing: Timestamp.now(),
-              guestPing: Timestamp.now(),
             ),
             isHost: true,
+            matchConnection: webSocket,
           ),
         );
         final goRouter = MockGoRouter();
         await tester.pumpSubject(bloc, goRouter: goRouter);
-
+        final data = GamePageData(
+          isHost: true,
+          matchId: 'matchId',
+          matchConnection: webSocket,
+        );
         verify(
-          () => goRouter.go('/game/matchId', extra: true),
+          () => goRouter.goNamed(
+            'game',
+            extra: data,
+          ),
         ).called(1);
       },
     );
@@ -87,7 +105,6 @@ void main() {
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
-              hostPing: Timestamp.now(),
               inviteCode: 'hello-join-my-match',
             ),
             isHost: true,
@@ -113,7 +130,6 @@ void main() {
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
-              hostPing: Timestamp.now(),
               inviteCode: 'hello-join-my-match',
             ),
             isHost: true,

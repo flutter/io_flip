@@ -8,6 +8,7 @@ import 'package:encrypt/encrypt.dart';
 import 'package:http/http.dart' as http;
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
+import 'package:web_socket_client/web_socket_client.dart';
 
 class _MockHttpClient extends Mock {
   Future<http.Response> get(Uri uri, {Map<String, String>? headers});
@@ -23,6 +24,8 @@ class _MockHttpClient extends Mock {
   });
 }
 
+class _MockWebSocket extends Mock implements WebSocket {}
+
 void main() {
   setUpAll(() {
     registerFallbackValue(Uri.parse('http://localhost'));
@@ -36,6 +39,7 @@ void main() {
     final key = Key.fromUtf8('encryption_key_not_set_123456789');
     final iv = IV.fromUtf8('iv_not_set_12345');
     final encrypter = Encrypter(AES(key));
+    final webSocket = _MockWebSocket();
 
     final testJson = {'data': 'test'};
 
@@ -85,6 +89,7 @@ void main() {
         putCall: httpClient.put,
         idTokenStream: idTokenStreamController.stream,
         refreshIdToken: () => refreshIdToken(),
+        websocket: webSocket,
       );
     });
 
@@ -337,6 +342,20 @@ void main() {
             },
           ),
         ).called(1);
+      });
+    });
+
+    group('ws connect', () {
+      test('returns the connection', () async {
+        const path = '/';
+        const params = {'test': 'test'};
+        final response = await subject.connect(path, queryParameters: params);
+        expect(
+          response,
+          equals(
+            webSocket,
+          ),
+        );
       });
     });
 

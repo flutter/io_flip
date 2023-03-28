@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash/game/views/game_summary.dart';
 import 'package:top_dash/widgets/widgets.dart';
@@ -34,8 +35,17 @@ class GameView extends StatelessWidget {
         }
 
         if (state is OpponentAbsentState) {
-          child = const Center(
-            child: Text('Opponent left the game!'),
+          child = Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('Opponent left the game!'),
+                ElevatedButton(
+                  onPressed: () => GoRouter.of(context).pop(),
+                  child: const Text('Replay'),
+                ),
+              ],
+            ),
           );
         }
 
