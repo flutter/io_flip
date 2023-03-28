@@ -212,4 +212,48 @@ class MatchRepository {
       ),
     );
   }
+
+  /// Sets the `hostConnected` attribute on a match to true or false.
+  Future<void> setHostConnectivity({
+    required String match,
+    required bool active,
+  }) async {
+    await _dbClient.update(
+      'matches',
+      DbEntityRecord(
+        id: match,
+        data: {
+          'hostConnected': active,
+        },
+      ),
+    );
+  }
+
+  /// Sets the `guestConnected` attribute on a match to true or false.
+  Future<void> setGuestConnectivity({
+    required String match,
+    required bool active,
+  }) async {
+    await _dbClient.update(
+      'matches',
+      DbEntityRecord(
+        id: match,
+        data: {
+          'guestConnected': active,
+        },
+      ),
+    );
+  }
+
+  /// Return the match with the given [matchId].
+  Future<bool> getPlayerConnectivity({
+    required String matchId,
+    required bool isHost,
+  }) async {
+    final matchData = await _dbClient.getById('matches', matchId);
+
+    return (matchData?.data[isHost ? 'hostConnected' : 'guestConnected']
+            as bool?) ??
+        false;
+  }
 }

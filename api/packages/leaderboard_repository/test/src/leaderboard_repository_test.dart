@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:db_client/db_client.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:leaderboard_repository/leaderboard_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -54,6 +55,53 @@ void main() {
         );
         final response = await leaderboardRepository.getInitialsBlacklist();
         expect(response, isEmpty);
+      });
+    });
+
+    group('findScoreCardByLongestStreakDeck', () {
+      test('returns the score card', () async {
+        const deckId = 'deckId';
+        final scoreCard = ScoreCard(
+          id: '',
+          wins: 2,
+          currentStreak: 2,
+          longestStreak: 3,
+          longestStreakDeck: deckId,
+        );
+
+        when(() => dbClient.findBy('score_cards', 'longestStreakDeck', deckId))
+            .thenAnswer((_) async {
+          return [
+            DbEntityRecord(
+              id: '',
+              data: {
+                'wins': scoreCard.wins,
+                'currentStreak': scoreCard.currentStreak,
+                'longestStreak': scoreCard.longestStreak,
+                'longestStreakDeck': deckId,
+              },
+            ),
+          ];
+        });
+
+        final result = await leaderboardRepository
+            .findScoreCardByLongestStreakDeck(deckId);
+
+        expect(result, equals(scoreCard));
+      });
+
+      test('returns null when no score card is to be found', () async {
+        const deckId = 'deckId';
+
+        when(() => dbClient.findBy('score_cards', 'longestStreakDeck', deckId))
+            .thenAnswer((_) async {
+          return [];
+        });
+
+        final result = await leaderboardRepository
+            .findScoreCardByLongestStreakDeck(deckId);
+
+        expect(result, isNull);
       });
     });
   });

@@ -85,7 +85,9 @@ void main() {
                 'suit': 'fire',
               },
             ],
-          }
+          },
+          'hostConnected': false,
+          'guestConnected': false
         }),
       );
     });

@@ -10,6 +10,7 @@ dependencies:
   cards_repository:
     path: packages/cards_repository
   dart_frog: ^0.3.0
+  dart_frog_web_socket: ^0.1.0-dev.3
   db_client:
     path: packages/db_client
   encryption_middleware:
@@ -30,9 +31,11 @@ dependencies:
   logging: ^1.1.1
   match_repository:
     path: packages/match_repository
+  mustache_template: ^2.0.0
   scripts_repository:
     path: packages/scripts_repository
   shelf_cors_headers: ^0.1.4
+  shelf_web_socket: ^1.0.3
 
 dev_dependencies:
   build_runner: ^2.3.3
@@ -40,3 +43,4 @@ dev_dependencies:
   mocktail: ^0.3.0
   test: ^1.19.2
   very_good_analysis: ^4.0.0
+  web_socket_client: ^0.1.0-dev.1

@@ -14,6 +14,8 @@ class Match extends Equatable {
     required this.id,
     required this.hostDeck,
     required this.guestDeck,
+    this.hostConnected = false,
+    this.guestConnected = false,
   });
 
   /// {@macro match}
@@ -31,9 +33,23 @@ class Match extends Equatable {
   @JsonKey()
   final Deck guestDeck;
 
+  /// If the host is connected or disconnected from the match.
+  @JsonKey()
+  final bool hostConnected;
+
+  /// If the guest is connected or disconnected from the match.
+  @JsonKey()
+  final bool guestConnected;
+
   /// Returns a json representation from this instance.
   Map<String, dynamic> toJson() => _$MatchToJson(this);
 
   @override
-  List<Object> get props => [id, hostDeck, guestDeck];
+  List<Object> get props => [
+        id,
+        hostDeck,
+        guestDeck,
+        hostConnected,
+        guestConnected,
+      ];
 }

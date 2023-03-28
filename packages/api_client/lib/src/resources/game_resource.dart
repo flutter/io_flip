@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:api_client/api_client.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:web_socket_client/web_socket_client.dart';
 
 /// {@template game_resource}
 /// An api resource for interacting with the game.
@@ -11,9 +13,12 @@ class GameResource {
   /// {@macro game_resource}
   GameResource({
     required ApiClient apiClient,
-  }) : _apiClient = apiClient;
+    Duration? webSocketTimeout,
+  })  : _apiClient = apiClient,
+        _webSocketTimeout = webSocketTimeout ?? const Duration(seconds: 20);
 
   final ApiClient _apiClient;
+  final Duration _webSocketTimeout;
 
   /// Post /cards
   Future<Card> generateCard() async {
@@ -171,6 +176,37 @@ class GameResource {
     } catch (e) {
       throw ApiClientError(
         'POST /matches/$matchId/decks/$deckId/cards/$cardId failed with the following message: "$e"',
+        StackTrace.current,
+      );
+    }
+  }
+
+  /// WebSocket connect to  matches/connect
+  Future<WebSocket> connectToMatch({
+    required String matchId,
+    required bool isHost,
+  }) async {
+    try {
+      final socket = await _apiClient.connect(
+        '/public/matches/connect',
+        queryParameters: {
+          'matchId': matchId,
+          'host': isHost.toString(),
+        },
+      );
+
+      await socket.connection.firstWhere((state) => state is Connected).timeout(
+        _webSocketTimeout,
+        onTimeout: () async {
+          socket.close();
+          throw TimeoutException('Could not connect to match');
+        },
+      );
+
+      return socket;
+    } catch (error) {
+      throw ApiClientError(
+        'websocket public/matches/connect returned with the following error: "$error"',
         StackTrace.current,
       );
     }

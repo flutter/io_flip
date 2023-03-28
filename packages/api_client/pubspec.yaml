@@ -16,3 +16,4 @@ dependencies:
   game_domain:
     path: ../../api/packages/game_domain
   http: ^0.13.5
+  web_socket_client: ^0.1.0-dev.3

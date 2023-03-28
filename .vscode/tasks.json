@@ -4,7 +4,7 @@
     "cwd": "${workspaceFolder}/api",
     "env": {
       "FB_APP_ID": "top-dash-dev",
-      "CORS_DOMAIN": "http://localhost:8080/",
+      "GAME_URL": "http://localhost:8080/",
       "USE_EMULATOR": "true",
       "ENCRYPTION_KEY": "X9YTchZdcnyZTNBSBgzj29p7RMBAIubD",
       "ENCRYPTION_IV": "FxC21ctRg9SgiXuZ"
