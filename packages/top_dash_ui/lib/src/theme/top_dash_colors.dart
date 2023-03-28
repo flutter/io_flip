@@ -44,7 +44,7 @@ abstract class TopDashColors {
   static const Color bronze = Color(0xFFC47542);
 
   /// Transparent White
-  static const Color trasnparentWhite = Color(0x89FFFFFF);
+  static const Color transparentWhite = Color(0x89FFFFFF);
 
   /// Ink.
   static const Color ink = Color(0xee352b42);
