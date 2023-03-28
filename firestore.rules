@@ -1,32 +1,51 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+  	function getMatch(matchId) {
+    	return get(/databases/$(database)/documents/matches/$(matchId));
+    }
+    
+  	function getDeck(deckId) {
+    	return get(/databases/$(database)/documents/decks/$(deckId));
+    }
+    
+  	function isAuthenticated() {
+    	return request.auth != null;
+    }
+  
     match /scripts/{script} {
-      allow read, write;
+      allow read: if isAuthenticated();
     }
 
     match /cards/{card} {
-      allow read, write;
+      allow read, write: if false;
     }
 
-    match /decks/{deck} {
-      allow read, write;
+    match /decks/{deck_id} {
+      allow read, write: if false;
     }
 
     match /initial_blacklist/{doc} {
-      allow read, write;
+      allow read: if isAuthenticated();
     }
 
-    match /match_states/{match_state} {
-      allow read, write;
+    match /match_states/{match_state_id} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated()
+      	&& request.auth.uid == getDeck(getMatch(request.resource.data.matchId).data.host).data.userId;
     }
 
-    match /matches/{match_doc} {
-      allow read, write;
+    match /matches/{match_id} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated()
+      	&& request.auth.uid == getDeck(request.resource.data.host).data.userId;
+      allow update: if isAuthenticated() 
+      	&& request.auth.uid == getDeck(request.resource.data.guest).data.userId
+        && (resource.data.guest == 'EMPTY' || resource.data.guest == 'INVITE');
     }
 
     match /score_cards/{score_card} {
-      allow read, write;
+      allow read, write: if isAuthenticated() && request.auth.uid == score_card;
     }
   }
 }
