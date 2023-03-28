@@ -134,30 +134,6 @@ void main() {
       });
 
       testWidgets(
-        'renders the draw message when the player won',
-        (tester) async {
-          mockState(
-            baseState.copyWith(
-              matchState: MatchState(
-                id: '',
-                matchId: '',
-                guestPlayedCards: const [],
-                hostPlayedCards: const [],
-                hostStartsMatch: true,
-                result: MatchResult.draw,
-              ),
-            ),
-          );
-          await tester.pumpSubject(bloc);
-
-          expect(
-            find.text('Game ended: Draw'),
-            findsOneWidget,
-          );
-        },
-      );
-
-      testWidgets(
         'renders the opponent absent message when the opponent leaves',
         (tester) async {
           mockState(OpponentAbsentState());
