@@ -56,8 +56,7 @@ class CardOverlay extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color:
-            child != const Icon(Icons.check) ? const Color(0x89FFFFFF) : null,
+        color: color != TopDashColors.darkPen ? const Color(0x89FFFFFF) : null,
         border: Border.all(width: 2, color: color),
         borderRadius: BorderRadius.circular(10),
       ),

@@ -131,6 +131,8 @@ class _CardsView extends StatelessWidget {
     final hostCards = List.generate(state.match.hostDeck.cards.length, (index) {
       final card = state.match.hostDeck.cards[index];
       return GameCard(
+        width: 120,
+        height: 180,
         card: card,
         overlay: bloc.isWiningCard(card, isPlayer: bloc.isHost)
             ? CardOverlayType.win
@@ -142,6 +144,8 @@ class _CardsView extends StatelessWidget {
         List.generate(state.match.guestDeck.cards.length, (index) {
       final card = state.match.guestDeck.cards[index];
       return GameCard(
+        width: 120,
+        height: 180,
         card: card,
         overlay: bloc.isWiningCard(card, isPlayer: !bloc.isHost)
             ? CardOverlayType.win
@@ -149,16 +153,15 @@ class _CardsView extends StatelessWidget {
       );
     });
 
-    print(hostCards.length);
-    print(guestCards.length);
     return Align(
       child: ConstrainedBox(
         constraints: const BoxConstraints(
           maxWidth: 500,
-          minHeight: 300,
+          minHeight: 360,
         ),
         child: GridView.count(
           shrinkWrap: true,
+          mainAxisSpacing: TopDashSpacing.md,
           crossAxisCount: 3,
           children: bloc.isHost
               ? [...guestCards, ...hostCards]
