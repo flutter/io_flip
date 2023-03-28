@@ -5,6 +5,9 @@ abstract class TopDashColors {
   /// Dark Pen.
   static const Color darkPen = Color(0xFF0050bc);
 
+  /// Black.
+  static const Color black = Color(0xFF202124);
+
   /// White.
   static const Color white = Color(0xFFFFFFFF);
 

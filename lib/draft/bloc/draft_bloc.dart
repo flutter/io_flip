@@ -12,6 +12,7 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
   })  : _gameResource = gameResource,
         super(const DraftState.initial()) {
     on<DeckRequested>(_onDeckRequested);
+    on<PreviousCard>(_onPreviousCard);
     on<NextCard>(_onNextCard);
     on<SelectCard>(_onSelectCard);
   }
@@ -43,6 +44,14 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
       addError(e, s);
       emit(state.copyWith(status: DraftStateStatus.deckFailed));
     }
+  }
+
+  void _onPreviousCard(
+    PreviousCard event,
+    Emitter<DraftState> emit,
+  ) {
+    final cards = _retrieveLastCard();
+    emit(state.copyWith(cards: cards));
   }
 
   void _onNextCard(
@@ -82,6 +91,14 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
   }
 
   List<Card> _dismissTopCard() {
+    final cards = [...state.cards];
+
+    final firstCard = cards.removeAt(0);
+    cards.add(firstCard);
+    return cards;
+  }
+
+  List<Card> _retrieveLastCard() {
     final cards = [...state.cards];
 
     final lastCard = cards.removeLast();

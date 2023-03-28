@@ -95,30 +95,54 @@ class _DraftDeck extends StatelessWidget {
     final bottomPadding = translateTween.transform(1).dy -
         ((cardHeight * (1 - scaleTween.transform(1))) / 2);
 
-    return Padding(
-      // Padding required to avoid widgets overlapping due to Stack child's
-      // translations
-      padding: EdgeInsets.only(bottom: bottomPadding),
-      child: Stack(
-        children: [
-          for (var i = state.cards.length - 1; i >= 0; i--)
-            Transform.translate(
-              offset: translateTween.transform(
-                (i + 1) / state.cards.length,
-              ),
-              child: Transform.scale(
-                scale: scaleTween.transform(
-                  (i + 1) / state.cards.length,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton(
+          onPressed: () {
+            bloc.add(const PreviousCard());
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            color: TopDashColors.black,
+          ),
+          iconSize: 20,
+        ),
+        const SizedBox(width: TopDashSpacing.xs),
+        Padding(
+          // Padding required to avoid widgets overlapping due to Stack child's
+          // translations
+          padding: EdgeInsets.only(bottom: bottomPadding),
+          child: Stack(
+            children: [
+              for (var i = state.cards.length - 1; i >= 0; i--)
+                Transform.translate(
+                  offset: translateTween.transform(
+                    (i + 1) / state.cards.length,
+                  ),
+                  child: Transform.scale(
+                    scale: scaleTween.transform(
+                      (i + 1) / state.cards.length,
+                    ),
+                    child: GameCard(
+                      width: cardWidth,
+                      height: cardHeight,
+                      card: state.cards[i],
+                    ),
+                  ),
                 ),
-                child: GameCard(
-                  width: cardWidth,
-                  height: cardHeight,
-                  card: state.cards[i],
-                ),
-              ),
-            ),
-        ],
-      ),
+            ],
+          ),
+        ),
+        const SizedBox(width: TopDashSpacing.xs),
+        IconButton(
+          onPressed: () {
+            bloc.add(const NextCard());
+          },
+          icon: const Icon(Icons.arrow_forward_ios, color: TopDashColors.black),
+          iconSize: 20,
+        ),
+      ],
     );
   }
 }

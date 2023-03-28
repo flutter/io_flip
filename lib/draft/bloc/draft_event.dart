@@ -11,6 +11,13 @@ class DeckRequested extends DraftEvent {
   List<Object> get props => [];
 }
 
+class PreviousCard extends DraftEvent {
+  const PreviousCard();
+
+  @override
+  List<Object> get props => [];
+}
+
 class NextCard extends DraftEvent {
   const NextCard();
 
