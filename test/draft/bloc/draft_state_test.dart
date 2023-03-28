@@ -32,6 +32,7 @@ void main() {
           cards: const [],
           selectedCards: const [],
           status: DraftStateStatus.initial,
+          firstCardOpacity: 1,
         ),
         isNotNull,
       );
@@ -45,6 +46,7 @@ void main() {
             cards: const [],
             selectedCards: const [],
             status: DraftStateStatus.initial,
+            firstCardOpacity: 1,
           ),
         ),
       );
@@ -56,12 +58,14 @@ void main() {
           cards: const [],
           selectedCards: const [],
           status: DraftStateStatus.initial,
+          firstCardOpacity: 1,
         ),
         equals(
           DraftState(
             cards: const [],
             selectedCards: const [],
             status: DraftStateStatus.initial,
+            firstCardOpacity: 1,
           ),
         ),
       );
@@ -71,6 +75,7 @@ void main() {
           cards: const [card1],
           selectedCards: const [],
           status: DraftStateStatus.initial,
+          firstCardOpacity: 1,
         ),
         isNot(
           equals(
@@ -78,6 +83,7 @@ void main() {
               cards: const [card2],
               selectedCards: const [],
               status: DraftStateStatus.initial,
+              firstCardOpacity: 1,
             ),
           ),
         ),
@@ -88,6 +94,7 @@ void main() {
           cards: const [],
           selectedCards: const [card1],
           status: DraftStateStatus.initial,
+          firstCardOpacity: 1,
         ),
         isNot(
           equals(
@@ -95,6 +102,7 @@ void main() {
               cards: const [],
               selectedCards: const [card2],
               status: DraftStateStatus.initial,
+              firstCardOpacity: 1,
             ),
           ),
         ),
@@ -105,6 +113,7 @@ void main() {
           cards: const [],
           selectedCards: const [],
           status: DraftStateStatus.initial,
+          firstCardOpacity: 1,
         ),
         isNot(
           equals(
@@ -112,6 +121,26 @@ void main() {
               cards: const [],
               selectedCards: const [],
               status: DraftStateStatus.deckLoading,
+              firstCardOpacity: 1,
+            ),
+          ),
+        ),
+      );
+
+      expect(
+        DraftState(
+          cards: const [],
+          selectedCards: const [],
+          status: DraftStateStatus.initial,
+          firstCardOpacity: 1,
+        ),
+        isNot(
+          equals(
+            DraftState(
+              cards: const [],
+              selectedCards: const [],
+              status: DraftStateStatus.initial,
+              firstCardOpacity: .8,
             ),
           ),
         ),
@@ -124,12 +153,14 @@ void main() {
           cards: const [],
           selectedCards: const [],
           status: DraftStateStatus.initial,
+          firstCardOpacity: 1,
         ).copyWith(cards: [card1, card2]),
         equals(
           DraftState(
             cards: const [card1, card2],
             selectedCards: const [],
             status: DraftStateStatus.initial,
+            firstCardOpacity: 1,
           ),
         ),
       );
@@ -139,12 +170,14 @@ void main() {
           cards: const [],
           selectedCards: const [],
           status: DraftStateStatus.initial,
+          firstCardOpacity: 1,
         ).copyWith(selectedCards: [card1, card2]),
         equals(
           DraftState(
             cards: const [],
             selectedCards: const [card1, card2],
             status: DraftStateStatus.initial,
+            firstCardOpacity: 1,
           ),
         ),
       );
@@ -154,12 +187,31 @@ void main() {
           cards: const [],
           selectedCards: const [],
           status: DraftStateStatus.initial,
+          firstCardOpacity: 1,
         ).copyWith(status: DraftStateStatus.deckLoaded),
         equals(
           DraftState(
             cards: const [],
             selectedCards: const [],
             status: DraftStateStatus.deckLoaded,
+            firstCardOpacity: 1,
+          ),
+        ),
+      );
+
+      expect(
+        DraftState(
+          cards: const [],
+          selectedCards: const [],
+          status: DraftStateStatus.initial,
+          firstCardOpacity: 1,
+        ).copyWith(firstCardOpacity: .8),
+        equals(
+          DraftState(
+            cards: const [],
+            selectedCards: const [],
+            status: DraftStateStatus.initial,
+            firstCardOpacity: .8,
           ),
         ),
       );
