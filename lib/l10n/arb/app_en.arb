@@ -85,6 +85,35 @@
   "@nextCard": {
     "description": "Label show on the draft page to show the next card"
   },
+  "gameWonTitle": "You won!",
+  "@gameWonTitle": {
+    "description": "Game summary title when player won"
+  },
+  "gameLostTitle": "You lost!",
+  "@gameLostTitle": {
+    "description": "Game summary title when player lost"
+  },
+  "gameTiedTitle": "It's a draw!",
+  "@gameTiedTitle": {
+    "description": "Game summary title when game tied"
+  },
+  "gameSummaryStreak": "{total} win streak!",
+  "@gameSummaryStreak": {
+    "description": "Label shown on the summary to show the current win streak of a player",
+    "placeholders": {
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "nextMatch": "NEXT MATCH",
+  "@nextMatch": {
+    "description": "Label show on the summary page to start the next match"
+  },
+  "quit": "QUIT",
+  "@quit": {
+    "description": "Label showing to quit game"
+  },
   "useCard": "Use card",
   "@useCard": {
     "description": "Label show on the draft page to use the card"
@@ -150,5 +179,17 @@
     "description": "Title of the credits item in settings",
     "type": "text",
     "placeholders": {}
+  },
+  "joinMatch": "Join a match",
+  "@joinMatch": {
+    "description": "Label join a match"
+  },
+  "deckBuildingTitle": "Build your best hand",
+  "@deckBuildingTitle": {
+    "description": "Title of the deck building page"
+  },
+  "deckBuildingSubtitle": "Swipe to see the rest of your deck",
+  "@deckBuildingSubtitle": {
+    "description": "Subtitle of the deck building page"
   }
 }

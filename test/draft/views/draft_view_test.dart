@@ -76,6 +76,7 @@ void main() {
             cards: const [card1, card2],
             selectedCards: const [],
             status: DraftStateStatus.deckLoaded,
+            firstCardOpacity: 1,
           )
         ],
       );
@@ -92,33 +93,75 @@ void main() {
             cards: const [card1, card2],
             selectedCards: const [],
             status: DraftStateStatus.deckLoaded,
+            firstCardOpacity: 1,
           )
         ],
       );
       await tester.pumpSubject(draftBloc: draftBloc);
 
-      await tester.tap(find.text('Use card'));
+      await tester.tap(find.byKey(ValueKey('SelectedCard0')));
       await tester.pumpAndSettle();
 
       verify(() => draftBloc.add(SelectCard())).called(1);
     });
 
-    testWidgets('can go to the next card', (tester) async {
+    testWidgets('can go to the next card by swiping', (tester) async {
       mockState(
         [
           DraftState(
             cards: const [card1, card2],
             selectedCards: const [],
             status: DraftStateStatus.deckLoaded,
+            firstCardOpacity: 1,
+          )
+        ],
+      );
+      await tester.pumpSubject(draftBloc: draftBloc);
+      await tester.drag(
+        find.byKey(ValueKey(card1.id)),
+        Offset(double.maxFinite, 0),
+      );
+      await tester.pumpAndSettle();
+
+      verify(() => draftBloc.add(CardSwiped())).called(1);
+    });
+
+    testWidgets('can go to the next card by tapping icon', (tester) async {
+      mockState(
+        [
+          DraftState(
+            cards: const [card1, card2],
+            selectedCards: const [],
+            status: DraftStateStatus.deckLoaded,
+            firstCardOpacity: 1,
           )
         ],
       );
       await tester.pumpSubject(draftBloc: draftBloc);
 
-      await tester.tap(find.text('Next card'));
+      await tester.tap(find.byIcon(Icons.arrow_forward_ios));
       await tester.pumpAndSettle();
 
       verify(() => draftBloc.add(NextCard())).called(1);
+    });
+
+    testWidgets('can go to the previous card by tapping icon', (tester) async {
+      mockState(
+        [
+          DraftState(
+            cards: const [card1, card2],
+            selectedCards: const [],
+            status: DraftStateStatus.deckLoaded,
+            firstCardOpacity: 1,
+          )
+        ],
+      );
+      await tester.pumpSubject(draftBloc: draftBloc);
+
+      await tester.tap(find.byIcon(Icons.arrow_back_ios_new));
+      await tester.pumpAndSettle();
+
+      verify(() => draftBloc.add(PreviousCard())).called(1);
     });
 
     testWidgets('renders an error message when loading failed', (tester) async {
@@ -128,6 +171,7 @@ void main() {
             cards: const [card1, card2],
             selectedCards: const [],
             status: DraftStateStatus.deckFailed,
+            firstCardOpacity: 1,
           )
         ],
       );
@@ -148,6 +192,7 @@ void main() {
               cards: const [card1, card2, card3],
               selectedCards: const [card1, card2, card3],
               status: DraftStateStatus.deckSelected,
+              firstCardOpacity: 1,
             )
           ],
         );
@@ -155,7 +200,7 @@ void main() {
 
         final l10n = tester.element(find.byType(DraftView)).l10n;
 
-        expect(find.text(l10n.play), findsOneWidget);
+        expect(find.text(l10n.joinMatch.toUpperCase()), findsOneWidget);
       },
     );
 
@@ -169,6 +214,7 @@ void main() {
               cards: const [card1, card2, card3],
               selectedCards: const [card1, card2, card3],
               status: DraftStateStatus.deckSelected,
+              firstCardOpacity: 1,
             )
           ],
         );
@@ -179,7 +225,7 @@ void main() {
 
         final l10n = tester.element(find.byType(DraftView)).l10n;
 
-        await tester.tap(find.text(l10n.play));
+        await tester.tap(find.text(l10n.joinMatch.toUpperCase()));
         verify(
           () => goRouter.goNamed(
             'match_making',
@@ -202,6 +248,7 @@ void main() {
               cards: const [card1, card2, card3],
               selectedCards: const [card1, card2, card3],
               status: DraftStateStatus.deckSelected,
+              firstCardOpacity: 1,
             )
           ],
         );
@@ -209,6 +256,9 @@ void main() {
           draftBloc: draftBloc,
           goRouter: goRouter,
         );
+
+        await tester.tap(find.text('Private match'));
+        await tester.pumpAndSettle();
 
         await tester.tap(find.text('Create private match'));
         verify(
@@ -234,6 +284,7 @@ void main() {
               cards: const [card1, card2, card3],
               selectedCards: const [card1, card2, card3],
               status: DraftStateStatus.deckSelected,
+              firstCardOpacity: 1,
             )
           ],
         );
@@ -242,7 +293,7 @@ void main() {
           goRouter: goRouter,
         );
 
-        await tester.tap(find.text('Join Private match'));
+        await tester.tap(find.text('Private match'));
         await tester.pumpAndSettle();
 
         await tester.enterText(find.byType(TextField), 'invite-code');
@@ -271,6 +322,7 @@ void main() {
               cards: const [card1, card2, card3],
               selectedCards: const [card1, card2, card3],
               status: DraftStateStatus.deckSelected,
+              firstCardOpacity: 1,
             )
           ],
         );
@@ -279,7 +331,7 @@ void main() {
           goRouter: goRouter,
         );
 
-        await tester.tap(find.text('Join Private match'));
+        await tester.tap(find.text('Private match'));
         await tester.pumpAndSettle();
 
         await tester.enterText(find.byType(TextField), 'invite-code');
@@ -295,6 +347,34 @@ void main() {
             },
           ),
         );
+      },
+    );
+
+    testWidgets(
+      'navigates to the how to play page',
+      (tester) async {
+        final goRouter = MockGoRouter();
+        mockState(
+          [
+            DraftState(
+              cards: const [card1, card2, card3],
+              selectedCards: const [card1, card2, card3],
+              status: DraftStateStatus.deckSelected,
+              firstCardOpacity: 1,
+            )
+          ],
+        );
+        await tester.pumpSubject(
+          draftBloc: draftBloc,
+          goRouter: goRouter,
+        );
+
+        await tester.tap(find.byIcon(Icons.question_mark_rounded));
+        await tester.pumpAndSettle();
+
+        verify(
+          () => goRouter.go('/how_to_play'),
+        ).called(1);
       },
     );
   });
