@@ -155,7 +155,7 @@ class _Footer extends StatelessWidget {
             _gap,
             RoundedButton.icon(
               const Icon(Icons.question_mark_rounded),
-              backgroundColor: Colors.white,
+              backgroundColor: TopDashColors.white,
               onPressed: () => GoRouter.of(context).go('/how_to_play'),
             ),
             _gap,
