@@ -10,6 +10,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/l10n/l10n.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -369,7 +370,7 @@ void main() {
           goRouter: goRouter,
         );
 
-        await tester.tap(find.byIcon(Icons.question_mark_rounded));
+        await tester.tap(find.byType(HowToPlayButton));
         await tester.pumpAndSettle();
 
         verify(

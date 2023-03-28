@@ -153,11 +153,7 @@ class _Footer extends StatelessWidget {
               onPressed: () => GoRouter.of(context).goNamed('share'),
             ),
             _gap,
-            RoundedButton.icon(
-              const Icon(Icons.question_mark_rounded),
-              backgroundColor: Colors.white,
-              onPressed: () => GoRouter.of(context).go('/how_to_play'),
-            ),
+            const HowToPlayButton(),
             _gap,
             RoundedButton.text(
               l10n.play,
