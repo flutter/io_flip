@@ -48,6 +48,9 @@ typedef GetCall = Future<http.Response> Function(
   Map<String, String>? headers,
 });
 
+/// A factory to create and connect to a [WebSocket] instance.
+typedef WebSocketFactory = WebSocket Function(Uri uri);
+
 /// {@template api_client}
 /// Client to access the api
 /// {@endtemplate}
@@ -60,12 +63,12 @@ class ApiClient {
     PostCall postCall = http.post,
     PutCall putCall = http.put,
     GetCall getCall = http.get,
-    WebSocket? websocket,
+    WebSocketFactory webSocketFactory = WebSocket.new,
   })  : _base = Uri.parse(baseUrl),
         _post = postCall,
         _put = putCall,
         _get = getCall,
-        _websocket = websocket,
+        _webSocketFactory = webSocketFactory,
         _refreshIdToken = refreshIdToken {
     _idTokenSubscription = idTokenStream.listen((idToken) {
       _idToken = idToken;
@@ -77,7 +80,7 @@ class ApiClient {
   final PostCall _put;
   final GetCall _get;
   final Future<String?> Function() _refreshIdToken;
-  final WebSocket? _websocket;
+  final WebSocketFactory _webSocketFactory;
 
   late final StreamSubscription<String?> _idTokenSubscription;
   String? _idToken;
@@ -173,14 +176,12 @@ class ApiClient {
     Map<String, String>? queryParameters,
   }) async {
     final uri = _base.replace(
-      scheme: 'wss',
+      scheme: _base.isScheme('https') ? 'wss' : 'ws',
       path: path,
       queryParameters: queryParameters,
     );
 
-    final socket = _websocket ?? WebSocket(uri);
-
-    return socket;
+    return _webSocketFactory(uri);
   }
 }
 
