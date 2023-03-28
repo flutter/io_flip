@@ -38,13 +38,13 @@ typedef ParseFont = BitmapFont Function(Uint8List);
 class CardRenderer {
   /// {@macro card_renderer}
   CardRenderer({
-    String airSuitAsset = 'http://localhost:8080/assets/card-air.png',
-    String earthSuitAsset = 'http://localhost:8080/assets/card-ground.png',
-    String fireSuitAsset = 'http://localhost:8080/assets/card-fire.png',
-    String waterSuitAsset = 'http://localhost:8080/assets/card-water.png',
-    String metalSuitAsset = 'http://localhost:8080/assets/card-metal.png',
+    String airSuitAsset = 'http://127.0.0.1:8080/assets/card-air.png',
+    String earthSuitAsset = 'http://127.0.0.1:8080/assets/card-ground.png',
+    String fireSuitAsset = 'http://127.0.0.1:8080/assets/card-fire.png',
+    String waterSuitAsset = 'http://127.0.0.1:8080/assets/card-water.png',
+    String metalSuitAsset = 'http://127.0.0.1:8080/assets/card-metal.png',
     String fontAsset =
-        'http://localhost:8080/assets/GoogleSans-Regular.ttf.zip',
+        'http://127.0.0.1:8080/assets/GoogleSans-Regular.ttf.zip',
     CreateCommand createCommand = Command.new,
     ParseFont parseFont = BitmapFont.fromZip,
     GetCall getCall = get,

@@ -108,12 +108,12 @@ void main() {
       verify(() => httpClient.get(Uri.parse(card.image))).called(1);
       verify(
         () => httpClient.get(
-          Uri.parse('http://localhost:8080/assets/card-fire.png'),
+          Uri.parse('http://127.0.0.1:8080/assets/card-fire.png'),
         ),
       ).called(1);
       verify(
         () => httpClient.get(
-          Uri.parse('http://localhost:8080/assets/GoogleSans-Regular.ttf.zip'),
+          Uri.parse('http://127.0.0.1:8080/assets/GoogleSans-Regular.ttf.zip'),
         ),
       ).called(1);
     });
@@ -167,7 +167,7 @@ void main() {
     test('throws CardRendererFailure when the request fails', () async {
       when(
         () => httpClient.get(
-          Uri.parse('http://localhost:8080/assets/card-fire.png'),
+          Uri.parse('http://127.0.0.1:8080/assets/card-fire.png'),
         ),
       ).thenAnswer((_) async {
         final response = _MockResponse();
@@ -181,7 +181,7 @@ void main() {
           isA<CardRendererFailure>().having(
             (e) => e.message,
             'message',
-            'Exception: Failed to get image from http://localhost:8080/assets/card-fire.png',
+            'Exception: Failed to get image from http://127.0.0.1:8080/assets/card-fire.png',
           ),
         ),
       );
