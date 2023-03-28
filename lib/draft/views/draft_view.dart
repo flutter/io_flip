@@ -93,20 +93,24 @@ class _DraftDeck extends StatelessWidget {
     final bottomPadding = translateTween.transform(1).dy -
         ((cardHeight * (1 - scaleTween.transform(1))) / 2);
 
+    final showArrows = MediaQuery.of(context).size.width > 500;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        IconButton(
-          onPressed: () {
-            bloc.add(const PreviousCard());
-          },
-          icon: const Icon(
-            Icons.arrow_back_ios_new,
-            color: TopDashColors.black,
+        if (showArrows) ...[
+          IconButton(
+            onPressed: () {
+              bloc.add(const PreviousCard());
+            },
+            icon: const Icon(
+              Icons.arrow_back_ios_new,
+              color: TopDashColors.black,
+            ),
+            iconSize: 20,
           ),
-          iconSize: 20,
-        ),
-        const SizedBox(width: TopDashSpacing.xs),
+          const SizedBox(width: TopDashSpacing.xs),
+        ],
         Padding(
           // Padding required to avoid widgets overlapping due to Stack child's
           // translations
@@ -144,14 +148,19 @@ class _DraftDeck extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: TopDashSpacing.xs),
-        IconButton(
-          onPressed: () {
-            bloc.add(const NextCard());
-          },
-          icon: const Icon(Icons.arrow_forward_ios, color: TopDashColors.black),
-          iconSize: 20,
-        ),
+        if (showArrows) ...[
+          const SizedBox(width: TopDashSpacing.xs),
+          IconButton(
+            onPressed: () {
+              bloc.add(const NextCard());
+            },
+            icon: const Icon(
+              Icons.arrow_forward_ios,
+              color: TopDashColors.black,
+            ),
+            iconSize: 20,
+          ),
+        ],
       ],
     );
   }
