@@ -13,6 +13,7 @@ env:
   SERVICE: top-dash-dev-api
   REGION: us-central1
   GAME_URL: https://a16e0900d-fe2c-3609-b43c-87093e447b78.web.app/
+  INITIALS_BLACKLIST_ID: MdOoZMhusnJTcwfYE0nL
 
 jobs:
   deploy:
