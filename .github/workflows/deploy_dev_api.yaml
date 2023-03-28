@@ -13,6 +13,7 @@ env:
   SERVICE: top-dash-dev-api
   REGION: us-central1
   GAME_URL: https://a16e0900d-fe2c-3609-b43c-87093e447b78.web.app/
+  INITIALS_BLACKLIST_ID: MdOoZMhusnJTcwfYE0nL
 
 jobs:
   deploy:
@@ -53,6 +54,7 @@ jobs:
           env_vars: |
             FB_APP_ID=${{ env.PROJECT_ID }}
             GAME_URL=${{ env.GAME_URL }}
+            INITIALS_BLACKLIST_ID=${{ env.INITIALS_BLACKLIST_ID }}
             ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }}
             ENCRYPTION_IV=${{ secrets.ENCRYPTION_IV }}
 

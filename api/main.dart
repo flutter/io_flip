@@ -60,7 +60,7 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
 
   leaderboardRepository = LeaderboardRepository(
     dbClient: dbClient,
-    blacklistDocumentId: 'MdOoZMhusnJTcwfYE0nL',
+    blacklistDocumentId: _initialsBlacklistId,
   );
 
   gameUrl = GameUrl(_gameUrl);
@@ -88,6 +88,14 @@ String get _gameUrl {
   final value = Platform.environment['GAME_URL'];
   if (value == null) {
     throw ArgumentError('GAME_URL is required to run the API');
+  }
+  return value;
+}
+
+String get _initialsBlacklistId {
+  final value = Platform.environment['INITIALS_BLACKLIST_ID'];
+  if (value == null) {
+    throw ArgumentError('INITIALS_BLACKLIST_ID is required to run the API');
   }
   return value;
 }
