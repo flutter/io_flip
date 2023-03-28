@@ -39,6 +39,7 @@ class DbClient {
       Firestore.initialize(
         projectId,
         emulator: useEmulator ? Emulator('127.0.0.1', 8081) : null,
+        useApplicationDefaultAuth: true,
       );
     } on Exception catch (e) {
       if (e.toString() ==
