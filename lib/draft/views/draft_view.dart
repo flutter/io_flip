@@ -171,60 +171,70 @@ class _SelectedDeck extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.watch<DraftBloc>();
-    final selectedCards = bloc.state.selectedCards;
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         for (var i = 0; i < 3; i++) ...[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.xs),
-            child: MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: () {
-                  bloc.add(const SelectCard());
-                },
-                child: Container(
-                  height: 136,
-                  width: 104,
-                  decoration: BoxDecoration(
-                    color: TopDashColors.lightBlue99,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Stack(
-                    children: [
-                      if (i < selectedCards.length) ...[
-                        Center(
-                          child: Text(
-                            '${selectedCards[i].name}\n'
-                            '${selectedCards[i].power}',
-                            textAlign: TextAlign.center,
-                          ),
-                        )
-                      ],
-                      Positioned(
-                        bottom: TopDashSpacing.xs,
-                        right: TopDashSpacing.xs,
-                        child: Container(
-                          width: 32,
-                          height: 32,
-                          decoration: BoxDecoration(
-                            color: TopDashColors.lightBlue60,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Image.asset(Assets.images.add.path),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            child: SelectedCard(i, key: ValueKey('SelectedCard$i')),
           ),
         ]
       ],
+    );
+  }
+}
+
+class SelectedCard extends StatelessWidget {
+  const SelectedCard(this.index, {super.key});
+
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    final bloc = context.watch<DraftBloc>();
+    final selectedCards = bloc.state.selectedCards;
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () {
+          bloc.add(const SelectCard());
+        },
+        child: Container(
+          height: 136,
+          width: 104,
+          decoration: BoxDecoration(
+            color: TopDashColors.lightBlue99,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Stack(
+            children: [
+              if (index < selectedCards.length) ...[
+                Center(
+                  child: Text(
+                    '${selectedCards[index].name}\n'
+                    '${selectedCards[index].power}',
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              ],
+              Positioned(
+                bottom: TopDashSpacing.xs,
+                right: TopDashSpacing.xs,
+                child: Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: TopDashColors.lightBlue60,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Image.asset(Assets.images.add.path),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -342,7 +352,7 @@ class _JoinPrivateMatchDialogState extends State<_JoinPrivateMatchDialog> {
       child: Container(
         padding: const EdgeInsets.all(16),
         width: 400,
-        height: 250,
+        height: 300,
         child: Column(
           children: [
             TextField(
