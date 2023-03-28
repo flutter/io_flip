@@ -37,14 +37,9 @@ class _MatchSummaryScreenView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final isPortrait = constraints.maxWidth < constraints.maxHeight ||
-            constraints.maxWidth < 1150;
-        return isPortrait
-            ? const PortraitSummaryView()
-            : const LandscapeSummaryView();
-      },
+    return ResponsiveLayoutBuilder(
+      small: (context, widget) => const PortraitSummaryView(),
+      large: (context, widget) => const LandscapeSummaryView(),
     );
   }
 }
