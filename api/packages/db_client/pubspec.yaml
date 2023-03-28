@@ -10,7 +10,7 @@ dependencies:
   equatable: ^2.0.5
   firedart:
     git:
-      url: https://github.com/kirpal/firedart.git
+      url: https://github.com/VGVentures/firedart.git
       ref: master
 
 dev_dependencies:
