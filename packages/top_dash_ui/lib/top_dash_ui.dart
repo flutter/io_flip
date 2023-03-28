@@ -2,4 +2,4 @@
 library top_dash_ui;
 
 export 'src/theme/theme.dart';
-export 'src/widgets/widgets.dart';
+export 'src/widgets/rounded_button.dart';

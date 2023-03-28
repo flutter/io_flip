@@ -15,7 +15,6 @@ import 'package:top_dash/settings/persistence/persistence.dart';
 import 'package:top_dash/settings/settings.dart';
 import 'package:top_dash/share/share.dart';
 import 'package:top_dash/style/snack_bar.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -217,7 +216,7 @@ void main() {
         ),
       );
 
-      await tester.tap(find.byType(HowToPlayButton));
+      await tester.tap(find.byIcon(Icons.question_mark_rounded));
       await tester.pumpAndSettle();
 
       expect(find.byType(HowToPlayPage), findsOneWidget);

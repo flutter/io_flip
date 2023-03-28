@@ -256,9 +256,13 @@ class _BottomBar extends StatelessWidget {
       height: isSmall ? 64 : 96,
       child: Stack(
         children: [
-          const Align(
+          Align(
             alignment: Alignment.centerRight,
-            child: HowToPlayButton(),
+            child: RoundedButton.icon(
+              const Icon(Icons.question_mark_rounded),
+              backgroundColor: Colors.white,
+              onPressed: () => GoRouter.of(context).go('/how_to_play'),
+            ),
           ),
           if (state.status == DraftStateStatus.deckSelected) ...[
             const Align(
