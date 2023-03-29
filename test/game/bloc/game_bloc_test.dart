@@ -1016,6 +1016,7 @@ void main() {
                 ),
               ),
             );
+            bloc.close();
           });
         });
 
@@ -1029,7 +1030,7 @@ void main() {
               return baseState.match;
             });
 
-            GameBloc(
+            final bloc = GameBloc(
               matchConnection: webSocket,
               gameResource: gameResource,
               matchMakerRepository: matchMakerRepository,
@@ -1049,6 +1050,7 @@ void main() {
                 deckId: any(named: 'deckId'),
               ),
             ).called(1);
+            bloc.close();
           });
         });
 
@@ -1062,7 +1064,7 @@ void main() {
               return baseState.match;
             });
 
-            GameBloc(
+            final bloc = GameBloc(
               matchConnection: webSocket,
               gameResource: gameResource,
               matchMakerRepository: matchMakerRepository,
@@ -1082,6 +1084,7 @@ void main() {
                 deckId: any(named: 'deckId'),
               ),
             ).called(1);
+            bloc.close();
           });
         });
       });
