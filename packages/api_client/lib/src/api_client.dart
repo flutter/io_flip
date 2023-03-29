@@ -99,8 +99,6 @@ class ApiClient {
   Future<http.Response> _handleUnauthorized(
     Future<http.Response> Function() sendRequest,
   ) async {
-    _idToken ??= await _refreshIdToken();
-
     final response = await sendRequest();
 
     if (response.statusCode == HttpStatus.unauthorized) {
@@ -175,7 +173,7 @@ class ApiClient {
     Map<String, String>? queryParameters,
   }) async {
     final uri = _base.replace(
-      scheme: 'ws',
+      scheme: 'wss',
       path: path,
       queryParameters: queryParameters,
     );
