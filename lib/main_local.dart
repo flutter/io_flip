@@ -38,7 +38,6 @@ void main() async {
         );
 
         await authenticationRepository.signInAnonymously();
-
         await authenticationRepository.idToken.first;
 
         final currentScript =
