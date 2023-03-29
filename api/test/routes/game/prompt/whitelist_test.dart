@@ -5,7 +5,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:prompt_repository/prompt_repository.dart';
 import 'package:test/test.dart';
 
-import '../../../../routes/game/prompt/index.dart'
+import '../../../../routes/game/prompt/whitelist.dart'
     as route;
 
 class _MockPromptRepository extends Mock
