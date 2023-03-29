@@ -13,6 +13,7 @@ import 'package:language_model_repository/language_model_repository.dart';
 import 'package:leaderboard_repository/leaderboard_repository.dart';
 import 'package:logging/logging.dart';
 import 'package:match_repository/match_repository.dart';
+import 'package:prompt_repository/prompt_repository.dart';
 import 'package:scripts_repository/scripts_repository.dart';
 
 late CardsRepository cardsRepository;
@@ -24,6 +25,7 @@ late GameScriptMachine gameScriptMachine;
 late JwtMiddleware jwtMiddleware;
 late EncryptionMiddleware encryptionMiddleware;
 late GameUrl gameUrl;
+late PromptRepository promptRepository;
 
 Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   const imageModelRepository = ImageModelRepository();
@@ -61,6 +63,11 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   leaderboardRepository = LeaderboardRepository(
     dbClient: dbClient,
     blacklistDocumentId: _initialsBlacklistId,
+  );
+
+  promptRepository = PromptRepository(
+    dbClient: dbClient,
+    whitelistDocumentId: _promptWhiteListId,
   );
 
   gameUrl = GameUrl(_gameUrl);
