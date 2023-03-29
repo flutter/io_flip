@@ -99,3 +99,11 @@ String get _initialsBlacklistId {
   }
   return value;
 }
+
+String get _promptWhiteListId {
+  final value = Platform.environment['PROMPT_WHITELIST_ID'];
+  if (value == null) {
+    throw ArgumentError('PROMPT_WHITELIST_ID is required to run the API');
+  }
+  return value;
+}
