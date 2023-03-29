@@ -176,7 +176,7 @@ class ApiClient {
     Map<String, String>? queryParameters,
   }) async {
     final uri = _base.replace(
-      scheme: _base.isScheme('https') ? 'wss' : 'ws',
+      scheme: _base.replace('http', 'ws'),
       path: path,
       queryParameters: queryParameters,
     );
