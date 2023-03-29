@@ -224,7 +224,9 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         _turnTimer = Timer.periodic(
           const Duration(seconds: 1),
           (timer) {
-            add(TurnTimerTicked(timer));
+            if (!isClosed) {
+              add(TurnTimerTicked(timer));
+            }
           },
         );
       }
