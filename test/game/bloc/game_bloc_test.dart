@@ -10,6 +10,7 @@ import 'package:game_domain/game_domain.dart';
 import 'package:match_maker_repository/match_maker_repository.dart' as repo;
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/game/game.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
 class _MockGameResource extends Mock implements GameResource {}
@@ -434,7 +435,7 @@ void main() {
                   .firstWhere((card) => card.id == 'card1'),
               isPlayer: true,
             ),
-            isTrue,
+            equals(CardOverlayType.win),
           );
         },
       );
@@ -542,7 +543,7 @@ void main() {
                   .firstWhere((card) => card.id == 'card6'),
               isPlayer: true,
             ),
-            isTrue,
+            equals(CardOverlayType.win),
           );
         },
       );

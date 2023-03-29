@@ -38,7 +38,7 @@ void main() {
       bloc = _MockGameBloc();
       when(() => bloc.isHost).thenReturn(true);
       when(() => bloc.isWiningCard(any(), isPlayer: any(named: 'isPlayer')))
-          .thenReturn(false);
+          .thenReturn(null);
       when(() => bloc.canPlayerPlay(any())).thenReturn(true);
       when(() => bloc.isPlayerTurn).thenReturn(true);
       when(bloc.hasPlayerWon).thenReturn(false);

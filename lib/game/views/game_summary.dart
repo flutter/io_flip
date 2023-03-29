@@ -131,9 +131,7 @@ class _CardsView extends StatelessWidget {
         name: card.name,
         power: card.power,
         suitName: card.suit.name,
-        overlay: bloc.isWiningCard(card, isPlayer: bloc.isHost)
-            ? CardOverlayType.win
-            : CardOverlayType.lose,
+        overlay: bloc.isWiningCard(card, isPlayer: bloc.isHost),
       );
     });
 
@@ -147,9 +145,7 @@ class _CardsView extends StatelessWidget {
         name: card.name,
         power: card.power,
         suitName: card.suit.name,
-        overlay: bloc.isWiningCard(card, isPlayer: !bloc.isHost)
-            ? CardOverlayType.win
-            : CardOverlayType.lose,
+        overlay: bloc.isWiningCard(card, isPlayer: !bloc.isHost),
       );
     });
 
