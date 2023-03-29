@@ -115,6 +115,7 @@ void main() {
           hostStartsMatch: true,
         ),
         turns: const [],
+        turnTimeRemaining: 10,
         playerPlayed: false,
       );
 

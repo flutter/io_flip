@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc_test/bloc_test.dart';
+import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:match_maker_repository/match_maker_repository.dart' as repo;
@@ -132,6 +133,7 @@ void main() {
           matchState: matchState,
           turns: const [],
           playerPlayed: false,
+          turnTimeRemaining: 10,
         ),
       ],
       verify: (_) {
@@ -261,6 +263,7 @@ void main() {
         ),
         turns: [],
         playerPlayed: false,
+        turnTimeRemaining: 10,
       );
 
       setUp(() {
@@ -274,6 +277,9 @@ void main() {
       });
 
       test('adds a new state change when the entity changes', () async {
+        when(
+          () => matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
+        ).thenReturn(true);
         final bloc = GameBloc(
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
@@ -572,6 +578,7 @@ void main() {
             ),
             turns: const [],
             playerPlayed: true,
+            turnTimeRemaining: 10,
           ),
         ],
       );
@@ -601,12 +608,13 @@ void main() {
             ),
             turns: const [],
             playerPlayed: true,
+            turnTimeRemaining: 10,
           ),
         ],
       );
 
       blocTest<GameBloc, GameState>(
-        'marks the playerPlayer as false on receive the new state',
+        'marks the playerPlayed as false on receive the new state',
         build: () => GameBloc(
           matchConnection: webSocket,
           gameResource: gameResource,
@@ -615,6 +623,11 @@ void main() {
           user: user,
           isHost: true,
         ),
+        setUp: () {
+          when(
+            () => matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
+          ).thenReturn(true);
+        },
         seed: () => baseState,
         act: (bloc) {
           bloc
@@ -644,6 +657,7 @@ void main() {
             ),
             turns: const [],
             playerPlayed: true,
+            turnTimeRemaining: 10,
           ),
           MatchLoadedState(
             playerScoreCard: ScoreCard(id: 'scoreCardId'),
@@ -662,12 +676,13 @@ void main() {
               ),
             ],
             playerPlayed: false,
+            turnTimeRemaining: 10,
           ),
         ],
       );
 
       blocTest<GameBloc, GameState>(
-        'marks the playerPlayer as false on receive the new state when being '
+        'marks the playerPlayed as false on receive the new state when being '
         'the guest',
         build: () => GameBloc(
           matchConnection: webSocket,
@@ -677,6 +692,11 @@ void main() {
           user: user,
           isHost: false,
         ),
+        setUp: () {
+          when(
+            () => matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
+          ).thenReturn(true);
+        },
         seed: () => baseState,
         act: (bloc) {
           bloc
@@ -706,6 +726,7 @@ void main() {
             ),
             turns: const [],
             playerPlayed: true,
+            turnTimeRemaining: 10,
           ),
           MatchLoadedState(
             playerScoreCard: ScoreCard(id: 'scoreCardId'),
@@ -724,6 +745,7 @@ void main() {
               ),
             ],
             playerPlayed: false,
+            turnTimeRemaining: 10,
           ),
         ],
       );
@@ -739,6 +761,11 @@ void main() {
           user: user,
           isHost: true,
         ),
+        setUp: () {
+          when(
+            () => matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
+          ).thenReturn(true);
+        },
         seed: () => baseState,
         act: (bloc) {
           bloc
@@ -779,6 +806,7 @@ void main() {
             ),
             turns: const [],
             playerPlayed: true,
+            turnTimeRemaining: 10,
           ),
           MatchLoadedState(
             playerScoreCard: ScoreCard(id: 'scoreCardId'),
@@ -797,6 +825,7 @@ void main() {
               ),
             ],
             playerPlayed: false,
+            turnTimeRemaining: 10,
           ),
           MatchLoadedState(
             playerScoreCard: ScoreCard(id: 'scoreCardId'),
@@ -815,6 +844,7 @@ void main() {
               ),
             ],
             playerPlayed: false,
+            turnTimeRemaining: 10,
           ),
         ],
       );
@@ -829,6 +859,11 @@ void main() {
           user: user,
           isHost: true,
         ),
+        setUp: () {
+          when(
+            () => matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
+          ).thenReturn(true);
+        },
         seed: () => baseState,
         act: (bloc) {
           bloc
@@ -880,6 +915,7 @@ void main() {
             ),
             turns: const [],
             playerPlayed: true,
+            turnTimeRemaining: 10,
           ),
           MatchLoadedState(
             playerScoreCard: ScoreCard(id: 'scoreCardId'),
@@ -898,6 +934,7 @@ void main() {
               ),
             ],
             playerPlayed: false,
+            turnTimeRemaining: 10,
           ),
           MatchLoadedState(
             playerScoreCard: ScoreCard(id: 'scoreCardId'),
@@ -916,6 +953,7 @@ void main() {
               ),
             ],
             playerPlayed: false,
+            turnTimeRemaining: 10,
           ),
           MatchLoadedState(
             playerScoreCard: ScoreCard(id: 'scoreCardId'),
@@ -938,9 +976,114 @@ void main() {
               ),
             ],
             playerPlayed: false,
+            turnTimeRemaining: 10,
           ),
         ],
       );
+
+      group('- turn countdown', () {
+        test('starts correctly', () {
+          fakeAsync((async) {
+            when(
+              () =>
+                  matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
+            ).thenReturn(true);
+
+            final bloc = GameBloc(
+              matchConnection: webSocket,
+              gameResource: gameResource,
+              matchMakerRepository: matchMakerRepository,
+              matchSolver: matchSolver,
+              user: user,
+              isHost: true,
+            )
+              ..add(MatchRequested(match.id))
+              ..add(MatchStateUpdated(baseState.matchState));
+
+            async.elapse(Duration(milliseconds: 2500));
+
+            expect(
+              bloc.state,
+              equals(
+                MatchLoadedState(
+                  playerScoreCard: ScoreCard(id: 'scoreCardId'),
+                  match: match,
+                  matchState: matchState,
+                  turns: const [],
+                  playerPlayed: false,
+                  turnTimeRemaining: 8,
+                ),
+              ),
+            );
+          });
+        });
+
+        test('ends and plays card automatically for host', () {
+          fakeAsync((async) {
+            when(
+              () =>
+                  matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
+            ).thenReturn(true);
+            when(() => gameResource.getMatch(any())).thenAnswer((_) async {
+              return baseState.match;
+            });
+
+            GameBloc(
+              matchConnection: webSocket,
+              gameResource: gameResource,
+              matchMakerRepository: matchMakerRepository,
+              matchSolver: matchSolver,
+              user: user,
+              isHost: true,
+            )
+              ..add(MatchRequested(baseState.match.id))
+              ..add(MatchStateUpdated(baseState.matchState));
+
+            async.elapse(Duration(milliseconds: 10500));
+
+            verify(
+              () => gameResource.playCard(
+                matchId: any(named: 'matchId'),
+                cardId: any(named: 'cardId'),
+                deckId: any(named: 'deckId'),
+              ),
+            ).called(1);
+          });
+        });
+
+        test('ends and plays card automatically for guest', () {
+          fakeAsync((async) {
+            when(
+              () =>
+                  matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
+            ).thenReturn(true);
+            when(() => gameResource.getMatch(any())).thenAnswer((_) async {
+              return baseState.match;
+            });
+
+            GameBloc(
+              matchConnection: webSocket,
+              gameResource: gameResource,
+              matchMakerRepository: matchMakerRepository,
+              matchSolver: matchSolver,
+              user: user,
+              isHost: false,
+            )
+              ..add(MatchRequested(baseState.match.id))
+              ..add(MatchStateUpdated(baseState.matchState));
+
+            async.elapse(Duration(milliseconds: 10500));
+
+            verify(
+              () => gameResource.playCard(
+                matchId: any(named: 'matchId'),
+                cardId: any(named: 'cardId'),
+                deckId: any(named: 'deckId'),
+              ),
+            ).called(1);
+          });
+        });
+      });
     });
 
     group('MatchLoadedState', () {
@@ -973,6 +1116,7 @@ void main() {
           matchState: matchState1,
           turns: const [],
           playerPlayed: false,
+          turnTimeRemaining: 10,
         );
 
         test('returns true if the card is the winning one', () {
