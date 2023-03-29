@@ -7,6 +7,9 @@ abstract class TopDashColors {
   /// Dark Pen.
   static const Color darkPen = Color(0xFF0050bc);
 
+  /// Blue 50
+  static const Color blue50 = Color(0xFF0D6EFF);
+
   /// Seed Blue
   static const Color seedBlue = Color(0xFF428EFF);
 

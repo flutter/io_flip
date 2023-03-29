@@ -27,6 +27,7 @@ class AppColorsStory extends StatelessWidget {
       ),
       const _ColorItem(name: 'Light Blue 99', color: TopDashColors.lightBlue99),
       const _ColorItem(name: 'Dark Pen', color: TopDashColors.darkPen),
+      const _ColorItem(name: 'Blue 50', color: TopDashColors.blue50),
       const _ColorItem(name: 'Seed Blue', color: TopDashColors.seedBlue),
       const _ColorItem(name: 'Main Blue', color: TopDashColors.mainBlue),
       const _ColorItem(name: 'Light Blue 60', color: TopDashColors.lightBlue60),
