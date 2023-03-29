@@ -1,4 +1,5 @@
 import 'package:api/game_url.dart';
+import 'package:card_renderer/card_renderer.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:game_script_machine/game_script_machine.dart';
@@ -18,5 +19,6 @@ Handler middleware(Handler handler) {
       .use(provider<ScriptsRepository>((_) => scriptsRepository))
       .use(provider<LeaderboardRepository>((_) => leaderboardRepository))
       .use(provider<GameScriptMachine>((_) => gameScriptMachine))
-      .use(provider<GameUrl>((_) => gameUrl));
+      .use(provider<GameUrl>((_) => gameUrl))
+      .use(provider<CardRenderer>((_) => CardRenderer()));
 }

@@ -9,7 +9,7 @@ class RoundedButton extends StatelessWidget {
   /// Contains an [icon] as child
   const RoundedButton.icon(
     Icon icon, {
-    required this.onPressed,
+    this.onPressed,
     super.key,
     this.backgroundColor = TopDashColors.mainBlue,
   }) : child = icon;
@@ -18,7 +18,7 @@ class RoundedButton extends StatelessWidget {
   /// Contains a [text] as child
   RoundedButton.text(
     String text, {
-    required this.onPressed,
+    this.onPressed,
     super.key,
     this.backgroundColor = TopDashColors.mainBlue,
   }) : child = Padding(
@@ -39,7 +39,7 @@ class RoundedButton extends StatelessWidget {
   final Widget child;
 
   /// On pressed callback
-  final GestureTapCallback onPressed;
+  final GestureTapCallback? onPressed;
 
   /// Button background color
   final Color backgroundColor;

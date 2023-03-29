@@ -27,17 +27,30 @@ class CardOverlay extends StatelessWidget {
   ) {
     switch (type) {
       case CardOverlayType.draw:
-        return CardOverlay._draw(width: width, height: height);
+        return CardOverlay._draw(
+          key: const Key('draw_card_overlay'),
+          width: width,
+          height: height,
+        );
       case CardOverlayType.win:
-        return CardOverlay._win(width: width, height: height);
+        return CardOverlay._win(
+          key: const Key('win_card_overlay'),
+          width: width,
+          height: height,
+        );
       case CardOverlayType.lose:
-        return CardOverlay._lose(width: width, height: height);
+        return CardOverlay._lose(
+          key: const Key('lose_card_overlay'),
+          width: width,
+          height: height,
+        );
     }
   }
 
   const CardOverlay._win({
     required this.width,
     required this.height,
+    super.key,
   })  : color = TopDashColors.seedBlue,
         child = const Icon(
           Icons.check,
@@ -47,6 +60,7 @@ class CardOverlay extends StatelessWidget {
   const CardOverlay._lose({
     required this.width,
     required this.height,
+    super.key,
   })  : color = TopDashColors.seedRed,
         child = const Icon(
           Icons.close,
@@ -56,6 +70,7 @@ class CardOverlay extends StatelessWidget {
   const CardOverlay._draw({
     required this.width,
     required this.height,
+    super.key,
   })  : color = TopDashColors.drawGrey,
         child = const Text(
           '=',
@@ -81,7 +96,7 @@ class CardOverlay extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         color: color != TopDashColors.darkPen
-            ? TopDashColors.trasnparentWhite
+            ? TopDashColors.transparentWhite
             : null,
         border: Border.all(width: 2, color: color),
         borderRadius: BorderRadius.circular(10),
