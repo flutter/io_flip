@@ -48,3 +48,19 @@ class ScoreCardUpdated extends GameEvent {
   @override
   List<Object?> get props => [updatedScore];
 }
+
+class TurnTimerStarted extends GameEvent {
+  const TurnTimerStarted();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class TurnTimerTicked extends GameEvent {
+  const TurnTimerTicked(this.timer);
+
+  final Timer timer;
+
+  @override
+  List<Object?> get props => [timer];
+}
