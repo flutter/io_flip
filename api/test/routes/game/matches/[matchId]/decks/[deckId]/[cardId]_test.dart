@@ -61,7 +61,7 @@ void main() {
       expect(response.statusCode, equals(HttpStatus.noContent));
     });
 
-    test("responds 500 when the card can't be played", () async {
+    test("rethrows error when the card can't be played", () async {
       when(
         () => matchRepository.playCard(
           matchId: matchId,
@@ -72,9 +72,9 @@ void main() {
       ).thenThrow(
         Exception('Ops'),
       );
-      final response = await route.onRequest(context, matchId, deckId, cardId);
+      final response = route.onRequest(context, matchId, deckId, cardId);
 
-      expect(response.statusCode, equals(HttpStatus.internalServerError));
+      expect(response, throwsA(isA<Exception>()));
     });
 
     test('allows only post methods', () async {

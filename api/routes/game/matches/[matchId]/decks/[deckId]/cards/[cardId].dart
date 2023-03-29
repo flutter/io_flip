@@ -25,7 +25,7 @@ FutureOr<Response> onRequest(
       );
     } catch (e, s) {
       context.read<Logger>().severe('Error playing a move', e, s);
-      return Response(statusCode: HttpStatus.internalServerError);
+      rethrow;
     }
 
     return Response(statusCode: HttpStatus.noContent);
