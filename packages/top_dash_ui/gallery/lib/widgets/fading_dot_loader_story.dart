@@ -7,10 +7,19 @@ class FadingDotLoaderStory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const StoryScaffold(
+    return StoryScaffold(
       title: 'Fading Dot Loader',
       body: Center(
-        child: FadingDotLoader(),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Animation I was going for (3 controllers)'),
+            FadingDotLoader(),
+            SizedBox(height: TopDashSpacing.xxxlg),
+            Text('Animation with 1 controller and intervals'),
+            FadingDotLoaderV2(),
+          ],
+        ),
       ),
     );
   }
