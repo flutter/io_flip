@@ -35,6 +35,7 @@ void main() async {
           baseUrl: 'http://localhost:8080',
           idTokenStream: authenticationRepository.idToken,
           refreshIdToken: authenticationRepository.refreshIdToken,
+          websocketScheme: 'ws',
         );
 
         await authenticationRepository.signInAnonymously();

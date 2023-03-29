@@ -61,11 +61,13 @@ class ApiClient {
     PutCall putCall = http.put,
     GetCall getCall = http.get,
     WebSocket? websocket,
+    String? websocketScheme,
   })  : _base = Uri.parse(baseUrl),
         _post = postCall,
         _put = putCall,
         _get = getCall,
         _websocket = websocket,
+        _websocketScheme = websocketScheme ?? 'wss',
         _refreshIdToken = refreshIdToken {
     _idTokenSubscription = idTokenStream.listen((idToken) {
       _idToken = idToken;
@@ -78,6 +80,7 @@ class ApiClient {
   final GetCall _get;
   final Future<String?> Function() _refreshIdToken;
   final WebSocket? _websocket;
+  final String _websocketScheme;
 
   late final StreamSubscription<String?> _idTokenSubscription;
   String? _idToken;
@@ -173,7 +176,7 @@ class ApiClient {
     Map<String, String>? queryParameters,
   }) async {
     final uri = _base.replace(
-      scheme: 'wss',
+      scheme: _websocketScheme,
       path: path,
       queryParameters: queryParameters,
     );
