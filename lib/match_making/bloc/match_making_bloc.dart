@@ -78,6 +78,10 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
       final playerId = await _gameResource.createDeck(cardIds);
       final match = await _matchMakerRepository.createPrivateMatch(playerId);
 
+      _matchConnection = await _gameResource.connectToMatch(
+        matchId: match.id,
+        isHost: true,
+      );
       await _waitGuestToJoin(
         match: match,
         emit: emit,
@@ -98,6 +102,10 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
       final match = await _matchMakerRepository.joinPrivateMatch(
         guestId: playerId,
         inviteCode: event.inviteCode,
+      );
+      _matchConnection = await _gameResource.connectToMatch(
+        matchId: match!.id,
+        isHost: false,
       );
 
       emit(

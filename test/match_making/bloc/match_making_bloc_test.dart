@@ -100,6 +100,14 @@ void main() {
           matchConnection: webSocket,
         ),
       ],
+      verify: (_) {
+        verify(
+          () => gameResource.connectToMatch(
+            matchId: '',
+            isHost: false,
+          ),
+        ).called(1);
+      },
     );
 
     blocTest<MatchMakingBloc, MatchMakingState>(
@@ -154,6 +162,14 @@ void main() {
           ),
         ),
       ],
+      verify: (_) {
+        verify(
+          () => gameResource.connectToMatch(
+            matchId: '',
+            isHost: true,
+          ),
+        ).called(1);
+      },
     );
 
     test('completes the match when is host and a guest joins', () async {
@@ -269,6 +285,14 @@ void main() {
           ),
         ),
       ],
+      verify: (_) {
+        verify(
+          () => gameResource.connectToMatch(
+            matchId: '',
+            isHost: true,
+          ),
+        ).called(1);
+      },
     );
 
     blocTest<MatchMakingBloc, MatchMakingState>(
@@ -329,6 +353,14 @@ void main() {
           ),
         ),
       ],
+      verify: (_) {
+        verify(
+          () => gameResource.connectToMatch(
+            matchId: '',
+            isHost: false,
+          ),
+        ).called(1);
+      },
     );
 
     blocTest<MatchMakingBloc, MatchMakingState>(
