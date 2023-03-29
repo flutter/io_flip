@@ -7,6 +7,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:match_maker_repository/match_maker_repository.dart' as repo;
+import 'package:top_dash_ui/top_dash_ui.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
 part 'game_event.dart';
@@ -271,9 +272,9 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     }
   }
 
-  bool isWiningCard(Card card, {required bool isPlayer}) {
+  CardOverlayType? isWinningCard(Card card, {required bool isPlayer}) {
     if (state is MatchLoadedState) {
-      final isCardFromHost = isPlayer ? isHost : !isHost;
+      final isCardFromHost = isPlayer && isHost;
 
       final matchLoadedState = state as MatchLoadedState;
       final matchState = matchLoadedState.matchState;
@@ -291,14 +292,18 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             round,
           );
 
-          return isCardFromHost
+          if (result == MatchResult.draw) {
+            return CardOverlayType.draw;
+          }
+          final cardWins = isCardFromHost
               ? result == MatchResult.host
               : result == MatchResult.guest;
+          return cardWins ? CardOverlayType.win : CardOverlayType.lose;
         }
       }
     }
 
-    return false;
+    return null;
   }
 
   bool get isPlayerTurn {

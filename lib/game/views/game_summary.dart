@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Card;
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -131,9 +131,8 @@ class _CardsView extends StatelessWidget {
         name: card.name,
         power: card.power,
         suitName: card.suit.name,
-        overlay: bloc.isWiningCard(card, isPlayer: bloc.isHost)
-            ? CardOverlayType.win
-            : CardOverlayType.lose,
+        overlay: bloc.isWinningCard(card, isPlayer: bloc.isHost),
+        isRare: card.rarity,
       );
     });
 
@@ -147,9 +146,8 @@ class _CardsView extends StatelessWidget {
         name: card.name,
         power: card.power,
         suitName: card.suit.name,
-        overlay: bloc.isWiningCard(card, isPlayer: !bloc.isHost)
-            ? CardOverlayType.win
-            : CardOverlayType.lose,
+        overlay: bloc.isWinningCard(card, isPlayer: !bloc.isHost),
+        isRare: card.rarity,
       );
     });
 

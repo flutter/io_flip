@@ -122,20 +122,12 @@ class _GameBoard extends StatelessWidget {
                                   name: card.name,
                                   power: card.power,
                                   suitName: card.suit.name,
+                                  isRare: card.rarity,
                                   width: opponentCardWidth,
                                   height: opponentCardHeight,
+                                  overlay:
+                                      bloc.isWinningCard(card, isPlayer: false),
                                 ),
-                                if (bloc.isWiningCard(card, isPlayer: false))
-                                  Positioned(
-                                    key: Key('win_badge_${card.id}'),
-                                    top: 16,
-                                    right: 16,
-                                    child: Container(
-                                      width: 32,
-                                      height: 32,
-                                      color: Colors.green,
-                                    ),
-                                  ),
                               ],
                             )
                           : FlippedGameCard(
@@ -190,20 +182,12 @@ class _GameBoard extends StatelessWidget {
                                 name: card.name,
                                 power: card.power,
                                 suitName: card.suit.name,
+                                isRare: card.rarity,
                                 width: cardWidth,
                                 height: cardHeight,
+                                overlay:
+                                    bloc.isWinningCard(card, isPlayer: true),
                               ),
-                              if (bloc.isWiningCard(card, isPlayer: true))
-                                Positioned(
-                                  key: Key('win_badge_${card.id}'),
-                                  top: 16,
-                                  right: 16,
-                                  child: Container(
-                                    width: 32,
-                                    height: 32,
-                                    color: Colors.green,
-                                  ),
-                                ),
                             ],
                           ),
                         ),
