@@ -126,7 +126,7 @@ class _GameBoard extends StatelessWidget {
                                   width: opponentCardWidth,
                                   height: opponentCardHeight,
                                   overlay:
-                                      bloc.isWiningCard(card, isPlayer: false),
+                                      bloc.isWinningCard(card, isPlayer: false),
                                 ),
                               ],
                             )
@@ -180,7 +180,7 @@ class _GameBoard extends StatelessWidget {
                                 width: cardWidth,
                                 height: cardHeight,
                                 overlay:
-                                    bloc.isWiningCard(card, isPlayer: true),
+                                    bloc.isWinningCard(card, isPlayer: true),
                               ),
                             ],
                           ),

@@ -36,7 +36,7 @@ void main() {
     setUp(() {
       bloc = _MockGameBloc();
       when(() => bloc.isHost).thenReturn(true);
-      when(() => bloc.isWiningCard(any(), isPlayer: any(named: 'isPlayer')))
+      when(() => bloc.isWinningCard(any(), isPlayer: any(named: 'isPlayer')))
           .thenReturn(null);
       when(() => bloc.canPlayerPlay(any())).thenReturn(true);
       when(() => bloc.isPlayerTurn).thenReturn(true);
@@ -269,7 +269,7 @@ void main() {
         'render the win overlay on the player winning card',
         (tester) async {
           when(
-            () => bloc.isWiningCard(
+            () => bloc.isWinningCard(
               Card(
                 id: 'player_card',
                 name: 'host_card',
@@ -306,7 +306,7 @@ void main() {
         'render the win overlay on the opponent winning card',
         (tester) async {
           when(
-            () => bloc.isWiningCard(
+            () => bloc.isWinningCard(
               Card(
                 id: 'opponent_card',
                 name: 'guest_card',

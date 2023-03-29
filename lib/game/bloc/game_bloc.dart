@@ -198,7 +198,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     }
   }
 
-  CardOverlayType? isWiningCard(Card card, {required bool isPlayer}) {
+  CardOverlayType? isWinningCard(Card card, {required bool isPlayer}) {
     if (state is MatchLoadedState) {
       final isCardFromHost = isPlayer && isHost;
 

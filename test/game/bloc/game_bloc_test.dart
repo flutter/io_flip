@@ -430,7 +430,7 @@ void main() {
         ),
         verify: (bloc) {
           expect(
-            bloc.isWiningCard(
+            bloc.isWinningCard(
               baseState.match.hostDeck.cards
                   .firstWhere((card) => card.id == 'card1'),
               isPlayer: true,
@@ -538,7 +538,7 @@ void main() {
         ),
         verify: (bloc) {
           expect(
-            bloc.isWiningCard(
+            bloc.isWinningCard(
               baseState.match.guestDeck.cards
                   .firstWhere((card) => card.id == 'card6'),
               isPlayer: true,
