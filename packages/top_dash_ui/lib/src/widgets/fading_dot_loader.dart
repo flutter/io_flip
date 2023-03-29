@@ -14,22 +14,25 @@ class FadingDotLoader extends StatefulWidget {
 
 class _FadingDotLoaderState extends State<FadingDotLoader>
     with TickerProviderStateMixin {
-  late final AnimationController dot1;
-  late final AnimationController dot2;
-  late final AnimationController dot3;
+  late final List<AnimationController> animationControllers;
 
   @override
   void initState() {
     super.initState();
     const length = Duration(milliseconds: 700);
     const delay = Duration(milliseconds: 300);
-    dot1 = AnimationController(vsync: this, duration: length);
-    dot2 = AnimationController(vsync: this, duration: length);
-    dot3 = AnimationController(vsync: this, duration: length);
+    animationControllers = [
+      AnimationController(vsync: this, duration: length),
+      AnimationController(vsync: this, duration: length),
+      AnimationController(vsync: this, duration: length),
+    ];
 
-    dot1.repeat(reverse: true);
-    Future.delayed(delay, () => dot2.repeat(reverse: true));
-    Future.delayed(delay * 2, () => dot3.repeat(reverse: true));
+    for (var i = 0; i < animationControllers.length; i++) {
+      Future.delayed(
+        delay * i,
+        () => animationControllers[i].repeat(reverse: true),
+      );
+    }
   }
 
   @override
@@ -37,20 +40,20 @@ class _FadingDotLoaderState extends State<FadingDotLoader>
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _AnimatedDot(animationController: dot1),
+        _AnimatedDot(animationController: animationControllers[0]),
         const SizedBox(width: TopDashSpacing.xs),
-        _AnimatedDot(animationController: dot2),
+        _AnimatedDot(animationController: animationControllers[1]),
         const SizedBox(width: TopDashSpacing.xs),
-        _AnimatedDot(animationController: dot3),
+        _AnimatedDot(animationController: animationControllers[2]),
       ],
     );
   }
 
   @override
   void dispose() {
-    dot1.dispose();
-    dot2.dispose();
-    dot3.dispose();
+    for (final controller in animationControllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
 }
