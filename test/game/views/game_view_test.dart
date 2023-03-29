@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/game/game.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -35,8 +36,8 @@ void main() {
     setUp(() {
       bloc = _MockGameBloc();
       when(() => bloc.isHost).thenReturn(true);
-      when(() => bloc.isWiningCard(any(), isPlayer: any(named: 'isPlayer')))
-          .thenReturn(false);
+      when(() => bloc.isWinningCard(any(), isPlayer: any(named: 'isPlayer')))
+          .thenReturn(null);
       when(() => bloc.canPlayerPlay(any())).thenReturn(true);
       when(() => bloc.isPlayerTurn).thenReturn(true);
       when(bloc.hasPlayerWon).thenReturn(false);
@@ -265,10 +266,10 @@ void main() {
       );
 
       testWidgets(
-        'render the win badge on the player winning card',
+        'render the win overlay on the player winning card',
         (tester) async {
           when(
-            () => bloc.isWiningCard(
+            () => bloc.isWinningCard(
               Card(
                 id: 'player_card',
                 name: 'host_card',
@@ -280,7 +281,7 @@ void main() {
               ),
               isPlayer: true,
             ),
-          ).thenReturn(true);
+          ).thenReturn(CardOverlayType.win);
 
           mockState(
             baseState.copyWith(
@@ -295,17 +296,17 @@ void main() {
           await tester.pumpSubject(bloc);
 
           expect(
-            find.byKey(const Key('win_badge_player_card')),
+            find.byKey(const Key('win_card_overlay')),
             findsOneWidget,
           );
         },
       );
 
       testWidgets(
-        'render the win badge on the opponent winning card',
+        'render the win overlay on the opponent winning card',
         (tester) async {
           when(
-            () => bloc.isWiningCard(
+            () => bloc.isWinningCard(
               Card(
                 id: 'opponent_card',
                 name: 'guest_card',
@@ -317,7 +318,7 @@ void main() {
               ),
               isPlayer: false,
             ),
-          ).thenReturn(true);
+          ).thenReturn(CardOverlayType.win);
 
           mockState(
             baseState.copyWith(
@@ -351,7 +352,7 @@ void main() {
           await tester.pumpSubject(bloc);
 
           expect(
-            find.byKey(const Key('win_badge_opponent_card')),
+            find.byKey(const Key('win_card_overlay')),
             findsOneWidget,
           );
         },

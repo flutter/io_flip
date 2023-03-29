@@ -7,12 +7,12 @@ environment:
   sdk: ">=2.18.0 <3.0.0"
 
 dependencies:
-  top_dash_ui:
-    path: ../
   dashbook: ^0.1.11
   flutter:
     sdk: flutter
   intl: ^0.17.0
+  top_dash_ui:
+    path: ../
 
 dev_dependencies:
   very_good_analysis: ^3.1.0

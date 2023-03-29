@@ -142,6 +142,7 @@ class _DraftDeck extends StatelessWidget {
                           name: state.cards[i].name,
                           power: state.cards[i].power,
                           suitName: state.cards[i].suit.name,
+                          isRare: state.cards[i].rarity,
                         ),
                       ),
                     ),

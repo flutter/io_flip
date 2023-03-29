@@ -51,7 +51,7 @@ class GameCard extends StatelessWidget {
             color: isRare ? TopDashColors.gold : TopDashColors.mainBlue,
             border: Border.all(
               width: 2,
-              color: TopDashColors.mainBlue,
+              color: TopDashColors.lightBlue60,
             ),
             borderRadius: BorderRadius.circular(10),
           ),
