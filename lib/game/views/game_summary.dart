@@ -107,7 +107,7 @@ class _ResultView extends StatelessWidget {
         ),
         Text(
           context.l10n.gameSummaryStreak(state.playerScoreCard.currentStreak),
-          style: TopDashTextStyles.headlineMobileH6,
+          style: TopDashTextStyles.headlineMobileH6.copyWith(color: color),
         ),
       ],
     );
