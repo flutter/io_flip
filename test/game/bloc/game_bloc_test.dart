@@ -1305,6 +1305,45 @@ void main() {
           verify(() => matchMakerRepository.watchMatch(match.id)).called(1);
         },
       );
+
+      blocTest<GameBloc, GameState>(
+        'does not return a state if game is over and opponent leaves match',
+        setUp: () {
+          when(() => gameResource.getMatchState(any())).thenAnswer(
+            (_) async => MatchState(
+              id: 'id',
+              matchId: 'matchId',
+              hostPlayedCards: const ['card1', 'card2', 'card3'],
+              guestPlayedCards: const ['card4', 'card5', 'card6'],
+              hostStartsMatch: true,
+            ),
+          );
+        },
+        build: () => GameBloc(
+          matchConnection: webSocket,
+          gameResource: gameResource,
+          matchMakerRepository: matchMakerRepository,
+          user: user,
+          isHost: true,
+          matchSolver: matchSolver,
+        ),
+        act: (bloc) {
+          bloc.add(ManagePlayerPresence(match.id));
+          matchController.add(
+            repo.Match(
+              id: 'matchId',
+              host: 'hostId',
+              guest: 'guestId',
+              hostConnected: true,
+            ),
+          );
+        },
+        expect: () => <GameState>[],
+        verify: (_) {
+          verify(() => matchMakerRepository.watchMatch(match.id)).called(1);
+          verify(() => gameResource.getMatchState(match.id)).called(1);
+        },
+      );
     });
   });
 }
