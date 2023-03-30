@@ -21,12 +21,12 @@ void main() {
     late Request request;
     late RequestContext context;
 
-    const blacklist = ['AAA', 'BBB', 'CCC'];
+    const whitelist = ['AAA', 'BBB', 'CCC'];
 
     setUp(() {
       promptRepository = _MockPromptRepository();
       when(() => promptRepository.getPromptWhitelist())
-          .thenAnswer((_) async => blacklist);
+          .thenAnswer((_) async => whitelist);
 
       request = _MockRequest();
       when(() => request.method).thenReturn(HttpMethod.get);
