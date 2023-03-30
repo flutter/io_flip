@@ -20,7 +20,7 @@ class MainMenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: TopDashColors.backgroundMain,
+      backgroundColor: TopDashColors.seedWhite,
       body: Stack(
         children: const [
           Align(
@@ -130,7 +130,7 @@ class _Footer extends StatelessWidget {
     final audioController = context.watch<AudioController>();
 
     return ColoredBox(
-      color: TopDashColors.white,
+      color: TopDashColors.seedWhite,
       child: Padding(
         padding: const EdgeInsets.all(TopDashSpacing.sm),
         child: Row(
@@ -138,19 +138,19 @@ class _Footer extends StatelessWidget {
           children: [
             RoundedButton.icon(
               const Icon(Icons.more_horiz_rounded),
-              backgroundColor: TopDashColors.white,
+              backgroundColor: TopDashColors.seedWhite,
               onPressed: () => GoRouter.of(context).push('/settings'),
             ),
             _gap,
             RoundedButton.icon(
               const Icon(Icons.share),
-              backgroundColor: TopDashColors.white,
+              backgroundColor: TopDashColors.seedWhite,
               onPressed: () => GoRouter.of(context).goNamed('share'),
             ),
             _gap,
             RoundedButton.icon(
               const Icon(Icons.question_mark_rounded),
-              backgroundColor: TopDashColors.white,
+              backgroundColor: TopDashColors.seedWhite,
               onPressed: () => GoRouter.of(context).go('/how_to_play'),
             ),
             _gap,
