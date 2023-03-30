@@ -27,11 +27,7 @@ class RoundedButton extends StatelessWidget {
           ),
           child: Text(
             text,
-            style: const TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
+            style: TopDashTextStyles.buttonLGCaps,
           ),
         );
 

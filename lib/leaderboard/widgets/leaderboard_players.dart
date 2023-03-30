@@ -74,12 +74,12 @@ class _Player extends StatelessWidget {
               child: Text((index + 1).toString()),
             ),
             const SizedBox(width: TopDashSpacing.lg),
-            Text(initials, style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(initials, style: TopDashTextStyles.headlineH6),
           ],
         ),
         Text(
           wins.toString(),
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: TopDashTextStyles.buttonLG,
         ),
       ],
     );

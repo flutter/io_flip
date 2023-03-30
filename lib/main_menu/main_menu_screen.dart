@@ -77,17 +77,21 @@ class LandscapeMenuView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(TopDashSpacing.lg),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 1300),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            _MainImage(key: Key('main menu image')),
-            SingleChildScrollView(
-              child: LeaderboardView(),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const _MainImage(key: Key('main menu image')),
+          Flexible(
+            child: Container(
+              constraints: const BoxConstraints(
+                maxWidth: 2 * TopDashSpacing.xxxlg,
+              ),
             ),
-          ],
-        ),
+          ),
+          const SingleChildScrollView(
+            child: LeaderboardView(),
+          ),
+        ],
       ),
     );
   }
@@ -111,7 +115,7 @@ class _MainImage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: TopDashSpacing.xxlg),
           child: Text(
             context.l10n.menuCatchPhrase,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            style: TopDashTextStyles.headlineH6Light,
           ),
         )
       ],
