@@ -22,7 +22,7 @@ class PromptFormView extends StatefulWidget {
 }
 
 class _PromptFormViewState extends State<PromptFormView> {
-  var _text = '';
+  final _text = '';
 
   static const _gap = SizedBox(height: TopDashSpacing.spaceUnit);
 
