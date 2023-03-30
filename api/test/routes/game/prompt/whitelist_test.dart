@@ -5,11 +5,9 @@ import 'package:mocktail/mocktail.dart';
 import 'package:prompt_repository/prompt_repository.dart';
 import 'package:test/test.dart';
 
-import '../../../../routes/game/prompt/whitelist.dart'
-    as route;
+import '../../../../routes/game/prompt/whitelist.dart' as route;
 
-class _MockPromptRepository extends Mock
-    implements PromptRepository {}
+class _MockPromptRepository extends Mock implements PromptRepository {}
 
 class _MockRequest extends Mock implements Request {}
 
@@ -33,8 +31,7 @@ void main() {
 
       context = _MockRequestContext();
       when(() => context.request).thenReturn(request);
-      when(() => context.read<PromptRepository>())
-          .thenReturn(promptRepository);
+      when(() => context.read<PromptRepository>()).thenReturn(promptRepository);
     });
 
     test('responds with a 200', () async {
