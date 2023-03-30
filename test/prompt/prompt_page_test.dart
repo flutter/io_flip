@@ -46,8 +46,16 @@ void main() {
         find.text(tester.l10n.environmentPromptPageSubtitle),
         findsOneWidget,
       );
+
       expect(find.text(tester.l10n.environmentPromptHint), findsOneWidget);
       expect(find.byIcon(Icons.check), findsOneWidget);
+    });
+
+    test('flow data correctly copies', () {
+      const data1 = FlowData();
+      final data2 = data1.copyWithNewAttribute('test');
+
+      expect(data2, equals(const FlowData(character: 'test')));
     });
   });
 }
