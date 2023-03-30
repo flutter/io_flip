@@ -52,8 +52,8 @@ void main() {
   });
 }
 
-extension InitialsFormViewTest on WidgetTester {
-  Future<void> pumpSubject() async {
+extension PromptPageTest on WidgetTester {
+  Future<void> pumpSubject() {
     return pumpApp(const Scaffold(body: PromptPage()));
   }
 }
