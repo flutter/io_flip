@@ -8,9 +8,9 @@ class AppColorsStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const colorItems = [
-      _ColorItem(name: 'gold', color: TopDashColors.gold),
-      _ColorItem(name: 'silver', color: TopDashColors.silver),
-      _ColorItem(name: 'bronze', color: TopDashColors.bronze),
+      _ColorItem(name: 'gold', color: TopDashColors.seedGold),
+      _ColorItem(name: 'silver', color: TopDashColors.seedSilver),
+      _ColorItem(name: 'bronze', color: TopDashColors.seedBronze),
       _ColorItem(name: 'seedLightBlue', color: TopDashColors.seedLightBlue),
       _ColorItem(name: 'seedBlue', color: TopDashColors.seedBlue),
       _ColorItem(name: 'seedRed', color: TopDashColors.seedRed),
