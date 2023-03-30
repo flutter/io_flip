@@ -1,10 +1,11 @@
+import 'package:equatable/equatable.dart';
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/prompt/prompt_form_view.dart';
 
-class FlowData {
-  FlowData({this.character, this.power, this.environment});
+class FlowData extends Equatable {
+  const FlowData({this.character, this.power, this.environment});
 
   final String? character;
   final String? power;
@@ -17,6 +18,9 @@ class FlowData {
       environment: power != null ? environment ?? attribute : null,
     );
   }
+
+  @override
+  List<Object?> get props => [character, power, environment];
 }
 
 class PromptPage extends StatelessWidget {
@@ -26,7 +30,7 @@ class PromptPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FlowBuilder<FlowData>(
-        state: FlowData(),
+        state: const FlowData(),
         onGeneratePages: (data, pages) {
           return [
             MaterialPage(
