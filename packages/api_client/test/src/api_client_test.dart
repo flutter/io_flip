@@ -24,7 +24,11 @@ class _MockHttpClient extends Mock {
   });
 }
 
-class _MockWebSocket extends Mock implements WebSocket {}
+class _FakeWebSocket extends Fake implements WebSocket {}
+
+class _MockWebSocketFactory extends Mock {
+  WebSocket call(Uri uri);
+}
 
 void main() {
   setUpAll(() {
@@ -39,7 +43,7 @@ void main() {
     final key = Key.fromUtf8('encryption_key_not_set_123456789');
     final iv = IV.fromUtf8('iv_not_set_12345');
     final encrypter = Encrypter(AES(key));
-    final webSocket = _MockWebSocket();
+    final webSocket = _FakeWebSocket();
 
     final testJson = {'data': 'test'};
 
@@ -51,6 +55,7 @@ void main() {
     late ApiClient subject;
     late _MockHttpClient httpClient;
     late StreamController<String?> idTokenStreamController;
+    late WebSocketFactory webSocketFactory;
 
     Future<String?> Function() refreshIdToken = () async => null;
 
@@ -80,7 +85,10 @@ void main() {
         ),
       ).thenAnswer((_) async => encryptedResponse);
 
-      idTokenStreamController = StreamController();
+      idTokenStreamController = StreamController.broadcast();
+
+      webSocketFactory = _MockWebSocketFactory().call;
+      when(() => webSocketFactory(any())).thenReturn(webSocket);
 
       subject = ApiClient(
         baseUrl: baseUrl,
@@ -89,7 +97,7 @@ void main() {
         putCall: httpClient.put,
         idTokenStream: idTokenStreamController.stream,
         refreshIdToken: () => refreshIdToken(),
-        websocket: webSocket,
+        webSocketFactory: webSocketFactory.call,
       );
     });
 
@@ -346,16 +354,40 @@ void main() {
     });
 
     group('ws connect', () {
-      test('returns the connection', () async {
-        const path = '/';
+      test('returns the connection with a "ws" scheme for http', () async {
+        const path = '/path';
         const params = {'test': 'test'};
         final response = await subject.connect(path, queryParameters: params);
-        expect(
-          response,
-          equals(
-            webSocket,
+        expect(response, equals(webSocket));
+
+        verify(
+          () => webSocketFactory(
+            Uri.parse('ws://baseurl.com/path?test=test'),
           ),
+        ).called(1);
+      });
+
+      test('returns the connection with a "wss" scheme for https', () async {
+        subject = ApiClient(
+          baseUrl: baseUrl.replaceAll('http', 'https'),
+          getCall: httpClient.get,
+          postCall: httpClient.post,
+          putCall: httpClient.put,
+          idTokenStream: idTokenStreamController.stream,
+          refreshIdToken: () => refreshIdToken(),
+          webSocketFactory: webSocketFactory.call,
         );
+
+        const path = '/path';
+        const params = {'test': 'test'};
+        final response = await subject.connect(path, queryParameters: params);
+        expect(response, equals(webSocket));
+
+        verify(
+          () => webSocketFactory(
+            Uri.parse('wss://baseurl.com/path?test=test'),
+          ),
+        ).called(1);
       });
     });
 

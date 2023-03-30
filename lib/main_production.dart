@@ -30,6 +30,7 @@ void main() async {
         );
 
         await authenticationRepository.signInAnonymously();
+        await authenticationRepository.idToken.first;
 
         final currentScript =
             await apiClient.scriptsResource.getCurrentScript();

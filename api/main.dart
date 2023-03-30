@@ -89,6 +89,8 @@ String get _appId {
   return value;
 }
 
+String get projectId => _appId;
+
 bool get _useEmulator => Platform.environment['USE_EMULATOR'] == 'true';
 
 String get _gameUrl {
