@@ -406,47 +406,6 @@ void main() {
       );
 
       blocTest<GameBloc, GameState>(
-        'isWinningCard return correctly when is host',
-        build: () => GameBloc(
-          gameResource: gameResource,
-          matchMakerRepository: matchMakerRepository,
-          matchSolver: matchSolver,
-          user: user,
-          isHost: true,
-          matchConnection: webSocket,
-        ),
-        setUp: () {
-          when(() => matchSolver.calculateRoundResult(any(), any(), any()))
-              .thenReturn(MatchResult.host);
-        },
-        seed: () => baseState.copyWith(
-          matchState: MatchState(
-            id: 'matchStateId',
-            matchId: 'matchId',
-            hostPlayedCards: const ['card1'],
-            guestPlayedCards: const ['card6'],
-            hostStartsMatch: true,
-          ),
-          turns: [
-            MatchTurn(
-              playerCardId: 'card1',
-              opponentCardId: 'card6',
-            ),
-          ],
-        ),
-        verify: (bloc) {
-          expect(
-            bloc.isWinningCard(
-              baseState.match.hostDeck.cards
-                  .firstWhere((card) => card.id == 'card1'),
-              isPlayer: true,
-            ),
-            equals(CardOverlayType.win),
-          );
-        },
-      );
-
-      blocTest<GameBloc, GameState>(
         'hasPlayerWon returns true if the host won, and the player is the host',
         build: () => GameBloc(
           matchConnection: webSocket,
@@ -513,46 +472,170 @@ void main() {
         },
       );
 
-      blocTest<GameBloc, GameState>(
-        'isWinningCard return correctly when is guest',
-        build: () => GameBloc(
-          matchConnection: webSocket,
-          gameResource: gameResource,
-          matchMakerRepository: matchMakerRepository,
-          matchSolver: matchSolver,
-          isHost: false,
-          user: user,
-        ),
-        setUp: () {
-          when(() => matchSolver.calculateRoundResult(any(), any(), any()))
-              .thenReturn(MatchResult.guest);
-        },
-        seed: () => baseState.copyWith(
-          matchState: MatchState(
-            id: 'matchStateId',
-            matchId: 'matchId',
-            hostPlayedCards: const ['card1'],
-            guestPlayedCards: const ['card6'],
-            hostStartsMatch: true,
+      group('isWinningCard', () {
+        blocTest<GameBloc, GameState>(
+          'returns correctly when host is card is from player',
+          build: () => GameBloc(
+            gameResource: gameResource,
+            matchMakerRepository: matchMakerRepository,
+            matchSolver: matchSolver,
+            user: user,
+            isHost: true,
+            matchConnection: webSocket,
           ),
-          turns: [
-            MatchTurn(
-              playerCardId: 'card6',
-              opponentCardId: 'card1',
+          setUp: () {
+            when(() => matchSolver.calculateRoundResult(any(), any(), any()))
+                .thenReturn(MatchResult.host);
+          },
+          seed: () => baseState.copyWith(
+            matchState: MatchState(
+              id: 'matchStateId',
+              matchId: 'matchId',
+              hostPlayedCards: const ['card1'],
+              guestPlayedCards: const ['card6'],
+              hostStartsMatch: true,
             ),
-          ],
-        ),
-        verify: (bloc) {
-          expect(
-            bloc.isWinningCard(
-              baseState.match.guestDeck.cards
-                  .firstWhere((card) => card.id == 'card6'),
-              isPlayer: true,
+            turns: [
+              MatchTurn(
+                playerCardId: 'card1',
+                opponentCardId: 'card6',
+              ),
+            ],
+          ),
+          verify: (bloc) {
+            expect(
+              bloc.isWinningCard(
+                baseState.match.hostDeck.cards
+                    .firstWhere((card) => card.id == 'card1'),
+                isPlayer: true,
+              ),
+              equals(CardOverlayType.win),
+            );
+          },
+        );
+        blocTest<GameBloc, GameState>(
+          'returns correctly when is host and card is from opponent',
+          build: () => GameBloc(
+            gameResource: gameResource,
+            matchMakerRepository: matchMakerRepository,
+            matchSolver: matchSolver,
+            user: user,
+            isHost: true,
+            matchConnection: webSocket,
+          ),
+          setUp: () {
+            when(() => matchSolver.calculateRoundResult(any(), any(), any()))
+                .thenReturn(MatchResult.host);
+          },
+          seed: () => baseState.copyWith(
+            matchState: MatchState(
+              id: 'matchStateId',
+              matchId: 'matchId',
+              hostPlayedCards: const ['card1'],
+              guestPlayedCards: const ['card6'],
+              hostStartsMatch: true,
             ),
-            equals(CardOverlayType.win),
-          );
-        },
-      );
+            turns: [
+              MatchTurn(
+                playerCardId: 'card1',
+                opponentCardId: 'card6',
+              ),
+            ],
+          ),
+          verify: (bloc) {
+            expect(
+              bloc.isWinningCard(
+                baseState.match.guestDeck.cards
+                    .firstWhere((card) => card.id == 'card6'),
+                isPlayer: false,
+              ),
+              equals(CardOverlayType.lose),
+            );
+          },
+        );
+
+        blocTest<GameBloc, GameState>(
+          'returns correctly when is guest and card is from player',
+          build: () => GameBloc(
+            matchConnection: webSocket,
+            gameResource: gameResource,
+            matchMakerRepository: matchMakerRepository,
+            matchSolver: matchSolver,
+            isHost: false,
+            user: user,
+          ),
+          setUp: () {
+            when(() => matchSolver.calculateRoundResult(any(), any(), any()))
+                .thenReturn(MatchResult.guest);
+          },
+          seed: () => baseState.copyWith(
+            matchState: MatchState(
+              id: 'matchStateId',
+              matchId: 'matchId',
+              hostPlayedCards: const ['card1'],
+              guestPlayedCards: const ['card6'],
+              hostStartsMatch: true,
+            ),
+            turns: [
+              MatchTurn(
+                playerCardId: 'card6',
+                opponentCardId: 'card1',
+              ),
+            ],
+          ),
+          verify: (bloc) {
+            expect(
+              bloc.isWinningCard(
+                baseState.match.guestDeck.cards
+                    .firstWhere((card) => card.id == 'card6'),
+                isPlayer: true,
+              ),
+              equals(CardOverlayType.win),
+            );
+          },
+        );
+
+        blocTest<GameBloc, GameState>(
+          'returns correctly when is guest and card is from opponent',
+          build: () => GameBloc(
+            matchConnection: webSocket,
+            gameResource: gameResource,
+            matchMakerRepository: matchMakerRepository,
+            matchSolver: matchSolver,
+            isHost: false,
+            user: user,
+          ),
+          setUp: () {
+            when(() => matchSolver.calculateRoundResult(any(), any(), any()))
+                .thenReturn(MatchResult.guest);
+          },
+          seed: () => baseState.copyWith(
+            matchState: MatchState(
+              id: 'matchStateId',
+              matchId: 'matchId',
+              hostPlayedCards: const ['card1'],
+              guestPlayedCards: const ['card6'],
+              hostStartsMatch: true,
+            ),
+            turns: [
+              MatchTurn(
+                playerCardId: 'card6',
+                opponentCardId: 'card1',
+              ),
+            ],
+          ),
+          verify: (bloc) {
+            expect(
+              bloc.isWinningCard(
+                baseState.match.hostDeck.cards
+                    .firstWhere((card) => card.id == 'card1'),
+                isPlayer: false,
+              ),
+              equals(CardOverlayType.lose),
+            );
+          },
+        );
+      });
 
       blocTest<GameBloc, GameState>(
         'plays a player card',
