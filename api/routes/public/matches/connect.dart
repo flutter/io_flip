@@ -2,77 +2,120 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dart_frog/dart_frog.dart';
-import 'package:dart_frog_web_socket/dart_frog_web_socket.dart';
+import 'package:dart_frog_web_socket/dart_frog_web_socket.dart' as ws;
 import 'package:game_domain/game_domain.dart';
 import 'package:match_repository/match_repository.dart';
 
-FutureOr<Response> onRequest(RequestContext context) async {
+import '../../../main.dart';
+
+typedef WebSocketHandlerFactory = Handler Function(
+  void Function(ws.WebSocketChannel channel, String? protocol) onConnection,
+);
+
+/// Used to override the default [ws.webSocketHandler] in tests.
+WebSocketHandlerFactory? debugWebSocketHandlerOverride;
+
+var _webSocketHandler = debugWebSocketHandlerOverride ?? ws.webSocketHandler;
+
+Future<Response> onRequest(RequestContext context) async {
   final matchRepository = context.read<MatchRepository>();
-  final matchId = context.request.uri.queryParameters['matchId']!;
-  final host = context.request.uri.queryParameters['host']!;
+  final matchId = context.request.uri.queryParameters['matchId'];
+  final host = context.request.uri.queryParameters['host'];
   final isHost = host == 'true';
-  final playerConnected = await matchRepository.getPlayerConnectivity(
-    isHost: isHost,
-    matchId: matchId,
-  );
 
-  if (playerConnected) {
-    final playerAlreadyConnectedHandler = webSocketHandler((
-      channel,
-      protocol,
-    ) {
-      const message = WebSocketMessage(
-        error: ErrorType.playerAlreadyConnected,
-      );
-      final json = jsonEncode(message);
-      channel.sink.add(json);
-    });
+  final handler = _webSocketHandler((channel, protocol) {
+    String? userId;
+    Future<void> setConnectivity({required bool connected}) async {
+      if (userId != null) {
+        await matchRepository.setPlayerConnectivity(
+          userId: userId!,
+          connected: connected,
+        );
 
-    return playerAlreadyConnectedHandler(context);
-  } else {
-    final handler = webSocketHandler((channel, protocol) {
-      try {
-        isHost
-            ? matchRepository.setHostConnectivity(
-                match: matchId,
-                active: true,
-              )
-            : matchRepository.setGuestConnectivity(
-                match: matchId,
-                active: true,
-              );
-        channel.sink.add(
-          jsonEncode(
-            const WebSocketMessage(
-              message: MessageType.connected,
-            ).toJson(),
-          ),
-        );
-      } catch (e) {
-        channel.sink.add(
-          jsonEncode(
-            const WebSocketMessage(
-              error: ErrorType.firebaseException,
-            ).toJson(),
-          ),
-        );
+        if (matchId != null) {
+          if (isHost) {
+            await matchRepository.setHostConnectivity(
+              match: matchId,
+              active: connected,
+            );
+          } else {
+            await matchRepository.setGuestConnectivity(
+              match: matchId,
+              active: connected,
+            );
+          }
+        }
       }
-      channel.stream.listen(
-        null,
-        onDone: () {
-          isHost
-              ? matchRepository.setHostConnectivity(
-                  match: matchId,
-                  active: false,
-                )
-              : matchRepository.setGuestConnectivity(
-                  match: matchId,
-                  active: false,
-                );
-        },
-      );
-    });
+    }
 
-    return handler(context);
-  }
+    Future<void> handleMessage(WebSocketMessage message) async {
+      // Right now, we only handle the token message. In the future, we may want
+      // to handle other messages, and in that case we will need to check that
+      // the userId is not null, to verify that the user is authenticated.
+      if (message.messageType == MessageType.token) {
+        final tokenPayload = message.payload! as WebSocketTokenPayload;
+        final newUserId = await jwtMiddleware.verifyToken(tokenPayload.token);
+
+        if (newUserId != userId) {
+          if (userId != null) {
+            // Disconnect the old user.
+            await matchRepository.setPlayerConnectivity(
+              userId: userId!,
+              connected: false,
+            );
+          }
+          userId = newUserId;
+          if (userId != null) {
+            final isConnected = await matchRepository.getPlayerConnectivity(
+              userId: userId!,
+            );
+
+            if (isConnected) {
+              final message = WebSocketMessage.error(
+                WebSocketErrorCode.playerAlreadyConnected,
+              );
+              channel.sink.add(jsonEncode(message));
+            } else {
+              try {
+                await setConnectivity(connected: true);
+                channel.sink
+                    .add(jsonEncode(const WebSocketMessage.connected()));
+              } catch (e) {
+                channel.sink.add(
+                  jsonEncode(
+                    WebSocketMessage.error(
+                      WebSocketErrorCode.firebaseException,
+                    ),
+                  ),
+                );
+              }
+            }
+          }
+        }
+      }
+    }
+
+    channel.stream.listen(
+      (data) async {
+        if (data is String) {
+          final decoded = jsonDecode(data);
+          if (decoded is Map) {
+            try {
+              final message = WebSocketMessage.fromJson(
+                Map<String, dynamic>.from(decoded),
+              );
+              await handleMessage(message);
+            } catch (e) {
+              // ignore this message.
+            }
+          }
+        }
+      },
+      onDone: () {
+        setConnectivity(connected: false);
+      },
+    );
+  });
+
+  return handler(context);
 }

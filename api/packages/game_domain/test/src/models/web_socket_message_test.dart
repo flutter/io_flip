@@ -1,67 +1,202 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:convert';
+
 import 'package:game_domain/game_domain.dart';
 import 'package:test/test.dart';
 
 void main() {
   group('WebSocketMessage', () {
-    test('can be instantiated', () {
-      expect(
-        WebSocketMessage(),
-        isNotNull,
-      );
-    });
+    group('error', () {
+      test('has correct message type', () {
+        final message = WebSocketMessage.error(WebSocketErrorCode.badRequest);
 
-    final message = WebSocketMessage(
-      message: MessageType.connected,
-      error: ErrorType.firebaseException,
-    );
+        expect(message.messageType, MessageType.error);
+      });
 
-    test('fromJson returns the correct instance', () {
-      expect(
-        WebSocketMessage.fromJson(const {
-          'message': 'connected',
-          'error': 'firebaseException',
-        }),
-        equals(message),
-      );
-    });
+      test('has correct payload', () {
+        final message = WebSocketMessage.error(WebSocketErrorCode.badRequest);
 
-    test('toJson returns the correct instance', () {
-      expect(
-        message.toJson(),
-        equals(const {
-          'message': 'connected',
-          'error': 'firebaseException',
-        }),
-      );
-    });
-
-    test('supports equality', () {
-      expect(
-        message,
-        equals(
-          WebSocketMessage(
-            message: MessageType.connected,
-            error: ErrorType.firebaseException,
+        expect(
+          message.payload,
+          isA<WebSocketErrorPayload>().having(
+            (p) => p.errorCode,
+            'errorCode',
+            WebSocketErrorCode.badRequest,
           ),
-        ),
-      );
+        );
+      });
 
-      expect(
-        WebSocketMessage(
-          message: MessageType.connected,
-        ),
-        isNot(
-          equals(message),
-        ),
-      );
-      expect(
-        WebSocketMessage(error: ErrorType.firebaseException),
-        isNot(
-          equals(message),
-        ),
-      );
+      test('uses value equality', () {
+        final a = WebSocketMessage.error(WebSocketErrorCode.badRequest);
+        final b = WebSocketMessage.error(WebSocketErrorCode.badRequest);
+        final c = WebSocketMessage.error(
+          WebSocketErrorCode.playerAlreadyConnected,
+        );
+
+        expect(a, equals(b));
+        expect(a, isNot(equals(c)));
+      });
+
+      group('json', () {
+        final json = {
+          'messageType': 'error',
+          'payload': {'errorCode': 'badRequest'},
+        };
+
+        final message = WebSocketMessage.error(WebSocketErrorCode.badRequest);
+
+        test('fromJson deserializes correctly', () {
+          expect(WebSocketMessage.fromJson(json), message);
+        });
+
+        test('toJson serializes correctly', () {
+          expect(jsonEncode(message), equals(jsonEncode(json)));
+        });
+      });
+    });
+
+    group('token', () {
+      test('has correct message type', () {
+        final message = WebSocketMessage.token('token');
+
+        expect(message.messageType, MessageType.token);
+      });
+
+      test('has correct payload', () {
+        final message = WebSocketMessage.token('token');
+
+        expect(
+          message.payload,
+          isA<WebSocketTokenPayload>().having(
+            (p) => p.token,
+            'token',
+            'token',
+          ),
+        );
+      });
+
+      test('uses value equality', () {
+        final a = WebSocketMessage.token('token');
+        final b = WebSocketMessage.token('token');
+        final c = WebSocketMessage.token('other');
+
+        expect(a, equals(b));
+        expect(a, isNot(equals(c)));
+      });
+
+      group('json', () {
+        final json = {
+          'messageType': 'token',
+          'payload': {'token': 'abcd'},
+        };
+
+        final message = WebSocketMessage.token('abcd');
+
+        test('fromJson deserializes correctly', () {
+          expect(WebSocketMessage.fromJson(json), message);
+        });
+
+        test('toJson serializes correctly', () {
+          expect(jsonEncode(message), equals(jsonEncode(json)));
+        });
+      });
+    });
+
+    group('connected', () {
+      test('has correct message type', () {
+        final message = WebSocketMessage.connected();
+
+        expect(message.messageType, MessageType.connected);
+      });
+
+      test('has no payload', () {
+        final message = WebSocketMessage.connected();
+
+        expect(message.payload, isNull);
+      });
+
+      test('uses value equality', () {
+        final a = WebSocketMessage.connected();
+        final b = WebSocketMessage.connected();
+
+        expect(a, equals(b));
+      });
+
+      group('json', () {
+        final json = {
+          'messageType': 'connected',
+          'payload': null,
+        };
+
+        final message = WebSocketMessage.connected();
+
+        test('fromJson deserializes correctly', () {
+          expect(WebSocketMessage.fromJson(json), message);
+        });
+
+        test('fromJson deserializes correctly with payload', () {
+          expect(
+            WebSocketMessage.fromJson({
+              ...json,
+              'payload': const {'a': 'b'}
+            }),
+            message,
+          );
+        });
+
+        test('toJson serializes correctly', () {
+          expect(jsonEncode(message), equals(jsonEncode(json)));
+        });
+      });
+    });
+
+    group('disconnected', () {
+      test('has correct message type', () {
+        final message = WebSocketMessage.disconnected();
+
+        expect(message.messageType, MessageType.disconnected);
+      });
+
+      test('has no payload', () {
+        final message = WebSocketMessage.disconnected();
+
+        expect(message.payload, isNull);
+      });
+
+      test('uses value equality', () {
+        final a = WebSocketMessage.disconnected();
+        final b = WebSocketMessage.disconnected();
+
+        expect(a, equals(b));
+      });
+
+      group('json', () {
+        final json = {
+          'messageType': 'disconnected',
+          'payload': null,
+        };
+
+        final message = WebSocketMessage.disconnected();
+
+        test('fromJson deserializes correctly', () {
+          expect(WebSocketMessage.fromJson(json), message);
+        });
+
+        test('fromJson deserializes correctly with payload', () {
+          expect(
+            WebSocketMessage.fromJson({
+              ...json,
+              'payload': const {'a': 'b'}
+            }),
+            message,
+          );
+        });
+
+        test('toJson serializes correctly', () {
+          expect(jsonEncode(message), equals(jsonEncode(json)));
+        });
+      });
     });
   });
 }
