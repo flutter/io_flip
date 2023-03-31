@@ -11,7 +11,7 @@ void main() {
       test('has correct message type', () {
         final message = WebSocketMessage.error(WebSocketErrorCode.badRequest);
 
-        expect(message.messageType, MessageType.error);
+        expect(message.messageType, equals(MessageType.error));
       });
 
       test('has correct payload', () {
@@ -47,7 +47,7 @@ void main() {
         final message = WebSocketMessage.error(WebSocketErrorCode.badRequest);
 
         test('fromJson deserializes correctly', () {
-          expect(WebSocketMessage.fromJson(json), message);
+          expect(WebSocketMessage.fromJson(json), equals(message));
         });
 
         test('toJson serializes correctly', () {
@@ -60,7 +60,7 @@ void main() {
       test('has correct message type', () {
         final message = WebSocketMessage.token('token');
 
-        expect(message.messageType, MessageType.token);
+        expect(message.messageType, equals(MessageType.token));
       });
 
       test('has correct payload', () {
@@ -94,7 +94,7 @@ void main() {
         final message = WebSocketMessage.token('abcd');
 
         test('fromJson deserializes correctly', () {
-          expect(WebSocketMessage.fromJson(json), message);
+          expect(WebSocketMessage.fromJson(json), equals(message));
         });
 
         test('toJson serializes correctly', () {
@@ -107,7 +107,7 @@ void main() {
       test('has correct message type', () {
         final message = WebSocketMessage.connected();
 
-        expect(message.messageType, MessageType.connected);
+        expect(message.messageType, equals(MessageType.connected));
       });
 
       test('has no payload', () {
@@ -132,7 +132,7 @@ void main() {
         final message = WebSocketMessage.connected();
 
         test('fromJson deserializes correctly', () {
-          expect(WebSocketMessage.fromJson(json), message);
+          expect(WebSocketMessage.fromJson(json), equals(message));
         });
 
         test('fromJson deserializes correctly with payload', () {
@@ -141,7 +141,7 @@ void main() {
               ...json,
               'payload': const {'a': 'b'}
             }),
-            message,
+            equals(message),
           );
         });
 
@@ -155,7 +155,7 @@ void main() {
       test('has correct message type', () {
         final message = WebSocketMessage.disconnected();
 
-        expect(message.messageType, MessageType.disconnected);
+        expect(message.messageType, equals(MessageType.disconnected));
       });
 
       test('has no payload', () {
@@ -180,7 +180,7 @@ void main() {
         final message = WebSocketMessage.disconnected();
 
         test('fromJson deserializes correctly', () {
-          expect(WebSocketMessage.fromJson(json), message);
+          expect(WebSocketMessage.fromJson(json), equals(message));
         });
 
         test('fromJson deserializes correctly with payload', () {
@@ -189,7 +189,7 @@ void main() {
               ...json,
               'payload': const {'a': 'b'}
             }),
-            message,
+            equals(message),
           );
         });
 
