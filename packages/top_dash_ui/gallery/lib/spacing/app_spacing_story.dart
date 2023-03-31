@@ -46,17 +46,17 @@ class _SpacingItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Container(
-                color: TopDashColors.black,
+                color: TopDashColors.seedBlack,
                 width: TopDashSpacing.xxs,
                 height: TopDashSpacing.lg,
               ),
               Container(
                 width: spacing,
                 height: TopDashSpacing.lg,
-                color: TopDashColors.mainBlue,
+                color: TopDashColors.seedPaletteBlue70,
               ),
               Container(
-                color: TopDashColors.black,
+                color: TopDashColors.seedBlack,
                 width: TopDashSpacing.xxs,
                 height: TopDashSpacing.lg,
               ),

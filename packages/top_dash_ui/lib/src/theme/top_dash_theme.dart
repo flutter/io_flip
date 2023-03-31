@@ -17,8 +17,8 @@ class TopDashTheme {
 
   static ColorScheme get _colorScheme {
     return ColorScheme.fromSeed(
-      seedColor: TopDashColors.darkPen,
-      background: TopDashColors.backgroundMain,
+      seedColor: TopDashColors.seedBlue,
+      background: TopDashColors.seedWhite,
     );
   }
 

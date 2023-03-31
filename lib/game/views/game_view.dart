@@ -49,7 +49,7 @@ class GameView extends StatelessWidget {
         }
 
         return Scaffold(
-          backgroundColor: TopDashColors.backgroundMain,
+          backgroundColor: TopDashColors.seedWhite,
           body: child,
         );
       },

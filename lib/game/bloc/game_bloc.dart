@@ -200,8 +200,12 @@ class GameBloc extends Bloc<GameEvent, GameState> {
                     : match.hostConnected == false,
               );
       _opponentDisconnectSubscription =
-          opponentDisconnectStream.listen((state) {
-        emit(const OpponentAbsentState());
+          opponentDisconnectStream.listen((match) async {
+        final matchState = await _gameResource.getMatchState(match.id);
+        final matchOver = matchState?.isOver();
+        if (matchOver != true) {
+          emit(const OpponentAbsentState());
+        }
         completer.complete();
       });
 

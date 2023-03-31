@@ -28,9 +28,9 @@ class SettingsScreen extends StatelessWidget {
     final l10n = context.l10n;
 
     return Scaffold(
-      backgroundColor: TopDashColors.white,
+      backgroundColor: TopDashColors.seedWhite,
       appBar: AppBar(
-        backgroundColor: TopDashColors.white,
+        backgroundColor: TopDashColors.seedWhite,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.sm),

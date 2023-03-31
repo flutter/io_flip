@@ -72,3 +72,8 @@ flutter:
         - asset: assets/fonts/GoogleSansText-Regular.ttf
         - asset: assets/fonts/GoogleSansText-Italic.ttf
           style: italic
+    - family: Roboto Serif
+      fonts:
+        - asset: assets/fonts/RobotoSerif-Regular.ttf
+        - asset: assets/fonts/RobotoSerif-Italic.ttf
+          style: italic
