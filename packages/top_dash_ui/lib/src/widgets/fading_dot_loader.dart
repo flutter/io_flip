@@ -6,7 +6,10 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 /// {@endtemplate}
 class FadingDotLoader extends StatefulWidget {
   /// {@macro fading_dot_indicator}
-  const FadingDotLoader({super.key});
+  const FadingDotLoader({super.key, this.numberOfDots = 3});
+
+  /// The number of dots in the loader.
+  final int numberOfDots;
 
   @override
   State<FadingDotLoader> createState() => _FadingDotLoaderState();
@@ -14,25 +17,15 @@ class FadingDotLoader extends StatefulWidget {
 
 class _FadingDotLoaderState extends State<FadingDotLoader>
     with TickerProviderStateMixin {
-  late final List<AnimationController> animationControllers;
+  late final AnimationController animationController;
 
   @override
   void initState() {
     super.initState();
-    const length = Duration(milliseconds: 700);
-    const delay = Duration(milliseconds: 300);
-    animationControllers = [
-      AnimationController(vsync: this, duration: length),
-      AnimationController(vsync: this, duration: length),
-      AnimationController(vsync: this, duration: length),
-    ];
 
-    for (var i = 0; i < animationControllers.length; i++) {
-      Future.delayed(
-        delay * i,
-        () => animationControllers[i].repeat(reverse: true),
-      );
-    }
+    final length = Duration(milliseconds: 460 * widget.numberOfDots);
+    animationController = AnimationController(vsync: this, duration: length)
+      ..repeat();
   }
 
   @override
@@ -40,20 +33,18 @@ class _FadingDotLoaderState extends State<FadingDotLoader>
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _AnimatedDot(animationController: animationControllers[0]),
-        const SizedBox(width: TopDashSpacing.xs),
-        _AnimatedDot(animationController: animationControllers[1]),
-        const SizedBox(width: TopDashSpacing.xs),
-        _AnimatedDot(animationController: animationControllers[2]),
+        for (var i = 0; i < widget.numberOfDots; i++) ...[
+          _AnimatedDot(index: i, animationController: animationController),
+          if (i < widget.numberOfDots - 1)
+            const SizedBox(width: TopDashSpacing.xs)
+        ],
       ],
     );
   }
 
   @override
   void dispose() {
-    for (final controller in animationControllers) {
-      controller.dispose();
-    }
+    animationController.dispose();
     super.dispose();
   }
 }
@@ -61,29 +52,38 @@ class _FadingDotLoaderState extends State<FadingDotLoader>
 class _AnimatedDot extends StatelessWidget {
   const _AnimatedDot({
     required this.animationController,
+    required this.index,
   });
 
-  final AnimationController animationController;
+  final Animation<double> animationController;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
-    final fadeAnimation = Tween<double>(begin: 100, end: 250).animate(
-      CurvedAnimation(parent: animationController, curve: Curves.linear),
-    );
-
     return AnimatedBuilder(
-      animation: fadeAnimation,
+      animation: animationController,
       builder: (BuildContext context, Widget? child) {
-        final side = fadeAnimation.value;
-        return Container(
-          width: TopDashSpacing.lg,
-          height: TopDashSpacing.lg,
-          decoration: BoxDecoration(
-            color: TopDashColors.mainBlue.withAlpha(side.round()),
-            shape: BoxShape.circle,
-          ),
+        // Calculates the animation controller value with an offset based on the
+        // dot's index and limits the new value between the range (0, 1)
+        final offset = (animationController.value - (index * .2)) % 1;
+        // Takes the new value that goes 0 -> 1, and converts it to move 0->1->0
+        final progress = 1 - (2 * (offset - .5).abs());
+        // Calculates opacity with a floor and ceiling of 40% and 100%
+        final opacity = (progress * .6) + .4;
+
+        return Opacity(
+          opacity: opacity,
+          child: child,
         );
       },
+      child: Container(
+        width: TopDashSpacing.lg,
+        height: TopDashSpacing.lg,
+        decoration: const BoxDecoration(
+          color: TopDashColors.mainBlue,
+          shape: BoxShape.circle,
+        ),
+      ),
     );
   }
 }
