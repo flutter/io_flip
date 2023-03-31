@@ -13,14 +13,14 @@ class ResponsiveLayoutStory extends StatelessWidget {
         small: (_, __) => const Center(
           child: Text(
             'Small Layout\nResize the window to see the large layout',
-            style: TextStyle(color: TopDashColors.lightBlue60),
+            style: TextStyle(color: TopDashColors.seedLightBlue),
             textAlign: TextAlign.center,
           ),
         ),
         large: (_, __) => const Center(
           child: Text(
             'Large Layout\nResize the window to see the small layout',
-            style: TextStyle(color: TopDashColors.gold),
+            style: TextStyle(color: TopDashColors.seedGold),
             textAlign: TextAlign.center,
           ),
         ),

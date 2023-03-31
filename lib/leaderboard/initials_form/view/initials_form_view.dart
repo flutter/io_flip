@@ -11,7 +11,7 @@ class InitialsFormView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    const white = TopDashColors.white;
+    const white = TopDashColors.seedWhite;
     return BlocBuilder<InitialsFormBloc, InitialsFormState>(
       builder: (context, state) {
         return Column(

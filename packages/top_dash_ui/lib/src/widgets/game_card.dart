@@ -48,10 +48,12 @@ class GameCard extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: isRare ? TopDashColors.gold : TopDashColors.mainBlue,
+            color: isRare
+                ? TopDashColors.seedGold
+                : TopDashColors.seedPaletteBlue70,
             border: Border.all(
               width: 2,
-              color: TopDashColors.lightBlue60,
+              color: TopDashColors.seedLightBlue,
             ),
             borderRadius: BorderRadius.circular(10),
           ),

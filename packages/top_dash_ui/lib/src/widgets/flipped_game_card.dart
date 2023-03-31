@@ -25,7 +25,7 @@ class FlippedGameCard extends StatelessWidget {
         color: TopDashColors.seedBlue,
         border: Border.all(
           width: 2,
-          color: TopDashColors.mainBlue,
+          color: TopDashColors.seedPaletteBlue70,
         ),
         borderRadius: BorderRadius.circular(10),
       ),

@@ -11,7 +11,7 @@ class RoundedButton extends StatelessWidget {
     Icon icon, {
     this.onPressed,
     super.key,
-    this.backgroundColor = TopDashColors.mainBlue,
+    this.backgroundColor = TopDashColors.seedPaletteBlue70,
   }) : child = icon;
 
   /// Basic [RoundedButton] with black shadow.
@@ -20,18 +20,14 @@ class RoundedButton extends StatelessWidget {
     String text, {
     this.onPressed,
     super.key,
-    this.backgroundColor = TopDashColors.mainBlue,
+    this.backgroundColor = TopDashColors.seedPaletteBlue70,
   }) : child = Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: TopDashSpacing.sm,
           ),
           child: Text(
             text,
-            style: const TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
+            style: TopDashTextStyles.buttonLGCaps,
           ),
         );
 
