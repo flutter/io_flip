@@ -24,9 +24,15 @@ void addStories(Dashbook dashbook) {
         'Responsive Layout',
         (_) => const ResponsiveLayoutStory(),
       );
+
   dashbook.storiesOf('Buttons').add(
         'Rounded Button',
         (_) => const RoundedButtonStory(),
+      );
+
+  dashbook.storiesOf('Loaders').add(
+        'Fading Dots',
+        (_) => const FadingDotLoaderStory(),
       );
 
   dashbook
