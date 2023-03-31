@@ -21,6 +21,7 @@ dependencies:
   firebase_core: ^2.5.0
   firebase_crashlytics: ^3.0.15
   firebase_storage: ^11.0.16
+  flow_builder: ^0.0.9
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.2
