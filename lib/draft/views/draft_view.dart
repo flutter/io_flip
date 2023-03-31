@@ -22,7 +22,7 @@ class DraftView extends StatelessWidget {
 
     if (state.status == DraftStateStatus.deckFailed) {
       return Scaffold(
-        backgroundColor: TopDashColors.backgroundMain,
+        backgroundColor: TopDashColors.seedWhite,
         body: Center(
           child: Text(l10n.cardGenerationError),
         ),
@@ -32,7 +32,7 @@ class DraftView extends StatelessWidget {
     if (state.status == DraftStateStatus.deckLoading ||
         state.status == DraftStateStatus.initial) {
       return const Scaffold(
-        backgroundColor: TopDashColors.backgroundMain,
+        backgroundColor: TopDashColors.seedWhite,
         body: Center(
           child: CircularProgressIndicator(),
         ),
@@ -40,7 +40,7 @@ class DraftView extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: TopDashColors.backgroundMain,
+      backgroundColor: TopDashColors.seedWhite,
       body: Center(
         child: Column(
           children: [
@@ -104,7 +104,7 @@ class _DraftDeck extends StatelessWidget {
             },
             icon: const Icon(
               Icons.arrow_back_ios_new,
-              color: TopDashColors.black,
+              color: TopDashColors.seedBlack,
             ),
             iconSize: 20,
           ),
@@ -159,7 +159,7 @@ class _DraftDeck extends StatelessWidget {
             },
             icon: const Icon(
               Icons.arrow_forward_ios,
-              color: TopDashColors.black,
+              color: TopDashColors.seedBlack,
             ),
             iconSize: 20,
           ),
@@ -207,7 +207,7 @@ class SelectedCard extends StatelessWidget {
           height: 136,
           width: 104,
           decoration: BoxDecoration(
-            color: TopDashColors.lightBlue99,
+            color: TopDashColors.seedPaletteLightBlue99,
             borderRadius: BorderRadius.circular(4),
           ),
           child: Stack(
@@ -228,7 +228,7 @@ class SelectedCard extends StatelessWidget {
                   width: 32,
                   height: 32,
                   decoration: BoxDecoration(
-                    color: TopDashColors.lightBlue60,
+                    color: TopDashColors.seedLightBlue,
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Image.asset(Assets.images.add.path),
@@ -290,12 +290,12 @@ class _BottomBar extends StatelessWidget {
                 children: [
                   Text(
                     l10n.deckBuildingTitle,
-                    style: TopDashTextStyles.mobile.titleSmall,
+                    style: TopDashTextStyles.headlineMobileH6Light,
                   ),
                   const SizedBox(height: TopDashSpacing.xs),
                   Text(
                     l10n.deckBuildingSubtitle,
-                    style: TopDashTextStyles.mobile.bodySmall,
+                    style: TopDashTextStyles.bodySM,
                   ),
                 ],
               ),

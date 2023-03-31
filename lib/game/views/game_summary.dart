@@ -12,7 +12,7 @@ class GameSummaryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: TopDashColors.backgroundMain,
+      backgroundColor: TopDashColors.seedWhite,
       body: Stack(
         children: const [
           Align(
@@ -88,13 +88,13 @@ class _ResultView extends StatelessWidget {
     if ((bloc.isHost && state.matchState.result == MatchResult.host) ||
         (!bloc.isHost && state.matchState.result == MatchResult.guest)) {
       title = context.l10n.gameWonTitle;
-      color = TopDashColors.darkPen;
+      color = TopDashColors.seedBlue;
     } else if ((bloc.isHost && state.matchState.result == MatchResult.guest) ||
         (!bloc.isHost && state.matchState.result == MatchResult.host)) {
-      color = TopDashColors.mainRed;
+      color = TopDashColors.seedPaletteRed40;
       title = context.l10n.gameLostTitle;
     } else {
-      color = TopDashColors.drawGrey;
+      color = TopDashColors.seedGrey50;
       title = context.l10n.gameTiedTitle;
     }
 
@@ -103,11 +103,11 @@ class _ResultView extends StatelessWidget {
       children: [
         Text(
           title,
-          style: TextStyle(fontSize: 48, color: color),
+          style: TopDashTextStyles.headlineMobileH1,
         ),
         Text(
           context.l10n.gameSummaryStreak(state.playerScoreCard.currentStreak),
-          style: TextStyle(fontSize: 20, color: color),
+          style: TopDashTextStyles.headlineMobileH6.copyWith(color: color),
         ),
       ],
     );
@@ -180,7 +180,7 @@ class _Footer extends StatelessWidget {
     final l10n = context.l10n;
 
     return ColoredBox(
-      color: TopDashColors.white,
+      color: TopDashColors.seedWhite,
       child: Padding(
         padding: const EdgeInsets.all(TopDashSpacing.sm),
         child: Row(
@@ -193,7 +193,7 @@ class _Footer extends StatelessWidget {
             _gap,
             RoundedButton.text(
               l10n.quit,
-              backgroundColor: TopDashColors.white,
+              backgroundColor: TopDashColors.seedWhite,
               onPressed: () => GoRouter.of(context).go('/'),
             ),
           ],
