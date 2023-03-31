@@ -80,7 +80,7 @@ class _AnimatedDot extends StatelessWidget {
         width: TopDashSpacing.lg,
         height: TopDashSpacing.lg,
         decoration: const BoxDecoration(
-          color: TopDashColors.mainBlue,
+          color: TopDashColors.seedPaletteBlue50,
           shape: BoxShape.circle,
         ),
       ),
