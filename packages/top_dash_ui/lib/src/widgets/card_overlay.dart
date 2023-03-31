@@ -52,9 +52,10 @@ class CardOverlay extends StatelessWidget {
     required this.height,
     super.key,
   })  : color = TopDashColors.seedBlue,
+        isDimmed = false,
         child = const Icon(
           Icons.check,
-          color: TopDashColors.white,
+          color: TopDashColors.seedWhite,
         );
 
   const CardOverlay._lose({
@@ -62,19 +63,21 @@ class CardOverlay extends StatelessWidget {
     required this.height,
     super.key,
   })  : color = TopDashColors.seedRed,
+        isDimmed = true,
         child = const Icon(
           Icons.close,
-          color: TopDashColors.white,
+          color: TopDashColors.seedWhite,
         );
 
   const CardOverlay._draw({
     required this.width,
     required this.height,
     super.key,
-  })  : color = TopDashColors.drawGrey,
+  })  : color = TopDashColors.seedGrey50,
+        isDimmed = true,
         child = const Text(
           '=',
-          style: TextStyle(color: TopDashColors.white, fontSize: 24),
+          style: TextStyle(color: TopDashColors.seedWhite, fontSize: 24),
         );
 
   /// Color
@@ -89,26 +92,31 @@ class CardOverlay extends StatelessWidget {
   /// Height
   final double? height;
 
+  /// Whether the card has a dimming effect
+  final bool isDimmed;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        color: color != TopDashColors.darkPen
-            ? TopDashColors.transparentWhite
-            : null,
-        border: Border.all(width: 2, color: color),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Stack(
-        children: [
-          CustomPaint(
-            size: const Size(40, 40),
-            painter: OverlayTriangle(color),
-          ),
-          child,
-        ],
+    final borderRadius = BorderRadius.circular(10);
+    return ClipRRect(
+      borderRadius: borderRadius,
+      child: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color: isDimmed ? TopDashColors.seedWhite.withOpacity(.5) : null,
+          border: Border.all(width: 2, color: color),
+          borderRadius: borderRadius,
+        ),
+        child: Stack(
+          children: [
+            CustomPaint(
+              size: const Size(40, 40),
+              painter: OverlayTriangle(color),
+            ),
+            child,
+          ],
+        ),
       ),
     );
   }

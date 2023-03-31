@@ -31,6 +31,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     on<MatchStateUpdated>(_onMatchStateUpdated);
     on<ScoreCardUpdated>(_onScoreCardUpdated);
     on<ManagePlayerPresence>(_onManagePlayerPresence);
+    on<TurnTimerStarted>(_onTurnTimerStarted);
+    on<TurnTimerTicked>(_onTurnTimerTicked);
   }
 
   final GameResource _gameResource;
@@ -39,6 +41,11 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   final User _user;
   final bool isHost;
   final WebSocket? matchConnection;
+  Timer? _turnTimer;
+
+  // Added to easily toggle timer functionality for testing purposes.
+  static const _turnTimerEnabled = true;
+  static const _turnMaxTime = 10;
 
   StreamSubscription<MatchState>? _stateSubscription;
   StreamSubscription<repo.Match>? _opponentDisconnectSubscription;
@@ -71,6 +78,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             turns: const [],
             playerPlayed: false,
             playerScoreCard: scoreCard,
+            turnTimeRemaining: _turnMaxTime,
           ),
         );
 
@@ -137,6 +145,10 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           playerPlayed: isPlayerMove ? false : null,
         ),
       );
+
+      if (_turnTimerEnabled) {
+        add(const TurnTimerStarted());
+      }
     }
   }
 
@@ -160,6 +172,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     if (state is MatchLoadedState) {
       final matchState = state as MatchLoadedState;
       emit(matchState.copyWith(playerPlayed: true));
+
+      _turnTimer?.cancel();
 
       final deckId =
           isHost ? matchState.match.hostDeck.id : matchState.match.guestDeck.id;
@@ -186,8 +200,12 @@ class GameBloc extends Bloc<GameEvent, GameState> {
                     : match.hostConnected == false,
               );
       _opponentDisconnectSubscription =
-          opponentDisconnectStream.listen((state) {
-        emit(const OpponentAbsentState());
+          opponentDisconnectStream.listen((match) async {
+        final matchState = await _gameResource.getMatchState(match.id);
+        final matchOver = matchState?.isOver();
+        if (matchOver != true) {
+          emit(const OpponentAbsentState());
+        }
         completer.complete();
       });
 
@@ -195,6 +213,68 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     } catch (e, s) {
       addError(e, s);
       emit(const ManagePlayerPresenceFailedState());
+    }
+  }
+
+  void _onTurnTimerStarted(
+    TurnTimerStarted event,
+    Emitter<GameState> emit,
+  ) {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+      if (isPlayerTurn && !matchLoadedState.matchState.isOver()) {
+        emit(matchLoadedState.copyWith(turnTimeRemaining: _turnMaxTime));
+
+        _turnTimer = Timer.periodic(
+          const Duration(seconds: 1),
+          (timer) {
+            if (!isClosed) {
+              add(TurnTimerTicked(timer));
+            }
+          },
+        );
+      }
+    }
+  }
+
+  void _onTurnTimerEnds() {
+    if (state is MatchLoadedState) {
+      final matchState = state as MatchLoadedState;
+
+      _turnTimer?.cancel();
+
+      final playedCards = isHost
+          ? matchState.matchState.hostPlayedCards
+          : matchState.matchState.guestPlayedCards;
+
+      final cards = isHost
+          ? matchState.match.hostDeck.cards.map((e) => e.id).toList()
+          : matchState.match.guestDeck.cards.map((e) => e.id).toList()
+        ..removeWhere(playedCards.contains);
+
+      if (cards.isNotEmpty) {
+        add(PlayerPlayed(cards.first));
+      }
+    }
+  }
+
+  void _onTurnTimerTicked(
+    TurnTimerTicked event,
+    Emitter<GameState> emit,
+  ) {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+      final timeRemaining = matchLoadedState.turnTimeRemaining - 1;
+      if (timeRemaining == 0) {
+        event.timer.cancel();
+        _onTurnTimerEnds();
+      } else {
+        emit(
+          matchLoadedState.copyWith(
+            turnTimeRemaining: timeRemaining,
+          ),
+        );
+      }
     }
   }
 
@@ -273,6 +353,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     _opponentDisconnectSubscription?.cancel();
     _scoreSubscription?.cancel();
     matchConnection?.close();
+    _turnTimer?.cancel();
     return super.close();
   }
 }

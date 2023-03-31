@@ -7,34 +7,415 @@ class AppColorsStory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorItems = [
-      const _ColorItem(name: 'Black', color: TopDashColors.black),
-      const _ColorItem(name: 'Ink', color: TopDashColors.ink),
-      const _ColorItem(name: 'Draw gray', color: TopDashColors.drawGrey),
-      const _ColorItem(
-        name: 'Background Leaderboard Entry',
-        color: TopDashColors.backgroundLeaderboardEntry,
+    const colorItems = [
+      _ColorItem(name: 'gold', color: TopDashColors.seedGold),
+      _ColorItem(name: 'silver', color: TopDashColors.seedSilver),
+      _ColorItem(name: 'bronze', color: TopDashColors.seedBronze),
+      _ColorItem(name: 'seedLightBlue', color: TopDashColors.seedLightBlue),
+      _ColorItem(name: 'seedBlue', color: TopDashColors.seedBlue),
+      _ColorItem(name: 'seedRed', color: TopDashColors.seedRed),
+      _ColorItem(name: 'seedYellow', color: TopDashColors.seedYellow),
+      _ColorItem(name: 'seedGreen', color: TopDashColors.seedGreen),
+      _ColorItem(name: 'seedBrown', color: TopDashColors.seedBrown),
+      _ColorItem(name: 'seedBlack', color: TopDashColors.seedBlack),
+      _ColorItem(name: 'seedGrey30', color: TopDashColors.seedGrey30),
+      _ColorItem(name: 'seedGrey50', color: TopDashColors.seedGrey50),
+      _ColorItem(name: 'seedGrey70', color: TopDashColors.seedGrey70),
+      _ColorItem(name: 'seedGrey80', color: TopDashColors.seedGrey80),
+      _ColorItem(name: 'seedGrey90', color: TopDashColors.seedGrey90),
+      _ColorItem(name: 'seedWhite', color: TopDashColors.seedWhite),
+      _ColorItem(name: 'seedScrim', color: TopDashColors.seedScrim),
+      _ColorItem(
+        name: 'seedPaletteLightBlue0',
+        color: TopDashColors.seedPaletteLightBlue0,
       ),
-      const _ColorItem(name: 'Silver', color: TopDashColors.silver),
-      const _ColorItem(name: 'White', color: TopDashColors.white),
-      const _ColorItem(
-        name: 'Transparent White',
-        color: TopDashColors.transparentWhite,
+      _ColorItem(
+        name: 'seedPaletteLightBlue10',
+        color: TopDashColors.seedPaletteLightBlue10,
       ),
-      const _ColorItem(
-        name: 'Background Main',
-        color: TopDashColors.backgroundMain,
+      _ColorItem(
+        name: 'seedPaletteLightBlue20',
+        color: TopDashColors.seedPaletteLightBlue20,
       ),
-      const _ColorItem(name: 'Light Blue 99', color: TopDashColors.lightBlue99),
-      const _ColorItem(name: 'Dark Pen', color: TopDashColors.darkPen),
-      const _ColorItem(name: 'Blue 50', color: TopDashColors.blue50),
-      const _ColorItem(name: 'Seed Blue', color: TopDashColors.seedBlue),
-      const _ColorItem(name: 'Main Blue', color: TopDashColors.mainBlue),
-      const _ColorItem(name: 'Light Blue 60', color: TopDashColors.lightBlue60),
-      const _ColorItem(name: 'Main Red', color: TopDashColors.mainRed),
-      const _ColorItem(name: 'Seed Red', color: TopDashColors.seedRed),
-      const _ColorItem(name: 'Gold', color: TopDashColors.gold),
-      const _ColorItem(name: 'Bronze', color: TopDashColors.bronze),
+      _ColorItem(
+        name: 'seedPaletteLightBlue30',
+        color: TopDashColors.seedPaletteLightBlue30,
+      ),
+      _ColorItem(
+        name: 'seedPaletteLightBlue40',
+        color: TopDashColors.seedPaletteLightBlue40,
+      ),
+      _ColorItem(
+        name: 'seedPaletteLightBlue50',
+        color: TopDashColors.seedPaletteLightBlue50,
+      ),
+      _ColorItem(
+        name: 'seedPaletteLightBlue60',
+        color: TopDashColors.seedPaletteLightBlue60,
+      ),
+      _ColorItem(
+        name: 'seedPaletteLightBlue70',
+        color: TopDashColors.seedPaletteLightBlue70,
+      ),
+      _ColorItem(
+        name: 'seedPaletteLightBlue80',
+        color: TopDashColors.seedPaletteLightBlue80,
+      ),
+      _ColorItem(
+        name: 'seedPaletteLightBlue90',
+        color: TopDashColors.seedPaletteLightBlue90,
+      ),
+      _ColorItem(
+        name: 'seedPaletteLightBlue95',
+        color: TopDashColors.seedPaletteLightBlue95,
+      ),
+      _ColorItem(
+        name: 'seedPaletteLightBlue99',
+        color: TopDashColors.seedPaletteLightBlue99,
+      ),
+      _ColorItem(
+        name: 'seedPaletteLightBlue100',
+        color: TopDashColors.seedPaletteLightBlue100,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBlue0',
+        color: TopDashColors.seedPaletteBlue0,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBlue10',
+        color: TopDashColors.seedPaletteBlue10,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBlue20',
+        color: TopDashColors.seedPaletteBlue20,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBlue30',
+        color: TopDashColors.seedPaletteBlue30,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBlue40',
+        color: TopDashColors.seedPaletteBlue40,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBlue50',
+        color: TopDashColors.seedPaletteBlue50,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBlue60',
+        color: TopDashColors.seedPaletteBlue60,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBlue70',
+        color: TopDashColors.seedPaletteBlue70,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBlue80',
+        color: TopDashColors.seedPaletteBlue80,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBlue90',
+        color: TopDashColors.seedPaletteBlue90,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBlue95',
+        color: TopDashColors.seedPaletteBlue95,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBlue99',
+        color: TopDashColors.seedPaletteBlue99,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBlue100',
+        color: TopDashColors.seedPaletteBlue100,
+      ),
+      _ColorItem(name: 'seedPaletteRed0', color: TopDashColors.seedPaletteRed0),
+      _ColorItem(
+        name: 'seedPaletteRed10',
+        color: TopDashColors.seedPaletteRed10,
+      ),
+      _ColorItem(
+        name: 'seedPaletteRed20',
+        color: TopDashColors.seedPaletteRed20,
+      ),
+      _ColorItem(
+        name: 'seedPaletteRed30',
+        color: TopDashColors.seedPaletteRed30,
+      ),
+      _ColorItem(
+        name: 'seedPaletteRed40',
+        color: TopDashColors.seedPaletteRed40,
+      ),
+      _ColorItem(
+        name: 'seedPaletteRed50',
+        color: TopDashColors.seedPaletteRed50,
+      ),
+      _ColorItem(
+        name: 'seedPaletteRed60',
+        color: TopDashColors.seedPaletteRed60,
+      ),
+      _ColorItem(
+        name: 'seedPaletteRed70',
+        color: TopDashColors.seedPaletteRed70,
+      ),
+      _ColorItem(
+        name: 'seedPaletteRed80',
+        color: TopDashColors.seedPaletteRed80,
+      ),
+      _ColorItem(
+        name: 'seedPaletteRed90',
+        color: TopDashColors.seedPaletteRed90,
+      ),
+      _ColorItem(
+        name: 'seedPaletteRed95',
+        color: TopDashColors.seedPaletteRed95,
+      ),
+      _ColorItem(
+        name: 'seedPaletteRed99',
+        color: TopDashColors.seedPaletteRed99,
+      ),
+      _ColorItem(
+        name: 'seedPaletteRed100',
+        color: TopDashColors.seedPaletteRed100,
+      ),
+      _ColorItem(
+        name: 'seedPaletteGreen0',
+        color: TopDashColors.seedPaletteGreen0,
+      ),
+      _ColorItem(
+        name: 'seedPaletteGreen10',
+        color: TopDashColors.seedPaletteGreen10,
+      ),
+      _ColorItem(
+        name: 'seedPaletteGreen20',
+        color: TopDashColors.seedPaletteGreen20,
+      ),
+      _ColorItem(
+        name: 'seedPaletteGreen30',
+        color: TopDashColors.seedPaletteGreen30,
+      ),
+      _ColorItem(
+        name: 'seedPaletteGreen40',
+        color: TopDashColors.seedPaletteGreen40,
+      ),
+      _ColorItem(
+        name: 'seedPaletteGreen50',
+        color: TopDashColors.seedPaletteGreen50,
+      ),
+      _ColorItem(
+        name: 'seedPaletteGreen60',
+        color: TopDashColors.seedPaletteGreen60,
+      ),
+      _ColorItem(
+        name: 'seedPaletteGreen70',
+        color: TopDashColors.seedPaletteGreen70,
+      ),
+      _ColorItem(
+        name: 'seedPaletteGreen80',
+        color: TopDashColors.seedPaletteGreen80,
+      ),
+      _ColorItem(
+        name: 'seedPaletteGreen90',
+        color: TopDashColors.seedPaletteGreen90,
+      ),
+      _ColorItem(
+        name: 'seedPaletteGreen95',
+        color: TopDashColors.seedPaletteGreen95,
+      ),
+      _ColorItem(
+        name: 'seedPaletteGreen99',
+        color: TopDashColors.seedPaletteGreen99,
+      ),
+      _ColorItem(
+        name: 'seedPaletteGreen100',
+        color: TopDashColors.seedPaletteGreen100,
+      ),
+      _ColorItem(
+        name: 'seedPaletteYellow0',
+        color: TopDashColors.seedPaletteYellow0,
+      ),
+      _ColorItem(
+        name: 'seedPaletteYellow10',
+        color: TopDashColors.seedPaletteYellow10,
+      ),
+      _ColorItem(
+        name: 'seedPaletteYellow20',
+        color: TopDashColors.seedPaletteYellow20,
+      ),
+      _ColorItem(
+        name: 'seedPaletteYellow30',
+        color: TopDashColors.seedPaletteYellow30,
+      ),
+      _ColorItem(
+        name: 'seedPaletteYellow40',
+        color: TopDashColors.seedPaletteYellow40,
+      ),
+      _ColorItem(
+        name: 'seedPaletteYellow50',
+        color: TopDashColors.seedPaletteYellow50,
+      ),
+      _ColorItem(
+        name: 'seedPaletteYellow60',
+        color: TopDashColors.seedPaletteYellow60,
+      ),
+      _ColorItem(
+        name: 'seedPaletteYellow70',
+        color: TopDashColors.seedPaletteYellow70,
+      ),
+      _ColorItem(
+        name: 'seedPaletteYellow80',
+        color: TopDashColors.seedPaletteYellow80,
+      ),
+      _ColorItem(
+        name: 'seedPaletteYellow90',
+        color: TopDashColors.seedPaletteYellow90,
+      ),
+      _ColorItem(
+        name: 'seedPaletteYellow95',
+        color: TopDashColors.seedPaletteYellow95,
+      ),
+      _ColorItem(
+        name: 'seedPaletteYellow99',
+        color: TopDashColors.seedPaletteYellow99,
+      ),
+      _ColorItem(
+        name: 'seedPaletteYellow100',
+        color: TopDashColors.seedPaletteYellow100,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBrown0',
+        color: TopDashColors.seedPaletteBrown0,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBrown10',
+        color: TopDashColors.seedPaletteBrown10,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBrown20',
+        color: TopDashColors.seedPaletteBrown20,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBrown30',
+        color: TopDashColors.seedPaletteBrown30,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBrown40',
+        color: TopDashColors.seedPaletteBrown40,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBrown50',
+        color: TopDashColors.seedPaletteBrown50,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBrown60',
+        color: TopDashColors.seedPaletteBrown60,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBrown70',
+        color: TopDashColors.seedPaletteBrown70,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBrown80',
+        color: TopDashColors.seedPaletteBrown80,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBrown90',
+        color: TopDashColors.seedPaletteBrown90,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBrown95',
+        color: TopDashColors.seedPaletteBrown95,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBrown99',
+        color: TopDashColors.seedPaletteBrown99,
+      ),
+      _ColorItem(
+        name: 'seedPaletteBrown100',
+        color: TopDashColors.seedPaletteBrown100,
+      ),
+      _ColorItem(
+        name: 'seedPaletteNeutral0',
+        color: TopDashColors.seedPaletteNeutral0,
+      ),
+      _ColorItem(
+        name: 'seedPaletteNeutral10',
+        color: TopDashColors.seedPaletteNeutral10,
+      ),
+      _ColorItem(
+        name: 'seedPaletteNeutral20',
+        color: TopDashColors.seedPaletteNeutral20,
+      ),
+      _ColorItem(
+        name: 'seedPaletteNeutral30',
+        color: TopDashColors.seedPaletteNeutral30,
+      ),
+      _ColorItem(
+        name: 'seedPaletteNeutral40',
+        color: TopDashColors.seedPaletteNeutral40,
+      ),
+      _ColorItem(
+        name: 'seedPaletteNeutral50',
+        color: TopDashColors.seedPaletteNeutral50,
+      ),
+      _ColorItem(
+        name: 'seedPaletteNeutral60',
+        color: TopDashColors.seedPaletteNeutral60,
+      ),
+      _ColorItem(
+        name: 'seedPaletteNeutral70',
+        color: TopDashColors.seedPaletteNeutral70,
+      ),
+      _ColorItem(
+        name: 'seedPaletteNeutral80',
+        color: TopDashColors.seedPaletteNeutral80,
+      ),
+      _ColorItem(
+        name: 'seedPaletteNeutral90',
+        color: TopDashColors.seedPaletteNeutral90,
+      ),
+      _ColorItem(
+        name: 'seedPaletteNeutral95',
+        color: TopDashColors.seedPaletteNeutral95,
+      ),
+      _ColorItem(
+        name: 'seedPaletteNeutral99',
+        color: TopDashColors.seedPaletteNeutral99,
+      ),
+      _ColorItem(
+        name: 'seedPaletteNeutral100',
+        color: TopDashColors.seedPaletteNeutral100,
+      ),
+      _ColorItem(
+        name: 'seedArchiveGrey99',
+        color: TopDashColors.seedArchiveGrey99,
+      ),
+      _ColorItem(
+        name: 'seedArchiveGrey95',
+        color: TopDashColors.seedArchiveGrey95,
+      ),
+      _ColorItem(name: 'accessibleBlack', color: TopDashColors.accessibleBlack),
+      _ColorItem(name: 'accessibleGrey', color: TopDashColors.accessibleGrey),
+      _ColorItem(
+        name: 'accessibleBrandLightBlue',
+        color: TopDashColors.accessibleBrandLightBlue,
+      ),
+      _ColorItem(
+        name: 'accessibleBrandBlue',
+        color: TopDashColors.accessibleBrandBlue,
+      ),
+      _ColorItem(
+        name: 'accessibleBrandRed',
+        color: TopDashColors.accessibleBrandRed,
+      ),
+      _ColorItem(
+        name: 'accessibleBrandYellow',
+        color: TopDashColors.accessibleBrandYellow,
+      ),
+      _ColorItem(
+        name: 'accessibleBrandGreen',
+        color: TopDashColors.accessibleBrandGreen,
+      ),
     ];
 
     return StoryScaffold(

@@ -49,7 +49,7 @@ class GameView extends StatelessWidget {
         }
 
         return Scaffold(
-          backgroundColor: TopDashColors.backgroundMain,
+          backgroundColor: TopDashColors.seedWhite,
           body: child,
         );
       },
@@ -144,7 +144,13 @@ class _GameBoard extends StatelessWidget {
             flex: 2,
             child: _BoardCenter(),
           ),
-          Expanded(child: Text(bloc.isPlayerTurn ? 'Your turn' : 'Their turn')),
+          Expanded(
+            child: Text(
+              bloc.isPlayerTurn
+                  ? 'Your turn: ${state.turnTimeRemaining}'
+                  : 'Their turn',
+            ),
+          ),
           Expanded(
             flex: 4,
             child: Center(

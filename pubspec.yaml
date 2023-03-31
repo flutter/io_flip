@@ -14,13 +14,14 @@ dependencies:
   authentication_repository:
     path: packages/authentication_repository
   bloc: ^8.1.1
-  cloud_firestore: ^4.4.3
+  cloud_firestore: ^4.5.0
   code_text_field: ^1.1.0
   equatable: ^2.0.5
-  firebase_auth: ^4.2.9
+  firebase_auth: ^4.4.0
   firebase_core: ^2.5.0
   firebase_crashlytics: ^3.0.15
   firebase_storage: ^11.0.16
+  flow_builder: ^0.0.9
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.2
@@ -31,7 +32,7 @@ dependencies:
     path: api/packages/game_domain
   game_script_machine:
     path: api/packages/game_script_machine
-  go_router: ^6.5.1
+  go_router: ^6.5.2
   highlight: ^0.7.0
   intl: ^0.17.0
   logging: ^1.1.1
@@ -70,4 +71,9 @@ flutter:
       fonts:
         - asset: assets/fonts/GoogleSansText-Regular.ttf
         - asset: assets/fonts/GoogleSansText-Italic.ttf
+          style: italic
+    - family: Roboto Serif
+      fonts:
+        - asset: assets/fonts/RobotoSerif-Regular.ttf
+        - asset: assets/fonts/RobotoSerif-Italic.ttf
           style: italic

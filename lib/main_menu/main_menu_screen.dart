@@ -20,7 +20,7 @@ class MainMenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: TopDashColors.backgroundMain,
+      backgroundColor: TopDashColors.seedWhite,
       body: Stack(
         children: const [
           Align(
@@ -77,17 +77,21 @@ class LandscapeMenuView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(TopDashSpacing.lg),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 1300),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            _MainImage(key: Key('main menu image')),
-            SingleChildScrollView(
-              child: LeaderboardView(),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const _MainImage(key: Key('main menu image')),
+          Flexible(
+            child: Container(
+              constraints: const BoxConstraints(
+                maxWidth: 2 * TopDashSpacing.xxxlg,
+              ),
             ),
-          ],
-        ),
+          ),
+          const SingleChildScrollView(
+            child: LeaderboardView(),
+          ),
+        ],
       ),
     );
   }
@@ -111,7 +115,7 @@ class _MainImage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: TopDashSpacing.xxlg),
           child: Text(
             context.l10n.menuCatchPhrase,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            style: TopDashTextStyles.headlineH6Light,
           ),
         )
       ],
@@ -130,7 +134,7 @@ class _Footer extends StatelessWidget {
     final audioController = context.watch<AudioController>();
 
     return ColoredBox(
-      color: TopDashColors.white,
+      color: TopDashColors.seedWhite,
       child: Padding(
         padding: const EdgeInsets.all(TopDashSpacing.sm),
         child: Row(
@@ -138,19 +142,19 @@ class _Footer extends StatelessWidget {
           children: [
             RoundedButton.icon(
               const Icon(Icons.more_horiz_rounded),
-              backgroundColor: TopDashColors.white,
+              backgroundColor: TopDashColors.seedWhite,
               onPressed: () => GoRouter.of(context).push('/settings'),
             ),
             _gap,
             RoundedButton.icon(
               const Icon(Icons.share),
-              backgroundColor: TopDashColors.white,
+              backgroundColor: TopDashColors.seedWhite,
               onPressed: () => GoRouter.of(context).goNamed('share'),
             ),
             _gap,
             RoundedButton.icon(
               const Icon(Icons.question_mark_rounded),
-              backgroundColor: TopDashColors.white,
+              backgroundColor: TopDashColors.seedWhite,
               onPressed: () => GoRouter.of(context).go('/how_to_play'),
             ),
             _gap,

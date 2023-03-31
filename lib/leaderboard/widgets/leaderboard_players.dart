@@ -48,13 +48,13 @@ class _Player extends StatelessWidget {
 
     switch (index) {
       case 0:
-        color = TopDashColors.gold;
+        color = TopDashColors.seedGold;
         break;
       case 1:
-        color = TopDashColors.silver;
+        color = TopDashColors.seedSilver;
         break;
       case 2:
-        color = TopDashColors.bronze;
+        color = TopDashColors.seedBronze;
         break;
     }
 
@@ -74,12 +74,12 @@ class _Player extends StatelessWidget {
               child: Text((index + 1).toString()),
             ),
             const SizedBox(width: TopDashSpacing.lg),
-            Text(initials, style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(initials, style: TopDashTextStyles.headlineH6),
           ],
         ),
         Text(
           wins.toString(),
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: TopDashTextStyles.buttonLG,
         ),
       ],
     );

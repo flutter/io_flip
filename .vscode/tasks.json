@@ -9,6 +9,7 @@
       "ENCRYPTION_KEY": "X9YTchZdcnyZTNBSBgzj29p7RMBAIubD",
       "ENCRYPTION_IV": "FxC21ctRg9SgiXuZ",
       "INITIALS_BLACKLIST_ID": "MdOoZMhusnJTcwfYE0nL",
+      "PROMPT_WHITELIST_ID": "MIsaP8zrRVhuR84MLEic",
     }
   },
   "tasks": [
