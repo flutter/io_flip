@@ -31,15 +31,18 @@ void main() {
     late Logger logger;
     const gameUrl = GameUrl('https://example.com');
 
-    final cards = List.generate(3, (i) => Card(
-      id: 'cardId$i',
-      name: 'cardName$i',
-      description: 'cardDescription',
-      image: 'cardImageUrl',
-      suit: Suit.fire,
-      rarity: false,
-      power: 10,
-    ),);
+    final cards = List.generate(
+      3,
+      (i) => Card(
+        id: 'cardId$i',
+        name: 'cardName$i',
+        description: 'cardDescription',
+        image: 'cardImageUrl',
+        suit: Suit.fire,
+        rarity: false,
+        power: 10,
+      ),
+    );
 
     final deck = Deck(
       id: 'deckId',

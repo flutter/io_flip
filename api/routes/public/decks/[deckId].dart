@@ -13,8 +13,7 @@ FutureOr<Response> onRequest(RequestContext context, String deckId) {
 }
 
 FutureOr<Response> _getDeckImage(RequestContext context, String deckId) async {
-  final deck = await context.read<CardsRepository>()
-    .getDeck(deckId);
+  final deck = await context.read<CardsRepository>().getDeck(deckId);
 
   if (deck == null) {
     return Response(statusCode: HttpStatus.notFound);
