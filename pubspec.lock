@@ -446,7 +446,7 @@ packages:
       sha256: "5410b6ab2009fc6c181ca82e16525fdcb324c5851933bfbb49246543b1005ebc"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.17"
+    version: "3.1.0"
   firebase_crashlytics_platform_interface:
     dependency: transitive
     description:
@@ -454,7 +454,7 @@ packages:
       sha256: bf3d3791c51a8448413b5ebd8388fa7db239a3e165db6bbd8ab58ef0e8f61906
       url: "https://pub.dev"
     source: hosted
-    version: "3.3.17"
+    version: "3.4.0"
   firebase_storage:
     dependency: "direct main"
     description:
@@ -462,7 +462,7 @@ packages:
       sha256: "0a49413725587aa3ceaaa6233fdb2e32687e4972f13cd7277526219cd5acb398"
       url: "https://pub.dev"
     source: hosted
-    version: "11.0.16"
+    version: "11.1.0"
   firebase_storage_platform_interface:
     dependency: transitive
     description:
@@ -470,7 +470,7 @@ packages:
       sha256: "951871b91ffdc49ead69daa03e58606f29b9b541056258ef805bbb7128f54afc"
       url: "https://pub.dev"
     source: hosted
-    version: "4.1.32"
+    version: "4.2.0"
   firebase_storage_web:
     dependency: transitive
     description:
@@ -478,7 +478,7 @@ packages:
       sha256: d77573712c9fa5e05c7f1e23c77db0757b0b0718136a550d4d9823c92eeca8c8
       url: "https://pub.dev"
     source: hosted
-    version: "3.3.25"
+    version: "3.4.0"
   fixnum:
     dependency: transitive
     description:
