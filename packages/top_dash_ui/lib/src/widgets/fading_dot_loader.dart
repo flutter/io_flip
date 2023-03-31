@@ -67,7 +67,7 @@ class _AnimatedDot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fadeAnimation = Tween<double>(begin: 255, end: 100).animate(
+    final fadeAnimation = Tween<double>(begin: 100, end: 250).animate(
       CurvedAnimation(parent: animationController, curve: Curves.linear),
     );
 
