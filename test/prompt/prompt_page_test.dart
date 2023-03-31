@@ -53,9 +53,21 @@ void main() {
 
     test('flow data correctly copies', () {
       const data1 = FlowData();
-      final data2 = data1.copyWithNewAttribute('test');
+      final data2 = data1
+        ..copyWithNewAttribute('character')
+        ..copyWithNewAttribute('power')
+        ..copyWithNewAttribute('environment');
 
-      expect(data2, equals(const FlowData(character: 'test')));
+      expect(
+        data2,
+        equals(
+          const FlowData(
+            character: 'character',
+            power: 'power',
+            environment: 'environment',
+          ),
+        ),
+      );
     });
   });
 }

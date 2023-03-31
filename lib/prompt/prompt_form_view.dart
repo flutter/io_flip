@@ -33,17 +33,20 @@ class _PromptFormViewState extends State<PromptFormView> {
       children: [
         Text(
           widget.title,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          style: TopDashTextStyles.headlineH4Light,
         ),
         _gap,
-        Text(widget.subtitle),
+        Text(widget.subtitle, style: TopDashTextStyles.bodyLG),
         _gap,
         Container(
           constraints: const BoxConstraints(minWidth: 100, maxWidth: 400),
           child: TextFormField(
+            style: TopDashTextStyles.headlineMobileH1,
             textAlign: TextAlign.center,
             decoration: InputDecoration(
               hintText: widget.hint,
+              hintStyle: TopDashTextStyles.headlineMobileH1
+                  .copyWith(color: TopDashColors.seedGrey70),
             ),
           ),
         ),
