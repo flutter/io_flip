@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:math';
+import 'dart:math' as math;
 
 import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
@@ -121,7 +121,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
               .length !=
           matchStatePlayerMoves.length;
 
-      final moveLength = max(
+      final moveLength = math.max(
         matchStatePlayerMoves.length,
         matchStateOpponentMoves.length,
       );
@@ -280,14 +280,16 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
   CardOverlayType? isWinningCard(Card card, {required bool isPlayer}) {
     if (state is MatchLoadedState) {
-      final isCardFromHost = isPlayer && isHost;
-
       final matchLoadedState = state as MatchLoadedState;
       final matchState = matchLoadedState.matchState;
 
-      final round = isHost
-          ? matchState.hostPlayedCards.indexWhere((id) => id == card.id)
-          : matchState.guestPlayedCards.indexWhere((id) => id == card.id);
+      final playerCards =
+          isHost ? matchState.hostPlayedCards : matchState.guestPlayedCards;
+      final opponentCards =
+          isHost ? matchState.guestPlayedCards : matchState.hostPlayedCards;
+
+      final round = (isPlayer ? playerCards : opponentCards)
+          .indexWhere((id) => id == card.id);
 
       if (round >= 0) {
         final turn = matchLoadedState.turns[round];
@@ -301,9 +303,13 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           if (result == MatchResult.draw) {
             return CardOverlayType.draw;
           }
-          final cardWins = isCardFromHost
-              ? result == MatchResult.host
-              : result == MatchResult.guest;
+
+          final playerWins = isHost ? MatchResult.host : MatchResult.guest;
+          final opponentWins = isHost ? MatchResult.guest : MatchResult.host;
+
+          final cardWins =
+              isPlayer ? result == playerWins : result == opponentWins;
+
           return cardWins ? CardOverlayType.win : CardOverlayType.lose;
         }
       }

@@ -122,34 +122,40 @@ class _CardsView extends StatelessWidget {
     final bloc = context.read<GameBloc>();
     final state = bloc.state as MatchLoadedState;
 
-    final hostCards = List.generate(state.match.hostDeck.cards.length, (index) {
-      final card = state.match.hostDeck.cards[index];
-      return GameCard(
-        width: 120,
-        height: 180,
-        image: card.image,
-        name: card.name,
-        power: card.power,
-        suitName: card.suit.name,
-        overlay: bloc.isWinningCard(card, isPlayer: bloc.isHost),
-        isRare: card.rarity,
-      );
-    });
+    final hostCardsOrdered = state.matchState.hostPlayedCards.map(
+      (id) => state.match.hostDeck.cards.firstWhere((card) => card.id == id),
+    );
+    final guestCardsOrdered = state.matchState.guestPlayedCards.map(
+      (id) => state.match.guestDeck.cards.firstWhere((card) => card.id == id),
+    );
 
-    final guestCards =
-        List.generate(state.match.guestDeck.cards.length, (index) {
-      final card = state.match.guestDeck.cards[index];
-      return GameCard(
+    final playerCards =
+        (bloc.isHost ? hostCardsOrdered : guestCardsOrdered).map(
+      (card) => GameCard(
         width: 120,
         height: 180,
         image: card.image,
         name: card.name,
         power: card.power,
         suitName: card.suit.name,
-        overlay: bloc.isWinningCard(card, isPlayer: !bloc.isHost),
+        overlay: bloc.isWinningCard(card, isPlayer: true),
         isRare: card.rarity,
-      );
-    });
+      ),
+    );
+
+    final opponentCards =
+        (bloc.isHost ? guestCardsOrdered : hostCardsOrdered).map(
+      (card) => GameCard(
+        width: 120,
+        height: 180,
+        image: card.image,
+        name: card.name,
+        power: card.power,
+        suitName: card.suit.name,
+        overlay: bloc.isWinningCard(card, isPlayer: false),
+        isRare: card.rarity,
+      ),
+    );
 
     return Align(
       child: ConstrainedBox(
@@ -161,9 +167,7 @@ class _CardsView extends StatelessWidget {
           shrinkWrap: true,
           mainAxisSpacing: TopDashSpacing.md,
           crossAxisCount: 3,
-          children: bloc.isHost
-              ? [...guestCards, ...hostCards]
-              : [...hostCards, ...guestCards],
+          children: [...opponentCards, ...playerCards],
         ),
       ),
     );
