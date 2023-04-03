@@ -34,10 +34,11 @@ class GameResource {
     try {
       final json = jsonDecode(response.body) as Map<String, dynamic>;
       final cards = json['cards'] as List<dynamic>;
-      return List.generate(
-        cards.length,
-        (index) => Card.fromJson(cards[index] as Map<String, dynamic>),
-      );
+      return cards
+          .map(
+            (card) => Card.fromJson(card as Map<String, dynamic>),
+          )
+          .toList();
     } catch (e) {
       throw ApiClientError(
         'POST /cards returned invalid response "${response.body}"',
