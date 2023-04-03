@@ -21,7 +21,7 @@ class GameResource {
   final Duration _webSocketTimeout;
 
   /// Post /cards
-  Future<Card> generateCard() async {
+  Future<List<Card>> generateCards() async {
     final response = await _apiClient.post('/game/cards');
 
     if (response.statusCode != HttpStatus.ok) {
@@ -32,8 +32,12 @@ class GameResource {
     }
 
     try {
-      final json = jsonDecode(response.body);
-      return Card.fromJson(json as Map<String, dynamic>);
+      final json = jsonDecode(response.body) as Map<String, dynamic>;
+      final cards = json['cards'] as List<dynamic>;
+      return List.generate(
+        cards.length,
+        (index) => Card.fromJson(cards[index] as Map<String, dynamic>),
+      );
     } catch (e) {
       throw ApiClientError(
         'POST /cards returned invalid response "${response.body}"',
