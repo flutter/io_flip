@@ -77,7 +77,16 @@ void main() {
                 image: '',
                 rarity: true,
                 power: 2,
-                suit: Suit.air,
+                suit: Suit.earth,
+              ),
+              Card(
+                id: 'player_card_3',
+                name: 'host_card_3',
+                description: '',
+                image: '',
+                rarity: true,
+                power: 4,
+                suit: Suit.metal,
               ),
             ],
           ),
@@ -92,7 +101,25 @@ void main() {
                 image: '',
                 rarity: true,
                 power: 1,
+                suit: Suit.fire,
+              ),
+              Card(
+                id: 'opponent_card_2',
+                name: 'guest_card_2',
+                description: '',
+                image: '',
+                rarity: false,
+                power: 1,
                 suit: Suit.air,
+              ),
+              Card(
+                id: 'opponent_card_3',
+                name: 'guest_card_3',
+                description: '',
+                image: '',
+                rarity: false,
+                power: 10,
+                suit: Suit.water,
               ),
             ],
           ),
@@ -184,16 +211,27 @@ void main() {
       );
 
       testWidgets(
-        'renders cards',
+        'renders all 6 cards with overlay, 3 for player and 3 for opponent',
         (tester) async {
+          when(
+            () => bloc.isWinningCard(any(), isPlayer: any(named: 'isPlayer')),
+          ).thenReturn(CardOverlayType.win);
           when(() => bloc.isHost).thenReturn(false);
           mockState(
             baseState.copyWith(
               matchState: MatchState(
                 id: '',
                 matchId: '',
-                guestPlayedCards: const [],
-                hostPlayedCards: const [],
+                guestPlayedCards: const [
+                  'opponent_card_2',
+                  'opponent_card_3',
+                  'opponent_card'
+                ],
+                hostPlayedCards: const [
+                  'player_card_2',
+                  'player_card',
+                  'player_card_3',
+                ],
                 hostStartsMatch: true,
                 result: MatchResult.guest,
               ),
@@ -203,7 +241,12 @@ void main() {
 
           expect(
             find.byType(GameCard),
-            findsNWidgets(3),
+            findsNWidgets(6),
+          );
+
+          expect(
+            find.byType(CardOverlay),
+            findsNWidgets(6),
           );
         },
       );
