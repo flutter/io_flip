@@ -2,7 +2,7 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:top_dash/game/bloc/game_bloc.dart';
+import 'package:top_dash/game/game.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -198,7 +198,11 @@ class _Footer extends StatelessWidget {
             RoundedButton.text(
               l10n.quit,
               backgroundColor: TopDashColors.seedWhite,
-              onPressed: () => GoRouter.of(context).go('/'),
+              onPressed: () => QuitGameDialog.show(
+                context,
+                onConfirm: () => GoRouter.of(context).go('/'),
+                onCancel: GoRouter.of(context).pop,
+              ),
             ),
           ],
         ),

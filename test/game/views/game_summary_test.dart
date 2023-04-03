@@ -136,6 +136,21 @@ void main() {
         playerPlayed: false,
       );
 
+      void defaultMockState() {
+        mockState(
+          baseState.copyWith(
+            matchState: MatchState(
+              id: '',
+              matchId: '',
+              guestPlayedCards: const [],
+              hostPlayedCards: const [],
+              hostStartsMatch: true,
+              result: MatchResult.guest,
+            ),
+          ),
+        );
+      }
+
       testWidgets(
         'renders the draw message when the players make a draw',
         (tester) async {
@@ -188,18 +203,8 @@ void main() {
       testWidgets(
         'renders the lose message when the player lost',
         (tester) async {
-          mockState(
-            baseState.copyWith(
-              matchState: MatchState(
-                id: '',
-                matchId: '',
-                guestPlayedCards: const [],
-                hostPlayedCards: const [],
-                hostStartsMatch: true,
-                result: MatchResult.guest,
-              ),
-            ),
-          );
+          defaultMockState();
+
           when(bloc.hasPlayerWon).thenReturn(false);
           await tester.pumpSubject(bloc);
 
@@ -253,18 +258,7 @@ void main() {
 
       testWidgets('renders the game summary in landscape', (tester) async {
         tester.binding.window.devicePixelRatioTestValue = 1;
-        mockState(
-          baseState.copyWith(
-            matchState: MatchState(
-              id: '',
-              matchId: '',
-              guestPlayedCards: const [],
-              hostPlayedCards: const [],
-              hostStartsMatch: true,
-              result: MatchResult.guest,
-            ),
-          ),
-        );
+        defaultMockState();
 
         await tester.pumpSubject(bloc);
 
@@ -277,18 +271,7 @@ void main() {
       testWidgets('renders the game summary in portrait', (tester) async {
         tester.binding.window.devicePixelRatioTestValue = 1;
         tester.binding.window.physicalSizeTestValue = const Size(1200, 1600);
-        mockState(
-          baseState.copyWith(
-            matchState: MatchState(
-              id: '',
-              matchId: '',
-              guestPlayedCards: const [],
-              hostPlayedCards: const [],
-              hostStartsMatch: true,
-              result: MatchResult.guest,
-            ),
-          ),
-        );
+        defaultMockState();
 
         await tester.pumpSubject(bloc);
 
@@ -304,18 +287,7 @@ void main() {
         (tester) async {
           final goRouter = MockGoRouter();
 
-          mockState(
-            baseState.copyWith(
-              matchState: MatchState(
-                id: '',
-                matchId: '',
-                guestPlayedCards: const [],
-                hostPlayedCards: const [],
-                hostStartsMatch: true,
-                result: MatchResult.guest,
-              ),
-            ),
-          );
+          defaultMockState();
           when(bloc.hasPlayerWon).thenReturn(true);
           await tester.pumpSubject(
             bloc,
@@ -330,22 +302,11 @@ void main() {
       );
 
       testWidgets(
-        'pops navigation when the replay button is tapped',
+        'pops navigation when the quit button is tapped and canceled',
         (tester) async {
           final goRouter = MockGoRouter();
 
-          mockState(
-            baseState.copyWith(
-              matchState: MatchState(
-                id: '',
-                matchId: '',
-                guestPlayedCards: const [],
-                hostPlayedCards: const [],
-                hostStartsMatch: true,
-                result: MatchResult.guest,
-              ),
-            ),
-          );
+          defaultMockState();
           when(bloc.hasPlayerWon).thenReturn(true);
           await tester.pumpSubject(
             bloc,
@@ -353,6 +314,60 @@ void main() {
           );
 
           await tester.tap(find.text(tester.l10n.quit));
+          await tester.pumpAndSettle();
+
+          expect(find.byType(QuitGameDialog), findsOneWidget);
+
+          await tester.tap(find.text(tester.l10n.cancel));
+          await tester.pumpAndSettle();
+
+          verify(goRouter.pop).called(1);
+        },
+      );
+
+      testWidgets(
+        'pops navigation when the quit button is tapped and canceled '
+        'by close icon',
+        (tester) async {
+          final goRouter = MockGoRouter();
+
+          defaultMockState();
+          when(bloc.hasPlayerWon).thenReturn(true);
+          await tester.pumpSubject(
+            bloc,
+            goRouter: goRouter,
+          );
+
+          await tester.tap(find.text(tester.l10n.quit));
+          await tester.pumpAndSettle();
+
+          expect(find.byType(QuitGameDialog), findsOneWidget);
+
+          await tester.tap(find.byIcon(Icons.close));
+          await tester.pumpAndSettle();
+
+          verify(goRouter.pop).called(1);
+        },
+      );
+
+      testWidgets(
+        'pops navigation when the quit button is tapped and confirmed',
+        (tester) async {
+          final goRouter = MockGoRouter();
+
+          defaultMockState();
+          when(bloc.hasPlayerWon).thenReturn(true);
+          await tester.pumpSubject(
+            bloc,
+            goRouter: goRouter,
+          );
+
+          await tester.tap(find.text(tester.l10n.quit));
+          await tester.pumpAndSettle();
+
+          expect(find.byType(QuitGameDialog), findsOneWidget);
+
+          await tester.tap(find.text(tester.l10n.quit).last);
           await tester.pumpAndSettle();
 
           verify(() => goRouter.go('/')).called(1);
