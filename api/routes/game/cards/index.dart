@@ -6,9 +6,17 @@ import 'package:dart_frog/dart_frog.dart';
 
 FutureOr<Response> onRequest(RequestContext context) async {
   if (context.request.method == HttpMethod.post) {
+    // TODO(hugo): Get prompts from request body to use in generation
     final cardsRepository = context.read<CardsRepository>();
-    final card = await cardsRepository.generateCard();
-    return Response.json(body: card.toJson());
+    final cards = await Future.wait(
+      List.generate(
+        10,
+        (_) => cardsRepository.generateCard(),
+      ),
+    );
+    return Response.json(
+      body: {'cards': cards.map((e) => e.toJson()).toList()},
+    );
   }
   return Response(statusCode: HttpStatus.methodNotAllowed);
 }
