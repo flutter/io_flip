@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -24,84 +23,182 @@
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="Top Dash">
+  <meta name="apple-mobile-web-app-title" content="I/O Bash">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans+Text:400,500" rel="stylesheet">
 
-  <title>Top Dash</title>
+  <title>top_dash</title>
   <link rel="manifest" href="manifest.json">
-</head>
+  <style type="text/css">
 
-<body>
-  <!-- This script installs service_worker.js to provide PWA functionality to
-       application. For more information, see:
-       https://developers.google.com/web/fundamentals/primers/service-workers -->
+     html { height: 100%; }
+
+     body.loading-mode {
+       min-height: 100%;
+       display: flex;
+       flex: 1;
+       align-items: center;
+       justify-content: center;
+       flex-direction: column;
+     }
+
+     .loading-mode p {
+       font-family: 'Google Sans Text';
+       font-style: normal;
+       font-weight: 400;
+       font-size: 12px;
+       line-height: 18px;
+       text-align: center;
+       letter-spacing: 0.25px;
+       color: #000000;
+     }
+
+     .loading-mode #progress-bar {
+       padding: 2px;
+       width: 288px;
+       background: #54C5F8;
+       border-radius: 100px;
+     }
+
+     .loading-mode #progress-indicator {
+       height: 8px;
+       width: 0%;
+       background: #428EFF;
+       border-radius: 100px;
+     }
+  </style>
+
   <script>
+    // The value below is injected by flutter build, do not touch.
     var serviceWorkerVersion = null;
-    var scriptLoaded = false;
-    function loadMainDartJs() {
-      if (scriptLoaded) {
-        return;
-      }
-      scriptLoaded = true;
-      var scriptTag = document.createElement('script');
-      scriptTag.src = 'main.dart.js';
-      scriptTag.type = 'application/javascript';
-      document.body.append(scriptTag);
-    }
+  </script>
+</head>
+<body class="loading-mode">
+  <svg id="splash_logo" width="232" height="69" viewBox="0 0 232 69" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M46.0637 8.5H50.503L38.1015 60.5H33.6621L46.0637 8.5Z" fill="#202124"/>
+<path d="M8 13.0981H30.4693V55.735H8V13.0981Z" fill="#428EFF"/>
+<path d="M96.0001 34.4825C96.0001 37.3818 95.3982 40.2527 94.2288 42.9313C93.0594 45.6099 91.3454 48.0437 89.1846 50.0938C87.0238 52.1439 84.4586 53.7702 81.6354 54.8797C78.8122 55.9892 75.7863 56.5602 72.7305 56.5602C69.6747 56.5602 66.6488 55.9892 63.8256 54.8797C61.0024 53.7702 58.4372 52.1439 56.2764 50.0938C54.1156 48.0437 52.4016 45.6099 51.2322 42.9313C50.0628 40.2527 49.4609 37.3818 49.4609 34.4825C49.4609 31.5832 50.0628 28.7123 51.2322 26.0337C52.4016 23.3551 54.1156 20.9213 56.2764 18.8712C58.4372 16.8211 61.0024 15.1949 63.8256 14.0854C66.6488 12.9759 69.6747 12.4048 72.7305 12.4048C75.7863 12.4048 78.8122 12.9759 81.6354 14.0854C84.4586 15.1949 87.0238 16.8211 89.1846 18.8712C91.3454 20.9213 93.0594 23.3551 94.2288 26.0337C95.3982 28.7123 96.0001 31.5832 96.0001 34.4825Z" fill="#428EFF"/>
+<path d="M123.928 20.1C125.635 20.1 127.128 20.26 128.408 20.58C129.715 20.9 130.795 21.3667 131.648 21.98C132.528 22.5667 133.195 23.2867 133.648 24.14C134.101 24.9933 134.328 25.9533 134.328 27.02C134.328 28.46 133.941 29.6733 133.168 30.66C132.395 31.6467 131.328 32.3933 129.968 32.9C128.608 33.4067 127.008 33.6867 125.168 33.74L126.848 32.94V34.1L125.488 33.22C127.488 33.2733 129.235 33.58 130.728 34.14C132.221 34.7 133.381 35.5133 134.208 36.58C135.061 37.6467 135.488 38.9533 135.488 40.5C135.488 41.7533 135.248 42.8733 134.768 43.86C134.288 44.8467 133.568 45.6867 132.608 46.38C131.648 47.0733 130.475 47.6067 129.088 47.98C127.701 48.3267 126.115 48.5 124.328 48.5H109.408V45.98H109.808C110.501 45.98 111.061 45.8867 111.488 45.7C111.941 45.5133 112.168 45.1267 112.168 44.54V24.06C112.168 23.4733 111.941 23.0867 111.488 22.9C111.061 22.7133 110.501 22.62 109.808 22.62H109.408V20.1H123.928ZM118.648 32.3H122.088C123.181 32.3 124.061 32.1133 124.728 31.74C125.395 31.3667 125.875 30.82 126.168 30.1C126.461 29.3533 126.608 28.46 126.608 27.42C126.608 26.4333 126.448 25.62 126.128 24.98C125.808 24.3133 125.328 23.8067 124.688 23.46C124.048 23.1133 123.248 22.94 122.288 22.94H119.888V45.66H122.568C123.688 45.66 124.621 45.4733 125.368 45.1C126.115 44.7 126.675 44.1 127.048 43.3C127.448 42.5 127.648 41.4733 127.648 40.22C127.648 39.1533 127.461 38.2333 127.088 37.46C126.741 36.6867 126.181 36.1 125.408 35.7C124.635 35.2733 123.621 35.06 122.368 35.06H118.648V32.3ZM142.971 36.42H153.931L153.971 39.3H142.771L142.971 36.42ZM147.531 22.86L148.811 24.46L141.971 45.26C141.971 45.3933 142.091 45.5267 142.331 45.66C142.571 45.7667 142.864 45.8467 143.211 45.9C143.584 45.9533 143.971 45.98 144.371 45.98H144.931V48.5H136.731V45.98H136.931C137.491 45.98 137.931 45.8733 138.251 45.66C138.598 45.42 138.878 44.9533 139.091 44.26L147.091 20.1H154.371L162.651 44.86C162.784 45.3133 163.024 45.62 163.371 45.78C163.718 45.9133 164.158 45.98 164.691 45.98H164.891V48.5H151.851V45.98H152.491C152.891 45.98 153.278 45.9667 153.651 45.94C154.024 45.9133 154.331 45.8733 154.571 45.82C154.811 45.74 154.931 45.66 154.931 45.58L147.531 22.86ZM178.786 45.82C179.773 45.82 180.599 45.6867 181.266 45.42C181.959 45.1533 182.479 44.7533 182.826 44.22C183.199 43.66 183.386 42.9533 183.386 42.1C183.386 41.38 183.199 40.78 182.826 40.3C182.479 39.7933 181.973 39.3667 181.306 39.02C180.666 38.6733 179.893 38.3533 178.986 38.06C178.079 37.7667 177.079 37.46 175.986 37.14C174.946 36.82 173.933 36.4467 172.946 36.02C171.959 35.5667 171.066 35.0067 170.266 34.34C169.493 33.6467 168.866 32.7933 168.386 31.78C167.933 30.7667 167.706 29.5267 167.706 28.06C167.706 26.2733 168.133 24.7667 168.986 23.54C169.866 22.2867 171.026 21.34 172.466 20.7C173.933 20.0333 175.533 19.7 177.266 19.7C178.759 19.7 180.066 19.9 181.186 20.3C182.306 20.7 183.279 21.3533 184.106 22.26C184.933 23.1667 185.626 24.4067 186.186 25.98L184.186 25.66L184.986 20.1H187.786V27.62H184.546C184.226 26.58 183.746 25.7 183.106 24.98C182.466 24.2333 181.719 23.6733 180.866 23.3C180.039 22.9267 179.133 22.74 178.146 22.74C177.239 22.74 176.479 22.8733 175.866 23.14C175.253 23.4067 174.786 23.7933 174.466 24.3C174.146 24.78 173.986 25.3667 173.986 26.06C173.986 26.7267 174.159 27.3 174.506 27.78C174.879 28.2333 175.373 28.62 175.986 28.94C176.626 29.26 177.359 29.54 178.186 29.78C179.039 30.02 179.946 30.26 180.906 30.5C182.079 30.82 183.186 31.2067 184.226 31.66C185.293 32.0867 186.239 32.6333 187.066 33.3C187.919 33.9667 188.586 34.8067 189.066 35.82C189.546 36.8067 189.786 38.0333 189.786 39.5C189.786 41.3933 189.359 43.0467 188.506 44.46C187.679 45.8733 186.493 46.9667 184.946 47.74C183.399 48.5133 181.546 48.9 179.386 48.9C177.839 48.9 176.359 48.66 174.946 48.18C173.559 47.7 172.319 46.9267 171.226 45.86C170.159 44.7933 169.306 43.3533 168.666 41.54L170.746 42.06L169.986 48.5H167.026V39.62H170.466C170.946 40.9267 171.599 42.0467 172.426 42.98C173.279 43.9133 174.253 44.62 175.346 45.1C176.466 45.58 177.613 45.82 178.786 45.82ZM198.343 32.38H215.343V35.34H198.343V32.38ZM192.103 48.5V45.98H192.503C193.17 45.98 193.73 45.8867 194.183 45.7C194.637 45.5133 194.863 45.1267 194.863 44.54V24.06C194.863 23.4733 194.637 23.0867 194.183 22.9C193.73 22.7133 193.17 22.62 192.503 22.62H192.103V20.1H205.343V22.62H205.023C204.757 22.62 204.477 22.6333 204.183 22.66C203.917 22.66 203.663 22.6867 203.423 22.74C203.183 22.7667 202.983 22.8067 202.823 22.86C202.663 22.8867 202.583 22.94 202.583 23.02V45.58C202.583 45.66 202.65 45.7267 202.783 45.78C202.943 45.8067 203.143 45.8467 203.383 45.9C203.65 45.9267 203.917 45.9533 204.183 45.98C204.477 45.98 204.757 45.98 205.023 45.98H205.343V48.5H192.103ZM209.303 48.5V45.98H209.663C209.93 45.98 210.197 45.98 210.463 45.98C210.757 45.9533 211.023 45.9267 211.263 45.9C211.503 45.8467 211.69 45.8067 211.823 45.78C211.983 45.7267 212.063 45.66 212.063 45.58V23.02C212.063 22.94 211.983 22.8867 211.823 22.86C211.69 22.8067 211.503 22.7667 211.263 22.74C211.023 22.6867 210.757 22.66 210.463 22.66C210.197 22.6333 209.93 22.62 209.663 22.62H209.303V20.1H222.583V22.62H222.183C221.49 22.62 220.917 22.7133 220.463 22.9C220.037 23.0867 219.823 23.4733 219.823 24.06V44.54C219.823 45.1267 220.037 45.5133 220.463 45.7C220.917 45.8867 221.49 45.98 222.183 45.98H222.583V48.5H209.303Z" fill="#428EFF"/>
+</svg>
+  <p id="splash_copy">A worldwide, AI-powered card collection game.</p>
+  <div id="progress-bar">
+    <div id="progress-indicator"></div>
+  </div>
+  <script>
+    // The value below is injected by flutter build, do not touch.
+    var serviceWorkerVersion = null;
+  </script>
+  <script>
+    (function() {
+      const progressBar = document.querySelector('#progress-bar');
+      const progressIndicator = document.querySelector('#progress-indicator');
+      const splashCopy = document.querySelector('#splash_copy');
+      const splashLogo = document.querySelector('#splash_logo');
 
-    if ('serviceWorker' in navigator) {
-      // Service workers are supported. Use them.
-      window.addEventListener('load', function () {
-        // Wait for registration to finish before dropping the <script> tag.
-        // Otherwise, the browser will load the script multiple times,
-        // potentially different versions.
-        var serviceWorkerUrl = 'flutter_service_worker.js?v=' + serviceWorkerVersion;
-        navigator.serviceWorker.register(serviceWorkerUrl)
-          .then((reg) => {
-            function waitForActivation(serviceWorker) {
-              serviceWorker.addEventListener('statechange', () => {
-                if (serviceWorker.state == 'activated') {
-                  console.log('Installed new service worker.');
-                  loadMainDartJs();
-                }
+      const additionalScripts = [];
+
+      function injectScript(url) {
+        return new Promise(function(resolve) {
+          let scriptTag = document.createElement('script');
+          scriptTag.src = url;
+          scriptTag.type = 'application/javascript';
+          scriptTag.onload = function() {
+            resolve();
+          };
+
+          document.body.append(scriptTag);
+        });
+      }
+
+      function beginPreloading(manifestAssets) {
+        var assets = [
+          'flutter.js',
+          'main.dart.js',
+
+          'canvaskit/canvaskit.wasm',
+          'canvaskit/canvaskit.js',
+
+          ...additionalScripts,
+          ...manifestAssets,
+        ];
+        let totalAssets = assets.length + 1;
+        let loaded = 0;
+
+        const batchSize = 20;
+
+        async function reportProgress() {
+          loaded++;
+          const value = Math.floor((loaded / totalAssets) * 100) + '%';
+          progressIndicator.style.width = value;
+
+          if (assets.length == 0) {
+            dispatchAppLoad();
+          } else {
+            load(assets.shift());
+          }
+        }
+
+        function load(url) {
+          const req = new XMLHttpRequest();
+          req.onload = reportProgress;
+          req.open('get', url);
+          req.send();
+        }
+
+        function startBatch() {
+          const end = Math.min(batchSize, assets.length);
+          for (let i = 0; i < end; i++) {
+            load(assets.shift());
+          }
+        }
+
+
+        var scriptLoaded = false;
+        async function dispatchAppLoad() {
+          if (scriptLoaded) {
+            return;
+          }
+          scriptLoaded = true;
+
+          for (let i = 0; i < additionalScripts.length; i++) {
+            await injectScript(additionalScripts[i]);
+          }
+
+          await injectScript('flutter.js');
+
+          // Download main.dart.js
+          _flutter.loader.loadEntrypoint({
+            serviceWorker: {
+              serviceWorkerVersion: serviceWorkerVersion,
+            },
+            onEntrypointLoaded: function(engineInitializer) {
+              engineInitializer.initializeEngine().then(async function(appRunner) {
+                progressBar.remove();
+                splashLogo.remove();
+                splashCopy.remove();
+                document.body.classList.remove('loading-mode');
+                appRunner.runApp();
               });
             }
-            if (!reg.active && (reg.installing || reg.waiting)) {
-              // No active web worker and we have installed or are installing
-              // one for the first time. Simply wait for it to activate.
-              waitForActivation(reg.installing || reg.waiting);
-            } else if (!reg.active.scriptURL.endsWith(serviceWorkerVersion)) {
-              // When the app updates the serviceWorkerVersion changes, so we
-              // need to ask the service worker to update.
-              console.log('New service worker available.');
-              reg.update();
-              waitForActivation(reg.installing);
-            } else {
-              // Existing service worker is still good.
-              console.log('Loading app from service worker.');
-              loadMainDartJs();
-            }
           });
+        }
 
-        // If service worker doesn't succeed in a reasonable amount of time,
-        // fallback to plaint <script> tag.
-        setTimeout(() => {
-          if (!scriptLoaded) {
-            console.warn(
-              'Failed to load app from service worker. Falling back to plain <script> tag.',
-            );
-            loadMainDartJs();
-          }
-        }, 4000);
+        startBatch();
+      }
+
+      window.addEventListener('load', async function(ev) {
+        const response = await fetch('assets/AssetManifest.json');
+        const manifest = await response.json();
+        const assets = Object.values(manifest)
+              .map((list) => list.map((url) => 'assets/' + url))
+              .reduce((arr, curr) => [...arr, ...curr]);
+
+        beginPreloading(assets);
       });
-    } else {
-      // Service workers not supported. Just drop the <script> tag.
-      loadMainDartJs();
-    }
+    })();
   </script>
-</body>
-
+  </body>
 </html>
