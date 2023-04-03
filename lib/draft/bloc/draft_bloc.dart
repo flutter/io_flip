@@ -28,13 +28,7 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     try {
       emit(state.copyWith(status: DraftStateStatus.deckLoading));
 
-      const deckSize = 10;
-      final cards = await Future.wait(
-        List.generate(
-          deckSize,
-          (_) => _gameResource.generateCard(),
-        ),
-      );
+      final cards = await _gameResource.generateCards();
 
       emit(
         state.copyWith(
