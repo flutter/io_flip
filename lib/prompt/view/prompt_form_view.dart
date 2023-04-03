@@ -44,6 +44,7 @@ class _PromptFormViewState extends State<PromptFormView> {
           constraints: const BoxConstraints(minWidth: 100, maxWidth: 400),
           child: TextFormField(
             onChanged: (entry) => setState(() => _text = entry),
+            onFieldSubmitted: _onSubmit,
             style: TopDashTextStyles.headlineMobileH1,
             textAlign: TextAlign.center,
             decoration: InputDecoration(
@@ -56,18 +57,20 @@ class _PromptFormViewState extends State<PromptFormView> {
         _gap,
         RoundedButton.icon(
           Icon(widget.buttonIcon),
-          onPressed: () {
-            // TODO(hugo): check in whitelist if entry is valid
-            widget.isLastOfFlow
-                ? context
-                    .flow<FlowData>()
-                    .complete((data) => data.copyWithNewAttribute(_text))
-                : context
-                    .flow<FlowData>()
-                    .update((data) => data.copyWithNewAttribute(_text));
-          },
+          onPressed: () => _onSubmit(_text),
         ),
       ],
     );
+  }
+
+  void _onSubmit(String field) {
+    // TODO(hugo): check in whitelist if entry is valid
+    widget.isLastOfFlow
+        ? context
+            .flow<FlowData>()
+            .complete((data) => data.copyWithNewAttribute(_text))
+        : context
+            .flow<FlowData>()
+            .update((data) => data.copyWithNewAttribute(_text));
   }
 }
