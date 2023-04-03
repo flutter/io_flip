@@ -80,7 +80,7 @@ void main() {
         when(() => response.body).thenReturn(
           jsonEncode({'cards': cards.map((e) => e.toJson()).toList()}),
         );
-        final returnedCards = await resource.generateCards();
+        final returnedCards = await resource.generateCards(const Prompt());
 
         expect(returnedCards, equals(cards));
       });

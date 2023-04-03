@@ -3,7 +3,9 @@ import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/prompt/prompt.dart';
 
 import '../../helpers/helpers.dart';
@@ -22,7 +24,7 @@ void main() {
     testWidgets('renders character form correctly', (tester) async {
       await tester.pumpSubject(promptFormBloc);
 
-      expect(find.byType(FlowBuilder<FlowData>), findsOneWidget);
+      expect(find.byType(FlowBuilder<Prompt>), findsOneWidget);
       expect(find.text(tester.l10n.characterPromptPageTitle), findsOneWidget);
       expect(
         find.text(tester.l10n.characterPromptPageSubtitle),
@@ -69,7 +71,7 @@ void main() {
       verify(
         () => promptFormBloc.add(
           const PromptSubmitted(
-            data: FlowData(
+            data: Prompt(
               character: '',
               power: '',
               environment: '',
@@ -77,27 +79,6 @@ void main() {
           ),
         ),
       ).called(1);
-    });
-  });
-
-  group('FowData', () {
-    test('flow data correctly copies', () {
-      const data1 = FlowData();
-      final data2 = data1
-          .copyWithNewAttribute('character')
-          .copyWithNewAttribute('power')
-          .copyWithNewAttribute('environment');
-
-      expect(
-        data2,
-        equals(
-          const FlowData(
-            character: 'character',
-            power: 'power',
-            environment: 'environment',
-          ),
-        ),
-      );
     });
   });
 }

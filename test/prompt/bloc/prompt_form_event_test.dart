@@ -1,18 +1,19 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:top_dash/prompt/prompt.dart';
 
 void main() {
   group('PromptSubmitted', () {
     test('can be instantiated', () {
-      expect(PromptSubmitted(data: FlowData()), isNotNull);
+      expect(PromptSubmitted(data: Prompt()), isNotNull);
     });
 
     test('supports equality', () {
       expect(
-        PromptSubmitted(data: FlowData()),
-        equals(PromptSubmitted(data: FlowData())),
+        PromptSubmitted(data: Prompt()),
+        equals(PromptSubmitted(data: Prompt())),
       );
     });
   });

@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/draft/draft.dart';
+import 'package:top_dash/prompt/prompt.dart';
 
 class _MockGameResource extends Mock implements GameResource {}
 
@@ -28,7 +29,8 @@ void main() {
 
     setUp(() {
       gameResource = _MockGameResource();
-      when(gameResource.generateCards).thenAnswer((_) async => cards);
+      when(() => gameResource.generateCards(Prompt()))
+          .thenAnswer((_) async => cards);
     });
 
     test('has the correct initial state', () {
@@ -41,7 +43,7 @@ void main() {
     blocTest<DraftBloc, DraftState>(
       'can request a deck',
       build: () => DraftBloc(gameResource: gameResource),
-      act: (bloc) => bloc.add(DeckRequested()),
+      act: (bloc) => bloc.add(DeckRequested(Prompt())),
       expect: () => [
         DraftState(
           cards: const [],
@@ -205,10 +207,11 @@ void main() {
     blocTest<DraftBloc, DraftState>(
       'emits failure when an error occured',
       setUp: () {
-        when(gameResource.generateCards).thenThrow(Exception('Error'));
+        when(() => gameResource.generateCards(Prompt()))
+            .thenThrow(Exception('Error'));
       },
       build: () => DraftBloc(gameResource: gameResource),
-      act: (bloc) => bloc.add(DeckRequested()),
+      act: (bloc) => bloc.add(DeckRequested(Prompt())),
       expect: () => [
         DraftState(
           cards: const [],
