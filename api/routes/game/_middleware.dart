@@ -5,6 +5,7 @@ import 'package:gcp/gcp.dart';
 import 'package:leaderboard_repository/leaderboard_repository.dart';
 import 'package:logging/logging.dart';
 import 'package:match_repository/match_repository.dart';
+import 'package:prompt_repository/prompt_repository.dart';
 import 'package:scripts_repository/scripts_repository.dart';
 import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 
@@ -16,6 +17,7 @@ Handler middleware(Handler handler) {
       .use(provider<Logger>((_) => Logger.root))
       .use(fromShelfMiddleware(cloudLoggingMiddleware(projectId)))
       .use(provider<CardsRepository>((_) => cardsRepository))
+      .use(provider<PromptRepository>((_) => promptRepository))
       .use(provider<MatchRepository>((_) => matchRepository))
       .use(provider<ScriptsRepository>((_) => scriptsRepository))
       .use(provider<LeaderboardRepository>((_) => leaderboardRepository))

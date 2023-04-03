@@ -12,7 +12,7 @@ void main() {
       test('background color is TopDashColors.backgroundMain', () {
         expect(
           TopDashTheme.themeData.colorScheme.background,
-          TopDashColors.backgroundMain,
+          TopDashColors.seedWhite,
         );
       });
 

@@ -13,6 +13,7 @@ import 'package:language_model_repository/language_model_repository.dart';
 import 'package:leaderboard_repository/leaderboard_repository.dart';
 import 'package:logging/logging.dart';
 import 'package:match_repository/match_repository.dart';
+import 'package:prompt_repository/prompt_repository.dart';
 import 'package:scripts_repository/scripts_repository.dart';
 
 late CardsRepository cardsRepository;
@@ -24,6 +25,7 @@ late GameScriptMachine gameScriptMachine;
 late JwtMiddleware jwtMiddleware;
 late EncryptionMiddleware encryptionMiddleware;
 late GameUrl gameUrl;
+late PromptRepository promptRepository;
 
 Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   const imageModelRepository = ImageModelRepository();
@@ -63,6 +65,11 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
     blacklistDocumentId: _initialsBlacklistId,
   );
 
+  promptRepository = PromptRepository(
+    dbClient: dbClient,
+    whitelistDocumentId: _promptWhiteListId,
+  );
+
   gameUrl = GameUrl(_gameUrl);
 
   return serve(
@@ -98,6 +105,14 @@ String get _initialsBlacklistId {
   final value = Platform.environment['INITIALS_BLACKLIST_ID'];
   if (value == null) {
     throw ArgumentError('INITIALS_BLACKLIST_ID is required to run the API');
+  }
+  return value;
+}
+
+String get _promptWhiteListId {
+  final value = Platform.environment['PROMPT_WHITELIST_ID'];
+  if (value == null) {
+    throw ArgumentError('PROMPT_WHITELIST_ID is required to run the API');
   }
   return value;
 }

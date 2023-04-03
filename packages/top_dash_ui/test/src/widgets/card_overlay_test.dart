@@ -78,7 +78,7 @@ void main() {
 
   group('OverlayTriangle', () {
     test('shouldRepaint always returns false', () {
-      final customPaint = OverlayTriangle(TopDashColors.darkPen);
+      final customPaint = OverlayTriangle(TopDashColors.seedBlue);
       expect(customPaint.shouldRepaint(_FakeCustomPainter()), isFalse);
     });
   });

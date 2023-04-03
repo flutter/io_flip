@@ -33,7 +33,7 @@ class MatchMakingView extends StatelessWidget {
         if (state.status == MatchMakingStatus.processing ||
             state.status == MatchMakingStatus.initial) {
           return Scaffold(
-            backgroundColor: TopDashColors.backgroundMain,
+            backgroundColor: TopDashColors.seedWhite,
             body: Center(
               child: Column(
                 children: [
@@ -55,7 +55,7 @@ class MatchMakingView extends StatelessWidget {
 
         if (state.status == MatchMakingStatus.timeout) {
           return const Scaffold(
-            backgroundColor: TopDashColors.backgroundMain,
+            backgroundColor: TopDashColors.seedWhite,
             body: Center(
               child: Text('Match making timed out, sorry!'),
             ),
@@ -64,7 +64,7 @@ class MatchMakingView extends StatelessWidget {
 
         if (state.status == MatchMakingStatus.failed) {
           return const Scaffold(
-            backgroundColor: TopDashColors.backgroundMain,
+            backgroundColor: TopDashColors.seedWhite,
             body: Center(
               child: Text('Match making failed, sorry!'),
             ),
@@ -72,7 +72,7 @@ class MatchMakingView extends StatelessWidget {
         }
 
         return Scaffold(
-          backgroundColor: TopDashColors.backgroundMain,
+          backgroundColor: TopDashColors.seedWhite,
           body: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

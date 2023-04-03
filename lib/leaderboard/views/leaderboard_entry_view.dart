@@ -10,10 +10,10 @@ class LeaderboardEntryView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final textTheme = Theme.of(context).textTheme;
-    const white = TopDashColors.white;
+    const white = TopDashColors.seedWhite;
 
     return Scaffold(
-      backgroundColor: TopDashColors.backgroundLeaderboardEntry,
+      backgroundColor: TopDashColors.seedWhite,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.xxlg),
         child: Center(

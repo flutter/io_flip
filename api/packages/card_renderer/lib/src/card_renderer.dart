@@ -4,6 +4,9 @@ import 'package:game_domain/game_domain.dart';
 import 'package:http/http.dart';
 import 'package:image/image.dart';
 
+const _width = 654;
+const _height = 870;
+
 /// {@template card_renderer_failure}
 /// Exception thrown when a card rendering fails.
 /// {@endtemplate}
@@ -82,9 +85,6 @@ class CardRenderer {
   /// Renders a [Card] to a [Uint8List] containing the PNG image.
   Future<Uint8List> renderCard(Card card) async {
     try {
-      const width = 654;
-      const height = 870;
-
       final assets = await Future.wait([
         _getImage(Uri.parse(card.image)),
         _getImage(Uri.parse(_suitFrames[card.suit]!)),
@@ -98,13 +98,13 @@ class CardRenderer {
       final fontDescription = _parseFont(assets.last);
 
       final compositionCommand = _createCommand()
-        ..createImage(width: width, height: height)
+        ..createImage(width: _width, height: _height, numChannels: 4)
         ..compositeImage(
           illustrationCmd,
           dstX: 0,
           dstY: 0,
-          dstW: width,
-          dstH: height,
+          dstW: _width,
+          dstH: _height,
         )
         ..compositeImage(frameCmd)
         ..drawString(
@@ -128,6 +128,68 @@ class CardRenderer {
       final output = compositionCommand.outputBytes;
       if (output == null) {
         throw CardRendererFailure('Failed to render card', StackTrace.current);
+      }
+
+      return output;
+    } on CardRendererFailure {
+      rethrow;
+    } catch (e, s) {
+      throw CardRendererFailure(e.toString(), s);
+    }
+  }
+
+  /// Renders a list of [Card] to a [Uint8List] containing the PNG image.
+  Future<Uint8List> renderDeck(List<Card> cards) async {
+    try {
+      final cardBytes = await Future.wait(
+        cards.map(renderCard),
+      );
+
+      final cardCommands = cardBytes
+          .map(
+            (e) => _createCommand()..decodePng(e),
+          )
+          .toList();
+
+      const angleValue = 10;
+      const offsetModifier = 12;
+
+      final compositionCommand = _createCommand()
+        ..createImage(
+          width: _width * cards.length,
+          height: _height + offsetModifier * angleValue,
+          numChannels: 4,
+        );
+
+      const angles = {
+        0: -angleValue,
+        1: 0,
+        2: angleValue,
+      };
+
+      const offsets = {
+        0: [50, 0],
+        1: [0, 0],
+        2: [-170, 0],
+      };
+
+      for (var i = 0; i < cards.length; i++) {
+        compositionCommand.compositeImage(
+          cardCommands[i]..copyRotate(angle: angles[i]!),
+          dstX: (_width * i) + offsets[i]![0],
+          dstY: offsets[i]![1],
+          dstW: _width + offsetModifier * angles[i]!.abs(),
+          dstH: _height + offsetModifier * angles[i]!.abs(),
+        );
+      }
+
+      compositionCommand.encodePng();
+
+      await compositionCommand.execute();
+
+      final output = compositionCommand.outputBytes;
+      if (output == null) {
+        throw CardRendererFailure('Failed to render deck', StackTrace.current);
       }
 
       return output;

@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:top_dash/game/game.dart';
@@ -108,6 +110,39 @@ void main() {
         expect(
           ManagePlayerPresence('match1'),
           isNot(equals(ManagePlayerPresence('match2'))),
+        );
+      });
+    });
+
+    group('TurnTimerStarted', () {
+      test('can be instantiated', () {
+        expect(TurnTimerStarted(), isNotNull);
+      });
+
+      test('supports equality', () {
+        expect(
+          TurnTimerStarted(),
+          equals(TurnTimerStarted()),
+        );
+      });
+    });
+
+    group('TurnTimerTicked', () {
+      final timer1 = Timer.periodic(Duration.zero, (t) {});
+      final timer2 = Timer.periodic(Duration(seconds: 1), (t) {});
+      test('can be instantiated', () {
+        expect(TurnTimerTicked(timer1), isNotNull);
+      });
+
+      test('supports equality', () {
+        expect(
+          TurnTimerTicked(timer1),
+          equals(TurnTimerTicked(timer1)),
+        );
+
+        expect(
+          TurnTimerTicked(timer1),
+          isNot(equals(TurnTimerTicked(timer2))),
         );
       });
     });

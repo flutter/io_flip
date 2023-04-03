@@ -9,6 +9,6 @@ void main() async {
     refreshIdToken: () async => null,
   );
 
-  final card = await client.gameResource.generateCard();
-  print(card.props);
+  final cards = await client.gameResource.generateCards();
+  print(cards);
 }
