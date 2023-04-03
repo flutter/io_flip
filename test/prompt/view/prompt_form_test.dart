@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/prompt/prompt.dart';
 
 import '../../helpers/helpers.dart';

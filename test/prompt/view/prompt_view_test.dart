@@ -6,7 +6,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:provider/provider.dart';
 import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/prompt/prompt.dart';
 
