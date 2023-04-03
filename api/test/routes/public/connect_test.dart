@@ -30,6 +30,7 @@ class _FakeRequestContext extends Fake implements RequestContext {
   _FakeRequestContext({
     required this.getRequest,
     required this.matchRepository,
+    required this.webSocketHandlerFactory,
   });
 
   final Request Function() getRequest;
@@ -38,11 +39,15 @@ class _FakeRequestContext extends Fake implements RequestContext {
   Request get request => getRequest();
 
   final MatchRepository matchRepository;
+  final WebSocketHandlerFactory webSocketHandlerFactory;
 
   @override
   T read<T>() {
     if (T == MatchRepository) {
       return matchRepository as T;
+    }
+    if (T == WebSocketHandlerFactory) {
+      return webSocketHandlerFactory as T;
     }
 
     throw UnimplementedError();
@@ -111,13 +116,6 @@ void main() {
       host = true;
       channelStream = StreamController<dynamic>();
       channelSink = _MockWebSocketSink();
-      debugWebSocketHandlerOverride = _FakeWebSocketHandlerFactory(
-        channelStream: channelStream.stream,
-        channelSink: channelSink,
-        onCreate: (newOnConnection) {
-          onConnection = newOnConnection;
-        },
-      ).call;
 
       jwtMiddleware = _MockJwtMiddleware();
       when(
@@ -155,11 +153,17 @@ void main() {
           ),
         ),
         matchRepository: matchRepository,
+        webSocketHandlerFactory: _FakeWebSocketHandlerFactory(
+          channelStream: channelStream.stream,
+          channelSink: channelSink,
+          onCreate: (newOnConnection) {
+            onConnection = newOnConnection;
+          },
+        ).call,
       );
     });
 
     tearDown(() {
-      debugWebSocketHandlerOverride = null;
       channelStream.close();
     });
 

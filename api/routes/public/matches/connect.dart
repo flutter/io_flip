@@ -12,18 +12,14 @@ typedef WebSocketHandlerFactory = Handler Function(
   void Function(ws.WebSocketChannel channel, String? protocol) onConnection,
 );
 
-/// Used to override the default [ws.webSocketHandler] in tests.
-WebSocketHandlerFactory? debugWebSocketHandlerOverride;
-
-var _webSocketHandler = debugWebSocketHandlerOverride ?? ws.webSocketHandler;
-
 Future<Response> onRequest(RequestContext context) async {
   final matchRepository = context.read<MatchRepository>();
+  final webSocketHandlerFactory = context.read<WebSocketHandlerFactory>();
   final matchId = context.request.uri.queryParameters['matchId'];
   final host = context.request.uri.queryParameters['host'];
   final isHost = host == 'true';
 
-  final handler = _webSocketHandler((channel, protocol) {
+  final handler = webSocketHandlerFactory((channel, protocol) {
     String? userId;
     Future<void> setConnectivity({required bool connected}) async {
       if (userId != null) {
