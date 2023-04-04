@@ -132,6 +132,7 @@ void main() {
 
     testWidgets('renders the app in landscape', (tester) async {
       tester.binding.window.devicePixelRatioTestValue = 1;
+      tester.binding.window.physicalSizeTestValue = const Size(2000, 1600);
       await tester.pumpWidget(
         App(
           settingsPersistence: MemoryOnlySettingsPersistence(),
