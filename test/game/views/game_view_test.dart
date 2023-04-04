@@ -117,7 +117,7 @@ void main() {
         ),
         turns: const [],
         turnTimeRemaining: 10,
-        playerPlayed: false,
+        turnAnimationsFinished: false,
       );
 
       testWidgets('renders the game in its initial state', (tester) async {

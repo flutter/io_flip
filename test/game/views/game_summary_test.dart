@@ -133,7 +133,7 @@ void main() {
         ),
         turns: const [],
         turnTimeRemaining: 10,
-        playerPlayed: false,
+        turnAnimationsFinished: false,
       );
 
       testWidgets(
