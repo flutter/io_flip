@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/widgets.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -34,8 +36,10 @@ class ResponsiveLayoutBuilder extends StatelessWidget {
       builder: (context, constraints) {
         if (constraints.maxWidth < constraints.maxHeight ||
             constraints.maxWidth < TopDashBreakpoints.medium) {
+          print('small');
           return small(context, child);
         }
+        print('large');
         return large(context, child);
       },
     );
