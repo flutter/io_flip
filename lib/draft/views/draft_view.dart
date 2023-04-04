@@ -1,15 +1,12 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/l10n/l10n.dart';
+import 'package:top_dash/match_making/match_making.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
-
-extension DraftViewX on DraftState {
-  List<String> selectedCardIds() =>
-      selectedCards.map((card) => card.id).toList();
-}
 
 class DraftView extends StatelessWidget {
   const DraftView({super.key});
@@ -278,7 +275,7 @@ class _BottomBar extends StatelessWidget {
                 onPressed: () {
                   GoRouter.of(context).goNamed(
                     'match_making',
-                    queryParams: {'cardId': state.selectedCardIds()},
+                    extra: MatchMakingPageData(deck: state.selectedCards),
                   );
                 },
               ),
@@ -319,15 +316,15 @@ class _PrivateMatchButton extends StatelessWidget {
         final goRouter = GoRouter.of(context);
         final inviteCode = await showDialog<String?>(
           context: context,
-          builder: (_) => _JoinPrivateMatchDialog(state.selectedCardIds()),
+          builder: (_) => _JoinPrivateMatchDialog(state.selectedCards),
         );
         if (inviteCode != null) {
           goRouter.goNamed(
             'match_making',
             queryParams: {
               'inviteCode': inviteCode,
-              'cardId': state.selectedCardIds(),
             },
+            extra: MatchMakingPageData(deck: state.selectedCards),
           );
         }
       },
@@ -337,9 +334,9 @@ class _PrivateMatchButton extends StatelessWidget {
 }
 
 class _JoinPrivateMatchDialog extends StatefulWidget {
-  const _JoinPrivateMatchDialog(this.selectedCardIds);
+  const _JoinPrivateMatchDialog(this.selectedCards);
 
-  final List<String> selectedCardIds;
+  final List<Card> selectedCards;
 
   @override
   State<_JoinPrivateMatchDialog> createState() =>
@@ -388,8 +385,8 @@ class _JoinPrivateMatchDialogState extends State<_JoinPrivateMatchDialog> {
                   'match_making',
                   queryParams: {
                     'createPrivateMatch': 'true',
-                    'cardId': widget.selectedCardIds,
                   },
+                  extra: MatchMakingPageData(deck: widget.selectedCards),
                 );
               },
               child: const Text('Create private match'),

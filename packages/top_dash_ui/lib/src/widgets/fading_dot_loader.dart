@@ -34,7 +34,7 @@ class _FadingDotLoaderState extends State<FadingDotLoader>
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         for (var i = 0; i < widget.numberOfDots; i++) ...[
-          _AnimatedDot(index: i, animationController: animationController),
+          _AnimatedDot(index: i, animation: animationController),
           if (i < widget.numberOfDots - 1)
             const SizedBox(width: TopDashSpacing.xs)
         ],
@@ -51,21 +51,21 @@ class _FadingDotLoaderState extends State<FadingDotLoader>
 
 class _AnimatedDot extends StatelessWidget {
   const _AnimatedDot({
-    required this.animationController,
+    required this.animation,
     required this.index,
   });
 
-  final Animation<double> animationController;
+  final Animation<double> animation;
   final int index;
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: animationController,
+      animation: animation,
       builder: (BuildContext context, Widget? child) {
         // Calculates the animation controller value with an offset based on the
         // dot's index and limits the new value between the range (0, 1)
-        final offset = (animationController.value - (index * .2)) % 1;
+        final offset = (animation.value - (index * .2)) % 1;
         // Takes the new value that goes 0 -> 1, and converts it to move 0->1->0
         final progress = 1 - (2 * (offset - .5).abs());
         // Calculates opacity with a floor and ceiling of 40% and 100%
