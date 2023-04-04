@@ -61,21 +61,29 @@ void main() {
 
       testWidgets('renders the title in landscape mode', (tester) async {
         tester.binding.window.devicePixelRatioTestValue = 1;
-        // tester.binding.window.physicalSizeTestValue = const Size(3000, 800);
         mockState(MatchMakingState.initial());
         await tester.pumpSubject(bloc);
 
         final title = find.byWidgetPredicate(
           (Widget widget) =>
               widget is Text &&
-              widget.data == 'Finding match...' &&
+              widget.data == tester.l10n.findingMatch &&
               widget.style == TopDashTextStyles.headlineH4Light,
+          description: 'Text with headlineH4Light style',
+        );
+
+        final subtitle = find.byWidgetPredicate(
+          (Widget widget) =>
+              widget is Text &&
+              widget.data == tester.l10n.searchingForOpponents &&
+              widget.style == TopDashTextStyles.headlineH6Light,
           description: 'Text with headlineH4Light style',
         );
 
         tester.binding.window.clearDevicePixelRatioTestValue();
 
         expect(title, findsOneWidget);
+        expect(subtitle, findsOneWidget);
       });
 
       testWidgets('renders the title in portrait mode', (tester) async {
@@ -87,7 +95,7 @@ void main() {
         final title = find.byWidgetPredicate(
           (Widget widget) =>
               widget is Text &&
-              widget.data == 'Finding match...' &&
+              widget.data == tester.l10n.findingMatch &&
               widget.style == TopDashTextStyles.headlineMobileH4Light,
           description: 'Text with headlineH4Light style',
         );
@@ -95,7 +103,7 @@ void main() {
         final subtitle = find.byWidgetPredicate(
           (Widget widget) =>
               widget is Text &&
-              widget.data == 'Searching for opponents' &&
+              widget.data == tester.l10n.searchingForOpponents &&
               widget.style == TopDashTextStyles.headlineMobileH6Light,
           description: 'Text with headlineH4Light style',
         );
@@ -123,10 +131,7 @@ void main() {
           );
           await tester.pumpSubject(bloc);
 
-          expect(
-            find.text('Copy invite code'),
-            findsOneWidget,
-          );
+          expect(find.text(tester.l10n.copyInviteCode), findsOneWidget);
         },
       );
 
@@ -151,7 +156,7 @@ void main() {
             setClipboardData: (data) async => clipboardData = data,
           );
 
-          await tester.tap(find.text('Copy invite code'));
+          await tester.tap(find.text(tester.l10n.copyInviteCode));
           await tester.pump();
 
           expect(
