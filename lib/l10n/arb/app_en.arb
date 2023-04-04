@@ -150,6 +150,10 @@
   "@quit": {
     "description": "Label showing to quit game"
   },
+  "cancel": "CANCEL",
+  "@cancel": {
+    "description": "Label showing to cancel an action"
+  },
   "useCard": "Use card",
   "@useCard": {
     "description": "Label show on the draft page to use the card"
@@ -227,5 +231,13 @@
   "deckBuildingSubtitle": "Swipe to see the rest of your deck",
   "@deckBuildingSubtitle": {
     "description": "Subtitle of the deck building page"
+  },
+  "quitGameDialogTitle": "Are you sure?",
+  "@quitGameDialogTitle": {
+    "description": "Title of the quit game dialog"
+  },
+  "quitGameDialogDescription": "You will lose your current hand and active winning streak.",
+  "@quitGameDialogDescription": {
+    "description": "Description of the quit game dialog"
   }
 }
