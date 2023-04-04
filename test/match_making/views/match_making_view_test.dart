@@ -81,6 +81,7 @@ void main() {
           description: 'Text with headlineH6Light style',
         );
 
+        tester.binding.window.clearPhysicalSizeTestValue();
         tester.binding.window.clearDevicePixelRatioTestValue();
 
         expect(title, findsOneWidget);
