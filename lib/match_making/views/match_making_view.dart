@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/game/views/game_page.dart';
-import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/match_making/match_making.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -127,7 +126,7 @@ class _WaitingForMatchView extends StatelessWidget {
                   ClipboardData(text: inviteCode),
                 );
               },
-              child: Text('context.l10n.copyInviteCode'),
+              child: const Text('context.l10n.copyInviteCode'),
             ),
           const SizedBox(height: TopDashSpacing.xxlg),
           const FadingDotLoader(),
