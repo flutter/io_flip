@@ -353,6 +353,56 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     return false;
   }
 
+  List<Card> get playerCards {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+      return isHost
+          ? matchLoadedState.match.hostDeck.cards
+          : matchLoadedState.match.guestDeck.cards;
+    }
+    return [];
+  }
+
+  List<Card> get opponentCards {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+      return isHost
+          ? matchLoadedState.match.guestDeck.cards
+          : matchLoadedState.match.hostDeck.cards;
+    }
+    return [];
+  }
+
+  String? get lastPlayedCardId {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+      if (matchLoadedState.turns.isNotEmpty) {
+        final lastTurn = matchLoadedState.turns.last;
+        if (lastTurn.isComplete()) {
+          if (isPlayerTurn) {
+            return playerCards
+                .firstWhere((e) => e.id == lastTurn.playerCardId)
+                .id;
+          }
+          return opponentCards
+              .firstWhere((e) => e.id == lastTurn.opponentCardId)
+              .id;
+        }
+        if (lastTurn.playerCardId != null) {
+          return playerCards
+              .firstWhere((e) => e.id == lastTurn.playerCardId)
+              .id;
+        }
+        if (lastTurn.opponentCardId != null) {
+          return opponentCards
+              .firstWhere((e) => e.id == lastTurn.opponentCardId)
+              .id;
+        }
+      }
+    }
+    return null;
+  }
+
   @override
   Future<void> close() {
     _stateSubscription?.cancel();
