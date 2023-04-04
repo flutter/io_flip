@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Card;
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/game/views/game_page.dart';
 import 'package:top_dash/match_making/match_making.dart';
@@ -8,11 +9,13 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 
 class MatchMakingView extends StatelessWidget {
   const MatchMakingView({
+    required this.deck,
     super.key,
     Future<void> Function(ClipboardData) setClipboardData = Clipboard.setData,
   }) : _setClipboardData = setClipboardData;
 
   final Future<void> Function(ClipboardData) _setClipboardData;
+  final List<Card> deck;
 
   @override
   Widget build(BuildContext context) {
