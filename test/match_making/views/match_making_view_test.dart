@@ -163,7 +163,7 @@ extension MatchMakingViewTest on WidgetTester {
         value: bloc,
         child: MatchMakingView(
           setClipboardData: setClipboardData ?? Clipboard.setData,
-          deck: [],
+          deck: const [],
         ),
       ),
       router: goRouter,
