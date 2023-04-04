@@ -65,6 +65,13 @@ class TurnTimerTicked extends GameEvent {
   List<Object?> get props => [timer];
 }
 
+class CardOverlayRevealed extends GameEvent {
+  const CardOverlayRevealed();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class TurnAnimationsFinished extends GameEvent {
   const TurnAnimationsFinished();
 

@@ -168,8 +168,8 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     return controllers
         .mapIndexed(
           (i, e) => RectTween(begin: begin(i), end: end).animate(e)
-            ..addStatusListener(moveCardsToHandOnTurnCompleted)
-            ..addStatusListener(notifyAnimationsFinished)
+            ..addStatusListener(turnCompleted)
+            ..addStatusListener(turnAnimationsCompleted)
             ..addListener(() => setState(() {})),
         )
         .toList();
@@ -182,11 +182,13 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     );
   }
 
-  void moveCardsToHandOnTurnCompleted(AnimationStatus status) {
+  void turnCompleted(AnimationStatus status) {
     if (status == AnimationStatus.completed) {
-      final state = context.read<GameBloc>().state as MatchLoadedState;
+      final bloc = context.read<GameBloc>();
+      final state = bloc.state as MatchLoadedState;
       if (state.turns.isNotEmpty) {
         if (state.turns.last.isComplete()) {
+          bloc.add(const CardOverlayRevealed());
           for (final controller in fightControllers) {
             Future.delayed(turnEndDuration, controller.reverse);
             fightControllers = [];
@@ -196,7 +198,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     }
   }
 
-  void notifyAnimationsFinished(AnimationStatus status) {
+  void turnAnimationsCompleted(AnimationStatus status) {
     if (status == AnimationStatus.dismissed) {
       context.read<GameBloc>().add(const TurnAnimationsFinished());
     }

@@ -22,13 +22,27 @@ class MatchTurn extends Equatable {
   const MatchTurn({
     required this.playerCardId,
     required this.opponentCardId,
+    this.showCardsOverlay = false,
   });
 
   final String? playerCardId;
   final String? opponentCardId;
+  final bool showCardsOverlay;
+
+  MatchTurn copyWith({
+    String? playerCardId,
+    String? opponentCardId,
+    bool? showCardsOverlay,
+  }) {
+    return MatchTurn(
+      playerCardId: playerCardId ?? this.playerCardId,
+      opponentCardId: opponentCardId ?? this.opponentCardId,
+      showCardsOverlay: showCardsOverlay ?? this.showCardsOverlay,
+    );
+  }
 
   @override
-  List<Object?> get props => [playerCardId, opponentCardId];
+  List<Object?> get props => [playerCardId, opponentCardId, showCardsOverlay];
 }
 
 class MatchLoadedState extends GameState {

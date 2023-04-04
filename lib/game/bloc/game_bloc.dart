@@ -34,6 +34,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     on<TurnTimerStarted>(_onTurnTimerStarted);
     on<TurnTimerTicked>(_onTurnTimerTicked);
     on<TurnAnimationsFinished>(_onTurnAnimationsFinished);
+    on<CardOverlayRevealed>(_onCardOverlayRevealed);
   }
 
   final GameResource _gameResource;
@@ -136,6 +137,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             opponentCardId: i < matchStateOpponentMoves.length
                 ? matchStateOpponentMoves[i]
                 : null,
+            showCardsOverlay: i < matchLoadedState.turns.length &&
+                matchLoadedState.turns[i].showCardsOverlay,
           ),
       ];
 
@@ -294,6 +297,23 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     }
   }
 
+  void _onCardOverlayRevealed(
+    CardOverlayRevealed event,
+    Emitter<GameState> emit,
+  ) {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+      if (matchLoadedState.turns.isNotEmpty) {
+        final lastTurn =
+            matchLoadedState.turns.last.copyWith(showCardsOverlay: true);
+        final turns = matchLoadedState.turns
+          ..removeLast()
+          ..add(lastTurn);
+        emit(matchLoadedState.copyWith(turns: turns));
+      }
+    }
+  }
+
   CardOverlayType? isWinningCard(Card card, {required bool isPlayer}) {
     if (state is MatchLoadedState) {
       final matchLoadedState = state as MatchLoadedState;
@@ -309,7 +329,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
       if (round >= 0) {
         final turn = matchLoadedState.turns[round];
-        if (turn.isComplete()) {
+        if (turn.isComplete() && turn.showCardsOverlay) {
           final result = _matchSolver.calculateRoundResult(
             matchLoadedState.match,
             matchLoadedState.matchState,
