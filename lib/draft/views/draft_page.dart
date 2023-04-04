@@ -10,7 +10,10 @@ class DraftPage extends StatelessWidget {
 
   factory DraftPage.routeBuilder(_, GoRouterState state) {
     final prompts = state.extra as Prompt?;
-    return DraftPage(prompts: prompts!, key: const Key('draft'));
+    return DraftPage(
+      prompts: prompts ?? const Prompt(),
+      key: const Key('draft'),
+    );
   }
 
   final Prompt prompts;

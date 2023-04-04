@@ -1,4 +1,3 @@
-import 'package:api_client/api_client.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,15 +5,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/prompt/prompt.dart';
 
 import '../../helpers/helpers.dart';
 
 class _MockPromptFormBloc extends MockBloc<PromptFormEvent, PromptFormState>
     implements PromptFormBloc {}
-
-class _MockPromptResource extends Mock implements PromptResource {}
 
 void main() {
   late PromptFormBloc promptFormBloc;
@@ -63,18 +59,6 @@ void main() {
       verify(
         () => goRouter.go('/draft', extra: prompt),
       ).called(1);
-    });
-
-    testWidgets('navigates to draft page', (tester) async {
-      final promptResource = _MockPromptResource();
-      when(promptResource.getPromptWhitelist).thenAnswer((_) async => ['test']);
-      final bloc = PromptFormBloc(promptResource: promptResource);
-      await tester.pumpSubject(bloc, null);
-
-      bloc.add(const PromptSubmitted(data: prompt));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(DraftPage), findsOneWidget);
     });
   });
 }

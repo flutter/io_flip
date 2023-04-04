@@ -175,7 +175,7 @@ void main() {
       expect(find.byType(PortraitMenuView), findsOneWidget);
     });
 
-    testWidgets('can navigate to the game page', (tester) async {
+    testWidgets('can navigate to the prompt page', (tester) async {
       await tester.pumpWidget(
         App(
           settingsPersistence: MemoryOnlySettingsPersistence(),
