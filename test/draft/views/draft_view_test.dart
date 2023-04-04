@@ -10,7 +10,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/match_making/match_making.dart';
+import 'package:top_dash/match_making/views/match_making_page.dart';
 
 import '../../helpers/helpers.dart';
 
