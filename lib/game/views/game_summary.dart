@@ -6,6 +6,8 @@ import 'package:top_dash/game/game.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
+typedef RouterNeglectCall = void Function(BuildContext, VoidCallback);
+
 class GameSummaryView extends StatelessWidget {
   const GameSummaryView({super.key});
 
@@ -23,7 +25,7 @@ class GameSummaryView extends StatelessWidget {
             left: 0,
             right: 0,
             child: Align(
-              child: _Footer(key: Key('match summary footer')),
+              child: GameSummaryFooter(key: Key('match summary footer')),
             ),
           )
         ],
@@ -174,8 +176,13 @@ class _CardsView extends StatelessWidget {
   }
 }
 
-class _Footer extends StatelessWidget {
-  const _Footer({super.key});
+class GameSummaryFooter extends StatelessWidget {
+  const GameSummaryFooter({
+    RouterNeglectCall routerNeglectCall = Router.neglect,
+    super.key,
+  }) : _routerNeglectCall = routerNeglectCall;
+
+  final RouterNeglectCall _routerNeglectCall;
 
   static const Widget _gap = SizedBox(width: TopDashSpacing.md);
 
@@ -200,7 +207,9 @@ class _Footer extends StatelessWidget {
               backgroundColor: TopDashColors.seedWhite,
               onPressed: () => QuitGameDialog.show(
                 context,
-                onConfirm: () => GoRouter.of(context).go('/'),
+                onConfirm: () => _routerNeglectCall(context, () {
+                  GoRouter.of(context).go('/');
+                }),
                 onCancel: GoRouter.of(context).pop,
               ),
             ),

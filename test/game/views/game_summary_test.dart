@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, one_member_abstracts
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart' hide Card;
@@ -15,6 +15,14 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 import '../../helpers/helpers.dart';
 
 class _MockGameBloc extends Mock implements GameBloc {}
+
+abstract class __Router {
+  void neglect(BuildContext context, VoidCallback callback);
+}
+
+class _MockRouter extends Mock implements __Router {}
+
+class _MockBuildContext extends Mock implements BuildContext {}
 
 void main() {
   group('GameSummaryView', () {
@@ -349,31 +357,47 @@ void main() {
           verify(goRouter.pop).called(1);
         },
       );
-
-      testWidgets(
-        'pops navigation when the quit button is tapped and confirmed',
-        (tester) async {
-          final goRouter = MockGoRouter();
-
-          defaultMockState();
-          when(bloc.hasPlayerWon).thenReturn(true);
-          await tester.pumpSubject(
-            bloc,
-            goRouter: goRouter,
-          );
-
-          await tester.tap(find.text(tester.l10n.quit));
-          await tester.pumpAndSettle();
-
-          expect(find.byType(QuitGameDialog), findsOneWidget);
-
-          await tester.tap(find.text(tester.l10n.quit).last);
-          await tester.pumpAndSettle();
-
-          verify(() => goRouter.go('/')).called(1);
-        },
-      );
     });
+  });
+
+  group('GameSummaryFooter', () {
+    late __Router router;
+
+    setUpAll(() {
+      registerFallbackValue(_MockBuildContext());
+    });
+
+    setUp(() {
+      router = _MockRouter();
+      when(() => router.neglect(any(), any())).thenAnswer((_) {
+        final callback = _.positionalArguments[1] as VoidCallback;
+        callback();
+      });
+    });
+
+    testWidgets(
+      'pops navigation when the quit button is tapped and confirmed',
+      (tester) async {
+        final goRouter = MockGoRouter();
+
+        await tester.pumpApp(
+          GameSummaryFooter(
+            routerNeglectCall: router.neglect,
+          ),
+          router: goRouter,
+        );
+
+        await tester.tap(find.text(tester.l10n.quit));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(QuitGameDialog), findsOneWidget);
+
+        await tester.tap(find.text(tester.l10n.quit).last);
+        await tester.pumpAndSettle();
+
+        verify(() => goRouter.go('/')).called(1);
+      },
+    );
   });
 }
 
