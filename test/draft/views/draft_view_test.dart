@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, one_member_abstracts
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart' hide Card;
@@ -16,9 +16,18 @@ import '../../helpers/helpers.dart';
 
 class _MockDraftBloc extends Mock implements DraftBloc {}
 
+abstract class __Router {
+  void neglect(BuildContext context, VoidCallback callback);
+}
+
+class _MockRouter extends Mock implements __Router {}
+
+class _MockBuildContext extends Mock implements BuildContext {}
+
 void main() {
   group('DraftView', () {
     late DraftBloc draftBloc;
+    late __Router router;
 
     const card1 = Card(
       id: '1',
@@ -58,10 +67,20 @@ void main() {
       );
     }
 
+    setUpAll(() {
+      registerFallbackValue(_MockBuildContext());
+    });
+
     setUp(() {
       draftBloc = _MockDraftBloc();
       const state = DraftState.initial();
       mockState([state]);
+
+      router = _MockRouter();
+      when(() => router.neglect(any(), any())).thenAnswer((_) {
+        final callback = _.positionalArguments[1] as VoidCallback;
+        callback();
+      });
     });
 
     testWidgets('renders correctly', (tester) async {
@@ -222,6 +241,7 @@ void main() {
         await tester.pumpSubject(
           draftBloc: draftBloc,
           goRouter: goRouter,
+          routerNeglectCall: router.neglect,
         );
 
         final l10n = tester.element(find.byType(DraftView)).l10n;
@@ -254,6 +274,7 @@ void main() {
         await tester.pumpSubject(
           draftBloc: draftBloc,
           goRouter: goRouter,
+          routerNeglectCall: router.neglect,
         );
 
         await tester.tap(find.text('Private match'));
@@ -290,6 +311,7 @@ void main() {
         await tester.pumpSubject(
           draftBloc: draftBloc,
           goRouter: goRouter,
+          routerNeglectCall: router.neglect,
         );
 
         await tester.tap(find.text('Private match'));
@@ -383,12 +405,15 @@ extension DraftViewTest on WidgetTester {
   Future<void> pumpSubject({
     required DraftBloc draftBloc,
     GoRouter? goRouter,
+    RouterNeglectCall routerNeglectCall = Router.neglect,
   }) async {
     await mockNetworkImages(() {
       return pumpApp(
         BlocProvider.value(
           value: draftBloc,
-          child: DraftView(),
+          child: DraftView(
+            routerNeglectCall: routerNeglectCall,
+          ),
         ),
         router: goRouter,
       );
