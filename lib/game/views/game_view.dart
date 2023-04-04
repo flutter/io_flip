@@ -29,7 +29,7 @@ class GameView extends StatelessWidget {
         }
 
         if (state is MatchLoadedState) {
-          if (state.matchState.result != null) {
+          if (state.matchState.result != null && state.turnAnimationsFinished) {
             return const GameSummaryView();
           }
           child = const _GameBoard();
@@ -169,6 +169,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
         .mapIndexed(
           (i, e) => RectTween(begin: begin(i), end: end).animate(e)
             ..addStatusListener(moveCardsToHandOnTurnCompleted)
+            ..addStatusListener(notifyAnimationsFinished)
             ..addListener(() => setState(() {})),
         )
         .toList();
@@ -192,6 +193,12 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
           }
         }
       }
+    }
+  }
+
+  void notifyAnimationsFinished(AnimationStatus status) {
+    if (status == AnimationStatus.dismissed) {
+      context.read<GameBloc>().add(const TurnAnimationsFinished());
     }
   }
 
@@ -345,7 +352,7 @@ class _PlayerCard extends StatelessWidget {
         onTap: () {
           if (!allPlayerPlayedCards.contains(card.id) &&
               bloc.canPlayerPlay(card.id) &&
-              !state.playerPlayed) {
+              state.turnAnimationsFinished) {
             context.read<GameBloc>().add(PlayerPlayed(card.id));
           }
         },

@@ -33,6 +33,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     on<ManagePlayerPresence>(_onManagePlayerPresence);
     on<TurnTimerStarted>(_onTurnTimerStarted);
     on<TurnTimerTicked>(_onTurnTimerTicked);
+    on<TurnAnimationsFinished>(_onTurnAnimationsFinished);
   }
 
   final GameResource _gameResource;
@@ -76,9 +77,9 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             match: match,
             matchState: matchState,
             turns: const [],
-            playerPlayed: false,
             playerScoreCard: scoreCard,
             turnTimeRemaining: _turnMaxTime,
+            turnAnimationsFinished: true,
           ),
         );
 
@@ -171,7 +172,12 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   ) async {
     if (state is MatchLoadedState) {
       final matchState = state as MatchLoadedState;
-      emit(matchState.copyWith(playerPlayed: true));
+      emit(
+        matchState.copyWith(
+          playerPlayed: true,
+          turnAnimationsFinished: false,
+        ),
+      );
 
       _turnTimer?.cancel();
 
@@ -275,6 +281,16 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           ),
         );
       }
+    }
+  }
+
+  void _onTurnAnimationsFinished(
+    TurnAnimationsFinished event,
+    Emitter<GameState> emit,
+  ) {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+      emit(matchLoadedState.copyWith(turnAnimationsFinished: true));
     }
   }
 

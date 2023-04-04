@@ -36,17 +36,17 @@ class MatchLoadedState extends GameState {
     required this.match,
     required this.matchState,
     required this.turns,
-    required this.playerPlayed,
     required this.playerScoreCard,
     required this.turnTimeRemaining,
+    required this.turnAnimationsFinished,
   });
 
   final Match match;
   final MatchState matchState;
   final List<MatchTurn> turns;
-  final bool playerPlayed;
   final ScoreCard playerScoreCard;
   final int turnTimeRemaining;
+  final bool turnAnimationsFinished;
 
   MatchLoadedState copyWith({
     Match? match,
@@ -55,14 +55,16 @@ class MatchLoadedState extends GameState {
     bool? playerPlayed,
     ScoreCard? playerScoreCard,
     int? turnTimeRemaining,
+    bool? turnAnimationsFinished,
   }) {
     return MatchLoadedState(
       match: match ?? this.match,
       matchState: matchState ?? this.matchState,
       turns: turns ?? this.turns,
-      playerPlayed: playerPlayed ?? this.playerPlayed,
       playerScoreCard: playerScoreCard ?? this.playerScoreCard,
       turnTimeRemaining: turnTimeRemaining ?? this.turnTimeRemaining,
+      turnAnimationsFinished:
+          turnAnimationsFinished ?? this.turnAnimationsFinished,
     );
   }
 
@@ -71,9 +73,9 @@ class MatchLoadedState extends GameState {
         match,
         matchState,
         turns,
-        playerPlayed,
         playerScoreCard,
         turnTimeRemaining,
+        turnAnimationsFinished,
       ];
 }
 

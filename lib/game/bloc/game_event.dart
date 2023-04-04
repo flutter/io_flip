@@ -64,3 +64,10 @@ class TurnTimerTicked extends GameEvent {
   @override
   List<Object?> get props => [timer];
 }
+
+class TurnAnimationsFinished extends GameEvent {
+  const TurnAnimationsFinished();
+
+  @override
+  List<Object?> get props => [];
+}
