@@ -149,6 +149,7 @@ void main() {
                 hostStartsMatch: true,
                 result: MatchResult.draw,
               ),
+              turnAnimationsFinished: true,
             ),
           );
           await tester.pumpSubject(bloc);
@@ -173,6 +174,7 @@ void main() {
                 hostStartsMatch: true,
                 result: MatchResult.host,
               ),
+              turnAnimationsFinished: true,
             ),
           );
           when(bloc.hasPlayerWon).thenReturn(true);
@@ -198,6 +200,7 @@ void main() {
                 hostStartsMatch: true,
                 result: MatchResult.guest,
               ),
+              turnAnimationsFinished: true,
             ),
           );
           when(bloc.hasPlayerWon).thenReturn(false);
@@ -235,6 +238,7 @@ void main() {
                 hostStartsMatch: true,
                 result: MatchResult.guest,
               ),
+              turnAnimationsFinished: true,
             ),
           );
           await tester.pumpSubject(bloc);
@@ -263,6 +267,7 @@ void main() {
               hostStartsMatch: true,
               result: MatchResult.guest,
             ),
+            turnAnimationsFinished: true,
           ),
         );
 
@@ -287,6 +292,7 @@ void main() {
               hostStartsMatch: true,
               result: MatchResult.guest,
             ),
+            turnAnimationsFinished: true,
           ),
         );
 
@@ -314,6 +320,7 @@ void main() {
                 hostStartsMatch: true,
                 result: MatchResult.guest,
               ),
+              turnAnimationsFinished: true,
             ),
           );
           when(bloc.hasPlayerWon).thenReturn(true);
@@ -344,6 +351,7 @@ void main() {
                 hostStartsMatch: true,
                 result: MatchResult.guest,
               ),
+              turnAnimationsFinished: true,
             ),
           );
           when(bloc.hasPlayerWon).thenReturn(true);

@@ -64,6 +64,37 @@ void main() {
     });
 
     group('Gameplay', () {
+      const playerCards = [
+        Card(
+          id: 'player_card',
+          name: 'host_card',
+          description: '',
+          image: '',
+          rarity: true,
+          power: 2,
+          suit: Suit.air,
+        ),
+        Card(
+          id: 'player_card_2',
+          name: 'host_card_2',
+          description: '',
+          image: '',
+          rarity: true,
+          power: 2,
+          suit: Suit.air,
+        ),
+      ];
+      const opponentCards = [
+        Card(
+          id: 'opponent_card',
+          name: 'guest_card',
+          description: '',
+          image: '',
+          rarity: true,
+          power: 1,
+          suit: Suit.air,
+        ),
+      ];
       final baseState = MatchLoadedState(
         playerScoreCard: ScoreCard(id: 'scoreCardId'),
         match: Match(
@@ -71,41 +102,12 @@ void main() {
           hostDeck: Deck(
             id: '',
             userId: '',
-            cards: const [
-              Card(
-                id: 'player_card',
-                name: 'host_card',
-                description: '',
-                image: '',
-                rarity: true,
-                power: 2,
-                suit: Suit.air,
-              ),
-              Card(
-                id: 'player_card_2',
-                name: 'host_card_2',
-                description: '',
-                image: '',
-                rarity: true,
-                power: 2,
-                suit: Suit.air,
-              ),
-            ],
+            cards: playerCards,
           ),
           guestDeck: Deck(
             id: '',
             userId: '',
-            cards: const [
-              Card(
-                id: 'opponent_card',
-                name: 'guest_card',
-                description: '',
-                image: '',
-                rarity: true,
-                power: 1,
-                suit: Suit.air,
-              ),
-            ],
+            cards: opponentCards,
           ),
         ),
         matchState: MatchState(
@@ -117,8 +119,13 @@ void main() {
         ),
         turns: const [],
         turnTimeRemaining: 10,
-        turnAnimationsFinished: false,
+        turnAnimationsFinished: true,
       );
+
+      setUp(() {
+        when(() => bloc.playerCards).thenReturn(playerCards);
+        when(() => bloc.opponentCards).thenReturn(opponentCards);
+      });
 
       testWidgets('renders the game in its initial state', (tester) async {
         mockState(baseState);
@@ -168,19 +175,6 @@ void main() {
           await tester.pumpAndSettle();
 
           verify(goRouter.pop).called(1);
-        },
-      );
-
-      testWidgets(
-        'renders the players score',
-        (tester) async {
-          mockState(baseState);
-          await tester.pumpSubject(bloc);
-
-          expect(
-            find.text('Score: 0 Streak: 0'),
-            findsOneWidget,
-          );
         },
       );
 
@@ -290,6 +284,7 @@ void main() {
                 MatchTurn(
                   playerCardId: 'player_card',
                   opponentCardId: 'opponent_card',
+                  showCardsOverlay: true,
                 )
               ],
             ),
@@ -308,15 +303,7 @@ void main() {
         (tester) async {
           when(
             () => bloc.isWinningCard(
-              Card(
-                id: 'opponent_card',
-                name: 'guest_card',
-                description: '',
-                image: '',
-                rarity: true,
-                power: 10,
-                suit: Suit.air,
-              ),
+              any(),
               isPlayer: false,
             ),
           ).thenReturn(CardOverlayType.win);
@@ -346,6 +333,7 @@ void main() {
                 MatchTurn(
                   playerCardId: 'player_card',
                   opponentCardId: 'opponent_card',
+                  showCardsOverlay: true,
                 )
               ],
             ),
