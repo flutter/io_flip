@@ -131,23 +131,23 @@ class _WaitingForMatchView extends StatelessWidget {
           const SizedBox(height: TopDashSpacing.xxlg),
           const FadingDotLoader(),
           const Spacer(),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     for (final card in deck)
-          //       Padding(
-          //         padding: const EdgeInsets.all(TopDashSpacing.xxs),
-          //         child: GameCard(
-          //           height: 150,
-          //           width: 100,
-          //           image: card.image,
-          //           name: card.name,
-          //           suitName: card.suit.name,
-          //           power: card.power,
-          //         ),
-          //       ),
-          //   ],
-          // ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              for (final card in deck)
+                Padding(
+                  padding: const EdgeInsets.all(TopDashSpacing.xxs),
+                  child: GameCard(
+                    height: 150,
+                    width: 100,
+                    image: card.image,
+                    name: card.name,
+                    suitName: card.suit.name,
+                    power: card.power,
+                  ),
+                ),
+            ],
+          ),
           const SizedBox(height: TopDashSpacing.sm),
           RoundedButton.text(
             'context.l10n.matchmaking',

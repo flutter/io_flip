@@ -53,11 +53,11 @@ void main() {
         expect(find.byType(FadingDotLoader), findsOneWidget);
       });
 
-      // testWidgets('renders the players deck', (tester) async {
-      //   mockState(MatchMakingState.initial());
-      //   await tester.pumpSubject(bloc);
-      //   expect(find.byType(GameCard), findsNWidgets(3));
-      // });
+      testWidgets('renders the players deck', (tester) async {
+        mockState(MatchMakingState.initial());
+        await tester.pumpSubject(bloc);
+        expect(find.byType(GameCard), findsNWidgets(3));
+      });
 
       testWidgets('renders the title in landscape mode', (tester) async {
         tester.binding.window.devicePixelRatioTestValue = 1;
