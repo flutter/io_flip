@@ -61,6 +61,7 @@ void main() {
 
       testWidgets('renders the title in landscape mode', (tester) async {
         tester.binding.window.devicePixelRatioTestValue = 1;
+        tester.binding.window.physicalSizeTestValue = const Size(2000, 1600);
         mockState(MatchMakingState.initial());
         await tester.pumpSubject(bloc);
 
@@ -80,6 +81,7 @@ void main() {
           description: 'Text with headlineH4Light style',
         );
 
+        tester.binding.window.clearPhysicalSizeTestValue();
         tester.binding.window.clearDevicePixelRatioTestValue();
 
         expect(title, findsOneWidget);
@@ -108,6 +110,7 @@ void main() {
           description: 'Text with headlineH4Light style',
         );
 
+        tester.binding.window.clearPhysicalSizeTestValue();
         tester.binding.window.clearDevicePixelRatioTestValue();
 
         expect(title, findsOneWidget);
