@@ -91,7 +91,7 @@ void main() {
         when(() => response.body).thenReturn('Ops');
 
         await expectLater(
-          resource.generateCards,
+          resource.generateCards(const Prompt()),
           throwsA(
             isA<ApiClientError>().having(
               (e) => e.cause,
@@ -109,7 +109,7 @@ void main() {
         when(() => response.body).thenReturn('Ops');
 
         await expectLater(
-          resource.generateCards,
+          resource.generateCards(const Prompt()),
           throwsA(
             isA<ApiClientError>().having(
               (e) => e.cause,
