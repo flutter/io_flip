@@ -141,7 +141,7 @@ void main() {
         ),
         turns: const [],
         turnTimeRemaining: 10,
-        playerPlayed: false,
+        turnAnimationsFinished: false,
       );
 
       void defaultMockState() {
@@ -155,6 +155,7 @@ void main() {
               hostStartsMatch: true,
               result: MatchResult.guest,
             ),
+            turnAnimationsFinished: true,
           ),
         );
       }
@@ -172,6 +173,7 @@ void main() {
                 hostStartsMatch: true,
                 result: MatchResult.draw,
               ),
+              turnAnimationsFinished: true,
             ),
           );
           await tester.pumpSubject(bloc);
@@ -196,6 +198,7 @@ void main() {
                 hostStartsMatch: true,
                 result: MatchResult.host,
               ),
+              turnAnimationsFinished: true,
             ),
           );
           when(bloc.hasPlayerWon).thenReturn(true);
@@ -248,6 +251,7 @@ void main() {
                 hostStartsMatch: true,
                 result: MatchResult.guest,
               ),
+              turnAnimationsFinished: true,
             ),
           );
           await tester.pumpSubject(bloc);
@@ -265,26 +269,20 @@ void main() {
       );
 
       testWidgets('renders the game summary in landscape', (tester) async {
-        tester.binding.window.devicePixelRatioTestValue = 1;
+        tester.setLandscapeDisplaySize();
         defaultMockState();
 
         await tester.pumpSubject(bloc);
-
-        tester.binding.window.clearDevicePixelRatioTestValue();
 
         expect(find.byType(GameSummaryView), findsOneWidget);
         expect(find.byType(LandscapeSummaryView), findsOneWidget);
       });
 
       testWidgets('renders the game summary in portrait', (tester) async {
-        tester.binding.window.devicePixelRatioTestValue = 1;
-        tester.binding.window.physicalSizeTestValue = const Size(1200, 1600);
+        tester.setPortraitDisplaySize();
         defaultMockState();
 
         await tester.pumpSubject(bloc);
-
-        tester.binding.window.clearPhysicalSizeTestValue();
-        tester.binding.window.clearDevicePixelRatioTestValue();
 
         expect(find.byType(GameSummaryView), findsOneWidget);
         expect(find.byType(PortraitSummaryView), findsOneWidget);

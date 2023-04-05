@@ -87,6 +87,93 @@ void main() {
           .thenAnswer((_) async => ScoreCard(id: 'scoreCardId'));
     });
 
+    const hostCards = [
+      Card(
+        id: 'card1',
+        name: '',
+        description: '',
+        image: '',
+        power: 10,
+        rarity: false,
+        suit: Suit.air,
+      ),
+      Card(
+        id: 'card2',
+        name: '',
+        description: '',
+        image: '',
+        power: 10,
+        rarity: false,
+        suit: Suit.air,
+      ),
+      Card(
+        id: 'card3',
+        name: '',
+        description: '',
+        image: '',
+        power: 10,
+        rarity: false,
+        suit: Suit.air,
+      ),
+    ];
+
+    const guestCards = [
+      Card(
+        id: 'card4',
+        name: '',
+        description: '',
+        image: '',
+        power: 10,
+        rarity: false,
+        suit: Suit.air,
+      ),
+      Card(
+        id: 'card5',
+        name: '',
+        description: '',
+        image: '',
+        power: 10,
+        rarity: false,
+        suit: Suit.air,
+      ),
+      Card(
+        id: 'card6',
+        name: '',
+        description: '',
+        image: '',
+        power: 10,
+        rarity: false,
+        suit: Suit.air,
+      ),
+    ];
+
+    const baseState = MatchLoadedState(
+      playerScoreCard: ScoreCard(id: 'scoreCardId'),
+      match: Match(
+        id: 'matchId',
+        hostDeck: Deck(
+          id: 'hostDeck',
+          userId: 'hostUserId',
+          cards: hostCards,
+        ),
+        guestDeck: Deck(
+          id: 'guestDeck',
+          userId: 'guestUserId',
+          cards: guestCards,
+        ),
+      ),
+      matchState: MatchState(
+        id: 'matchStateId',
+        matchId: 'matchId',
+        hostPlayedCards: [],
+        guestPlayedCards: [],
+        hostStartsMatch: true,
+      ),
+      turns: [],
+      turnAnimationsFinished: true,
+      turnTimeRemaining: 10,
+    );
+
     test('can be instantiated', () {
       expect(
         GameBloc(
@@ -133,7 +220,7 @@ void main() {
           match: match,
           matchState: matchState,
           turns: const [],
-          playerPlayed: false,
+          turnAnimationsFinished: true,
           turnTimeRemaining: 10,
         ),
       ],
@@ -184,89 +271,6 @@ void main() {
     );
 
     group('register player and opponent moves', () {
-      const baseState = MatchLoadedState(
-        playerScoreCard: ScoreCard(id: 'scoreCardId'),
-        match: Match(
-          id: 'matchId',
-          hostDeck: Deck(
-            id: 'hostDeck',
-            userId: 'hostUserId',
-            cards: [
-              Card(
-                id: 'card1',
-                name: '',
-                description: '',
-                image: '',
-                power: 10,
-                rarity: false,
-                suit: Suit.air,
-              ),
-              Card(
-                id: 'card2',
-                name: '',
-                description: '',
-                image: '',
-                power: 10,
-                rarity: false,
-                suit: Suit.air,
-              ),
-              Card(
-                id: 'card3',
-                name: '',
-                description: '',
-                image: '',
-                power: 10,
-                rarity: false,
-                suit: Suit.air,
-              ),
-            ],
-          ),
-          guestDeck: Deck(
-            id: 'guestDeck',
-            userId: 'guestUserId',
-            cards: [
-              Card(
-                id: 'card4',
-                name: '',
-                description: '',
-                image: '',
-                power: 10,
-                rarity: false,
-                suit: Suit.air,
-              ),
-              Card(
-                id: 'card5',
-                name: '',
-                description: '',
-                image: '',
-                power: 10,
-                rarity: false,
-                suit: Suit.air,
-              ),
-              Card(
-                id: 'card6',
-                name: '',
-                description: '',
-                image: '',
-                power: 10,
-                rarity: false,
-                suit: Suit.air,
-              ),
-            ],
-          ),
-        ),
-        matchState: MatchState(
-          id: 'matchStateId',
-          matchId: 'matchId',
-          hostPlayedCards: [],
-          guestPlayedCards: [],
-          hostStartsMatch: true,
-        ),
-        turns: [],
-        playerPlayed: false,
-        turnTimeRemaining: 10,
-      );
-
       setUp(() {
         when(
           () => gameResource.playCard(
@@ -499,6 +503,7 @@ void main() {
               MatchTurn(
                 playerCardId: 'card1',
                 opponentCardId: 'card6',
+                showCardsOverlay: true,
               ),
             ],
           ),
@@ -539,6 +544,7 @@ void main() {
               MatchTurn(
                 playerCardId: 'card1',
                 opponentCardId: 'card6',
+                showCardsOverlay: true,
               ),
             ],
           ),
@@ -580,6 +586,7 @@ void main() {
               MatchTurn(
                 playerCardId: 'card6',
                 opponentCardId: 'card1',
+                showCardsOverlay: true,
               ),
             ],
           ),
@@ -621,6 +628,7 @@ void main() {
               MatchTurn(
                 playerCardId: 'card6',
                 opponentCardId: 'card1',
+                showCardsOverlay: true,
               ),
             ],
           ),
@@ -661,7 +669,7 @@ void main() {
               hostStartsMatch: true,
             ),
             turns: const [],
-            playerPlayed: true,
+            turnAnimationsFinished: false,
             turnTimeRemaining: 10,
           ),
         ],
@@ -691,144 +699,7 @@ void main() {
               hostStartsMatch: true,
             ),
             turns: const [],
-            playerPlayed: true,
-            turnTimeRemaining: 10,
-          ),
-        ],
-      );
-
-      blocTest<GameBloc, GameState>(
-        'marks the playerPlayed as false on receive the new state',
-        build: () => GameBloc(
-          matchConnection: webSocket,
-          gameResource: gameResource,
-          matchMakerRepository: matchMakerRepository,
-          matchSolver: matchSolver,
-          user: user,
-          isHost: true,
-        ),
-        setUp: () {
-          when(
-            () => matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
-          ).thenReturn(true);
-        },
-        seed: () => baseState,
-        act: (bloc) {
-          bloc
-            ..add(PlayerPlayed('new_card_1'))
-            ..add(
-              MatchStateUpdated(
-                MatchState(
-                  id: baseState.matchState.id,
-                  matchId: baseState.matchState.matchId,
-                  hostPlayedCards: const ['new_card_1'],
-                  guestPlayedCards: baseState.matchState.guestPlayedCards,
-                  hostStartsMatch: true,
-                ),
-              ),
-            );
-        },
-        expect: () => [
-          MatchLoadedState(
-            playerScoreCard: ScoreCard(id: 'scoreCardId'),
-            match: baseState.match,
-            matchState: MatchState(
-              id: 'matchStateId',
-              matchId: baseState.match.id,
-              guestPlayedCards: const [],
-              hostPlayedCards: const [],
-              hostStartsMatch: true,
-            ),
-            turns: const [],
-            playerPlayed: true,
-            turnTimeRemaining: 10,
-          ),
-          MatchLoadedState(
-            playerScoreCard: ScoreCard(id: 'scoreCardId'),
-            match: baseState.match,
-            matchState: MatchState(
-              id: 'matchStateId',
-              matchId: baseState.match.id,
-              guestPlayedCards: const [],
-              hostPlayedCards: const ['new_card_1'],
-              hostStartsMatch: true,
-            ),
-            turns: const [
-              MatchTurn(
-                opponentCardId: null,
-                playerCardId: 'new_card_1',
-              ),
-            ],
-            playerPlayed: false,
-            turnTimeRemaining: 10,
-          ),
-        ],
-      );
-
-      blocTest<GameBloc, GameState>(
-        'marks the playerPlayed as false on receive the new state when being '
-        'the guest',
-        build: () => GameBloc(
-          matchConnection: webSocket,
-          gameResource: gameResource,
-          matchMakerRepository: matchMakerRepository,
-          matchSolver: matchSolver,
-          user: user,
-          isHost: false,
-        ),
-        setUp: () {
-          when(
-            () => matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
-          ).thenReturn(true);
-        },
-        seed: () => baseState,
-        act: (bloc) {
-          bloc
-            ..add(PlayerPlayed('new_card_1'))
-            ..add(
-              MatchStateUpdated(
-                MatchState(
-                  id: baseState.matchState.id,
-                  matchId: baseState.matchState.matchId,
-                  hostPlayedCards: baseState.matchState.hostPlayedCards,
-                  guestPlayedCards: const ['new_card_1'],
-                  hostStartsMatch: true,
-                ),
-              ),
-            );
-        },
-        expect: () => [
-          MatchLoadedState(
-            playerScoreCard: ScoreCard(id: 'scoreCardId'),
-            match: baseState.match,
-            matchState: MatchState(
-              id: 'matchStateId',
-              matchId: baseState.match.id,
-              guestPlayedCards: const [],
-              hostPlayedCards: const [],
-              hostStartsMatch: true,
-            ),
-            turns: const [],
-            playerPlayed: true,
-            turnTimeRemaining: 10,
-          ),
-          MatchLoadedState(
-            playerScoreCard: ScoreCard(id: 'scoreCardId'),
-            match: baseState.match,
-            matchState: MatchState(
-              id: 'matchStateId',
-              matchId: baseState.match.id,
-              guestPlayedCards: const ['new_card_1'],
-              hostPlayedCards: const [],
-              hostStartsMatch: true,
-            ),
-            turns: const [
-              MatchTurn(
-                opponentCardId: null,
-                playerCardId: 'new_card_1',
-              ),
-            ],
-            playerPlayed: false,
+            turnAnimationsFinished: false,
             turnTimeRemaining: 10,
           ),
         ],
@@ -889,7 +760,7 @@ void main() {
               hostStartsMatch: true,
             ),
             turns: const [],
-            playerPlayed: true,
+            turnAnimationsFinished: false,
             turnTimeRemaining: 10,
           ),
           MatchLoadedState(
@@ -908,7 +779,7 @@ void main() {
                 playerCardId: 'new_card_1',
               ),
             ],
-            playerPlayed: false,
+            turnAnimationsFinished: false,
             turnTimeRemaining: 10,
           ),
           MatchLoadedState(
@@ -927,7 +798,7 @@ void main() {
                 playerCardId: 'new_card_1',
               ),
             ],
-            playerPlayed: false,
+            turnAnimationsFinished: false,
             turnTimeRemaining: 10,
           ),
         ],
@@ -998,7 +869,7 @@ void main() {
               hostStartsMatch: true,
             ),
             turns: const [],
-            playerPlayed: true,
+            turnAnimationsFinished: false,
             turnTimeRemaining: 10,
           ),
           MatchLoadedState(
@@ -1017,7 +888,7 @@ void main() {
                 playerCardId: 'new_card_1',
               ),
             ],
-            playerPlayed: false,
+            turnAnimationsFinished: false,
             turnTimeRemaining: 10,
           ),
           MatchLoadedState(
@@ -1036,7 +907,7 @@ void main() {
                 playerCardId: 'new_card_1',
               ),
             ],
-            playerPlayed: false,
+            turnAnimationsFinished: false,
             turnTimeRemaining: 10,
           ),
           MatchLoadedState(
@@ -1059,7 +930,7 @@ void main() {
                 playerCardId: null,
               ),
             ],
-            playerPlayed: false,
+            turnAnimationsFinished: false,
             turnTimeRemaining: 10,
           ),
         ],
@@ -1094,7 +965,7 @@ void main() {
                   match: match,
                   matchState: matchState,
                   turns: const [],
-                  playerPlayed: false,
+                  turnAnimationsFinished: true,
                   turnTimeRemaining: 8,
                 ),
               ),
@@ -1173,6 +1044,194 @@ void main() {
       });
     });
 
+    blocTest<GameBloc, GameState>(
+      'playerCards returns host cards if is host',
+      build: () => GameBloc(
+        matchConnection: webSocket,
+        gameResource: gameResource,
+        matchMakerRepository: matchMakerRepository,
+        matchSolver: matchSolver,
+        isHost: true,
+        user: user,
+      ),
+      seed: () => baseState,
+      verify: (bloc) {
+        expect(bloc.playerCards, equals(hostCards));
+      },
+    );
+
+    blocTest<GameBloc, GameState>(
+      'playerCards returns guest cards if is guest',
+      build: () => GameBloc(
+        matchConnection: webSocket,
+        gameResource: gameResource,
+        matchMakerRepository: matchMakerRepository,
+        matchSolver: matchSolver,
+        isHost: false,
+        user: user,
+      ),
+      seed: () => baseState,
+      verify: (bloc) {
+        expect(bloc.playerCards, equals(guestCards));
+      },
+    );
+
+    blocTest<GameBloc, GameState>(
+      'opponentCards returns host cards if player is not host',
+      build: () => GameBloc(
+        matchConnection: webSocket,
+        gameResource: gameResource,
+        matchMakerRepository: matchMakerRepository,
+        matchSolver: matchSolver,
+        isHost: false,
+        user: user,
+      ),
+      seed: () => baseState,
+      verify: (bloc) {
+        expect(bloc.opponentCards, equals(hostCards));
+      },
+    );
+
+    blocTest<GameBloc, GameState>(
+      'opponentCards returns guest cards if player is host',
+      build: () => GameBloc(
+        matchConnection: webSocket,
+        gameResource: gameResource,
+        matchMakerRepository: matchMakerRepository,
+        matchSolver: matchSolver,
+        isHost: true,
+        user: user,
+      ),
+      seed: () => baseState,
+      verify: (bloc) {
+        expect(bloc.opponentCards, equals(guestCards));
+      },
+    );
+
+    blocTest<GameBloc, GameState>(
+      'playerCards and opponentCards returns empty if state is not '
+      'MatchLoadedState',
+      build: () => GameBloc(
+        matchConnection: webSocket,
+        gameResource: gameResource,
+        matchMakerRepository: matchMakerRepository,
+        matchSolver: matchSolver,
+        isHost: true,
+        user: user,
+      ),
+      seed: MatchLoadingState.new,
+      verify: (bloc) {
+        expect(bloc.playerCards, isEmpty);
+        expect(bloc.opponentCards, isEmpty);
+      },
+    );
+
+    blocTest<GameBloc, GameState>(
+      'lastPlayedCardId returns player card if last turn complete and is '
+      'player turn',
+      setUp: () {
+        when(
+          () => matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
+        ).thenReturn(true);
+      },
+      build: () => GameBloc(
+        matchConnection: webSocket,
+        gameResource: gameResource,
+        matchMakerRepository: matchMakerRepository,
+        matchSolver: matchSolver,
+        isHost: true,
+        user: user,
+      ),
+      seed: () => baseState.copyWith(
+        turns: [
+          MatchTurn(
+            playerCardId: hostCards.first.id,
+            opponentCardId: guestCards.first.id,
+          )
+        ],
+      ),
+      verify: (bloc) {
+        expect(bloc.lastPlayedCardId, equals(hostCards.first.id));
+      },
+    );
+
+    blocTest<GameBloc, GameState>(
+      'lastPlayedCardId returns opponent card if last turn complete and is not '
+      'player turn',
+      setUp: () {
+        when(
+          () => matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
+        ).thenReturn(false);
+      },
+      build: () => GameBloc(
+        matchConnection: webSocket,
+        gameResource: gameResource,
+        matchMakerRepository: matchMakerRepository,
+        matchSolver: matchSolver,
+        isHost: true,
+        user: user,
+      ),
+      seed: () => baseState.copyWith(
+        turns: [
+          MatchTurn(
+            playerCardId: hostCards.first.id,
+            opponentCardId: guestCards.first.id,
+          )
+        ],
+      ),
+      verify: (bloc) {
+        expect(bloc.lastPlayedCardId, equals(guestCards.first.id));
+      },
+    );
+
+    blocTest<GameBloc, GameState>(
+      'lastPlayedCardId returns player card if last turn not complete and '
+      'only player played',
+      build: () => GameBloc(
+        matchConnection: webSocket,
+        gameResource: gameResource,
+        matchMakerRepository: matchMakerRepository,
+        matchSolver: matchSolver,
+        isHost: true,
+        user: user,
+      ),
+      seed: () => baseState.copyWith(
+        turns: [
+          MatchTurn(
+            playerCardId: hostCards.first.id,
+            opponentCardId: null,
+          )
+        ],
+      ),
+      verify: (bloc) {
+        expect(bloc.lastPlayedCardId, equals(hostCards.first.id));
+      },
+    );
+
+    blocTest<GameBloc, GameState>(
+      'lastPlayedCardId returns opponent card if last turn not complete and '
+      'only opponent played',
+      build: () => GameBloc(
+        matchConnection: webSocket,
+        gameResource: gameResource,
+        matchMakerRepository: matchMakerRepository,
+        matchSolver: matchSolver,
+        isHost: true,
+        user: user,
+      ),
+      seed: () => baseState.copyWith(
+        turns: [
+          MatchTurn(
+            playerCardId: null,
+            opponentCardId: guestCards.first.id,
+          )
+        ],
+      ),
+      verify: (bloc) {
+        expect(bloc.lastPlayedCardId, equals(guestCards.first.id));
+      },
+    );
+
     group('MatchLoadedState', () {
       group('isCardTurnComplete', () {
         final match1 = Match(
@@ -1202,7 +1261,7 @@ void main() {
           match: match1,
           matchState: matchState1,
           turns: const [],
-          playerPlayed: false,
+          turnAnimationsFinished: false,
           turnTimeRemaining: 10,
         );
 
@@ -1426,6 +1485,58 @@ void main() {
           verify(() => matchMakerRepository.watchMatch(match.id)).called(1);
           verify(() => gameResource.getMatchState(match.id)).called(1);
         },
+      );
+    });
+    group('TurnAnimationsFinished', () {
+      blocTest<GameBloc, GameState>(
+        'emits state updating turnAnimationsFinished field',
+        build: () => GameBloc(
+          matchConnection: webSocket,
+          gameResource: gameResource,
+          matchMakerRepository: matchMakerRepository,
+          user: user,
+          isHost: true,
+          matchSolver: matchSolver,
+        ),
+        seed: () => baseState.copyWith(turnAnimationsFinished: false),
+        act: (bloc) => bloc.add(TurnAnimationsFinished()),
+        expect: () => <GameState>[
+          baseState.copyWith(turnAnimationsFinished: true),
+        ],
+      );
+    });
+
+    group('CardOverlayRevealed', () {
+      blocTest<GameBloc, GameState>(
+        'emits state updating showCardsOverlay field',
+        build: () => GameBloc(
+          matchConnection: webSocket,
+          gameResource: gameResource,
+          matchMakerRepository: matchMakerRepository,
+          user: user,
+          isHost: true,
+          matchSolver: matchSolver,
+        ),
+        seed: () => baseState.copyWith(
+          turns: [
+            MatchTurn(
+              playerCardId: hostCards.first.id,
+              opponentCardId: guestCards.first.id,
+            )
+          ],
+        ),
+        act: (bloc) => bloc.add(CardOverlayRevealed()),
+        expect: () => <GameState>[
+          baseState.copyWith(
+            turns: [
+              MatchTurn(
+                playerCardId: hostCards.first.id,
+                opponentCardId: guestCards.first.id,
+                showCardsOverlay: true,
+              )
+            ],
+          ),
+        ],
       );
     });
   });

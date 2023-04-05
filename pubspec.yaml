@@ -18,6 +18,7 @@ dependencies:
   code_text_field: ^1.1.0
   connection_repository:
     path: packages/connection_repository
+  collection: ^1.17.0
   equatable: ^2.0.5
   firebase_auth: ^4.4.0
   firebase_core: ^2.5.0

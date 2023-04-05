@@ -33,6 +33,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     on<ManagePlayerPresence>(_onManagePlayerPresence);
     on<TurnTimerStarted>(_onTurnTimerStarted);
     on<TurnTimerTicked>(_onTurnTimerTicked);
+    on<TurnAnimationsFinished>(_onTurnAnimationsFinished);
+    on<CardOverlayRevealed>(_onCardOverlayRevealed);
   }
 
   final GameResource _gameResource;
@@ -76,9 +78,9 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             match: match,
             matchState: matchState,
             turns: const [],
-            playerPlayed: false,
             playerScoreCard: scoreCard,
             turnTimeRemaining: _turnMaxTime,
+            turnAnimationsFinished: true,
           ),
         );
 
@@ -135,6 +137,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             opponentCardId: i < matchStateOpponentMoves.length
                 ? matchStateOpponentMoves[i]
                 : null,
+            showCardsOverlay: i < matchLoadedState.turns.length &&
+                matchLoadedState.turns[i].showCardsOverlay,
           ),
       ];
 
@@ -171,7 +175,12 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   ) async {
     if (state is MatchLoadedState) {
       final matchState = state as MatchLoadedState;
-      emit(matchState.copyWith(playerPlayed: true));
+      emit(
+        matchState.copyWith(
+          playerPlayed: true,
+          turnAnimationsFinished: false,
+        ),
+      );
 
       _turnTimer?.cancel();
 
@@ -278,6 +287,32 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     }
   }
 
+  void _onTurnAnimationsFinished(
+    TurnAnimationsFinished event,
+    Emitter<GameState> emit,
+  ) {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+      emit(matchLoadedState.copyWith(turnAnimationsFinished: true));
+    }
+  }
+
+  void _onCardOverlayRevealed(
+    CardOverlayRevealed event,
+    Emitter<GameState> emit,
+  ) {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+      if (matchLoadedState.turns.isNotEmpty) {
+        final lastTurn = matchLoadedState.turns.last;
+        final turns = [...matchLoadedState.turns]
+          ..removeLast()
+          ..add(lastTurn.copyWith(showCardsOverlay: true));
+        emit(matchLoadedState.copyWith(turns: turns));
+      }
+    }
+  }
+
   CardOverlayType? isWinningCard(Card card, {required bool isPlayer}) {
     if (state is MatchLoadedState) {
       final matchLoadedState = state as MatchLoadedState;
@@ -293,7 +328,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
       if (round >= 0) {
         final turn = matchLoadedState.turns[round];
-        if (turn.isComplete()) {
+        if (turn.isComplete() && turn.showCardsOverlay) {
           final result = _matchSolver.calculateRoundResult(
             matchLoadedState.match,
             matchLoadedState.matchState,
@@ -351,6 +386,43 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           : matchState.result == MatchResult.guest;
     }
     return false;
+  }
+
+  List<Card> get playerCards {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+      return isHost
+          ? matchLoadedState.match.hostDeck.cards
+          : matchLoadedState.match.guestDeck.cards;
+    }
+    return [];
+  }
+
+  List<Card> get opponentCards {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+      return isHost
+          ? matchLoadedState.match.guestDeck.cards
+          : matchLoadedState.match.hostDeck.cards;
+    }
+    return [];
+  }
+
+  String? get lastPlayedCardId {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+      if (matchLoadedState.turns.isNotEmpty) {
+        final lastTurn = matchLoadedState.turns.last;
+        if (lastTurn.isComplete()) {
+          if (isPlayerTurn) {
+            return lastTurn.playerCardId;
+          }
+          return lastTurn.opponentCardId;
+        }
+        return lastTurn.playerCardId ?? lastTurn.opponentCardId;
+      }
+    }
+    return null;
   }
 
   @override

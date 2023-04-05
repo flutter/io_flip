@@ -67,7 +67,7 @@ void main() {
           match: match1,
           matchState: matchState1,
           turns: const [],
-          playerPlayed: false,
+          turnAnimationsFinished: false,
           turnTimeRemaining: 10,
         ),
         isNotNull,
@@ -81,7 +81,7 @@ void main() {
           match: match1,
           matchState: matchState1,
           turns: const [],
-          playerPlayed: false,
+          turnAnimationsFinished: false,
           turnTimeRemaining: 10,
         ),
         equals(
@@ -90,7 +90,7 @@ void main() {
             match: match1,
             matchState: matchState1,
             turns: const [],
-            playerPlayed: false,
+            turnAnimationsFinished: false,
             turnTimeRemaining: 10,
           ),
         ),
@@ -102,7 +102,7 @@ void main() {
           match: match1,
           matchState: matchState1,
           turns: const [],
-          playerPlayed: false,
+          turnAnimationsFinished: false,
           turnTimeRemaining: 10,
         ),
         isNot(
@@ -112,7 +112,7 @@ void main() {
               match: match2,
               matchState: matchState1,
               turns: const [],
-              playerPlayed: false,
+              turnAnimationsFinished: false,
               turnTimeRemaining: 10,
             ),
           ),
@@ -125,7 +125,7 @@ void main() {
           match: match1,
           matchState: matchState1,
           turns: const [],
-          playerPlayed: false,
+          turnAnimationsFinished: false,
           turnTimeRemaining: 10,
         ),
         isNot(
@@ -135,7 +135,7 @@ void main() {
               match: match1,
               matchState: matchState2,
               turns: const [],
-              playerPlayed: false,
+              turnAnimationsFinished: false,
               turnTimeRemaining: 10,
             ),
           ),
@@ -148,7 +148,7 @@ void main() {
           match: match1,
           matchState: matchState1,
           turns: const [],
-          playerPlayed: false,
+          turnAnimationsFinished: false,
           turnTimeRemaining: 10,
         ),
         isNot(
@@ -163,7 +163,7 @@ void main() {
                   playerCardId: '',
                 ),
               ],
-              playerPlayed: false,
+              turnAnimationsFinished: false,
               turnTimeRemaining: 10,
             ),
           ),
@@ -176,7 +176,7 @@ void main() {
           match: match1,
           matchState: matchState1,
           turns: const [],
-          playerPlayed: false,
+          turnAnimationsFinished: false,
           turnTimeRemaining: 10,
         ),
         isNot(
@@ -186,7 +186,7 @@ void main() {
               match: match1,
               matchState: matchState1,
               turns: const [],
-              playerPlayed: true,
+              turnAnimationsFinished: true,
               turnTimeRemaining: 10,
             ),
           ),
@@ -199,7 +199,7 @@ void main() {
           match: match1,
           matchState: matchState1,
           turns: const [],
-          playerPlayed: false,
+          turnAnimationsFinished: false,
           turnTimeRemaining: 10,
         ),
         isNot(
@@ -209,7 +209,7 @@ void main() {
               match: match1,
               matchState: matchState1,
               turns: const [],
-              playerPlayed: false,
+              turnAnimationsFinished: false,
               turnTimeRemaining: 9,
             ),
           ),
@@ -224,7 +224,7 @@ void main() {
           match: match1,
           matchState: matchState1,
           turns: const [],
-          playerPlayed: true,
+          turnAnimationsFinished: true,
           turnTimeRemaining: 10,
         ).copyWith(match: match2),
         equals(
@@ -233,7 +233,7 @@ void main() {
             match: match2,
             matchState: matchState1,
             turns: const [],
-            playerPlayed: true,
+            turnAnimationsFinished: true,
             turnTimeRemaining: 10,
           ),
         ),
@@ -245,7 +245,7 @@ void main() {
           match: match1,
           matchState: matchState1,
           turns: const [],
-          playerPlayed: true,
+          turnAnimationsFinished: true,
           turnTimeRemaining: 10,
         ).copyWith(matchState: matchState2),
         equals(
@@ -254,7 +254,7 @@ void main() {
             match: match1,
             matchState: matchState2,
             turns: const [],
-            playerPlayed: true,
+            turnAnimationsFinished: true,
             turnTimeRemaining: 10,
           ),
         ),
@@ -266,7 +266,7 @@ void main() {
           match: match1,
           matchState: matchState1,
           turns: const [],
-          playerPlayed: true,
+          turnAnimationsFinished: true,
           turnTimeRemaining: 10,
         ).copyWith(turns: [MatchTurn(playerCardId: '', opponentCardId: '')]),
         equals(
@@ -275,7 +275,7 @@ void main() {
             match: match1,
             matchState: matchState1,
             turns: const [MatchTurn(playerCardId: '', opponentCardId: '')],
-            playerPlayed: true,
+            turnAnimationsFinished: true,
             turnTimeRemaining: 10,
           ),
         ),
@@ -287,16 +287,16 @@ void main() {
           match: match1,
           matchState: matchState1,
           turns: const [],
-          playerPlayed: true,
+          turnAnimationsFinished: true,
           turnTimeRemaining: 10,
-        ).copyWith(playerPlayed: false),
+        ).copyWith(turnAnimationsFinished: false),
         equals(
           MatchLoadedState(
             playerScoreCard: ScoreCard(id: 'scoreCardId'),
             match: match1,
             matchState: matchState1,
             turns: const [],
-            playerPlayed: false,
+            turnAnimationsFinished: false,
             turnTimeRemaining: 10,
           ),
         ),
@@ -308,7 +308,7 @@ void main() {
           match: match1,
           matchState: matchState1,
           turns: const [],
-          playerPlayed: true,
+          turnAnimationsFinished: true,
           turnTimeRemaining: 10,
         ).copyWith(turnTimeRemaining: 9),
         equals(
@@ -317,7 +317,7 @@ void main() {
             match: match1,
             matchState: matchState1,
             turns: const [],
-            playerPlayed: true,
+            turnAnimationsFinished: true,
             turnTimeRemaining: 9,
           ),
         ),
@@ -353,6 +353,61 @@ void main() {
         equals(
           isNot(
             MatchTurn(playerCardId: null, opponentCardId: '1'),
+          ),
+        ),
+      );
+    });
+
+    test('copyWith returns a new instance with the copied values', () {
+      expect(
+        MatchTurn(
+          playerCardId: 'player',
+          opponentCardId: 'opponent',
+        ).copyWith(),
+        equals(
+          MatchTurn(
+            playerCardId: 'player',
+            opponentCardId: 'opponent',
+          ),
+        ),
+      );
+
+      expect(
+        MatchTurn(
+          playerCardId: 'player',
+          opponentCardId: 'opponent',
+        ).copyWith(playerCardId: ''),
+        equals(
+          MatchTurn(
+            playerCardId: '',
+            opponentCardId: 'opponent',
+          ),
+        ),
+      );
+
+      expect(
+        MatchTurn(
+          playerCardId: 'player',
+          opponentCardId: 'opponent',
+        ).copyWith(opponentCardId: ''),
+        equals(
+          MatchTurn(
+            playerCardId: 'player',
+            opponentCardId: '',
+          ),
+        ),
+      );
+
+      expect(
+        MatchTurn(
+          playerCardId: 'player',
+          opponentCardId: 'opponent',
+        ).copyWith(showCardsOverlay: true),
+        equals(
+          MatchTurn(
+            playerCardId: 'player',
+            opponentCardId: 'opponent',
+            showCardsOverlay: true,
           ),
         ),
       );
