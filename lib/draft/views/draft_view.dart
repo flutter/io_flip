@@ -6,13 +6,20 @@ import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
+typedef RouterNeglectCall = void Function(BuildContext, VoidCallback);
+
 extension DraftViewX on DraftState {
   List<String> selectedCardIds() =>
       selectedCards.map((card) => card.id).toList();
 }
 
 class DraftView extends StatelessWidget {
-  const DraftView({super.key});
+  const DraftView({
+    super.key,
+    RouterNeglectCall routerNeglectCall = Router.neglect,
+  }) : _routerNeglectCall = routerNeglectCall;
+
+  final RouterNeglectCall _routerNeglectCall;
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +67,7 @@ class DraftView extends StatelessWidget {
                 ],
               ),
             ),
-            const _BottomBar(),
+            _BottomBar(routerNeglectCall: _routerNeglectCall),
           ],
         ),
       ),
@@ -243,7 +250,11 @@ class SelectedCard extends StatelessWidget {
 }
 
 class _BottomBar extends StatelessWidget {
-  const _BottomBar();
+  const _BottomBar({
+    required this.routerNeglectCall,
+  });
+
+  final RouterNeglectCall routerNeglectCall;
 
   @override
   Widget build(BuildContext context) {
@@ -268,19 +279,22 @@ class _BottomBar extends StatelessWidget {
             ),
           ),
           if (state.status == DraftStateStatus.deckSelected) ...[
-            const Align(
+            Align(
               alignment: Alignment.centerLeft,
-              child: _PrivateMatchButton(),
+              child: _PrivateMatchButton(
+                routerNeglectCall: routerNeglectCall,
+              ),
             ),
             Center(
               child: RoundedButton.text(
                 l10n.joinMatch.toUpperCase(),
-                onPressed: () {
-                  GoRouter.of(context).goNamed(
+                onPressed: () => routerNeglectCall(
+                  context,
+                  () => GoRouter.of(context).goNamed(
                     'match_making',
                     queryParams: {'cardId': state.selectedCardIds()},
-                  );
-                },
+                  ),
+                ),
               ),
             ),
           ] else ...[
@@ -308,28 +322,41 @@ class _BottomBar extends StatelessWidget {
 }
 
 class _PrivateMatchButton extends StatelessWidget {
-  const _PrivateMatchButton();
+  const _PrivateMatchButton({
+    required this.routerNeglectCall,
+  });
+
+  final RouterNeglectCall routerNeglectCall;
 
   @override
   Widget build(BuildContext context) {
     final bloc = context.watch<DraftBloc>();
     final state = bloc.state;
     return ElevatedButton(
-      onPressed: () async {
+      onPressed: () {
         final goRouter = GoRouter.of(context);
-        final inviteCode = await showDialog<String?>(
+
+        showDialog<String?>(
           context: context,
-          builder: (_) => _JoinPrivateMatchDialog(state.selectedCardIds()),
-        );
-        if (inviteCode != null) {
-          goRouter.goNamed(
-            'match_making',
-            queryParams: {
-              'inviteCode': inviteCode,
-              'cardId': state.selectedCardIds(),
-            },
-          );
-        }
+          builder: (_) => _JoinPrivateMatchDialog(
+            selectedCardIds: state.selectedCardIds(),
+            routerNeglectCall: routerNeglectCall,
+          ),
+        ).then((inviteCode) {
+          if (inviteCode != null) {
+            routerNeglectCall(
+              context,
+              () => goRouter.goNamed(
+                'match_making',
+                queryParams: {
+                  'inviteCode': inviteCode,
+                  'cardId': state.selectedCardIds(),
+                },
+              ),
+            );
+          }
+          return inviteCode;
+        });
       },
       child: const Text('Private match'),
     );
@@ -337,9 +364,13 @@ class _PrivateMatchButton extends StatelessWidget {
 }
 
 class _JoinPrivateMatchDialog extends StatefulWidget {
-  const _JoinPrivateMatchDialog(this.selectedCardIds);
+  const _JoinPrivateMatchDialog({
+    required this.selectedCardIds,
+    required this.routerNeglectCall,
+  });
 
   final List<String> selectedCardIds;
+  final RouterNeglectCall routerNeglectCall;
 
   @override
   State<_JoinPrivateMatchDialog> createState() =>
@@ -383,15 +414,16 @@ class _JoinPrivateMatchDialogState extends State<_JoinPrivateMatchDialog> {
             ),
             const SizedBox(height: 24),
             ElevatedButton(
-              onPressed: () {
-                GoRouter.of(context).goNamed(
+              onPressed: () => widget.routerNeglectCall(
+                context,
+                () => GoRouter.of(context).goNamed(
                   'match_making',
                   queryParams: {
                     'createPrivateMatch': 'true',
                     'cardId': widget.selectedCardIds,
                   },
-                );
-              },
+                ),
+              ),
               child: const Text('Create private match'),
             ),
           ],

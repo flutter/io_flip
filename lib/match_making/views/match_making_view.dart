@@ -6,25 +6,33 @@ import 'package:top_dash/game/views/game_page.dart';
 import 'package:top_dash/match_making/match_making.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
+typedef RouterNeglectCall = void Function(BuildContext, VoidCallback);
+
 class MatchMakingView extends StatelessWidget {
   const MatchMakingView({
     super.key,
     Future<void> Function(ClipboardData) setClipboardData = Clipboard.setData,
-  }) : _setClipboardData = setClipboardData;
+    RouterNeglectCall routerNeglectCall = Router.neglect,
+  })  : _setClipboardData = setClipboardData,
+        _routerNeglectCall = routerNeglectCall;
 
   final Future<void> Function(ClipboardData) _setClipboardData;
+  final RouterNeglectCall _routerNeglectCall;
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<MatchMakingBloc, MatchMakingState>(
       listener: (previous, current) {
         if (current.status == MatchMakingStatus.completed) {
-          context.goNamed(
-            'game',
-            extra: GamePageData(
-              isHost: current.isHost,
-              matchId: current.match?.id ?? '',
-              matchConnection: current.matchConnection,
+          _routerNeglectCall(
+            context,
+            () => context.goNamed(
+              'game',
+              extra: GamePageData(
+                isHost: current.isHost,
+                matchId: current.match?.id ?? '',
+                matchConnection: current.matchConnection,
+              ),
             ),
           );
         }
