@@ -415,24 +415,11 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         final lastTurn = matchLoadedState.turns.last;
         if (lastTurn.isComplete()) {
           if (isPlayerTurn) {
-            return playerCards
-                .firstWhere((e) => e.id == lastTurn.playerCardId)
-                .id;
+            return lastTurn.playerCardId;
           }
-          return opponentCards
-              .firstWhere((e) => e.id == lastTurn.opponentCardId)
-              .id;
+          return lastTurn.opponentCardId;
         }
-        if (lastTurn.playerCardId != null) {
-          return playerCards
-              .firstWhere((e) => e.id == lastTurn.playerCardId)
-              .id;
-        }
-        if (lastTurn.opponentCardId != null) {
-          return opponentCards
-              .firstWhere((e) => e.id == lastTurn.opponentCardId)
-              .id;
-        }
+        return lastTurn.playerCardId ?? lastTurn.opponentCardId;
       }
     }
     return null;
