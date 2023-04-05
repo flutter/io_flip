@@ -232,6 +232,22 @@
   "@deckBuildingSubtitle": {
     "description": "Subtitle of the deck building page"
   },
+  "findingMatch": "Finding match...",
+  "@findingMatch": {
+    "description": "Title displayed while waiting to find match"
+  },
+  "searchingForOpponents": "Searching for opponents",
+  "@searchingForOpponents": {
+    "description": "Subitle displayed while waiting to find match"
+  },
+  "copyInviteCode": "Copy invite code",
+  "@copyInviteCode": {
+    "description": "Label on button to copy match invite code"
+  },
+  "matchmaking": "MATCHMAKING...",
+  "@matchmaking": {
+    "description": "Label of the match making page button"
+  },
   "quitGameDialogTitle": "Are you sure?",
   "@quitGameDialogTitle": {
     "description": "Title of the quit game dialog"

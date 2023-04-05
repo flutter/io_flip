@@ -1,30 +1,34 @@
 import 'package:api_client/api_client.dart';
-import 'package:flutter/widgets.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:top_dash/match_making/match_making.dart';
 
 class MatchMakingPage extends StatelessWidget {
   const MatchMakingPage({
-    required this.playerCardIds,
     required this.createPrivateMatch,
     required this.inviteCode,
+    required this.deck,
     super.key,
   });
 
   factory MatchMakingPage.routeBuilder(_, GoRouterState state) {
+    final data = state.extra as MatchMakingPageData?;
+
     return MatchMakingPage(
       key: const Key('match_making'),
-      playerCardIds: state.queryParametersAll['cardId'] ?? [],
       createPrivateMatch: state.queryParams['createPrivateMatch'] == 'true',
       inviteCode: state.queryParams['inviteCode'],
+      deck: data?.deck ?? [],
     );
   }
 
-  final List<String> playerCardIds;
   final bool createPrivateMatch;
   final String? inviteCode;
+  final List<Card> deck;
 
   MatchMakingEvent mapEvent() {
     return inviteCode != null
@@ -43,10 +47,18 @@ class MatchMakingPage extends StatelessWidget {
         return MatchMakingBloc(
           matchMakerRepository: matchMakerRepository,
           gameResource: gameResource,
-          cardIds: playerCardIds,
+          cardIds: deck.map((card) => card.id).toList(),
         )..add(mapEvent());
       },
-      child: const MatchMakingView(),
+      child: MatchMakingView(deck: deck),
     );
   }
+}
+
+class MatchMakingPageData extends Equatable {
+  const MatchMakingPageData({required this.deck});
+  final List<Card> deck;
+
+  @override
+  List<Object?> get props => [deck];
 }

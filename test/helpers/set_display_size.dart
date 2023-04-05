@@ -12,8 +12,8 @@ extension TopDashWidgetTester on WidgetTester {
     });
   }
 
-  void setLandspaceDisplaySize() {
-    setDisplaySize(const Size(1000, 400));
+  void setLandscapeDisplaySize() {
+    setDisplaySize(const Size(1400, 800));
   }
 
   void setPortraitDisplaySize() {
