@@ -90,7 +90,7 @@ void main() {
       when(() => context.read<CardRenderer>()).thenReturn(cardRenderer);
 
       firebaseCloudStorage = _MockFirebaseCloudStorage();
-      when(() => firebaseCloudStorage.updloadFile(any(), any()))
+      when(() => firebaseCloudStorage.uploadFile(any(), any()))
           .thenAnswer((_) async => 'https://example.com/share.png');
       when(() => context.read<FirebaseCloudStorage>())
           .thenReturn(firebaseCloudStorage);

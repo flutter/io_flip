@@ -33,7 +33,7 @@ FutureOr<Response> _getDeckImage(RequestContext context, String deckId) async {
   final image = await context.read<CardRenderer>().renderDeck(deck.cards);
 
   final firebaseCloudStorage = context.read<FirebaseCloudStorage>();
-  final url = await firebaseCloudStorage.updloadFile(
+  final url = await firebaseCloudStorage.uploadFile(
     image,
     'share/$deckId.png',
   );

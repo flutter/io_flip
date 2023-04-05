@@ -33,7 +33,7 @@ FutureOr<Response> _getCardImage(RequestContext context, String cardId) async {
 
   final firebaseCloudStorage = context.read<FirebaseCloudStorage>();
 
-  final url = await firebaseCloudStorage.updloadFile(
+  final url = await firebaseCloudStorage.uploadFile(
     image,
     'share/$cardId.png',
   );

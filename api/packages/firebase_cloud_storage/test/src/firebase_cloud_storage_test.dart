@@ -63,7 +63,7 @@ void main() {
     });
 
     test('returns the uploaded object url', () async {
-      final url = await firebaseCloudStorage.updloadFile(
+      final url = await firebaseCloudStorage.uploadFile(
         Uint8List(0),
         'filename',
       );
@@ -77,7 +77,7 @@ void main() {
     });
 
     test('correctly encode complex urls', () async {
-      final url = await firebaseCloudStorage.updloadFile(
+      final url = await firebaseCloudStorage.uploadFile(
         Uint8List(0),
         'share/filename',
       );
@@ -91,7 +91,7 @@ void main() {
     });
 
     test('makes the correct request', () async {
-      await firebaseCloudStorage.updloadFile(
+      await firebaseCloudStorage.uploadFile(
         Uint8List(0),
         'filename',
       );
@@ -117,7 +117,7 @@ void main() {
         when(() => response.body).thenReturn('Error');
 
         await expectLater(
-          () => firebaseCloudStorage.updloadFile(
+          () => firebaseCloudStorage.uploadFile(
             Uint8List(0),
             'filename',
           ),

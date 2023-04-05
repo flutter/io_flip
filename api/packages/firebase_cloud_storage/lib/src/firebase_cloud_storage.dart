@@ -57,7 +57,7 @@ class FirebaseCloudStorage {
   final String bucketName;
 
   /// Uploads a file to Firebase Cloud Storage.
-  Future<String> updloadFile(Uint8List data, String filename) async {
+  Future<String> uploadFile(Uint8List data, String filename) async {
     final url =
         'https://storage.googleapis.com/upload/storage/v1/b/$bucketName/o?uploadType=media&name=$filename';
 
