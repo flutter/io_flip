@@ -1,5 +1,6 @@
 import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:connection_repository/connection_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
@@ -39,6 +40,8 @@ class _MockLeaderboardResource extends Mock implements LeaderboardResource {}
 
 class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
 
+class _MockConnectionRepository extends Mock implements ConnectionRepository {}
+
 class _MockMatchSolver extends Mock implements MatchSolver {}
 
 class _MockGameScriptEngine extends Mock implements GameScriptMachine {}
@@ -70,6 +73,7 @@ void main() {
           settingsPersistence: MemoryOnlySettingsPersistence(),
           apiClient: apiClient,
           matchMakerRepository: _MockMatchMakerRepository(),
+          connectionRepository: _MockConnectionRepository(),
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
           user: _MockUser(),
@@ -144,6 +148,7 @@ void main() {
           settingsPersistence: MemoryOnlySettingsPersistence(),
           apiClient: apiClient,
           matchMakerRepository: _MockMatchMakerRepository(),
+          connectionRepository: _MockConnectionRepository(),
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
           user: _MockUser(),
@@ -163,6 +168,7 @@ void main() {
           settingsPersistence: MemoryOnlySettingsPersistence(),
           apiClient: apiClient,
           matchMakerRepository: _MockMatchMakerRepository(),
+          connectionRepository: _MockConnectionRepository(),
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
           user: _MockUser(),
@@ -181,6 +187,7 @@ void main() {
           settingsPersistence: MemoryOnlySettingsPersistence(),
           apiClient: apiClient,
           matchMakerRepository: _MockMatchMakerRepository(),
+          connectionRepository: _MockConnectionRepository(),
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
           user: _MockUser(),
@@ -199,6 +206,7 @@ void main() {
           settingsPersistence: MemoryOnlySettingsPersistence(),
           apiClient: apiClient,
           matchMakerRepository: _MockMatchMakerRepository(),
+          connectionRepository: _MockConnectionRepository(),
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
           user: _MockUser(),
@@ -217,6 +225,7 @@ void main() {
           settingsPersistence: MemoryOnlySettingsPersistence(),
           apiClient: apiClient,
           matchMakerRepository: _MockMatchMakerRepository(),
+          connectionRepository: _MockConnectionRepository(),
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
           user: _MockUser(),
@@ -235,6 +244,7 @@ void main() {
           settingsPersistence: MemoryOnlySettingsPersistence(),
           apiClient: apiClient,
           matchMakerRepository: _MockMatchMakerRepository(),
+          connectionRepository: _MockConnectionRepository(),
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
           user: _MockUser(),

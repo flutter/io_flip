@@ -16,6 +16,8 @@ dependencies:
   bloc: ^8.1.1
   cloud_firestore: ^4.5.0
   code_text_field: ^1.1.0
+  connection_repository:
+    path: packages/connection_repository
   equatable: ^2.0.5
   firebase_auth: ^4.4.0
   firebase_core: ^2.5.0
