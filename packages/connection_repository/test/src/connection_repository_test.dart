@@ -36,7 +36,7 @@ void main() {
       test('calls connect on api client with correct path', () async {
         await subject.connect();
 
-        verify(() => apiClient.connect('/public/connect'));
+        verify(() => apiClient.connect('/public/connect')).called(1);
       });
     });
 
