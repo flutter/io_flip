@@ -80,7 +80,7 @@ class HowToPlayPage extends StatelessWidget {
                     ),
                   ),
                   OutlinedButton(
-                    onPressed: () => GoRouter.of(context).go('/draft'),
+                    onPressed: () => GoRouter.of(context).go('/prompt'),
                     child: Text(l10n.howToPlayButtonText),
                   ),
                 ],

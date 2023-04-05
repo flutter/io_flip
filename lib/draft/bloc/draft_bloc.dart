@@ -28,7 +28,7 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     try {
       emit(state.copyWith(status: DraftStateStatus.deckLoading));
 
-      final cards = await _gameResource.generateCards();
+      final cards = await _gameResource.generateCards(event.prompts);
 
       emit(
         state.copyWith(

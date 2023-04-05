@@ -1,16 +1,17 @@
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:top_dash/prompt/prompt.dart';
 
 import '../../helpers/helpers.dart';
 
-class _FakePromptFlowController extends FakeFlowController<FlowData> {
-  _FakePromptFlowController() : super(const FlowData());
+class _FakePromptFlowController extends FakeFlowController<Prompt> {
+  _FakePromptFlowController() : super(const Prompt());
 }
 
 void main() {
-  late FakeFlowController<FlowData> flowController;
+  late FakeFlowController<Prompt> flowController;
 
   setUp(() {
     flowController = _FakePromptFlowController();
@@ -24,7 +25,7 @@ void main() {
       await tester.tap(find.byIcon(Icons.arrow_forward));
       await tester.pumpAndSettle();
 
-      expect(flowController.state, equals(const FlowData(character: 'text')));
+      expect(flowController.state, equals(const Prompt(character: 'text')));
     });
 
     testWidgets('flow completes correctly', (tester) async {
@@ -34,7 +35,7 @@ void main() {
       await tester.tap(find.byIcon(Icons.arrow_forward));
       await tester.pumpAndSettle();
 
-      expect(flowController.state, equals(const FlowData(character: 'text')));
+      expect(flowController.state, equals(const Prompt(character: 'text')));
       expect(flowController.completed, isTrue);
     });
   });
@@ -42,12 +43,12 @@ void main() {
 
 extension PromptFormViewTest on WidgetTester {
   Future<void> pumpSubject(
-    FlowController<FlowData> flowController, {
+    FlowController<Prompt> flowController, {
     bool isLast = false,
   }) {
     return pumpApp(
       Scaffold(
-        body: FlowBuilder<FlowData>(
+        body: FlowBuilder<Prompt>(
           controller: flowController,
           onGeneratePages: (data, pages) {
             return [

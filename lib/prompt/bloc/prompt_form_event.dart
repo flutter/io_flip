@@ -7,7 +7,7 @@ abstract class PromptFormEvent extends Equatable {
 class PromptSubmitted extends PromptFormEvent {
   const PromptSubmitted({required this.data});
 
-  final FlowData data;
+  final Prompt data;
 
   @override
   List<Object> get props => [data];

@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:api_client/src/resources/resources.dart';
 import 'package:encrypt/encrypt.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:http/http.dart' as http;
 import 'package:web_socket_client/web_socket_client.dart';
 
@@ -184,7 +185,13 @@ class ApiClient {
       queryParameters: queryParameters,
     );
 
-    return _webSocketFactory(uri);
+    final webSocket = _webSocketFactory(uri);
+    if (_idToken != null) {
+      webSocket.onConnected(
+        () => webSocket.send(jsonEncode(WebSocketMessage.token(_idToken!))),
+      );
+    }
+    return webSocket;
   }
 }
 
@@ -228,5 +235,13 @@ extension on http.Response {
       defaultValue: 'iv_not_set_12345',
     );
     return value;
+  }
+}
+
+extension on WebSocket {
+  void onConnected(void Function() onConnected) {
+    connection.firstWhere((state) => state is Connected).then((_) {
+      onConnected();
+    });
   }
 }

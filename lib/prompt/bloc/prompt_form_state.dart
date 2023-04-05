@@ -2,13 +2,13 @@ part of 'prompt_form_bloc.dart';
 
 class PromptFormState extends Equatable {
   const PromptFormState({
-    this.prompts = const FlowData(),
+    this.prompts = const Prompt(),
   });
 
-  final FlowData prompts;
+  final Prompt prompts;
 
   PromptFormState copyWith({
-    FlowData? prompts,
+    Prompt? prompts,
   }) {
     return PromptFormState(
       prompts: prompts ?? this.prompts,
