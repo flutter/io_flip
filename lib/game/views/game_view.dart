@@ -104,13 +104,10 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
   // Clash zone card position calculations
   final clashCardPositionY = opponentHandCardSize.height + cardSpacingY;
 
-  late final clashCardOffsets = List.generate(
-    2,
-    (index) => Offset(
-      index * (clashCardSize.width + cardSpacingX),
-      clashCardPositionY,
-    ),
-  );
+  late final clashCardOffsets = [
+    Offset(0, clashCardPositionY),
+    Offset(clashCardSize.width + cardSpacingX, clashCardPositionY),
+  ];
 
   // Player card position calculations
   late final playerLeftPadding = (boardSize.width -
