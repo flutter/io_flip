@@ -564,5 +564,72 @@ void main() {
         );
       });
     });
+
+    group('connectToCpuMatch', () {
+      final connection = _MockConnection();
+      setUp(() {
+        when(
+          () => apiClient.connect(
+            any(),
+            queryParameters: any(named: 'queryParameters'),
+          ),
+        ).thenAnswer((_) async => webSocket);
+
+        when(
+          () => webSocket.connection,
+        ).thenAnswer((_) => connection);
+      });
+
+      test('Makes the correct call', () {
+        when(
+          () => connection.firstWhere(any()),
+        ).thenAnswer((_) async => const Connected());
+
+        resource.connectToCpuMatch(matchId: '');
+
+        verify(
+          () => apiClient.connect(
+            any(),
+            queryParameters: any(named: 'queryParameters'),
+          ),
+        ).called(1);
+      });
+
+      test('throws on error', () async {
+        when(
+          () => connection.firstWhere(any()),
+        ).thenThrow(Exception('oops'));
+
+        await expectLater(
+          () => resource.connectToCpuMatch(matchId: ''),
+          throwsA(isA<ApiClientError>()),
+        );
+      });
+
+      test('throws on error on timeout', () async {
+        when(
+          () => apiClient.connect(
+            any(),
+            queryParameters: any(named: 'queryParameters'),
+          ),
+        ).thenAnswer((_) async => webSocket);
+
+        when(
+          () => webSocket.connection,
+        ).thenAnswer((_) => connection);
+        when(
+          () => connection.firstWhere(any()),
+        ).thenAnswer((_) async {
+          return Future.delayed(const Duration(seconds: 3), () {
+            return const Connecting();
+          });
+        });
+
+        expect(
+          () => resource.connectToCpuMatch(matchId: ''),
+          throwsA(isA<ApiClientError>()),
+        );
+      });
+    });
   });
 }

@@ -189,7 +189,7 @@ class GameResource {
     }
   }
 
-  /// WebSocket connect to  matches/connect
+  /// WebSocket connect to  public/matches/connect
   Future<WebSocket> connectToMatch({
     required String matchId,
     required bool isHost,
@@ -215,6 +215,35 @@ class GameResource {
     } catch (error) {
       throw ApiClientError(
         'websocket public/matches/connect returned with the following error: "$error"',
+        StackTrace.current,
+      );
+    }
+  }
+
+  /// WebSocket connect to  game/matches/connect
+  Future<WebSocket> connectToCpuMatch({
+    required String matchId,
+  }) async {
+    try {
+      final socket = await _apiClient.connect(
+        '/game/matches/connect',
+        queryParameters: {
+          'matchId': matchId,
+        },
+      );
+
+      await socket.connection.firstWhere((state) => state is Connected).timeout(
+        _webSocketTimeout,
+        onTimeout: () async {
+          socket.close();
+          throw TimeoutException('Could not connect to cpu match');
+        },
+      );
+
+      return socket;
+    } catch (error) {
+      throw ApiClientError(
+        'websocket game/matches/connect returned with the following error: "$error"',
         StackTrace.current,
       );
     }

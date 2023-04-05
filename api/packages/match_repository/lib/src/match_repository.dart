@@ -245,6 +245,23 @@ class MatchRepository {
     );
   }
 
+  /// Sets the `guestConnected` attribute as true for CPU guest.
+  Future<void> setCpuConnectivity({
+    required String match,
+    required String hostId,
+  }) async {
+    await _dbClient.update(
+      'matches',
+      DbEntityRecord(
+        id: match,
+        data: {
+          'guestConnected': true,
+          'guest': 'CPU_$hostId',
+        },
+      ),
+    );
+  }
+
   /// Return the match with the given [matchId].
   Future<bool> getPlayerConnectivity({
     required String matchId,

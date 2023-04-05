@@ -736,6 +736,44 @@ void main() {
       });
     });
 
+    group('setCpuConnectivity', () {
+      late final MatchRepository matchRepository;
+      final dbClient = _MockDbClient();
+      final cardsRepository = _MockCardRepository();
+      final matchSolver = _MockMatchSolver();
+      const matchId = 'matchId';
+      const hostId = 'hostId';
+
+      setUp(() {
+        matchRepository = MatchRepository(
+          cardsRepository: cardsRepository,
+          dbClient: dbClient,
+          matchSolver: matchSolver,
+        );
+        when(() => dbClient.update(any(), any<DbEntityRecord>()))
+            .thenAnswer((_) async {});
+      });
+
+      test('updates the correct field', () async {
+        await matchRepository.setCpuConnectivity(
+          match: matchId,
+          hostId: hostId,
+        );
+        verify(
+          () => dbClient.update(
+            'matches',
+            DbEntityRecord(
+              id: matchId,
+              data: const {
+                'guestConnected': true,
+                'guest': 'CPU_$hostId',
+              },
+            ),
+          ),
+        );
+      });
+    });
+
     group('setGuestConnectivity', () {
       late final MatchRepository matchRepository;
       final dbClient = _MockDbClient();

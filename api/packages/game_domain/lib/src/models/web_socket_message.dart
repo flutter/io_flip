@@ -13,6 +13,9 @@ enum ErrorType {
 
   /// Represents a player that is already connect to the socket.
   playerAlreadyConnected,
+
+  /// Represents a player that is not connected to the requested game
+  playerNotConnectedToGame
 }
 
 /// Represents the message passed from the websocket.

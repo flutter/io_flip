@@ -27,4 +27,5 @@ const _$ErrorTypeEnumMap = {
   ErrorType.badRequest: 'badRequest',
   ErrorType.firebaseException: 'firebaseException',
   ErrorType.playerAlreadyConnected: 'playerAlreadyConnected',
+  ErrorType.playerNotConnectedToGame: 'playerNotConnectedToGame',
 };
