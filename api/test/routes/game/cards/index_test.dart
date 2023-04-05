@@ -63,6 +63,7 @@ void main() {
               'image': '',
               'power': 1,
               'suit': 'air',
+              'shareImage': null,
             },
           ),
         }),
