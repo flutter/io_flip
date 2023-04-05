@@ -1,6 +1,6 @@
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
-import 'package:top_dash/prompt/prompt.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class PromptFormView extends StatefulWidget {
@@ -67,10 +67,10 @@ class _PromptFormViewState extends State<PromptFormView> {
     // TODO(hugo): check in whitelist if entry is valid
     widget.isLastOfFlow
         ? context
-            .flow<FlowData>()
+            .flow<Prompt>()
             .complete((data) => data.copyWithNewAttribute(_text))
         : context
-            .flow<FlowData>()
+            .flow<Prompt>()
             .update((data) => data.copyWithNewAttribute(_text));
   }
 }

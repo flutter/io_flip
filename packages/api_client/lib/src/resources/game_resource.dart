@@ -21,8 +21,11 @@ class GameResource {
   final Duration _webSocketTimeout;
 
   /// Post /cards
-  Future<List<Card>> generateCards() async {
-    final response = await _apiClient.post('/game/cards');
+  Future<List<Card>> generateCards(Prompt prompt) async {
+    final response = await _apiClient.post(
+      '/game/cards',
+      body: jsonEncode(prompt),
+    );
 
     if (response.statusCode != HttpStatus.ok) {
       throw ApiClientError(

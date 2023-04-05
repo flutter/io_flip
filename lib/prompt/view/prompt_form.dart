@@ -1,29 +1,11 @@
-import 'package:equatable/equatable.dart';
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:provider/provider.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/prompt/bloc/prompt_form_bloc.dart';
 import 'package:top_dash/prompt/view/prompt_form_view.dart';
-
-class FlowData extends Equatable {
-  const FlowData({this.character, this.power, this.environment});
-
-  final String? character;
-  final String? power;
-  final String? environment;
-
-  FlowData copyWithNewAttribute(String attribute) {
-    return FlowData(
-      character: character ?? attribute,
-      power: character != null ? power ?? attribute : null,
-      environment: power != null ? environment ?? attribute : null,
-    );
-  }
-
-  @override
-  List<Object?> get props => [character, power, environment];
-}
 
 class PromptForm extends StatelessWidget {
   const PromptForm({super.key});
@@ -32,8 +14,8 @@ class PromptForm extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = context.read<PromptFormBloc>();
     return Scaffold(
-      body: FlowBuilder<FlowData>(
-        state: const FlowData(),
+      body: FlowBuilder<Prompt>(
+        state: const Prompt(),
         onComplete: (data) {
           bloc.add(PromptSubmitted(data: data));
         },

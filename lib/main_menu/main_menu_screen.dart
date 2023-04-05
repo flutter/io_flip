@@ -162,7 +162,7 @@ class _Footer extends StatelessWidget {
               l10n.play,
               onPressed: () {
                 audioController.playSfx(SfxType.buttonTap);
-                GoRouter.of(context).go('/draft');
+                GoRouter.of(context).go('/prompt');
               },
             ),
           ],
