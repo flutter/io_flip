@@ -272,10 +272,8 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    for (final element in playerCardControllers) {
-      element.dispose();
-    }
-    for (final element in opponentCardControllers) {
+    final controllers = [...playerCardControllers, ...opponentCardControllers];
+    for (final element in controllers) {
       element.dispose();
     }
 
