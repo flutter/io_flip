@@ -28,6 +28,14 @@ void main() {
     late CardsRepository cardsRepository;
     late DbClient dbClient;
 
+    setUpAll(() {
+      registerFallbackValue(
+        DbEntityRecord(
+          id: 'id',
+        ),
+      );
+    });
+
     setUp(() {
       dbClient = _MockDbClient();
       cardRng = _MockCardRng();
@@ -160,6 +168,7 @@ void main() {
             data: const {
               'userId': userId,
               'cards': [cardId],
+              'shareImage': 'https://share-image.png',
             },
           ),
         );
@@ -188,6 +197,7 @@ void main() {
             Deck(
               id: deckId,
               userId: userId,
+              shareImage: 'https://share-image.png',
               cards: const [
                 Card(
                   id: cardId,
@@ -253,6 +263,87 @@ void main() {
 
         final returnedCard = await cardsRepository.getCard(cardId);
         expect(returnedCard, isNull);
+      });
+    });
+
+    group('updateCard', () {
+      test('updates a card', () async {
+        final card = Card(
+          id: 'abc',
+          name: 'Super Bird',
+          description: 'Super Bird Is Ready!',
+          image: 'https://image.png',
+          rarity: false,
+          power: 10,
+          suit: Suit.air,
+          shareImage: 'https://share.png',
+        );
+
+        when(() => dbClient.update('cards', any())).thenAnswer(
+          (_) async {},
+        );
+
+        await cardsRepository.updateCard(card);
+
+        verify(
+          () => dbClient.update(
+            'cards',
+            DbEntityRecord(
+              id: card.id,
+              data: const {
+                'name': 'Super Bird',
+                'description': 'Super Bird Is Ready!',
+                'image': 'https://image.png',
+                'rarity': false,
+                'power': 10,
+                'suit': 'air',
+                'shareImage': 'https://share.png',
+              },
+            ),
+          ),
+        ).called(1);
+      });
+    });
+
+    group('updateDeck', () {
+      test('updates a deck', () async {
+        final deck = Deck(
+          id: 'abc',
+          userId: 'userId',
+          shareImage: 'https://share.png',
+          cards: const [
+            Card(
+              id: 'card1',
+              name: 'Super Bird',
+              description: 'Super Bird Is Ready!',
+              image: 'https://image.png',
+              rarity: false,
+              power: 10,
+              suit: Suit.air,
+              shareImage: 'https://share.png',
+            ),
+          ],
+        );
+
+        when(() => dbClient.update('decks', any())).thenAnswer(
+          (_) async {},
+        );
+
+        await cardsRepository.updateDeck(deck);
+
+        verify(
+          () => dbClient.update(
+            'decks',
+            DbEntityRecord(
+              id: deck.id,
+              data: const {
+                'userId': 'userId',
+                'shareImage': 'https://share.png',
+                'cards': ['card1'],
+              },
+            ),
+          ),
+        ).called(1);
       });
     });
   });

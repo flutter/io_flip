@@ -68,8 +68,10 @@ void main() {
                 'rarity': false,
                 'power': 1,
                 'suit': 'air',
+                'shareImage': null,
               },
             ],
+            'shareImage': null,
           },
           'guestDeck': {
             'id': 'guestDeck',
@@ -83,8 +85,10 @@ void main() {
                 'rarity': false,
                 'power': 1,
                 'suit': 'fire',
+                'shareImage': null,
               },
             ],
+            'shareImage': null,
           },
           'hostConnected': false,
           'guestConnected': false

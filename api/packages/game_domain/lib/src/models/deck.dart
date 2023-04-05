@@ -14,6 +14,7 @@ class Deck extends Equatable {
     required this.id,
     required this.userId,
     required this.cards,
+    this.shareImage,
   });
 
   /// {@macro deck}
@@ -31,9 +32,21 @@ class Deck extends Equatable {
   @JsonKey()
   final List<Card> cards;
 
+  /// Share image.
+  @JsonKey()
+  final String? shareImage;
+
   /// Returns a json representation from this instance.
   Map<String, dynamic> toJson() => _$DeckToJson(this);
 
+  /// Returns a copy of this instance with the new [shareImage].
+  Deck copyWithShareImage(String? shareImage) => Deck(
+        id: id,
+        userId: userId,
+        cards: cards,
+        shareImage: shareImage,
+      );
+
   @override
-  List<Object> get props => [id, cards, userId];
+  List<Object?> get props => [id, cards, userId, shareImage];
 }
