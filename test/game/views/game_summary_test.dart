@@ -155,6 +155,7 @@ void main() {
               hostStartsMatch: true,
               result: MatchResult.guest,
             ),
+            turnAnimationsFinished: true,
           ),
         );
       }
