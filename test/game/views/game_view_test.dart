@@ -502,17 +502,17 @@ void main() {
           final playerInitialOffset = tester.getCenter(playerCardFinder);
           final opponentInitialOffset = tester.getCenter(opponentCardFinder);
 
-          // Get card offset after both players play and cards are in the fight
+          // Get card offset after both players play and cards are in the clash
           // zone
           await tester.pumpAndSettle();
-          final playerFightOffset = tester.getCenter(playerCardFinder);
-          expect(playerInitialOffset, isNot(equals(playerFightOffset)));
+          final playerClashOffset = tester.getCenter(playerCardFinder);
+          expect(playerInitialOffset, isNot(equals(playerClashOffset)));
 
           await tester.pumpAndSettle();
-          final opponentFightOffset = tester.getCenter(opponentCardFinder);
-          expect(opponentInitialOffset, isNot(equals(opponentFightOffset)));
+          final opponentClashOffset = tester.getCenter(opponentCardFinder);
+          expect(opponentInitialOffset, isNot(equals(opponentClashOffset)));
 
-          // Get card offset once fight is over and both cards are back in the
+          // Get card offset once clash is over and both cards are back in the
           // original position
           await tester.pump(turnEndDuration);
           await tester.pumpAndSettle();

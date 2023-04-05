@@ -59,7 +59,7 @@ class GameView extends StatelessWidget {
   }
 }
 
-const fightCardSize = TopDashCardSizes.md;
+const clashCardSize = TopDashCardSizes.md;
 const playerHandCardSize = TopDashCardSizes.sm;
 const opponentHandCardSize = TopDashCardSizes.xs;
 const counterSize = Size(56, 56);
@@ -80,10 +80,10 @@ class _GameBoard extends StatefulWidget {
 
 class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
   final boardSize = Size(
-    2 * fightCardSize.width + cardSpacingX,
+    2 * clashCardSize.width + cardSpacingX,
     opponentHandCardSize.height +
         cardSpacingY +
-        fightCardSize.height +
+        clashCardSize.height +
         cardSpacingY +
         playerHandCardSize.height,
   );
@@ -101,14 +101,14 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     ),
   );
 
-  // Fight zone card position calculations
-  final fightCardPositionY = opponentHandCardSize.height + cardSpacingY;
+  // Clash zone card position calculations
+  final clashCardPositionY = opponentHandCardSize.height + cardSpacingY;
 
-  late final fightCardOffsets = List.generate(
+  late final clashCardOffsets = List.generate(
     2,
     (index) => Offset(
-      index * (fightCardSize.width + cardSpacingX),
-      fightCardPositionY,
+      index * (clashCardSize.width + cardSpacingX),
+      clashCardPositionY,
     ),
   );
 
@@ -119,7 +119,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
 
   final playerCardPositionY = opponentHandCardSize.height +
       cardSpacingY +
-      fightCardSize.height +
+      clashCardSize.height +
       cardSpacingY;
 
   late final playerCardOffsets = List.generate(
@@ -133,14 +133,14 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
   //Counter position
   late final counterY = opponentHandCardSize.height +
       cardSpacingY +
-      (fightCardSize.height - counterSize.height) / 2;
+      (clashCardSize.height - counterSize.height) / 2;
 
   late final counterX =
-      (2 * fightCardSize.width + cardSpacingX - counterSize.width) / 2;
+      (2 * clashCardSize.width + cardSpacingX - counterSize.width) / 2;
 
   late final counterOffset = Offset(counterX, counterY);
 
-  List<AnimationController> fightControllers = [];
+  List<AnimationController> clashControllers = [];
 
   // Opponent animation controllers
   late final opponentCardControllers = createAnimationControllers();
@@ -148,7 +148,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
   late final opponentCardAnimations = createAnimations(
     controllers: opponentCardControllers,
     begin: (i) => opponentCardOffsets[i] & opponentHandCardSize,
-    end: fightCardOffsets.last & fightCardSize,
+    end: clashCardOffsets.last & clashCardSize,
   );
 
   // Player animation controllers
@@ -157,7 +157,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
   late final playerCardAnimations = createAnimations(
     controllers: playerCardControllers,
     begin: (i) => playerCardOffsets[i] & playerHandCardSize,
-    end: fightCardOffsets.first & fightCardSize,
+    end: clashCardOffsets.first & clashCardSize,
   );
 
   List<Animation<Rect?>> createAnimations({
@@ -189,9 +189,9 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
       if (state.turns.isNotEmpty) {
         if (state.turns.last.isComplete()) {
           bloc.add(const CardOverlayRevealed());
-          for (final controller in fightControllers) {
+          for (final controller in clashControllers) {
             Future.delayed(turnEndDuration, controller.reverse);
-            fightControllers = [];
+            clashControllers = [];
           }
         }
       }
@@ -222,14 +222,14 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
               .indexWhere((element) => element.id == lastPlayedCardId);
           if (playerIndex >= 0) {
             final controller = playerCardControllers[playerIndex]..forward();
-            fightControllers.add(controller);
+            clashControllers.add(controller);
           }
           final opponentIndex = bloc.opponentCards
               .indexWhere((element) => element.id == lastPlayedCardId);
           if (opponentIndex >= 0) {
             final controller = opponentCardControllers[opponentIndex]
               ..forward();
-            fightControllers.add(controller);
+            clashControllers.add(controller);
           }
         }
       },
@@ -239,12 +239,12 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
           height: boardSize.height,
           child: Stack(
             children: [
-              ...fightCardOffsets.mapIndexed(
+              ...clashCardOffsets.mapIndexed(
                 (i, offset) {
                   final isSlotTurn = (bloc.isPlayerTurn && i.isEven) ||
                       (!bloc.isPlayerTurn && i.isOdd);
-                  return _FightCard(
-                    rect: offset & fightCardSize,
+                  return _ClashCard(
+                    rect: offset & clashCardSize,
                     isSlotTurn: isSlotTurn,
                     isPlayerTurn: bloc.isPlayerTurn,
                   );
@@ -375,8 +375,8 @@ class _PlayerCard extends StatelessWidget {
   }
 }
 
-class _FightCard extends StatelessWidget {
-  const _FightCard({
+class _ClashCard extends StatelessWidget {
+  const _ClashCard({
     required this.rect,
     required this.isSlotTurn,
     required this.isPlayerTurn,
@@ -391,8 +391,8 @@ class _FightCard extends StatelessWidget {
     return Positioned.fromRect(
       rect: rect,
       child: Container(
-        height: fightCardSize.height,
-        width: fightCardSize.width,
+        height: clashCardSize.height,
+        width: clashCardSize.width,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: isSlotTurn
