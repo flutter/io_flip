@@ -1,6 +1,8 @@
 import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:game_script_machine/game_script_machine.dart';
@@ -17,6 +19,8 @@ import 'helpers.dart';
 class _MockSettingsController extends Mock implements SettingsController {}
 
 class _MockGameResource extends Mock implements GameResource {}
+
+class _MockPromptResource extends Mock implements PromptResource {}
 
 class _MockScriptsResource extends Mock implements ScriptsResource {}
 
@@ -38,6 +42,7 @@ extension PumpApp on WidgetTester {
     SettingsController? settingsController,
     GameResource? gameResource,
     ScriptsResource? scriptsResource,
+    PromptResource? promptResource,
     LeaderboardResource? leaderboardResource,
     MatchMakerRepository? matchMakerRepository,
     MatchSolver? matchSolver,
@@ -56,6 +61,9 @@ extension PumpApp on WidgetTester {
           ),
           Provider.value(
             value: scriptsResource ?? _MockScriptsResource(),
+          ),
+          Provider.value(
+            value: promptResource ?? _MockPromptResource(),
           ),
           Provider.value(
             value: leaderboardResource ?? _MockLeaderboardResource(),
@@ -82,6 +90,77 @@ extension PumpApp on WidgetTester {
             home: widget,
           ),
         ),
+      ),
+    );
+  }
+}
+
+extension PumpAppWithRouter on WidgetTester {
+  Future<void> pumpAppWithRouter<T extends Bloc<Equatable, Equatable>>(
+    GoRouter router, {
+    SettingsController? settingsController,
+    GameResource? gameResource,
+    PromptResource? promptResource,
+    ScriptsResource? scriptsResource,
+    LeaderboardResource? leaderboardResource,
+    MatchMakerRepository? matchMakerRepository,
+    MatchSolver? matchSolver,
+    GameScriptMachine? gameScriptMachine,
+    User? user,
+    T? bloc,
+  }) {
+    return pumpWidget(
+      MultiProvider(
+        providers: [
+          Provider.value(
+            value: settingsController ?? _MockSettingsController(),
+          ),
+          Provider.value(
+            value: promptResource ?? _MockPromptResource(),
+          ),
+          Provider.value(
+            value: gameResource ?? _MockGameResource(),
+          ),
+          Provider.value(
+            value: scriptsResource ?? _MockScriptsResource(),
+          ),
+          Provider.value(
+            value: leaderboardResource ?? _MockLeaderboardResource(),
+          ),
+          Provider.value(
+            value: matchMakerRepository ?? _MockMatchMakerRepository(),
+          ),
+          Provider.value(
+            value: matchSolver ?? _MockMatchSolver(),
+          ),
+          Provider.value(
+            value: gameScriptMachine ?? _MockGameScriptMachine(),
+          ),
+          Provider.value(
+            value: user ?? _MockUser(),
+          ),
+        ],
+        child: bloc != null
+            ? BlocProvider.value(
+                value: bloc,
+                child: MaterialApp.router(
+                  scaffoldMessengerKey: scaffoldMessengerKey,
+                  routeInformationProvider: router.routeInformationProvider,
+                  routeInformationParser: router.routeInformationParser,
+                  routerDelegate: router.routerDelegate,
+                  localizationsDelegates:
+                      AppLocalizations.localizationsDelegates,
+                  supportedLocales: AppLocalizations.supportedLocales,
+                ),
+              )
+            : MaterialApp.router(
+                scaffoldMessengerKey: scaffoldMessengerKey,
+                routeInformationProvider: router.routeInformationProvider,
+                routeInformationParser: router.routeInformationParser,
+                routerDelegate: router.routerDelegate,
+                localizationsDelegates: AppLocalizations.localizationsDelegates,
+                supportedLocales: AppLocalizations.supportedLocales,
+              ),
       ),
     );
   }

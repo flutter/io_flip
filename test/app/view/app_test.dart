@@ -8,9 +8,9 @@ import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/app/app.dart';
 import 'package:top_dash/audio/audio_controller.dart';
-import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/main_menu/main_menu_screen.dart';
+import 'package:top_dash/prompt/prompt.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
 import 'package:top_dash/settings/settings.dart';
 import 'package:top_dash/share/share.dart';
@@ -33,6 +33,8 @@ class _MockGameResource extends Mock implements GameResource {}
 
 class _MockScriptsResource extends Mock implements ScriptsResource {}
 
+class _MockPromptResource extends Mock implements PromptResource {}
+
 class _MockLeaderboardResource extends Mock implements LeaderboardResource {}
 
 class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
@@ -52,6 +54,11 @@ void main() {
     setUp(() {
       apiClient = _MockApiClient();
       when(() => apiClient.gameResource).thenReturn(_MockGameResource());
+
+      final promptResource = _MockPromptResource();
+      when(promptResource.getPromptWhitelist)
+          .thenAnswer((_) async => Future.value(['']));
+      when(() => apiClient.promptResource).thenReturn(promptResource);
       when(() => apiClient.scriptsResource).thenReturn(_MockScriptsResource());
       when(() => apiClient.leaderboardResource)
           .thenReturn(_MockLeaderboardResource());
@@ -168,7 +175,7 @@ void main() {
       expect(find.byType(PortraitMenuView), findsOneWidget);
     });
 
-    testWidgets('can navigate to the game page', (tester) async {
+    testWidgets('can navigate to the prompt page', (tester) async {
       await tester.pumpWidget(
         App(
           settingsPersistence: MemoryOnlySettingsPersistence(),
@@ -183,7 +190,7 @@ void main() {
       await tester.tap(find.text(tester.l10n.play));
       await tester.pumpAndSettle();
 
-      expect(find.byType(DraftPage), findsOneWidget);
+      expect(find.byType(PromptPage), findsOneWidget);
     });
 
     testWidgets('can navigate to the settings', (tester) async {

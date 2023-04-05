@@ -245,15 +245,26 @@ class MatchRepository {
     );
   }
 
-  /// Return the match with the given [matchId].
-  Future<bool> getPlayerConnectivity({
-    required String matchId,
-    required bool isHost,
-  }) async {
-    final matchData = await _dbClient.getById('matches', matchId);
+  /// Return whether a player with the given [userId] is connected to the game.
+  Future<bool> getPlayerConnectivity({required String userId}) async {
+    final entity = await _dbClient.getById('connection_states', userId);
 
-    return (matchData?.data[isHost ? 'hostConnected' : 'guestConnected']
-            as bool?) ??
-        false;
+    return (entity?.data['connected'] as bool?) ?? false;
+  }
+
+  /// Sets the player with the given [userId] as connected or disconnected.
+  Future<void> setPlayerConnectivity({
+    required String userId,
+    required bool connected,
+  }) async {
+    await _dbClient.update(
+      'connection_states',
+      DbEntityRecord(
+        id: userId,
+        data: {
+          'connected': connected,
+        },
+      ),
+    );
   }
 }

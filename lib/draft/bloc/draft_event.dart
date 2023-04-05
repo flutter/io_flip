@@ -5,7 +5,9 @@ abstract class DraftEvent extends Equatable {
 }
 
 class DeckRequested extends DraftEvent {
-  const DeckRequested();
+  const DeckRequested(this.prompts);
+
+  final Prompt prompts;
 
   @override
   List<Object> get props => [];

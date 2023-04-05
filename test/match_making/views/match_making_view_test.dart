@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, one_member_abstracts
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
@@ -18,15 +18,31 @@ class _MockMatchMakingBloc extends Mock implements MatchMakingBloc {}
 
 class _MockWebSocket extends Mock implements WebSocket {}
 
+abstract class __Router {
+  void neglect(BuildContext context, VoidCallback callback);
+}
+
+class _MockRouter extends Mock implements __Router {}
+
+class _MockBuildContext extends Mock implements BuildContext {}
+
 void main() {
   group('MatchMakingView', () {
     late MatchMakingBloc bloc;
+    late __Router router;
     final webSocket = _MockWebSocket();
 
     setUp(() {
       bloc = _MockMatchMakingBloc();
+      router = _MockRouter();
+      when(() => router.neglect(any(), any())).thenAnswer((_) {
+        final callback = _.positionalArguments[1] as VoidCallback;
+        callback();
+      });
     });
+
     setUpAll(() {
+      registerFallbackValue(_MockBuildContext());
       registerFallbackValue(
         GamePageData(
           isHost: true,
@@ -80,7 +96,12 @@ void main() {
           ),
         );
         final goRouter = MockGoRouter();
-        await tester.pumpSubject(bloc, goRouter: goRouter);
+        await tester.pumpSubject(
+          bloc,
+          goRouter: goRouter,
+          routerNeglectCall: router.neglect,
+        );
+
         final data = GamePageData(
           isHost: true,
           matchId: 'matchId',
@@ -157,12 +178,14 @@ extension MatchMakingViewTest on WidgetTester {
     MatchMakingBloc bloc, {
     GoRouter? goRouter,
     Future<void> Function(ClipboardData)? setClipboardData,
+    RouterNeglectCall routerNeglectCall = Router.neglect,
   }) {
     return pumpApp(
       BlocProvider<MatchMakingBloc>.value(
         value: bloc,
         child: MatchMakingView(
           setClipboardData: setClipboardData ?? Clipboard.setData,
+          routerNeglectCall: routerNeglectCall,
         ),
       ),
       router: goRouter,

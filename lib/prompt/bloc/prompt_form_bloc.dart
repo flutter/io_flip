@@ -1,7 +1,7 @@
 import 'package:api_client/api_client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:top_dash/prompt/prompt.dart';
+import 'package:game_domain/game_domain.dart';
 
 part 'prompt_form_event.dart';
 part 'prompt_form_state.dart';
@@ -12,7 +12,7 @@ class PromptFormBloc extends Bloc<PromptFormEvent, PromptFormState> {
   })  : _promptResource = promptResource,
         super(const PromptFormState()) {
     _setWhitelist();
-    on<PromptSubmitted>(_onInitialsSubmitted);
+    on<PromptSubmitted>(_onPromptSubmitted);
   }
 
   final PromptResource _promptResource;
@@ -22,7 +22,7 @@ class PromptFormBloc extends Bloc<PromptFormEvent, PromptFormState> {
     whitelist = await _promptResource.getPromptWhitelist();
   }
 
-  void _onInitialsSubmitted(
+  void _onPromptSubmitted(
     PromptSubmitted event,
     Emitter<PromptFormState> emit,
   ) {
