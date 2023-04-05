@@ -176,6 +176,22 @@ class MatchRepository {
         },
       ),
     );
+
+    if (match.guestDeck.id.contains('CPU') &&
+        newMatchState.guestPlayedCards.length < 3 &&
+        newMatchState.hostPlayedCards.length >=
+            newMatchState.guestPlayedCards.length) {
+      await playCard(
+        matchId: matchId,
+        cardId: match.guestDeck.cards
+            .firstWhere(
+              (element) => !newMatchState.guestPlayedCards.contains(element.id),
+            )
+            .id,
+        deckId: match.guestDeck.id,
+        userId: match.guestDeck.userId,
+      );
+    }
   }
 
   Future<void> _playerWon(ScoreCard scoreCard) async {
