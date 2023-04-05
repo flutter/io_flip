@@ -1508,7 +1508,7 @@ void main() {
 
     group('CardOverlayRevealed', () {
       blocTest<GameBloc, GameState>(
-        'emits state updating turnAnimationsFinished field',
+        'emits state updating showCardsOverlay field',
         build: () => GameBloc(
           matchConnection: webSocket,
           gameResource: gameResource,
