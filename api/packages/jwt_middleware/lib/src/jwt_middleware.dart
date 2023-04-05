@@ -50,7 +50,7 @@ class JwtMiddleware {
               authorization.first == 'Bearer') {
             final token = authorization.last;
 
-            final userId = await _verifyToken(token);
+            final userId = await verifyToken(token);
             if (userId != null) {
               return handler(context.provide(() => AuthenticatedUser(userId)));
             }
@@ -61,7 +61,7 @@ class JwtMiddleware {
       };
 
   /// Verifies the given token and returns the user id if valid.
-  Future<String?> _verifyToken(String token) async {
+  Future<String?> verifyToken(String token) async {
     final JWT jwt;
     try {
       jwt = _parseJwt(token);
