@@ -10,6 +10,7 @@
       "ENCRYPTION_IV": "FxC21ctRg9SgiXuZ",
       "INITIALS_BLACKLIST_ID": "MdOoZMhusnJTcwfYE0nL",
       "PROMPT_WHITELIST_ID": "MIsaP8zrRVhuR84MLEic",
+      "FB_STORAGE_BUCKET": "top-dash-dev.appspot.com"
     }
   },
   "tasks": [

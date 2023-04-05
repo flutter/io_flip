@@ -39,6 +39,7 @@ void main() {
           'rarity': false,
           'power': 1,
           'suit': 'air',
+          'shareImage': null,
         }),
       );
     });
@@ -242,5 +243,34 @@ void main() {
         ),
       );
     });
+
+    test(
+      'copyWithShareImage returns the instance with the new shareImage value',
+      () {
+        expect(
+          Card(
+            id: '',
+            name: '',
+            description: '',
+            image: '',
+            rarity: false,
+            power: 1,
+            suit: Suit.air,
+          ).copyWithShareImage('a'),
+          equals(
+            Card(
+              id: '',
+              name: '',
+              description: '',
+              image: '',
+              rarity: false,
+              power: 1,
+              suit: Suit.air,
+              shareImage: 'a',
+            ),
+          ),
+        );
+      },
+    );
   });
 }

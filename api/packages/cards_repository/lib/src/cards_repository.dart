@@ -123,6 +123,7 @@ class CardsRepository {
     return Deck.fromJson({
       'id': deckData.id,
       'userId': deckData.data['userId'],
+      'shareImage': deckData.data['shareImage'],
       'cards': cardsData
           .whereType<DbEntityRecord>()
           .map(
@@ -144,5 +145,35 @@ class CardsRepository {
       'id': cardData.id,
       ...cardData.data,
     });
+  }
+
+  /// Updates the given [card] in the database.
+  Future<void> updateCard(Card card) async {
+    final data = card.toJson()..remove('id');
+
+    await _dbClient.update(
+      'cards',
+      DbEntityRecord(
+        id: card.id,
+        data: data,
+      ),
+    );
+  }
+
+  /// Updates the given [deck] in the database.
+  Future<void> updateDeck(Deck deck) async {
+    final data = deck.toJson()..remove('id');
+
+    data['cards'] = (data['cards'] as List<Map<String, dynamic>>)
+        .map((card) => card['id'])
+        .toList();
+
+    await _dbClient.update(
+      'decks',
+      DbEntityRecord(
+        id: deck.id,
+        data: data,
+      ),
+    );
   }
 }

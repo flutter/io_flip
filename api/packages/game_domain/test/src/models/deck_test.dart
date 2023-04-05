@@ -54,6 +54,7 @@ void main() {
               'rarity': false,
               'power': 1,
               'suit': 'air',
+              'shareImage': null,
             },
             {
               'id': 'card2',
@@ -63,8 +64,10 @@ void main() {
               'rarity': false,
               'power': 1,
               'suit': 'fire',
+              'shareImage': null,
             },
           ],
+          'shareImage': null,
         }),
       );
     });
@@ -138,5 +141,26 @@ void main() {
         ),
       );
     });
+
+    test(
+      'copyWithShareImage returns a new instance with the new value',
+      () {
+        expect(
+          Deck(
+            id: 'deckId',
+            userId: 'userId',
+            cards: const [card1, card2],
+          ).copyWithShareImage('shareImage'),
+          equals(
+            Deck(
+              id: 'deckId',
+              userId: 'userId',
+              cards: const [card1, card2],
+              shareImage: 'shareImage',
+            ),
+          ),
+        );
+      },
+    );
   });
 }

@@ -15,6 +15,7 @@ env:
   GAME_URL: https://a16e0900d-fe2c-3609-b43c-87093e447b78.web.app/
   INITIALS_BLACKLIST_ID: MdOoZMhusnJTcwfYE0nL
   PROMPT_WHITELIST_ID: MIsaP8zrRVhuR84MLEic
+  FB_STORAGE_BUCKET: top-dash-dev.appspot.com
 
 jobs:
   deploy:
