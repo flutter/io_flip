@@ -165,7 +165,9 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
 
   @override
   Future<void> close() {
-    if (state.match?.guest == null) _matchConnection?.close();
+    if (state.match?.guest == null) {
+      _matchConnection?.close();
+    }
     return super.close();
   }
 }

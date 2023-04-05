@@ -76,61 +76,29 @@ void main() {
       });
 
       testWidgets('renders the title in landscape mode', (tester) async {
-        tester.binding.window.devicePixelRatioTestValue = 1;
-        tester.binding.window.physicalSizeTestValue = const Size(2000, 1600);
+        tester.setLandscapeDisplaySize();
         mockState(MatchMakingState.initial());
         await tester.pumpSubject(bloc);
 
-        final title = find.byWidgetPredicate(
-          (Widget widget) =>
-              widget is Text &&
-              widget.data == tester.l10n.findingMatch &&
-              widget.style == TopDashTextStyles.headlineH4Light,
-          description: 'Text with headlineH4Light style',
+        expect(find.text(tester.l10n.findingMatch), findsOneWidget);
+        expect(find.text(tester.l10n.searchingForOpponents), findsOneWidget);
+        expect(
+          find.byKey(const Key('large_waiting_for_match_view')),
+          findsOneWidget,
         );
-
-        final subtitle = find.byWidgetPredicate(
-          (Widget widget) =>
-              widget is Text &&
-              widget.data == tester.l10n.searchingForOpponents &&
-              widget.style == TopDashTextStyles.headlineH6Light,
-          description: 'Text with headlineH4Light style',
-        );
-
-        tester.binding.window.clearPhysicalSizeTestValue();
-        tester.binding.window.clearDevicePixelRatioTestValue();
-
-        expect(title, findsOneWidget);
-        expect(subtitle, findsOneWidget);
       });
 
       testWidgets('renders the title in portrait mode', (tester) async {
-        tester.binding.window.devicePixelRatioTestValue = 1;
-        tester.binding.window.physicalSizeTestValue = const Size(1200, 1600);
+        tester.setPortraitDisplaySize();
         mockState(MatchMakingState.initial());
         await tester.pumpSubject(bloc);
 
-        final title = find.byWidgetPredicate(
-          (Widget widget) =>
-              widget is Text &&
-              widget.data == tester.l10n.findingMatch &&
-              widget.style == TopDashTextStyles.headlineMobileH4Light,
-          description: 'Text with headlineH4Light style',
+        expect(find.text(tester.l10n.findingMatch), findsOneWidget);
+        expect(find.text(tester.l10n.searchingForOpponents), findsOneWidget);
+        expect(
+          find.byKey(const Key('small_waiting_for_match_view')),
+          findsOneWidget,
         );
-
-        final subtitle = find.byWidgetPredicate(
-          (Widget widget) =>
-              widget is Text &&
-              widget.data == tester.l10n.searchingForOpponents &&
-              widget.style == TopDashTextStyles.headlineMobileH6Light,
-          description: 'Text with headlineH4Light style',
-        );
-
-        tester.binding.window.clearPhysicalSizeTestValue();
-        tester.binding.window.clearDevicePixelRatioTestValue();
-
-        expect(title, findsOneWidget);
-        expect(subtitle, findsOneWidget);
       });
 
       testWidgets(

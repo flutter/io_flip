@@ -51,6 +51,7 @@ class MatchMakingView extends StatelessWidget {
               inviteCode: state.match?.inviteCode,
               title: TopDashTextStyles.headlineMobileH4Light,
               subtitle: TopDashTextStyles.headlineMobileH6Light,
+              key: const Key('small_waiting_for_match_view'),
             ),
             large: (_, __) => _WaitingForMatchView(
               deck: deck,
@@ -58,6 +59,7 @@ class MatchMakingView extends StatelessWidget {
               inviteCode: state.match?.inviteCode,
               title: TopDashTextStyles.headlineH4Light,
               subtitle: TopDashTextStyles.headlineH6Light,
+              key: const Key('large_waiting_for_match_view'),
             ),
           );
         }
@@ -106,6 +108,7 @@ class _WaitingForMatchView extends StatelessWidget {
     required this.deck,
     required this.setClipboardData,
     this.inviteCode,
+    super.key,
   });
   final List<Card> deck;
   final String? inviteCode;

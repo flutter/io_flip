@@ -131,8 +131,7 @@ void main() {
     });
 
     testWidgets('renders the app in landscape', (tester) async {
-      tester.binding.window.devicePixelRatioTestValue = 1;
-      tester.binding.window.physicalSizeTestValue = const Size(2000, 1600);
+      tester.setLandscapeDisplaySize();
       await tester.pumpWidget(
         App(
           settingsPersistence: MemoryOnlySettingsPersistence(),
@@ -143,16 +142,13 @@ void main() {
           user: _MockUser(),
         ),
       );
-      tester.binding.window.clearDevicePixelRatioTestValue();
-      tester.binding.window.clearDevicePixelRatioTestValue();
 
       expect(find.byType(MainMenuScreen), findsOneWidget);
       expect(find.byType(LandscapeMenuView), findsOneWidget);
     });
 
     testWidgets('renders the app in portrait', (tester) async {
-      tester.binding.window.devicePixelRatioTestValue = 1;
-      tester.binding.window.physicalSizeTestValue = const Size(1200, 1600);
+      tester.setPortraitDisplaySize();
       await tester.pumpWidget(
         App(
           settingsPersistence: MemoryOnlySettingsPersistence(),
@@ -163,8 +159,6 @@ void main() {
           user: _MockUser(),
         ),
       );
-      tester.binding.window.clearPhysicalSizeTestValue();
-      tester.binding.window.clearDevicePixelRatioTestValue();
 
       expect(find.byType(MainMenuScreen), findsOneWidget);
       expect(find.byType(PortraitMenuView), findsOneWidget);
