@@ -1,16 +1,29 @@
+import 'package:bloc_test/bloc_test.dart';
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:game_domain/game_domain.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/prompt/prompt.dart';
 
-import '../helpers/helpers.dart';
+import '../../helpers/helpers.dart';
+
+class _MockPromptFormBloc extends MockBloc<PromptFormEvent, PromptFormState>
+    implements PromptFormBloc {}
 
 void main() {
-  group('PromptPage', () {
-    testWidgets('renders character form correctly', (tester) async {
-      await tester.pumpSubject();
+  late PromptFormBloc promptFormBloc;
 
-      expect(find.byType(FlowBuilder<FlowData>), findsOneWidget);
+  setUp(() {
+    promptFormBloc = _MockPromptFormBloc();
+  });
+
+  group('PromptForm', () {
+    testWidgets('renders character form correctly', (tester) async {
+      await tester.pumpSubject(promptFormBloc);
+
+      expect(find.byType(FlowBuilder<Prompt>), findsOneWidget);
       expect(find.text(tester.l10n.characterPromptPageTitle), findsOneWidget);
       expect(
         find.text(tester.l10n.characterPromptPageSubtitle),
@@ -21,7 +34,7 @@ void main() {
     });
 
     testWidgets('renders power form correctly', (tester) async {
-      await tester.pumpSubject();
+      await tester.pumpSubject(promptFormBloc);
 
       await tester.tap(find.byIcon(Icons.arrow_forward));
       await tester.pumpAndSettle();
@@ -32,8 +45,9 @@ void main() {
       expect(find.byIcon(Icons.arrow_forward), findsOneWidget);
     });
 
-    testWidgets('renders environment form correctly', (tester) async {
-      await tester.pumpSubject();
+    testWidgets('renders environment form correctly and completes flow',
+        (tester) async {
+      await tester.pumpSubject(promptFormBloc);
 
       await tester.tap(find.byIcon(Icons.arrow_forward));
       await tester.pumpAndSettle();
@@ -49,31 +63,34 @@ void main() {
 
       expect(find.text(tester.l10n.environmentPromptHint), findsOneWidget);
       expect(find.byIcon(Icons.check), findsOneWidget);
-    });
 
-    test('flow data correctly copies', () {
-      const data1 = FlowData();
-      final data2 = data1
-          .copyWithNewAttribute('character')
-          .copyWithNewAttribute('power')
-          .copyWithNewAttribute('environment');
+      await tester.tap(find.byIcon(Icons.check));
+      await tester.pumpAndSettle();
 
-      expect(
-        data2,
-        equals(
-          const FlowData(
-            character: 'character',
-            power: 'power',
-            environment: 'environment',
+      verify(
+        () => promptFormBloc.add(
+          const PromptSubmitted(
+            data: Prompt(
+              character: '',
+              power: '',
+              environment: '',
+            ),
           ),
         ),
-      );
+      ).called(1);
     });
   });
 }
 
-extension PromptPageTest on WidgetTester {
-  Future<void> pumpSubject() {
-    return pumpApp(const Scaffold(body: PromptPage()));
+extension PromptFormTest on WidgetTester {
+  Future<void> pumpSubject(PromptFormBloc bloc) {
+    return pumpApp(
+      Scaffold(
+        body: BlocProvider.value(
+          value: bloc,
+          child: const PromptForm(),
+        ),
+      ),
+    );
   }
 }

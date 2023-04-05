@@ -63,21 +63,26 @@ void main() {
       });
 
       test('returns a Card', () async {
-        const card = Card(
-          id: '',
-          name: 'Dash',
-          description: 'Cute blue bird',
-          image: 'image.png',
-          rarity: true,
-          power: 1,
-          suit: Suit.air,
+        final cards = List.generate(
+          10,
+          (_) => const Card(
+            id: '',
+            name: 'Dash',
+            description: 'Cute blue bird',
+            image: 'image.png',
+            rarity: true,
+            power: 1,
+            suit: Suit.air,
+          ),
         );
 
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
-        when(() => response.body).thenReturn(jsonEncode(card.toJson()));
-        final returnedCard = await resource.generateCard();
+        when(() => response.body).thenReturn(
+          jsonEncode({'cards': cards.map((e) => e.toJson()).toList()}),
+        );
+        final returnedCards = await resource.generateCards(const Prompt());
 
-        expect(returnedCard, equals(card));
+        expect(returnedCards, equals(cards));
       });
 
       test('throws ApiClientError when request fails', () async {
@@ -86,7 +91,7 @@ void main() {
         when(() => response.body).thenReturn('Ops');
 
         await expectLater(
-          resource.generateCard,
+          resource.generateCards(const Prompt()),
           throwsA(
             isA<ApiClientError>().having(
               (e) => e.cause,
@@ -104,7 +109,7 @@ void main() {
         when(() => response.body).thenReturn('Ops');
 
         await expectLater(
-          resource.generateCard,
+          resource.generateCards(const Prompt()),
           throwsA(
             isA<ApiClientError>().having(
               (e) => e.cause,

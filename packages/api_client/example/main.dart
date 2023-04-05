@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:api_client/api_client.dart';
+import 'package:game_domain/game_domain.dart';
 
 void main() async {
   final client = ApiClient(
@@ -9,6 +10,6 @@ void main() async {
     refreshIdToken: () async => null,
   );
 
-  final card = await client.gameResource.generateCard();
-  print(card.props);
+  final cards = await client.gameResource.generateCards(const Prompt());
+  print(cards);
 }

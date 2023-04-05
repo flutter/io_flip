@@ -53,13 +53,18 @@ void main() {
       expect(
         json,
         equals({
-          'id': '',
-          'name': '',
-          'description': '',
-          'rarity': true,
-          'image': '',
-          'power': 1,
-          'suit': 'air',
+          'cards': List.generate(
+            10,
+            (index) => {
+              'id': '',
+              'name': '',
+              'description': '',
+              'rarity': true,
+              'image': '',
+              'power': 1,
+              'suit': 'air',
+            },
+          ),
         }),
       );
     });

@@ -10,7 +10,7 @@ import 'package:logging/logging.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-import '../../../../../routes/public/cards/[cardId].dart' as route;
+import '../../../../routes/public/cards/[cardId].dart' as route;
 
 class _MockRequestContext extends Mock implements RequestContext {}
 
@@ -45,7 +45,7 @@ void main() {
       request = _MockRequest();
       when(() => request.method).thenReturn(HttpMethod.get);
       when(() => request.uri).thenReturn(
-        Uri.parse('/public/share?cardId=${card.id}'),
+        Uri.parse('/public/cards/${card.id}'),
       );
 
       logger = _MockLogger();

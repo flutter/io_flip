@@ -1,21 +1,22 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:top_dash/draft/draft.dart';
 
 void main() {
   group('DeckRequested', () {
     test('can be instantiated', () {
       expect(
-        DeckRequested(),
+        DeckRequested(Prompt()),
         isNotNull,
       );
     });
 
     test('supports equality', () {
       expect(
-        DeckRequested(),
-        equals(DeckRequested()),
+        DeckRequested(Prompt()),
+        equals(DeckRequested(Prompt())),
       );
     });
   });

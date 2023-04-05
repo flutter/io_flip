@@ -1,2 +1,2 @@
-export 'prompt_form_view.dart';
-export 'prompt_page.dart';
+export 'bloc/prompt_form_bloc.dart';
+export 'view/view.dart';

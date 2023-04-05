@@ -28,8 +28,8 @@ void main() {
 
     setUp(() {
       gameResource = _MockGameResource();
-      var last = 0;
-      when(gameResource.generateCard).thenAnswer((_) async => cards[last++]);
+      when(() => gameResource.generateCards(Prompt()))
+          .thenAnswer((_) async => cards);
     });
 
     test('has the correct initial state', () {
@@ -42,7 +42,7 @@ void main() {
     blocTest<DraftBloc, DraftState>(
       'can request a deck',
       build: () => DraftBloc(gameResource: gameResource),
-      act: (bloc) => bloc.add(DeckRequested()),
+      act: (bloc) => bloc.add(DeckRequested(Prompt())),
       expect: () => [
         DraftState(
           cards: const [],
@@ -206,10 +206,11 @@ void main() {
     blocTest<DraftBloc, DraftState>(
       'emits failure when an error occured',
       setUp: () {
-        when(gameResource.generateCard).thenThrow(Exception('Error'));
+        when(() => gameResource.generateCards(Prompt()))
+            .thenThrow(Exception('Error'));
       },
       build: () => DraftBloc(gameResource: gameResource),
-      act: (bloc) => bloc.add(DeckRequested()),
+      act: (bloc) => bloc.add(DeckRequested(Prompt())),
       expect: () => [
         DraftState(
           cards: const [],
