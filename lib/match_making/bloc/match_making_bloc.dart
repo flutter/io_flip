@@ -26,7 +26,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   final MatchMakerRepository _matchMakerRepository;
   final GameResource _gameResource;
   final List<String> cardIds;
-  late WebSocket _matchConnection;
+  WebSocket? _matchConnection;
 
   static const defaultHostWaitTime = Duration(seconds: 4);
   final Duration hostWaitTime;
@@ -157,8 +157,17 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
       const Duration(seconds: 30),
       onTimeout: () {
         subscription.cancel();
+        _matchConnection?.close();
         emit(state.copyWith(status: MatchMakingStatus.timeout));
       },
     );
+  }
+
+  @override
+  Future<void> close() {
+    if (state.match?.guest == null) {
+      _matchConnection?.close();
+    }
+    return super.close();
   }
 }

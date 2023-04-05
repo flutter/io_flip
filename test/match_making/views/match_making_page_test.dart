@@ -1,23 +1,53 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/match_making/match_making.dart';
 
 import '../../helpers/helpers.dart';
 
 class _MockGoRouterState extends Mock implements GoRouterState {}
 
+const deck = [
+  Card(
+    id: 'a',
+    name: '',
+    description: '',
+    image: '',
+    power: 1,
+    rarity: false,
+    suit: Suit.air,
+  ),
+  Card(
+    id: 'b',
+    name: '',
+    description: '',
+    image: '',
+    power: 1,
+    rarity: false,
+    suit: Suit.air,
+  ),
+  Card(
+    id: 'c',
+    name: '',
+    description: '',
+    image: '',
+    power: 1,
+    rarity: false,
+    suit: Suit.air,
+  ),
+];
+final pageData = MatchMakingPageData(deck: deck);
 void main() {
   group('MatchMakingPage', () {
     late GoRouterState goRouterState;
 
     setUp(() {
       goRouterState = _MockGoRouterState();
-      when(() => goRouterState.queryParametersAll).thenReturn({
-        'cardId': ['a', 'b', 'c'],
-      });
+      when(() => goRouterState.extra).thenReturn(pageData);
       when(() => goRouterState.queryParams).thenReturn({});
     });
 
@@ -32,17 +62,18 @@ void main() {
       test('correctly maps to GuestPrivateMatchRequested', () {
         expect(
           MatchMakingPage(
-            playerCardIds: const ['a', 'b', 'c'],
+            deck: deck,
             createPrivateMatch: false,
             inviteCode: 'inviteCode',
           ).mapEvent(),
           equals(GuestPrivateMatchRequested('inviteCode')),
         );
       });
+
       test('correctly maps to PrivateMatchRequested', () {
         expect(
           MatchMakingPage(
-            playerCardIds: const ['a', 'b', 'c'],
+            deck: deck,
             createPrivateMatch: true,
             inviteCode: null,
           ).mapEvent(),
@@ -52,7 +83,7 @@ void main() {
       test('correctly maps to MatchRequested', () {
         expect(
           MatchMakingPage(
-            playerCardIds: const ['a', 'b', 'c'],
+            deck: deck,
             createPrivateMatch: false,
             inviteCode: null,
           ).mapEvent(),
@@ -62,15 +93,25 @@ void main() {
     });
 
     testWidgets('renders a MatchMakingView', (tester) async {
-      await tester.pumpApp(
-        MatchMakingPage(
-          playerCardIds: const ['a', 'b', 'c'],
-          createPrivateMatch: false,
-          inviteCode: null,
-        ),
-      );
-
+      await tester.pumpSubject();
       expect(find.byType(MatchMakingView), findsOneWidget);
     });
   });
+}
+
+extension GameSummaryViewTest on WidgetTester {
+  Future<void> pumpSubject({
+    GoRouter? goRouter,
+  }) {
+    return mockNetworkImages(() {
+      return pumpApp(
+        MatchMakingPage(
+          deck: deck,
+          createPrivateMatch: false,
+          inviteCode: null,
+        ),
+        router: goRouter,
+      );
+    });
+  }
 }

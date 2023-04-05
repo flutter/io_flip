@@ -10,6 +10,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/l10n/l10n.dart';
+import 'package:top_dash/match_making/views/match_making_page.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -249,9 +250,7 @@ void main() {
         verify(
           () => goRouter.goNamed(
             'match_making',
-            queryParams: {
-              'cardId': [card1, card2, card3].map((card) => card.id).toList(),
-            },
+            extra: MatchMakingPageData(deck: const [card1, card2, card3]),
           ),
         ).called(1);
       },
@@ -286,9 +285,9 @@ void main() {
           () => goRouter.goNamed(
             'match_making',
             queryParams: {
-              'cardId': [card1, card2, card3].map((card) => card.id).toList(),
               'createPrivateMatch': 'true',
             },
+            extra: MatchMakingPageData(deck: const [card1, card2, card3]),
           ),
         ).called(1);
       },
@@ -326,9 +325,9 @@ void main() {
           () => goRouter.goNamed(
             'match_making',
             queryParams: {
-              'cardId': [card1, card2, card3].map((card) => card.id).toList(),
               'inviteCode': 'invite-code',
             },
+            extra: MatchMakingPageData(deck: const [card1, card2, card3]),
           ),
         ).called(1);
       },
