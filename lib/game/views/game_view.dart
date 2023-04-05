@@ -294,11 +294,15 @@ class _OpponentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.watch<GameBloc>();
-    final state = bloc.state as MatchLoadedState;
+    final turns = context.select<GameBloc, List<MatchTurn>>(
+      (bloc) => (bloc.state as MatchLoadedState).turns,
+    );
+    final overlay = context.select<GameBloc, CardOverlayType?>(
+      (bloc) => bloc.isWinningCard(card, isPlayer: false),
+    );
 
     final allOpponentPlayedCards =
-        state.turns.map((turn) => turn.opponentCardId).toList();
+        turns.map((turn) => turn.opponentCardId).toList();
 
     return AnimatedBuilder(
       animation: animation,
@@ -319,7 +323,7 @@ class _OpponentCard extends StatelessWidget {
                       isRare: card.rarity,
                       width: rect.width,
                       height: rect.height,
-                      overlay: bloc.isWinningCard(card, isPlayer: false),
+                      overlay: overlay,
                     ),
                   ],
                 )
@@ -345,11 +349,15 @@ class _PlayerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.watch<GameBloc>();
-    final state = bloc.state as MatchLoadedState;
+    final turns = context.select<GameBloc, List<MatchTurn>>(
+      (bloc) => (bloc.state as MatchLoadedState).turns,
+    );
+    final overlay = context.select<GameBloc, CardOverlayType?>(
+      (bloc) => bloc.isWinningCard(card, isPlayer: true),
+    );
 
     final allPlayerPlayedCards =
-        state.turns.map((turn) => turn.playerCardId).toList();
+        turns.map((turn) => turn.playerCardId).toList();
 
     return AnimatedBuilder(
       animation: animation,
@@ -359,6 +367,8 @@ class _PlayerCard extends StatelessWidget {
           rect: rect,
           child: InkWell(
             onTap: () {
+              final bloc = context.read<GameBloc>();
+              final state = bloc.state as MatchLoadedState;
               if (!allPlayerPlayedCards.contains(card.id) &&
                   bloc.canPlayerPlay(card.id) &&
                   state.turnAnimationsFinished) {
@@ -374,7 +384,7 @@ class _PlayerCard extends StatelessWidget {
               isRare: card.rarity,
               width: rect.width,
               height: rect.height,
-              overlay: bloc.isWinningCard(card, isPlayer: true),
+              overlay: overlay,
             ),
           ),
         );
