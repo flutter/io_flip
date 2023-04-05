@@ -19,6 +19,38 @@ void main() {
   group('GameView', () {
     late GameBloc bloc;
 
+    const playerCards = [
+      Card(
+        id: 'player_card',
+        name: 'host_card',
+        description: '',
+        image: '',
+        rarity: true,
+        power: 2,
+        suit: Suit.air,
+      ),
+      Card(
+        id: 'player_card_2',
+        name: 'host_card_2',
+        description: '',
+        image: '',
+        rarity: true,
+        power: 2,
+        suit: Suit.air,
+      ),
+    ];
+    const opponentCards = [
+      Card(
+        id: 'opponent_card',
+        name: 'guest_card',
+        description: '',
+        image: '',
+        rarity: true,
+        power: 1,
+        suit: Suit.air,
+      ),
+    ];
+
     setUpAll(() {
       registerFallbackValue(
         Card(
@@ -64,51 +96,12 @@ void main() {
     });
 
     group('Gameplay', () {
-      const playerCards = [
-        Card(
-          id: 'player_card',
-          name: 'host_card',
-          description: '',
-          image: '',
-          rarity: true,
-          power: 2,
-          suit: Suit.air,
-        ),
-        Card(
-          id: 'player_card_2',
-          name: 'host_card_2',
-          description: '',
-          image: '',
-          rarity: true,
-          power: 2,
-          suit: Suit.air,
-        ),
-      ];
-      const opponentCards = [
-        Card(
-          id: 'opponent_card',
-          name: 'guest_card',
-          description: '',
-          image: '',
-          rarity: true,
-          power: 1,
-          suit: Suit.air,
-        ),
-      ];
       final baseState = MatchLoadedState(
         playerScoreCard: ScoreCard(id: 'scoreCardId'),
         match: Match(
           id: '',
-          hostDeck: Deck(
-            id: '',
-            userId: '',
-            cards: playerCards,
-          ),
-          guestDeck: Deck(
-            id: '',
-            userId: '',
-            cards: opponentCards,
-          ),
+          hostDeck: Deck(id: '', userId: '', cards: playerCards),
+          guestDeck: Deck(id: '', userId: '', cards: opponentCards),
         ),
         matchState: MatchState(
           id: '',
@@ -344,6 +337,193 @@ void main() {
             find.byKey(const Key('win_card_overlay')),
             findsOneWidget,
           );
+        },
+      );
+    });
+
+    group('Card animation', () {
+      final baseState = MatchLoadedState(
+        playerScoreCard: ScoreCard(id: 'scoreCardId'),
+        match: Match(
+          id: '',
+          hostDeck: Deck(id: '', userId: '', cards: playerCards),
+          guestDeck: Deck(id: '', userId: '', cards: opponentCards),
+        ),
+        matchState: MatchState(
+          id: '',
+          matchId: '',
+          guestPlayedCards: const [],
+          hostPlayedCards: const [],
+          hostStartsMatch: true,
+        ),
+        turns: const [],
+        turnTimeRemaining: 10,
+        turnAnimationsFinished: true,
+      );
+
+      setUp(() {
+        when(() => bloc.playerCards).thenReturn(playerCards);
+        when(() => bloc.opponentCards).thenReturn(opponentCards);
+      });
+
+      testWidgets('starts when player plays a card', (tester) async {
+        when(() => bloc.lastPlayedCardId).thenReturn(playerCards.first.id);
+        whenListen(
+          bloc,
+          Stream.fromIterable([
+            baseState,
+            baseState.copyWith(
+              turns: [
+                MatchTurn(
+                  playerCardId: playerCards.first.id,
+                  opponentCardId: null,
+                )
+              ],
+            )
+          ]),
+          initialState: baseState,
+        );
+
+        await tester.pumpSubject(bloc);
+
+        final cardFinder =
+            find.byKey(Key('player_card_${playerCards.first.id}'));
+
+        final initialOffset = tester.getCenter(cardFinder);
+        await tester.pumpAndSettle();
+        final finalOffset = tester.getCenter(cardFinder);
+
+        expect(
+          initialOffset,
+          isNot(equals(finalOffset)),
+        );
+      });
+
+      testWidgets('starts when opponent plays a card', (tester) async {
+        when(() => bloc.lastPlayedCardId).thenReturn(opponentCards.first.id);
+        whenListen(
+          bloc,
+          Stream.fromIterable([
+            baseState,
+            baseState.copyWith(
+              turns: [
+                MatchTurn(
+                  playerCardId: null,
+                  opponentCardId: opponentCards.first.id,
+                )
+              ],
+            )
+          ]),
+          initialState: baseState,
+        );
+
+        await tester.pumpSubject(bloc);
+
+        final cardFinder =
+            find.byKey(Key('opponent_card_${opponentCards.first.id}'));
+
+        final initialOffset = tester.getCenter(cardFinder);
+        await tester.pumpAndSettle();
+        final finalOffset = tester.getCenter(cardFinder);
+
+        expect(
+          initialOffset,
+          isNot(equals(finalOffset)),
+        );
+      });
+
+      testWidgets('completes when both players play a card', (tester) async {
+        when(() => bloc.lastPlayedCardId).thenReturn(opponentCards.first.id);
+        whenListen(
+          bloc,
+          Stream.fromIterable([
+            baseState,
+            baseState.copyWith(
+              turns: [
+                MatchTurn(
+                  playerCardId: playerCards.first.id,
+                  opponentCardId: opponentCards.first.id,
+                )
+              ],
+            )
+          ]),
+          initialState: baseState,
+        );
+
+        await tester.pumpSubject(bloc);
+        await tester.pumpAndSettle();
+
+        await tester.pump(turnEndDuration);
+
+        verify(() => bloc.add(CardOverlayRevealed())).called(1);
+      });
+
+      testWidgets(
+        'completes and goes back when both players play a card',
+        (tester) async {
+          final lastPlayedCards = [
+            () => playerCards.first.id,
+            () => opponentCards.first.id
+          ];
+          when(() => bloc.lastPlayedCardId)
+              .thenAnswer((_) => lastPlayedCards.removeAt(0)());
+
+          whenListen(
+            bloc,
+            Stream.fromIterable([
+              baseState,
+              baseState.copyWith(
+                turns: [
+                  MatchTurn(
+                    playerCardId: playerCards.first.id,
+                    opponentCardId: null,
+                  )
+                ],
+              ),
+              baseState.copyWith(
+                turns: [
+                  MatchTurn(
+                    playerCardId: playerCards.first.id,
+                    opponentCardId: opponentCards.first.id,
+                  )
+                ],
+              )
+            ]),
+            initialState: baseState,
+          );
+          await tester.pumpSubject(bloc);
+
+          final playerCardFinder =
+              find.byKey(Key('player_card_${playerCards.first.id}'));
+          final opponentCardFinder =
+              find.byKey(Key('opponent_card_${opponentCards.first.id}'));
+
+          // Get card offset before moving
+          final playerInitialOffset = tester.getCenter(playerCardFinder);
+          final opponentInitialOffset = tester.getCenter(opponentCardFinder);
+
+          // Get card offset after both players play and cards are in the fight
+          // zone
+          await tester.pumpAndSettle();
+          final playerFightOffset = tester.getCenter(playerCardFinder);
+          expect(playerInitialOffset, isNot(equals(playerFightOffset)));
+
+          await tester.pumpAndSettle();
+          final opponentFightOffset = tester.getCenter(opponentCardFinder);
+          expect(opponentInitialOffset, isNot(equals(opponentFightOffset)));
+
+          // Get card offset once fight is over and both cards are back in the
+          // original position
+          await tester.pump(turnEndDuration);
+          await tester.pumpAndSettle();
+          final playerFinalOffset = tester.getCenter(playerCardFinder);
+          final opponentFinalOffset = tester.getCenter(opponentCardFinder);
+
+          expect(playerInitialOffset, equals(playerFinalOffset));
+          expect(opponentInitialOffset, equals(opponentFinalOffset));
+
+          verify(() => bloc.add(CardOverlayRevealed())).called(2);
+          verify(() => bloc.add(TurnAnimationsFinished())).called(2);
         },
       );
     });

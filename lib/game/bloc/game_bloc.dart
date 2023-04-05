@@ -304,11 +304,10 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     if (state is MatchLoadedState) {
       final matchLoadedState = state as MatchLoadedState;
       if (matchLoadedState.turns.isNotEmpty) {
-        final lastTurn =
-            matchLoadedState.turns.last.copyWith(showCardsOverlay: true);
-        final turns = matchLoadedState.turns
+        final lastTurn = matchLoadedState.turns.last;
+        final turns = [...matchLoadedState.turns]
           ..removeLast()
-          ..add(lastTurn);
+          ..add(lastTurn.copyWith(showCardsOverlay: true));
         emit(matchLoadedState.copyWith(turns: turns));
       }
     }

@@ -357,6 +357,61 @@ void main() {
         ),
       );
     });
+
+    test('copyWith returns a new instance with the copied values', () {
+      expect(
+        MatchTurn(
+          playerCardId: 'player',
+          opponentCardId: 'opponent',
+        ).copyWith(),
+        equals(
+          MatchTurn(
+            playerCardId: 'player',
+            opponentCardId: 'opponent',
+          ),
+        ),
+      );
+
+      expect(
+        MatchTurn(
+          playerCardId: 'player',
+          opponentCardId: 'opponent',
+        ).copyWith(playerCardId: ''),
+        equals(
+          MatchTurn(
+            playerCardId: '',
+            opponentCardId: 'opponent',
+          ),
+        ),
+      );
+
+      expect(
+        MatchTurn(
+          playerCardId: 'player',
+          opponentCardId: 'opponent',
+        ).copyWith(opponentCardId: ''),
+        equals(
+          MatchTurn(
+            playerCardId: 'player',
+            opponentCardId: '',
+          ),
+        ),
+      );
+
+      expect(
+        MatchTurn(
+          playerCardId: 'player',
+          opponentCardId: 'opponent',
+        ).copyWith(showCardsOverlay: true),
+        equals(
+          MatchTurn(
+            playerCardId: 'player',
+            opponentCardId: 'opponent',
+            showCardsOverlay: true,
+          ),
+        ),
+      );
+    });
   });
 
   group('OpponentAbsentState', () {

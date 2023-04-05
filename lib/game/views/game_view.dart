@@ -305,6 +305,7 @@ class _OpponentCard extends StatelessWidget {
         state.turns.map((turn) => turn.opponentCardId).toList();
 
     return Positioned.fromRect(
+      key: Key('opponent_card_${card.id}'),
       rect: rect,
       child: allOpponentPlayedCards.contains(card.id)
           ? Stack(
