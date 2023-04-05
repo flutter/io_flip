@@ -60,6 +60,28 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
     matchSolver: MatchSolver(gameScriptMachine: gameScriptMachine),
   );
 
+  if (_useEmulator) {
+    await dbClient.set(
+      'initials_blacklist',
+      DbEntityRecord(
+        id: _initialsBlacklistId,
+        data: const {
+          'blacklist': ['TST'],
+        },
+      ),
+    );
+
+    await dbClient.set(
+      'prompt_whitelist',
+      DbEntityRecord(
+        id: _promptWhiteListId,
+        data: const {
+          'whitelist': ['TST'],
+        },
+      ),
+    );
+  }
+
   leaderboardRepository = LeaderboardRepository(
     dbClient: dbClient,
     blacklistDocumentId: _initialsBlacklistId,
