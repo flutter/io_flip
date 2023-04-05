@@ -166,8 +166,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
         .mapIndexed(
           (i, e) => RectTween(begin: begin(i), end: end).animate(e)
             ..addStatusListener(turnCompleted)
-            ..addStatusListener(turnAnimationsCompleted)
-            ..addListener(() => setState(() {})),
+            ..addStatusListener(turnAnimationsCompleted),
         )
         .toList();
   }
@@ -251,7 +250,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
                 (i, card) {
                   return _OpponentCard(
                     card: card,
-                    rect: opponentCardAnimations[i].value!,
+                    animation: opponentCardAnimations[i],
                   );
                 },
               ),
@@ -259,7 +258,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
                 (i, card) {
                   return _PlayerCard(
                     card: card,
-                    rect: playerCardAnimations[i].value!,
+                    animation: playerCardAnimations[i],
                   );
                 },
               ),
@@ -287,11 +286,11 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
 class _OpponentCard extends StatelessWidget {
   const _OpponentCard({
     required this.card,
-    required this.rect,
+    required this.animation,
   });
 
   final game.Card card;
-  final Rect rect;
+  final Animation<Rect?> animation;
 
   @override
   Widget build(BuildContext context) {
@@ -301,30 +300,36 @@ class _OpponentCard extends StatelessWidget {
     final allOpponentPlayedCards =
         state.turns.map((turn) => turn.opponentCardId).toList();
 
-    return Positioned.fromRect(
-      key: Key('opponent_card_${card.id}'),
-      rect: rect,
-      child: allOpponentPlayedCards.contains(card.id)
-          ? Stack(
-              children: [
-                GameCard(
-                  key: Key('opponent_revealed_card_${card.id}'),
-                  image: card.image,
-                  name: card.name,
-                  power: card.power,
-                  suitName: card.suit.name,
-                  isRare: card.rarity,
-                  width: rect.width,
-                  height: rect.height,
-                  overlay: bloc.isWinningCard(card, isPlayer: false),
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, _) {
+        final rect = animation.value!;
+        return Positioned.fromRect(
+          key: Key('opponent_card_${card.id}'),
+          rect: rect,
+          child: allOpponentPlayedCards.contains(card.id)
+              ? Stack(
+                  children: [
+                    GameCard(
+                      key: Key('opponent_revealed_card_${card.id}'),
+                      image: card.image,
+                      name: card.name,
+                      power: card.power,
+                      suitName: card.suit.name,
+                      isRare: card.rarity,
+                      width: rect.width,
+                      height: rect.height,
+                      overlay: bloc.isWinningCard(card, isPlayer: false),
+                    ),
+                  ],
+                )
+              : FlippedGameCard(
+                  key: Key('opponent_hidden_card_${card.id}'),
+                  width: TopDashCardSizes.xs.width,
+                  height: TopDashCardSizes.xs.height,
                 ),
-              ],
-            )
-          : FlippedGameCard(
-              key: Key('opponent_hidden_card_${card.id}'),
-              width: TopDashCardSizes.xs.width,
-              height: TopDashCardSizes.xs.height,
-            ),
+        );
+      },
     );
   }
 }
@@ -332,11 +337,11 @@ class _OpponentCard extends StatelessWidget {
 class _PlayerCard extends StatelessWidget {
   const _PlayerCard({
     required this.card,
-    required this.rect,
+    required this.animation,
   });
 
   final game.Card card;
-  final Rect rect;
+  final Animation<Rect?> animation;
 
   @override
   Widget build(BuildContext context) {
@@ -346,28 +351,34 @@ class _PlayerCard extends StatelessWidget {
     final allPlayerPlayedCards =
         state.turns.map((turn) => turn.playerCardId).toList();
 
-    return Positioned.fromRect(
-      rect: rect,
-      child: InkWell(
-        onTap: () {
-          if (!allPlayerPlayedCards.contains(card.id) &&
-              bloc.canPlayerPlay(card.id) &&
-              state.turnAnimationsFinished) {
-            context.read<GameBloc>().add(PlayerPlayed(card.id));
-          }
-        },
-        child: GameCard(
-          key: Key('player_card_${card.id}'),
-          image: card.image,
-          name: card.name,
-          power: card.power,
-          suitName: card.suit.name,
-          isRare: card.rarity,
-          width: rect.width,
-          height: rect.height,
-          overlay: bloc.isWinningCard(card, isPlayer: true),
-        ),
-      ),
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, _) {
+        final rect = animation.value!;
+        return Positioned.fromRect(
+          rect: rect,
+          child: InkWell(
+            onTap: () {
+              if (!allPlayerPlayedCards.contains(card.id) &&
+                  bloc.canPlayerPlay(card.id) &&
+                  state.turnAnimationsFinished) {
+                context.read<GameBloc>().add(PlayerPlayed(card.id));
+              }
+            },
+            child: GameCard(
+              key: Key('player_card_${card.id}'),
+              image: card.image,
+              name: card.name,
+              power: card.power,
+              suitName: card.suit.name,
+              isRare: card.rarity,
+              width: rect.width,
+              height: rect.height,
+              overlay: bloc.isWinningCard(card, isPlayer: true),
+            ),
+          ),
+        );
+      },
     );
   }
 }
