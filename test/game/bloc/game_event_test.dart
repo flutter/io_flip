@@ -146,5 +146,31 @@ void main() {
         );
       });
     });
+
+    group('CardOverlayRevealed', () {
+      test('can be instantiated', () {
+        expect(CardOverlayRevealed(), isNotNull);
+      });
+
+      test('supports equality', () {
+        expect(
+          CardOverlayRevealed(),
+          equals(CardOverlayRevealed()),
+        );
+      });
+    });
+
+    group('TurnAnimationsFinished', () {
+      test('can be instantiated', () {
+        expect(TurnAnimationsFinished(), isNotNull);
+      });
+
+      test('supports equality', () {
+        expect(
+          TurnAnimationsFinished(),
+          equals(TurnAnimationsFinished()),
+        );
+      });
+    });
   });
 }

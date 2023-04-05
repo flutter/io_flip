@@ -59,25 +59,28 @@ class GameCard extends StatelessWidget {
           ),
           width: width,
           height: height,
-          child: Column(
+          child: Stack(
             children: [
-              const SizedBox(height: 8),
-              Text(name),
-              const SizedBox(height: 8),
-              Text(
-                suitName,
-                style: Theme.of(context).textTheme.bodySmall,
+              Align(
+                alignment: const Alignment(0, -.9),
+                child: Text(name),
               ),
-              const SizedBox(height: 8),
-              Image.network(
-                image,
+              Align(
+                alignment: const Alignment(0, -.7),
+                child: Text(
+                  suitName,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
               ),
-              Expanded(
-                child: Center(
-                  child: Text(
-                    power.toString(),
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
+              Align(
+                alignment: const Alignment(0, -.25),
+                child: Image.network(image),
+              ),
+              Align(
+                alignment: const Alignment(0, .8),
+                child: Text(
+                  power.toString(),
+                  style: Theme.of(context).textTheme.headlineMedium,
                 ),
               ),
             ],
