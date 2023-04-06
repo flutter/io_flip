@@ -42,4 +42,25 @@ class LeaderboardResource {
       );
     }
   }
+
+  /// Post /game/leaderboard/initials
+  Future<void> addInitialsToScoreCard({
+    required String scoreCardId,
+    required String initials,
+  }) async {
+    final response = await _apiClient.post(
+      '/game/leaderboard/initials',
+      body: jsonEncode({
+        'scoreCardId': scoreCardId,
+        'initials': initials,
+      }),
+    );
+
+    if (response.statusCode != HttpStatus.noContent) {
+      throw ApiClientError(
+        'POST /leaderboard/initials returned status ${response.statusCode} with the following response: "${response.body}"',
+        StackTrace.current,
+      );
+    }
+  }
 }

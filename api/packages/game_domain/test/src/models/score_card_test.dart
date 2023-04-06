@@ -20,6 +20,7 @@ void main() {
       currentStreak: 1,
       currentDeck: 'deckId',
       longestStreakDeck: 'longestId',
+      initials: 'initials',
     );
 
     test('fromJson returns the correct instance', () {
@@ -31,6 +32,7 @@ void main() {
           'currentStreak': 1,
           'currentDeck': 'deckId',
           'longestStreakDeck': 'longestId',
+          'initials': 'initials',
         }),
         equals(scoreCard),
       );
@@ -50,6 +52,7 @@ void main() {
           longestStreak: 1,
           currentDeck: 'deckId',
           longestStreakDeck: 'longestId',
+          initials: 'initials',
         ),
         isNot(
           equals(scoreCard),
@@ -63,6 +66,7 @@ void main() {
           longestStreak: 1,
           currentDeck: 'deckId',
           longestStreakDeck: 'longestId',
+          initials: 'initials',
         ),
         isNot(
           equals(scoreCard),
@@ -76,6 +80,7 @@ void main() {
           longestStreak: 1,
           currentDeck: 'deckId',
           longestStreakDeck: 'longestId',
+          initials: 'initials',
         ),
         isNot(
           equals(scoreCard),
@@ -89,6 +94,7 @@ void main() {
           longestStreak: 2,
           currentDeck: 'deckId',
           longestStreakDeck: 'longestId',
+          initials: 'initials',
         ),
         isNot(
           equals(scoreCard),
@@ -101,6 +107,7 @@ void main() {
           currentStreak: 1,
           longestStreak: 1,
           longestStreakDeck: 'longestId',
+          initials: 'initials',
         ),
         isNot(
           equals(scoreCard),
@@ -113,6 +120,7 @@ void main() {
           currentStreak: 1,
           longestStreak: 1,
           currentDeck: 'deckId',
+          initials: 'initials',
         ),
         isNot(
           equals(scoreCard),

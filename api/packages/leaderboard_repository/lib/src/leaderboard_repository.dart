@@ -13,7 +13,6 @@ class LeaderboardRepository {
         _blacklistDocumentId = blacklistDocumentId;
 
   final DbClient _dbClient;
-
   final String _blacklistDocumentId;
 
   /// Retrieves the blacklist for player initials.
@@ -47,5 +46,21 @@ class LeaderboardRepository {
       'id': results.first.id,
       ...results.first.data,
     });
+  }
+
+  /// Adds the initials to the score card with the given [scoreCardId].
+  Future<void> addInitialsToScoreCard({
+    required String scoreCardId,
+    required String initials,
+  }) async {
+    await _dbClient.update(
+      'score_cards',
+      DbEntityRecord(
+        id: scoreCardId,
+        data: {
+          'initials': initials,
+        },
+      ),
+    );
   }
 }

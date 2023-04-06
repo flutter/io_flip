@@ -104,5 +104,41 @@ void main() {
         expect(result, isNull);
       });
     });
+
+    group('addInitialsToScoreCard', () {
+      test('adds initials to score card', () async {
+        const scoreCardId = 'scoreCardId';
+        const initials = 'AAA';
+
+        when(
+          () => dbClient.update(
+            'score_cards',
+            DbEntityRecord(
+              id: scoreCardId,
+              data: const {
+                'initials': initials,
+              },
+            ),
+          ),
+        ).thenAnswer((_) async {});
+
+        await leaderboardRepository.addInitialsToScoreCard(
+          scoreCardId: scoreCardId,
+          initials: initials,
+        );
+
+        verify(
+          () => dbClient.update(
+            'score_cards',
+            DbEntityRecord(
+              id: scoreCardId,
+              data: const {
+                'initials': initials,
+              },
+            ),
+          ),
+        ).called(1);
+      });
+    });
   });
 }

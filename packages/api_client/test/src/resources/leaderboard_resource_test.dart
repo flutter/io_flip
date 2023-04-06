@@ -84,5 +84,55 @@ void main() {
         );
       });
     });
+
+    group('addInitialsToScoreCard', () {
+      const scoreCardId = 'scoreCardId';
+      const initials = 'initials';
+
+      setUp(() {
+        when(() => apiClient.post(any(), body: any(named: 'body')))
+            .thenAnswer((_) async => response);
+      });
+
+      test('makes the correct call', () async {
+        when(() => response.statusCode).thenReturn(HttpStatus.noContent);
+        await resource.addInitialsToScoreCard(
+          scoreCardId: scoreCardId,
+          initials: initials,
+        );
+
+        verify(
+          () => apiClient.post(
+            '/game/leaderboard/initials',
+            body: jsonEncode({
+              'scoreCardId': scoreCardId,
+              'initials': initials,
+            }),
+          ),
+        ).called(1);
+      });
+
+      test('throws ApiClientError when request fails', () async {
+        when(() => response.statusCode)
+            .thenReturn(HttpStatus.internalServerError);
+        when(() => response.body).thenReturn('Oops');
+
+        await expectLater(
+          () => resource.addInitialsToScoreCard(
+            scoreCardId: scoreCardId,
+            initials: initials,
+          ),
+          throwsA(
+            isA<ApiClientError>().having(
+              (e) => e.cause,
+              'cause',
+              equals(
+                'POST /leaderboard/initials returned status 500 with the following response: "Oops"',
+              ),
+            ),
+          ),
+        );
+      });
+    });
   });
 }
