@@ -255,5 +255,13 @@
   "quitGameDialogDescription": "You will lose your current hand and active winning streak.",
   "@quitGameDialogDescription": {
     "description": "Description of the quit game dialog"
+  },
+  "playerAlreadyConnectedError": "Please only use one tab at a time.",
+  "@playerAlreadyConnectedError": {
+    "description": "Error message shown when user connects in multiple tabs"
+  },
+  "unknownConnectionError": "Unable to connect. Please try again in a few moments.",
+  "@unknownConnectionError": {
+    "description": "Error message shown when an unknown error occurs while connecting"
   }
 }

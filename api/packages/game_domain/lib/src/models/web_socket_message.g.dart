@@ -47,4 +47,5 @@ const _$WebSocketErrorCodeEnumMap = {
   WebSocketErrorCode.badRequest: 'badRequest',
   WebSocketErrorCode.firebaseException: 'firebaseException',
   WebSocketErrorCode.playerAlreadyConnected: 'playerAlreadyConnected',
+  WebSocketErrorCode.unknown: 'unknown',
 };
