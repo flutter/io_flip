@@ -38,7 +38,7 @@ FutureOr<Response> onRequest(RequestContext context) async {
       } catch (e) {
         return Response(statusCode: HttpStatus.unauthorized);
       }
-      return Response();
+      return Response(statusCode: HttpStatus.noContent);
     } else {
       return Response(statusCode: HttpStatus.unauthorized);
     }

@@ -87,7 +87,7 @@ void main() {
   group('POST /game/matches/connect', () {
     test('responds with a 200', () async {
       final response = await route.onRequest(context);
-      expect(response.statusCode, equals(HttpStatus.ok));
+      expect(response.statusCode, equals(HttpStatus.noContent));
     });
 
     test('responds with a 401 if user not connected to match', () async {
@@ -102,6 +102,17 @@ void main() {
       when(() => request.method).thenReturn(HttpMethod.put);
       final response = await route.onRequest(context);
       expect(response.statusCode, equals(HttpStatus.methodNotAllowed));
+    });
+
+    test('responds with a 401 if something happens', () async {
+      when(
+        () => matchRepository.setCpuConnectivity(
+          matchId: matchId,
+          hostId: userId,
+        ),
+      ).thenThrow(Exception());
+      final response = await route.onRequest(context);
+      expect(response.statusCode, equals(HttpStatus.unauthorized));
     });
   });
 }
