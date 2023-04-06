@@ -30,6 +30,7 @@ void main() {
   late RequestContext context;
 
   const matchId = 'matchId';
+  const userId = 'userId';
   const card = Card(
     id: '',
     name: '',
@@ -54,27 +55,24 @@ void main() {
     when(
       () => matchRepository.setCpuConnectivity(
         matchId: matchId,
-        hostId: 'mock-userId',
+        hostId: userId,
       ),
     ).thenAnswer(
       (_) async {},
     );
     when(
-      () => matchRepository.getPlayerConnectivity(
-        matchId: matchId,
-        isHost: true,
-      ),
+      () => matchRepository.getPlayerConnectivity(userId: userId),
     ).thenAnswer((_) => Future.value(true));
 
     user = _MockAuthenticatedUser();
-    when(() => user.id).thenReturn('mock-userId');
+    when(() => user.id).thenReturn(userId);
 
     request = _MockRequest();
     when(() => request.method).thenReturn(HttpMethod.post);
     when(request.json).thenAnswer(
       (_) async => {
         'cards': ['a', 'b', 'c'],
-        'userId': 'mock-userId',
+        'userId': userId,
       },
     );
     context = _MockRequestContext();
@@ -94,10 +92,7 @@ void main() {
 
     test('responds with a 401 if user not connected to match', () async {
       when(
-        () => matchRepository.getPlayerConnectivity(
-          matchId: matchId,
-          isHost: true,
-        ),
+        () => matchRepository.getPlayerConnectivity(userId: userId),
       ).thenAnswer((_) => Future.value(false));
       final response = await route.onRequest(context);
       expect(response.statusCode, equals(HttpStatus.unauthorized));

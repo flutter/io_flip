@@ -827,13 +827,16 @@ void main() {
     });
 
     group('setHostConnectivity', () {
-      late final MatchRepository matchRepository;
-      final dbClient = _MockDbClient();
-      final cardsRepository = _MockCardRepository();
-      final matchSolver = _MockMatchSolver();
+      late DbClient dbClient;
+      late MatchRepository matchRepository;
       const matchId = 'matchId';
 
       setUp(() {
+        dbClient = _MockDbClient();
+
+        final cardsRepository = _MockCardRepository();
+        final matchSolver = _MockMatchSolver();
+
         matchRepository = MatchRepository(
           cardsRepository: cardsRepository,
           dbClient: dbClient,
@@ -879,13 +882,15 @@ void main() {
     });
 
     group('getPlayerConnectivity', () {
-      late final MatchRepository matchRepository;
-      final dbClient = _MockDbClient();
-      final cardsRepository = _MockCardRepository();
-      final matchSolver = _MockMatchSolver();
-      const matchId = 'matchId';
+      late DbClient dbClient;
+      late MatchRepository matchRepository;
+      const userId = 'userId';
 
       setUp(() {
+        dbClient = _MockDbClient();
+        final cardsRepository = _MockCardRepository();
+        final matchSolver = _MockMatchSolver();
+
         matchRepository = MatchRepository(
           cardsRepository: cardsRepository,
           dbClient: dbClient,
@@ -894,27 +899,58 @@ void main() {
 
         when(() => dbClient.getById(any(), any())).thenAnswer(
           (_) async => DbEntityRecord(
-            id: '',
+            id: userId,
             data: const {
-              'hostConnected': true,
-              'guestConnected': false,
+              'connected': true,
             },
           ),
         );
       });
 
-      test('returns the correct field', () async {
-        final host = await matchRepository.getPlayerConnectivity(
-          matchId: matchId,
-          isHost: true,
+      test('returns the correct result', () async {
+        final result = await matchRepository.getPlayerConnectivity(
+          userId: userId,
         );
-        expect(host, isTrue);
 
-        final guest = await matchRepository.getPlayerConnectivity(
-          matchId: matchId,
-          isHost: false,
+        expect(result, isTrue);
+        verify(() => dbClient.getById('connection_states', userId)).called(1);
+      });
+    });
+
+    group('setPlayerConnectivity', () {
+      late DbClient dbClient;
+      late MatchRepository matchRepository;
+      const userId = 'userId';
+
+      setUp(() {
+        dbClient = _MockDbClient();
+        final cardsRepository = _MockCardRepository();
+        final matchSolver = _MockMatchSolver();
+
+        matchRepository = MatchRepository(
+          cardsRepository: cardsRepository,
+          dbClient: dbClient,
+          matchSolver: matchSolver,
         );
-        expect(guest, isFalse);
+
+        when(() => dbClient.update(any(), any())).thenAnswer((_) async {});
+      });
+
+      test('updates data on the dbClient', () async {
+        await matchRepository.setPlayerConnectivity(
+          userId: userId,
+          connected: false,
+        );
+
+        verify(
+          () => dbClient.update(
+            'connection_states',
+            DbEntityRecord(
+              id: userId,
+              data: const {'connected': false},
+            ),
+          ),
+        ).called(1);
       });
     });
   });

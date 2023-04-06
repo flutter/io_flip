@@ -13,8 +13,7 @@ FutureOr<Response> onRequest(RequestContext context) async {
     final matchId = context.request.uri.queryParameters['matchId']!;
 
     final playerConnected = await matchRepository.getPlayerConnectivity(
-      isHost: true,
-      matchId: matchId,
+      userId: user.id,
     );
 
     if (playerConnected) {

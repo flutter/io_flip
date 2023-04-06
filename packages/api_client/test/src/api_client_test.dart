@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import 'package:api_client/api_client.dart';
 import 'package:encrypt/encrypt.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:http/http.dart' as http;
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -24,7 +25,20 @@ class _MockHttpClient extends Mock {
   });
 }
 
-class _FakeWebSocket extends Fake implements WebSocket {}
+class _FakeConnection extends Fake implements Connection {
+  _FakeConnection(this.stream);
+
+  final Stream<ConnectionState> stream;
+
+  @override
+  Future<ConnectionState> firstWhere(
+    bool Function(ConnectionState element) test, {
+    ConnectionState Function()? orElse,
+  }) =>
+      stream.firstWhere(test, orElse: orElse);
+}
+
+class _MockWebSocket extends Mock implements WebSocket {}
 
 class _MockWebSocketFactory extends Mock {
   WebSocket call(Uri uri);
@@ -43,7 +57,6 @@ void main() {
     final key = Key.fromUtf8('encryption_key_not_set_123456789');
     final iv = IV.fromUtf8('iv_not_set_12345');
     final encrypter = Encrypter(AES(key));
-    final webSocket = _FakeWebSocket();
 
     final testJson = {'data': 'test'};
 
@@ -56,6 +69,8 @@ void main() {
     late _MockHttpClient httpClient;
     late StreamController<String?> idTokenStreamController;
     late WebSocketFactory webSocketFactory;
+    late WebSocket webSocket;
+    late StreamController<ConnectionState> connectionStreamController;
 
     Future<String?> Function() refreshIdToken = () async => null;
 
@@ -88,6 +103,11 @@ void main() {
       idTokenStreamController = StreamController.broadcast();
 
       webSocketFactory = _MockWebSocketFactory().call;
+      connectionStreamController = StreamController.broadcast();
+      webSocket = _MockWebSocket();
+      when(() => webSocket.connection).thenAnswer(
+        (_) => _FakeConnection(connectionStreamController.stream),
+      );
       when(() => webSocketFactory(any())).thenReturn(webSocket);
 
       subject = ApiClient(
@@ -386,6 +406,29 @@ void main() {
         verify(
           () => webSocketFactory(
             Uri.parse('wss://baseurl.com/path?test=test'),
+          ),
+        ).called(1);
+      });
+
+      test('sends the token message after connection is established', () async {
+        const path = '/path';
+        const params = {'test': 'test'};
+        idTokenStreamController.add('token');
+        await Future.microtask(() {});
+        final response = await subject.connect(path, queryParameters: params);
+        expect(response, equals(webSocket));
+
+        connectionStreamController.add(Connected());
+
+        await Future.microtask(() {});
+
+        verify(
+          () => webSocket.send(jsonEncode(WebSocketMessage.token('token'))),
+        ).called(1);
+
+        verify(
+          () => webSocketFactory(
+            Uri.parse('ws://baseurl.com/path?test=test'),
           ),
         ).called(1);
       });

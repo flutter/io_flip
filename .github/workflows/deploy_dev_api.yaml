@@ -15,6 +15,7 @@ env:
   GAME_URL: https://a16e0900d-fe2c-3609-b43c-87093e447b78.web.app/
   INITIALS_BLACKLIST_ID: MdOoZMhusnJTcwfYE0nL
   PROMPT_WHITELIST_ID: MIsaP8zrRVhuR84MLEic
+  FB_STORAGE_BUCKET: top-dash-dev.appspot.com
 
 jobs:
   deploy:
@@ -59,6 +60,7 @@ jobs:
             PROMPT_WHITELIST_ID=${{ env.PROMPT_WHITELIST_ID }}
             ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }}
             ENCRYPTION_IV=${{ secrets.ENCRYPTION_IV }}
+            FB_STORAGE_BUCKET=${{ env.FB_STORAGE_BUCKET }}
 
       - name: Show Output
         run: echo ${{ steps.deploy.outputs.url }}

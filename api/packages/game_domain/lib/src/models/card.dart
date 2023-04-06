@@ -35,6 +35,7 @@ class Card extends Equatable {
     required this.power,
     required this.rarity,
     required this.suit,
+    this.shareImage,
   });
 
   /// {@macro card}
@@ -68,11 +69,29 @@ class Card extends Equatable {
   @JsonKey()
   final Suit suit;
 
+  /// The share image
+  @JsonKey()
+  final String? shareImage;
+
+  /// Returns a copy of this instance with the new [shareImage].
+  Card copyWithShareImage(String? shareImage) {
+    return Card(
+      id: id,
+      name: name,
+      description: description,
+      image: image,
+      power: power,
+      rarity: rarity,
+      suit: suit,
+      shareImage: shareImage,
+    );
+  }
+
   /// Returns a json representation from this instance.
   Map<String, dynamic> toJson() => _$CardToJson(this);
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         id,
         name,
         description,
@@ -80,5 +99,6 @@ class Card extends Equatable {
         power,
         rarity,
         suit,
+        shareImage,
       ];
 }
