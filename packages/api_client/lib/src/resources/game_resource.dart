@@ -238,9 +238,11 @@ class GameResource {
           StackTrace.current,
         );
       }
+    } on ApiClientError {
+      rethrow;
     } catch (error) {
       throw ApiClientError(
-        'websocket game/matches/connect returned with the following error: "$error"',
+        'POST game/matches/connect returned with the following error: "$error"',
         StackTrace.current,
       );
     }

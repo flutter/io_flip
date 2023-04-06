@@ -586,23 +586,34 @@ void main() {
         when(
           () => apiClient.post(any()),
         ).thenAnswer((_) async => response);
+        when(() => response.body).thenReturn('Ops');
 
         when(() => response.statusCode).thenReturn(HttpStatus.methodNotAllowed);
 
         await expectLater(
-          () => resource.connectToCpuMatch(matchId: ''),
-          throwsA(isA<ApiClientError>()),
+          resource.connectToCpuMatch(matchId: ''),
+          throwsA(
+            isA<ApiClientError>().having(
+              (e) => e.cause,
+              'cause',
+              contains(
+                'POST game/matches/connect returned status ${HttpStatus.methodNotAllowed}',
+              ),
+            ),
+          ),
         );
       });
 
-      test('throws an error', () async {
+      test('Catches error', () async {
         when(
           () => apiClient.post(any()),
         ).thenThrow(Exception('oops'));
 
         await expectLater(
-          () => resource.connectToCpuMatch(matchId: ''),
-          throwsA(isA<ApiClientError>()),
+          resource.connectToCpuMatch(matchId: ''),
+          throwsA(
+            isA<ApiClientError>(),
+          ),
         );
       });
     });
