@@ -414,6 +414,31 @@ void main() {
     });
   });
 
+  group('LeaderboardEntryState', () {
+    test('can be instantiated', () {
+      expect(
+        LeaderboardEntryState('scoreCardId'),
+        isNotNull,
+      );
+    });
+
+    test('supports equality', () {
+      expect(
+        LeaderboardEntryState('scoreCardId'),
+        equals(LeaderboardEntryState('scoreCardId')),
+      );
+
+      expect(
+        LeaderboardEntryState('scoreCardId'),
+        equals(
+          isNot(
+            LeaderboardEntryState('scoreCardId2'),
+          ),
+        ),
+      );
+    });
+  });
+
   group('OpponentAbsentState', () {
     test('can be instantiated', () {
       expect(OpponentAbsentState(), isNotNull);

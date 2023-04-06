@@ -5,6 +5,7 @@ import 'package:game_domain/game_domain.dart' as game;
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash/game/views/game_summary.dart';
+import 'package:top_dash/leaderboard/leaderboard.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class GameView extends StatelessWidget {
@@ -33,6 +34,12 @@ class GameView extends StatelessWidget {
             return const GameSummaryView();
           }
           child = const _GameBoard();
+        }
+
+        if (state is LeaderboardEntryState) {
+          child = LeaderboardEntryView(
+            scoreCardId: state.scoreCardId,
+          );
         }
 
         if (state is OpponentAbsentState) {

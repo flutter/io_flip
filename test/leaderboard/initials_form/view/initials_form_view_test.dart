@@ -2,6 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/leaderboard/initials_form/initials_form.dart';
@@ -20,15 +21,53 @@ void main() {
   });
 
   group('InitialsFormView', () {
-    testWidgets('renders continue button', (tester) async {
+    testWidgets('renders enter button', (tester) async {
       when(() => initialsFormBloc.state).thenReturn(const InitialsFormState());
       await tester.pumpSubject(initialsFormBloc);
 
       final l10n = tester.element(find.byType(InitialsFormView)).l10n;
 
-      expect(find.text(l10n.continueButton.toUpperCase()), findsOneWidget);
-      expect(find.byType(OutlinedButton), findsOneWidget);
+      expect(find.text(l10n.enter), findsOneWidget);
+      expect(find.byType(FilledButton), findsOneWidget);
     });
+
+    testWidgets(
+      'renders error text when state status is InitialsFormStatus.failure',
+      (tester) async {
+        when(() => initialsFormBloc.state).thenReturn(
+          const InitialsFormState(
+            status: InitialsFormStatus.failure,
+          ),
+        );
+        await tester.pumpSubject(initialsFormBloc);
+
+        expect(find.text('Error submitting initials'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'routes navigation to home when initials submission is successful',
+      (tester) async {
+        final goRouter = MockGoRouter();
+
+        whenListen(
+          initialsFormBloc,
+          Stream.fromIterable([
+            const InitialsFormState(
+              status: InitialsFormStatus.success,
+            ),
+          ]),
+          initialState: const InitialsFormState(),
+        );
+
+        await tester.pumpSubject(
+          initialsFormBloc,
+          router: goRouter,
+        );
+
+        verify(() => goRouter.go('/')).called(1);
+      },
+    );
 
     group('initials textfield', () {
       testWidgets('renders correctly', (tester) async {
@@ -50,7 +89,7 @@ void main() {
 
         final l10n = tester.element(find.byType(InitialsFormView)).l10n;
 
-        await tester.tap(find.byType(OutlinedButton));
+        await tester.tap(find.byType(FilledButton));
         await tester.pumpAndSettle();
 
         expect(find.text(l10n.enterInitialsError), findsNothing);
@@ -67,7 +106,7 @@ void main() {
 
         final l10n = tester.element(find.byType(InitialsFormView)).l10n;
 
-        await tester.tap(find.byType(OutlinedButton));
+        await tester.tap(find.byType(FilledButton));
         await tester.pumpAndSettle();
 
         expect(find.text(l10n.enterInitialsError), findsOneWidget);
@@ -86,7 +125,7 @@ void main() {
 
           final l10n = tester.element(find.byType(InitialsFormView)).l10n;
 
-          await tester.tap(find.byType(OutlinedButton));
+          await tester.tap(find.byType(FilledButton));
           await tester.pumpAndSettle();
 
           expect(find.text(l10n.enterInitialsError), findsOneWidget);
@@ -101,7 +140,7 @@ void main() {
         final l10n = tester.element(find.byType(InitialsFormView)).l10n;
 
         await tester.enterText(find.byType(TextField), 'aaa');
-        await tester.tap(find.byType(OutlinedButton));
+        await tester.tap(find.byType(FilledButton));
         await tester.pumpAndSettle();
         final input = tester.widget<EditableText>(find.byType(EditableText));
         expect(input.controller.text == 'AAA', isTrue);
@@ -113,12 +152,16 @@ void main() {
 }
 
 extension InitialsFormViewTest on WidgetTester {
-  Future<void> pumpSubject(InitialsFormBloc bloc) async {
+  Future<void> pumpSubject(
+    InitialsFormBloc bloc, {
+    GoRouter? router,
+  }) async {
     return pumpApp(
       BlocProvider.value(
         value: bloc,
         child: const Scaffold(body: InitialsFormView()),
       ),
+      router: router,
     );
   }
 }

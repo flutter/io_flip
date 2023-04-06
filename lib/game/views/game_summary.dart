@@ -189,6 +189,9 @@ class GameSummaryFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final bloc = context.read<GameBloc>();
+    final state = bloc.state as MatchLoadedState;
+    final playerScoreCard = state.playerScoreCard;
 
     return ColoredBox(
       color: TopDashColors.seedWhite,
@@ -208,7 +211,12 @@ class GameSummaryFooter extends StatelessWidget {
               onPressed: () => QuitGameDialog.show(
                 context,
                 onConfirm: () => _routerNeglectCall(context, () {
-                  GoRouter.of(context).go('/');
+                  if (playerScoreCard.initials != null) {
+                    GoRouter.of(context).go('/');
+                  } else {
+                    GoRouter.of(context).pop();
+                    bloc.add(const LeaderboardEntryRequested());
+                  }
                 }),
                 onCancel: GoRouter.of(context).pop,
               ),

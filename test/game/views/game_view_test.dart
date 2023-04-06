@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:api_client/api_client.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,15 +10,19 @@ import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/game/game.dart';
+import 'package:top_dash/leaderboard/leaderboard.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
 
 class _MockGameBloc extends Mock implements GameBloc {}
 
+class _MockLeaderboardResource extends Mock implements LeaderboardResource {}
+
 void main() {
   group('GameView', () {
     late GameBloc bloc;
+    late LeaderboardResource leaderboardResource;
 
     const playerCards = [
       Card(
@@ -73,6 +78,10 @@ void main() {
       when(() => bloc.canPlayerPlay(any())).thenReturn(true);
       when(() => bloc.isPlayerTurn).thenReturn(true);
       when(bloc.hasPlayerWon).thenReturn(false);
+
+      leaderboardResource = _MockLeaderboardResource();
+      when(() => leaderboardResource.getInitialsBlacklist())
+          .thenAnswer((_) async => ['WTF']);
     });
 
     void mockState(GameState state) {
@@ -134,6 +143,19 @@ void main() {
           findsOneWidget,
         );
       });
+
+      testWidgets(
+        'renders leaderboard entry view when state is LeaderboardEntryState',
+        (tester) async {
+          mockState(LeaderboardEntryState('scoreCardId'));
+          await tester.pumpSubject(
+            bloc,
+            leaderboardResource: leaderboardResource,
+          );
+
+          expect(find.byType(LeaderboardEntryView), findsOneWidget);
+        },
+      );
 
       testWidgets(
         'renders the opponent absent message when the opponent leaves',
@@ -534,6 +556,7 @@ extension GameViewTest on WidgetTester {
   Future<void> pumpSubject(
     GameBloc bloc, {
     GoRouter? goRouter,
+    LeaderboardResource? leaderboardResource,
   }) {
     return mockNetworkImages(() {
       return pumpApp(
@@ -542,6 +565,7 @@ extension GameViewTest on WidgetTester {
           child: GameView(),
         ),
         router: goRouter,
+        leaderboardResource: leaderboardResource,
       );
     });
   }

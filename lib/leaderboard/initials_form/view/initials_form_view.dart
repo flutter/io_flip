@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/leaderboard/initials_form/initials_form.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
+
+// TODO(willhlas): update design.
 
 class InitialsFormView extends StatelessWidget {
   const InitialsFormView({super.key});
@@ -11,9 +14,18 @@ class InitialsFormView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    const white = TopDashColors.seedWhite;
-    return BlocBuilder<InitialsFormBloc, InitialsFormState>(
+
+    return BlocConsumer<InitialsFormBloc, InitialsFormState>(
+      listener: (context, state) {
+        if (state.status == InitialsFormStatus.success) {
+          GoRouter.of(context).go('/');
+        }
+      },
       builder: (context, state) {
+        if (state.status == InitialsFormStatus.failure) {
+          return const Center(child: Text('Error submitting initials'));
+        }
+
         return Column(
           children: [
             Container(
@@ -26,21 +38,12 @@ class InitialsFormView extends StatelessWidget {
                   LengthLimitingTextInputFormatter(3)
                 ],
                 textCapitalization: TextCapitalization.characters,
-                cursorColor: white,
                 decoration: InputDecoration(
-                  enabledBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: white),
-                  ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: white),
-                  ),
                   hintText: 'AAA',
-                  hintStyle: const TextStyle(color: white),
                   errorText:
                       state.status.isInvalid ? l10n.enterInitialsError : null,
                 ),
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: white),
                 onChanged: (value) {
                   context
                       .read<InitialsFormBloc>()
@@ -49,15 +52,11 @@ class InitialsFormView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: TopDashSpacing.xxlg),
-            OutlinedButton(
+            FilledButton(
               onPressed: () {
                 context.read<InitialsFormBloc>().add(InitialsSubmitted());
               },
-              style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: white),
-                foregroundColor: white,
-              ),
-              child: Text(l10n.continueButton.toUpperCase()),
+              child: Text(l10n.enter),
             )
           ],
         );

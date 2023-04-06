@@ -60,106 +60,109 @@ void main() {
       );
     }
 
-    group('Gameplay', () {
-      final baseState = MatchLoadedState(
-        playerScoreCard: ScoreCard(id: 'scoreCardId'),
-        match: Match(
+    final baseState = MatchLoadedState(
+      playerScoreCard: ScoreCard(id: 'scoreCardId'),
+      match: Match(
+        id: '',
+        hostDeck: Deck(
           id: '',
-          hostDeck: Deck(
-            id: '',
-            userId: '',
-            cards: const [
-              Card(
-                id: 'player_card',
-                name: 'host_card',
-                description: '',
-                image: '',
-                rarity: true,
-                power: 2,
-                suit: Suit.air,
-              ),
-              Card(
-                id: 'player_card_2',
-                name: 'host_card_2',
-                description: '',
-                image: '',
-                rarity: true,
-                power: 2,
-                suit: Suit.earth,
-              ),
-              Card(
-                id: 'player_card_3',
-                name: 'host_card_3',
-                description: '',
-                image: '',
-                rarity: true,
-                power: 4,
-                suit: Suit.metal,
-              ),
-            ],
-          ),
-          guestDeck: Deck(
-            id: '',
-            userId: '',
-            cards: const [
-              Card(
-                id: 'opponent_card',
-                name: 'guest_card',
-                description: '',
-                image: '',
-                rarity: true,
-                power: 1,
-                suit: Suit.fire,
-              ),
-              Card(
-                id: 'opponent_card_2',
-                name: 'guest_card_2',
-                description: '',
-                image: '',
-                rarity: false,
-                power: 1,
-                suit: Suit.air,
-              ),
-              Card(
-                id: 'opponent_card_3',
-                name: 'guest_card_3',
-                description: '',
-                image: '',
-                rarity: false,
-                power: 10,
-                suit: Suit.water,
-              ),
-            ],
-          ),
-        ),
-        matchState: MatchState(
-          id: '',
-          matchId: '',
-          guestPlayedCards: const [],
-          hostPlayedCards: const [],
-          hostStartsMatch: true,
-        ),
-        turns: const [],
-        turnTimeRemaining: 10,
-        turnAnimationsFinished: false,
-      );
-
-      void defaultMockState() {
-        mockState(
-          baseState.copyWith(
-            matchState: MatchState(
-              id: '',
-              matchId: '',
-              guestPlayedCards: const [],
-              hostPlayedCards: const [],
-              hostStartsMatch: true,
-              result: MatchResult.guest,
+          userId: '',
+          cards: const [
+            Card(
+              id: 'player_card',
+              name: 'host_card',
+              description: '',
+              image: '',
+              rarity: true,
+              power: 2,
+              suit: Suit.air,
             ),
-            turnAnimationsFinished: true,
-          ),
-        );
-      }
+            Card(
+              id: 'player_card_2',
+              name: 'host_card_2',
+              description: '',
+              image: '',
+              rarity: true,
+              power: 2,
+              suit: Suit.earth,
+            ),
+            Card(
+              id: 'player_card_3',
+              name: 'host_card_3',
+              description: '',
+              image: '',
+              rarity: true,
+              power: 4,
+              suit: Suit.metal,
+            ),
+          ],
+        ),
+        guestDeck: Deck(
+          id: '',
+          userId: '',
+          cards: const [
+            Card(
+              id: 'opponent_card',
+              name: 'guest_card',
+              description: '',
+              image: '',
+              rarity: true,
+              power: 1,
+              suit: Suit.fire,
+            ),
+            Card(
+              id: 'opponent_card_2',
+              name: 'guest_card_2',
+              description: '',
+              image: '',
+              rarity: false,
+              power: 1,
+              suit: Suit.air,
+            ),
+            Card(
+              id: 'opponent_card_3',
+              name: 'guest_card_3',
+              description: '',
+              image: '',
+              rarity: false,
+              power: 10,
+              suit: Suit.water,
+            ),
+          ],
+        ),
+      ),
+      matchState: MatchState(
+        id: '',
+        matchId: '',
+        guestPlayedCards: const [],
+        hostPlayedCards: const [],
+        hostStartsMatch: true,
+      ),
+      turns: const [],
+      turnTimeRemaining: 10,
+      turnAnimationsFinished: false,
+    );
 
+    void defaultMockState({
+      ScoreCard? scoreCard,
+    }) {
+      mockState(
+        baseState.copyWith(
+          playerScoreCard: scoreCard,
+          matchState: MatchState(
+            id: '',
+            matchId: '',
+            guestPlayedCards: const [],
+            hostPlayedCards: const [],
+            hostStartsMatch: true,
+            result: MatchResult.guest,
+          ),
+          turnAnimationsFinished: true,
+        ),
+      );
+    }
+
+    group('Gameplay', () {
       testWidgets(
         'renders the draw message when the players make a draw',
         (tester) async {
@@ -356,46 +359,85 @@ void main() {
         },
       );
     });
-  });
 
-  group('GameSummaryFooter', () {
-    late __Router router;
+    group('GameSummaryFooter', () {
+      late __Router router;
 
-    setUpAll(() {
-      registerFallbackValue(_MockBuildContext());
-    });
-
-    setUp(() {
-      router = _MockRouter();
-      when(() => router.neglect(any(), any())).thenAnswer((_) {
-        final callback = _.positionalArguments[1] as VoidCallback;
-        callback();
+      setUpAll(() {
+        registerFallbackValue(_MockBuildContext());
       });
+
+      setUp(() {
+        router = _MockRouter();
+        when(() => router.neglect(any(), any())).thenAnswer((_) {
+          final callback = _.positionalArguments[1] as VoidCallback;
+          callback();
+        });
+      });
+
+      testWidgets(
+        'pops navigation when the quit button is tapped and confirmed and '
+        'adds LeaderboardEntryRequested event to bloc if player score card '
+        'initials is null',
+        (tester) async {
+          final goRouter = MockGoRouter();
+
+          defaultMockState();
+          await tester.pumpApp(
+            BlocProvider<GameBloc>.value(
+              value: bloc,
+              child: GameSummaryFooter(
+                routerNeglectCall: router.neglect,
+              ),
+            ),
+            router: goRouter,
+          );
+
+          await tester.tap(find.text(tester.l10n.quit));
+          await tester.pumpAndSettle();
+
+          expect(find.byType(QuitGameDialog), findsOneWidget);
+
+          await tester.tap(find.text(tester.l10n.quit).last);
+          await tester.pumpAndSettle();
+
+          verify(goRouter.pop).called(1);
+          verify(() => bloc.add(LeaderboardEntryRequested())).called(1);
+        },
+      );
+
+      testWidgets(
+        'pops navigation when the quit button is tapped and confirmed and '
+        'player score card has initials',
+        (tester) async {
+          final goRouter = MockGoRouter();
+
+          defaultMockState(
+            scoreCard: ScoreCard(id: 'id', initials: 'AAA'),
+          );
+
+          await tester.pumpApp(
+            BlocProvider<GameBloc>.value(
+              value: bloc,
+              child: GameSummaryFooter(
+                routerNeglectCall: router.neglect,
+              ),
+            ),
+            router: goRouter,
+          );
+
+          await tester.tap(find.text(tester.l10n.quit));
+          await tester.pumpAndSettle();
+
+          expect(find.byType(QuitGameDialog), findsOneWidget);
+
+          await tester.tap(find.text(tester.l10n.quit).last);
+          await tester.pumpAndSettle();
+
+          verify(() => goRouter.go('/')).called(1);
+        },
+      );
     });
-
-    testWidgets(
-      'pops navigation when the quit button is tapped and confirmed',
-      (tester) async {
-        final goRouter = MockGoRouter();
-
-        await tester.pumpApp(
-          GameSummaryFooter(
-            routerNeglectCall: router.neglect,
-          ),
-          router: goRouter,
-        );
-
-        await tester.tap(find.text(tester.l10n.quit));
-        await tester.pumpAndSettle();
-
-        expect(find.byType(QuitGameDialog), findsOneWidget);
-
-        await tester.tap(find.text(tester.l10n.quit).last);
-        await tester.pumpAndSettle();
-
-        verify(() => goRouter.go('/')).called(1);
-      },
-    );
   });
 }
 
