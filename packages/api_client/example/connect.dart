@@ -12,9 +12,6 @@ void main() async {
     refreshIdToken: () async => null,
   );
 
-  final channel = await client.gameResource.connectToMatch(
-    matchId: '1ldDtz5qg33hKt95Y4l2',
-    isHost: true,
-  );
+  final channel = await client.connect('public/connect');
   channel.messages.listen(print);
 }

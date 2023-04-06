@@ -103,6 +103,80 @@ void main() {
       });
     });
 
+    group('matchJoined', () {
+      test('has correct message type', () {
+        final message = WebSocketMessage.matchJoined(
+          matchId: 'matchId',
+          isHost: true,
+        );
+
+        expect(message.messageType, equals(MessageType.matchJoined));
+      });
+
+      test('has correct payload', () {
+        final message = WebSocketMessage.matchJoined(
+          matchId: 'matchId',
+          isHost: true,
+        );
+
+        expect(
+          message.payload,
+          isA<WebSocketMatchJoinedPayload>()
+              .having(
+                (p) => p.isHost,
+                'isHost',
+                isTrue,
+              )
+              .having(
+                (p) => p.matchId,
+                'matchId',
+                'matchId',
+              ),
+        );
+      });
+
+      test('uses value equality', () {
+        final a = WebSocketMessage.matchJoined(
+          matchId: 'matchId',
+          isHost: true,
+        );
+        final b = WebSocketMessage.matchJoined(
+          matchId: 'matchId',
+          isHost: true,
+        );
+        final c = WebSocketMessage.matchJoined(
+          matchId: 'NOT matchId',
+          isHost: true,
+        );
+
+        expect(a, equals(b));
+        expect(a, isNot(equals(c)));
+      });
+
+      group('json', () {
+        final json = {
+          'messageType': 'matchJoined',
+          'payload': {
+            'matchId': 'abcd',
+            'isHost': false,
+          },
+        };
+
+        final message = WebSocketMessage.matchJoined(
+          matchId: 'abcd',
+          isHost: false,
+        );
+
+        test('fromJson deserializes correctly', () {
+          expect(WebSocketMessage.fromJson(json), equals(message));
+        });
+
+        test('toJson serializes correctly', () {
+          expect(jsonEncode(message), equals(jsonEncode(json)));
+        });
+      });
+    });
+
     group('connected', () {
       test('has correct message type', () {
         final message = WebSocketMessage.connected();
@@ -151,33 +225,33 @@ void main() {
       });
     });
 
-    group('disconnected', () {
+    group('matchLeft', () {
       test('has correct message type', () {
-        final message = WebSocketMessage.disconnected();
+        final message = WebSocketMessage.matchLeft();
 
-        expect(message.messageType, equals(MessageType.disconnected));
+        expect(message.messageType, equals(MessageType.matchLeft));
       });
 
       test('has no payload', () {
-        final message = WebSocketMessage.disconnected();
+        final message = WebSocketMessage.matchLeft();
 
         expect(message.payload, isNull);
       });
 
       test('uses value equality', () {
-        final a = WebSocketMessage.disconnected();
-        final b = WebSocketMessage.disconnected();
+        final a = WebSocketMessage.matchLeft();
+        final b = WebSocketMessage.matchLeft();
 
         expect(a, equals(b));
       });
 
       group('json', () {
         final json = {
-          'messageType': 'disconnected',
+          'messageType': 'matchLeft',
           'payload': null,
         };
 
-        final message = WebSocketMessage.disconnected();
+        final message = WebSocketMessage.matchLeft();
 
         test('fromJson deserializes correctly', () {
           expect(WebSocketMessage.fromJson(json), equals(message));

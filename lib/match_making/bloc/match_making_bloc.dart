@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:api_client/api_client.dart';
+import 'package:connection_repository/connection_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+// TODO(kirpal): Why are there two different Match classes?
+import 'package:game_domain/game_domain.dart' hide Match;
 import 'package:match_maker_repository/match_maker_repository.dart';
-import 'package:web_socket_client/web_socket_client.dart';
 
 part 'match_making_event.dart';
 part 'match_making_state.dart';
@@ -12,10 +14,12 @@ part 'match_making_state.dart';
 class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   MatchMakingBloc({
     required MatchMakerRepository matchMakerRepository,
+    required ConnectionRepository connectionRepository,
     required GameResource gameResource,
     required this.cardIds,
     this.hostWaitTime = defaultHostWaitTime,
   })  : _matchMakerRepository = matchMakerRepository,
+        _connectionRepository = connectionRepository,
         _gameResource = gameResource,
         super(const MatchMakingState.initial()) {
     on<MatchRequested>(_onMatchRequested);
@@ -26,10 +30,25 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   final MatchMakerRepository _matchMakerRepository;
   final GameResource _gameResource;
   final List<String> cardIds;
-  WebSocket? _matchConnection;
+  final ConnectionRepository _connectionRepository;
 
   static const defaultHostWaitTime = Duration(seconds: 4);
   final Duration hostWaitTime;
+
+  Future<void> _connectToMatch({
+    required String matchId,
+    required bool isHost,
+  }) async {
+    _connectionRepository.send(
+      WebSocketMessage.matchJoined(
+        matchId: matchId,
+        isHost: isHost,
+      ),
+    );
+    await _connectionRepository.messages.firstWhere(
+      (message) => message.messageType == MessageType.matchJoined,
+    );
+  }
 
   Future<void> _onMatchRequested(
     MatchRequested event,
@@ -39,25 +58,21 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
       emit(state.copyWith(status: MatchMakingStatus.processing));
       final playerId = await _gameResource.createDeck(cardIds);
       final match = await _matchMakerRepository.findMatch(playerId);
+      final isHost = match.guest == null;
 
-      if (match.guest != null) {
-        _matchConnection = await _gameResource.connectToMatch(
-          matchId: match.id,
-          isHost: false,
-        );
+      await _connectToMatch(
+        matchId: match.id,
+        isHost: isHost,
+      );
+      if (!isHost) {
         emit(
           state.copyWith(
             match: match,
             status: MatchMakingStatus.completed,
             isHost: false,
-            matchConnection: _matchConnection,
           ),
         );
       } else {
-        _matchConnection = await _gameResource.connectToMatch(
-          matchId: match.id,
-          isHost: true,
-        );
         await _waitGuestToJoin(
           match: match,
           emit: emit,
@@ -78,7 +93,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
       final playerId = await _gameResource.createDeck(cardIds);
       final match = await _matchMakerRepository.createPrivateMatch(playerId);
 
-      _matchConnection = await _gameResource.connectToMatch(
+      await _connectToMatch(
         matchId: match.id,
         isHost: true,
       );
@@ -103,7 +118,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
         guestId: playerId,
         inviteCode: event.inviteCode,
       );
-      _matchConnection = await _gameResource.connectToMatch(
+      await _connectToMatch(
         matchId: match!.id,
         isHost: false,
       );
@@ -139,7 +154,6 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
           match: newMatch,
           status: MatchMakingStatus.completed,
           isHost: true,
-          matchConnection: _matchConnection,
         ),
       );
       subscription.cancel();
@@ -157,7 +171,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
       const Duration(seconds: 30),
       onTimeout: () {
         subscription.cancel();
-        _matchConnection?.close();
+        _connectionRepository.send(const WebSocketMessage.matchLeft());
         emit(state.copyWith(status: MatchMakingStatus.timeout));
       },
     );
@@ -166,7 +180,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   @override
   Future<void> close() {
     if (state.match?.guest == null) {
-      _matchConnection?.close();
+      _connectionRepository.send(const WebSocketMessage.matchLeft());
     }
     return super.close();
   }
