@@ -2,6 +2,7 @@ import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:connection_repository/connection_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:game_script_machine/game_script_machine.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +10,7 @@ import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:provider/provider.dart';
 import 'package:top_dash/app_lifecycle/app_lifecycle.dart';
 import 'package:top_dash/audio/audio_controller.dart';
+import 'package:top_dash/connection/connection.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/router/router.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
@@ -91,6 +93,11 @@ class _AppState extends State<App> {
             update: updateAudioController,
             dispose: (context, audio) => audio.dispose(),
           ),
+          BlocProvider(
+            create: (context) => ConnectionBloc(
+              connectionRepository: widget.connectionRepository,
+            )..add(const ConnectionRequested()),
+          ),
         ],
         child: Builder(
           builder: (context) {
@@ -103,6 +110,7 @@ class _AppState extends State<App> {
               scaffoldMessengerKey: scaffoldMessengerKey,
               localizationsDelegates: AppLocalizations.localizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,
+              builder: (context, child) => ConnectionOverlay(child: child),
             );
           },
         ),

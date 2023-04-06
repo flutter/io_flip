@@ -1252,7 +1252,7 @@ packages:
     source: hosted
     version: "2.3.0"
   web_socket_client:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: web_socket_client
       sha256: c58378b2374622c43abfb0a29dce1a9418f95e1dddbf7fdd695a8c34b01eb737

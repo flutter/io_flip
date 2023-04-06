@@ -6,7 +6,7 @@ import 'package:dart_frog_web_socket/dart_frog_web_socket.dart' as ws;
 import 'package:game_domain/game_domain.dart';
 import 'package:match_repository/match_repository.dart';
 
-import '../../../main.dart';
+import '../../main.dart';
 
 typedef WebSocketHandlerFactory = Handler Function(
   void Function(ws.WebSocketChannel channel, String? protocol) onConnection,
@@ -15,39 +15,37 @@ typedef WebSocketHandlerFactory = Handler Function(
 Future<Response> onRequest(RequestContext context) async {
   final matchRepository = context.read<MatchRepository>();
   final webSocketHandlerFactory = context.read<WebSocketHandlerFactory>();
-  final matchId = context.request.uri.queryParameters['matchId'];
-  final host = context.request.uri.queryParameters['host'];
-  final isHost = host == 'true';
 
   final handler = webSocketHandlerFactory((channel, protocol) {
     String? userId;
+    String? matchId;
+    var isHost = true;
     Future<void> setConnectivity({required bool connected}) async {
       if (userId != null) {
         await matchRepository.setPlayerConnectivity(
           userId: userId!,
           connected: connected,
         );
+      }
+    }
 
-        if (matchId != null) {
-          if (isHost) {
-            await matchRepository.setHostConnectivity(
-              match: matchId,
-              active: connected,
-            );
-          } else {
-            await matchRepository.setGuestConnectivity(
-              match: matchId,
-              active: connected,
-            );
-          }
+    Future<void> setGameConnectivity({required bool connected}) async {
+      if (matchId != null) {
+        if (isHost) {
+          await matchRepository.setHostConnectivity(
+            match: matchId!,
+            active: connected,
+          );
+        } else {
+          await matchRepository.setGuestConnectivity(
+            match: matchId!,
+            active: connected,
+          );
         }
       }
     }
 
     Future<void> handleMessage(WebSocketMessage message) async {
-      // Right now, we only handle the token message. In the future, we may want
-      // to handle other messages, and in that case we will need to check that
-      // the userId is not null, to verify that the user is authenticated.
       if (message.messageType == MessageType.token) {
         final tokenPayload = message.payload! as WebSocketTokenPayload;
         final newUserId = await jwtMiddleware.verifyToken(tokenPayload.token);
@@ -71,6 +69,7 @@ Future<Response> onRequest(RequestContext context) async {
                 WebSocketErrorCode.playerAlreadyConnected,
               );
               channel.sink.add(jsonEncode(message));
+              userId = null;
             } else {
               try {
                 await setConnectivity(connected: true);
@@ -86,6 +85,29 @@ Future<Response> onRequest(RequestContext context) async {
                 );
               }
             }
+          }
+        }
+      } else {
+        // All other message types require a user to already be authenticated.
+        if (userId != null) {
+          if (message.messageType == MessageType.matchJoined) {
+            final matchJoinedPayload =
+                message.payload! as WebSocketMatchJoinedPayload;
+            await setGameConnectivity(connected: false);
+            matchId = matchJoinedPayload.matchId;
+            isHost = matchJoinedPayload.isHost;
+            await setGameConnectivity(connected: true);
+            channel.sink.add(
+              jsonEncode(
+                WebSocketMessage.matchJoined(
+                  isHost: isHost,
+                  matchId: matchId!,
+                ),
+              ),
+            );
+          } else if (message.messageType == MessageType.matchLeft) {
+            await setGameConnectivity(connected: false);
+            matchId = null;
           }
         }
       }
@@ -109,6 +131,7 @@ Future<Response> onRequest(RequestContext context) async {
       },
       onDone: () {
         setConnectivity(connected: false);
+        setGameConnectivity(connected: false);
       },
     );
   });

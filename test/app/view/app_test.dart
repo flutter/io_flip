@@ -9,6 +9,7 @@ import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/app/app.dart';
 import 'package:top_dash/audio/audio_controller.dart';
+import 'package:top_dash/connection/connection.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/main_menu/main_menu_screen.dart';
 import 'package:top_dash/prompt/prompt.dart';
@@ -40,7 +41,12 @@ class _MockLeaderboardResource extends Mock implements LeaderboardResource {}
 
 class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
 
-class _MockConnectionRepository extends Mock implements ConnectionRepository {}
+class _MockConnectionRepository extends Mock implements ConnectionRepository {
+  _MockConnectionRepository() {
+    when(connect).thenAnswer((_) async {});
+    when(() => messages).thenAnswer((_) => const Stream.empty());
+  }
+}
 
 class _MockMatchSolver extends Mock implements MatchSolver {}
 
@@ -85,6 +91,22 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('SnackBar'), findsOneWidget);
+    });
+
+    testWidgets('wraps everything in a ConnectionOverlay', (tester) async {
+      await tester.pumpWidget(
+        App(
+          settingsPersistence: MemoryOnlySettingsPersistence(),
+          apiClient: apiClient,
+          matchMakerRepository: _MockMatchMakerRepository(),
+          connectionRepository: _MockConnectionRepository(),
+          matchSolver: _MockMatchSolver(),
+          gameScriptMachine: _MockGameScriptEngine(),
+          user: _MockUser(),
+        ),
+      );
+
+      expect(find.byType(ConnectionOverlay), findsOneWidget);
     });
 
     group('updateAudioController', () {
