@@ -418,7 +418,7 @@ class AppColorsStory extends StatelessWidget {
       ),
     ];
 
-    return StoryScaffold(
+    return const StoryScaffold(
       title: 'Colors',
       body: SingleChildScrollView(
         child: Wrap(

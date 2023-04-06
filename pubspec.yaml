@@ -5,7 +5,7 @@ publish_to: none
 
 environment:
   sdk: ">=2.19.0 <3.0.0"
-  flutter: 3.7.2
+  flutter: 3.9.0-0.2.pre
 
 dependencies:
   api_client:
@@ -37,7 +37,7 @@ dependencies:
     path: api/packages/game_script_machine
   go_router: ^6.5.5
   highlight: ^0.7.0
-  intl: ^0.17.0
+  intl: ^0.18.0
   logging: ^1.1.1
   match_maker_repository:
     path: packages/match_maker_repository

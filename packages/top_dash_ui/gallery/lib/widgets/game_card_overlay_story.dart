@@ -7,7 +7,7 @@ class GameCardOverlayStory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StoryScaffold(
+    return const StoryScaffold(
       title: 'Game Card Overlay',
       body: Center(
         child: SingleChildScrollView(
@@ -15,7 +15,7 @@ class GameCardOverlayStory extends StatelessWidget {
             children: [
               Column(
                 mainAxisSize: MainAxisSize.min,
-                children: const [
+                children: [
                   Text('Win'),
                   GameCard(
                     image:
@@ -29,10 +29,10 @@ class GameCardOverlayStory extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(width: TopDashSpacing.lg),
+              SizedBox(width: TopDashSpacing.lg),
               Column(
                 mainAxisSize: MainAxisSize.min,
-                children: const [
+                children: [
                   Text('Draw'),
                   GameCard(
                     image:
@@ -46,10 +46,10 @@ class GameCardOverlayStory extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(width: TopDashSpacing.lg),
+              SizedBox(width: TopDashSpacing.lg),
               Column(
                 mainAxisSize: MainAxisSize.min,
-                children: const [
+                children: [
                   Text('Lose'),
                   GameCard(
                     image:
