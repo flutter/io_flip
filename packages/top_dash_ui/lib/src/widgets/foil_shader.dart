@@ -7,7 +7,13 @@ import 'package:flutter_shaders/flutter_shaders.dart';
 /// {@endtemplate}
 class FoilShader extends StatelessWidget {
   /// {@macro foil_shader}
-  const FoilShader({required this.child, super.key, this.dx = 0, this.dy = 0});
+  const FoilShader({
+    required this.child,
+    super.key,
+    this.dx = 0,
+    this.dy = 0,
+    this.package = 'top_dash_ui',
+  });
 
   /// The optional x offset of the foil shader.
   ///
@@ -19,14 +25,24 @@ class FoilShader extends StatelessWidget {
   /// This can be used for parallax.
   final double dy;
 
+  /// The name of the package from which the shader is included.
+  ///
+  /// This is used to resolve the shader asset key.
+  final String? package;
+
   /// The child widget to apply the foil shader to.
   final Widget child;
+
+  static const String _assetPath = 'shaders/foil.frag';
+
+  String get _assetKey =>
+      package == null ? _assetPath : 'packages/$package/$_assetPath';
 
   @override
   Widget build(BuildContext context) {
     late final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
     return ShaderBuilder(
-      assetKey: 'packages/top_dash_ui/shaders/foil.frag',
+      assetKey: _assetKey,
       (context, shader, child) {
         return AnimatedSampler(
           (image, size, canvas) {
