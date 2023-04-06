@@ -13,6 +13,9 @@ enum WebSocketErrorCode {
 
   /// Represents a player that is already connect to the socket.
   playerAlreadyConnected,
+
+  /// Represents an unknown error.
+  unknown,
 }
 
 /// Represents the message passed from the websocket.
