@@ -48,19 +48,6 @@ class LeaderboardRepository {
     });
   }
 
-  /// Checks whether the given [initials] is available.
-  ///
-  /// Returns `true` if no score cards were found, `false` otherwise.
-  Future<bool> isInitialsAvailable(String initials) async {
-    final results = await _dbClient.findBy(
-      'score_cards',
-      'initials',
-      initials,
-    );
-
-    return results.isEmpty;
-  }
-
   /// Adds the initials to the score card with the given [scoreCardId].
   Future<void> addInitialsToScoreCard({
     required String scoreCardId,

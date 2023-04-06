@@ -25,9 +25,6 @@ void main() {
 
     setUp(() {
       leaderboardRepository = _MockLeaderboardRepository();
-      when(() => leaderboardRepository.isInitialsAvailable(any())).thenAnswer(
-        (_) async => true,
-      );
       when(
         () => leaderboardRepository.addInitialsToScoreCard(
           scoreCardId: any(named: 'scoreCardId'),
@@ -64,13 +61,6 @@ void main() {
       when(() => request.method).thenReturn(HttpMethod.get);
       final response = await route.onRequest(context);
       expect(response.statusCode, equals(HttpStatus.methodNotAllowed));
-    });
-
-    test('responds with a 409 when initials are already taken', () async {
-      when(() => leaderboardRepository.isInitialsAvailable(any()))
-          .thenAnswer((_) async => false);
-      final response = await route.onRequest(context);
-      expect(response.statusCode, equals(HttpStatus.conflict));
     });
   });
 }

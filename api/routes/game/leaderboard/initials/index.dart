@@ -15,17 +15,6 @@ FutureOr<Response> onRequest(RequestContext context) async {
     }
 
     final leaderboardRepository = context.read<LeaderboardRepository>();
-
-    final initialsAvailability =
-        await leaderboardRepository.isInitialsAvailable(initials);
-
-    if (!initialsAvailability) {
-      return Response(
-        statusCode: HttpStatus.conflict,
-        body: '"$initials" is already taken.',
-      );
-    }
-
     await leaderboardRepository.addInitialsToScoreCard(
       scoreCardId: scoreCardId,
       initials: initials,
