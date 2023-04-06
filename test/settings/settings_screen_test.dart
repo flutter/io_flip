@@ -17,6 +17,8 @@ void main() {
       settingsController = _MockSettingsController();
       router = MockGoRouter();
 
+      when(() => settingsController.muted).thenReturn(ValueNotifier(true));
+      when(() => settingsController.toggleMuted()).thenAnswer((_) {});
       when(() => settingsController.soundsOn).thenReturn(ValueNotifier(true));
       when(() => settingsController.toggleSoundsOn()).thenAnswer((_) {});
       when(() => settingsController.musicOn).thenReturn(ValueNotifier(false));
@@ -64,6 +66,14 @@ void main() {
       await pumpSubjectWith(tester);
 
       expect(find.text(tester.l10n.settingsSoundEffectsItem), findsOneWidget);
+    });
+
+    testWidgets('tapping the mute item toggles mute', (tester) async {
+      await pumpSubjectWith(tester);
+
+      await tester.tap(find.text(tester.l10n.mutedItem));
+
+      verify(() => settingsController.toggleMuted()).called(1);
     });
 
     testWidgets('tapping the sound effects item toggles the sounds',

@@ -54,6 +54,14 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 _divider,
                 ValueListenableBuilder<bool>(
+                  valueListenable: settings.muted,
+                  builder: (context, muted, child) => SwitchListTile(
+                    title: Text(l10n.mutedItem),
+                    value: muted,
+                    onChanged: (_) => settings.toggleMuted(),
+                  ),
+                ),
+                ValueListenableBuilder<bool>(
                   valueListenable: settings.soundsOn,
                   builder: (context, soundsOn, child) => SwitchListTile(
                     title: Text(l10n.settingsSoundEffectsItem),
