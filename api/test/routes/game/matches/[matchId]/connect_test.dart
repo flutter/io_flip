@@ -10,7 +10,7 @@ import 'package:match_repository/match_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-import '../../../../routes/game/matches/connect.dart' as route;
+import '../../../../../routes/game/matches/[matchId]/connect.dart' as route;
 
 class _MockMatchRepository extends Mock implements MatchRepository {}
 
@@ -86,7 +86,7 @@ void main() {
 
   group('POST /game/matches/connect', () {
     test('responds with a 200', () async {
-      final response = await route.onRequest(context);
+      final response = await route.onRequest(context, matchId);
       expect(response.statusCode, equals(HttpStatus.noContent));
     });
 
@@ -94,13 +94,13 @@ void main() {
       when(
         () => matchRepository.getPlayerConnectivity(userId: userId),
       ).thenAnswer((_) => Future.value(false));
-      final response = await route.onRequest(context);
+      final response = await route.onRequest(context, matchId);
       expect(response.statusCode, equals(HttpStatus.unauthorized));
     });
 
     test("responds with a 405 if method isn't POST", () async {
       when(() => request.method).thenReturn(HttpMethod.put);
-      final response = await route.onRequest(context);
+      final response = await route.onRequest(context, matchId);
       expect(response.statusCode, equals(HttpStatus.methodNotAllowed));
     });
 
@@ -111,7 +111,7 @@ void main() {
           hostId: userId,
         ),
       ).thenThrow(Exception());
-      final response = await route.onRequest(context);
+      final response = await route.onRequest(context, matchId);
       expect(response.statusCode, equals(HttpStatus.unauthorized));
     });
   });

@@ -226,10 +226,7 @@ class GameResource {
   }) async {
     try {
       final response = await _apiClient.post(
-        '/game/matches/connect',
-        queryParameters: {
-          'matchId': matchId,
-        },
+        '/game/matches/$matchId/connect',
       );
 
       if (response.statusCode != HttpStatus.noContent) {

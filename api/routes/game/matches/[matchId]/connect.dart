@@ -6,11 +6,10 @@ import 'package:dart_frog/dart_frog.dart';
 import 'package:jwt_middleware/jwt_middleware.dart';
 import 'package:match_repository/match_repository.dart';
 
-FutureOr<Response> onRequest(RequestContext context) async {
+FutureOr<Response> onRequest(RequestContext context, String matchId) async {
   if (context.request.method == HttpMethod.post) {
     final user = context.read<AuthenticatedUser>();
     final matchRepository = context.read<MatchRepository>();
-    final matchId = context.request.uri.queryParameters['matchId']!;
 
     final playerConnected = await matchRepository.getPlayerConnectivity(
       userId: user.id,
