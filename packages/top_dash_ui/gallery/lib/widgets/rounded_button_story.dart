@@ -28,9 +28,9 @@ class RoundedButtonStory extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(width: TopDashSpacing.lg),
-                Column(
+                const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text('Icon button (disabled)'),
                     RoundedButton.icon(
                       Icon(Icons.add_circle),

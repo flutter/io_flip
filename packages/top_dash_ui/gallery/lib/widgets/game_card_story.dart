@@ -16,7 +16,7 @@ class GameCardStory extends StatelessWidget {
       _GameCardItem(size: TopDashCardSizes.xxl, name: 'xxl'),
     ];
 
-    return StoryScaffold(
+    return const StoryScaffold(
       title: 'Game Card',
       body: SingleChildScrollView(
         child: Center(
