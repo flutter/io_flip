@@ -429,7 +429,7 @@ void main() {
 
       test('correctly updates the match state when is against cpu', () async {
         final cpuDeck = Deck(
-          id: 'cpuDeckId',
+          id: 'guestDeckId',
           userId: 'CPU_UserId',
           cards: [cards[3], cards[4], cards[5]],
         );
@@ -443,6 +443,7 @@ void main() {
           userId: hostDeck.userId,
         );
 
+        await Future<void>.delayed(const Duration(seconds: 2));
         verify(
           () => dbClient.update(
             'match_states',
@@ -457,21 +458,20 @@ void main() {
             ),
           ),
         ).called(1);
-        await expectLater(
-          dbClient.update(
+        verify(
+          () => dbClient.update(
             'match_states',
             DbEntityRecord(
               id: matchStateId,
               data: const {
                 'matchId': matchId,
-                'hostPlayedCards': <String>['A'],
-                'guestPlayedCards': <String>['D'],
+                'hostPlayedCards': <String>[],
+                'guestPlayedCards': <String>['card_3'],
                 'result': null,
               },
             ),
           ),
-          completes,
-        );
+        ).called(1);
       });
 
       test('when the match is over, updates the result', () async {
