@@ -180,10 +180,10 @@ class MatchRepository {
       ),
     );
 
-    if (match.guestDeck.id.contains(_cpuPrefix) &&
+    if (match.guestDeck.userId.contains(_cpuPrefix) &&
         newMatchState.guestPlayedCards.length < 3 &&
-        newMatchState.hostPlayedCards.length >=
-            newMatchState.guestPlayedCards.length) {
+        newMatchState.guestPlayedCards.length <=
+            newMatchState.hostPlayedCards.length) {
       unawaited(
         Future.delayed(const Duration(seconds: 1), () {
           playCard(

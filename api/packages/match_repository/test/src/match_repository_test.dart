@@ -427,6 +427,53 @@ void main() {
         ).called(1);
       });
 
+      test('correctly updates the match state when is against cpu', () async {
+        final cpuDeck = Deck(
+          id: 'cpuDeckId',
+          userId: 'CPU_UserId',
+          cards: [cards[3], cards[4], cards[5]],
+        );
+        when(() => cardsRepository.getDeck(guestDeck.id))
+            .thenAnswer((_) async => cpuDeck);
+
+        await matchRepository.playCard(
+          matchId: matchId,
+          cardId: 'A',
+          deckId: hostDeck.id,
+          userId: hostDeck.userId,
+        );
+
+        verify(
+          () => dbClient.update(
+            'match_states',
+            DbEntityRecord(
+              id: matchStateId,
+              data: const {
+                'matchId': matchId,
+                'hostPlayedCards': <String>['A'],
+                'guestPlayedCards': <String>[],
+                'result': null,
+              },
+            ),
+          ),
+        ).called(1);
+        await expectLater(
+          dbClient.update(
+            'match_states',
+            DbEntityRecord(
+              id: matchStateId,
+              data: const {
+                'matchId': matchId,
+                'hostPlayedCards': <String>['A'],
+                'guestPlayedCards': <String>['D'],
+                'result': null,
+              },
+            ),
+          ),
+          completes,
+        );
+      });
+
       test('when the match is over, updates the result', () async {
         when(() => dbClient.findBy('match_states', 'matchId', matchId))
             .thenAnswer(
