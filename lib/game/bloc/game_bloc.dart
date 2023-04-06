@@ -3,12 +3,12 @@ import 'dart:math' as math;
 
 import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:connection_repository/connection_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:match_maker_repository/match_maker_repository.dart' as repo;
 import 'package:top_dash_ui/top_dash_ui.dart';
-import 'package:web_socket_client/web_socket_client.dart';
 
 part 'game_event.dart';
 part 'game_state.dart';
@@ -20,9 +20,10 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     required MatchSolver matchSolver,
     required User user,
     required this.isHost,
-    required this.matchConnection,
+    required ConnectionRepository connectionRepository,
   })  : _gameResource = gameResource,
         _matchMakerRepository = matchMakerRepository,
+        _connectionRepository = connectionRepository,
         _matchSolver = matchSolver,
         _user = user,
         super(const MatchLoadingState()) {
@@ -43,7 +44,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   final MatchSolver _matchSolver;
   final User _user;
   final bool isHost;
-  final WebSocket? matchConnection;
+  final ConnectionRepository _connectionRepository;
   Timer? _turnTimer;
 
   // Added to easily toggle timer functionality for testing purposes.
@@ -441,7 +442,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     _stateSubscription?.cancel();
     _opponentDisconnectSubscription?.cancel();
     _scoreSubscription?.cancel();
-    matchConnection?.close();
+    _connectionRepository.send(const WebSocketMessage.matchLeft());
     _turnTimer?.cancel();
     return super.close();
   }
