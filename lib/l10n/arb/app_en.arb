@@ -202,6 +202,12 @@
     "type": "text",
     "placeholders": {}
   },
+  "mutedItem": "Muted",
+  "@mutedItem": {
+    "description": "Title of the muted item in settings",
+    "type": "text",
+    "placeholders": {}
+  },
   "settingsSoundEffectsItem": "Sound Effects",
   "@settingsSoundEffectsItem": {
     "description": "Title of the sound effects item in settings",

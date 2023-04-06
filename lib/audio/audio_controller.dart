@@ -3,14 +3,13 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:collection';
-import 'dart:math';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
 
 import 'package:top_dash/audio/songs.dart';
-import 'package:top_dash/audio/sounds.dart';
+import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/settings/settings.dart';
 
 typedef CreateAudioPlayer = AudioPlayer Function({required String playerId});
@@ -49,8 +48,6 @@ class AudioController {
   int _currentSfxPlayer = 0;
 
   final Queue<Song> _playlist;
-
-  final Random _random = Random();
 
   SettingsController? _settings;
 
@@ -113,41 +110,47 @@ class AudioController {
     // This assumes there is only a limited number of sound effects in the game.
     // If there are hundreds of long sound effect files, it's better
     // to be more selective when preloading.
+
     await AudioCache.instance.loadAll(
-      SfxType.values
-          .expand(soundTypeToFilename)
-          .map((path) => 'sfx/$path')
-          .toList(),
+      Assets.sfx.values.map(_replaceUrl).toList(),
     );
   }
 
-  /// Plays a single sound effect, defined by [type].
+  String _replaceUrl(String asset) {
+    return asset.replaceFirst('assets/', '');
+  }
+
+  /// Plays a single sound effect.
   ///
   /// The controller will ignore this call when the attached settings'
   /// [SettingsController.muted] is `true` or if its
   /// [SettingsController.soundsOn] is `false`.
-  void playSfx(SfxType type) {
+  void playSfx(String sfx) {
+    if (!Assets.sfx.values.contains(sfx)) {
+      throw ArgumentError.value(
+        sfx,
+        'sfx',
+        'The given sfx is not a valid sound effect.',
+      );
+    }
+
     final muted = _settings?.muted.value ?? true;
     if (muted) {
-      _log.info(() => 'Ignoring playing sound ($type) because audio is muted.');
+      _log.info(() => 'Ignoring playing sound ($sfx) because audio is muted.');
       return;
     }
     final soundsOn = _settings?.soundsOn.value ?? false;
     if (!soundsOn) {
       _log.info(
-        () => 'Ignoring playing sound ($type) because sounds are turned off.',
+        () => 'Ignoring playing sound ($sfx) because sounds are turned off.',
       );
       return;
     }
 
-    _log.info(() => 'Playing sound: $type');
-    final options = soundTypeToFilename(type);
-    final filename = options[_random.nextInt(options.length)];
-    _log.info(() => '- Chosen filename: $filename');
+    _log.info(() => 'Playing sound: $sfx');
 
     _sfxPlayers[_currentSfxPlayer].play(
-      AssetSource('sfx/$filename'),
-      volume: soundTypeToVolume(type),
+      AssetSource(_replaceUrl(sfx)),
     );
     _currentSfxPlayer = (_currentSfxPlayer + 1) % _sfxPlayers.length;
   }

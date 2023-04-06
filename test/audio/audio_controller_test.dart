@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/audio/audio_controller.dart';
-import 'package:top_dash/audio/sounds.dart';
+import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/settings/settings.dart';
 
 class _MockSettingsController extends Mock implements SettingsController {}
@@ -25,7 +25,6 @@ class _MockAudioPlayerFactory {
     when(
       () => player.play(
         any(),
-        volume: any(named: 'volume'),
       ),
     ).thenAnswer((_) async {});
     when(() => player.onPlayerComplete).thenAnswer(
@@ -154,17 +153,42 @@ void main() {
           ..attachSettings(
             settingsController,
           )
-          ..playSfx(SfxType.swishSwish);
+          ..playSfx(Assets.sfx.addToHand);
 
         final player = playerFactory.players['sfxPlayer#0']!;
 
-        verify(
+        final captured = verify(
           () => player.play(
-            any(),
-            volume: soundTypeToVolume(SfxType.swishSwish),
+            captureAny(),
           ),
-        ).called(1);
+        ).captured;
+        final source = captured.first;
+        expect(source, isA<AssetSource>());
+        expect((source as AssetSource).path, 'sfx/add_to_hand.mp3');
       });
+
+      test(
+        "throws ArgumentError when trying to play a sound that doesn't exists",
+        () {
+          final playerFactory = _MockAudioPlayerFactory();
+
+          when(() => soundsOn.value).thenReturn(true);
+          when(() => musicOn.value).thenReturn(true);
+          when(() => muted.value).thenReturn(false);
+
+          expect(
+            () => AudioController(
+              createPlayer: playerFactory.createPlayer,
+              polyphony: 1,
+            )
+              ..attachSettings(
+                settingsController,
+              )
+              ..playSfx('this_assets_does_not_exists.mp3'),
+            throwsArgumentError,
+          );
+        },
+      );
 
       test("doesn't play when is muted", () {
         final playerFactory = _MockAudioPlayerFactory();
@@ -180,14 +204,13 @@ void main() {
           ..attachSettings(
             settingsController,
           )
-          ..playSfx(SfxType.swishSwish);
+          ..playSfx(Assets.sfx.addToHand);
 
         final player = playerFactory.players['sfxPlayer#0']!;
 
         verifyNever(
           () => player.play(
-            any(),
-            volume: soundTypeToVolume(SfxType.swishSwish),
+            AssetSource('sfx/add_to_hand.mp3'),
           ),
         );
       });
@@ -206,14 +229,13 @@ void main() {
           ..attachSettings(
             settingsController,
           )
-          ..playSfx(SfxType.swishSwish);
+          ..playSfx(Assets.sfx.addToHand);
 
         final player = playerFactory.players['sfxPlayer#0']!;
 
         verifyNever(
           () => player.play(
-            any(),
-            volume: soundTypeToVolume(SfxType.swishSwish),
+            AssetSource('sfx/add_to_hand.mp3'),
           ),
         );
       });
@@ -236,7 +258,7 @@ void main() {
           ..attachSettings(
             settingsController,
           )
-          ..playSfx(SfxType.swishSwish);
+          ..playSfx(Assets.sfx.addToHand);
 
         final musicPlayer = playerFactory.players.entries
             .firstWhere((entry) => entry.key.startsWith('music'))
@@ -273,7 +295,7 @@ void main() {
           ..attachSettings(
             settingsController,
           )
-          ..playSfx(SfxType.swishSwish);
+          ..playSfx(Assets.sfx.addToHand);
 
         final musicPlayer = playerFactory.players.entries
             .firstWhere((entry) => entry.key.startsWith('music'))
@@ -337,7 +359,7 @@ void main() {
           ..attachSettings(
             settingsController,
           )
-          ..playSfx(SfxType.wssh);
+          ..playSfx(Assets.sfx.addToHand);
 
         final sfxPlayer = playerFactory.players.entries
             .firstWhere((entry) => entry.key.startsWith('sfxPlayer'))
@@ -370,7 +392,7 @@ void main() {
             settingsController,
           )
           ..attachLifecycleNotifier(lifecycleNotifier)
-          ..playSfx(SfxType.swishSwish);
+          ..playSfx(Assets.sfx.addToHand);
 
         final musicPlayer = playerFactory.players.entries
             .firstWhere((entry) => entry.key.startsWith('music'))
@@ -407,7 +429,7 @@ void main() {
             settingsController,
           )
           ..attachLifecycleNotifier(lifecycleNotifier)
-          ..playSfx(SfxType.swishSwish);
+          ..playSfx(Assets.sfx.addToHand);
 
         final musicPlayer = playerFactory.players.entries
             .firstWhere((entry) => entry.key.startsWith('music'))
@@ -444,7 +466,7 @@ void main() {
             settingsController,
           )
           ..attachLifecycleNotifier(lifecycleNotifier)
-          ..playSfx(SfxType.swishSwish);
+          ..playSfx(Assets.sfx.addToHand);
 
         final musicPlayer = playerFactory.players.entries
             .firstWhere((entry) => entry.key.startsWith('music'))
@@ -481,7 +503,7 @@ void main() {
             settingsController,
           )
           ..attachLifecycleNotifier(lifecycleNotifier)
-          ..playSfx(SfxType.swishSwish);
+          ..playSfx(Assets.sfx.addToHand);
 
         final musicPlayer = playerFactory.players.entries
             .firstWhere((entry) => entry.key.startsWith('music'))

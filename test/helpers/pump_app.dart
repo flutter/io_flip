@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
+import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/settings/settings.dart';
 import 'package:top_dash/style/snack_bar.dart';
@@ -34,6 +35,8 @@ class _MockConnectionRepository extends Mock implements ConnectionRepository {}
 class _MockMatchSolver extends Mock implements MatchSolver {}
 
 class _MockGameScriptMachine extends Mock implements GameScriptMachine {}
+
+class _MockAudioController extends Mock implements AudioController {}
 
 class _MockUser extends Mock implements User {}
 
@@ -113,6 +116,7 @@ extension PumpAppWithRouter on WidgetTester {
     MatchMakerRepository? matchMakerRepository,
     MatchSolver? matchSolver,
     GameScriptMachine? gameScriptMachine,
+    AudioController? audioController,
     User? user,
     T? bloc,
   }) {
@@ -142,6 +146,9 @@ extension PumpAppWithRouter on WidgetTester {
           ),
           Provider.value(
             value: gameScriptMachine ?? _MockGameScriptMachine(),
+          ),
+          Provider.value(
+            value: audioController ?? _MockAudioController(),
           ),
           Provider.value(
             value: user ?? _MockUser(),

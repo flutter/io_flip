@@ -56,120 +56,88 @@ class $AssetsMusicGen {
 class $AssetsSfxGen {
   const $AssetsSfxGen();
 
-  /// File path: assets/sfx/README.md
-  String get readme => 'assets/sfx/README.md';
+  /// File path: assets/sfx/add_to_hand.mp3
+  String get addToHand => 'assets/sfx/add_to_hand.mp3';
 
-  /// File path: assets/sfx/dsht1.mp3
-  String get dsht1 => 'assets/sfx/dsht1.mp3';
+  /// File path: assets/sfx/card_movement.mp3
+  String get cardMovement => 'assets/sfx/card_movement.mp3';
 
-  /// File path: assets/sfx/ehehee1.mp3
-  String get ehehee1 => 'assets/sfx/ehehee1.mp3';
+  /// File path: assets/sfx/click.mp3
+  String get click => 'assets/sfx/click.mp3';
 
-  /// File path: assets/sfx/fwfwfwfw1.mp3
-  String get fwfwfwfw1 => 'assets/sfx/fwfwfwfw1.mp3';
+  /// File path: assets/sfx/clock_running.mp3
+  String get clockRunning => 'assets/sfx/clock_running.mp3';
 
-  /// File path: assets/sfx/fwfwfwfwfw1.mp3
-  String get fwfwfwfwfw1 => 'assets/sfx/fwfwfwfwfw1.mp3';
+  /// File path: assets/sfx/damage.mp3
+  String get damage => 'assets/sfx/damage.mp3';
 
-  /// File path: assets/sfx/hash1.mp3
-  String get hash1 => 'assets/sfx/hash1.mp3';
+  /// File path: assets/sfx/deck_open.mp3
+  String get deckOpen => 'assets/sfx/deck_open.mp3';
 
-  /// File path: assets/sfx/hash2.mp3
-  String get hash2 => 'assets/sfx/hash2.mp3';
+  /// File path: assets/sfx/draw_match.mp3
+  String get drawMatch => 'assets/sfx/draw_match.mp3';
 
-  /// File path: assets/sfx/hash3.mp3
-  String get hash3 => 'assets/sfx/hash3.mp3';
+  /// File path: assets/sfx/fire.mp3
+  String get fire => 'assets/sfx/fire.mp3';
 
-  /// File path: assets/sfx/haw1.mp3
-  String get haw1 => 'assets/sfx/haw1.mp3';
+  /// File path: assets/sfx/ground.mp3
+  String get ground => 'assets/sfx/ground.mp3';
 
-  /// File path: assets/sfx/hh1.mp3
-  String get hh1 => 'assets/sfx/hh1.mp3';
+  /// File path: assets/sfx/holo_reveal.mp3
+  String get holoReveal => 'assets/sfx/holo_reveal.mp3';
 
-  /// File path: assets/sfx/hh2.mp3
-  String get hh2 => 'assets/sfx/hh2.mp3';
+  /// File path: assets/sfx/lost_match.mp3
+  String get lostMatch => 'assets/sfx/lost_match.mp3';
 
-  /// File path: assets/sfx/k1.mp3
-  String get k1 => 'assets/sfx/k1.mp3';
+  /// File path: assets/sfx/metal.mp3
+  String get metal => 'assets/sfx/metal.mp3';
 
-  /// File path: assets/sfx/k2.mp3
-  String get k2 => 'assets/sfx/k2.mp3';
+  /// File path: assets/sfx/play_card.mp3
+  String get playCard => 'assets/sfx/play_card.mp3';
 
-  /// File path: assets/sfx/kch1.mp3
-  String get kch1 => 'assets/sfx/kch1.mp3';
+  /// File path: assets/sfx/reveal.mp3
+  String get reveal => 'assets/sfx/reveal.mp3';
 
-  /// File path: assets/sfx/kss1.mp3
-  String get kss1 => 'assets/sfx/kss1.mp3';
+  /// File path: assets/sfx/round_lost.mp3
+  String get roundLost => 'assets/sfx/round_lost.mp3';
 
-  /// File path: assets/sfx/lalala1.mp3
-  String get lalala1 => 'assets/sfx/lalala1.mp3';
+  /// File path: assets/sfx/round_win.mp3
+  String get roundWin => 'assets/sfx/round_win.mp3';
 
-  /// File path: assets/sfx/oo1.mp3
-  String get oo1 => 'assets/sfx/oo1.mp3';
+  /// File path: assets/sfx/start_game.mp3
+  String get startGame => 'assets/sfx/start_game.mp3';
 
-  /// File path: assets/sfx/p1.mp3
-  String get p1 => 'assets/sfx/p1.mp3';
+  /// File path: assets/sfx/water.mp3
+  String get water => 'assets/sfx/water.mp3';
 
-  /// File path: assets/sfx/p2.mp3
-  String get p2 => 'assets/sfx/p2.mp3';
+  /// File path: assets/sfx/win_match.mp3
+  String get winMatch => 'assets/sfx/win_match.mp3';
 
-  /// File path: assets/sfx/sh1.mp3
-  String get sh1 => 'assets/sfx/sh1.mp3';
-
-  /// File path: assets/sfx/sh2.mp3
-  String get sh2 => 'assets/sfx/sh2.mp3';
-
-  /// File path: assets/sfx/spsh1.mp3
-  String get spsh1 => 'assets/sfx/spsh1.mp3';
-
-  /// File path: assets/sfx/swishswish1.mp3
-  String get swishswish1 => 'assets/sfx/swishswish1.mp3';
-
-  /// File path: assets/sfx/wehee1.mp3
-  String get wehee1 => 'assets/sfx/wehee1.mp3';
-
-  /// File path: assets/sfx/ws1.mp3
-  String get ws1 => 'assets/sfx/ws1.mp3';
-
-  /// File path: assets/sfx/wssh1.mp3
-  String get wssh1 => 'assets/sfx/wssh1.mp3';
-
-  /// File path: assets/sfx/wssh2.mp3
-  String get wssh2 => 'assets/sfx/wssh2.mp3';
-
-  /// File path: assets/sfx/yay1.mp3
-  String get yay1 => 'assets/sfx/yay1.mp3';
+  /// File path: assets/sfx/wind.mp3
+  String get wind => 'assets/sfx/wind.mp3';
 
   /// List of all assets
   List<String> get values => [
-        readme,
-        dsht1,
-        ehehee1,
-        fwfwfwfw1,
-        fwfwfwfwfw1,
-        hash1,
-        hash2,
-        hash3,
-        haw1,
-        hh1,
-        hh2,
-        k1,
-        k2,
-        kch1,
-        kss1,
-        lalala1,
-        oo1,
-        p1,
-        p2,
-        sh1,
-        sh2,
-        spsh1,
-        swishswish1,
-        wehee1,
-        ws1,
-        wssh1,
-        wssh2,
-        yay1
+        addToHand,
+        cardMovement,
+        click,
+        clockRunning,
+        damage,
+        deckOpen,
+        drawMatch,
+        fire,
+        ground,
+        holoReveal,
+        lostMatch,
+        metal,
+        playCard,
+        reveal,
+        roundLost,
+        roundWin,
+        startGame,
+        water,
+        winMatch,
+        wind
       ];
 }
 
