@@ -10,10 +10,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  mocktail_image_network: ^0.3.1
+  flutter_shaders: ^0.1.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   mocktail: ^0.3.0
+  mocktail_image_network: ^0.3.1
   very_good_analysis: ^4.0.0
+
+flutter:
+  shaders:
+    - shaders/foil.frag
