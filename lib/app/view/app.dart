@@ -1,5 +1,6 @@
 import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:connection_repository/connection_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:game_script_machine/game_script_machine.dart';
@@ -36,6 +37,7 @@ class App extends StatefulWidget {
     required this.settingsPersistence,
     required this.apiClient,
     required this.matchMakerRepository,
+    required this.connectionRepository,
     required this.matchSolver,
     required this.gameScriptMachine,
     required this.user,
@@ -46,6 +48,7 @@ class App extends StatefulWidget {
   final SettingsPersistence settingsPersistence;
   final ApiClient apiClient;
   final MatchMakerRepository matchMakerRepository;
+  final ConnectionRepository connectionRepository;
   final MatchSolver matchSolver;
   final GameScriptMachine gameScriptMachine;
   final User user;
@@ -68,6 +71,7 @@ class _AppState extends State<App> {
           Provider.value(value: widget.apiClient.promptResource),
           Provider.value(value: widget.apiClient.leaderboardResource),
           Provider.value(value: widget.matchMakerRepository),
+          Provider.value(value: widget.connectionRepository),
           Provider.value(value: widget.matchSolver),
           Provider.value(value: widget.gameScriptMachine),
           Provider.value(value: widget.user),

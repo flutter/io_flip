@@ -1,5 +1,6 @@
 import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:connection_repository/connection_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,6 +29,8 @@ class _MockLeaderboardResource extends Mock implements LeaderboardResource {}
 
 class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
 
+class _MockConnectionRepository extends Mock implements ConnectionRepository {}
+
 class _MockMatchSolver extends Mock implements MatchSolver {}
 
 class _MockGameScriptMachine extends Mock implements GameScriptMachine {}
@@ -45,6 +48,7 @@ extension PumpApp on WidgetTester {
     PromptResource? promptResource,
     LeaderboardResource? leaderboardResource,
     MatchMakerRepository? matchMakerRepository,
+    ConnectionRepository? connectionRepository,
     MatchSolver? matchSolver,
     GameScriptMachine? gameScriptMachine,
     User? user,
@@ -70,6 +74,9 @@ extension PumpApp on WidgetTester {
           ),
           Provider.value(
             value: matchMakerRepository ?? _MockMatchMakerRepository(),
+          ),
+          Provider.value(
+            value: connectionRepository ?? _MockConnectionRepository(),
           ),
           Provider.value(
             value: matchSolver ?? _MockMatchSolver(),
