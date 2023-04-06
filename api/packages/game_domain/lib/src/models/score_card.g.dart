@@ -13,4 +13,5 @@ ScoreCard _$ScoreCardFromJson(Map<String, dynamic> json) => ScoreCard(
       currentStreak: json['currentStreak'] as int? ?? 0,
       currentDeck: json['currentDeck'] as String? ?? '',
       longestStreakDeck: json['longestStreakDeck'] as String? ?? '',
+      initials: json['initials'] as String?,
     );

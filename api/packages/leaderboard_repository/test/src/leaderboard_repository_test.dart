@@ -104,5 +104,78 @@ void main() {
         expect(result, isNull);
       });
     });
+
+    group('isInitialsAvailable', () {
+      test('returns true if results is empty', () async {
+        const initials = 'AAA';
+
+        when(() => dbClient.findBy('score_cards', 'initials', initials))
+            .thenAnswer((_) async {
+          return [];
+        });
+
+        final result =
+            await leaderboardRepository.isInitialsAvailable(initials);
+
+        expect(result, isTrue);
+      });
+
+      test('returns false if results is not empty', () async {
+        const initials = 'AAA';
+
+        when(() => dbClient.findBy('score_cards', 'initials', initials))
+            .thenAnswer((_) async {
+          return [
+            DbEntityRecord(
+              id: '',
+              data: const {
+                'initials': initials,
+              },
+            ),
+          ];
+        });
+
+        final result =
+            await leaderboardRepository.isInitialsAvailable(initials);
+
+        expect(result, isFalse);
+      });
+    });
+
+    group('addInitialsToScoreCard', () {
+      test('adds initials to score card', () async {
+        const scoreCardId = 'scoreCardId';
+        const initials = 'AAA';
+
+        when(
+          () => dbClient.update(
+            'score_cards',
+            DbEntityRecord(
+              id: scoreCardId,
+              data: const {
+                'initials': initials,
+              },
+            ),
+          ),
+        ).thenAnswer((_) async {});
+
+        await leaderboardRepository.addInitialsToScoreCard(
+          scoreCardId: scoreCardId,
+          initials: initials,
+        );
+
+        verify(
+          () => dbClient.update(
+            'score_cards',
+            DbEntityRecord(
+              id: scoreCardId,
+              data: const {
+                'initials': initials,
+              },
+            ),
+          ),
+        ).called(1);
+      });
+    });
   });
 }
