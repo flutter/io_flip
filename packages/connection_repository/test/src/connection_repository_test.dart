@@ -47,14 +47,14 @@ void main() {
         webSocketMessages
           ..add(jsonEncode(const WebSocketMessage.connected()))
           ..add('not a WebSocketMessage')
-          ..add(jsonEncode(const WebSocketMessage.disconnected()))
+          ..add(jsonEncode(const WebSocketMessage.matchLeft()))
           ..add(jsonEncode({'not': 'a WebSocketMessage'}));
 
         await expectLater(
           subject.messages,
           emitsInOrder([
             const WebSocketMessage.connected(),
-            const WebSocketMessage.disconnected(),
+            const WebSocketMessage.matchLeft(),
           ]),
         );
       });

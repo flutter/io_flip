@@ -13,7 +13,7 @@ import 'package:prompt_repository/prompt_repository.dart';
 import 'package:scripts_repository/scripts_repository.dart';
 
 import '../../main.dart';
-import 'matches/connect.dart';
+import 'connect.dart';
 
 Handler middleware(Handler handler) {
   return handler

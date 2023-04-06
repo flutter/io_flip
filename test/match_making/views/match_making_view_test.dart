@@ -13,13 +13,10 @@ import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash/match_making/match_making.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
-import 'package:web_socket_client/web_socket_client.dart';
 
 import '../../helpers/helpers.dart';
 
 class _MockMatchMakingBloc extends Mock implements MatchMakingBloc {}
-
-class _MockWebSocket extends Mock implements WebSocket {}
 
 abstract class __Router {
   void neglect(BuildContext context, VoidCallback callback);
@@ -33,7 +30,6 @@ void main() {
   group('MatchMakingView', () {
     late MatchMakingBloc bloc;
     late __Router router;
-    final webSocket = _MockWebSocket();
 
     setUp(() {
       bloc = _MockMatchMakingBloc();
@@ -50,7 +46,6 @@ void main() {
         GamePageData(
           isHost: true,
           matchId: null,
-          matchConnection: webSocket,
         ),
       );
     });
@@ -180,7 +175,6 @@ void main() {
               guest: 'guestId',
             ),
             isHost: true,
-            matchConnection: webSocket,
           ),
         );
         final goRouter = MockGoRouter();
@@ -193,7 +187,6 @@ void main() {
         final data = GamePageData(
           isHost: true,
           matchId: 'matchId',
-          matchConnection: webSocket,
         );
         verify(
           () => goRouter.goNamed(

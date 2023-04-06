@@ -1105,7 +1105,7 @@ packages:
     source: hosted
     version: "2.3.0"
   web_socket_client:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: web_socket_client
       url: "https://pub.dartlang.org"

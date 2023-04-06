@@ -51,6 +51,7 @@ void main() {
 
   group('ApiClient', () {
     const baseUrl = 'http://baseurl.com';
+    const webSocketTimeout = Duration(milliseconds: 200);
 
     // Since the key and iv are set from the environment variables, we can
     // reference the default values here.
@@ -118,6 +119,7 @@ void main() {
         idTokenStream: idTokenStreamController.stream,
         refreshIdToken: () => refreshIdToken(),
         webSocketFactory: webSocketFactory.call,
+        webSocketTimeout: webSocketTimeout,
       );
     });
 
@@ -374,15 +376,21 @@ void main() {
     });
 
     group('ws connect', () {
+      const path = '/path';
+
+      setUp(() {
+        connectionStreamController.onListen = () {
+          connectionStreamController.add(Connected());
+        };
+      });
+
       test('returns the connection with a "ws" scheme for http', () async {
-        const path = '/path';
-        const params = {'test': 'test'};
-        final response = await subject.connect(path, queryParameters: params);
+        final response = await subject.connect(path);
         expect(response, equals(webSocket));
 
         verify(
           () => webSocketFactory(
-            Uri.parse('ws://baseurl.com/path?test=test'),
+            Uri.parse('ws://baseurl.com/path'),
           ),
         ).called(1);
       });
@@ -398,27 +406,24 @@ void main() {
           webSocketFactory: webSocketFactory.call,
         );
 
-        const path = '/path';
-        const params = {'test': 'test'};
-        final response = await subject.connect(path, queryParameters: params);
+        final response = await subject.connect(path);
         expect(response, equals(webSocket));
 
         verify(
           () => webSocketFactory(
-            Uri.parse('wss://baseurl.com/path?test=test'),
+            Uri.parse('wss://baseurl.com/path'),
           ),
         ).called(1);
       });
 
       test('sends the token message after connection is established', () async {
-        const path = '/path';
-        const params = {'test': 'test'};
+        connectionStreamController.onListen = null;
         idTokenStreamController.add('token');
         await Future.microtask(() {});
-        final response = await subject.connect(path, queryParameters: params);
-        expect(response, equals(webSocket));
+        final response = subject.connect(path);
 
         connectionStreamController.add(Connected());
+        expect(await response, equals(webSocket));
 
         await Future.microtask(() {});
 
@@ -428,9 +433,34 @@ void main() {
 
         verify(
           () => webSocketFactory(
-            Uri.parse('ws://baseurl.com/path?test=test'),
+            Uri.parse('ws://baseurl.com/path'),
           ),
         ).called(1);
+      });
+
+      test('throws ApiClientError on error', () async {
+        when(
+          () => webSocketFactory(any()),
+        ).thenThrow(Exception('oops'));
+
+        await expectLater(
+          () => subject.connect(path),
+          throwsA(isA<ApiClientError>()),
+        );
+      });
+
+      test('throws ApiClientError when socket takes too long', () async {
+        connectionStreamController.onListen = () {
+          Future.delayed(
+            const Duration(seconds: 1),
+            () => connectionStreamController.add(Connected()),
+          );
+        };
+
+        expect(
+          () => subject.connect(path),
+          throwsA(isA<ApiClientError>()),
+        );
       });
     });
 
