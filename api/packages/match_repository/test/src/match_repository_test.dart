@@ -756,7 +756,7 @@ void main() {
 
       test('updates the correct field', () async {
         await matchRepository.setCpuConnectivity(
-          match: matchId,
+          matchId: matchId,
           hostId: hostId,
         );
         verify(
