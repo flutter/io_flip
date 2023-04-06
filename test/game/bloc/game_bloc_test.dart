@@ -1492,7 +1492,7 @@ void main() {
       blocTest<GameBloc, GameState>(
         'emits LeaderboardEntryState when leaderboard entry is requested',
         build: () => GameBloc(
-          matchConnection: webSocket,
+          connectionRepository: connectionRepository,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           user: user,
