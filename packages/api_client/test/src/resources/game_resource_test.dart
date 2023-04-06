@@ -570,13 +570,13 @@ void main() {
         when(
           () => apiClient.post(any()),
         ).thenAnswer((_) async => response);
-
+        const matchId = 'matchId';
         when(() => response.statusCode).thenReturn(HttpStatus.noContent);
-        resource.connectToCpuMatch(matchId: '');
+        resource.connectToCpuMatch(matchId: matchId);
 
         verify(
           () => apiClient.post(
-            '/game/matches/connect',
+            '/game/matches/$matchId/connect',
             queryParameters: any(named: 'queryParameters'),
           ),
         ).called(1);
