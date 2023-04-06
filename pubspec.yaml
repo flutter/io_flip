@@ -16,9 +16,9 @@ dependencies:
   bloc: ^8.1.1
   cloud_firestore: ^4.5.0
   code_text_field: ^1.1.0
+  collection: ^1.17.0
   connection_repository:
     path: packages/connection_repository
-  collection: ^1.17.0
   equatable: ^2.0.5
   firebase_auth: ^4.4.0
   firebase_core: ^2.5.0
@@ -47,7 +47,6 @@ dependencies:
   top_dash_ui:
     path: packages/top_dash_ui
   url_launcher: ^6.1.10
-  web_socket_client: ^0.1.0-dev.3
 
 dev_dependencies:
   bloc_test: ^9.1.1

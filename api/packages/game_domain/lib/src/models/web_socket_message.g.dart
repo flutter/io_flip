@@ -14,9 +14,10 @@ Map<String, dynamic> _$WebSocketMessageToJson(WebSocketMessage instance) =>
 
 const _$MessageTypeEnumMap = {
   MessageType.connected: 'connected',
-  MessageType.disconnected: 'disconnected',
   MessageType.error: 'error',
   MessageType.token: 'token',
+  MessageType.matchJoined: 'matchJoined',
+  MessageType.matchLeft: 'matchLeft',
 };
 
 WebSocketTokenPayload _$WebSocketTokenPayloadFromJson(
@@ -47,4 +48,19 @@ const _$WebSocketErrorCodeEnumMap = {
   WebSocketErrorCode.badRequest: 'badRequest',
   WebSocketErrorCode.firebaseException: 'firebaseException',
   WebSocketErrorCode.playerAlreadyConnected: 'playerAlreadyConnected',
+  WebSocketErrorCode.unknown: 'unknown',
 };
+
+WebSocketMatchJoinedPayload _$WebSocketMatchJoinedPayloadFromJson(
+        Map<String, dynamic> json) =>
+    WebSocketMatchJoinedPayload(
+      matchId: json['matchId'] as String,
+      isHost: json['isHost'] as bool,
+    );
+
+Map<String, dynamic> _$WebSocketMatchJoinedPayloadToJson(
+        WebSocketMatchJoinedPayload instance) =>
+    <String, dynamic>{
+      'matchId': instance.matchId,
+      'isHost': instance.isHost,
+    };

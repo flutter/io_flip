@@ -12,8 +12,8 @@ import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 import '../../../main.dart';
-import '../../../routes/public/matches/connect.dart';
-import '../../../routes/public/matches/connect.dart' as route show onRequest;
+import '../../../routes/public/connect.dart';
+import '../../../routes/public/connect.dart' as route show onRequest;
 
 typedef _OnConnection = void Function(
   WebSocketChannel channel,
@@ -101,7 +101,7 @@ class _FakeWebSocketHandlerFactory extends Fake {
 }
 
 void main() {
-  group('GET /matches/connect', () {
+  group('GET /connect', () {
     late MatchRepository matchRepository;
     late StreamController<dynamic> channelStream;
     late WebSocketSink channelSink;
@@ -110,10 +110,8 @@ void main() {
 
     const matchId = 'matchId';
     const userId = 'userId';
-    var host = true;
 
     setUp(() {
-      host = true;
       channelStream = StreamController<dynamic>();
       channelSink = _MockWebSocketSink();
 
@@ -144,13 +142,7 @@ void main() {
 
       context = _FakeRequestContext(
         getRequest: () => _FakeRequest(
-          uri: Uri(
-            path: '/public/matches/connect',
-            queryParameters: {
-              'matchId': matchId,
-              'host': '$host',
-            },
-          ),
+          uri: Uri(path: '/public/connect'),
         ),
         matchRepository: matchRepository,
         webSocketHandlerFactory: _FakeWebSocketHandlerFactory(
@@ -210,7 +202,6 @@ void main() {
         waitAndVerify(() => channelSink.add(message));
 
     test('does nothing when no token message is sent', () async {
-      host = true;
       final response = await route.onRequest(context);
       expect(response, isA<_FakeResponse>());
 
@@ -223,7 +214,7 @@ void main() {
     test('does nothing when authentication fails', () async {
       when(() => jwtMiddleware.verifyToken('token'))
           .thenAnswer((_) async => null);
-      host = true;
+
       final response = await route.onRequest(context);
       expect(response, isA<_FakeResponse>());
 
@@ -236,12 +227,11 @@ void main() {
       verifyZeroInteractions(matchRepository);
     });
 
-    test('establishes connection and updates host connectivity', () async {
+    test('establishes user connection', () async {
       when(
         () => matchRepository.getPlayerConnectivity(userId: userId),
       ).thenAnswer((_) async => false);
 
-      host = true;
       final response = await route.onRequest(context);
       expect(response, isA<_FakeResponse>());
 
@@ -250,8 +240,45 @@ void main() {
       channelStream.add(jsonEncode(WebSocketMessage.token('token')));
 
       await checkSetPlayerConnectivity(connected: true);
-      await checkSetHostConnectivity(active: true);
       await checkResponseSent(jsonEncode(const WebSocketMessage.connected()));
+
+      await channelStream.close();
+
+      await checkSetPlayerConnectivity(connected: false);
+    });
+
+    test('on matchJoined updates host connectivity', () async {
+      when(
+        () => matchRepository.getPlayerConnectivity(userId: userId),
+      ).thenAnswer((_) async => false);
+
+      final response = await route.onRequest(context);
+      expect(response, isA<_FakeResponse>());
+
+      connectToSocket();
+
+      channelStream.add(jsonEncode(WebSocketMessage.token('token')));
+
+      await checkSetPlayerConnectivity(connected: true);
+
+      channelStream.add(
+        jsonEncode(
+          WebSocketMessage.matchJoined(
+            matchId: matchId,
+            isHost: true,
+          ),
+        ),
+      );
+
+      await checkSetHostConnectivity(active: true);
+      await checkResponseSent(
+        jsonEncode(
+          WebSocketMessage.matchJoined(
+            matchId: matchId,
+            isHost: true,
+          ),
+        ),
+      );
 
       await channelStream.close();
 
@@ -259,12 +286,11 @@ void main() {
       await checkSetHostConnectivity(active: false);
     });
 
-    test('establishes connection and updates guest connectivity', () async {
+    test('on matchJoined updates old match connectivity', () async {
       when(
         () => matchRepository.getPlayerConnectivity(userId: userId),
       ).thenAnswer((_) async => false);
 
-      host = false;
       final response = await route.onRequest(context);
       expect(response, isA<_FakeResponse>());
 
@@ -273,13 +299,129 @@ void main() {
       channelStream.add(jsonEncode(WebSocketMessage.token('token')));
 
       await checkSetPlayerConnectivity(connected: true);
+
+      channelStream.add(
+        jsonEncode(
+          WebSocketMessage.matchJoined(
+            matchId: matchId,
+            isHost: true,
+          ),
+        ),
+      );
+
+      await checkSetHostConnectivity(active: true);
+      await checkResponseSent(
+        jsonEncode(
+          WebSocketMessage.matchJoined(
+            matchId: matchId,
+            isHost: true,
+          ),
+        ),
+      );
+
+      channelStream.add(
+        jsonEncode(
+          WebSocketMessage.matchJoined(
+            matchId: matchId,
+            isHost: false,
+          ),
+        ),
+      );
+      await checkSetHostConnectivity(active: false);
       await checkSetGuestConnectivity(active: true);
-      await checkResponseSent(jsonEncode(const WebSocketMessage.connected()));
+      await checkResponseSent(
+        jsonEncode(
+          WebSocketMessage.matchJoined(
+            matchId: matchId,
+            isHost: false,
+          ),
+        ),
+      );
 
       await channelStream.close();
 
       await checkSetPlayerConnectivity(connected: false);
       await checkSetGuestConnectivity(active: false);
+    });
+
+    test('on matchJoined updates guest connectivity', () async {
+      when(
+        () => matchRepository.getPlayerConnectivity(userId: userId),
+      ).thenAnswer((_) async => false);
+
+      final response = await route.onRequest(context);
+      expect(response, isA<_FakeResponse>());
+
+      connectToSocket();
+
+      channelStream.add(jsonEncode(WebSocketMessage.token('token')));
+
+      await checkSetPlayerConnectivity(connected: true);
+
+      channelStream.add(
+        jsonEncode(
+          WebSocketMessage.matchJoined(
+            matchId: matchId,
+            isHost: false,
+          ),
+        ),
+      );
+
+      await checkSetGuestConnectivity(active: true);
+      await checkResponseSent(
+        jsonEncode(
+          WebSocketMessage.matchJoined(
+            matchId: matchId,
+            isHost: false,
+          ),
+        ),
+      );
+
+      await channelStream.close();
+
+      await checkSetPlayerConnectivity(connected: false);
+      await checkSetGuestConnectivity(active: false);
+    });
+
+    test('on matchLeft updates connectivity', () async {
+      when(
+        () => matchRepository.getPlayerConnectivity(userId: userId),
+      ).thenAnswer((_) async => false);
+
+      final response = await route.onRequest(context);
+      expect(response, isA<_FakeResponse>());
+
+      connectToSocket();
+
+      channelStream.add(jsonEncode(WebSocketMessage.token('token')));
+
+      await checkSetPlayerConnectivity(connected: true);
+
+      channelStream.add(
+        jsonEncode(
+          WebSocketMessage.matchJoined(
+            matchId: matchId,
+            isHost: false,
+          ),
+        ),
+      );
+
+      await checkSetGuestConnectivity(active: true);
+      await checkResponseSent(
+        jsonEncode(
+          WebSocketMessage.matchJoined(
+            matchId: matchId,
+            isHost: false,
+          ),
+        ),
+      );
+
+      channelStream.add(jsonEncode(const WebSocketMessage.matchLeft()));
+      await checkSetGuestConnectivity(active: false);
+
+      await channelStream.close();
+
+      await checkSetPlayerConnectivity(connected: false);
     });
 
     test('sets old user as inactive when a new user connects', () async {
@@ -292,7 +434,6 @@ void main() {
         () => matchRepository.getPlayerConnectivity(userId: 'newUserId'),
       ).thenAnswer((_) async => false);
 
-      host = true;
       final response = await route.onRequest(context);
       expect(response, isA<_FakeResponse>());
 
@@ -317,7 +458,6 @@ void main() {
         () => matchRepository.getPlayerConnectivity(userId: userId),
       ).thenAnswer((_) async => true);
 
-      host = false;
       final response = await route.onRequest(context);
       expect(response, isA<_FakeResponse>());
 
@@ -339,16 +479,15 @@ void main() {
 
     test('sends error when cannot update player connectivity', () async {
       when(
-        () => matchRepository.setHostConnectivity(
-          match: matchId,
-          active: true,
-        ),
-      ).thenThrow(Exception('oops'));
-      when(
         () => matchRepository.getPlayerConnectivity(userId: userId),
       ).thenAnswer((_) async => false);
+      when(
+        () => matchRepository.setPlayerConnectivity(
+          userId: userId,
+          connected: true,
+        ),
+      ).thenThrow(Exception('oops'));
 
-      host = true;
       final response = await route.onRequest(context);
       expect(response, isA<_FakeResponse>());
 
@@ -356,7 +495,6 @@ void main() {
 
       channelStream.add(jsonEncode(WebSocketMessage.token('token')));
 
-      await checkSetHostConnectivity(active: true);
       await checkSetPlayerConnectivity(connected: true);
 
       await checkResponseSent(
@@ -367,7 +505,6 @@ void main() {
 
       await channelStream.close();
 
-      await checkSetHostConnectivity(active: false);
       await checkSetPlayerConnectivity(connected: false);
     });
   });
