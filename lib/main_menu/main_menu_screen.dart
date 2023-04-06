@@ -19,10 +19,10 @@ class MainMenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: TopDashColors.seedWhite,
       body: Stack(
-        children: const [
+        children: [
           Align(
             child: _MainMenuScreenView(key: Key('main menu view')),
           ),
@@ -57,9 +57,9 @@ class PortraitMenuView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return const SingleChildScrollView(
       child: Column(
-        children: const [
+        children: [
           _MainImage(key: Key('main menu image')),
           LeaderboardView(),
           SizedBox(height: TopDashSpacing.xxlg),
