@@ -582,6 +582,19 @@ void main() {
         ).called(1);
       });
 
+      test('Answers with error', () async {
+        when(
+          () => apiClient.post(any()),
+        ).thenAnswer((_) async => response);
+
+        when(() => response.statusCode).thenReturn(HttpStatus.methodNotAllowed);
+
+        await expectLater(
+          () => resource.connectToCpuMatch(matchId: ''),
+          throwsA(isA<ApiClientError>()),
+        );
+      });
+
       test('throws an error', () async {
         when(
           () => apiClient.post(any()),
