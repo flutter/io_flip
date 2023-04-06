@@ -12,4 +12,7 @@ class FontFamily {
 
   /// Font family: Google Sans
   static const String googleSans = 'Google Sans';
+
+  /// Font family: Roboto Serif
+  static const String robotoSerif = 'Roboto Serif';
 }
