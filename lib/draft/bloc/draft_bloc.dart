@@ -2,6 +2,8 @@ import 'package:api_client/api_client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:top_dash/audio/audio_controller.dart';
+import 'package:top_dash/gen/assets.gen.dart';
 
 part 'draft_event.dart';
 part 'draft_state.dart';
@@ -9,7 +11,9 @@ part 'draft_state.dart';
 class DraftBloc extends Bloc<DraftEvent, DraftState> {
   DraftBloc({
     required GameResource gameResource,
+    required AudioController audioController,
   })  : _gameResource = gameResource,
+        _audioController = audioController,
         super(const DraftState.initial()) {
     on<DeckRequested>(_onDeckRequested);
     on<PreviousCard>(_onPreviousCard);
@@ -20,6 +24,7 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
   }
 
   final GameResource _gameResource;
+  final AudioController _audioController;
 
   Future<void> _onDeckRequested(
     DeckRequested event,
@@ -84,6 +89,8 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     Emitter<DraftState> emit,
   ) {
     if (state.selectedCards.length == 3) return;
+
+    _audioController.playSfx(Assets.sfx.addToHand);
 
     final topCard = state.cards.first;
 
