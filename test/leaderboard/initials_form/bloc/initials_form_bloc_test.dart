@@ -17,11 +17,20 @@ void main() {
 
       when(() => leaderboardResource.getInitialsBlacklist())
           .thenAnswer((_) async => ['WTF']);
+      when(
+        () => leaderboardResource.addInitialsToScoreCard(
+          scoreCardId: any(named: 'scoreCardId'),
+          initials: any(named: 'initials'),
+        ),
+      ).thenAnswer((_) async {});
     });
 
     blocTest<InitialsFormBloc, InitialsFormState>(
       'emits state with updated initials when changing them',
-      build: () => InitialsFormBloc(leaderboardResource: leaderboardResource),
+      build: () => InitialsFormBloc(
+        leaderboardResource: leaderboardResource,
+        scoreCardId: 'scoreCardId',
+      ),
       act: (bloc) => bloc.add(InitialsChanged(initials: 'ABC')),
       expect: () => <InitialsFormState>[
         InitialsFormState(initials: 'ABC'),
@@ -29,8 +38,11 @@ void main() {
     );
 
     blocTest<InitialsFormBloc, InitialsFormState>(
-      'emits state with validated field when initials are valid and submitted',
-      build: () => InitialsFormBloc(leaderboardResource: leaderboardResource),
+      'emits correct states when initials are valid and submitted',
+      build: () => InitialsFormBloc(
+        leaderboardResource: leaderboardResource,
+        scoreCardId: 'scoreCardId',
+      ),
       act: (bloc) {
         bloc
           ..add(InitialsChanged(initials: 'ABC'))
@@ -39,13 +51,17 @@ void main() {
       expect: () => <InitialsFormState>[
         InitialsFormState(initials: 'ABC'),
         InitialsFormState(initials: 'ABC', status: InitialsFormStatus.valid),
+        InitialsFormState(initials: 'ABC', status: InitialsFormStatus.success),
       ],
     );
 
     blocTest<InitialsFormBloc, InitialsFormState>(
       'emits state with invalid field when initials are not valid and '
       'submitted',
-      build: () => InitialsFormBloc(leaderboardResource: leaderboardResource),
+      build: () => InitialsFormBloc(
+        leaderboardResource: leaderboardResource,
+        scoreCardId: 'scoreCardId',
+      ),
       act: (bloc) {
         bloc
           ..add(InitialsChanged(initials: 'WTF'))
@@ -54,6 +70,32 @@ void main() {
       expect: () => <InitialsFormState>[
         InitialsFormState(initials: 'WTF'),
         InitialsFormState(initials: 'WTF', status: InitialsFormStatus.invalid),
+      ],
+    );
+
+    blocTest<InitialsFormBloc, InitialsFormState>(
+      'emits failure state if adding initials fails',
+      setUp: () {
+        when(
+          () => leaderboardResource.addInitialsToScoreCard(
+            scoreCardId: any(named: 'scoreCardId'),
+            initials: any(named: 'initials'),
+          ),
+        ).thenThrow(Exception());
+      },
+      build: () => InitialsFormBloc(
+        leaderboardResource: leaderboardResource,
+        scoreCardId: 'scoreCardId',
+      ),
+      act: (bloc) {
+        bloc
+          ..add(InitialsChanged(initials: 'ABC'))
+          ..add(InitialsSubmitted());
+      },
+      expect: () => <InitialsFormState>[
+        InitialsFormState(initials: 'ABC'),
+        InitialsFormState(initials: 'ABC', status: InitialsFormStatus.valid),
+        InitialsFormState(initials: 'ABC', status: InitialsFormStatus.failure),
       ],
     );
   });

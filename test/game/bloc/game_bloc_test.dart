@@ -1487,6 +1487,26 @@ void main() {
         },
       );
     });
+
+    group('LeaderboardEntryRequested', () {
+      blocTest<GameBloc, GameState>(
+        'emits LeaderboardEntryState when leaderboard entry is requested',
+        build: () => GameBloc(
+          connectionRepository: connectionRepository,
+          gameResource: gameResource,
+          matchMakerRepository: matchMakerRepository,
+          user: user,
+          isHost: true,
+          matchSolver: matchSolver,
+        ),
+        act: (bloc) => bloc.add(LeaderboardEntryRequested()),
+        seed: () => baseState,
+        expect: () => <GameState>[
+          LeaderboardEntryState(baseState.playerScoreCard.id),
+        ],
+      );
+    });
+
     group('TurnAnimationsFinished', () {
       blocTest<GameBloc, GameState>(
         'emits state updating turnAnimationsFinished field',

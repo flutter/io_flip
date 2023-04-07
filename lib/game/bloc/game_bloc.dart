@@ -31,6 +31,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     on<PlayerPlayed>(_onPlayerPlayed);
     on<MatchStateUpdated>(_onMatchStateUpdated);
     on<ScoreCardUpdated>(_onScoreCardUpdated);
+    on<LeaderboardEntryRequested>(_onLeaderboardEntryRequested);
     on<ManagePlayerPresence>(_onManagePlayerPresence);
     on<TurnTimerStarted>(_onTurnTimerStarted);
     on<TurnTimerTicked>(_onTurnTimerTicked);
@@ -223,6 +224,16 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     } catch (e, s) {
       addError(e, s);
       emit(const ManagePlayerPresenceFailedState());
+    }
+  }
+
+  void _onLeaderboardEntryRequested(
+    LeaderboardEntryRequested event,
+    Emitter<GameState> emit,
+  ) {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+      emit(LeaderboardEntryState(matchLoadedState.playerScoreCard.id));
     }
   }
 

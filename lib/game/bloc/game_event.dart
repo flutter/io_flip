@@ -49,6 +49,13 @@ class ScoreCardUpdated extends GameEvent {
   List<Object?> get props => [updatedScore];
 }
 
+class LeaderboardEntryRequested extends GameEvent {
+  const LeaderboardEntryRequested();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class TurnTimerStarted extends GameEvent {
   const TurnTimerStarted();
 

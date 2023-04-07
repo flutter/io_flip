@@ -114,6 +114,19 @@ void main() {
       });
     });
 
+    group('LeaderboardEntryRequested', () {
+      test('can be instantiated', () {
+        expect(LeaderboardEntryRequested(), isNotNull);
+      });
+
+      test('supports equality', () {
+        expect(
+          LeaderboardEntryRequested(),
+          equals(LeaderboardEntryRequested()),
+        );
+      });
+    });
+
     group('TurnTimerStarted', () {
       test('can be instantiated', () {
         expect(TurnTimerStarted(), isNotNull);

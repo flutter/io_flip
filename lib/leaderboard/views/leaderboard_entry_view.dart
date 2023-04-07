@@ -4,13 +4,16 @@ import 'package:top_dash/leaderboard/initials_form/initials_form.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class LeaderboardEntryView extends StatelessWidget {
-  const LeaderboardEntryView({super.key});
+  const LeaderboardEntryView({
+    required this.scoreCardId,
+    super.key,
+  });
+
+  final String scoreCardId;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final textTheme = Theme.of(context).textTheme;
-    const white = TopDashColors.seedWhite;
 
     return Scaffold(
       backgroundColor: TopDashColors.seedWhite,
@@ -21,22 +24,12 @@ class LeaderboardEntryView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                l10n.youMadeItToTheLeaderboard,
-                style: textTheme.titleMedium?.copyWith(
-                  color: white,
-                  fontWeight: FontWeight.w700,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              Text(
                 l10n.enterYourInitials,
                 textAlign: TextAlign.center,
-                style: textTheme.bodySmall?.copyWith(
-                  color: white,
-                ),
+                style: TopDashTextStyles.headlineMobileH4,
               ),
-              const SizedBox(height: TopDashSpacing.xxlg),
-              const InitialsForm()
+              const SizedBox(height: TopDashSpacing.xlg),
+              InitialsForm(scoreCardId: scoreCardId)
             ],
           ),
         ),

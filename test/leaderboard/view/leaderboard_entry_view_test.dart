@@ -19,12 +19,11 @@ void main() {
   });
 
   group('LeaderboardEntryView', () {
-    testWidgets('renders correct title and subtitle', (tester) async {
+    testWidgets('renders correct title', (tester) async {
       await tester.pumpSubject(leaderboardResource);
 
       final l10n = tester.element(find.byType(LeaderboardEntryView)).l10n;
 
-      expect(find.text(l10n.youMadeItToTheLeaderboard), findsOneWidget);
       expect(find.text(l10n.enterYourInitials), findsOneWidget);
     });
 
@@ -37,9 +36,13 @@ void main() {
 }
 
 extension LeaderboardEntryViewTest on WidgetTester {
-  Future<void> pumpSubject(LeaderboardResource leaderboardResource) async {
+  Future<void> pumpSubject(
+    LeaderboardResource leaderboardResource,
+  ) async {
     return pumpApp(
-      const LeaderboardEntryView(),
+      const LeaderboardEntryView(
+        scoreCardId: 'scoreCardId',
+      ),
       leaderboardResource: leaderboardResource,
     );
   }

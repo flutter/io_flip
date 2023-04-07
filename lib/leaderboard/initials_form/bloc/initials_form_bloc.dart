@@ -8,7 +8,9 @@ part 'initials_form_state.dart';
 class InitialsFormBloc extends Bloc<InitialsFormEvent, InitialsFormState> {
   InitialsFormBloc({
     required LeaderboardResource leaderboardResource,
+    required String scoreCardId,
   })  : _leaderboardResource = leaderboardResource,
+        _scoreCardId = scoreCardId,
         super(const InitialsFormState()) {
     _setBlacklist();
     on<InitialsChanged>(_onInitialsChanged);
@@ -18,6 +20,7 @@ class InitialsFormBloc extends Bloc<InitialsFormEvent, InitialsFormState> {
   final LeaderboardResource _leaderboardResource;
   final initialsRegex = RegExp('[A-Z]{3}');
   late final List<String> blacklist;
+  late final String _scoreCardId;
 
   Future<void> _setBlacklist() async {
     blacklist = await _leaderboardResource.getInitialsBlacklist();
@@ -30,15 +33,26 @@ class InitialsFormBloc extends Bloc<InitialsFormEvent, InitialsFormState> {
     emit(state.copyWith(initials: event.initials));
   }
 
-  void _onInitialsSubmitted(
+  Future<void> _onInitialsSubmitted(
     InitialsSubmitted event,
     Emitter<InitialsFormState> emit,
-  ) {
-    if (_validate()) {
-      emit(state.copyWith(status: InitialsFormStatus.valid));
-      // Here goes the submission logic
-    } else {
-      emit(state.copyWith(status: InitialsFormStatus.invalid));
+  ) async {
+    try {
+      if (_validate()) {
+        emit(state.copyWith(status: InitialsFormStatus.valid));
+
+        await _leaderboardResource.addInitialsToScoreCard(
+          scoreCardId: _scoreCardId,
+          initials: state.initials,
+        );
+
+        emit(state.copyWith(status: InitialsFormStatus.success));
+      } else {
+        emit(state.copyWith(status: InitialsFormStatus.invalid));
+      }
+    } catch (e, s) {
+      addError(e, s);
+      emit(state.copyWith(status: InitialsFormStatus.failure));
     }
   }
 
