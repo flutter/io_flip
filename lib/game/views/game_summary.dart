@@ -13,10 +13,10 @@ class GameSummaryView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: TopDashColors.seedWhite,
       body: Stack(
-        children: const [
+        children: [
           Align(
             child: _MatchSummaryScreenView(key: Key('match_summary_view')),
           ),
@@ -51,9 +51,9 @@ class PortraitSummaryView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: const [
+      children: [
         _ResultView(key: Key('game_summary_result_view')),
         SizedBox(height: TopDashSpacing.xxlg),
         _CardsView(),
@@ -67,9 +67,9 @@ class LandscapeSummaryView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: const [
+      children: [
         _ResultView(key: Key('game_summary_result_view')),
         _CardsView(),
       ],
