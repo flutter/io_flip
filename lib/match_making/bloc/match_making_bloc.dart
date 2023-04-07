@@ -4,8 +4,7 @@ import 'package:api_client/api_client.dart';
 import 'package:connection_repository/connection_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-// TODO(kirpal): Why are there two different Match classes?
-import 'package:game_domain/game_domain.dart' hide Match;
+import 'package:game_domain/game_domain.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 
 part 'match_making_event.dart';
@@ -137,7 +136,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   }
 
   Future<void> _waitGuestToJoin({
-    required Match match,
+    required DraftMatch match,
     required Emitter<MatchMakingState> emit,
   }) async {
     final stream = _matchMakerRepository
@@ -146,7 +145,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
 
     emit(state.copyWith(match: match));
 
-    late StreamSubscription<Match> subscription;
+    late StreamSubscription<DraftMatch> subscription;
 
     subscription = stream.listen((newMatch) {
       emit(

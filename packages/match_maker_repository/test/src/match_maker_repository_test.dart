@@ -5,7 +5,7 @@ import 'dart:math' as math;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:game_domain/game_domain.dart' hide Match;
+import 'package:game_domain/game_domain.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -79,7 +79,7 @@ void main() {
       );
     });
 
-    void mockQueryResult({List<Match> matches = const []}) {
+    void mockQueryResult({List<DraftMatch> matches = const []}) {
       when(() => collection.where('guest', isEqualTo: 'EMPTY'))
           .thenReturn(collection);
       when(
@@ -109,7 +109,7 @@ void main() {
 
     void mockInviteQueryResult(
       String inviteCode, {
-      List<Match> matches = const [],
+      List<DraftMatch> matches = const [],
     }) {
       when(() => collection.where('guest', isEqualTo: 'INVITE'))
           .thenReturn(collection);
@@ -251,7 +251,7 @@ void main() {
       expect(
         match,
         equals(
-          Match(
+          DraftMatch(
             id: 'matchId',
             host: 'hostId',
           ),
@@ -279,7 +279,7 @@ void main() {
       expect(
         match,
         equals(
-          Match(
+          DraftMatch(
             id: 'matchId',
             host: 'hostId',
             inviteCode: 'inviteCode',
@@ -303,7 +303,7 @@ void main() {
       mockInviteQueryResult(
         'inviteCode',
         matches: [
-          Match(
+          DraftMatch(
             id: 'matchId',
             host: 'hostId',
             inviteCode: 'inviteCode',
@@ -319,7 +319,7 @@ void main() {
       expect(
         match,
         equals(
-          Match(
+          DraftMatch(
             id: 'matchId',
             host: 'hostId',
             guest: 'guestId',
@@ -334,7 +334,7 @@ void main() {
       () async {
         mockQueryResult(
           matches: [
-            Match(
+            DraftMatch(
               id: 'match123',
               host: 'host123',
             ),
@@ -346,7 +346,7 @@ void main() {
         expect(
           match,
           equals(
-            Match(
+            DraftMatch(
               id: 'match123',
               host: 'host123',
               guest: 'guest123',
@@ -361,7 +361,7 @@ void main() {
       () async {
         mockQueryResult(
           matches: [
-            Match(
+            DraftMatch(
               id: 'match123',
               host: 'host123',
             ),
@@ -383,7 +383,7 @@ void main() {
 
       mockSnapshots('123', streamController.stream);
 
-      final values = <Match>[];
+      final values = <DraftMatch>[];
       final subscription =
           matchMakerRepository.watchMatch('123').listen(values.add);
 
@@ -403,7 +403,7 @@ void main() {
       expect(
         values,
         equals([
-          Match(
+          DraftMatch(
             id: '123',
             host: 'host1',
             guest: 'guest1',
@@ -422,7 +422,7 @@ void main() {
 
       mockSnapshots('123', streamController.stream);
 
-      final values = <Match>[];
+      final values = <DraftMatch>[];
       final subscription =
           matchMakerRepository.watchMatch('123').listen(values.add);
 
@@ -440,7 +440,7 @@ void main() {
       expect(
         values,
         equals([
-          Match(
+          DraftMatch(
             id: '123',
             host: 'host1',
           )

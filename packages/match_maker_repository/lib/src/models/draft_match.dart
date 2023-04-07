@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
 
-/// {@template match}
-/// A class representing a match between a host and a guest.
+/// {@template draft_match}
+/// A class representing a partially-formed match between a host and a guest.
 /// {@endtemplate}
-class Match extends Equatable {
-  /// {@macro match}
-  const Match({
+class DraftMatch extends Equatable {
+  /// {@macro draft_match}
+  const DraftMatch({
     required this.id,
     required this.host,
     this.guest,
@@ -34,11 +34,11 @@ class Match extends Equatable {
   /// If the guest is connected or disconnected from the match.
   final bool guestConnected;
 
-  /// Returns a new [Match] object with a new [guest] property.
-  Match copyWithGuest({
+  /// Returns a new [DraftMatch] object with a new [guest] property.
+  DraftMatch copyWithGuest({
     required String guest,
   }) {
-    return Match(
+    return DraftMatch(
       id: id,
       host: host,
       guest: guest,
