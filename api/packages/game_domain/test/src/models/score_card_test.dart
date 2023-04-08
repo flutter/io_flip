@@ -23,6 +23,21 @@ void main() {
       initials: 'initials',
     );
 
+    test('toJson returns the instance as json', () {
+      expect(
+        scoreCard.toJson(),
+        equals({
+          'id': 'id',
+          'wins': 1,
+          'longestStreak': 1,
+          'currentStreak': 1,
+          'currentDeck': 'deckId',
+          'longestStreakDeck': 'longestId',
+          'initials': 'initials',
+        }),
+      );
+    });
+
     test('fromJson returns the correct instance', () {
       expect(
         ScoreCard.fromJson(const {

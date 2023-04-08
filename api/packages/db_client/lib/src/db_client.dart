@@ -122,4 +122,30 @@ class DbClient {
 
     return [];
   }
+
+  /// Gets the [limit] records sorted by the specified [field].
+  Future<List<DbEntityRecord>> orderBy(
+    String entity,
+    String field, {
+    int limit = 10,
+    bool descending = true,
+  }) async {
+    final collection = _firestore.collection(entity);
+
+    final results = await collection
+        .orderBy(field, descending: descending)
+        .limit(limit)
+        .get();
+
+    if (results.isNotEmpty) {
+      return results.map((document) {
+        return DbEntityRecord(
+          id: document.id,
+          data: document.map,
+        );
+      }).toList();
+    }
+
+    return [];
+  }
 }
