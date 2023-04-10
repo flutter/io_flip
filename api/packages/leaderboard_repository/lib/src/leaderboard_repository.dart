@@ -56,7 +56,14 @@ class LeaderboardRepository {
       return [];
     }
 
-    return results.map((e) => ScoreCard.fromJson(e.data)).toList();
+    return results
+        .map(
+          (e) => ScoreCard.fromJson({
+            'id': e.id,
+            ...e.data,
+          }),
+        )
+        .toList();
   }
 
   /// Retrieves the top score cards with the longest streak.
@@ -67,7 +74,14 @@ class LeaderboardRepository {
       return [];
     }
 
-    return results.map((e) => ScoreCard.fromJson(e.data)).toList();
+    return results
+        .map(
+          (e) => ScoreCard.fromJson({
+            'id': e.id,
+            ...e.data,
+          }),
+        )
+        .toList();
   }
 
   /// Adds the initials to the score card with the given [scoreCardId].

@@ -127,11 +127,21 @@ void main() {
           return [
             DbEntityRecord(
               id: 'id',
-              data: scoreCardOne.toJson(),
+              data: {
+                'wins': scoreCardOne.wins,
+                'currentStreak': scoreCardOne.currentStreak,
+                'longestStreak': scoreCardOne.longestStreak,
+                'longestStreakDeck': scoreCardOne.longestStreakDeck,
+              },
             ),
             DbEntityRecord(
               id: 'id2',
-              data: scoreCardTwo.toJson(),
+              data: {
+                'wins': scoreCardTwo.wins,
+                'currentStreak': scoreCardTwo.currentStreak,
+                'longestStreak': scoreCardTwo.longestStreak,
+                'longestStreakDeck': scoreCardTwo.longestStreakDeck,
+              },
             ),
           ];
         });
@@ -175,11 +185,21 @@ void main() {
           return [
             DbEntityRecord(
               id: 'id',
-              data: scoreCardOne.toJson(),
+              data: {
+                'wins': scoreCardOne.wins,
+                'currentStreak': scoreCardOne.currentStreak,
+                'longestStreak': scoreCardOne.longestStreak,
+                'longestStreakDeck': scoreCardOne.longestStreakDeck,
+              },
             ),
             DbEntityRecord(
               id: 'id2',
-              data: scoreCardTwo.toJson(),
+              data: {
+                'wins': scoreCardTwo.wins,
+                'currentStreak': scoreCardTwo.currentStreak,
+                'longestStreak': scoreCardTwo.longestStreak,
+                'longestStreakDeck': scoreCardTwo.longestStreakDeck,
+              },
             ),
           ];
         });
