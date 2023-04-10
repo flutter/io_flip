@@ -48,6 +48,34 @@ class LeaderboardRepository {
     });
   }
 
+  /// Retrieves the top score cards with the highest total wins.
+  Future<List<ScoreCard>> getScoreCardsWithMostWins() async {
+    final results = await _dbClient.orderBy('score_cards', 'wins');
+
+    return results
+        .map(
+          (e) => ScoreCard.fromJson({
+            'id': e.id,
+            ...e.data,
+          }),
+        )
+        .toList();
+  }
+
+  /// Retrieves the top score cards with the longest streak.
+  Future<List<ScoreCard>> getScoreCardsWithLongestStreak() async {
+    final results = await _dbClient.orderBy('score_cards', 'longestStreak');
+
+    return results
+        .map(
+          (e) => ScoreCard.fromJson({
+            'id': e.id,
+            ...e.data,
+          }),
+        )
+        .toList();
+  }
+
   /// Adds the initials to the score card with the given [scoreCardId].
   Future<void> addInitialsToScoreCard({
     required String scoreCardId,
