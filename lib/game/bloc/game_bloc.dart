@@ -7,7 +7,7 @@ import 'package:connection_repository/connection_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:match_maker_repository/match_maker_repository.dart' as repo;
+import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 part 'game_event.dart';
@@ -16,7 +16,7 @@ part 'game_state.dart';
 class GameBloc extends Bloc<GameEvent, GameState> {
   GameBloc({
     required GameResource gameResource,
-    required repo.MatchMakerRepository matchMakerRepository,
+    required MatchMakerRepository matchMakerRepository,
     required MatchSolver matchSolver,
     required User user,
     required this.isHost,
@@ -40,7 +40,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   }
 
   final GameResource _gameResource;
-  final repo.MatchMakerRepository _matchMakerRepository;
+  final MatchMakerRepository _matchMakerRepository;
   final MatchSolver _matchSolver;
   final User _user;
   final bool isHost;
@@ -52,7 +52,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   static const _turnMaxTime = 10;
 
   StreamSubscription<MatchState>? _stateSubscription;
-  StreamSubscription<repo.Match>? _opponentDisconnectSubscription;
+  StreamSubscription<DraftMatch>? _opponentDisconnectSubscription;
   StreamSubscription<ScoreCard>? _scoreSubscription;
 
   Future<void> _onMatchRequested(
