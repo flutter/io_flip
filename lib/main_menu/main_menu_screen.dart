@@ -58,7 +58,7 @@ class PortraitMenuView extends StatelessWidget {
       child: Column(
         children: [
           _MainImage(key: Key('main menu image')),
-          LeaderboardView(),
+          LeaderboardPage(),
           SizedBox(height: TopDashSpacing.xxlg),
         ],
       ),
@@ -86,7 +86,7 @@ class LandscapeMenuView extends StatelessWidget {
             ),
           ),
           const SingleChildScrollView(
-            child: LeaderboardView(),
+            child: LeaderboardPage(),
           ),
         ],
       ),
