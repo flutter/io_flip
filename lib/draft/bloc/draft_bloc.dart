@@ -41,6 +41,7 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
           status: DraftStateStatus.deckLoaded,
         ),
       );
+      _audioController.playSfx(Assets.sfx.reveal);
     } catch (e, s) {
       addError(e, s);
       emit(state.copyWith(status: DraftStateStatus.deckFailed));
