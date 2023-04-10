@@ -7,8 +7,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:connection_repository/connection_repository.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
-// TODO(kirpal): Why are there two match classes?
-import 'package:game_domain/game_domain.dart' hide Match;
+import 'package:game_domain/game_domain.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/match_making/match_making.dart';
@@ -24,7 +23,7 @@ void main() {
     late GameResource gameResource;
     late MatchMakerRepository matchMakerRepository;
     late ConnectionRepository connectionRepository;
-    late StreamController<Match> watchController;
+    late StreamController<DraftMatch> watchController;
     const deckId = 'deckId';
     final cardIds = ['a', 'b', 'c'];
 
@@ -85,7 +84,7 @@ void main() {
       ),
       setUp: () {
         when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
-          (_) async => Match(
+          (_) async => DraftMatch(
             id: '',
             host: '',
             guest: deckId,
@@ -99,7 +98,7 @@ void main() {
         ),
         MatchMakingState(
           status: MatchMakingStatus.completed,
-          match: Match(
+          match: DraftMatch(
             id: '',
             host: '',
             guest: deckId,
@@ -153,7 +152,7 @@ void main() {
       ),
       setUp: () {
         when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
-          (_) async => Match(
+          (_) async => DraftMatch(
             id: '',
             host: deckId,
           ),
@@ -166,7 +165,7 @@ void main() {
         ),
         MatchMakingState(
           status: MatchMakingStatus.processing,
-          match: Match(
+          match: DraftMatch(
             id: '',
             host: deckId,
           ),
@@ -186,7 +185,7 @@ void main() {
 
     test('completes the match when is host and a guest joins', () async {
       when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
-        (_) async => Match(
+        (_) async => DraftMatch(
           id: '',
           host: deckId,
         ),
@@ -204,7 +203,7 @@ void main() {
         equals(
           MatchMakingState(
             status: MatchMakingStatus.processing,
-            match: Match(
+            match: DraftMatch(
               id: '',
               host: deckId,
             ),
@@ -213,7 +212,7 @@ void main() {
       );
 
       watchController.add(
-        Match(
+        DraftMatch(
           id: '',
           host: deckId,
           guest: '',
@@ -225,7 +224,7 @@ void main() {
         equals(
           MatchMakingState(
             status: MatchMakingStatus.completed,
-            match: Match(
+            match: DraftMatch(
               id: '',
               host: deckId,
               guest: '',
@@ -239,7 +238,7 @@ void main() {
     test('emits timeout when guest never joins host', () async {
       fakeAsync((async) {
         when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
-          (_) async => Match(
+          (_) async => DraftMatch(
             id: '',
             host: deckId,
           ),
@@ -260,7 +259,7 @@ void main() {
           equals(
             MatchMakingState(
               status: MatchMakingStatus.timeout,
-              match: Match(
+              match: DraftMatch(
                 id: '',
                 host: deckId,
               ),
@@ -280,7 +279,7 @@ void main() {
       ),
       setUp: () {
         when(() => matchMakerRepository.createPrivateMatch(deckId)).thenAnswer(
-          (_) async => Match(
+          (_) async => DraftMatch(
             id: '',
             host: deckId,
           ),
@@ -293,7 +292,7 @@ void main() {
         ),
         MatchMakingState(
           status: MatchMakingStatus.processing,
-          match: Match(
+          match: DraftMatch(
             id: '',
             host: deckId,
           ),
@@ -350,7 +349,7 @@ void main() {
             inviteCode: 'invite',
           ),
         ).thenAnswer(
-          (_) async => Match(
+          (_) async => DraftMatch(
             id: '',
             guest: deckId,
             host: 'hostId',
@@ -364,7 +363,7 @@ void main() {
         ),
         MatchMakingState(
           status: MatchMakingStatus.completed,
-          match: Match(
+          match: DraftMatch(
             id: '',
             guest: deckId,
             host: 'hostId',
