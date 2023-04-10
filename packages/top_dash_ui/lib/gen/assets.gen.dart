@@ -18,28 +18,23 @@ class $AssetsImagesGen {
 class $AssetsImagesElementsGen {
   const $AssetsImagesElementsGen();
 
-  /// File path: assets/images/elements/air.png
-  AssetGenImage get air =>
-      const AssetGenImage('assets/images/elements/air.png');
+  /// File path: assets/images/elements/air.svg
+  String get air => 'assets/images/elements/air.svg';
 
-  /// File path: assets/images/elements/earth.png
-  AssetGenImage get earth =>
-      const AssetGenImage('assets/images/elements/earth.png');
+  /// File path: assets/images/elements/earth.svg
+  String get earth => 'assets/images/elements/earth.svg';
 
-  /// File path: assets/images/elements/fire.png
-  AssetGenImage get fire =>
-      const AssetGenImage('assets/images/elements/fire.png');
+  /// File path: assets/images/elements/fire.svg
+  String get fire => 'assets/images/elements/fire.svg';
 
-  /// File path: assets/images/elements/metal.png
-  AssetGenImage get metal =>
-      const AssetGenImage('assets/images/elements/metal.png');
+  /// File path: assets/images/elements/metal.svg
+  String get metal => 'assets/images/elements/metal.svg';
 
-  /// File path: assets/images/elements/water.png
-  AssetGenImage get water =>
-      const AssetGenImage('assets/images/elements/water.png');
+  /// File path: assets/images/elements/water.svg
+  String get water => 'assets/images/elements/water.svg';
 
   /// List of all assets
-  List<AssetGenImage> get values => [air, earth, fire, metal, water];
+  List<String> get values => [air, earth, fire, metal, water];
 }
 
 class Assets {
