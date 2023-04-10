@@ -269,5 +269,37 @@
   "unknownConnectionError": "Unable to connect. Please try again in a few moments.",
   "@unknownConnectionError": {
     "description": "Error message shown when an unknown error occurs while connecting"
+  },
+  "howToPlayIntroTitle": "Harness the power of generative AI to build unique decks of playing cards.",
+  "@howToPlayIntroTitle": {
+    "description": "Text shown in the first page of the how to play flow"
+  },
+  "howToPlayDeckTitle": "Build your best hand and keep your streak alive against opponents from across the globe.",
+  "@howToPlayDeckTitle": {
+    "description": "Text shown in the deck page of the how to play flow"
+  },
+  "howToPlayElementsTitle": "Flip your way to victory by harnessing the elements to apply an extra 10% damage.",
+  "@howToPlayElementsTitle": {
+    "description": "Text shown in the elements page of the how to play flow"
+  },
+  "howToPlayElementsFireTitle": "Fire scorches air and melts metal.",
+  "@howToPlayElementsFireTitle": {
+    "description": "Text shown in the fire element page of the how to play flow"
+  },
+  "howToPlayElementsAirTitle": "Air blasts water and blows away earth.",
+  "@howToPlayElementsAirTitle": {
+    "description": "Text shown in the air element page of the how to play flow"
+  },
+  "howToPlayElementsMetalTitle": "Metal traps air and diverts water.",
+  "@howToPlayElementsMetalTitle": {
+    "description": "Text shown in the metal element page of the how to play flow"
+  },
+  "howToPlayElementsEarthTitle": "Earth crushes metal and snuffs out fire.",
+  "@howToPlayElementsEarthTitle": {
+    "description": "Text shown in the earth element page of the how to play flow"
+  },
+  "howToPlayElementsWaterTitle": "Water puts out fire and erodes earth.",
+  "@howToPlayElementsWaterTitle": {
+    "description": "Text shown in the water element page of the how to play flow"
   }
 }
