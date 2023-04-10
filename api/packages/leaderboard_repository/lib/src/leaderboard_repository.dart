@@ -52,10 +52,6 @@ class LeaderboardRepository {
   Future<List<ScoreCard>> getScoreCardsWithMostWins() async {
     final results = await _dbClient.orderBy('score_cards', 'wins');
 
-    if (results.isEmpty) {
-      return [];
-    }
-
     return results
         .map(
           (e) => ScoreCard.fromJson({
@@ -69,10 +65,6 @@ class LeaderboardRepository {
   /// Retrieves the top score cards with the longest streak.
   Future<List<ScoreCard>> getScoreCardsWithLongestStreak() async {
     final results = await _dbClient.orderBy('score_cards', 'longestStreak');
-
-    if (results.isEmpty) {
-      return [];
-    }
 
     return results
         .map(

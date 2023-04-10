@@ -137,15 +137,11 @@ class DbClient {
         .limit(limit)
         .get();
 
-    if (results.isNotEmpty) {
-      return results.map((document) {
-        return DbEntityRecord(
-          id: document.id,
-          data: document.map,
-        );
-      }).toList();
-    }
-
-    return [];
+    return results.map((document) {
+      return DbEntityRecord(
+        id: document.id,
+        data: document.map,
+      );
+    }).toList();
   }
 }
