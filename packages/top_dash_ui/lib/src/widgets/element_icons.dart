@@ -64,10 +64,11 @@ class ElementIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return SvgPicture.asset(
+      icon,
+      package: package,
       height: scale * height,
       width: scale * width,
-      child: SvgPicture.asset(icon, package: package),
     );
   }
 }
