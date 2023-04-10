@@ -20,12 +20,12 @@ class MatchMakingState extends Equatable {
           status: MatchMakingStatus.initial,
         );
 
-  final Match? match;
+  final DraftMatch? match;
   final MatchMakingStatus status;
   final bool isHost;
 
   MatchMakingState copyWith({
-    Match? match,
+    DraftMatch? match,
     MatchMakingStatus? status,
     bool? isHost,
   }) {

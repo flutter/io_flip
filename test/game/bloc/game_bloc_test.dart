@@ -9,7 +9,7 @@ import 'package:connection_repository/connection_repository.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:match_maker_repository/match_maker_repository.dart' as repo;
+import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
@@ -18,8 +18,7 @@ class _MockGameResource extends Mock implements GameResource {}
 
 class _MockConnectionRepository extends Mock implements ConnectionRepository {}
 
-class _MockMatchMakerRepository extends Mock
-    implements repo.MatchMakerRepository {}
+class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
 
 class _MockMatchSolver extends Mock implements MatchSolver {}
 
@@ -44,10 +43,10 @@ void main() {
     );
 
     late StreamController<MatchState> matchStateController;
-    late StreamController<repo.Match> matchController;
+    late StreamController<DraftMatch> matchController;
     late StreamController<ScoreCard> scoreController;
     late GameResource gameResource;
-    late repo.MatchMakerRepository matchMakerRepository;
+    late MatchMakerRepository matchMakerRepository;
     late MatchSolver matchSolver;
     late User user;
     late ConnectionRepository connectionRepository;
@@ -1348,7 +1347,7 @@ void main() {
         act: (bloc) {
           bloc.add(ManagePlayerPresence(match.id));
           matchController.add(
-            repo.Match(
+            DraftMatch(
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
@@ -1375,7 +1374,7 @@ void main() {
         act: (bloc) {
           bloc.add(ManagePlayerPresence(match.id));
           matchController.add(
-            repo.Match(
+            DraftMatch(
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
@@ -1402,7 +1401,7 @@ void main() {
         act: (bloc) {
           bloc.add(ManagePlayerPresence(match.id));
           matchController.add(
-            repo.Match(
+            DraftMatch(
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
@@ -1435,7 +1434,7 @@ void main() {
         act: (bloc) {
           bloc.add(ManagePlayerPresence(match.id));
           matchController.add(
-            repo.Match(
+            DraftMatch(
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
@@ -1472,7 +1471,7 @@ void main() {
         act: (bloc) {
           bloc.add(ManagePlayerPresence(match.id));
           matchController.add(
-            repo.Match(
+            DraftMatch(
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
