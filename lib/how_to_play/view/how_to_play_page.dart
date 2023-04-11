@@ -6,7 +6,7 @@ import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
-class HowToPlayPage extends StatelessWidget {
+class HowToPlayPage extends StatefulWidget {
   const HowToPlayPage({super.key});
 
   factory HowToPlayPage.routeBuilder(_, __) {
@@ -16,20 +16,26 @@ class HowToPlayPage extends StatelessWidget {
   }
 
   @override
+  State<HowToPlayPage> createState() => _HowToPlayPageState();
+}
+
+class _HowToPlayPageState extends State<HowToPlayPage> {
+  final pageController = PageController();
+  int selectedPageIndex = 0;
+
+  static const pages = <Widget>[
+    _Intro(),
+    _HandBuilding(),
+    _ElementsIntro(),
+    _ElementsFire(),
+    _ElementsAir(),
+    _ElementsMetal(),
+    _ElementsEarth(),
+    _ElementsWater(),
+  ];
+
+  @override
   Widget build(BuildContext context) {
-    final pageController = PageController();
-
-    const pages = <Widget>[
-      _Intro(),
-      _HandBuilding(),
-      _ElementsIntro(),
-      _ElementsFire(),
-      _ElementsAir(),
-      _ElementsMetal(),
-      _ElementsEarth(),
-      _ElementsWater(),
-    ];
-
     return Scaffold(
       backgroundColor: TopDashColors.seedScrim,
       body: Center(
@@ -46,6 +52,7 @@ class HowToPlayPage extends StatelessWidget {
               Column(
                 children: [
                   Expanded(
+                    flex: 20,
                     child: PageView(
                       scrollBehavior: ScrollConfiguration.of(context).copyWith(
                         dragDevices: {
@@ -54,7 +61,34 @@ class HowToPlayPage extends StatelessWidget {
                         },
                       ),
                       controller: pageController,
-                      children: pages,
+                      children: pages
+                          .map((e) => SingleChildScrollView(child: e))
+                          .toList(),
+                      onPageChanged: (value) {
+                        setState(() => selectedPageIndex = value);
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: TopDashSpacing.xlg,
+                      horizontal: TopDashSpacing.xxxlg,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: List.generate(
+                        pages.length,
+                        (index) => Container(
+                          height: 12,
+                          width: 12,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: selectedPageIndex == index
+                                ? TopDashColors.seedBlue
+                                : TopDashColors.seedGrey70,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   RoundedButton.icon(
