@@ -11,8 +11,8 @@ class ElementIcon extends StatelessWidget {
     super.key,
     this.scale = 1,
   })  : icon = Assets.images.elements.air,
-        width = 66.41,
-        height = 57.87;
+        _width = 66.41,
+        _height = 57.87;
 
   /// [ElementIcon] for the earth element.
 
@@ -20,41 +20,41 @@ class ElementIcon extends StatelessWidget {
     super.key,
     this.scale = 1,
   })  : icon = Assets.images.elements.earth,
-        width = 65.93,
-        height = 64.62;
+        _width = 65.93,
+        _height = 64.62;
 
   /// [ElementIcon] for the fire element.
   ElementIcon.fire({
     super.key,
     this.scale = 1,
   })  : icon = Assets.images.elements.fire,
-        width = 50.17,
-        height = 80.95;
+        _width = 50.17,
+        _height = 80.95;
 
   /// [ElementIcon] for the metal element.
   ElementIcon.metal({
     super.key,
     this.scale = 1,
   })  : icon = Assets.images.elements.metal,
-        width = 69.36,
-        height = 68.44;
+        _width = 69.36,
+        _height = 68.44;
 
   /// [ElementIcon] for the water element.
   ElementIcon.water({
     super.key,
     this.scale = 1,
   })  : icon = Assets.images.elements.water,
-        width = 58.24,
-        height = 79.37;
+        _width = 58.24,
+        _height = 79.37;
 
   /// Image icon for the element.
   final String icon;
 
   /// Original width of the image.
-  final double width;
+  final double _width;
 
   /// Original height of the image.
-  final double height;
+  final double _height;
 
   /// Scale factor to resize the image.
   final double scale;
@@ -62,13 +62,19 @@ class ElementIcon extends StatelessWidget {
   /// Package name where the assets are located.
   static const package = 'top_dash_ui';
 
+  /// Rendered height of the image
+  double get height => scale * _height;
+
+  /// Rendered width of the image
+  double get width => scale * _width;
+
   @override
   Widget build(BuildContext context) {
     return SvgPicture.asset(
       icon,
       package: package,
-      height: scale * height,
-      width: scale * width,
+      height: height,
+      width: width,
     );
   }
 }

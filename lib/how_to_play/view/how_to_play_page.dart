@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:styled_text/styled_text.dart';
 import 'package:top_dash/gen/assets.gen.dart';
+import 'package:top_dash/how_to_play/widgets/elements_wheel.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -24,10 +25,10 @@ class _HowToPlayPageState extends State<HowToPlayPage> {
   int selectedPageIndex = 0;
 
   static const pages = <Widget>[
+    _ElementsFire(),
     _Intro(),
     _HandBuilding(),
     _ElementsIntro(),
-    _ElementsFire(),
     _ElementsAir(),
     _ElementsMetal(),
     _ElementsEarth(),
@@ -230,8 +231,19 @@ class _ElementsFire extends StatelessWidget {
     final l10n = context.l10n;
     return Column(
       children: [
-        const SizedBox(height: TopDashSpacing.xxxlg),
+        const SizedBox(height: TopDashSpacing.xxlg),
         _CustomText(l10n.howToPlayElementsFireTitle),
+        const SizedBox(height: TopDashSpacing.xlg),
+        ElementsWheel(
+          allElements: const [
+            Elements.fire,
+            Elements.water,
+            Elements.air,
+            Elements.earth,
+            Elements.metal,
+          ],
+          elementsAffected: const [Elements.air, Elements.metal],
+        ),
       ],
     );
   }
@@ -245,8 +257,19 @@ class _ElementsAir extends StatelessWidget {
     final l10n = context.l10n;
     return Column(
       children: [
-        const SizedBox(height: TopDashSpacing.xxxlg),
+        const SizedBox(height: TopDashSpacing.xxlg),
         _CustomText(l10n.howToPlayElementsAirTitle),
+        const SizedBox(height: TopDashSpacing.xlg),
+        ElementsWheel(
+          allElements: const [
+            Elements.air,
+            Elements.fire,
+            Elements.metal,
+            Elements.water,
+            Elements.earth,
+          ],
+          elementsAffected: const [Elements.water, Elements.earth],
+        ),
       ],
     );
   }
@@ -260,8 +283,19 @@ class _ElementsMetal extends StatelessWidget {
     final l10n = context.l10n;
     return Column(
       children: [
-        const SizedBox(height: TopDashSpacing.xxxlg),
+        const SizedBox(height: TopDashSpacing.xxlg),
         _CustomText(l10n.howToPlayElementsMetalTitle),
+        const SizedBox(height: TopDashSpacing.xlg),
+        ElementsWheel(
+          allElements: const [
+            Elements.metal,
+            Elements.air,
+            Elements.earth,
+            Elements.fire,
+            Elements.water,
+          ],
+          elementsAffected: const [Elements.air, Elements.water],
+        ),
       ],
     );
   }
@@ -275,8 +309,19 @@ class _ElementsEarth extends StatelessWidget {
     final l10n = context.l10n;
     return Column(
       children: [
-        const SizedBox(height: TopDashSpacing.xxxlg),
+        const SizedBox(height: TopDashSpacing.xxlg),
         _CustomText(l10n.howToPlayElementsEarthTitle),
+        const SizedBox(height: TopDashSpacing.xlg),
+        ElementsWheel(
+          allElements: const [
+            Elements.earth,
+            Elements.metal,
+            Elements.water,
+            Elements.air,
+            Elements.fire,
+          ],
+          elementsAffected: const [Elements.metal, Elements.fire],
+        ),
       ],
     );
   }
@@ -290,8 +335,19 @@ class _ElementsWater extends StatelessWidget {
     final l10n = context.l10n;
     return Column(
       children: [
-        const SizedBox(height: TopDashSpacing.xxxlg),
+        const SizedBox(height: TopDashSpacing.xxlg),
         _CustomText(l10n.howToPlayElementsWaterTitle),
+        const SizedBox(height: TopDashSpacing.xlg),
+        ElementsWheel(
+          allElements: const [
+            Elements.water,
+            Elements.earth,
+            Elements.fire,
+            Elements.metal,
+            Elements.air,
+          ],
+          elementsAffected: const [Elements.earth, Elements.fire],
+        ),
       ],
     );
   }
