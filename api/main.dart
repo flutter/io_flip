@@ -73,15 +73,18 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
       ),
     );
 
-    await dbClient.set(
-      'prompt_whitelist',
-      DbEntityRecord(
-        id: _promptWhiteListId,
-        data: const {
-          'whitelist': ['TST'],
-        },
-      ),
-    );
+    for (final value in ProcessStartMode.values) {
+      await dbClient.set(
+        'prompt_terms',
+        DbEntityRecord(
+          id: 'id',
+          data: {
+            'term': 'TST',
+            'type': value,
+          },
+        ),
+      );
+    }
   }
 
   leaderboardRepository = LeaderboardRepository(
@@ -91,7 +94,6 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
 
   promptRepository = PromptRepository(
     dbClient: dbClient,
-    whitelistDocumentId: _promptWhiteListId,
   );
 
   firebaseCloudStorage = FirebaseCloudStorage(
@@ -133,14 +135,6 @@ String get _initialsBlacklistId {
   final value = Platform.environment['INITIALS_BLACKLIST_ID'];
   if (value == null) {
     throw ArgumentError('INITIALS_BLACKLIST_ID is required to run the API');
-  }
-  return value;
-}
-
-String get _promptWhiteListId {
-  final value = Platform.environment['PROMPT_WHITELIST_ID'];
-  if (value == null) {
-    throw ArgumentError('PROMPT_WHITELIST_ID is required to run the API');
   }
   return value;
 }

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:prompt_repository/prompt_repository.dart';
 import 'package:test/test.dart';
@@ -13,21 +14,32 @@ class _MockRequest extends Mock implements Request {}
 
 class _MockRequestContext extends Mock implements RequestContext {}
 
+class _MockUri extends Mock implements Uri {}
+
 void main() {
   group('GET /', () {
     late PromptRepository promptRepository;
     late Request request;
     late RequestContext context;
+    late Uri uri;
 
-    const whitelist = ['AAA', 'BBB', 'CCC'];
+    const whitelist = [
+      PromptTerm(id: 'AAA', term: 'AAA', type: PromptTermType.character),
+      PromptTerm(id: 'BBB', term: 'BBB', type: PromptTermType.character),
+      PromptTerm(id: 'CCC', term: 'CCC', type: PromptTermType.character),
+    ];
 
     setUp(() {
       promptRepository = _MockPromptRepository();
-      when(() => promptRepository.getPromptWhitelist())
+      when(() => promptRepository.getPromptTerms(PromptTermType.character))
           .thenAnswer((_) async => whitelist);
 
       request = _MockRequest();
       when(() => request.method).thenReturn(HttpMethod.get);
+
+      uri = _MockUri();
+      when(() => uri.queryParameters).thenReturn({'type': 'character'});
+      when(() => request.uri).thenReturn(uri);
 
       context = _MockRequestContext();
       when(() => context.request).thenReturn(request);
@@ -43,6 +55,13 @@ void main() {
       when(() => request.method).thenReturn(HttpMethod.post);
       final response = await route.onRequest(context);
       expect(response.statusCode, equals(HttpStatus.methodNotAllowed));
+    });
+
+    test('responds with bad request when the query is invalid', () async {
+      when(() => uri.queryParameters).thenReturn({'type': 'not_valid'});
+      final response = await route.onRequest(context);
+      expect(response.statusCode, equals(HttpStatus.badRequest));
+      expect(await response.body(), equals('Invalid type'));
     });
 
     test('responds with the whitelist', () async {
