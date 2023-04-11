@@ -232,6 +232,8 @@ void main() {
             host: deckId,
           ),
         );
+        when(() => gameResource.connectToCpuMatch(matchId: ''))
+            .thenThrow(Exception());
 
         final bloc = MatchMakingBloc(
           matchMakerRepository: matchMakerRepository,
