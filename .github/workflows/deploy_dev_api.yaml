@@ -64,6 +64,7 @@ jobs:
             ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }}
             ENCRYPTION_IV=${{ secrets.ENCRYPTION_IV }}
             FB_STORAGE_BUCKET=${{ env.FB_STORAGE_BUCKET }}
+            RECAPTCHA_KEY=${{ secrets.RECAPTCHA_KEY }}
 
       - name: Show Output
         run: echo ${{ steps.deploy.outputs.url }}

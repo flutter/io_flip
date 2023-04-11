@@ -19,7 +19,11 @@ void main() async {
 
   unawaited(
     bootstrap(
-      (firestore, firebaseAuth) async {
+      (firestore, firebaseAuth, appCheck) async {
+        await appCheck.activate(
+          webRecaptchaSiteKey: const String.fromEnvironment('RECAPTCHA_KEY'),
+        );
+
         final authenticationRepository = AuthenticationRepository(
           firebaseAuth: firebaseAuth,
         );
