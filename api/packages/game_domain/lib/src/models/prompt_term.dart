@@ -37,19 +37,16 @@ class PromptTerm extends Equatable {
   factory PromptTerm.fromJson(Map<String, dynamic> json) =>
       _$PromptTermFromJson(json);
 
-  @JsonKey()
-
   /// The id of the prompt term.
+  @JsonKey()
   final String? id;
 
-  @JsonKey()
-
   /// The term of the prompt term.
+  @JsonKey()
   final String term;
 
-  @JsonKey()
-
   /// The type of the prompt term.
+  @JsonKey()
   final PromptTermType type;
 
   /// Converts a [PromptTerm] to a JSON object.
