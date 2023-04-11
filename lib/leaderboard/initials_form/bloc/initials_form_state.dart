@@ -3,7 +3,9 @@ part of 'initials_form_bloc.dart';
 enum InitialsFormStatus {
   initial,
   valid,
-  invalid;
+  invalid,
+  success,
+  failure;
 
   bool get isInvalid => this == InitialsFormStatus.invalid;
 }

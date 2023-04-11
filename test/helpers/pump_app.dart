@@ -1,5 +1,6 @@
 import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:connection_repository/connection_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
+import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/settings/settings.dart';
 import 'package:top_dash/style/snack_bar.dart';
@@ -28,9 +30,13 @@ class _MockLeaderboardResource extends Mock implements LeaderboardResource {}
 
 class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
 
+class _MockConnectionRepository extends Mock implements ConnectionRepository {}
+
 class _MockMatchSolver extends Mock implements MatchSolver {}
 
 class _MockGameScriptMachine extends Mock implements GameScriptMachine {}
+
+class _MockAudioController extends Mock implements AudioController {}
 
 class _MockUser extends Mock implements User {}
 
@@ -45,6 +51,7 @@ extension PumpApp on WidgetTester {
     PromptResource? promptResource,
     LeaderboardResource? leaderboardResource,
     MatchMakerRepository? matchMakerRepository,
+    ConnectionRepository? connectionRepository,
     MatchSolver? matchSolver,
     GameScriptMachine? gameScriptMachine,
     User? user,
@@ -70,6 +77,9 @@ extension PumpApp on WidgetTester {
           ),
           Provider.value(
             value: matchMakerRepository ?? _MockMatchMakerRepository(),
+          ),
+          Provider.value(
+            value: connectionRepository ?? _MockConnectionRepository(),
           ),
           Provider.value(
             value: matchSolver ?? _MockMatchSolver(),
@@ -106,6 +116,7 @@ extension PumpAppWithRouter on WidgetTester {
     MatchMakerRepository? matchMakerRepository,
     MatchSolver? matchSolver,
     GameScriptMachine? gameScriptMachine,
+    AudioController? audioController,
     User? user,
     T? bloc,
   }) {
@@ -135,6 +146,9 @@ extension PumpAppWithRouter on WidgetTester {
           ),
           Provider.value(
             value: gameScriptMachine ?? _MockGameScriptMachine(),
+          ),
+          Provider.value(
+            value: audioController ?? _MockAudioController(),
           ),
           Provider.value(
             value: user ?? _MockUser(),

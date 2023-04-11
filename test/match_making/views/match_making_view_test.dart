@@ -5,7 +5,7 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:game_domain/game_domain.dart' hide Match;
+import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
@@ -13,13 +13,10 @@ import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash/match_making/match_making.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
-import 'package:web_socket_client/web_socket_client.dart';
 
 import '../../helpers/helpers.dart';
 
 class _MockMatchMakingBloc extends Mock implements MatchMakingBloc {}
-
-class _MockWebSocket extends Mock implements WebSocket {}
 
 abstract class __Router {
   void neglect(BuildContext context, VoidCallback callback);
@@ -33,7 +30,6 @@ void main() {
   group('MatchMakingView', () {
     late MatchMakingBloc bloc;
     late __Router router;
-    final webSocket = _MockWebSocket();
 
     setUp(() {
       bloc = _MockMatchMakingBloc();
@@ -50,7 +46,6 @@ void main() {
         GamePageData(
           isHost: true,
           matchId: null,
-          matchConnection: webSocket,
         ),
       );
     });
@@ -107,7 +102,7 @@ void main() {
           mockState(
             MatchMakingState(
               status: MatchMakingStatus.processing,
-              match: Match(
+              match: DraftMatch(
                 id: 'matchId',
                 host: 'hostId',
                 guest: 'guestId',
@@ -129,7 +124,7 @@ void main() {
           mockState(
             MatchMakingState(
               status: MatchMakingStatus.processing,
-              match: Match(
+              match: DraftMatch(
                 id: 'matchId',
                 host: 'hostId',
                 guest: 'guestId',
@@ -174,13 +169,12 @@ void main() {
         mockState(
           MatchMakingState(
             status: MatchMakingStatus.completed,
-            match: Match(
+            match: DraftMatch(
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
             ),
             isHost: true,
-            matchConnection: webSocket,
           ),
         );
         final goRouter = MockGoRouter();
@@ -193,7 +187,6 @@ void main() {
         final data = GamePageData(
           isHost: true,
           matchId: 'matchId',
-          matchConnection: webSocket,
         );
         verify(
           () => goRouter.goNamed(

@@ -2,6 +2,8 @@ import 'package:api_client/api_client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:top_dash/audio/audio_controller.dart';
+import 'package:top_dash/gen/assets.gen.dart';
 
 part 'draft_event.dart';
 part 'draft_state.dart';
@@ -9,7 +11,9 @@ part 'draft_state.dart';
 class DraftBloc extends Bloc<DraftEvent, DraftState> {
   DraftBloc({
     required GameResource gameResource,
+    required AudioController audioController,
   })  : _gameResource = gameResource,
+        _audioController = audioController,
         super(const DraftState.initial()) {
     on<DeckRequested>(_onDeckRequested);
     on<PreviousCard>(_onPreviousCard);
@@ -20,6 +24,9 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
   }
 
   final GameResource _gameResource;
+  final AudioController _audioController;
+
+  final List<String> _playedHoloReveal = [];
 
   Future<void> _onDeckRequested(
     DeckRequested event,
@@ -36,6 +43,8 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
           status: DraftStateStatus.deckLoaded,
         ),
       );
+      _audioController.playSfx(Assets.sfx.reveal);
+      _playHoloReveal(cards);
     } catch (e, s) {
       addError(e, s);
       emit(state.copyWith(status: DraftStateStatus.deckFailed));
@@ -47,6 +56,7 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     Emitter<DraftState> emit,
   ) {
     final cards = _retrieveLastCard();
+    _playHoloReveal(cards);
     emit(state.copyWith(cards: cards));
   }
 
@@ -55,6 +65,7 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     Emitter<DraftState> emit,
   ) {
     final cards = _dismissTopCard();
+    _playHoloReveal(cards);
     emit(state.copyWith(cards: cards));
   }
 
@@ -63,6 +74,7 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     Emitter<DraftState> emit,
   ) {
     final cards = _dismissTopCard();
+    _playHoloReveal(cards);
     emit(
       state.copyWith(
         cards: cards,
@@ -85,6 +97,8 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
   ) {
     if (state.selectedCards.length == 3) return;
 
+    _audioController.playSfx(Assets.sfx.addToHand);
+
     final topCard = state.cards.first;
 
     final selectedCards = [
@@ -95,6 +109,9 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     final selectionCompleted = selectedCards.length == 3;
 
     final cards = selectionCompleted ? null : _dismissTopCard();
+    if (cards != null) {
+      _playHoloReveal(cards);
+    }
 
     emit(
       state.copyWith(
@@ -121,5 +138,14 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     final lastCard = cards.removeLast();
     cards.insert(0, lastCard);
     return cards;
+  }
+
+  void _playHoloReveal(List<Card> cards) {
+    final card = cards.first;
+
+    if (card.rarity && !_playedHoloReveal.contains(card.id)) {
+      _playedHoloReveal.add(card.id);
+      _audioController.playSfx(Assets.sfx.holoReveal);
+    }
   }
 }

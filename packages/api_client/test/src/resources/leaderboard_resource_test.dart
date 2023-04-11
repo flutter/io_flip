@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:api_client/api_client.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:http/http.dart' as http;
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -21,6 +22,88 @@ void main() {
       response = _MockResponse();
 
       resource = LeaderboardResource(apiClient: apiClient);
+    });
+
+    group('getLeaderboardResults', () {
+      setUp(() {
+        when(() => apiClient.get(any())).thenAnswer((_) async => response);
+      });
+
+      test('makes the correct call ', () async {
+        const scoreCard = ScoreCard(
+          id: 'id',
+          wins: 2,
+          currentStreak: 2,
+          longestStreak: 3,
+          longestStreakDeck: 'deckId',
+        );
+
+        when(() => response.statusCode).thenReturn(HttpStatus.ok);
+        when(() => response.body).thenReturn(
+          jsonEncode(
+            {
+              'scoreCardsWithMostWins': [scoreCard.toJson()],
+              'scoreCardsWithLongestStreak': [scoreCard.toJson()],
+            },
+          ),
+        );
+
+        final results = await resource.getLeaderboardResults();
+
+        expect(
+          results,
+          isA<LeaderboardResults>()
+              .having(
+                (lr) => lr.scoreCardsWithMostWins,
+                'scoreCardsWithMostWins',
+                equals([scoreCard]),
+              )
+              .having(
+                (lr) => lr.scoreCardsWithLongestStreak,
+                'scoreCardsWithLongestStreak',
+                equals(
+                  [scoreCard],
+                ),
+              ),
+        );
+      });
+
+      test('throws ApiClientError when request fails', () async {
+        when(() => response.statusCode)
+            .thenReturn(HttpStatus.internalServerError);
+        when(() => response.body).thenReturn('Oops');
+
+        await expectLater(
+          resource.getLeaderboardResults,
+          throwsA(
+            isA<ApiClientError>().having(
+              (e) => e.cause,
+              'cause',
+              equals(
+                'GET /leaderboard/results returned status 500 with the following response: "Oops"',
+              ),
+            ),
+          ),
+        );
+      });
+
+      test('throws ApiClientError when request response is invalid', () async {
+        when(() => response.statusCode).thenReturn(HttpStatus.ok);
+        when(() => response.body).thenReturn('Oops');
+
+        await expectLater(
+          resource.getLeaderboardResults,
+          throwsA(
+            isA<ApiClientError>().having(
+              (e) => e.cause,
+              'cause',
+              equals(
+                'GET /leaderboard/results returned invalid response "Oops"',
+              ),
+            ),
+          ),
+        );
+      });
     });
 
     group('getInitialsBlacklist', () {
@@ -78,6 +161,56 @@ void main() {
               'cause',
               equals(
                 'GET /leaderboard/initials_blacklist returned invalid response "Oops"',
+              ),
+            ),
+          ),
+        );
+      });
+    });
+
+    group('addInitialsToScoreCard', () {
+      const scoreCardId = 'scoreCardId';
+      const initials = 'initials';
+
+      setUp(() {
+        when(() => apiClient.post(any(), body: any(named: 'body')))
+            .thenAnswer((_) async => response);
+      });
+
+      test('makes the correct call', () async {
+        when(() => response.statusCode).thenReturn(HttpStatus.noContent);
+        await resource.addInitialsToScoreCard(
+          scoreCardId: scoreCardId,
+          initials: initials,
+        );
+
+        verify(
+          () => apiClient.post(
+            '/game/leaderboard/initials',
+            body: jsonEncode({
+              'scoreCardId': scoreCardId,
+              'initials': initials,
+            }),
+          ),
+        ).called(1);
+      });
+
+      test('throws ApiClientError when request fails', () async {
+        when(() => response.statusCode)
+            .thenReturn(HttpStatus.internalServerError);
+        when(() => response.body).thenReturn('Oops');
+
+        await expectLater(
+          () => resource.addInitialsToScoreCard(
+            scoreCardId: scoreCardId,
+            initials: initials,
+          ),
+          throwsA(
+            isA<ApiClientError>().having(
+              (e) => e.cause,
+              'cause',
+              equals(
+                'POST /leaderboard/initials returned status 500 with the following response: "Oops"',
               ),
             ),
           ),

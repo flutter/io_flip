@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
+import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/draft/draft.dart';
 
 class DraftPage extends StatelessWidget {
@@ -23,8 +24,10 @@ class DraftPage extends StatelessWidget {
     return BlocProvider(
       create: (context) {
         final gameResource = context.read<GameResource>();
+        final audioController = context.read<AudioController>();
         return DraftBloc(
           gameResource: gameResource,
+          audioController: audioController,
         )..add(DeckRequested(prompts));
       },
       child: const DraftView(),

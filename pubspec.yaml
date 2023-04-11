@@ -5,7 +5,7 @@ publish_to: none
 
 environment:
   sdk: ">=2.19.0 <3.0.0"
-  flutter: 3.7.2
+  flutter: 3.9.0-0.2.pre
 
 dependencies:
   api_client:
@@ -17,6 +17,8 @@ dependencies:
   cloud_firestore: ^4.5.0
   code_text_field: ^1.1.0
   collection: ^1.17.0
+  connection_repository:
+    path: packages/connection_repository
   equatable: ^2.0.5
   firebase_auth: ^4.4.0
   firebase_core: ^2.5.0
@@ -33,9 +35,9 @@ dependencies:
     path: api/packages/game_domain
   game_script_machine:
     path: api/packages/game_script_machine
-  go_router: ^6.5.3
+  go_router: ^6.5.5
   highlight: ^0.7.0
-  intl: ^0.17.0
+  intl: ^0.18.0
   logging: ^1.1.1
   match_maker_repository:
     path: packages/match_maker_repository
@@ -45,7 +47,6 @@ dependencies:
   top_dash_ui:
     path: packages/top_dash_ui
   url_launcher: ^6.1.10
-  web_socket_client: ^0.1.0-dev.3
 
 dev_dependencies:
   bloc_test: ^9.1.1
@@ -57,6 +58,9 @@ dev_dependencies:
   mocktail: ^0.3.0
   mocktail_image_network: ^0.3.1
   very_good_analysis: ^4.0.0
+
+dependency_overrides:
+  intl: ^0.17.0
 
 flutter:
   uses-material-design: true

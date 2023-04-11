@@ -35,6 +35,11 @@ void addStories(Dashbook dashbook) {
         (_) => const FadingDotLoaderStory(),
       );
 
+  dashbook.storiesOf('Shaders').add(
+        'Foil Shader',
+        (_) => const FoilShaderStory(),
+      );
+
   dashbook
       .storiesOf('Cards')
       .add(

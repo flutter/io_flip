@@ -93,6 +93,15 @@ class MatchLoadedState extends GameState {
       ];
 }
 
+class LeaderboardEntryState extends GameState {
+  const LeaderboardEntryState(this.scoreCardId);
+
+  final String scoreCardId;
+
+  @override
+  List<Object?> get props => [scoreCardId];
+}
+
 class OpponentAbsentState extends GameState {
   const OpponentAbsentState();
 

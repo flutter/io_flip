@@ -20,7 +20,23 @@ void main() {
       currentStreak: 1,
       currentDeck: 'deckId',
       longestStreakDeck: 'longestId',
+      initials: 'initials',
     );
+
+    test('toJson returns the instance as json', () {
+      expect(
+        scoreCard.toJson(),
+        equals({
+          'id': 'id',
+          'wins': 1,
+          'longestStreak': 1,
+          'currentStreak': 1,
+          'currentDeck': 'deckId',
+          'longestStreakDeck': 'longestId',
+          'initials': 'initials',
+        }),
+      );
+    });
 
     test('fromJson returns the correct instance', () {
       expect(
@@ -31,6 +47,7 @@ void main() {
           'currentStreak': 1,
           'currentDeck': 'deckId',
           'longestStreakDeck': 'longestId',
+          'initials': 'initials',
         }),
         equals(scoreCard),
       );
@@ -50,6 +67,7 @@ void main() {
           longestStreak: 1,
           currentDeck: 'deckId',
           longestStreakDeck: 'longestId',
+          initials: 'initials',
         ),
         isNot(
           equals(scoreCard),
@@ -63,6 +81,7 @@ void main() {
           longestStreak: 1,
           currentDeck: 'deckId',
           longestStreakDeck: 'longestId',
+          initials: 'initials',
         ),
         isNot(
           equals(scoreCard),
@@ -76,6 +95,7 @@ void main() {
           longestStreak: 1,
           currentDeck: 'deckId',
           longestStreakDeck: 'longestId',
+          initials: 'initials',
         ),
         isNot(
           equals(scoreCard),
@@ -89,6 +109,7 @@ void main() {
           longestStreak: 2,
           currentDeck: 'deckId',
           longestStreakDeck: 'longestId',
+          initials: 'initials',
         ),
         isNot(
           equals(scoreCard),
@@ -101,6 +122,7 @@ void main() {
           currentStreak: 1,
           longestStreak: 1,
           longestStreakDeck: 'longestId',
+          initials: 'initials',
         ),
         isNot(
           equals(scoreCard),
@@ -113,6 +135,7 @@ void main() {
           currentStreak: 1,
           longestStreak: 1,
           currentDeck: 'deckId',
+          initials: 'initials',
         ),
         isNot(
           equals(scoreCard),

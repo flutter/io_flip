@@ -73,6 +73,10 @@
       }
     }
   },
+  "leaderboardFailedToLoad": "Failed to load leaderboard",
+  "@leaderboardFailedToLoad": {
+    "description": "Label shown on the leaderboard when it fails to load"
+  },
   "menuCatchPhrase": "A global, AI-powered card collection game.",
   "@menuCatchPhrase": {
     "description": "Sentence shown on the main menu screen"
@@ -154,17 +158,17 @@
   "@cancel": {
     "description": "Label showing to cancel an action"
   },
+  "enter": "ENTER",
+  "@enter": {
+    "description": "Label showing to enter"
+  },
   "useCard": "Use card",
   "@useCard": {
     "description": "Label show on the draft page to use the card"
   },
-  "youMadeItToTheLeaderboard": "You made it to the leaderboard!",
-  "@youMadeItToTheLeaderboard": {
-    "description": "Title shown on the Leaderboard Entry page"
-  },
-  "enterYourInitials": "Enter your initials to get the glory you deserve!",
+  "enterYourInitials": "Enter your initials for the leaderboard",
   "@enterYourInitials": {
-    "description": "Sub title on the leaderboard entry page to prompt users to enter their initials"
+    "description": "Subtitle on the leaderboard entry page to prompt users to enter their initials"
   },
   "continueButton": "Continue",
   "@continueButton": {
@@ -199,6 +203,12 @@
   "settingsHowToPlayItem": "How to play",
   "@settingsHowToPlayItem": {
     "description": "Title of the how to play item in settings",
+    "type": "text",
+    "placeholders": {}
+  },
+  "mutedItem": "Muted",
+  "@mutedItem": {
+    "description": "Title of the muted item in settings",
     "type": "text",
     "placeholders": {}
   },
@@ -255,5 +265,13 @@
   "quitGameDialogDescription": "You will lose your current hand and active winning streak.",
   "@quitGameDialogDescription": {
     "description": "Description of the quit game dialog"
+  },
+  "playerAlreadyConnectedError": "Please only use one tab at a time.",
+  "@playerAlreadyConnectedError": {
+    "description": "Error message shown when user connects in multiple tabs"
+  },
+  "unknownConnectionError": "Unable to connect. Please try again in a few moments.",
+  "@unknownConnectionError": {
+    "description": "Error message shown when an unknown error occurs while connecting"
   }
 }

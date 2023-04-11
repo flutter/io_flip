@@ -50,6 +50,12 @@
       "type": "dart",
       "program": "lib/main_production.dart",
       "args": ["--flavor", "production", "--target", "lib/main_production.dart"]
+    },
+    {
+      "name": "Launch UI gallery",
+      "request": "launch",
+      "type": "dart",
+      "program": "packages/top_dash_ui/gallery/lib/main.dart"
     }
   ]
 }

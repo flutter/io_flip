@@ -6,7 +6,7 @@ part 'score_card.g.dart';
 /// {@template score_card}
 /// A class representing the user session's win and streak count.
 /// {@endtemplate}
-@JsonSerializable(ignoreUnannotated: true, createToJson: false)
+@JsonSerializable(ignoreUnannotated: true)
 class ScoreCard extends Equatable {
   /// {@macro score_card}
   const ScoreCard({
@@ -16,6 +16,7 @@ class ScoreCard extends Equatable {
     this.currentStreak = 0,
     this.currentDeck = '',
     this.longestStreakDeck = '',
+    this.initials,
   });
 
   /// {@macro score_card}
@@ -46,6 +47,13 @@ class ScoreCard extends Equatable {
   @JsonKey()
   final String longestStreakDeck;
 
+  /// Initials of the player.
+  @JsonKey()
+  final String? initials;
+
+  /// Returns a json representation from this instance.
+  Map<String, dynamic> toJson() => _$ScoreCardToJson(this);
+
   @override
   List<Object?> get props => [
         id,
@@ -54,5 +62,6 @@ class ScoreCard extends Equatable {
         currentStreak,
         currentDeck,
         longestStreakDeck,
+        initials,
       ];
 }

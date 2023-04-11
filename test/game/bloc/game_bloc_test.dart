@@ -5,21 +5,20 @@ import 'dart:async';
 import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc_test/bloc_test.dart';
+import 'package:connection_repository/connection_repository.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:match_maker_repository/match_maker_repository.dart' as repo;
+import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
-import 'package:web_socket_client/web_socket_client.dart';
 
 class _MockGameResource extends Mock implements GameResource {}
 
-class _MockWebSocket extends Mock implements WebSocket {}
+class _MockConnectionRepository extends Mock implements ConnectionRepository {}
 
-class _MockMatchMakerRepository extends Mock
-    implements repo.MatchMakerRepository {}
+class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
 
 class _MockMatchSolver extends Mock implements MatchSolver {}
 
@@ -44,13 +43,13 @@ void main() {
     );
 
     late StreamController<MatchState> matchStateController;
-    late StreamController<repo.Match> matchController;
+    late StreamController<DraftMatch> matchController;
     late StreamController<ScoreCard> scoreController;
     late GameResource gameResource;
-    late repo.MatchMakerRepository matchMakerRepository;
+    late MatchMakerRepository matchMakerRepository;
     late MatchSolver matchSolver;
     late User user;
-    late WebSocket webSocket;
+    late ConnectionRepository connectionRepository;
     const isHost = true;
 
     setUpAll(() {
@@ -59,7 +58,7 @@ void main() {
     });
 
     setUp(() {
-      webSocket = _MockWebSocket();
+      connectionRepository = _MockConnectionRepository();
       matchSolver = _MockMatchSolver();
       gameResource = _MockGameResource();
       matchMakerRepository = _MockMatchMakerRepository();
@@ -182,7 +181,7 @@ void main() {
           matchSolver: matchSolver,
           user: user,
           isHost: true,
-          matchConnection: webSocket,
+          connectionRepository: _MockConnectionRepository(),
         ),
         isNotNull,
       );
@@ -196,7 +195,7 @@ void main() {
           matchSolver: matchSolver,
           user: user,
           isHost: false,
-          matchConnection: webSocket,
+          connectionRepository: _MockConnectionRepository(),
         ).state,
         equals(MatchLoadingState()),
       );
@@ -210,7 +209,7 @@ void main() {
         matchSolver: matchSolver,
         user: user,
         isHost: isHost,
-        matchConnection: webSocket,
+        connectionRepository: connectionRepository,
       ),
       act: (bloc) => bloc.add(MatchRequested(match.id)),
       expect: () => [
@@ -237,7 +236,7 @@ void main() {
         matchSolver: matchSolver,
         user: user,
         isHost: isHost,
-        matchConnection: webSocket,
+        connectionRepository: connectionRepository,
       ),
       setUp: () {
         when(() => gameResource.getMatch(match.id))
@@ -258,7 +257,7 @@ void main() {
         matchSolver: matchSolver,
         user: user,
         isHost: isHost,
-        matchConnection: webSocket,
+        connectionRepository: connectionRepository,
       ),
       setUp: () {
         when(() => gameResource.getMatch(match.id)).thenThrow(Exception('Ops'));
@@ -291,7 +290,7 @@ void main() {
           matchSolver: matchSolver,
           user: user,
           isHost: true,
-          matchConnection: webSocket,
+          connectionRepository: connectionRepository,
         )..add(MatchRequested(baseState.match.id));
 
         await Future.microtask(() {});
@@ -332,7 +331,7 @@ void main() {
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
           isHost: true,
-          matchConnection: webSocket,
+          connectionRepository: connectionRepository,
         )..add(MatchRequested(baseState.match.id));
 
         await Future.microtask(() {});
@@ -361,7 +360,7 @@ void main() {
           matchSolver: matchSolver,
           user: user,
           isHost: true,
-          matchConnection: webSocket,
+          connectionRepository: connectionRepository,
         ),
         setUp: () {
           when(
@@ -385,7 +384,7 @@ void main() {
           matchSolver: matchSolver,
           user: user,
           isHost: true,
-          matchConnection: webSocket,
+          connectionRepository: connectionRepository,
         ),
         setUp: () {
           when(
@@ -412,7 +411,7 @@ void main() {
       blocTest<GameBloc, GameState>(
         'hasPlayerWon returns true if the host won, and the player is the host',
         build: () => GameBloc(
-          matchConnection: webSocket,
+          connectionRepository: connectionRepository,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
@@ -438,7 +437,7 @@ void main() {
         'hasPlayerWon returns false if the guest won, and the player '
         'is the guest',
         build: () => GameBloc(
-          matchConnection: webSocket,
+          connectionRepository: connectionRepository,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
@@ -463,7 +462,7 @@ void main() {
       blocTest<GameBloc, GameState>(
         'hasPlayerWon returns false if match is still loading',
         build: () => GameBloc(
-          matchConnection: webSocket,
+          connectionRepository: connectionRepository,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
@@ -485,7 +484,7 @@ void main() {
             matchSolver: matchSolver,
             user: user,
             isHost: true,
-            matchConnection: webSocket,
+            connectionRepository: connectionRepository,
           ),
           setUp: () {
             when(() => matchSolver.calculateRoundResult(any(), any(), any()))
@@ -526,7 +525,7 @@ void main() {
             matchSolver: matchSolver,
             user: user,
             isHost: true,
-            matchConnection: webSocket,
+            connectionRepository: connectionRepository,
           ),
           setUp: () {
             when(() => matchSolver.calculateRoundResult(any(), any(), any()))
@@ -563,7 +562,7 @@ void main() {
         blocTest<GameBloc, GameState>(
           'returns correctly when is guest and card is from player',
           build: () => GameBloc(
-            matchConnection: webSocket,
+            connectionRepository: connectionRepository,
             gameResource: gameResource,
             matchMakerRepository: matchMakerRepository,
             matchSolver: matchSolver,
@@ -605,7 +604,7 @@ void main() {
         blocTest<GameBloc, GameState>(
           'returns correctly when is guest and card is from opponent',
           build: () => GameBloc(
-            matchConnection: webSocket,
+            connectionRepository: connectionRepository,
             gameResource: gameResource,
             matchMakerRepository: matchMakerRepository,
             matchSolver: matchSolver,
@@ -648,7 +647,7 @@ void main() {
       blocTest<GameBloc, GameState>(
         'plays a player card',
         build: () => GameBloc(
-          matchConnection: webSocket,
+          connectionRepository: connectionRepository,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
@@ -678,7 +677,7 @@ void main() {
       blocTest<GameBloc, GameState>(
         'plays a player card when being the guest',
         build: () => GameBloc(
-          matchConnection: webSocket,
+          connectionRepository: connectionRepository,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
@@ -709,7 +708,7 @@ void main() {
         'plays a player card, receives confirmation and then receives an '
         'opponent card',
         build: () => GameBloc(
-          matchConnection: webSocket,
+          connectionRepository: connectionRepository,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
@@ -807,7 +806,7 @@ void main() {
       blocTest<GameBloc, GameState>(
         'plays a player card and opponent card and another opponent one',
         build: () => GameBloc(
-          matchConnection: webSocket,
+          connectionRepository: connectionRepository,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
@@ -945,7 +944,7 @@ void main() {
             ).thenReturn(true);
 
             final bloc = GameBloc(
-              matchConnection: webSocket,
+              connectionRepository: connectionRepository,
               gameResource: gameResource,
               matchMakerRepository: matchMakerRepository,
               matchSolver: matchSolver,
@@ -985,7 +984,7 @@ void main() {
             });
 
             final bloc = GameBloc(
-              matchConnection: webSocket,
+              connectionRepository: connectionRepository,
               gameResource: gameResource,
               matchMakerRepository: matchMakerRepository,
               matchSolver: matchSolver,
@@ -1019,7 +1018,7 @@ void main() {
             });
 
             final bloc = GameBloc(
-              matchConnection: webSocket,
+              connectionRepository: connectionRepository,
               gameResource: gameResource,
               matchMakerRepository: matchMakerRepository,
               matchSolver: matchSolver,
@@ -1047,7 +1046,7 @@ void main() {
     blocTest<GameBloc, GameState>(
       'playerCards returns host cards if is host',
       build: () => GameBloc(
-        matchConnection: webSocket,
+        connectionRepository: connectionRepository,
         gameResource: gameResource,
         matchMakerRepository: matchMakerRepository,
         matchSolver: matchSolver,
@@ -1063,7 +1062,7 @@ void main() {
     blocTest<GameBloc, GameState>(
       'playerCards returns guest cards if is guest',
       build: () => GameBloc(
-        matchConnection: webSocket,
+        connectionRepository: connectionRepository,
         gameResource: gameResource,
         matchMakerRepository: matchMakerRepository,
         matchSolver: matchSolver,
@@ -1079,7 +1078,7 @@ void main() {
     blocTest<GameBloc, GameState>(
       'opponentCards returns host cards if player is not host',
       build: () => GameBloc(
-        matchConnection: webSocket,
+        connectionRepository: connectionRepository,
         gameResource: gameResource,
         matchMakerRepository: matchMakerRepository,
         matchSolver: matchSolver,
@@ -1095,7 +1094,7 @@ void main() {
     blocTest<GameBloc, GameState>(
       'opponentCards returns guest cards if player is host',
       build: () => GameBloc(
-        matchConnection: webSocket,
+        connectionRepository: connectionRepository,
         gameResource: gameResource,
         matchMakerRepository: matchMakerRepository,
         matchSolver: matchSolver,
@@ -1112,7 +1111,7 @@ void main() {
       'playerCards and opponentCards returns empty if state is not '
       'MatchLoadedState',
       build: () => GameBloc(
-        matchConnection: webSocket,
+        connectionRepository: connectionRepository,
         gameResource: gameResource,
         matchMakerRepository: matchMakerRepository,
         matchSolver: matchSolver,
@@ -1135,7 +1134,7 @@ void main() {
         ).thenReturn(true);
       },
       build: () => GameBloc(
-        matchConnection: webSocket,
+        connectionRepository: connectionRepository,
         gameResource: gameResource,
         matchMakerRepository: matchMakerRepository,
         matchSolver: matchSolver,
@@ -1164,7 +1163,7 @@ void main() {
         ).thenReturn(false);
       },
       build: () => GameBloc(
-        matchConnection: webSocket,
+        connectionRepository: connectionRepository,
         gameResource: gameResource,
         matchMakerRepository: matchMakerRepository,
         matchSolver: matchSolver,
@@ -1188,7 +1187,7 @@ void main() {
       'lastPlayedCardId returns player card if last turn not complete and '
       'only player played',
       build: () => GameBloc(
-        matchConnection: webSocket,
+        connectionRepository: connectionRepository,
         gameResource: gameResource,
         matchMakerRepository: matchMakerRepository,
         matchSolver: matchSolver,
@@ -1212,7 +1211,7 @@ void main() {
       'lastPlayedCardId returns opponent card if last turn not complete and '
       'only opponent played',
       build: () => GameBloc(
-        matchConnection: webSocket,
+        connectionRepository: connectionRepository,
         gameResource: gameResource,
         matchMakerRepository: matchMakerRepository,
         matchSolver: matchSolver,
@@ -1338,7 +1337,7 @@ void main() {
       blocTest<GameBloc, GameState>(
         'notifies when opponent(guest) is absent',
         build: () => GameBloc(
-          matchConnection: webSocket,
+          connectionRepository: connectionRepository,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           user: user,
@@ -1348,7 +1347,7 @@ void main() {
         act: (bloc) {
           bloc.add(ManagePlayerPresence(match.id));
           matchController.add(
-            repo.Match(
+            DraftMatch(
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
@@ -1365,7 +1364,7 @@ void main() {
       blocTest<GameBloc, GameState>(
         'notifies when opponent(host) is absent',
         build: () => GameBloc(
-          matchConnection: webSocket,
+          connectionRepository: connectionRepository,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           user: user,
@@ -1375,7 +1374,7 @@ void main() {
         act: (bloc) {
           bloc.add(ManagePlayerPresence(match.id));
           matchController.add(
-            repo.Match(
+            DraftMatch(
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
@@ -1392,7 +1391,7 @@ void main() {
       blocTest<GameBloc, GameState>(
         'does not return a state if opponent is present',
         build: () => GameBloc(
-          matchConnection: webSocket,
+          connectionRepository: connectionRepository,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           user: user,
@@ -1402,7 +1401,7 @@ void main() {
         act: (bloc) {
           bloc.add(ManagePlayerPresence(match.id));
           matchController.add(
-            repo.Match(
+            DraftMatch(
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
@@ -1420,7 +1419,7 @@ void main() {
       blocTest<GameBloc, GameState>(
         'fails when fetching the match throws an exception',
         build: () => GameBloc(
-          matchConnection: webSocket,
+          connectionRepository: connectionRepository,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           user: user,
@@ -1435,7 +1434,7 @@ void main() {
         act: (bloc) {
           bloc.add(ManagePlayerPresence(match.id));
           matchController.add(
-            repo.Match(
+            DraftMatch(
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
@@ -1462,7 +1461,7 @@ void main() {
           );
         },
         build: () => GameBloc(
-          matchConnection: webSocket,
+          connectionRepository: connectionRepository,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           user: user,
@@ -1472,7 +1471,7 @@ void main() {
         act: (bloc) {
           bloc.add(ManagePlayerPresence(match.id));
           matchController.add(
-            repo.Match(
+            DraftMatch(
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
@@ -1487,11 +1486,31 @@ void main() {
         },
       );
     });
+
+    group('LeaderboardEntryRequested', () {
+      blocTest<GameBloc, GameState>(
+        'emits LeaderboardEntryState when leaderboard entry is requested',
+        build: () => GameBloc(
+          connectionRepository: connectionRepository,
+          gameResource: gameResource,
+          matchMakerRepository: matchMakerRepository,
+          user: user,
+          isHost: true,
+          matchSolver: matchSolver,
+        ),
+        act: (bloc) => bloc.add(LeaderboardEntryRequested()),
+        seed: () => baseState,
+        expect: () => <GameState>[
+          LeaderboardEntryState(baseState.playerScoreCard.id),
+        ],
+      );
+    });
+
     group('TurnAnimationsFinished', () {
       blocTest<GameBloc, GameState>(
         'emits state updating turnAnimationsFinished field',
         build: () => GameBloc(
-          matchConnection: webSocket,
+          connectionRepository: connectionRepository,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           user: user,
@@ -1510,7 +1529,7 @@ void main() {
       blocTest<GameBloc, GameState>(
         'emits state updating showCardsOverlay field',
         build: () => GameBloc(
-          matchConnection: webSocket,
+          connectionRepository: connectionRepository,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           user: user,

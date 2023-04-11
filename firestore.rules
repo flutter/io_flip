@@ -12,6 +12,10 @@ service cloud.firestore {
   	function isAuthenticated() {
     	return request.auth != null;
     }
+
+    match /prompt_terms/{script} {
+      allow read: if isAuthenticated();
+    }
   
     match /scripts/{script} {
       allow read: if isAuthenticated();

@@ -1,5 +1,6 @@
 import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:connection_repository/connection_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
@@ -8,6 +9,7 @@ import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/app/app.dart';
 import 'package:top_dash/audio/audio_controller.dart';
+import 'package:top_dash/connection/connection.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/main_menu/main_menu_screen.dart';
 import 'package:top_dash/prompt/prompt.dart';
@@ -38,6 +40,13 @@ class _MockPromptResource extends Mock implements PromptResource {}
 class _MockLeaderboardResource extends Mock implements LeaderboardResource {}
 
 class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
+
+class _MockConnectionRepository extends Mock implements ConnectionRepository {
+  _MockConnectionRepository() {
+    when(connect).thenAnswer((_) async {});
+    when(() => messages).thenAnswer((_) => const Stream.empty());
+  }
+}
 
 class _MockMatchSolver extends Mock implements MatchSolver {}
 
@@ -70,6 +79,7 @@ void main() {
           settingsPersistence: MemoryOnlySettingsPersistence(),
           apiClient: apiClient,
           matchMakerRepository: _MockMatchMakerRepository(),
+          connectionRepository: _MockConnectionRepository(),
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
           user: _MockUser(),
@@ -81,6 +91,22 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('SnackBar'), findsOneWidget);
+    });
+
+    testWidgets('wraps everything in a ConnectionOverlay', (tester) async {
+      await tester.pumpWidget(
+        App(
+          settingsPersistence: MemoryOnlySettingsPersistence(),
+          apiClient: apiClient,
+          matchMakerRepository: _MockMatchMakerRepository(),
+          connectionRepository: _MockConnectionRepository(),
+          matchSolver: _MockMatchSolver(),
+          gameScriptMachine: _MockGameScriptEngine(),
+          user: _MockUser(),
+        ),
+      );
+
+      expect(find.byType(ConnectionOverlay), findsOneWidget);
     });
 
     group('updateAudioController', () {
@@ -144,6 +170,7 @@ void main() {
           settingsPersistence: MemoryOnlySettingsPersistence(),
           apiClient: apiClient,
           matchMakerRepository: _MockMatchMakerRepository(),
+          connectionRepository: _MockConnectionRepository(),
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
           user: _MockUser(),
@@ -161,6 +188,7 @@ void main() {
           settingsPersistence: MemoryOnlySettingsPersistence(),
           apiClient: apiClient,
           matchMakerRepository: _MockMatchMakerRepository(),
+          connectionRepository: _MockConnectionRepository(),
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
           user: _MockUser(),
@@ -177,6 +205,7 @@ void main() {
           settingsPersistence: MemoryOnlySettingsPersistence(),
           apiClient: apiClient,
           matchMakerRepository: _MockMatchMakerRepository(),
+          connectionRepository: _MockConnectionRepository(),
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
           user: _MockUser(),
@@ -195,6 +224,7 @@ void main() {
           settingsPersistence: MemoryOnlySettingsPersistence(),
           apiClient: apiClient,
           matchMakerRepository: _MockMatchMakerRepository(),
+          connectionRepository: _MockConnectionRepository(),
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
           user: _MockUser(),
@@ -213,6 +243,7 @@ void main() {
           settingsPersistence: MemoryOnlySettingsPersistence(),
           apiClient: apiClient,
           matchMakerRepository: _MockMatchMakerRepository(),
+          connectionRepository: _MockConnectionRepository(),
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
           user: _MockUser(),
@@ -231,6 +262,7 @@ void main() {
           settingsPersistence: MemoryOnlySettingsPersistence(),
           apiClient: apiClient,
           matchMakerRepository: _MockMatchMakerRepository(),
+          connectionRepository: _MockConnectionRepository(),
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
           user: _MockUser(),

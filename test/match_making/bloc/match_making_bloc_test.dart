@@ -4,30 +4,31 @@ import 'dart:async';
 
 import 'package:api_client/api_client.dart';
 import 'package:bloc_test/bloc_test.dart';
+import 'package:connection_repository/connection_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/match_making/match_making.dart';
-import 'package:web_socket_client/web_socket_client.dart';
 
 class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
 
-class _MockWebSocket extends Mock implements WebSocket {}
-
 class _MockGameResource extends Mock implements GameResource {}
+
+class _MockConnectionRepository extends Mock implements ConnectionRepository {}
 
 void main() {
   group('MatchMakingBloc', () {
     late GameResource gameResource;
     late MatchMakerRepository matchMakerRepository;
-    late WebSocket webSocket;
-    late StreamController<Match> watchController;
+    late ConnectionRepository connectionRepository;
+    late StreamController<DraftMatch> watchController;
     const deckId = 'deckId';
     final cardIds = ['a', 'b', 'c'];
 
     setUp(() {
       matchMakerRepository = _MockMatchMakerRepository();
-      webSocket = _MockWebSocket();
+      connectionRepository = _MockConnectionRepository();
       watchController = StreamController.broadcast();
       when(() => matchMakerRepository.watchMatch(any()))
           .thenAnswer((_) => watchController.stream);
@@ -37,18 +38,21 @@ void main() {
         () => gameResource.createDeck(cardIds),
       ).thenAnswer((_) async => deckId);
 
-      when(
-        () => gameResource.connectToMatch(
-          matchId: any(named: 'matchId'),
-          isHost: any<bool>(named: 'isHost'),
-        ),
-      ).thenAnswer((_) async => webSocket);
+      when(() => connectionRepository.messages).thenAnswer(
+        (_) => Stream.fromIterable([
+          WebSocketMessage.matchJoined(
+            matchId: '',
+            isHost: false,
+          ),
+        ]),
+      );
     });
 
     test('can be instantiated', () {
       expect(
         MatchMakingBloc(
           matchMakerRepository: _MockMatchMakerRepository(),
+          connectionRepository: connectionRepository,
           gameResource: gameResource,
           cardIds: cardIds,
         ),
@@ -60,6 +64,7 @@ void main() {
       expect(
         MatchMakingBloc(
           matchMakerRepository: _MockMatchMakerRepository(),
+          connectionRepository: connectionRepository,
           gameResource: gameResource,
           cardIds: cardIds,
         ).state,
@@ -71,13 +76,14 @@ void main() {
       'can find a match as a guest',
       build: () => MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
+        connectionRepository: connectionRepository,
         gameResource: gameResource,
         cardIds: cardIds,
         hostWaitTime: Duration.zero,
       ),
       setUp: () {
         when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
-          (_) async => Match(
+          (_) async => DraftMatch(
             id: '',
             host: '',
             guest: deckId,
@@ -91,19 +97,20 @@ void main() {
         ),
         MatchMakingState(
           status: MatchMakingStatus.completed,
-          match: Match(
+          match: DraftMatch(
             id: '',
             host: '',
             guest: deckId,
           ),
-          matchConnection: webSocket,
         ),
       ],
       verify: (_) {
         verify(
-          () => gameResource.connectToMatch(
-            matchId: '',
-            isHost: false,
+          () => connectionRepository.send(
+            WebSocketMessage.matchJoined(
+              matchId: '',
+              isHost: false,
+            ),
           ),
         ).called(1);
       },
@@ -113,6 +120,7 @@ void main() {
       'emits a failure when an error happens',
       build: () => MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
+        connectionRepository: connectionRepository,
         gameResource: gameResource,
         cardIds: cardIds,
         hostWaitTime: Duration.zero,
@@ -137,12 +145,13 @@ void main() {
       "creates a match when there isn't one open",
       build: () => MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
+        connectionRepository: connectionRepository,
         gameResource: gameResource,
         cardIds: cardIds,
       ),
       setUp: () {
         when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
-          (_) async => Match(
+          (_) async => DraftMatch(
             id: '',
             host: deckId,
           ),
@@ -155,7 +164,7 @@ void main() {
         ),
         MatchMakingState(
           status: MatchMakingStatus.processing,
-          match: Match(
+          match: DraftMatch(
             id: '',
             host: deckId,
           ),
@@ -163,9 +172,11 @@ void main() {
       ],
       verify: (_) {
         verify(
-          () => gameResource.connectToMatch(
-            matchId: '',
-            isHost: true,
+          () => connectionRepository.send(
+            WebSocketMessage.matchJoined(
+              matchId: '',
+              isHost: true,
+            ),
           ),
         ).called(1);
       },
@@ -173,7 +184,7 @@ void main() {
 
     test('completes the match when is host and a guest joins', () async {
       when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
-        (_) async => Match(
+        (_) async => DraftMatch(
           id: '',
           host: deckId,
         ),
@@ -181,6 +192,7 @@ void main() {
 
       final bloc = MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
+        connectionRepository: connectionRepository,
         gameResource: gameResource,
         cardIds: cardIds,
       )..add(MatchRequested());
@@ -190,7 +202,7 @@ void main() {
         equals(
           MatchMakingState(
             status: MatchMakingStatus.processing,
-            match: Match(
+            match: DraftMatch(
               id: '',
               host: deckId,
             ),
@@ -199,7 +211,7 @@ void main() {
       );
 
       watchController.add(
-        Match(
+        DraftMatch(
           id: '',
           host: deckId,
           guest: '',
@@ -211,13 +223,12 @@ void main() {
         equals(
           MatchMakingState(
             status: MatchMakingStatus.completed,
-            match: Match(
+            match: DraftMatch(
               id: '',
               host: deckId,
               guest: '',
             ),
             isHost: true,
-            matchConnection: webSocket,
           ),
         ),
       );
@@ -247,7 +258,7 @@ void main() {
         equals(
           MatchMakingState(
             status: MatchMakingStatus.timeout,
-            match: Match(
+            match: DraftMatch(
               id: '',
               host: deckId,
             ),
@@ -268,6 +279,7 @@ void main() {
 
       final bloc = MatchMakingBloc.test(
         matchMakerRepository: matchMakerRepository,
+        connectionRepository: connectionRepository,
         gameResource: gameResource,
         cardIds: cardIds,
         hostWaitTime: const Duration(milliseconds: 200),
@@ -278,7 +290,7 @@ void main() {
         equals(
           MatchMakingState(
             status: MatchMakingStatus.completed,
-            match: Match(id: '', host: deckId, guest: 'CPU_$deckId'),
+            match: DraftMatch(id: '', host: deckId, guest: 'CPU_$deckId'),
             matchConnection: webSocket,
             isHost: true,
           ),
@@ -290,12 +302,13 @@ void main() {
       'creates a private match when requested',
       build: () => MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
+        connectionRepository: connectionRepository,
         gameResource: gameResource,
         cardIds: cardIds,
       ),
       setUp: () {
         when(() => matchMakerRepository.createPrivateMatch(deckId)).thenAnswer(
-          (_) async => Match(
+          (_) async => DraftMatch(
             id: '',
             host: deckId,
           ),
@@ -308,7 +321,7 @@ void main() {
         ),
         MatchMakingState(
           status: MatchMakingStatus.processing,
-          match: Match(
+          match: DraftMatch(
             id: '',
             host: deckId,
           ),
@@ -316,9 +329,11 @@ void main() {
       ],
       verify: (_) {
         verify(
-          () => gameResource.connectToMatch(
-            matchId: '',
-            isHost: true,
+          () => connectionRepository.send(
+            WebSocketMessage.matchJoined(
+              matchId: '',
+              isHost: true,
+            ),
           ),
         ).called(1);
       },
@@ -328,6 +343,7 @@ void main() {
       'emits failed when a private match is requested gives an error',
       build: () => MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
+        connectionRepository: connectionRepository,
         gameResource: gameResource,
         cardIds: cardIds,
       ),
@@ -351,6 +367,7 @@ void main() {
       'joins a private match',
       build: () => MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
+        connectionRepository: connectionRepository,
         gameResource: gameResource,
         cardIds: cardIds,
       ),
@@ -361,7 +378,7 @@ void main() {
             inviteCode: 'invite',
           ),
         ).thenAnswer(
-          (_) async => Match(
+          (_) async => DraftMatch(
             id: '',
             guest: deckId,
             host: 'hostId',
@@ -375,7 +392,7 @@ void main() {
         ),
         MatchMakingState(
           status: MatchMakingStatus.completed,
-          match: Match(
+          match: DraftMatch(
             id: '',
             guest: deckId,
             host: 'hostId',
@@ -384,9 +401,11 @@ void main() {
       ],
       verify: (_) {
         verify(
-          () => gameResource.connectToMatch(
-            matchId: '',
-            isHost: false,
+          () => connectionRepository.send(
+            WebSocketMessage.matchJoined(
+              matchId: '',
+              isHost: false,
+            ),
           ),
         ).called(1);
       },
@@ -396,6 +415,7 @@ void main() {
       'emits failed when joining a private match gives an error',
       build: () => MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
+        connectionRepository: connectionRepository,
         gameResource: gameResource,
         cardIds: cardIds,
       ),

@@ -10,7 +10,7 @@ void main() {
       expect(
         MatchMakingState(
           status: MatchMakingStatus.initial,
-          match: Match(
+          match: DraftMatch(
             id: '',
             host: '',
           ),
@@ -34,7 +34,7 @@ void main() {
       expect(
         MatchMakingState(
           status: MatchMakingStatus.initial,
-          match: Match(
+          match: DraftMatch(
             id: '',
             host: '',
           ),
@@ -42,7 +42,7 @@ void main() {
         equals(
           MatchMakingState(
             status: MatchMakingStatus.initial,
-            match: Match(
+            match: DraftMatch(
               id: '',
               host: '',
             ),
@@ -53,7 +53,7 @@ void main() {
       expect(
         MatchMakingState(
           status: MatchMakingStatus.failed,
-          match: Match(
+          match: DraftMatch(
             id: '',
             host: '',
           ),
@@ -62,7 +62,7 @@ void main() {
           equals(
             MatchMakingState(
               status: MatchMakingStatus.initial,
-              match: Match(
+              match: DraftMatch(
                 id: '',
                 host: '',
               ),
@@ -74,7 +74,7 @@ void main() {
       expect(
         MatchMakingState(
           status: MatchMakingStatus.initial,
-          match: Match(
+          match: DraftMatch(
             id: '1',
             host: '',
           ),
@@ -83,7 +83,7 @@ void main() {
           equals(
             MatchMakingState(
               status: MatchMakingStatus.initial,
-              match: Match(
+              match: DraftMatch(
                 id: '',
                 host: '',
               ),
@@ -97,7 +97,7 @@ void main() {
       expect(
         MatchMakingState(
           status: MatchMakingStatus.initial,
-          match: Match(
+          match: DraftMatch(
             id: '',
             host: '',
           ),
@@ -105,7 +105,7 @@ void main() {
         equals(
           MatchMakingState(
             status: MatchMakingStatus.failed,
-            match: Match(
+            match: DraftMatch(
               id: '',
               host: '',
             ),
@@ -116,12 +116,12 @@ void main() {
       expect(
         MatchMakingState(
           status: MatchMakingStatus.initial,
-          match: Match(
+          match: DraftMatch(
             id: '',
             host: '',
           ),
         ).copyWith(
-          match: Match(
+          match: DraftMatch(
             id: '1',
             host: '',
           ),
@@ -129,7 +129,7 @@ void main() {
         equals(
           MatchMakingState(
             status: MatchMakingStatus.initial,
-            match: Match(
+            match: DraftMatch(
               id: '1',
               host: '',
             ),

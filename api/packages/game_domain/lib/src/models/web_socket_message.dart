@@ -14,8 +14,8 @@ enum WebSocketErrorCode {
   /// Represents a player that is already connect to the socket.
   playerAlreadyConnected,
 
-  /// Represents a player that is not connected to the requested game
-  playerNotConnectedToGame
+  /// Represents an unknown error.
+  unknown,
 }
 
 /// Represents the message passed from the websocket.
@@ -23,14 +23,17 @@ enum MessageType {
   /// Represents a successful connection.
   connected,
 
-  /// Represents a disconnect from the socket.
-  disconnected,
-
   /// Represents a connection error.
   error,
 
   /// Represents an authentication token being sent.
   token,
+
+  /// Represents a match being joined.
+  matchJoined,
+
+  /// Represents a match being left.
+  matchLeft,
 }
 
 /// {@template web_socket_message}
@@ -55,12 +58,21 @@ class WebSocketMessage extends Equatable {
           payload: WebSocketTokenPayload(token: token),
         );
 
+  /// A message indicating a match has been joined.
+  WebSocketMessage.matchJoined({required String matchId, required bool isHost})
+      : this(
+          messageType: MessageType.matchJoined,
+          payload: WebSocketMatchJoinedPayload(
+            matchId: matchId,
+            isHost: isHost,
+          ),
+        );
+
+  /// A message indicating a match has been left.
+  const WebSocketMessage.matchLeft() : this(messageType: MessageType.matchLeft);
+
   /// A message indicating the socket has connected.
   const WebSocketMessage.connected() : this(messageType: MessageType.connected);
-
-  /// A message indicating the socket has disconnected.
-  const WebSocketMessage.disconnected()
-      : this(messageType: MessageType.disconnected);
 
   /// {@macro web_socket_message}
   factory WebSocketMessage.fromJson(Map<String, dynamic> json) {
@@ -76,8 +88,11 @@ class WebSocketMessage extends Equatable {
         case MessageType.token:
           messagePayload = WebSocketTokenPayload.fromJson(payloadJson);
           break;
+        case MessageType.matchJoined:
+          messagePayload = WebSocketMatchJoinedPayload.fromJson(payloadJson);
+          break;
         case MessageType.connected:
-        case MessageType.disconnected:
+        case MessageType.matchLeft:
           break;
       }
     }
@@ -161,4 +176,34 @@ class WebSocketErrorPayload extends WebSocketMessagePayload {
 
   @override
   List<Object?> get props => [errorCode];
+}
+
+/// {@template web_socket_match_joined_payload}
+/// The payload for a match joined message.
+/// {@endtemplate}
+@JsonSerializable(ignoreUnannotated: true)
+class WebSocketMatchJoinedPayload extends WebSocketMessagePayload {
+  /// {@macro web_socket_match_joined_payload}
+  const WebSocketMatchJoinedPayload({
+    required this.matchId,
+    required this.isHost,
+  });
+
+  /// Deserializes a [WebSocketMatchJoinedPayload] from a json map.
+  factory WebSocketMatchJoinedPayload.fromJson(Map<String, dynamic> json) =>
+      _$WebSocketMatchJoinedPayloadFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$WebSocketMatchJoinedPayloadToJson(this);
+
+  /// The id of the match that was joined.
+  @JsonKey()
+  final String matchId;
+
+  /// Whether or not the player is the host of the match.
+  @JsonKey()
+  final bool isHost;
+
+  @override
+  List<Object?> get props => [matchId, isHost];
 }

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import 'package:top_dash/audio/audio_controller.dart';
-import 'package:top_dash/audio/sounds.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/leaderboard/leaderboard.dart';
@@ -19,10 +16,10 @@ class MainMenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: TopDashColors.seedWhite,
       body: Stack(
-        children: const [
+        children: [
           Align(
             child: _MainMenuScreenView(key: Key('main menu view')),
           ),
@@ -57,11 +54,11 @@ class PortraitMenuView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return const SingleChildScrollView(
       child: Column(
-        children: const [
+        children: [
           _MainImage(key: Key('main menu image')),
-          LeaderboardView(),
+          LeaderboardPage(),
           SizedBox(height: TopDashSpacing.xxlg),
         ],
       ),
@@ -89,7 +86,7 @@ class LandscapeMenuView extends StatelessWidget {
             ),
           ),
           const SingleChildScrollView(
-            child: LeaderboardView(),
+            child: LeaderboardPage(),
           ),
         ],
       ),
@@ -131,7 +128,6 @@ class _Footer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final audioController = context.watch<AudioController>();
 
     return ColoredBox(
       color: TopDashColors.seedWhite,
@@ -161,7 +157,6 @@ class _Footer extends StatelessWidget {
             RoundedButton.text(
               l10n.play,
               onPressed: () {
-                audioController.playSfx(SfxType.buttonTap);
                 GoRouter.of(context).go('/prompt');
               },
             ),

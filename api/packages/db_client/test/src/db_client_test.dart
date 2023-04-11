@@ -218,5 +218,67 @@ void main() {
         expect(result, isEmpty);
       });
     });
+
+    group('orderBy', () {
+      test('returns the found records', () async {
+        final firestore = _MockFirestore();
+        final collection = _MockCollectionReference();
+        when(() => firestore.collection('birds')).thenReturn(collection);
+
+        final queryReference = _MockQueryReference();
+
+        when(() => collection.orderBy('score', descending: true))
+            .thenReturn(queryReference);
+
+        when(() => queryReference.limit(any())).thenReturn(queryReference);
+
+        when(queryReference.get).thenAnswer((_) async {
+          final record1 = _MockDocument();
+          when(() => record1.id).thenReturn('1');
+          when(() => record1.map).thenReturn({
+            'score': 1,
+          });
+          final record2 = _MockDocument();
+          when(() => record2.id).thenReturn('2');
+          when(() => record2.map).thenReturn({
+            'score': 2,
+          });
+
+          return [
+            record1,
+            record2,
+          ];
+        });
+
+        final client = DbClient(firestore: firestore);
+
+        final result = await client.orderBy('birds', 'score');
+
+        expect(result.first.id, equals('1'));
+        expect(result.first.data, equals({'score': 1}));
+
+        expect(result.last.id, equals('2'));
+        expect(result.last.data, equals({'score': 2}));
+      });
+
+      test('returns empty when no results are returned', () async {
+        final firestore = _MockFirestore();
+        final collection = _MockCollectionReference();
+        when(() => firestore.collection('birds')).thenReturn(collection);
+
+        final queryReference = _MockQueryReference();
+
+        when(() => collection.orderBy('score', descending: true))
+            .thenReturn(queryReference);
+
+        when(() => queryReference.limit(any())).thenReturn(queryReference);
+        when(queryReference.get).thenAnswer((_) async => []);
+
+        final client = DbClient(firestore: firestore);
+
+        final result = await client.orderBy('birds', 'score');
+        expect(result, isEmpty);
+      });
+    });
   });
 }

@@ -65,11 +65,13 @@ class ApiClient {
     PutCall putCall = http.put,
     GetCall getCall = http.get,
     WebSocketFactory webSocketFactory = WebSocket.new,
+    Duration webSocketTimeout = const Duration(seconds: 20),
   })  : _base = Uri.parse(baseUrl),
         _post = postCall,
         _put = putCall,
         _get = getCall,
         _webSocketFactory = webSocketFactory,
+        _webSocketTimeout = webSocketTimeout,
         _refreshIdToken = refreshIdToken {
     _idTokenSubscription = idTokenStream.listen((idToken) {
       _idToken = idToken;
@@ -82,6 +84,7 @@ class ApiClient {
   final GetCall _get;
   final Future<String?> Function() _refreshIdToken;
   final WebSocketFactory _webSocketFactory;
+  final Duration _webSocketTimeout;
 
   late final StreamSubscription<String?> _idTokenSubscription;
   String? _idToken;
@@ -174,24 +177,40 @@ class ApiClient {
     });
   }
 
-  /// Returns a WebSocket for the specified [path] and [queryParameters].
-  Future<WebSocket> connect(
-    String path, {
-    Map<String, String>? queryParameters,
-  }) async {
+  /// Returns a WebSocket for the specified [path].
+  Future<WebSocket> connect(String path) async {
     final uri = _base.replace(
       scheme: _base.scheme.replaceAll('http', 'ws'),
       path: path,
-      queryParameters: queryParameters,
     );
 
-    final webSocket = _webSocketFactory(uri);
-    if (_idToken != null) {
-      webSocket.onConnected(
-        () => webSocket.send(jsonEncode(WebSocketMessage.token(_idToken!))),
+    try {
+      final webSocket = _webSocketFactory(uri);
+      if (_idToken != null) {
+        webSocket.onConnected(
+          () => webSocket.send(jsonEncode(WebSocketMessage.token(_idToken!))),
+        );
+      }
+
+      await webSocket.connection
+          .firstWhere((state) => state is Connected)
+          .timeout(
+        _webSocketTimeout,
+        onTimeout: () async {
+          webSocket.close();
+          throw TimeoutException(
+            'Could not connect within timeout: $_webSocketTimeout',
+          );
+        },
+      );
+
+      return webSocket;
+    } catch (error) {
+      throw ApiClientError(
+        'WebSocket: $path returned with the following error: "$error"',
+        StackTrace.current,
       );
     }
-    return webSocket;
   }
 }
 

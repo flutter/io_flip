@@ -3,12 +3,12 @@ import 'dart:math' as math;
 
 import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:connection_repository/connection_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:match_maker_repository/match_maker_repository.dart' as repo;
+import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
-import 'package:web_socket_client/web_socket_client.dart';
 
 part 'game_event.dart';
 part 'game_state.dart';
@@ -16,13 +16,14 @@ part 'game_state.dart';
 class GameBloc extends Bloc<GameEvent, GameState> {
   GameBloc({
     required GameResource gameResource,
-    required repo.MatchMakerRepository matchMakerRepository,
+    required MatchMakerRepository matchMakerRepository,
     required MatchSolver matchSolver,
     required User user,
     required this.isHost,
-    required this.matchConnection,
+    required ConnectionRepository connectionRepository,
   })  : _gameResource = gameResource,
         _matchMakerRepository = matchMakerRepository,
+        _connectionRepository = connectionRepository,
         _matchSolver = matchSolver,
         _user = user,
         super(const MatchLoadingState()) {
@@ -30,6 +31,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     on<PlayerPlayed>(_onPlayerPlayed);
     on<MatchStateUpdated>(_onMatchStateUpdated);
     on<ScoreCardUpdated>(_onScoreCardUpdated);
+    on<LeaderboardEntryRequested>(_onLeaderboardEntryRequested);
     on<ManagePlayerPresence>(_onManagePlayerPresence);
     on<TurnTimerStarted>(_onTurnTimerStarted);
     on<TurnTimerTicked>(_onTurnTimerTicked);
@@ -38,11 +40,11 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   }
 
   final GameResource _gameResource;
-  final repo.MatchMakerRepository _matchMakerRepository;
+  final MatchMakerRepository _matchMakerRepository;
   final MatchSolver _matchSolver;
   final User _user;
   final bool isHost;
-  final WebSocket? matchConnection;
+  final ConnectionRepository _connectionRepository;
   Timer? _turnTimer;
 
   // Added to easily toggle timer functionality for testing purposes.
@@ -50,7 +52,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   static const _turnMaxTime = 10;
 
   StreamSubscription<MatchState>? _stateSubscription;
-  StreamSubscription<repo.Match>? _opponentDisconnectSubscription;
+  StreamSubscription<DraftMatch>? _opponentDisconnectSubscription;
   StreamSubscription<ScoreCard>? _scoreSubscription;
 
   Future<void> _onMatchRequested(
@@ -222,6 +224,16 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     } catch (e, s) {
       addError(e, s);
       emit(const ManagePlayerPresenceFailedState());
+    }
+  }
+
+  void _onLeaderboardEntryRequested(
+    LeaderboardEntryRequested event,
+    Emitter<GameState> emit,
+  ) {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+      emit(LeaderboardEntryState(matchLoadedState.playerScoreCard.id));
     }
   }
 
@@ -430,7 +442,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     _stateSubscription?.cancel();
     _opponentDisconnectSubscription?.cancel();
     _scoreSubscription?.cancel();
-    matchConnection?.close();
+    _connectionRepository.send(const WebSocketMessage.matchLeft());
     _turnTimer?.cancel();
     return super.close();
   }
