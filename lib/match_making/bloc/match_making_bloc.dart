@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:api_client/api_client.dart';
 import 'package:connection_repository/connection_repository.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
@@ -18,24 +17,6 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
     required GameResource gameResource,
     required this.cardIds,
     this.hostWaitTime = defaultHostWaitTime,
-    this.guestWaitingTimeout = 30,
-  })  : _matchMakerRepository = matchMakerRepository,
-        _connectionRepository = connectionRepository,
-        _gameResource = gameResource,
-        super(const MatchMakingState.initial()) {
-    on<MatchRequested>(_onMatchRequested);
-    on<PrivateMatchRequested>(_onPrivateMatchRequested);
-    on<GuestPrivateMatchRequested>(_onGuestPrivateMatchRequested);
-  }
-
-  @visibleForTesting
-  MatchMakingBloc.test({
-    required MatchMakerRepository matchMakerRepository,
-    required ConnectionRepository connectionRepository,
-    required GameResource gameResource,
-    required this.cardIds,
-    this.hostWaitTime = defaultHostWaitTime,
-    this.guestWaitingTimeout = 1,
   })  : _matchMakerRepository = matchMakerRepository,
         _connectionRepository = connectionRepository,
         _gameResource = gameResource,
@@ -48,7 +29,6 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   final MatchMakerRepository _matchMakerRepository;
   final GameResource _gameResource;
   final List<String> cardIds;
-  final int guestWaitingTimeout;
   final ConnectionRepository _connectionRepository;
 
   static const defaultHostWaitTime = Duration(seconds: 4);
@@ -187,7 +167,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
 
       return Future.value(false);
     }).timeout(
-      Duration(seconds: guestWaitingTimeout),
+      const Duration(seconds: 30),
       onTimeout: () async {
         await subscription.cancel();
         try {

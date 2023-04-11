@@ -253,7 +253,7 @@ void main() {
           (_) => stream,
         );
 
-        final bloc = MatchMakingBloc.test(
+        final bloc = MatchMakingBloc(
           matchMakerRepository: matchMakerRepository,
           connectionRepository: connectionRepository,
           gameResource: gameResource,
@@ -293,7 +293,7 @@ void main() {
           (_) => stream,
         );
 
-        final bloc = MatchMakingBloc.test(
+        final bloc = MatchMakingBloc(
           matchMakerRepository: matchMakerRepository,
           connectionRepository: connectionRepository,
           gameResource: gameResource,
