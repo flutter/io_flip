@@ -62,7 +62,7 @@ void main() {
       );
     });
 
-    test('copyWith returns same instance', () {
+    test('copyWith returns a new instance with the same values', () {
       expect(
         LeaderboardState(
           status: LeaderboardStateStatus.initial,
