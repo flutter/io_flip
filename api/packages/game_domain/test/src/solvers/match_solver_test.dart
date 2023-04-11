@@ -277,14 +277,14 @@ void main() {
             );
             test('returns true when is the host', () {
               expect(
-                matchSolver.isPlayerTurn(matchState, isHost: true),
+                matchSolver.isPlayerAllowedToPlay(matchState, isHost: true),
                 isTrue,
               );
             });
 
             test('returns true when is the guest', () {
               expect(
-                matchSolver.isPlayerTurn(matchState, isHost: false),
+                matchSolver.isPlayerAllowedToPlay(matchState, isHost: false),
                 isTrue,
               );
             });
@@ -300,14 +300,14 @@ void main() {
             );
             test('returns false when is the host', () {
               expect(
-                matchSolver.isPlayerTurn(matchState, isHost: true),
+                matchSolver.isPlayerAllowedToPlay(matchState, isHost: true),
                 isFalse,
               );
             });
 
             test('returns true when is the guest', () {
               expect(
-                matchSolver.isPlayerTurn(matchState, isHost: false),
+                matchSolver.isPlayerAllowedToPlay(matchState, isHost: false),
                 isTrue,
               );
             });
@@ -325,14 +325,14 @@ void main() {
             );
             test('returns true when is the host', () {
               expect(
-                matchSolver.isPlayerTurn(matchState, isHost: true),
+                matchSolver.isPlayerAllowedToPlay(matchState, isHost: true),
                 isTrue,
               );
             });
 
             test('returns true when is the guest', () {
               expect(
-                matchSolver.isPlayerTurn(matchState, isHost: false),
+                matchSolver.isPlayerAllowedToPlay(matchState, isHost: false),
                 isTrue,
               );
             });
@@ -348,14 +348,14 @@ void main() {
             );
             test('returns true when is the host', () {
               expect(
-                matchSolver.isPlayerTurn(matchState, isHost: true),
+                matchSolver.isPlayerAllowedToPlay(matchState, isHost: true),
                 true,
               );
             });
 
             test('returns false when is the guest', () {
               expect(
-                matchSolver.isPlayerTurn(matchState, isHost: false),
+                matchSolver.isPlayerAllowedToPlay(matchState, isHost: false),
                 isFalse,
               );
             });
@@ -373,14 +373,14 @@ void main() {
             );
             test('returns true when is the host', () {
               expect(
-                matchSolver.isPlayerTurn(matchState, isHost: true),
+                matchSolver.isPlayerAllowedToPlay(matchState, isHost: true),
                 isTrue,
               );
             });
 
             test('returns true when is the guest', () {
               expect(
-                matchSolver.isPlayerTurn(matchState, isHost: false),
+                matchSolver.isPlayerAllowedToPlay(matchState, isHost: false),
                 isTrue,
               );
             });
@@ -396,14 +396,14 @@ void main() {
             );
             test('returns false when is the host', () {
               expect(
-                matchSolver.isPlayerTurn(matchState, isHost: true),
+                matchSolver.isPlayerAllowedToPlay(matchState, isHost: true),
                 isFalse,
               );
             });
 
             test('returns true when is the guest', () {
               expect(
-                matchSolver.isPlayerTurn(matchState, isHost: false),
+                matchSolver.isPlayerAllowedToPlay(matchState, isHost: false),
                 isTrue,
               );
             });
@@ -443,7 +443,7 @@ void main() {
 
           expect(
             matchSolver.canPlayCard(matchState, '', isHost: isHost),
-            matchSolver.isPlayerTurn(matchState, isHost: isHost),
+            matchSolver.isPlayerAllowedToPlay(matchState, isHost: isHost),
           );
         });
       });
@@ -478,7 +478,7 @@ void main() {
 
           expect(
             matchSolver.canPlayCard(matchState, '', isHost: isHost),
-            matchSolver.isPlayerTurn(matchState, isHost: isHost),
+            matchSolver.isPlayerAllowedToPlay(matchState, isHost: isHost),
           );
         });
       });

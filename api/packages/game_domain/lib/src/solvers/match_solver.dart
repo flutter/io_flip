@@ -100,7 +100,7 @@ class MatchSolver {
 
   /// Returns true when player, determined by [isHost], can select a card
   /// to play.
-  bool isPlayerTurn(MatchState state, {required bool isHost}) {
+  bool isPlayerAllowedToPlay(MatchState state, {required bool isHost}) {
     final hostPlayedCardsLength = state.hostPlayedCards.length;
     final guestPlayedCardsLength = state.guestPlayedCards.length;
 
@@ -128,6 +128,6 @@ class MatchSolver {
       return false;
     }
 
-    return isPlayerTurn(state, isHost: isHost);
+    return isPlayerAllowedToPlay(state, isHost: isHost);
   }
 }
