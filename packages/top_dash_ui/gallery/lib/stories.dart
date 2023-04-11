@@ -53,5 +53,9 @@ void addStories(Dashbook dashbook) {
       .add(
         'Flipped Game Card',
         (_) => const FlippedGameCardStory(),
+      )
+      .add(
+        'Animated Card',
+        (_) => const AnimatedCardStory(),
       );
 }
