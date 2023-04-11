@@ -243,7 +243,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   ) {
     if (state is MatchLoadedState) {
       final matchLoadedState = state as MatchLoadedState;
-      if (isPlayerTurn && !matchLoadedState.matchState.isOver()) {
+      if (isPlayerAllowedToPlay && !matchLoadedState.matchState.isOver()) {
         emit(matchLoadedState.copyWith(turnTimeRemaining: _turnMaxTime));
 
         _turnTimer = Timer.periodic(
@@ -365,10 +365,10 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     return null;
   }
 
-  bool get isPlayerTurn {
+  bool get isPlayerAllowedToPlay {
     if (state is MatchLoadedState) {
       final matchLoadedState = state as MatchLoadedState;
-      return _matchSolver.isPlayerTurn(
+      return _matchSolver.isPlayerAllowedToPlay(
         matchLoadedState.matchState,
         isHost: isHost,
       );
@@ -426,7 +426,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       if (matchLoadedState.turns.isNotEmpty) {
         final lastTurn = matchLoadedState.turns.last;
         if (lastTurn.isComplete()) {
-          if (isPlayerTurn) {
+          if (isPlayerAllowedToPlay) {
             return lastTurn.playerCardId;
           }
           return lastTurn.opponentCardId;

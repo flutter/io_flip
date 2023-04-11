@@ -436,7 +436,7 @@ class _BoardCounter extends StatelessWidget {
       left: counterOffset.dx,
       top: counterOffset.dy,
       child: Offstage(
-        offstage: !bloc.isPlayerTurn,
+        offstage: !bloc.isPlayerAllowedToPlay,
         child: DecoratedBox(
           decoration: BoxDecoration(
             shape: BoxShape.circle,

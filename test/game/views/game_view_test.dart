@@ -76,7 +76,7 @@ void main() {
       when(() => bloc.isWinningCard(any(), isPlayer: any(named: 'isPlayer')))
           .thenReturn(null);
       when(() => bloc.canPlayerPlay(any())).thenReturn(true);
-      when(() => bloc.isPlayerTurn).thenReturn(true);
+      when(() => bloc.isPlayerAllowedToPlay).thenReturn(true);
       when(bloc.hasPlayerWon).thenReturn(false);
 
       leaderboardResource = _MockLeaderboardResource();
