@@ -1,0 +1,23 @@
+name: data_loader
+description: Dart tool that feed data into the Database
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ">=2.18.0 <3.0.0"
+
+executables:
+  data_loader:
+
+dependencies:
+  db_client:
+    path: ../../packages/db_client
+  game_domain:
+    path: ../../packages/game_domain
+  prompt_repository:
+    path: ../../packages/prompt_repository
+
+dev_dependencies:
+  mocktail: ^0.3.0
+  test: ^1.19.2
+  very_good_analysis: ^3.1.0

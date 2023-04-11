@@ -1,4 +1,4 @@
-name: api
+name: api_data_loader
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -7,8 +7,8 @@ concurrency:
 on:
   pull_request:
     paths:
-      - "api/**"
-      - ".github/workflows/api.yaml"
+      - "api/tools/data_loader/**"
+      - ".github/workflows/api_data_loader.yaml"
     branches:
       - main
 
@@ -17,7 +17,4 @@ jobs:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v1
     with:
       dart_sdk: beta
-      working_directory: api
-      analyze_directories: "routes test lib"
-      coverage_excludes: "**/*.g.dart"
-      report_on: "routes"
+      working_directory: api/tools/data_loader
