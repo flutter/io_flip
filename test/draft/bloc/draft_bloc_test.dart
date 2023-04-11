@@ -15,6 +15,26 @@ class _MockAudioController extends Mock implements AudioController {}
 
 void main() {
   group('DraftBloc', () {
+    final rareCard = Card(
+      id: '0',
+      name: '',
+      description: '',
+      image: '',
+      rarity: true,
+      power: 20,
+      suit: Suit.fire,
+    );
+
+    final commonCard = Card(
+      id: '0',
+      name: '',
+      description: '',
+      image: '',
+      rarity: false,
+      power: 20,
+      suit: Suit.fire,
+    );
+
     final cards = List.generate(
       10,
       (i) => Card(
@@ -86,6 +106,35 @@ void main() {
     );
 
     blocTest<DraftBloc, DraftState>(
+      'plays the holo reveal sfx when the deck is loaded and the first '
+      'card is rare',
+      setUp: () {
+        final cards = List.generate(
+          10,
+          (i) => Card(
+            id: i.toString(),
+            name: '',
+            description: '',
+            image: '',
+            rarity: i == 0,
+            power: 20,
+            suit: Suit.values[i % Suit.values.length],
+          ),
+        );
+        when(() => gameResource.generateCards(Prompt()))
+            .thenAnswer((_) async => cards);
+      },
+      build: () => DraftBloc(
+        gameResource: gameResource,
+        audioController: audioController,
+      ),
+      act: (bloc) => bloc.add(DeckRequested(Prompt())),
+      verify: (_) {
+        verify(() => audioController.playSfx(Assets.sfx.holoReveal)).called(1);
+      },
+    );
+
+    blocTest<DraftBloc, DraftState>(
       'change the cards order on PreviousCard',
       build: () => DraftBloc(
         gameResource: gameResource,
@@ -111,6 +160,26 @@ void main() {
           firstCardOpacity: 1,
         ),
       ],
+    );
+
+    blocTest<DraftBloc, DraftState>(
+      'plays the holo reveal when the previous card is rare',
+      build: () => DraftBloc(
+        gameResource: gameResource,
+        audioController: audioController,
+      ),
+      seed: () => DraftState(
+        cards: [commonCard, rareCard],
+        selectedCards: const [],
+        status: DraftStateStatus.deckLoaded,
+        firstCardOpacity: 1,
+      ),
+      act: (bloc) {
+        bloc.add(PreviousCard());
+      },
+      verify: (_) {
+        verify(() => audioController.playSfx(Assets.sfx.holoReveal)).called(1);
+      },
     );
 
     blocTest<DraftBloc, DraftState>(
@@ -142,6 +211,26 @@ void main() {
     );
 
     blocTest<DraftBloc, DraftState>(
+      'plays the holo reveal when the next card is rare',
+      build: () => DraftBloc(
+        gameResource: gameResource,
+        audioController: audioController,
+      ),
+      seed: () => DraftState(
+        cards: [commonCard, rareCard],
+        selectedCards: const [],
+        status: DraftStateStatus.deckLoaded,
+        firstCardOpacity: 1,
+      ),
+      act: (bloc) {
+        bloc.add(NextCard());
+      },
+      verify: (_) {
+        verify(() => audioController.playSfx(Assets.sfx.holoReveal)).called(1);
+      },
+    );
+
+    blocTest<DraftBloc, DraftState>(
       'change the cards order on CardSwiped',
       build: () => DraftBloc(
         gameResource: gameResource,
@@ -167,6 +256,25 @@ void main() {
           firstCardOpacity: 1,
         ),
       ],
+    );
+    blocTest<DraftBloc, DraftState>(
+      'plays the holo reveal after a swipe and when the next card is rare',
+      build: () => DraftBloc(
+        gameResource: gameResource,
+        audioController: audioController,
+      ),
+      seed: () => DraftState(
+        cards: [commonCard, rareCard],
+        selectedCards: const [],
+        status: DraftStateStatus.deckLoaded,
+        firstCardOpacity: 1,
+      ),
+      act: (bloc) {
+        bloc.add(CardSwiped());
+      },
+      verify: (_) {
+        verify(() => audioController.playSfx(Assets.sfx.holoReveal)).called(1);
+      },
     );
 
     blocTest<DraftBloc, DraftState>(

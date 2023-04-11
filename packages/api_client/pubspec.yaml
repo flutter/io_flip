@@ -13,6 +13,7 @@ dev_dependencies:
 
 dependencies:
   encrypt: ^5.0.1
+  equatable: ^2.0.5
   game_domain:
     path: ../../api/packages/game_domain
   http: ^0.13.5

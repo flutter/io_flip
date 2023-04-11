@@ -105,6 +105,123 @@ void main() {
       });
     });
 
+    group('getScoreCardsWithMostWins', () {
+      test('returns list of score cards', () async {
+        const scoreCardOne = ScoreCard(
+          id: 'id',
+          wins: 2,
+          currentStreak: 2,
+          longestStreak: 3,
+          longestStreakDeck: 'deckId',
+        );
+        const scoreCardTwo = ScoreCard(
+          id: 'id2',
+          wins: 3,
+          currentStreak: 3,
+          longestStreak: 4,
+          longestStreakDeck: 'deckId2',
+        );
+
+        when(() => dbClient.orderBy('score_cards', 'wins'))
+            .thenAnswer((_) async {
+          return [
+            DbEntityRecord(
+              id: 'id',
+              data: {
+                'wins': scoreCardOne.wins,
+                'currentStreak': scoreCardOne.currentStreak,
+                'longestStreak': scoreCardOne.longestStreak,
+                'longestStreakDeck': scoreCardOne.longestStreakDeck,
+              },
+            ),
+            DbEntityRecord(
+              id: 'id2',
+              data: {
+                'wins': scoreCardTwo.wins,
+                'currentStreak': scoreCardTwo.currentStreak,
+                'longestStreak': scoreCardTwo.longestStreak,
+                'longestStreakDeck': scoreCardTwo.longestStreakDeck,
+              },
+            ),
+          ];
+        });
+
+        final result = await leaderboardRepository.getScoreCardsWithMostWins();
+
+        expect(result, equals([scoreCardOne, scoreCardTwo]));
+      });
+
+      test('returns empty list if results are empty', () async {
+        when(() => dbClient.orderBy('score_cards', 'wins'))
+            .thenAnswer((_) async {
+          return [];
+        });
+
+        final response =
+            await leaderboardRepository.getScoreCardsWithMostWins();
+        expect(response, isEmpty);
+      });
+    });
+
+    group('getScoreCardsWithLongestStreak', () {
+      test('returns list of score cards', () async {
+        const scoreCardOne = ScoreCard(
+          id: 'id',
+          wins: 2,
+          currentStreak: 2,
+          longestStreak: 3,
+          longestStreakDeck: 'deckId',
+        );
+        const scoreCardTwo = ScoreCard(
+          id: 'id2',
+          wins: 3,
+          currentStreak: 3,
+          longestStreak: 4,
+          longestStreakDeck: 'deckId2',
+        );
+
+        when(() => dbClient.orderBy('score_cards', 'longestStreak'))
+            .thenAnswer((_) async {
+          return [
+            DbEntityRecord(
+              id: 'id',
+              data: {
+                'wins': scoreCardOne.wins,
+                'currentStreak': scoreCardOne.currentStreak,
+                'longestStreak': scoreCardOne.longestStreak,
+                'longestStreakDeck': scoreCardOne.longestStreakDeck,
+              },
+            ),
+            DbEntityRecord(
+              id: 'id2',
+              data: {
+                'wins': scoreCardTwo.wins,
+                'currentStreak': scoreCardTwo.currentStreak,
+                'longestStreak': scoreCardTwo.longestStreak,
+                'longestStreakDeck': scoreCardTwo.longestStreakDeck,
+              },
+            ),
+          ];
+        });
+
+        final result =
+            await leaderboardRepository.getScoreCardsWithLongestStreak();
+
+        expect(result, equals([scoreCardOne, scoreCardTwo]));
+      });
+
+      test('returns empty list if results are empty', () async {
+        when(() => dbClient.orderBy('score_cards', 'longestStreak'))
+            .thenAnswer((_) async {
+          return [];
+        });
+
+        final response =
+            await leaderboardRepository.getScoreCardsWithLongestStreak();
+        expect(response, isEmpty);
+      });
+    });
+
     group('addInitialsToScoreCard', () {
       test('adds initials to score card', () async {
         const scoreCardId = 'scoreCardId';
