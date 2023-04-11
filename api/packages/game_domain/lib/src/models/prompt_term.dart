@@ -21,9 +21,10 @@ enum PromptTermType {
   location;
 }
 
-@JsonSerializable(ignoreUnannotated: true)
-
 /// {@template prompt_term}
+/// A term used as a prompt for card generation.
+/// {@endtemplate}
+@JsonSerializable(ignoreUnannotated: true)
 class PromptTerm extends Equatable {
   /// {@macro prompt_term}
   const PromptTerm({

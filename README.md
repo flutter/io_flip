@@ -35,7 +35,7 @@ _\*Top Dash works on iOS, Android, Web, and Windows._
 
 ## Loading initial data into database
 
-Check ![](api/tools/data_loader) for documentation on how the initial data is loaded.
+Check [the data loader docs](api/tools/data_loader) for documentation on how the initial data is loaded.
 
 ---
 

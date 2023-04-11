@@ -25,8 +25,7 @@ class DataLoader {
 
     final lines = await _csv.readAsLines();
 
-    for (var i = 1; i < lines.length; i++) {
-      final line = lines[i];
+    for (final line in lines.skip(1)) {
       final parts = line.split(',');
 
       for (var j = 0; j < 5; j++) {
