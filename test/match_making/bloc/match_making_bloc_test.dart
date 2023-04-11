@@ -4,7 +4,6 @@ import 'dart:async';
 
 import 'package:api_client/api_client.dart';
 import 'package:bloc_test/bloc_test.dart';
-import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
@@ -224,39 +223,67 @@ void main() {
       );
     });
 
-    test('emits timeout when guest never joins host', () async {
-      fakeAsync((async) {
-        when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
-          (_) async => Match(
-            id: '',
-            host: deckId,
-          ),
-        );
-        when(() => gameResource.connectToCpuMatch(matchId: ''))
-            .thenThrow(Exception());
+    test(
+        'emits timeout when guest never joins and fails to connect to CPU game',
+        () async {
+      when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
+        (_) async => Match(
+          id: '',
+          host: deckId,
+        ),
+      );
+      when(() => gameResource.connectToCpuMatch(matchId: ''))
+          .thenThrow(Exception());
 
-        final bloc = MatchMakingBloc(
-          matchMakerRepository: matchMakerRepository,
-          gameResource: gameResource,
-          cardIds: cardIds,
-          hostWaitTime: const Duration(milliseconds: 200),
-        )..add(MatchRequested());
+      final bloc = MatchMakingBloc.test(
+        matchMakerRepository: matchMakerRepository,
+        gameResource: gameResource,
+        cardIds: cardIds,
+        hostWaitTime: const Duration(milliseconds: 200),
+      )..add(MatchRequested());
 
-        async.elapse(const Duration(seconds: 30));
-
-        expect(
-          bloc.state,
-          equals(
-            MatchMakingState(
-              status: MatchMakingStatus.timeout,
-              match: Match(
-                id: '',
-                host: deckId,
-              ),
+      await expectLater(
+        await bloc.stream.take(3).last,
+        equals(
+          MatchMakingState(
+            status: MatchMakingStatus.timeout,
+            match: Match(
+              id: '',
+              host: deckId,
             ),
           ),
-        );
-      });
+        ),
+      );
+    });
+
+    test('creates CPU match when guest never joins host', () async {
+      when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
+        (_) async => Match(
+          id: '',
+          host: deckId,
+        ),
+      );
+      when(() => gameResource.connectToCpuMatch(matchId: ''))
+          .thenAnswer((_) async {});
+
+      final bloc = MatchMakingBloc.test(
+        matchMakerRepository: matchMakerRepository,
+        gameResource: gameResource,
+        cardIds: cardIds,
+        hostWaitTime: const Duration(milliseconds: 200),
+      )..add(MatchRequested());
+
+      await expectLater(
+        await bloc.stream.take(3).last,
+        equals(
+          MatchMakingState(
+            status: MatchMakingStatus.completed,
+            match: Match(id: '', host: deckId, guest: 'CPU_$deckId'),
+            matchConnection: webSocket,
+            isHost: true,
+          ),
+        ),
+      );
     });
 
     blocTest<MatchMakingBloc, MatchMakingState>(
