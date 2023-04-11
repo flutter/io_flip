@@ -17,8 +17,8 @@ FutureOr<Response> onRequest(RequestContext context) async {
       return Response(statusCode: HttpStatus.badRequest, body: 'Invalid type');
     }
 
-    final leaderboardRepository = context.read<PromptRepository>();
-    final list = await leaderboardRepository.getPromptTerms(
+    final promptRepository = context.read<PromptRepository>();
+    final list = await promptRepository.getPromptTerms(
       promptTypeList.first,
     );
     return Response.json(body: {'list': list.map((e) => e.term).toList()});
