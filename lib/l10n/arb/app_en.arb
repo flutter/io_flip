@@ -73,6 +73,10 @@
       }
     }
   },
+  "leaderboardFailedToLoad": "Failed to load leaderboard",
+  "@leaderboardFailedToLoad": {
+    "description": "Label shown on the leaderboard when it fails to load"
+  },
   "menuCatchPhrase": "A global, AI-powered card collection game.",
   "@menuCatchPhrase": {
     "description": "Sentence shown on the main menu screen"
