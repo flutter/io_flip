@@ -57,6 +57,13 @@ void main() {
       expect(response.statusCode, equals(HttpStatus.methodNotAllowed));
     });
 
+    test('responds with bad request when the query is invalid', () async {
+      when(() => uri.queryParameters).thenReturn({'type': 'not_valid'});
+      final response = await route.onRequest(context);
+      expect(response.statusCode, equals(HttpStatus.badRequest));
+      expect(await response.body(), equals('Invalid type'));
+    });
+
     test('responds with the whitelist', () async {
       final response = await route.onRequest(context);
 
