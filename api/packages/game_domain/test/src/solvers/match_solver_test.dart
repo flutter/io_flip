@@ -282,10 +282,10 @@ void main() {
               );
             });
 
-            test('returns false when is the guest', () {
+            test('returns true when is the guest', () {
               expect(
                 matchSolver.isPlayerTurn(matchState, isHost: false),
-                isFalse,
+                isTrue,
               );
             });
           });
@@ -323,10 +323,10 @@ void main() {
               guestPlayedCards: const [''],
               hostStartsMatch: hostStarts,
             );
-            test('returns false when is the host', () {
+            test('returns true when is the host', () {
               expect(
                 matchSolver.isPlayerTurn(matchState, isHost: true),
-                isFalse,
+                isTrue,
               );
             });
 
@@ -378,10 +378,10 @@ void main() {
               );
             });
 
-            test('returns false when is the guest', () {
+            test('returns true when is the guest', () {
               expect(
                 matchSolver.isPlayerTurn(matchState, isHost: false),
-                isFalse,
+                isTrue,
               );
             });
           });

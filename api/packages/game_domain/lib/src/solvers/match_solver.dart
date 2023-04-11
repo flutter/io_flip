@@ -101,33 +101,15 @@ class MatchSolver {
   /// Returns true when player, determined by [isHost], can select a card
   /// to play.
   bool isPlayerTurn(MatchState state, {required bool isHost}) {
-    final hostStarts = state.hostStartsMatch;
-    final isPlayer1 = (isHost && hostStarts) || (!isHost && !hostStarts);
-
     final hostPlayedCardsLength = state.hostPlayedCards.length;
     final guestPlayedCardsLength = state.guestPlayedCards.length;
 
-    final player1PlayedCardsLength =
-        hostStarts ? hostPlayedCardsLength : guestPlayedCardsLength;
-    final player2PlayedCardsLength =
-        hostStarts ? guestPlayedCardsLength : hostPlayedCardsLength;
-
-    final round = math.min(hostPlayedCardsLength, guestPlayedCardsLength) + 1;
-
-    if (round.isOdd) {
-      if (isPlayer1 && player1PlayedCardsLength == player2PlayedCardsLength) {
+    if (isHost) {
+      if (hostPlayedCardsLength <= guestPlayedCardsLength) {
         return true;
       }
-      if (!isPlayer1 && player1PlayedCardsLength > player2PlayedCardsLength) {
-        return true;
-      }
-    }
-
-    if (round.isEven) {
-      if (isPlayer1 && player1PlayedCardsLength < player2PlayedCardsLength) {
-        return true;
-      }
-      if (!isPlayer1 && player1PlayedCardsLength == player2PlayedCardsLength) {
+    } else {
+      if (guestPlayedCardsLength <= hostPlayedCardsLength) {
         return true;
       }
     }

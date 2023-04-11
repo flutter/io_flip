@@ -244,12 +244,8 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
             children: [
               ...clashCardOffsets.mapIndexed(
                 (i, offset) {
-                  final isSlotTurn = (bloc.isPlayerTurn && i.isEven) ||
-                      (!bloc.isPlayerTurn && i.isOdd);
                   return _ClashCard(
                     rect: offset & clashCardSize,
-                    isSlotTurn: isSlotTurn,
-                    isPlayerTurn: bloc.isPlayerTurn,
                   );
                 },
               ),
@@ -402,13 +398,9 @@ class _PlayerCard extends StatelessWidget {
 class _ClashCard extends StatelessWidget {
   const _ClashCard({
     required this.rect,
-    required this.isSlotTurn,
-    required this.isPlayerTurn,
   });
 
   final Rect rect;
-  final bool isSlotTurn;
-  final bool isPlayerTurn;
 
   @override
   Widget build(BuildContext context) {
@@ -419,14 +411,10 @@ class _ClashCard extends StatelessWidget {
         width: clashCardSize.width,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: isSlotTurn
-              ? TopDashColors.seedPaletteLightBlue99
-              : TopDashColors.seedWhite,
+          color: TopDashColors.seedPaletteLightBlue99,
           borderRadius: BorderRadius.circular(6),
           border: Border.all(
-            color: isSlotTurn
-                ? TopDashColors.seedPaletteLightBlue80
-                : TopDashColors.seedPaletteNeutral95,
+            color: TopDashColors.seedPaletteLightBlue80,
           ),
         ),
       ),
