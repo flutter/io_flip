@@ -238,7 +238,7 @@ void main() {
         'emits timeout when guest never joins and fails to connect to CPU game',
         () async {
       when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
-        (_) async => Match(
+        (_) async => DraftMatch(
           id: '',
           host: deckId,
         ),
@@ -248,6 +248,7 @@ void main() {
 
       final bloc = MatchMakingBloc.test(
         matchMakerRepository: matchMakerRepository,
+        connectionRepository: connectionRepository,
         gameResource: gameResource,
         cardIds: cardIds,
         hostWaitTime: const Duration(milliseconds: 200),
@@ -269,7 +270,7 @@ void main() {
 
     test('creates CPU match when guest never joins host', () async {
       when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
-        (_) async => Match(
+        (_) async => DraftMatch(
           id: '',
           host: deckId,
         ),
@@ -291,7 +292,6 @@ void main() {
           MatchMakingState(
             status: MatchMakingStatus.completed,
             match: DraftMatch(id: '', host: deckId, guest: 'CPU_$deckId'),
-            matchConnection: webSocket,
             isHost: true,
           ),
         ),
