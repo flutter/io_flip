@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/leaderboard/leaderboard.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
@@ -15,11 +16,42 @@ class LeaderboardViewState extends State<LeaderboardView> {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = context.watch<LeaderboardBloc>();
+    final state = bloc.state;
     final l10n = context.l10n;
+    final leaderboard = state.leaderboard;
+
+    if (state.status == LeaderboardStateStatus.loading ||
+        state.status == LeaderboardStateStatus.initial) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (state.status == LeaderboardStateStatus.failed || leaderboard == null) {
+      return Center(child: Text(l10n.leaderboardFailedToLoad));
+    }
+
+    final longestStreak = leaderboard.scoreCardsWithLongestStreak;
+    final mostWins = leaderboard.scoreCardsWithMostWins;
 
     final tabs = {
-      l10n.leaderboardLongestStreak: const LeaderboardPlayers(),
-      l10n.leaderboardMostWins: const LeaderboardPlayers(),
+      l10n.leaderboardLongestStreak: LeaderboardPlayers(
+        players: longestStreak.map((e) {
+          return LeaderboardPlayer(
+            index: longestStreak.indexOf(e),
+            initials: e.initials ?? '',
+            value: e.longestStreak,
+          );
+        }).toList(),
+      ),
+      l10n.leaderboardMostWins: LeaderboardPlayers(
+        players: mostWins.map((e) {
+          return LeaderboardPlayer(
+            index: mostWins.indexOf(e),
+            initials: e.initials ?? '',
+            value: e.wins,
+          );
+        }).toList(),
+      ),
     };
 
     return Padding(

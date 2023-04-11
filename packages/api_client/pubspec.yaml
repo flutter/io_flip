@@ -4,7 +4,7 @@ version: 0.1.0+1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.0 <3.0.0"
+  sdk: ">=3.0.0-134.0.dev <4.0.0"
 
 dev_dependencies:
   mocktail: ^0.3.0

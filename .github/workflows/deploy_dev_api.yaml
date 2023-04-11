@@ -25,6 +25,8 @@ jobs:
       - uses: actions/checkout@v3
 
       - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: beta
 
       - name: Install Dart Frog
         run: dart pub global activate dart_frog_cli
@@ -43,6 +45,7 @@ jobs:
 
       - name: Build and Push Container
         run: |-
+          cp api/Dockerfile api/build/Dockerfile
           docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }} api/build
           docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }}
 
