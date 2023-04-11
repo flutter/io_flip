@@ -18,8 +18,7 @@ import 'package:top_dash/settings/persistence/persistence.dart';
 
 void main() async {
   if (kDebugMode) {
-    final jsContext = js.context;
-    jsContext['FIREBASE_APPCHECK_DEBUG_TOKEN'] =
+    js.context['FIREBASE_APPCHECK_DEBUG_TOKEN'] =
         const String.fromEnvironment('APPCHECK_DEBUG_TOKEN');
   }
 
