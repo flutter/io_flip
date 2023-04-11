@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:api_client/api_client.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:connection_repository/connection_repository.dart';
+import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
@@ -236,66 +237,82 @@ void main() {
 
     test(
         'emits timeout when guest never joins and fails to connect to CPU game',
-        () async {
-      when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
-        (_) async => DraftMatch(
-          id: '',
-          host: deckId,
-        ),
-      );
-      when(() => gameResource.connectToCpuMatch(matchId: ''))
-          .thenThrow(Exception());
+        () {
+      fakeAsync((async) {
+        when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
+          (_) async => DraftMatch(
+            id: '',
+            host: deckId,
+          ),
+        );
+        when(() => gameResource.connectToCpuMatch(matchId: ''))
+            .thenThrow(Exception());
+        final stream =
+            StreamController<DraftMatch>(onCancel: () async {}).stream;
+        when(() => matchMakerRepository.watchMatch(any())).thenAnswer(
+          (_) => stream,
+        );
 
-      final bloc = MatchMakingBloc.test(
-        matchMakerRepository: matchMakerRepository,
-        connectionRepository: connectionRepository,
-        gameResource: gameResource,
-        cardIds: cardIds,
-        hostWaitTime: const Duration(milliseconds: 200),
-      )..add(MatchRequested());
+        final bloc = MatchMakingBloc.test(
+          matchMakerRepository: matchMakerRepository,
+          connectionRepository: connectionRepository,
+          gameResource: gameResource,
+          cardIds: cardIds,
+          hostWaitTime: const Duration(milliseconds: 200),
+        )..add(MatchRequested());
 
-      await expectLater(
-        await bloc.stream.take(3).last,
-        equals(
-          MatchMakingState(
-            status: MatchMakingStatus.timeout,
-            match: DraftMatch(
-              id: '',
-              host: deckId,
+        async.elapse(Duration(seconds: 30));
+        expect(
+          bloc.state,
+          equals(
+            MatchMakingState(
+              status: MatchMakingStatus.timeout,
+              match: DraftMatch(
+                id: '',
+                host: deckId,
+              ),
             ),
           ),
-        ),
-      );
+        );
+      });
     });
 
-    test('creates CPU match when guest never joins host', () async {
-      when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
-        (_) async => DraftMatch(
-          id: '',
-          host: deckId,
-        ),
-      );
-      when(() => gameResource.connectToCpuMatch(matchId: ''))
-          .thenAnswer((_) async {});
-
-      final bloc = MatchMakingBloc.test(
-        matchMakerRepository: matchMakerRepository,
-        connectionRepository: connectionRepository,
-        gameResource: gameResource,
-        cardIds: cardIds,
-        hostWaitTime: const Duration(milliseconds: 200),
-      )..add(MatchRequested());
-
-      await expectLater(
-        await bloc.stream.take(3).last,
-        equals(
-          MatchMakingState(
-            status: MatchMakingStatus.completed,
-            match: DraftMatch(id: '', host: deckId, guest: 'CPU_$deckId'),
-            isHost: true,
+    test('creates CPU match when guest never joins host', () {
+      fakeAsync((async) {
+        when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
+          (_) async => DraftMatch(
+            id: '',
+            host: deckId,
           ),
-        ),
-      );
+        );
+        when(() => gameResource.connectToCpuMatch(matchId: ''))
+            .thenAnswer((_) async {});
+        final stream =
+            StreamController<DraftMatch>(onCancel: () async {}).stream;
+        when(() => matchMakerRepository.watchMatch(any())).thenAnswer(
+          (_) => stream,
+        );
+
+        final bloc = MatchMakingBloc.test(
+          matchMakerRepository: matchMakerRepository,
+          connectionRepository: connectionRepository,
+          gameResource: gameResource,
+          cardIds: cardIds,
+          hostWaitTime: const Duration(milliseconds: 200),
+        )..add(MatchRequested());
+
+        async.elapse(Duration(seconds: 30));
+        expect(
+          bloc.state,
+          equals(
+            MatchMakingState(
+              status: MatchMakingStatus.completed,
+              match: DraftMatch(id: '', host: deckId, guest: 'CPU_$deckId'),
+              isHost: true,
+            ),
+          ),
+        );
+      });
     });
 
     blocTest<MatchMakingBloc, MatchMakingState>(
