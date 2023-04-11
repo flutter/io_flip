@@ -316,27 +316,28 @@ class _OpponentCard extends StatelessWidget {
         return Positioned.fromRect(
           key: Key('opponent_card_${card.id}'),
           rect: rect,
-          child: allOpponentPlayedCards.contains(card.id)
-              ? Stack(
-                  children: [
-                    GameCard(
-                      key: Key('opponent_revealed_card_${card.id}'),
-                      image: card.image,
-                      name: card.name,
-                      power: card.power,
-                      suitName: card.suit.name,
-                      isRare: card.rarity,
-                      width: rect.width,
-                      height: rect.height,
-                      overlay: overlay,
+          child:
+              allOpponentPlayedCards.contains(card.id) && animation.isDismissed
+                  ? Stack(
+                      children: [
+                        GameCard(
+                          key: Key('opponent_revealed_card_${card.id}'),
+                          image: card.image,
+                          name: card.name,
+                          power: card.power,
+                          suitName: card.suit.name,
+                          isRare: card.rarity,
+                          width: rect.width,
+                          height: rect.height,
+                          overlay: overlay,
+                        ),
+                      ],
+                    )
+                  : FlippedGameCard(
+                      key: Key('opponent_hidden_card_${card.id}'),
+                      width: TopDashCardSizes.xs.width,
+                      height: TopDashCardSizes.xs.height,
                     ),
-                  ],
-                )
-              : FlippedGameCard(
-                  key: Key('opponent_hidden_card_${card.id}'),
-                  width: TopDashCardSizes.xs.width,
-                  height: TopDashCardSizes.xs.height,
-                ),
         );
       },
     );
@@ -428,12 +429,6 @@ class _ClashCard extends StatelessWidget {
                 : TopDashColors.seedPaletteNeutral95,
           ),
         ),
-        child: isSlotTurn
-            ? Text(
-                isPlayerTurn ? 'Your turn' : 'Their turn',
-                style: TopDashTextStyles.headlineMobileH6Light,
-              )
-            : null,
       ),
     );
   }
