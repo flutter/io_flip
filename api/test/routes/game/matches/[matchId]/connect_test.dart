@@ -95,7 +95,7 @@ void main() {
         () => matchRepository.getPlayerConnectivity(userId: userId),
       ).thenAnswer((_) => Future.value(false));
       final response = await route.onRequest(context, matchId);
-      expect(response.statusCode, equals(HttpStatus.unauthorized));
+      expect(response.statusCode, equals(HttpStatus.forbidden));
     });
 
     test("responds with a 405 if method isn't POST", () async {
