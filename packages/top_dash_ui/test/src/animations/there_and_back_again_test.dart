@@ -3,8 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 void main() {
-  group('ThereAndBackTween', () {
-    final tween = ThereAndBackTween(Tween<double>(begin: 0, end: 1));
+  group('ThereAndBackAgain', () {
+    final tween = ThereAndBackAgain(Tween<double>(begin: 0, end: 1));
 
     test("begin returns parent's beginning", () {
       expect(tween.begin, equals(0));

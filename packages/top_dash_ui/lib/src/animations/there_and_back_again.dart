@@ -1,11 +1,13 @@
 import 'package:flutter/animation.dart';
 
-/// {@template there_and_back_tween}
+/// {@template there_and_back_again}
 /// A [Tween] that runs the given tween forward and then backward.
+///
+/// Also, A Hobbit's Tale.
 /// {@endtemplate}
-class ThereAndBackTween<T> extends Tween<T> {
-  /// {@macro there_and_back_tween}
-  ThereAndBackTween(this._tween);
+class ThereAndBackAgain<T> extends Tween<T> {
+  /// {@macro there_and_back_again}
+  ThereAndBackAgain(this._tween);
 
   final Tween<T> _tween;
 

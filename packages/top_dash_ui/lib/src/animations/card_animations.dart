@@ -49,7 +49,7 @@ final bigFlipAnimation = CardAnimation(
 final jumpAnimation = CardAnimation(
   curve: Curves.slowMiddle,
   duration: const Duration(milliseconds: 400),
-  animatable: ThereAndBackTween(
+  animatable: ThereAndBackAgain(
     TransformTween(
       endTranslateZ: -300,
       endRotateX: -math.pi / 20,
