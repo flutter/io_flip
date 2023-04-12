@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:game_domain/game_domain.dart';
 import 'package:game_script_machine/game_script_machine.dart';
 

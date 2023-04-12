@@ -282,8 +282,10 @@ void main() {
 
       test('adds a new state change when the entity changes', () async {
         when(
-          () => matchSolver.isPlayerAllowedToPlay(any(),
-              isHost: any(named: 'isHost')),
+          () => matchSolver.isPlayerAllowedToPlay(
+            any(),
+            isHost: any(named: 'isHost'),
+          ),
         ).thenReturn(true);
         final bloc = GameBloc(
           gameResource: gameResource,
@@ -365,16 +367,20 @@ void main() {
         ),
         setUp: () {
           when(
-            () => matchSolver.isPlayerAllowedToPlay(baseState.matchState,
-                isHost: true),
+            () => matchSolver.isPlayerAllowedToPlay(
+              baseState.matchState,
+              isHost: true,
+            ),
           ).thenReturn(true);
         },
         seed: () => baseState,
         act: (bloc) => bloc.isPlayerAllowedToPlay,
         verify: (_) {
           verify(
-            () => matchSolver.isPlayerAllowedToPlay(baseState.matchState,
-                isHost: true),
+            () => matchSolver.isPlayerAllowedToPlay(
+              baseState.matchState,
+              isHost: true,
+            ),
           ).called(1);
         },
       );
@@ -720,8 +726,10 @@ void main() {
         ),
         setUp: () {
           when(
-            () => matchSolver.isPlayerAllowedToPlay(any(),
-                isHost: any(named: 'isHost')),
+            () => matchSolver.isPlayerAllowedToPlay(
+              any(),
+              isHost: any(named: 'isHost'),
+            ),
           ).thenReturn(true);
         },
         seed: () => baseState,
@@ -819,8 +827,10 @@ void main() {
         ),
         setUp: () {
           when(
-            () => matchSolver.isPlayerAllowedToPlay(any(),
-                isHost: any(named: 'isHost')),
+            () => matchSolver.isPlayerAllowedToPlay(
+              any(),
+              isHost: any(named: 'isHost'),
+            ),
           ).thenReturn(true);
         },
         seed: () => baseState,
@@ -944,8 +954,10 @@ void main() {
         test('starts correctly', () {
           fakeAsync((async) {
             when(
-              () => matchSolver.isPlayerAllowedToPlay(any(),
-                  isHost: any(named: 'isHost')),
+              () => matchSolver.isPlayerAllowedToPlay(
+                any(),
+                isHost: any(named: 'isHost'),
+              ),
             ).thenReturn(true);
 
             final bloc = GameBloc(
@@ -981,8 +993,10 @@ void main() {
         test('ends and plays card automatically for host', () {
           fakeAsync((async) {
             when(
-              () => matchSolver.isPlayerAllowedToPlay(any(),
-                  isHost: any(named: 'isHost')),
+              () => matchSolver.isPlayerAllowedToPlay(
+                any(),
+                isHost: any(named: 'isHost'),
+              ),
             ).thenReturn(true);
             when(() => gameResource.getMatch(any())).thenAnswer((_) async {
               return baseState.match;
@@ -1015,8 +1029,10 @@ void main() {
         test('ends and plays card automatically for guest', () {
           fakeAsync((async) {
             when(
-              () => matchSolver.isPlayerAllowedToPlay(any(),
-                  isHost: any(named: 'isHost')),
+              () => matchSolver.isPlayerAllowedToPlay(
+                any(),
+                isHost: any(named: 'isHost'),
+              ),
             ).thenReturn(true);
             when(() => gameResource.getMatch(any())).thenAnswer((_) async {
               return baseState.match;
@@ -1135,8 +1151,10 @@ void main() {
       'player turn',
       setUp: () {
         when(
-          () => matchSolver.isPlayerAllowedToPlay(any(),
-              isHost: any(named: 'isHost')),
+          () => matchSolver.isPlayerAllowedToPlay(
+            any(),
+            isHost: any(named: 'isHost'),
+          ),
         ).thenReturn(true);
       },
       build: () => GameBloc(
@@ -1165,8 +1183,10 @@ void main() {
       'player turn',
       setUp: () {
         when(
-          () => matchSolver.isPlayerAllowedToPlay(any(),
-              isHost: any(named: 'isHost')),
+          () => matchSolver.isPlayerAllowedToPlay(
+            any(),
+            isHost: any(named: 'isHost'),
+          ),
         ).thenReturn(false);
       },
       build: () => GameBloc(
