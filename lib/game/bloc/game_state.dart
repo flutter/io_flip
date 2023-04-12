@@ -18,8 +18,8 @@ class MatchLoadFailedState extends GameState {
   List<Object> get props => [];
 }
 
-class MatchTurn extends Equatable {
-  const MatchTurn({
+class MatchRound extends Equatable {
+  const MatchRound({
     required this.playerCardId,
     required this.opponentCardId,
     this.showCardsOverlay = false,
@@ -29,12 +29,12 @@ class MatchTurn extends Equatable {
   final String? opponentCardId;
   final bool showCardsOverlay;
 
-  MatchTurn copyWith({
+  MatchRound copyWith({
     String? playerCardId,
     String? opponentCardId,
     bool? showCardsOverlay,
   }) {
-    return MatchTurn(
+    return MatchRound(
       playerCardId: playerCardId ?? this.playerCardId,
       opponentCardId: opponentCardId ?? this.opponentCardId,
       showCardsOverlay: showCardsOverlay ?? this.showCardsOverlay,
@@ -49,36 +49,39 @@ class MatchLoadedState extends GameState {
   const MatchLoadedState({
     required this.match,
     required this.matchState,
-    required this.turns,
+    required this.rounds,
     required this.playerScoreCard,
     required this.turnTimeRemaining,
     required this.turnAnimationsFinished,
+    this.lastPlayedCardId,
   });
 
   final Match match;
   final MatchState matchState;
-  final List<MatchTurn> turns;
+  final List<MatchRound> rounds;
   final ScoreCard playerScoreCard;
   final int turnTimeRemaining;
   final bool turnAnimationsFinished;
+  final String? lastPlayedCardId;
 
   MatchLoadedState copyWith({
     Match? match,
     MatchState? matchState,
-    List<MatchTurn>? turns,
-    bool? playerPlayed,
+    List<MatchRound>? rounds,
     ScoreCard? playerScoreCard,
     int? turnTimeRemaining,
     bool? turnAnimationsFinished,
+    String? lastPlayedCardId,
   }) {
     return MatchLoadedState(
       match: match ?? this.match,
       matchState: matchState ?? this.matchState,
-      turns: turns ?? this.turns,
+      rounds: rounds ?? this.rounds,
       playerScoreCard: playerScoreCard ?? this.playerScoreCard,
       turnTimeRemaining: turnTimeRemaining ?? this.turnTimeRemaining,
       turnAnimationsFinished:
           turnAnimationsFinished ?? this.turnAnimationsFinished,
+      lastPlayedCardId: lastPlayedCardId,
     );
   }
 
@@ -86,7 +89,7 @@ class MatchLoadedState extends GameState {
   List<Object> get props => [
         match,
         matchState,
-        turns,
+        rounds,
         playerScoreCard,
         turnTimeRemaining,
         turnAnimationsFinished,

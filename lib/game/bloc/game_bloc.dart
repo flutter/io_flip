@@ -45,6 +45,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   final User _user;
   final bool isHost;
   final ConnectionRepository _connectionRepository;
+  final List<String> playedCardsInOrder = [];
   Timer? _turnTimer;
 
   // Added to easily toggle timer functionality for testing purposes.
@@ -79,7 +80,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           MatchLoadedState(
             match: match,
             matchState: matchState,
-            turns: const [],
+            rounds: const [],
             playerScoreCard: scoreCard,
             turnTimeRemaining: _turnMaxTime,
             turnAnimationsFinished: true,
@@ -120,35 +121,41 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           ? event.updatedState.guestPlayedCards
           : event.updatedState.hostPlayedCards;
 
-      final isPlayerMove = matchLoadedState.turns
-              .where((turn) => turn.playerCardId != null)
-              .length !=
-          matchStatePlayerMoves.length;
+      String? lastPlayedCard;
+      for (final cardId in [
+        ...matchStatePlayerMoves,
+        ...matchStateOpponentMoves
+      ]) {
+        if (!playedCardsInOrder.contains(cardId)) {
+          playedCardsInOrder.add(cardId);
+          lastPlayedCard = cardId;
+        }
+      }
 
       final moveLength = math.max(
         matchStatePlayerMoves.length,
         matchStateOpponentMoves.length,
       );
 
-      final turns = [
+      final rounds = [
         for (var i = 0; i < moveLength; i++)
-          MatchTurn(
+          MatchRound(
             playerCardId: i < matchStatePlayerMoves.length
                 ? matchStatePlayerMoves[i]
                 : null,
             opponentCardId: i < matchStateOpponentMoves.length
                 ? matchStateOpponentMoves[i]
                 : null,
-            showCardsOverlay: i < matchLoadedState.turns.length &&
-                matchLoadedState.turns[i].showCardsOverlay,
+            showCardsOverlay: i < matchLoadedState.rounds.length &&
+                matchLoadedState.rounds[i].showCardsOverlay,
           ),
       ];
 
       emit(
         matchLoadedState.copyWith(
           matchState: event.updatedState,
-          turns: turns,
-          playerPlayed: isPlayerMove ? false : null,
+          rounds: rounds,
+          lastPlayedCardId: lastPlayedCard,
         ),
       );
 
@@ -179,7 +186,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       final matchState = state as MatchLoadedState;
       emit(
         matchState.copyWith(
-          playerPlayed: true,
           turnAnimationsFinished: false,
         ),
       );
@@ -243,7 +249,10 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   ) {
     if (state is MatchLoadedState) {
       final matchLoadedState = state as MatchLoadedState;
-      if (isPlayerTurn && !matchLoadedState.matchState.isOver()) {
+      if (isPlayerAllowedToPlay &&
+          !matchLoadedState.matchState.isOver() &&
+          matchLoadedState.matchState.hostPlayedCards.length ==
+              matchLoadedState.matchState.guestPlayedCards.length) {
         emit(matchLoadedState.copyWith(turnTimeRemaining: _turnMaxTime));
 
         _turnTimer = Timer.periodic(
@@ -315,12 +324,12 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   ) {
     if (state is MatchLoadedState) {
       final matchLoadedState = state as MatchLoadedState;
-      if (matchLoadedState.turns.isNotEmpty) {
-        final lastTurn = matchLoadedState.turns.last;
-        final turns = [...matchLoadedState.turns]
+      if (matchLoadedState.rounds.isNotEmpty) {
+        final lastRound = matchLoadedState.rounds.last;
+        final rounds = [...matchLoadedState.rounds]
           ..removeLast()
-          ..add(lastTurn.copyWith(showCardsOverlay: true));
-        emit(matchLoadedState.copyWith(turns: turns));
+          ..add(lastRound.copyWith(showCardsOverlay: true));
+        emit(matchLoadedState.copyWith(rounds: rounds));
       }
     }
   }
@@ -339,7 +348,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           .indexWhere((id) => id == card.id);
 
       if (round >= 0) {
-        final turn = matchLoadedState.turns[round];
+        final turn = matchLoadedState.rounds[round];
         if (turn.isComplete() && turn.showCardsOverlay) {
           final result = _matchSolver.calculateRoundResult(
             matchLoadedState.match,
@@ -365,10 +374,10 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     return null;
   }
 
-  bool get isPlayerTurn {
+  bool get isPlayerAllowedToPlay {
     if (state is MatchLoadedState) {
       final matchLoadedState = state as MatchLoadedState;
-      return _matchSolver.isPlayerTurn(
+      return _matchSolver.isPlayerAllowedToPlay(
         matchLoadedState.matchState,
         isHost: isHost,
       );
@@ -420,23 +429,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     return [];
   }
 
-  String? get lastPlayedCardId {
-    if (state is MatchLoadedState) {
-      final matchLoadedState = state as MatchLoadedState;
-      if (matchLoadedState.turns.isNotEmpty) {
-        final lastTurn = matchLoadedState.turns.last;
-        if (lastTurn.isComplete()) {
-          if (isPlayerTurn) {
-            return lastTurn.playerCardId;
-          }
-          return lastTurn.opponentCardId;
-        }
-        return lastTurn.playerCardId ?? lastTurn.opponentCardId;
-      }
-    }
-    return null;
-  }
-
   @override
   Future<void> close() {
     _stateSubscription?.cancel();
@@ -448,7 +440,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   }
 }
 
-extension MatchTurnX on MatchTurn {
+extension MatchTurnX on MatchRound {
   bool isComplete() {
     return playerCardId != null && opponentCardId != null;
   }
@@ -456,7 +448,7 @@ extension MatchTurnX on MatchTurn {
 
 extension MatchLoadedStateX on MatchLoadedState {
   bool isCardTurnComplete(Card card) {
-    for (final turn in turns) {
+    for (final turn in rounds) {
       if (card.id == turn.playerCardId || card.id == turn.opponentCardId) {
         return turn.isComplete();
       }

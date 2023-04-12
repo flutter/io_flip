@@ -15,12 +15,6 @@ void main(List<String> args) async {
 
     final dbClient = DbClient.initialize(projectId);
     final promptRepository = PromptRepository(
-      // With the new structure, we can remove this configuration
-      // as we will a collection with the terms instead of having
-      // all of them in the same collection.
-      // TODO(erickzanardo): remove this configuration once the
-      // new structure is merged.
-      whitelistDocumentId: '',
       dbClient: dbClient,
     );
 
