@@ -71,9 +71,7 @@ class HowToPlayView extends StatelessWidget {
             Align(
               alignment: Alignment.topRight,
               child: CloseButton(
-                onPressed: () {
-                  maybePop(context);
-                },
+                onPressed: () => maybePop(context),
               ),
             ),
           ],
@@ -106,7 +104,7 @@ class HowToPlayStepView extends StatelessWidget {
     return BlocBuilder<HowToPlayBloc, HowToPlayState>(
       builder: (context, state) {
         final Widget child;
-        if (state.position < 3) {
+        if (state.position < steps.length) {
           child = steps[state.position];
         } else {
           child = ElementsWheel(

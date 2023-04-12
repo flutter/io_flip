@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
+const _elementsWheelSize = 300.0;
+
 class ElementsWheel extends StatelessWidget {
   const ElementsWheel({
     required this.allElements,
@@ -18,8 +20,6 @@ class ElementsWheel extends StatelessWidget {
   final List<int> affectedIndexes;
   final String text;
 
-  static const size = 300.0;
-  static const iconSize = 100;
   static const List<Alignment> alignments = [
     Alignment.topCenter,
     Alignment(1, -.1),
@@ -42,8 +42,8 @@ class ElementsWheel extends StatelessWidget {
         ),
         const SizedBox(height: TopDashSpacing.lg),
         SizedBox(
-          height: size,
-          width: size,
+          height: _elementsWheelSize,
+          width: _elementsWheelSize,
           child: Stack(
             children: [
               ...allElements.mapIndexed(
@@ -86,14 +86,10 @@ class _ElementItem extends StatelessWidget {
     return AnimatedAlign(
       duration: transitionDuration,
       alignment: alignment,
-      child: Builder(
-        builder: (context) {
-          return AnimatedOpacity(
-            opacity: isAffected || isReference ? 1 : .2,
-            duration: transitionDuration,
-            child: child,
-          );
-        },
+      child: AnimatedOpacity(
+        opacity: isAffected || isReference ? 1 : .2,
+        duration: transitionDuration,
+        child: child,
       ),
     );
   }
@@ -104,7 +100,7 @@ class _AffectedArrows extends StatelessWidget {
 
   final List<int> affectedIndexes;
 
-  static const size = 300.0;
+  static const size = _elementsWheelSize;
   static const iconSize = 100;
 
   static const topPosition = Offset(size * .5, iconSize * .5);
