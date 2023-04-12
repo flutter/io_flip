@@ -29,7 +29,6 @@ void main() {
           matchId: '',
           guestPlayedCards: const [],
           hostPlayedCards: const [],
-          hostStartsMatch: true,
         ),
       );
     });
@@ -244,7 +243,6 @@ void main() {
                 'matchId': matchId,
                 'guestPlayedCards': ['A', 'B'],
                 'hostPlayedCards': ['C', 'D'],
-                'hostStartsMatch': true,
                 'currentDeck': deckId,
               },
             ),
@@ -269,7 +267,6 @@ void main() {
               matchId: matchId,
               guestPlayedCards: const ['A', 'B'],
               hostPlayedCards: const ['C', 'D'],
-              hostStartsMatch: true,
             ),
           ),
         );
@@ -354,7 +351,6 @@ void main() {
                 'matchId': matchId,
                 'guestPlayedCards': <String>[],
                 'hostPlayedCards': <String>[],
-                'hostStartsMatch': true,
               },
             ),
           ],
@@ -437,7 +433,6 @@ void main() {
                 'matchId': matchId,
                 'guestPlayedCards': <String>['A', 'B', 'C'],
                 'hostPlayedCards': <String>['D', 'E'],
-                'hostStartsMatch': true,
               },
             ),
           ],
@@ -550,7 +545,6 @@ void main() {
                   'matchId': matchId,
                   'guestPlayedCards': <String>['A', 'B', 'C'],
                   'hostPlayedCards': <String>['D', 'E'],
-                  'hostStartsMatch': true,
                 },
               ),
             ],

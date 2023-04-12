@@ -48,7 +48,7 @@ void main() {
       when(() => bloc.isWinningCard(any(), isPlayer: any(named: 'isPlayer')))
           .thenReturn(null);
       when(() => bloc.canPlayerPlay(any())).thenReturn(true);
-      when(() => bloc.isPlayerTurn).thenReturn(true);
+      when(() => bloc.isPlayerAllowedToPlay).thenReturn(true);
       when(bloc.hasPlayerWon).thenReturn(false);
     });
 
@@ -136,9 +136,8 @@ void main() {
         matchId: '',
         guestPlayedCards: const [],
         hostPlayedCards: const [],
-        hostStartsMatch: true,
       ),
-      turns: const [],
+      rounds: const [],
       turnTimeRemaining: 10,
       turnAnimationsFinished: false,
     );
@@ -154,7 +153,6 @@ void main() {
             matchId: '',
             guestPlayedCards: const [],
             hostPlayedCards: const [],
-            hostStartsMatch: true,
             result: MatchResult.guest,
           ),
           turnAnimationsFinished: true,
@@ -173,7 +171,6 @@ void main() {
                 matchId: '',
                 guestPlayedCards: const [],
                 hostPlayedCards: const [],
-                hostStartsMatch: true,
                 result: MatchResult.draw,
               ),
               turnAnimationsFinished: true,
@@ -198,7 +195,6 @@ void main() {
                 matchId: '',
                 guestPlayedCards: const [],
                 hostPlayedCards: const [],
-                hostStartsMatch: true,
                 result: MatchResult.host,
               ),
               turnAnimationsFinished: true,
@@ -251,7 +247,6 @@ void main() {
                   'player_card',
                   'player_card_3',
                 ],
-                hostStartsMatch: true,
                 result: MatchResult.guest,
               ),
               turnAnimationsFinished: true,

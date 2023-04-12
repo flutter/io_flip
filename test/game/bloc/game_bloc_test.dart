@@ -39,7 +39,6 @@ void main() {
       matchId: match.id,
       guestPlayedCards: const [],
       hostPlayedCards: const [],
-      hostStartsMatch: true,
     );
 
     late StreamController<MatchState> matchStateController;
@@ -166,9 +165,8 @@ void main() {
         matchId: 'matchId',
         hostPlayedCards: [],
         guestPlayedCards: [],
-        hostStartsMatch: true,
       ),
-      turns: [],
+      rounds: [],
       turnAnimationsFinished: true,
       turnTimeRemaining: 10,
     );
@@ -218,7 +216,7 @@ void main() {
           playerScoreCard: ScoreCard(id: 'scoreCardId'),
           match: match,
           matchState: matchState,
-          turns: const [],
+          rounds: const [],
           turnAnimationsFinished: true,
           turnTimeRemaining: 10,
         ),
@@ -282,7 +280,10 @@ void main() {
 
       test('adds a new state change when the entity changes', () async {
         when(
-          () => matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
+          () => matchSolver.isPlayerAllowedToPlay(
+            any(),
+            isHost: any(named: 'isHost'),
+          ),
         ).thenReturn(true);
         final bloc = GameBloc(
           gameResource: gameResource,
@@ -301,7 +302,6 @@ void main() {
             matchId: baseState.matchState.matchId,
             hostPlayedCards: baseState.matchState.hostPlayedCards,
             guestPlayedCards: const ['card6'],
-            hostStartsMatch: true,
           ),
         );
 
@@ -312,10 +312,10 @@ void main() {
 
         final matchLoadedState = state as MatchLoadedState;
         expect(
-          matchLoadedState.turns,
+          matchLoadedState.rounds,
           equals(
             [
-              MatchTurn(
+              MatchRound(
                 playerCardId: null,
                 opponentCardId: 'card6',
               ),
@@ -364,14 +364,20 @@ void main() {
         ),
         setUp: () {
           when(
-            () => matchSolver.isPlayerTurn(baseState.matchState, isHost: true),
+            () => matchSolver.isPlayerAllowedToPlay(
+              baseState.matchState,
+              isHost: true,
+            ),
           ).thenReturn(true);
         },
         seed: () => baseState,
-        act: (bloc) => bloc.isPlayerTurn,
+        act: (bloc) => bloc.isPlayerAllowedToPlay,
         verify: (_) {
           verify(
-            () => matchSolver.isPlayerTurn(baseState.matchState, isHost: true),
+            () => matchSolver.isPlayerAllowedToPlay(
+              baseState.matchState,
+              isHost: true,
+            ),
           ).called(1);
         },
       );
@@ -424,7 +430,6 @@ void main() {
             matchId: baseState.matchState.id,
             guestPlayedCards: baseState.matchState.guestPlayedCards,
             hostPlayedCards: baseState.matchState.hostPlayedCards,
-            hostStartsMatch: true,
             result: MatchResult.host,
           ),
         ),
@@ -450,7 +455,6 @@ void main() {
             matchId: baseState.matchState.id,
             guestPlayedCards: baseState.matchState.guestPlayedCards,
             hostPlayedCards: baseState.matchState.hostPlayedCards,
-            hostStartsMatch: true,
             result: MatchResult.guest,
           ),
         ),
@@ -496,10 +500,9 @@ void main() {
               matchId: 'matchId',
               hostPlayedCards: const ['card1'],
               guestPlayedCards: const ['card6'],
-              hostStartsMatch: true,
             ),
-            turns: [
-              MatchTurn(
+            rounds: [
+              MatchRound(
                 playerCardId: 'card1',
                 opponentCardId: 'card6',
                 showCardsOverlay: true,
@@ -537,10 +540,9 @@ void main() {
               matchId: 'matchId',
               hostPlayedCards: const ['card1'],
               guestPlayedCards: const ['card6'],
-              hostStartsMatch: true,
             ),
-            turns: [
-              MatchTurn(
+            rounds: [
+              MatchRound(
                 playerCardId: 'card1',
                 opponentCardId: 'card6',
                 showCardsOverlay: true,
@@ -579,10 +581,9 @@ void main() {
               matchId: 'matchId',
               hostPlayedCards: const ['card1'],
               guestPlayedCards: const ['card6'],
-              hostStartsMatch: true,
             ),
-            turns: [
-              MatchTurn(
+            rounds: [
+              MatchRound(
                 playerCardId: 'card6',
                 opponentCardId: 'card1',
                 showCardsOverlay: true,
@@ -621,10 +622,9 @@ void main() {
               matchId: 'matchId',
               hostPlayedCards: const ['card1'],
               guestPlayedCards: const ['card6'],
-              hostStartsMatch: true,
             ),
-            turns: [
-              MatchTurn(
+            rounds: [
+              MatchRound(
                 playerCardId: 'card6',
                 opponentCardId: 'card1',
                 showCardsOverlay: true,
@@ -665,9 +665,8 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const [],
               hostPlayedCards: const [],
-              hostStartsMatch: true,
             ),
-            turns: const [],
+            rounds: const [],
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
           ),
@@ -695,9 +694,8 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const [],
               hostPlayedCards: const [],
-              hostStartsMatch: true,
             ),
-            turns: const [],
+            rounds: const [],
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
           ),
@@ -717,7 +715,10 @@ void main() {
         ),
         setUp: () {
           when(
-            () => matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
+            () => matchSolver.isPlayerAllowedToPlay(
+              any(),
+              isHost: any(named: 'isHost'),
+            ),
           ).thenReturn(true);
         },
         seed: () => baseState,
@@ -731,7 +732,6 @@ void main() {
                   matchId: baseState.matchState.matchId,
                   hostPlayedCards: const ['new_card_1'],
                   guestPlayedCards: baseState.matchState.guestPlayedCards,
-                  hostStartsMatch: true,
                 ),
               ),
             )
@@ -742,7 +742,6 @@ void main() {
                   matchId: baseState.matchState.matchId,
                   hostPlayedCards: const ['new_card_1'],
                   guestPlayedCards: const ['new_card_2'],
-                  hostStartsMatch: true,
                 ),
               ),
             );
@@ -756,9 +755,8 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const [],
               hostPlayedCards: const [],
-              hostStartsMatch: true,
             ),
-            turns: const [],
+            rounds: const [],
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
           ),
@@ -770,10 +768,9 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const [],
               hostPlayedCards: const ['new_card_1'],
-              hostStartsMatch: true,
             ),
-            turns: const [
-              MatchTurn(
+            rounds: const [
+              MatchRound(
                 opponentCardId: null,
                 playerCardId: 'new_card_1',
               ),
@@ -789,10 +786,9 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const ['new_card_2'],
               hostPlayedCards: const ['new_card_1'],
-              hostStartsMatch: true,
             ),
-            turns: const [
-              MatchTurn(
+            rounds: const [
+              MatchRound(
                 opponentCardId: 'new_card_2',
                 playerCardId: 'new_card_1',
               ),
@@ -815,7 +811,10 @@ void main() {
         ),
         setUp: () {
           when(
-            () => matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
+            () => matchSolver.isPlayerAllowedToPlay(
+              any(),
+              isHost: any(named: 'isHost'),
+            ),
           ).thenReturn(true);
         },
         seed: () => baseState,
@@ -829,7 +828,6 @@ void main() {
                   matchId: baseState.matchState.matchId,
                   hostPlayedCards: const ['new_card_1'],
                   guestPlayedCards: baseState.matchState.guestPlayedCards,
-                  hostStartsMatch: true,
                 ),
               ),
             )
@@ -840,7 +838,6 @@ void main() {
                   matchId: baseState.matchState.matchId,
                   hostPlayedCards: const ['new_card_1'],
                   guestPlayedCards: const ['new_card_2'],
-                  hostStartsMatch: true,
                 ),
               ),
             )
@@ -851,7 +848,6 @@ void main() {
                   matchId: baseState.matchState.matchId,
                   hostPlayedCards: const ['new_card_1'],
                   guestPlayedCards: const ['new_card_2', 'new_card_3'],
-                  hostStartsMatch: true,
                 ),
               ),
             );
@@ -865,9 +861,8 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const [],
               hostPlayedCards: const [],
-              hostStartsMatch: true,
             ),
-            turns: const [],
+            rounds: const [],
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
           ),
@@ -879,10 +874,9 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const [],
               hostPlayedCards: const ['new_card_1'],
-              hostStartsMatch: true,
             ),
-            turns: const [
-              MatchTurn(
+            rounds: const [
+              MatchRound(
                 opponentCardId: null,
                 playerCardId: 'new_card_1',
               ),
@@ -898,10 +892,9 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const ['new_card_2'],
               hostPlayedCards: const ['new_card_1'],
-              hostStartsMatch: true,
             ),
-            turns: const [
-              MatchTurn(
+            rounds: const [
+              MatchRound(
                 opponentCardId: 'new_card_2',
                 playerCardId: 'new_card_1',
               ),
@@ -917,14 +910,13 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const ['new_card_2', 'new_card_3'],
               hostPlayedCards: const ['new_card_1'],
-              hostStartsMatch: true,
             ),
-            turns: const [
-              MatchTurn(
+            rounds: const [
+              MatchRound(
                 opponentCardId: 'new_card_2',
                 playerCardId: 'new_card_1',
               ),
-              MatchTurn(
+              MatchRound(
                 opponentCardId: 'new_card_3',
                 playerCardId: null,
               ),
@@ -939,9 +931,16 @@ void main() {
         test('starts correctly', () {
           fakeAsync((async) {
             when(
-              () =>
-                  matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
+              () => matchSolver.isPlayerAllowedToPlay(
+                any(),
+                isHost: any(named: 'isHost'),
+              ),
             ).thenReturn(true);
+            final stream =
+                StreamController<DraftMatch>(onCancel: () async {}).stream;
+            when(() => matchMakerRepository.watchMatch(any())).thenAnswer(
+              (_) => stream,
+            );
 
             final bloc = GameBloc(
               connectionRepository: connectionRepository,
@@ -963,7 +962,7 @@ void main() {
                   playerScoreCard: ScoreCard(id: 'scoreCardId'),
                   match: match,
                   matchState: matchState,
-                  turns: const [],
+                  rounds: const [],
                   turnAnimationsFinished: true,
                   turnTimeRemaining: 8,
                 ),
@@ -976,8 +975,10 @@ void main() {
         test('ends and plays card automatically for host', () {
           fakeAsync((async) {
             when(
-              () =>
-                  matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
+              () => matchSolver.isPlayerAllowedToPlay(
+                any(),
+                isHost: any(named: 'isHost'),
+              ),
             ).thenReturn(true);
             when(() => gameResource.getMatch(any())).thenAnswer((_) async {
               return baseState.match;
@@ -1010,8 +1011,10 @@ void main() {
         test('ends and plays card automatically for guest', () {
           fakeAsync((async) {
             when(
-              () =>
-                  matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
+              () => matchSolver.isPlayerAllowedToPlay(
+                any(),
+                isHost: any(named: 'isHost'),
+              ),
             ).thenReturn(true);
             when(() => gameResource.getMatch(any())).thenAnswer((_) async {
               return baseState.match;
@@ -1125,112 +1128,6 @@ void main() {
       },
     );
 
-    blocTest<GameBloc, GameState>(
-      'lastPlayedCardId returns player card if last turn complete and is '
-      'player turn',
-      setUp: () {
-        when(
-          () => matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
-        ).thenReturn(true);
-      },
-      build: () => GameBloc(
-        connectionRepository: connectionRepository,
-        gameResource: gameResource,
-        matchMakerRepository: matchMakerRepository,
-        matchSolver: matchSolver,
-        isHost: true,
-        user: user,
-      ),
-      seed: () => baseState.copyWith(
-        turns: [
-          MatchTurn(
-            playerCardId: hostCards.first.id,
-            opponentCardId: guestCards.first.id,
-          )
-        ],
-      ),
-      verify: (bloc) {
-        expect(bloc.lastPlayedCardId, equals(hostCards.first.id));
-      },
-    );
-
-    blocTest<GameBloc, GameState>(
-      'lastPlayedCardId returns opponent card if last turn complete and is not '
-      'player turn',
-      setUp: () {
-        when(
-          () => matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
-        ).thenReturn(false);
-      },
-      build: () => GameBloc(
-        connectionRepository: connectionRepository,
-        gameResource: gameResource,
-        matchMakerRepository: matchMakerRepository,
-        matchSolver: matchSolver,
-        isHost: true,
-        user: user,
-      ),
-      seed: () => baseState.copyWith(
-        turns: [
-          MatchTurn(
-            playerCardId: hostCards.first.id,
-            opponentCardId: guestCards.first.id,
-          )
-        ],
-      ),
-      verify: (bloc) {
-        expect(bloc.lastPlayedCardId, equals(guestCards.first.id));
-      },
-    );
-
-    blocTest<GameBloc, GameState>(
-      'lastPlayedCardId returns player card if last turn not complete and '
-      'only player played',
-      build: () => GameBloc(
-        connectionRepository: connectionRepository,
-        gameResource: gameResource,
-        matchMakerRepository: matchMakerRepository,
-        matchSolver: matchSolver,
-        isHost: true,
-        user: user,
-      ),
-      seed: () => baseState.copyWith(
-        turns: [
-          MatchTurn(
-            playerCardId: hostCards.first.id,
-            opponentCardId: null,
-          )
-        ],
-      ),
-      verify: (bloc) {
-        expect(bloc.lastPlayedCardId, equals(hostCards.first.id));
-      },
-    );
-
-    blocTest<GameBloc, GameState>(
-      'lastPlayedCardId returns opponent card if last turn not complete and '
-      'only opponent played',
-      build: () => GameBloc(
-        connectionRepository: connectionRepository,
-        gameResource: gameResource,
-        matchMakerRepository: matchMakerRepository,
-        matchSolver: matchSolver,
-        isHost: true,
-        user: user,
-      ),
-      seed: () => baseState.copyWith(
-        turns: [
-          MatchTurn(
-            playerCardId: null,
-            opponentCardId: guestCards.first.id,
-          )
-        ],
-      ),
-      verify: (bloc) {
-        expect(bloc.lastPlayedCardId, equals(guestCards.first.id));
-      },
-    );
-
     group('MatchLoadedState', () {
       group('isCardTurnComplete', () {
         final match1 = Match(
@@ -1243,7 +1140,6 @@ void main() {
           matchId: match1.id,
           hostPlayedCards: const [],
           guestPlayedCards: const [],
-          hostStartsMatch: true,
         );
         final card = Card(
           id: '1',
@@ -1259,15 +1155,15 @@ void main() {
           playerScoreCard: ScoreCard(id: 'scoreCardId'),
           match: match1,
           matchState: matchState1,
-          turns: const [],
+          rounds: const [],
           turnAnimationsFinished: false,
           turnTimeRemaining: 10,
         );
 
         test('returns true if the card is the winning one', () {
           final state = baseState.copyWith(
-            turns: [
-              MatchTurn(
+            rounds: [
+              MatchRound(
                 opponentCardId: card.id,
                 playerCardId: 'a',
               ),
@@ -1279,8 +1175,8 @@ void main() {
 
         test('returns false if the turn is not complete', () {
           final state = baseState.copyWith(
-            turns: [
-              MatchTurn(
+            rounds: [
+              MatchRound(
                 opponentCardId: card.id,
                 playerCardId: null,
               ),
@@ -1292,12 +1188,12 @@ void main() {
 
         test('can detect the card turn no matter the order', () {
           final state = baseState.copyWith(
-            turns: [
-              MatchTurn(
+            rounds: [
+              MatchRound(
                 opponentCardId: 'a',
                 playerCardId: card.id,
               ),
-              MatchTurn(
+              MatchRound(
                 opponentCardId: 'b',
                 playerCardId: null,
               ),
@@ -1309,25 +1205,25 @@ void main() {
       });
     });
 
-    group('MatchTurn', () {
+    group('MatchRound', () {
       test('isComplete', () {
         expect(
-          MatchTurn(playerCardId: null, opponentCardId: null).isComplete(),
+          MatchRound(playerCardId: null, opponentCardId: null).isComplete(),
           isFalse,
         );
 
         expect(
-          MatchTurn(playerCardId: 'a', opponentCardId: null).isComplete(),
+          MatchRound(playerCardId: 'a', opponentCardId: null).isComplete(),
           isFalse,
         );
 
         expect(
-          MatchTurn(playerCardId: null, opponentCardId: 'a').isComplete(),
+          MatchRound(playerCardId: null, opponentCardId: 'a').isComplete(),
           isFalse,
         );
 
         expect(
-          MatchTurn(playerCardId: 'b', opponentCardId: 'a').isComplete(),
+          MatchRound(playerCardId: 'b', opponentCardId: 'a').isComplete(),
           isTrue,
         );
       });
@@ -1456,7 +1352,6 @@ void main() {
               matchId: 'matchId',
               hostPlayedCards: const ['card1', 'card2', 'card3'],
               guestPlayedCards: const ['card4', 'card5', 'card6'],
-              hostStartsMatch: true,
             ),
           );
         },
@@ -1506,7 +1401,7 @@ void main() {
       );
     });
 
-    group('TurnAnimationsFinished', () {
+    group('turnAnimationsFinished', () {
       blocTest<GameBloc, GameState>(
         'emits state updating turnAnimationsFinished field',
         build: () => GameBloc(
@@ -1537,8 +1432,8 @@ void main() {
           matchSolver: matchSolver,
         ),
         seed: () => baseState.copyWith(
-          turns: [
-            MatchTurn(
+          rounds: [
+            MatchRound(
               playerCardId: hostCards.first.id,
               opponentCardId: guestCards.first.id,
             )
@@ -1547,8 +1442,8 @@ void main() {
         act: (bloc) => bloc.add(CardOverlayRevealed()),
         expect: () => <GameState>[
           baseState.copyWith(
-            turns: [
-              MatchTurn(
+            rounds: [
+              MatchRound(
                 playerCardId: hostCards.first.id,
                 opponentCardId: guestCards.first.id,
                 showCardsOverlay: true,

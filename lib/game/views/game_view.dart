@@ -189,8 +189,8 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     if (status == AnimationStatus.completed) {
       final bloc = context.read<GameBloc>();
       final state = bloc.state as MatchLoadedState;
-      if (state.turns.isNotEmpty) {
-        if (state.turns.last.isComplete()) {
+      if (state.rounds.isNotEmpty) {
+        if (state.rounds.last.isComplete()) {
           bloc.add(const CardOverlayRevealed());
           for (final controller in clashControllers) {
             Future.delayed(turnEndDuration, controller.reverse);
@@ -214,13 +214,13 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     return BlocListener<GameBloc, GameState>(
       listenWhen: (previous, current) {
         if (previous is MatchLoadedState && current is MatchLoadedState) {
-          return previous.turns != current.turns;
+          return previous.rounds != current.rounds;
         }
         return false;
       },
       listener: (context, state) {
         if (state is MatchLoadedState) {
-          final lastPlayedCardId = bloc.lastPlayedCardId;
+          final lastPlayedCardId = state.lastPlayedCardId;
           final playerIndex = bloc.playerCards
               .indexWhere((element) => element.id == lastPlayedCardId);
           if (playerIndex >= 0) {
@@ -244,12 +244,8 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
             children: [
               ...clashCardOffsets.mapIndexed(
                 (i, offset) {
-                  final isSlotTurn = (bloc.isPlayerTurn && i.isEven) ||
-                      (!bloc.isPlayerTurn && i.isOdd);
                   return _ClashCard(
                     rect: offset & clashCardSize,
-                    isSlotTurn: isSlotTurn,
-                    isPlayerTurn: bloc.isPlayerTurn,
                   );
                 },
               ),
@@ -299,15 +295,15 @@ class _OpponentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final turns = context.select<GameBloc, List<MatchTurn>>(
-      (bloc) => (bloc.state as MatchLoadedState).turns,
+    final rounds = context.select<GameBloc, List<MatchRound>>(
+      (bloc) => (bloc.state as MatchLoadedState).rounds,
     );
     final overlay = context.select<GameBloc, CardOverlayType?>(
       (bloc) => bloc.isWinningCard(card, isPlayer: false),
     );
 
     final allOpponentPlayedCards =
-        turns.map((turn) => turn.opponentCardId).toList();
+        rounds.map((turn) => turn.opponentCardId).toList();
 
     return AnimatedBuilder(
       animation: animation,
@@ -316,27 +312,28 @@ class _OpponentCard extends StatelessWidget {
         return Positioned.fromRect(
           key: Key('opponent_card_${card.id}'),
           rect: rect,
-          child: allOpponentPlayedCards.contains(card.id)
-              ? Stack(
-                  children: [
-                    GameCard(
-                      key: Key('opponent_revealed_card_${card.id}'),
-                      image: card.image,
-                      name: card.name,
-                      power: card.power,
-                      suitName: card.suit.name,
-                      isRare: card.rarity,
-                      width: rect.width,
-                      height: rect.height,
-                      overlay: overlay,
+          child:
+              allOpponentPlayedCards.contains(card.id) && animation.isDismissed
+                  ? Stack(
+                      children: [
+                        GameCard(
+                          key: Key('opponent_revealed_card_${card.id}'),
+                          image: card.image,
+                          name: card.name,
+                          power: card.power,
+                          suitName: card.suit.name,
+                          isRare: card.rarity,
+                          width: rect.width,
+                          height: rect.height,
+                          overlay: overlay,
+                        ),
+                      ],
+                    )
+                  : FlippedGameCard(
+                      key: Key('opponent_hidden_card_${card.id}'),
+                      width: TopDashCardSizes.xs.width,
+                      height: TopDashCardSizes.xs.height,
                     ),
-                  ],
-                )
-              : FlippedGameCard(
-                  key: Key('opponent_hidden_card_${card.id}'),
-                  width: TopDashCardSizes.xs.width,
-                  height: TopDashCardSizes.xs.height,
-                ),
         );
       },
     );
@@ -354,15 +351,15 @@ class _PlayerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final turns = context.select<GameBloc, List<MatchTurn>>(
-      (bloc) => (bloc.state as MatchLoadedState).turns,
+    final rounds = context.select<GameBloc, List<MatchRound>>(
+      (bloc) => (bloc.state as MatchLoadedState).rounds,
     );
     final overlay = context.select<GameBloc, CardOverlayType?>(
       (bloc) => bloc.isWinningCard(card, isPlayer: true),
     );
 
     final allPlayerPlayedCards =
-        turns.map((turn) => turn.playerCardId).toList();
+        rounds.map((turn) => turn.playerCardId).toList();
 
     return AnimatedBuilder(
       animation: animation,
@@ -401,13 +398,9 @@ class _PlayerCard extends StatelessWidget {
 class _ClashCard extends StatelessWidget {
   const _ClashCard({
     required this.rect,
-    required this.isSlotTurn,
-    required this.isPlayerTurn,
   });
 
   final Rect rect;
-  final bool isSlotTurn;
-  final bool isPlayerTurn;
 
   @override
   Widget build(BuildContext context) {
@@ -418,22 +411,12 @@ class _ClashCard extends StatelessWidget {
         width: clashCardSize.width,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: isSlotTurn
-              ? TopDashColors.seedPaletteLightBlue99
-              : TopDashColors.seedWhite,
+          color: TopDashColors.seedPaletteLightBlue99,
           borderRadius: BorderRadius.circular(6),
           border: Border.all(
-            color: isSlotTurn
-                ? TopDashColors.seedPaletteLightBlue80
-                : TopDashColors.seedPaletteNeutral95,
+            color: TopDashColors.seedPaletteLightBlue80,
           ),
         ),
-        child: isSlotTurn
-            ? Text(
-                isPlayerTurn ? 'Your turn' : 'Their turn',
-                style: TopDashTextStyles.headlineMobileH6Light,
-              )
-            : null,
       ),
     );
   }
@@ -453,7 +436,7 @@ class _BoardCounter extends StatelessWidget {
       left: counterOffset.dx,
       top: counterOffset.dy,
       child: Offstage(
-        offstage: !bloc.isPlayerTurn,
+        offstage: !bloc.isPlayerAllowedToPlay,
         child: DecoratedBox(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
