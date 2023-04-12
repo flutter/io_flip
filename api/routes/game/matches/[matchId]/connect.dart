@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cards_repository/cards_repository.dart';
@@ -35,11 +36,12 @@ FutureOr<Response> onRequest(RequestContext context, String matchId) async {
           hostId: user.id,
         );
       } catch (e) {
-        return Response(statusCode: HttpStatus.unauthorized);
+        log('Error while connecting to cpu match: $e');
+        return Response(statusCode: HttpStatus.internalServerError);
       }
       return Response(statusCode: HttpStatus.noContent);
     } else {
-      return Response(statusCode: HttpStatus.unauthorized);
+      return Response(statusCode: HttpStatus.forbidden);
     }
   }
   return Response(statusCode: HttpStatus.methodNotAllowed);
