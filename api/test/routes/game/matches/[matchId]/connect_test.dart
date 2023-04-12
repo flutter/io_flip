@@ -104,15 +104,15 @@ void main() {
       expect(response.statusCode, equals(HttpStatus.methodNotAllowed));
     });
 
-    test('responds with a 401 if something happens', () async {
+    test('responds with a 500 if something happens', () async {
       when(
         () => matchRepository.setCpuConnectivity(
           matchId: matchId,
           hostId: userId,
         ),
-      ).thenThrow(Exception());
+      ).thenThrow(Exception(''));
       final response = await route.onRequest(context, matchId);
-      expect(response.statusCode, equals(HttpStatus.unauthorized));
+      expect(response.statusCode, equals(HttpStatus.internalServerError));
     });
   });
 }
