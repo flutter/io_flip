@@ -73,14 +73,14 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
       ),
     );
 
-    for (final value in ProcessStartMode.values) {
+    for (final value in PromptTermType.values) {
       await dbClient.set(
         'prompt_terms',
         DbEntityRecord(
           id: 'id',
           data: {
             'term': 'TST',
-            'type': value,
+            'type': value.name,
           },
         ),
       );
