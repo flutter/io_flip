@@ -1,4 +1,7 @@
+// ignore_for_file: avoid_web_libraries_in_flutter
+
 import 'dart:async';
+import 'dart:js' as js;
 
 import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
@@ -14,13 +17,16 @@ import 'package:top_dash/firebase_options_development.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
 
 void main() async {
+  js.context['FIREBASE_APPCHECK_DEBUG_TOKEN'] =
+      const String.fromEnvironment('APPCHECK_DEBUG_TOKEN');
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
   unawaited(
     bootstrap(
-      (firestore, firebaseAuth) async {
+      (firestore, firebaseAuth, appCheck) async {
         try {
           firestore.useFirestoreEmulator('localhost', 8081);
           await firebaseAuth.useAuthEmulator('localhost', 9099);
