@@ -1,11 +1,13 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class ElementsWheel extends StatelessWidget {
   const ElementsWheel({
     required this.allElements,
-    required this.elementsAffected,
+    required this.affectedIndexes,
+    required this.text,
     super.key,
   }) : assert(
           allElements.length == 5,
@@ -13,33 +15,54 @@ class ElementsWheel extends StatelessWidget {
         );
 
   final List<Elements> allElements;
-  final List<Elements> elementsAffected;
+  final List<int> affectedIndexes;
+  final String text;
 
+  static const size = 300.0;
+  static const iconSize = 100;
   static const List<Alignment> alignments = [
     Alignment.topCenter,
-    Alignment(-1, -.1),
     Alignment(1, -.1),
-    Alignment(-.6, 1),
     Alignment(.6, 1),
+    Alignment(-.6, 1),
+    Alignment(-1, -.1),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 300,
-      width: 300,
-      child: Stack(
-        children: allElements.mapIndexed(
-          (index, element) {
-            return _ElementItem(
-              alignment: alignments[index],
-              isReference: index == 0,
-              isAffected: elementsAffected.contains(element),
-              child: element.icon,
-            );
-          },
-        ).toList(),
-      ),
+    return Column(
+      children: [
+        const SizedBox(height: TopDashSpacing.xxlg),
+        FadeAnimatedSwitcher(
+          duration: transitionDuration,
+          child: HowToPlayStyledText(
+            text,
+            key: ValueKey(text),
+          ),
+        ),
+        const SizedBox(height: TopDashSpacing.lg),
+        SizedBox(
+          height: size,
+          width: size,
+          child: Stack(
+            children: [
+              ...allElements.mapIndexed(
+                (index, element) {
+                  return _ElementItem(
+                    key: ValueKey(element),
+                    alignment: alignments[index],
+                    isReference: index == 0,
+                    isAffected: affectedIndexes.contains(index - 1),
+                    child: element.icon,
+                  );
+                },
+              ),
+              _AffectedArrows(affectedIndexes),
+              _AffectedIndicators(affectedIndexes)
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -50,6 +73,7 @@ class _ElementItem extends StatelessWidget {
     required this.isReference,
     required this.isAffected,
     required this.child,
+    super.key,
   });
 
   final Alignment alignment;
@@ -59,37 +83,105 @@ class _ElementItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (isReference) return Align(alignment: alignment, child: child);
-    if (isAffected) {
-      return Align(
-        alignment: alignment,
-        child: SizedBox(
-          height: child.height,
-          width: child.width,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              child,
-              Positioned(
-                top: -5,
-                right: alignment.x > 0 ? -5 : null,
-                left: alignment.x < 0 ? -5 : null,
+    return AnimatedAlign(
+      duration: transitionDuration,
+      alignment: alignment,
+      child: Builder(
+        builder: (context) {
+          return AnimatedOpacity(
+            opacity: isAffected || isReference ? 1 : .2,
+            duration: transitionDuration,
+            child: child,
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _AffectedArrows extends StatelessWidget {
+  const _AffectedArrows(this.affectedIndexes);
+
+  final List<int> affectedIndexes;
+
+  static const size = 300.0;
+  static const iconSize = 100;
+
+  static const topPosition = Offset(size * .5, iconSize * .5);
+  static const centerLeftPosition = Offset(iconSize * .5, size * .45);
+  static const centerRightPosition = Offset(size - iconSize * .5, size * .45);
+  static const bottomLeftPosition = Offset(size * .3, size - iconSize * .5);
+  static const bottomRightPosition = Offset(size * .7, size - iconSize * .5);
+
+  @override
+  Widget build(BuildContext context) {
+    final rightArrowStart = getMidpoint(topPosition, centerRightPosition, .45);
+    final rightArrowEnd = getMidpoint(topPosition, centerRightPosition, .65);
+    final midRightArrowStart =
+        getMidpoint(topPosition, bottomRightPosition, .35);
+    final midRightArrowEnd = getMidpoint(topPosition, bottomRightPosition, .75);
+    final midLeftArrowStart = getMidpoint(topPosition, bottomLeftPosition, .35);
+    final midLeftArrowEnd = getMidpoint(topPosition, bottomLeftPosition, .75);
+    final leftArrowStart = getMidpoint(topPosition, centerLeftPosition, .45);
+    final leftArrowEnd = getMidpoint(topPosition, centerLeftPosition, .65);
+    return Stack(
+      children: [
+        ArrowWidget(
+          rightArrowStart,
+          rightArrowEnd,
+          visible: affectedIndexes.contains(0),
+        ),
+        ArrowWidget(
+          midRightArrowStart,
+          midRightArrowEnd,
+          visible: affectedIndexes.contains(1),
+        ),
+        ArrowWidget(
+          midLeftArrowStart,
+          midLeftArrowEnd,
+          visible: affectedIndexes.contains(2),
+        ),
+        ArrowWidget(
+          leftArrowStart,
+          leftArrowEnd,
+          visible: affectedIndexes.contains(3),
+        ),
+      ],
+    );
+  }
+
+  Offset getMidpoint(Offset p1, Offset p2, double distanceRatio) {
+    return p1 + (p2 - p1) * distanceRatio;
+  }
+}
+
+class _AffectedIndicators extends StatelessWidget {
+  const _AffectedIndicators(this.affectedIndexes);
+
+  final List<int> affectedIndexes;
+
+  static const List<Alignment> alignments = [
+    Alignment(1, -.25),
+    Alignment(.7, .6),
+    Alignment(-.7, .6),
+    Alignment(-1, -.25),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: alignments
+          .mapIndexed(
+            (i, alignment) => AnimatedOpacity(
+              duration: transitionDuration,
+              opacity: affectedIndexes.contains(i) ? 1 : 0,
+              child: Align(
+                alignment: alignment,
                 child: const _AffectedIndicator(),
               ),
-            ],
-          ),
-        ),
-      );
-    }
-    return Align(
-      alignment: alignment,
-      child: ColorFiltered(
-        colorFilter: ColorFilter.mode(
-          TopDashColors.seedGrey50.withOpacity(.2),
-          BlendMode.modulate,
-        ),
-        child: child,
-      ),
+            ),
+          )
+          .toList(),
     );
   }
 }
@@ -119,29 +211,5 @@ class _AffectedIndicator extends StatelessWidget {
         child: Icon(Icons.arrow_downward, size: 22),
       ),
     );
-  }
-}
-
-enum Elements {
-  fire,
-  water,
-  air,
-  earth,
-  metal;
-
-  ElementIcon get icon {
-    const scale = 1.3;
-    switch (this) {
-      case fire:
-        return ElementIcon.fire(scale: scale);
-      case water:
-        return ElementIcon.water(scale: scale);
-      case air:
-        return ElementIcon.air(scale: scale);
-      case earth:
-        return ElementIcon.earth(scale: scale);
-      case metal:
-        return ElementIcon.metal(scale: scale);
-    }
   }
 }
