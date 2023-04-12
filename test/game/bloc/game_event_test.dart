@@ -50,14 +50,12 @@ void main() {
         matchId: '',
         hostPlayedCards: [],
         guestPlayedCards: [],
-        hostStartsMatch: true,
       );
       const matchState2 = MatchState(
         id: '2',
         matchId: '',
         hostPlayedCards: [],
         guestPlayedCards: [],
-        hostStartsMatch: true,
       );
       test('can be instantiated', () {
         expect(MatchStateUpdated(matchState1), isNotNull);

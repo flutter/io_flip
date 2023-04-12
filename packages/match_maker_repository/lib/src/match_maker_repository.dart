@@ -85,7 +85,6 @@ class MatchMakerRepository {
       final matchId = data['matchId'] as String;
       final hostCards = (data['hostPlayedCards'] as List).cast<String>();
       final guestCards = (data['guestPlayedCards'] as List).cast<String>();
-      final hostStartsMatch = data['hostStartsMatch'] as bool;
       final result = MatchResult.valueOf(data['result'] as String?);
 
       return MatchState(
@@ -93,7 +92,6 @@ class MatchMakerRepository {
         matchId: matchId,
         hostPlayedCards: hostCards,
         guestPlayedCards: guestCards,
-        hostStartsMatch: hostStartsMatch,
         result: result,
       );
     });

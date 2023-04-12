@@ -117,9 +117,8 @@ void main() {
           matchId: '',
           guestPlayedCards: const [],
           hostPlayedCards: const [],
-          hostStartsMatch: true,
         ),
-        turns: const [],
+        rounds: const [],
         turnTimeRemaining: 10,
         turnAnimationsFinished: true,
       );
@@ -210,8 +209,8 @@ void main() {
         (tester) async {
           mockState(
             baseState.copyWith(
-              turns: [
-                MatchTurn(
+              rounds: [
+                MatchRound(
                   playerCardId: 'player_card',
                   opponentCardId: 'opponent_card',
                 )
@@ -232,8 +231,8 @@ void main() {
           when(() => bloc.canPlayerPlay(any())).thenReturn(false);
           mockState(
             baseState.copyWith(
-              turns: [
-                MatchTurn(
+              rounds: [
+                MatchRound(
                   playerCardId: 'player_card',
                   opponentCardId: null,
                 )
@@ -253,8 +252,8 @@ void main() {
         (tester) async {
           mockState(
             baseState.copyWith(
-              turns: [
-                MatchTurn(
+              rounds: [
+                MatchRound(
                   playerCardId: null,
                   opponentCardId: 'opponent_card',
                 )
@@ -295,8 +294,8 @@ void main() {
 
           mockState(
             baseState.copyWith(
-              turns: [
-                MatchTurn(
+              rounds: [
+                MatchRound(
                   playerCardId: 'player_card',
                   opponentCardId: 'opponent_card',
                   showCardsOverlay: true,
@@ -344,8 +343,8 @@ void main() {
                   ],
                 ),
               ),
-              turns: [
-                MatchTurn(
+              rounds: [
+                MatchRound(
                   playerCardId: 'player_card',
                   opponentCardId: 'opponent_card',
                   showCardsOverlay: true,
@@ -376,9 +375,8 @@ void main() {
           matchId: '',
           guestPlayedCards: const [],
           hostPlayedCards: const [],
-          hostStartsMatch: true,
         ),
-        turns: const [],
+        rounds: const [],
         turnTimeRemaining: 10,
         turnAnimationsFinished: true,
       );
@@ -389,14 +387,14 @@ void main() {
       });
 
       testWidgets('starts when player plays a card', (tester) async {
-        when(() => bloc.lastPlayedCardId).thenReturn(playerCards.first.id);
         whenListen(
           bloc,
           Stream.fromIterable([
             baseState,
             baseState.copyWith(
-              turns: [
-                MatchTurn(
+              lastPlayedCardId: playerCards.first.id,
+              rounds: [
+                MatchRound(
                   playerCardId: playerCards.first.id,
                   opponentCardId: null,
                 )
@@ -422,14 +420,14 @@ void main() {
       });
 
       testWidgets('starts when opponent plays a card', (tester) async {
-        when(() => bloc.lastPlayedCardId).thenReturn(opponentCards.first.id);
         whenListen(
           bloc,
           Stream.fromIterable([
             baseState,
             baseState.copyWith(
-              turns: [
-                MatchTurn(
+              lastPlayedCardId: opponentCards.first.id,
+              rounds: [
+                MatchRound(
                   playerCardId: null,
                   opponentCardId: opponentCards.first.id,
                 )
@@ -455,14 +453,14 @@ void main() {
       });
 
       testWidgets('completes when both players play a card', (tester) async {
-        when(() => bloc.lastPlayedCardId).thenReturn(opponentCards.first.id);
         whenListen(
           bloc,
           Stream.fromIterable([
             baseState,
             baseState.copyWith(
-              turns: [
-                MatchTurn(
+              lastPlayedCardId: playerCards.first.id,
+              rounds: [
+                MatchRound(
                   playerCardId: playerCards.first.id,
                   opponentCardId: opponentCards.first.id,
                 )
@@ -483,28 +481,23 @@ void main() {
       testWidgets(
         'completes and goes back when both players play a card',
         (tester) async {
-          final lastPlayedCards = [
-            () => playerCards.first.id,
-            () => opponentCards.first.id
-          ];
-          when(() => bloc.lastPlayedCardId)
-              .thenAnswer((_) => lastPlayedCards.removeAt(0)());
-
           whenListen(
             bloc,
             Stream.fromIterable([
               baseState,
               baseState.copyWith(
-                turns: [
-                  MatchTurn(
+                lastPlayedCardId: playerCards.first.id,
+                rounds: [
+                  MatchRound(
                     playerCardId: playerCards.first.id,
                     opponentCardId: null,
                   )
                 ],
               ),
               baseState.copyWith(
-                turns: [
-                  MatchTurn(
+                lastPlayedCardId: opponentCards.first.id,
+                rounds: [
+                  MatchRound(
                     playerCardId: playerCards.first.id,
                     opponentCardId: opponentCards.first.id,
                   )

@@ -189,8 +189,8 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     if (status == AnimationStatus.completed) {
       final bloc = context.read<GameBloc>();
       final state = bloc.state as MatchLoadedState;
-      if (state.turns.isNotEmpty) {
-        if (state.turns.last.isComplete()) {
+      if (state.rounds.isNotEmpty) {
+        if (state.rounds.last.isComplete()) {
           bloc.add(const CardOverlayRevealed());
           for (final controller in clashControllers) {
             Future.delayed(turnEndDuration, controller.reverse);
@@ -214,13 +214,13 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     return BlocListener<GameBloc, GameState>(
       listenWhen: (previous, current) {
         if (previous is MatchLoadedState && current is MatchLoadedState) {
-          return previous.turns != current.turns;
+          return previous.rounds != current.rounds;
         }
         return false;
       },
       listener: (context, state) {
         if (state is MatchLoadedState) {
-          final lastPlayedCardId = bloc.lastPlayedCardId;
+          final lastPlayedCardId = state.lastPlayedCardId;
           final playerIndex = bloc.playerCards
               .indexWhere((element) => element.id == lastPlayedCardId);
           if (playerIndex >= 0) {
@@ -295,15 +295,15 @@ class _OpponentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final turns = context.select<GameBloc, List<MatchTurn>>(
-      (bloc) => (bloc.state as MatchLoadedState).turns,
+    final rounds = context.select<GameBloc, List<MatchRound>>(
+      (bloc) => (bloc.state as MatchLoadedState).rounds,
     );
     final overlay = context.select<GameBloc, CardOverlayType?>(
       (bloc) => bloc.isWinningCard(card, isPlayer: false),
     );
 
     final allOpponentPlayedCards =
-        turns.map((turn) => turn.opponentCardId).toList();
+        rounds.map((turn) => turn.opponentCardId).toList();
 
     return AnimatedBuilder(
       animation: animation,
@@ -351,15 +351,15 @@ class _PlayerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final turns = context.select<GameBloc, List<MatchTurn>>(
-      (bloc) => (bloc.state as MatchLoadedState).turns,
+    final rounds = context.select<GameBloc, List<MatchRound>>(
+      (bloc) => (bloc.state as MatchLoadedState).rounds,
     );
     final overlay = context.select<GameBloc, CardOverlayType?>(
       (bloc) => bloc.isWinningCard(card, isPlayer: true),
     );
 
     final allPlayerPlayedCards =
-        turns.map((turn) => turn.playerCardId).toList();
+        rounds.map((turn) => turn.playerCardId).toList();
 
     return AnimatedBuilder(
       animation: animation,

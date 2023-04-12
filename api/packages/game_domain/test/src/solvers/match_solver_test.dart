@@ -64,7 +64,6 @@ void main() {
           matchId: '',
           hostPlayedCards: [cards[4].id, cards[2].id, cards[0].id],
           guestPlayedCards: [cards[3].id, cards[1].id],
-          hostStartsMatch: true,
         );
 
         expect(
@@ -97,7 +96,6 @@ void main() {
           matchId: '',
           hostPlayedCards: [cards[4].id, cards[2].id, cards[0].id],
           guestPlayedCards: [cards[3].id, cards[1].id, cards[5].id],
-          hostStartsMatch: true,
         );
 
         final matchResult = matchSolver.calculateMatchResult(
@@ -127,7 +125,6 @@ void main() {
           matchId: '',
           hostPlayedCards: [cards[0].id, cards[2].id, cards[4].id],
           guestPlayedCards: [cards[3].id, cards[1].id, cards[5].id],
-          hostStartsMatch: true,
         );
 
         final matchResult = matchSolver.calculateMatchResult(
@@ -171,7 +168,6 @@ void main() {
           matchId: '',
           hostPlayedCards: [cards[0].id, cards[2].id, cards[4].id],
           guestPlayedCards: [cards[3].id, cards[1].id, cards[5].id],
-          hostStartsMatch: true,
         );
 
         final matchResult = matchSolver.calculateMatchResult(
@@ -215,7 +211,6 @@ void main() {
           matchId: '',
           hostPlayedCards: [cards[4].id, cards[2].id, cards[0].id],
           guestPlayedCards: [cards[3].id, cards[1].id],
-          hostStartsMatch: true,
         );
 
         expect(
@@ -247,7 +242,6 @@ void main() {
           matchId: '',
           hostPlayedCards: [cards[4].id, cards[2].id, cards[0].id],
           guestPlayedCards: [cards[3].id, cards[1].id, cards[5].id],
-          hostStartsMatch: true,
         );
 
         when(() => gameScriptMachine.compare(cards[2], cards[1])).thenReturn(1);
@@ -264,8 +258,6 @@ void main() {
 
     group('isPlayerTurn', () {
       group('when the host starts the match', () {
-        const hostStarts = true;
-
         group('when is the first round', () {
           group('first move', () {
             final matchState = MatchState(
@@ -273,7 +265,6 @@ void main() {
               matchId: '',
               hostPlayedCards: const [],
               guestPlayedCards: const [],
-              hostStartsMatch: hostStarts,
             );
             test('returns true when is the host', () {
               expect(
@@ -296,7 +287,6 @@ void main() {
               matchId: '',
               hostPlayedCards: const [''],
               guestPlayedCards: const [],
-              hostStartsMatch: hostStarts,
             );
             test('returns false when is the host', () {
               expect(
@@ -321,7 +311,6 @@ void main() {
               matchId: '',
               hostPlayedCards: const [''],
               guestPlayedCards: const [''],
-              hostStartsMatch: hostStarts,
             );
             test('returns true when is the host', () {
               expect(
@@ -344,7 +333,6 @@ void main() {
               matchId: '',
               hostPlayedCards: const [''],
               guestPlayedCards: const ['', ''],
-              hostStartsMatch: hostStarts,
             );
             test('returns true when is the host', () {
               expect(
@@ -369,7 +357,6 @@ void main() {
               matchId: '',
               hostPlayedCards: const ['', ''],
               guestPlayedCards: const ['', ''],
-              hostStartsMatch: hostStarts,
             );
             test('returns true when is the host', () {
               expect(
@@ -392,7 +379,6 @@ void main() {
               matchId: '',
               hostPlayedCards: const ['', '', ''],
               guestPlayedCards: const ['', ''],
-              hostStartsMatch: hostStarts,
             );
             test('returns false when is the host', () {
               expect(
@@ -423,7 +409,6 @@ void main() {
             matchId: '',
             hostPlayedCards: const [cardId],
             guestPlayedCards: const ['', ''],
-            hostStartsMatch: true,
           );
 
           expect(
@@ -438,7 +423,6 @@ void main() {
             matchId: '',
             hostPlayedCards: const [],
             guestPlayedCards: const [],
-            hostStartsMatch: true,
           );
 
           expect(
@@ -458,7 +442,6 @@ void main() {
             matchId: '',
             hostPlayedCards: const ['', ''],
             guestPlayedCards: const [cardId],
-            hostStartsMatch: true,
           );
 
           expect(
@@ -473,7 +456,6 @@ void main() {
             matchId: '',
             hostPlayedCards: const [],
             guestPlayedCards: const [],
-            hostStartsMatch: true,
           );
 
           expect(

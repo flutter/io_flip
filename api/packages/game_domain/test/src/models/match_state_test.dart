@@ -12,7 +12,6 @@ void main() {
           matchId: '',
           guestPlayedCards: const [],
           hostPlayedCards: const [],
-          hostStartsMatch: true,
         ),
         isNotNull,
       );
@@ -25,7 +24,6 @@ void main() {
           matchId: 'matchId',
           guestPlayedCards: const ['1'],
           hostPlayedCards: const ['2'],
-          hostStartsMatch: true,
           result: MatchResult.host,
         ).toJson(),
         equals({
@@ -55,7 +53,6 @@ void main() {
             matchId: 'matchId',
             guestPlayedCards: const ['1'],
             hostPlayedCards: const ['2'],
-            hostStartsMatch: true,
             result: MatchResult.host,
           ),
         ),
@@ -69,7 +66,6 @@ void main() {
           matchId: '',
           guestPlayedCards: const [],
           hostPlayedCards: const [],
-          hostStartsMatch: true,
           result: MatchResult.host,
         ),
         equals(
@@ -78,7 +74,6 @@ void main() {
             matchId: '',
             guestPlayedCards: const [],
             hostPlayedCards: const [],
-            hostStartsMatch: true,
             result: MatchResult.host,
           ),
         ),
@@ -90,7 +85,6 @@ void main() {
           matchId: '',
           guestPlayedCards: const [],
           hostPlayedCards: const [],
-          hostStartsMatch: true,
         ),
         isNot(
           equals(
@@ -99,7 +93,6 @@ void main() {
               matchId: '',
               guestPlayedCards: const [],
               hostPlayedCards: const [],
-              hostStartsMatch: true,
             ),
           ),
         ),
@@ -111,7 +104,6 @@ void main() {
           matchId: '',
           guestPlayedCards: const [],
           hostPlayedCards: const [],
-          hostStartsMatch: true,
         ),
         isNot(
           equals(
@@ -120,7 +112,6 @@ void main() {
               matchId: '1',
               guestPlayedCards: const [],
               hostPlayedCards: const [],
-              hostStartsMatch: true,
             ),
           ),
         ),
@@ -132,7 +123,6 @@ void main() {
           matchId: '',
           guestPlayedCards: const [],
           hostPlayedCards: const [],
-          hostStartsMatch: true,
         ),
         isNot(
           equals(
@@ -141,7 +131,6 @@ void main() {
               matchId: '',
               guestPlayedCards: const ['1'],
               hostPlayedCards: const [],
-              hostStartsMatch: true,
             ),
           ),
         ),
@@ -153,7 +142,6 @@ void main() {
           matchId: '',
           guestPlayedCards: const [],
           hostPlayedCards: const [],
-          hostStartsMatch: true,
         ),
         isNot(
           equals(
@@ -162,7 +150,6 @@ void main() {
               matchId: '',
               guestPlayedCards: const [],
               hostPlayedCards: const ['1'],
-              hostStartsMatch: true,
             ),
           ),
         ),
@@ -174,7 +161,6 @@ void main() {
           matchId: '',
           guestPlayedCards: const [],
           hostPlayedCards: const [],
-          hostStartsMatch: true,
         ),
         isNot(
           equals(
@@ -183,7 +169,6 @@ void main() {
               matchId: '',
               guestPlayedCards: const [],
               hostPlayedCards: const [],
-              hostStartsMatch: false,
             ),
           ),
         ),
@@ -195,7 +180,6 @@ void main() {
           matchId: '',
           guestPlayedCards: const [],
           hostPlayedCards: const [],
-          hostStartsMatch: true,
         ),
         isNot(
           equals(
@@ -204,7 +188,6 @@ void main() {
               matchId: '',
               guestPlayedCards: const [],
               hostPlayedCards: const [],
-              hostStartsMatch: true,
               result: MatchResult.host,
             ),
           ),
@@ -220,14 +203,12 @@ void main() {
         matchId: '',
         hostPlayedCards: const ['', '', ''],
         guestPlayedCards: const ['', '', ''],
-        hostStartsMatch: true,
       );
       final unfinishedMatchState = MatchState(
         id: '',
         matchId: '',
         hostPlayedCards: const ['', '', ''],
         guestPlayedCards: const ['', ''],
-        hostStartsMatch: true,
       );
 
       expect(finishedMatchState.isOver(), isTrue);
@@ -243,7 +224,6 @@ void main() {
           matchId: '',
           hostPlayedCards: const [],
           guestPlayedCards: const [],
-          hostStartsMatch: true,
         ).addHostPlayedCard(''),
         equals(
           MatchState(
@@ -251,7 +231,6 @@ void main() {
             matchId: '',
             hostPlayedCards: const [''],
             guestPlayedCards: const [],
-            hostStartsMatch: true,
           ),
         ),
       );
@@ -266,7 +245,6 @@ void main() {
           matchId: '',
           hostPlayedCards: const [],
           guestPlayedCards: const [],
-          hostStartsMatch: true,
         ).addGuestPlayedCard(''),
         equals(
           MatchState(
@@ -274,7 +252,6 @@ void main() {
             matchId: '',
             hostPlayedCards: const [],
             guestPlayedCards: const [''],
-            hostStartsMatch: true,
           ),
         ),
       );
@@ -287,7 +264,6 @@ void main() {
           matchId: '',
           hostPlayedCards: const [],
           guestPlayedCards: const [],
-          hostStartsMatch: true,
         ).setResult(MatchResult.host),
         equals(
           MatchState(
@@ -295,7 +271,6 @@ void main() {
             matchId: '',
             hostPlayedCards: const [],
             guestPlayedCards: const [],
-            hostStartsMatch: true,
             result: MatchResult.host,
           ),
         ),
