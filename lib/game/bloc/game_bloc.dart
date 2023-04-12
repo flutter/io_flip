@@ -243,7 +243,10 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   ) {
     if (state is MatchLoadedState) {
       final matchLoadedState = state as MatchLoadedState;
-      if (isPlayerAllowedToPlay && !matchLoadedState.matchState.isOver()) {
+      if (isPlayerAllowedToPlay &&
+          !matchLoadedState.matchState.isOver() &&
+          matchLoadedState.matchState.hostPlayedCards.length ==
+              matchLoadedState.matchState.guestPlayedCards.length) {
         emit(matchLoadedState.copyWith(turnTimeRemaining: _turnMaxTime));
 
         _turnTimer = Timer.periodic(
