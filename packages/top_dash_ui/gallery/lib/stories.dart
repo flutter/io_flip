@@ -3,6 +3,9 @@ import 'package:gallery/colors/app_colors_story.dart';
 import 'package:gallery/spacing/app_spacing_story.dart';
 import 'package:gallery/typography/typography_story.dart';
 import 'package:gallery/widgets/widgets.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
+
+final _controller = AnimatedCardController();
 
 void addStories(Dashbook dashbook) {
   dashbook.storiesOf('AppSpacing').add(
@@ -53,5 +56,24 @@ void addStories(Dashbook dashbook) {
       .add(
         'Flipped Game Card',
         (_) => const FlippedGameCardStory(),
-      );
+      )
+      .add(
+    'Animated Card',
+    (ctx) {
+      ctx
+        ..action('Small Flip', (_) => _controller.run(smallFlipAnimation))
+        ..action('Big Flip', (_) => _controller.run(bigFlipAnimation))
+        ..action('Jump', (_) => _controller.run(jumpAnimation))
+        ..action('Knock Out', (_) => _controller.run(knockOutAnimation))
+        ..action(
+          'Flip and Jump',
+          (_) => _controller
+              .run(smallFlipAnimation)
+              .then((_) => _controller.run(jumpAnimation)),
+        )
+        ..action('Attack', (_) => _controller.run(attackAnimation));
+
+      return AnimatedCardStory(controller: _controller);
+    },
+  );
 }
