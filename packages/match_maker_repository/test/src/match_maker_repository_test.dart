@@ -1,7 +1,6 @@
 // ignore_for_file: subtype_of_sealed_class, prefer_const_constructors
 
 import 'dart:async';
-import 'dart:math' as math;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -44,8 +43,6 @@ class _MockDocumentReference<T> extends Mock implements DocumentReference<T> {}
 
 class _MockTransaction extends Mock implements Transaction {}
 
-class _MockRandom extends Mock implements math.Random {}
-
 void main() {
   group('MatchMakerRepository', () {
     late _MockFirebaseFirestore db;
@@ -53,7 +50,6 @@ void main() {
     late CollectionReference<Map<String, dynamic>> matchStateCollection;
     late CollectionReference<Map<String, dynamic>> scoreCardsCollection;
     late MatchMakerRepository matchMakerRepository;
-    late math.Random randomGenerator;
 
     setUpAll(() {
       registerFallbackValue(Timestamp(0, 0));
@@ -64,18 +60,15 @@ void main() {
       collection = _MockCollectionReference();
       matchStateCollection = _MockCollectionReference();
       scoreCardsCollection = _MockCollectionReference();
-      randomGenerator = _MockRandom();
 
       when(() => db.collection('matches')).thenReturn(collection);
       when(() => db.collection('score_cards')).thenReturn(scoreCardsCollection);
       when(() => db.collection('match_states'))
           .thenReturn(matchStateCollection);
-      when(() => randomGenerator.nextBool()).thenReturn(true);
       matchMakerRepository = MatchMakerRepository(
         db: db,
         retryDelay: 0,
         inviteCode: () => 'inviteCode',
-        randomGenerator: randomGenerator,
       );
     });
 
