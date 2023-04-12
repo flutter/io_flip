@@ -229,7 +229,6 @@ class MatchMakerRepository {
       'matchId': result.id,
       'hostPlayedCards': const <String>[],
       'guestPlayedCards': const <String>[],
-      'hostStartsMatch': _randomGenerator.nextBool(),
     });
     return DraftMatch(
       id: result.id,

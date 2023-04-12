@@ -31,7 +31,6 @@ void main() {
           'matchId': 'matchId',
           'guestPlayedCards': ['1'],
           'hostPlayedCards': ['2'],
-          'hostStartsMatch': true,
           'result': 'host',
         }),
       );
@@ -44,7 +43,6 @@ void main() {
           'matchId': 'matchId',
           'guestPlayedCards': ['1'],
           'hostPlayedCards': ['2'],
-          'hostStartsMatch': true,
           'result': 'host',
         }),
         equals(
@@ -150,25 +148,6 @@ void main() {
               matchId: '',
               guestPlayedCards: const [],
               hostPlayedCards: const ['1'],
-            ),
-          ),
-        ),
-      );
-
-      expect(
-        MatchState(
-          id: '',
-          matchId: '',
-          guestPlayedCards: const [],
-          hostPlayedCards: const [],
-        ),
-        isNot(
-          equals(
-            MatchState(
-              id: '',
-              matchId: '',
-              guestPlayedCards: const [],
-              hostPlayedCards: const [],
             ),
           ),
         ),
