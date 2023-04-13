@@ -52,8 +52,9 @@ void main() {
   group('ApiClient', () {
     const baseUrl = 'http://baseurl.com';
     const webSocketTimeout = Duration(milliseconds: 200);
-    const mockToken = 'mockToken';
-    const mockNewToken = 'mockNewToken';
+    const mockIdToken = 'mockIdToken';
+    const mockNewIdToken = 'mockNewIdToken';
+    const mockAppCheckToken = 'mockAppCheckToken';
 
     // Since the key and iv are set from the environment variables, we can
     // reference the default values here.
@@ -71,6 +72,7 @@ void main() {
     late ApiClient subject;
     late _MockHttpClient httpClient;
     late StreamController<String?> idTokenStreamController;
+    late StreamController<String?> appCheckTokenStreamController;
     late WebSocketFactory webSocketFactory;
     late WebSocket webSocket;
     late StreamController<ConnectionState> connectionStreamController;
@@ -104,6 +106,7 @@ void main() {
       ).thenAnswer((_) async => encryptedResponse);
 
       idTokenStreamController = StreamController.broadcast();
+      appCheckTokenStreamController = StreamController.broadcast();
 
       webSocketFactory = _MockWebSocketFactory().call;
       connectionStreamController = StreamController.broadcast();
@@ -118,9 +121,9 @@ void main() {
         getCall: httpClient.get,
         postCall: httpClient.post,
         putCall: httpClient.put,
-        appCheckToken: mockToken,
         idTokenStream: idTokenStreamController.stream,
         refreshIdToken: () => refreshIdToken(),
+        appCheckTokenStream: appCheckTokenStreamController.stream,
         webSocketFactory: webSocketFactory.call,
         webSocketTimeout: webSocketTimeout,
       );
@@ -132,6 +135,7 @@ void main() {
           baseUrl: 'http://localhost',
           idTokenStream: Stream.empty(),
           refreshIdToken: () async => null,
+          appCheckTokenStream: Stream.empty(),
         ),
         isNotNull,
       );
@@ -152,10 +156,12 @@ void main() {
     group('dispose', () {
       test('cancels id token stream subscription', () async {
         expect(idTokenStreamController.hasListener, isTrue);
+        expect(appCheckTokenStreamController.hasListener, isTrue);
 
         await subject.dispose();
 
         expect(idTokenStreamController.hasListener, isFalse);
+        expect(appCheckTokenStreamController.hasListener, isFalse);
       });
     });
 
@@ -179,15 +185,14 @@ void main() {
         verify(
           () => httpClient.get(
             Uri.parse('$baseUrl/path/to/endpoint?param1=value1&param2=value2'),
-            headers: {
-              'X-Firebase-AppCheck': mockToken,
-            },
+            headers: {},
           ),
         ).called(1);
       });
 
       test('sends the authentication and app check token', () async {
-        idTokenStreamController.add(mockToken);
+        idTokenStreamController.add(mockIdToken);
+        appCheckTokenStreamController.add(mockAppCheckToken);
         await Future.microtask(() {});
         await subject.get('/path/to/endpoint');
 
@@ -195,8 +200,8 @@ void main() {
           () => httpClient.get(
             Uri.parse('$baseUrl/path/to/endpoint'),
             headers: {
-              'Authorization': 'Bearer $mockToken',
-              'X-Firebase-AppCheck': mockToken
+              'Authorization': 'Bearer $mockIdToken',
+              'X-Firebase-AppCheck': mockAppCheckToken
             },
           ),
         ).called(1);
@@ -212,9 +217,10 @@ void main() {
             ),
           ).thenAnswer((_) async => http.Response('', 401));
 
-          refreshIdToken = () async => mockNewToken;
+          refreshIdToken = () async => mockNewIdToken;
 
-          idTokenStreamController.add(mockToken);
+          idTokenStreamController.add(mockIdToken);
+          appCheckTokenStreamController.add(mockAppCheckToken);
           await Future.microtask(() {});
           await subject.get('/path/to/endpoint');
 
@@ -222,8 +228,8 @@ void main() {
             () => httpClient.get(
               Uri.parse('$baseUrl/path/to/endpoint'),
               headers: {
-                'Authorization': 'Bearer $mockToken',
-                'X-Firebase-AppCheck': mockToken
+                'Authorization': 'Bearer $mockIdToken',
+                'X-Firebase-AppCheck': mockAppCheckToken,
               },
             ),
           ).called(1);
@@ -231,8 +237,8 @@ void main() {
             () => httpClient.get(
               Uri.parse('$baseUrl/path/to/endpoint'),
               headers: {
-                'Authorization': 'Bearer $mockNewToken',
-                'X-Firebase-AppCheck': mockToken
+                'Authorization': 'Bearer $mockNewIdToken',
+                'X-Firebase-AppCheck': mockAppCheckToken,
               },
             ),
           ).called(1);
@@ -259,15 +265,14 @@ void main() {
           () => httpClient.post(
             Uri.parse('$baseUrl/path/to/endpoint?param1=value1&param2=value2'),
             body: 'BODY_CONTENT',
-            headers: {
-              'X-Firebase-AppCheck': mockToken,
-            },
+            headers: {},
           ),
         ).called(1);
       });
 
       test('sends the authentication and app check token', () async {
-        idTokenStreamController.add(mockToken);
+        idTokenStreamController.add(mockIdToken);
+        appCheckTokenStreamController.add(mockAppCheckToken);
         await Future.microtask(() {});
         await subject.post('/path/to/endpoint');
 
@@ -275,8 +280,8 @@ void main() {
           () => httpClient.post(
             Uri.parse('$baseUrl/path/to/endpoint'),
             headers: {
-              'Authorization': 'Bearer $mockToken',
-              'X-Firebase-AppCheck': mockToken,
+              'Authorization': 'Bearer $mockIdToken',
+              'X-Firebase-AppCheck': mockAppCheckToken,
             },
           ),
         ).called(1);
@@ -292,9 +297,10 @@ void main() {
             ),
           ).thenAnswer((_) async => http.Response('', 401));
 
-          refreshIdToken = () async => mockNewToken;
+          refreshIdToken = () async => mockNewIdToken;
 
-          idTokenStreamController.add(mockToken);
+          idTokenStreamController.add(mockIdToken);
+          appCheckTokenStreamController.add(mockAppCheckToken);
           await Future.microtask(() {});
           await subject.post('/path/to/endpoint');
 
@@ -302,8 +308,8 @@ void main() {
             () => httpClient.post(
               Uri.parse('$baseUrl/path/to/endpoint'),
               headers: {
-                'Authorization': 'Bearer $mockToken',
-                'X-Firebase-AppCheck': mockToken,
+                'Authorization': 'Bearer $mockIdToken',
+                'X-Firebase-AppCheck': mockAppCheckToken,
               },
             ),
           ).called(1);
@@ -311,8 +317,8 @@ void main() {
             () => httpClient.post(
               Uri.parse('$baseUrl/path/to/endpoint'),
               headers: {
-                'Authorization': 'Bearer $mockNewToken',
-                'X-Firebase-AppCheck': mockToken,
+                'Authorization': 'Bearer $mockNewIdToken',
+                'X-Firebase-AppCheck': mockAppCheckToken,
               },
             ),
           ).called(1);
@@ -338,15 +344,14 @@ void main() {
           () => httpClient.put(
             Uri.parse('$baseUrl/path/to/endpoint'),
             body: 'BODY_CONTENT',
-            headers: {
-              'X-Firebase-AppCheck': mockToken,
-            },
+            headers: {},
           ),
         ).called(1);
       });
 
       test('sends the authentication and app check token', () async {
-        idTokenStreamController.add(mockToken);
+        idTokenStreamController.add(mockIdToken);
+        appCheckTokenStreamController.add(mockAppCheckToken);
         await Future.microtask(() {});
         await subject.put('/path/to/endpoint');
 
@@ -354,8 +359,8 @@ void main() {
           () => httpClient.put(
             Uri.parse('$baseUrl/path/to/endpoint'),
             headers: {
-              'Authorization': 'Bearer $mockToken',
-              'X-Firebase-AppCheck': mockToken,
+              'Authorization': 'Bearer $mockIdToken',
+              'X-Firebase-AppCheck': mockAppCheckToken,
             },
           ),
         ).called(1);
@@ -371,9 +376,10 @@ void main() {
             ),
           ).thenAnswer((_) async => http.Response('', 401));
 
-          refreshIdToken = () async => mockNewToken;
+          refreshIdToken = () async => mockNewIdToken;
 
-          idTokenStreamController.add(mockToken);
+          idTokenStreamController.add(mockIdToken);
+          appCheckTokenStreamController.add(mockAppCheckToken);
           await Future.microtask(() {});
           await subject.put('/path/to/endpoint');
 
@@ -381,8 +387,8 @@ void main() {
             () => httpClient.put(
               Uri.parse('$baseUrl/path/to/endpoint'),
               headers: {
-                'Authorization': 'Bearer $mockToken',
-                'X-Firebase-AppCheck': mockToken,
+                'Authorization': 'Bearer $mockIdToken',
+                'X-Firebase-AppCheck': mockAppCheckToken,
               },
             ),
           ).called(1);
@@ -390,8 +396,8 @@ void main() {
             () => httpClient.put(
               Uri.parse('$baseUrl/path/to/endpoint'),
               headers: {
-                'Authorization': 'Bearer $mockNewToken',
-                'X-Firebase-AppCheck': mockToken,
+                'Authorization': 'Bearer $mockNewIdToken',
+                'X-Firebase-AppCheck': mockAppCheckToken,
               },
             ),
           ).called(1);
@@ -427,6 +433,7 @@ void main() {
           putCall: httpClient.put,
           idTokenStream: idTokenStreamController.stream,
           refreshIdToken: () => refreshIdToken(),
+          appCheckTokenStream: appCheckTokenStreamController.stream,
           webSocketFactory: webSocketFactory.call,
         );
 

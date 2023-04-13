@@ -25,6 +25,9 @@ class _MockRequestContext extends Mock implements RequestContext {}
 
 class _FakeVerifier extends Fake implements Verifier {}
 
+class _MockDefaultJsonWebKeySetLoader extends Mock
+    implements DefaultJsonWebKeySetLoader {}
+
 class _MockJsonWebKeySet extends Mock implements JsonWebKeySet {}
 
 class _MockJsonWebKey extends Mock implements JsonWebKey {}
@@ -76,9 +79,9 @@ void main() {
     late JWT jwt;
     late JwtMiddleware subject;
     late JwtParser parseJwt;
+    late DefaultJsonWebKeySetLoader jwksLoader;
     late JsonWebKeySet jwks;
     late JsonWebKey jwk;
-    late JwksParser parseJwks;
     late JsonWebSignature jws;
     late JoseHeader joseHeader;
     late JwsParser parseJws;
@@ -102,8 +105,10 @@ void main() {
       when(() => jwt.keyId).thenReturn(keyId);
       when(() => jwt.verifyWith(any())).thenReturn(true);
 
+      jwksLoader = _MockDefaultJsonWebKeySetLoader();
       jwks = _MockJsonWebKeySet();
       jwk = _MockJsonWebKey();
+      when(() => jwksLoader.read(any())).thenAnswer((_) async => jwks);
       when(() => jwks.keys).thenReturn([jwk]);
       when(() => jwk.keyId).thenReturn(keyId);
 
@@ -114,7 +119,6 @@ void main() {
       when(() => jws.verify(any())).thenAnswer((_) async => true);
 
       parseJwt = (_) => jwt;
-      parseJwks = (_) => jwks;
       parseJws = (_) => jws;
       isEmulator = false;
     });
@@ -124,14 +128,18 @@ void main() {
         projectId: projectId,
         get: get,
         parseJwt: parseJwt,
-        parseJwks: parseJwks,
         parseJws: parseJws,
+        jwksLoader: jwksLoader,
         isEmulator: isEmulator,
       );
       return subject.middleware((_) async {
         return Response();
       });
     }
+
+    test('can be instantiated', () {
+      expect(JwtMiddleware(projectId: projectId), isNotNull);
+    });
 
     group('request fails (401)', () {
       test('with no authorization header', () async {
@@ -216,24 +224,6 @@ void main() {
           uri,
           headers: {
             'authorization': 'Bearer myToken',
-          },
-        );
-        final context = _MockRequestContext();
-        when(() => context.request).thenReturn(request);
-
-        final handler = getHandler();
-        final response = await handler(context);
-
-        expect(response, unauthorizedResponse);
-      });
-
-      test('when parsing json web key set fails', () async {
-        parseJwks = (_) => throw Exception();
-        final request = Request.get(
-          uri,
-          headers: {
-            'authorization': 'Bearer myToken',
-            'X-Firebase-AppCheck': 'myToken',
           },
         );
         final context = _MockRequestContext();
@@ -388,7 +378,7 @@ void main() {
         ];
 
         expect(responses, everyElement(successfulReponse));
-        verify(() => get(any())).called(4);
+        verify(() => get(any())).called(1);
       });
 
       test('and updates keys as needed', () async {
@@ -422,7 +412,7 @@ void main() {
 
           expect(responses, everyElement(successfulReponse));
           expect(responses2, everyElement(successfulReponse));
-          verify(() => get(any())).called(6);
+          verify(() => get(any())).called(2);
         });
       });
     });

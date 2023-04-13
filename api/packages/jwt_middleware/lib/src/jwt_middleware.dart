@@ -15,9 +15,6 @@ typedef GetCall = Future<http.Response> Function(Uri uri);
 /// Definition of a function for parsing encoded JWTs.
 typedef JwtParser = JWT Function(String token);
 
-/// Definition of a function for parsing JWKS.
-typedef JwksParser = JsonWebKeySet Function(Map<String, dynamic>);
-
 /// Definition of a function for parsing JWS.
 typedef JwsParser = JsonWebSignature Function(String);
 
@@ -30,21 +27,21 @@ class JwtMiddleware {
     required String projectId,
     GetCall get = http.get,
     JwtParser parseJwt = JWT.from,
-    JwksParser parseJwks = JsonWebKeySet.fromJson,
     JwsParser parseJws = JsonWebSignature.fromCompactSerialization,
+    DefaultJsonWebKeySetLoader? jwksLoader,
     bool isEmulator = false,
   })  : _get = get,
         _parseJwt = parseJwt,
-        _parseJwks = parseJwks,
         _parseJws = parseJws,
+        _jwksLoader = jwksLoader ?? DefaultJsonWebKeySetLoader(),
         _projectId = projectId,
         _isEmulator = isEmulator,
         _keys = const {};
 
   final GetCall _get;
   final JwtParser _parseJwt;
-  final JwksParser _parseJwks;
   final JwsParser _parseJws;
+  final DefaultJsonWebKeySetLoader _jwksLoader;
   final String _projectId;
   final bool _isEmulator;
 
@@ -81,25 +78,18 @@ class JwtMiddleware {
     if (appCheckToken == null || appCheckToken.isEmpty) return false;
     if (_isEmulator) return true;
 
-    final response = await _get(Uri.parse(_jwksUrl));
-    if (response.statusCode == HttpStatus.ok) {
-      try {
-        final jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
-        final jwks = _parseJwks(jsonResponse);
+    try {
+      final jwks = await _jwksLoader.read(Uri.parse(_jwksUrl));
 
-        final jws = _parseJws(appCheckToken);
-        final keyId = jws.commonHeader.keyId;
+      final jws = _parseJws(appCheckToken);
+      final keyId = jws.commonHeader.keyId;
+      final jwk = jwks.keys.firstWhere((key) => key.keyId == keyId);
+      final keyStore = JsonWebKeyStore()..addKey(jwk);
 
-        final jsonWebKey = jwks.keys.firstWhere((key) => key.keyId == keyId);
-        final keyStore = JsonWebKeyStore()..addKey(jsonWebKey);
-
-        return jws.verify(keyStore);
-      } catch (e) {
-        return false;
-      }
+      return jws.verify(keyStore);
+    } catch (e) {
+      return false;
     }
-
-    return false;
   }
 
   /// Verifies the given token and returns the user id if valid.

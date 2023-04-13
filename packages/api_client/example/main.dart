@@ -8,6 +8,7 @@ void main() async {
     baseUrl: 'https://top-dash-dev-api-synvj3dcmq-uc.a.run.app',
     idTokenStream: const Stream.empty(),
     refreshIdToken: () async => null,
+    appCheckTokenStream: const Stream.empty(),
   );
 
   final cards = await client.gameResource.generateCards(const Prompt());

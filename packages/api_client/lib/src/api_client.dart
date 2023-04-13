@@ -61,12 +61,13 @@ class ApiClient {
     required String baseUrl,
     required Stream<String?> idTokenStream,
     required Future<String?> Function() refreshIdToken,
+    required Stream<String?> appCheckTokenStream,
+    String? appCheckToken,
     PostCall postCall = http.post,
     PutCall putCall = http.put,
     GetCall getCall = http.get,
     WebSocketFactory webSocketFactory = WebSocket.new,
     Duration webSocketTimeout = const Duration(seconds: 20),
-    String? appCheckToken,
   })  : _base = Uri.parse(baseUrl),
         _post = postCall,
         _put = putCall,
@@ -78,6 +79,9 @@ class ApiClient {
     _idTokenSubscription = idTokenStream.listen((idToken) {
       _idToken = idToken;
     });
+    _appCheckTokenSubscription = appCheckTokenStream.listen((appCheckToken) {
+      _appCheckToken = appCheckToken;
+    });
   }
 
   final Uri _base;
@@ -87,10 +91,11 @@ class ApiClient {
   final Future<String?> Function() _refreshIdToken;
   final WebSocketFactory _webSocketFactory;
   final Duration _webSocketTimeout;
-  final String? _appCheckToken;
 
   late final StreamSubscription<String?> _idTokenSubscription;
+  late final StreamSubscription<String?> _appCheckTokenSubscription;
   String? _idToken;
+  String? _appCheckToken;
 
   Map<String, String> get _headers => {
         if (_idToken != null) 'Authorization': 'Bearer $_idToken',
@@ -125,6 +130,7 @@ class ApiClient {
   /// Dispose of resources used by this client.
   Future<void> dispose() async {
     await _idTokenSubscription.cancel();
+    await _appCheckTokenSubscription.cancel();
   }
 
   /// Sends a POST request to the specified [path] with the given [body].
