@@ -18,82 +18,79 @@ class HowToPlayView extends StatelessWidget {
       (bloc) => bloc.state.position,
     );
 
-    return Center(
-      child: Container(
-        constraints: const BoxConstraints.expand(width: 400, height: 584),
-        margin: const EdgeInsets.all(TopDashSpacing.sm),
-        padding: const EdgeInsets.all(TopDashSpacing.lg),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          color: TopDashColors.seedWhite,
-        ),
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                const Expanded(
-                  child: HowToPlayStepView(),
+    return Container(
+      constraints: const BoxConstraints.expand(width: 400, height: 584),
+      padding: const EdgeInsets.all(TopDashSpacing.lg),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        color: TopDashColors.seedWhite,
+      ),
+      child: Stack(
+        children: [
+          Column(
+            children: [
+              const Expanded(
+                child: HowToPlayStepView(),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: TopDashSpacing.xlg,
+                  horizontal: TopDashSpacing.xxxlg,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: TopDashSpacing.xlg,
-                    horizontal: TopDashSpacing.xxxlg,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: List.generate(
-                      totalSteps,
-                      (index) => Container(
-                        height: 12,
-                        width: 12,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: selectedPageIndex == index
-                              ? TopDashColors.seedBlue
-                              : TopDashColors.seedGrey70,
-                        ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: List.generate(
+                    totalSteps,
+                    (index) => Container(
+                      height: 12,
+                      width: 12,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: selectedPageIndex == index
+                            ? TopDashColors.seedBlue
+                            : TopDashColors.seedGrey70,
                       ),
                     ),
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    RoundedButton.icon(
-                      const Icon(Icons.arrow_back),
-                      onPressed: () {
-                        final bloc = context.read<HowToPlayBloc>();
-                        if (bloc.state.position == 0) {
-                          maybePop(context);
-                        } else {
-                          bloc.add(const PreviousPageRequested());
-                        }
-                      },
-                    ),
-                    const SizedBox(width: TopDashSpacing.md),
-                    RoundedButton.icon(
-                      const Icon(Icons.arrow_forward),
-                      onPressed: () {
-                        final bloc = context.read<HowToPlayBloc>();
-                        if (bloc.state.position == totalSteps - 1) {
-                          maybePop(context);
-                        } else {
-                          bloc.add(const NextPageRequested());
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            Align(
-              alignment: Alignment.topRight,
-              child: CloseButton(
-                onPressed: () => maybePop(context),
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  RoundedButton.icon(
+                    const Icon(Icons.arrow_back),
+                    onPressed: () {
+                      final bloc = context.read<HowToPlayBloc>();
+                      if (bloc.state.position == 0) {
+                        maybePop(context);
+                      } else {
+                        bloc.add(const PreviousPageRequested());
+                      }
+                    },
+                  ),
+                  const SizedBox(width: TopDashSpacing.md),
+                  RoundedButton.icon(
+                    const Icon(Icons.arrow_forward),
+                    onPressed: () {
+                      final bloc = context.read<HowToPlayBloc>();
+                      if (bloc.state.position == totalSteps - 1) {
+                        maybePop(context);
+                      } else {
+                        bloc.add(const NextPageRequested());
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Align(
+            alignment: Alignment.topRight,
+            child: CloseButton(
+              onPressed: () => maybePop(context),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

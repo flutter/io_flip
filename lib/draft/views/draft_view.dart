@@ -4,6 +4,7 @@ import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/gen/assets.gen.dart';
+import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/match_making/match_making.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
@@ -272,7 +273,7 @@ class _BottomBar extends StatelessWidget {
             child: RoundedButton.icon(
               const Icon(Icons.question_mark_rounded),
               backgroundColor: Colors.white,
-              onPressed: () => GoRouter.of(context).go('/how_to_play'),
+              onPressed: () => HowToPlayPage.show(context),
             ),
           ),
           if (state.status == DraftStateStatus.deckSelected) ...[
