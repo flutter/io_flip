@@ -1,5 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -110,7 +112,7 @@ class _AffectedArrows extends StatelessWidget {
   final List<int> affectedIndexes;
 
   static const size = elementsWheelSize;
-  static const iconSize = 100;
+  static const iconSize = 96;
 
   static const topPosition = Offset(size * .5, iconSize * .5);
   static const centerLeftPosition = Offset(iconSize * .5, size * .45);
@@ -198,22 +200,20 @@ class _AffectedIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(40),
+        shape: BoxShape.circle,
         border: Border.all(
-          width: 2,
+          width: 4,
           strokeAlign: BorderSide.strokeAlignCenter,
         ),
         color: TopDashColors.seedRed,
-        boxShadow: const [
-          BoxShadow(
-            offset: Offset(-2, 2),
-            spreadRadius: 1,
-          )
-        ],
       ),
-      child: const Padding(
-        padding: EdgeInsets.all(TopDashSpacing.xs),
-        child: Icon(Icons.arrow_downward, size: 22),
+      child: Padding(
+        padding: const EdgeInsets.all(TopDashSpacing.sm),
+        child: SvgPicture.asset(
+          Assets.icons.cancel,
+          height: 20,
+          width: 20,
+        ),
       ),
     );
   }

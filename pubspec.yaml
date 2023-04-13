@@ -31,6 +31,7 @@ dependencies:
   flutter_highlight: ^0.7.0
   flutter_localizations:
     sdk: flutter
+  flutter_svg: ^2.0.5
   game_domain:
     path: api/packages/game_domain
   game_script_machine:
@@ -68,6 +69,7 @@ flutter:
   generate: true
 
   assets:
+    - assets/icons/
     - assets/images/
     - assets/music/
     - assets/sfx/
