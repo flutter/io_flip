@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
-const _elementsWheelSize = 300.0;
+const transitionDuration = Duration(milliseconds: 400);
+const elementsWheelSize = 300.0;
 
 class ElementsWheel extends StatelessWidget {
   const ElementsWheel({
@@ -42,8 +43,8 @@ class ElementsWheel extends StatelessWidget {
         ),
         const SizedBox(height: TopDashSpacing.lg),
         SizedBox(
-          height: _elementsWheelSize,
-          width: _elementsWheelSize,
+          height: elementsWheelSize,
+          width: elementsWheelSize,
           child: Stack(
             children: [
               ...allElements.mapIndexed(
@@ -88,6 +89,7 @@ class _ElementItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return TweenAnimationBuilder<Alignment>(
       duration: transitionDuration,
+      curve: const Cubic(.1, 0, .2, 1),
       tween: CircularAlignmentTween(begin: initialAlignment, end: alignment),
       builder: (context, alignment, child) => Align(
         alignment: alignment,
@@ -107,7 +109,7 @@ class _AffectedArrows extends StatelessWidget {
 
   final List<int> affectedIndexes;
 
-  static const size = _elementsWheelSize;
+  static const size = elementsWheelSize;
   static const iconSize = 100;
 
   static const topPosition = Offset(size * .5, iconSize * .5);

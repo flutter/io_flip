@@ -3,8 +3,6 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
-const Duration transitionDuration = Duration(milliseconds: 500);
-
 class ArrowWidget extends StatelessWidget {
   const ArrowWidget(
     this.p1,
@@ -21,7 +19,7 @@ class ArrowWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedOpacity(
       opacity: visible ? 1 : 0,
-      duration: transitionDuration,
+      duration: const Duration(milliseconds: 400),
       child: CustomPaint(painter: ArrowPainter(p1, p2)),
     );
   }
