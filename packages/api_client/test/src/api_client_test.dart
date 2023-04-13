@@ -486,6 +486,24 @@ void main() {
       });
     });
 
+    group('shareHandUrl', () {
+      test('returns the correct url', () {
+        expect(
+          subject.shareHandUrl('id'),
+          equals('http://baseurl.com/public/share?deckId=id'),
+        );
+      });
+    });
+
+    group('shareCardUrl', () {
+      test('returns the correct url', () {
+        expect(
+          subject.shareCardUrl('id'),
+          equals('http://baseurl.com/public/share?cardId=id'),
+        );
+      });
+    });
+
     group('ApiClientError', () {
       test('toString returns the cause', () {
         expect(

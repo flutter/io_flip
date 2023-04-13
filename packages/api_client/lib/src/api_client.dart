@@ -222,6 +222,16 @@ class ApiClient {
       );
     }
   }
+
+  /// Returns the share page url for the specified [deckId].
+  String shareHandUrl(String deckId) {
+    return '$_base/public/share?deckId=$deckId';
+  }
+
+  /// Returns the share page url for the specified [cardId].
+  String shareCardUrl(String cardId) {
+    return '$_base/public/share?cardId=$cardId';
+  }
 }
 
 extension on http.Response {
