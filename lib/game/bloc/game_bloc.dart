@@ -157,6 +157,9 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           ),
       ];
 
+      if (lastPlayedCard != null) {
+        _audioController.playSfx(Assets.sfx.playCard);
+      }
       emit(
         matchLoadedState.copyWith(
           matchState: event.updatedState,
@@ -201,7 +204,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       final deckId =
           isHost ? matchState.match.hostDeck.id : matchState.match.guestDeck.id;
 
-      _audioController.playSfx(Assets.sfx.playCard);
       await _gameResource.playCard(
         matchId: matchState.match.id,
         cardId: event.cardId,
