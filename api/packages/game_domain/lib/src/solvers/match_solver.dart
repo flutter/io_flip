@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:game_domain/game_domain.dart';
 import 'package:game_script_machine/game_script_machine.dart';
 
@@ -100,34 +98,16 @@ class MatchSolver {
 
   /// Returns true when player, determined by [isHost], can select a card
   /// to play.
-  bool isPlayerTurn(MatchState state, {required bool isHost}) {
-    final hostStarts = state.hostStartsMatch;
-    final isPlayer1 = (isHost && hostStarts) || (!isHost && !hostStarts);
-
+  bool isPlayerAllowedToPlay(MatchState state, {required bool isHost}) {
     final hostPlayedCardsLength = state.hostPlayedCards.length;
     final guestPlayedCardsLength = state.guestPlayedCards.length;
 
-    final player1PlayedCardsLength =
-        hostStarts ? hostPlayedCardsLength : guestPlayedCardsLength;
-    final player2PlayedCardsLength =
-        hostStarts ? guestPlayedCardsLength : hostPlayedCardsLength;
-
-    final round = math.min(hostPlayedCardsLength, guestPlayedCardsLength) + 1;
-
-    if (round.isOdd) {
-      if (isPlayer1 && player1PlayedCardsLength == player2PlayedCardsLength) {
+    if (isHost) {
+      if (hostPlayedCardsLength <= guestPlayedCardsLength) {
         return true;
       }
-      if (!isPlayer1 && player1PlayedCardsLength > player2PlayedCardsLength) {
-        return true;
-      }
-    }
-
-    if (round.isEven) {
-      if (isPlayer1 && player1PlayedCardsLength < player2PlayedCardsLength) {
-        return true;
-      }
-      if (!isPlayer1 && player1PlayedCardsLength == player2PlayedCardsLength) {
+    } else {
+      if (guestPlayedCardsLength <= hostPlayedCardsLength) {
         return true;
       }
     }
@@ -146,6 +126,6 @@ class MatchSolver {
       return false;
     }
 
-    return isPlayerTurn(state, isHost: isHost);
+    return isPlayerAllowedToPlay(state, isHost: isHost);
   }
 }

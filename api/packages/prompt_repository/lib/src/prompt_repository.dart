@@ -8,27 +8,9 @@ class PromptRepository {
   /// {@macro prompt_repository}
   const PromptRepository({
     required DbClient dbClient,
-    required String whitelistDocumentId,
-  })  : _dbClient = dbClient,
-        _whitelistDocumentId = whitelistDocumentId;
+  }) : _dbClient = dbClient;
 
   final DbClient _dbClient;
-
-  final String _whitelistDocumentId;
-
-  /// Retrieves the whitelist for prompt.
-  Future<List<String>> getPromptWhitelist() async {
-    final whitelistData = await _dbClient.getById(
-      'prompt_whitelist',
-      _whitelistDocumentId,
-    );
-
-    if (whitelistData == null) {
-      return [];
-    }
-
-    return (whitelistData.data['whitelist'] as List).cast<String>();
-  }
 
   /// Retrieves the prompt terms for the given [type].
   Future<List<PromptTerm>> getPromptTerms(PromptTermType type) async {

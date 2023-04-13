@@ -110,7 +110,6 @@ class MatchRepository {
             (record.data['hostPlayedCards'] as List).cast<String>(),
         guestPlayedCards:
             (record.data['guestPlayedCards'] as List).cast<String>(),
-        hostStartsMatch: record.data['hostStartsMatch'] as bool,
         result: MatchResult.valueOf(record.data['result'] as String?),
       );
     }
