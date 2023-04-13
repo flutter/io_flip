@@ -236,9 +236,6 @@ void main() {
               },
             ),
           ).called(1);
-
-          // clean up resources
-          await subject.dispose();
         },
       );
     });
