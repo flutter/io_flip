@@ -744,6 +744,55 @@ void main() {
       );
 
       blocTest<GameBloc, GameState>(
+        'Plays playCard sound when card is played by both players',
+        build: () => GameBloc(
+          connectionRepository: connectionRepository,
+          gameResource: gameResource,
+          audioController: audioController,
+          matchMakerRepository: matchMakerRepository,
+          matchSolver: matchSolver,
+          user: user,
+          isHost: true,
+        ),
+        setUp: () {
+          when(
+            () => matchSolver.isPlayerAllowedToPlay(
+              any(),
+              isHost: any(named: 'isHost'),
+            ),
+          ).thenReturn(true);
+        },
+        seed: () => baseState,
+        act: (bloc) {
+          bloc
+            ..add(PlayerPlayed('new_card_1'))
+            ..add(
+              MatchStateUpdated(
+                MatchState(
+                  id: baseState.matchState.id,
+                  matchId: baseState.matchState.matchId,
+                  hostPlayedCards: const ['new_card_1'],
+                  guestPlayedCards: baseState.matchState.guestPlayedCards,
+                ),
+              ),
+            )
+            ..add(
+              MatchStateUpdated(
+                MatchState(
+                  id: baseState.matchState.id,
+                  matchId: baseState.matchState.matchId,
+                  hostPlayedCards: const ['new_card_1'],
+                  guestPlayedCards: const ['new_card_2'],
+                ),
+              ),
+            );
+        },
+        verify: (_) {
+          verify(() => audioController.playSfx(Assets.sfx.playCard)).called(2);
+        },
+      );
+
+      blocTest<GameBloc, GameState>(
         'plays a player card, receives confirmation and then receives an '
         'opponent card',
         build: () => GameBloc(
