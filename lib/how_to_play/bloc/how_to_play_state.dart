@@ -9,7 +9,14 @@ class HowToPlayState extends Equatable {
   final int position;
   final ElementsWheelState elementsWheelState;
 
-  static const int numSteps = 8;
+  static const initialSteps = <Widget>[
+    HowToPlayIntro(),
+    HowToPlayHandBuilding(),
+    HowToPlayElementsIntro(),
+  ];
+
+  int get totalSteps =>
+      HowToPlayState.initialSteps.length + Elements.values.length;
 
   @override
   List<Object> get props => [position, elementsWheelState];

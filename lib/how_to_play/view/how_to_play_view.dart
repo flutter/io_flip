@@ -9,10 +9,11 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 class HowToPlayView extends StatelessWidget {
   const HowToPlayView({super.key});
 
-  static const numSteps = HowToPlayState.numSteps;
-
   @override
   Widget build(BuildContext context) {
+    final totalSteps = context.select<HowToPlayBloc, int>(
+      (bloc) => bloc.state.totalSteps,
+    );
     final selectedPageIndex = context.select<HowToPlayBloc, int>(
       (bloc) => bloc.state.position,
     );
@@ -41,7 +42,7 @@ class HowToPlayView extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: List.generate(
-                      numSteps,
+                      totalSteps,
                       (index) => Container(
                         height: 12,
                         width: 12,
@@ -59,7 +60,7 @@ class HowToPlayView extends StatelessWidget {
                   const Icon(Icons.arrow_forward),
                   onPressed: () {
                     final bloc = context.read<HowToPlayBloc>();
-                    if (bloc.state.position == numSteps - 1) {
+                    if (bloc.state.position == totalSteps - 1) {
                       maybePop(context);
                     } else {
                       bloc.add(const NextPageRequested());
@@ -91,15 +92,10 @@ class HowToPlayView extends StatelessWidget {
 class HowToPlayStepView extends StatelessWidget {
   const HowToPlayStepView({super.key});
 
-  static const steps = <Widget>[
-    _Intro(),
-    _HandBuilding(),
-    _ElementsIntro(),
-  ];
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    const steps = HowToPlayState.initialSteps;
 
     return BlocBuilder<HowToPlayBloc, HowToPlayState>(
       builder: (context, state) {
@@ -122,8 +118,8 @@ class HowToPlayStepView extends StatelessWidget {
   }
 }
 
-class _Intro extends StatelessWidget {
-  const _Intro();
+class HowToPlayIntro extends StatelessWidget {
+  const HowToPlayIntro({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -147,8 +143,8 @@ class _Intro extends StatelessWidget {
   }
 }
 
-class _HandBuilding extends StatelessWidget {
-  const _HandBuilding();
+class HowToPlayHandBuilding extends StatelessWidget {
+  const HowToPlayHandBuilding({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -172,8 +168,8 @@ class _HandBuilding extends StatelessWidget {
   }
 }
 
-class _ElementsIntro extends StatelessWidget {
-  const _ElementsIntro();
+class HowToPlayElementsIntro extends StatelessWidget {
+  const HowToPlayElementsIntro({super.key});
 
   @override
   Widget build(BuildContext context) {
