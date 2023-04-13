@@ -66,12 +66,14 @@ class ApiClient {
     GetCall getCall = http.get,
     WebSocketFactory webSocketFactory = WebSocket.new,
     Duration webSocketTimeout = const Duration(seconds: 20),
+    String? appCheckToken,
   })  : _base = Uri.parse(baseUrl),
         _post = postCall,
         _put = putCall,
         _get = getCall,
         _webSocketFactory = webSocketFactory,
         _webSocketTimeout = webSocketTimeout,
+        _appCheckToken = appCheckToken,
         _refreshIdToken = refreshIdToken {
     _idTokenSubscription = idTokenStream.listen((idToken) {
       _idToken = idToken;
@@ -85,12 +87,14 @@ class ApiClient {
   final Future<String?> Function() _refreshIdToken;
   final WebSocketFactory _webSocketFactory;
   final Duration _webSocketTimeout;
+  final String? _appCheckToken;
 
   late final StreamSubscription<String?> _idTokenSubscription;
   String? _idToken;
 
   Map<String, String> get _headers => {
         if (_idToken != null) 'Authorization': 'Bearer $_idToken',
+        if (_appCheckToken != null) 'X-Firebase-AppCheck': _appCheckToken!,
       };
 
   /// {@macro game_resource}

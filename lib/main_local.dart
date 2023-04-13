@@ -27,6 +27,12 @@ void main() async {
   unawaited(
     bootstrap(
       (firestore, firebaseAuth, appCheck) async {
+        await appCheck.activate(
+          webRecaptchaSiteKey: const String.fromEnvironment('RECAPTCHA_KEY'),
+        );
+        await appCheck.setTokenAutoRefreshEnabled(true);
+        final appCheckToken = await appCheck.getToken();
+
         try {
           firestore.useFirestoreEmulator('localhost', 8081);
           await firebaseAuth.useAuthEmulator('localhost', 9099);
@@ -40,6 +46,7 @@ void main() async {
 
         final apiClient = ApiClient(
           baseUrl: 'http://localhost:8080',
+          appCheckToken: appCheckToken,
           idTokenStream: authenticationRepository.idToken,
           refreshIdToken: authenticationRepository.refreshIdToken,
         );

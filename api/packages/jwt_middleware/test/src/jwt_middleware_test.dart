@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:clock/clock.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:http/http.dart' as http;
+import 'package:jose/jose.dart';
 import 'package:jwt_middleware/jwt_middleware.dart';
 import 'package:jwt_middleware/src/jwt.dart';
 import 'package:mocktail/mocktail.dart';
@@ -23,6 +24,16 @@ class _MockJWT extends Mock implements JWT {}
 class _MockRequestContext extends Mock implements RequestContext {}
 
 class _FakeVerifier extends Fake implements Verifier {}
+
+class _MockJsonWebKeySet extends Mock implements JsonWebKeySet {}
+
+class _MockJsonWebKey extends Mock implements JsonWebKey {}
+
+class _MockJsonWebSignature extends Mock implements JsonWebSignature {}
+
+class _MockJoseHeader extends Mock implements JoseHeader {}
+
+class _FakeJsonWebKeyStore extends Fake implements JsonWebKeyStore {}
 
 const _successfulKeyResponse = r'''
 {
@@ -47,6 +58,7 @@ void main() {
   setUpAll(() {
     registerFallbackValue(Uri());
     registerFallbackValue(_FakeVerifier());
+    registerFallbackValue(_FakeJsonWebKeyStore());
   });
 
   group('JwtMiddleware', () {
@@ -64,6 +76,12 @@ void main() {
     late JWT jwt;
     late JwtMiddleware subject;
     late JwtParser parseJwt;
+    late JsonWebKeySet jwks;
+    late JsonWebKey jwk;
+    late JwksParser parseJwks;
+    late JsonWebSignature jws;
+    late JoseHeader joseHeader;
+    late JwsParser parseJws;
     late bool isEmulator;
 
     setUp(() {
@@ -84,7 +102,20 @@ void main() {
       when(() => jwt.keyId).thenReturn(keyId);
       when(() => jwt.verifyWith(any())).thenReturn(true);
 
+      jwks = _MockJsonWebKeySet();
+      jwk = _MockJsonWebKey();
+      when(() => jwks.keys).thenReturn([jwk]);
+      when(() => jwk.keyId).thenReturn(keyId);
+
+      jws = _MockJsonWebSignature();
+      joseHeader = _MockJoseHeader();
+      when(() => jws.commonHeader).thenReturn(joseHeader);
+      when(() => joseHeader.keyId).thenReturn(keyId);
+      when(() => jws.verify(any())).thenAnswer((_) async => true);
+
       parseJwt = (_) => jwt;
+      parseJwks = (_) => jwks;
+      parseJws = (_) => jws;
       isEmulator = false;
     });
 
@@ -93,6 +124,8 @@ void main() {
         projectId: projectId,
         get: get,
         parseJwt: parseJwt,
+        parseJwks: parseJwks,
+        parseJws: parseJws,
         isEmulator: isEmulator,
       );
       return subject.middleware((_) async {
@@ -104,6 +137,22 @@ void main() {
       test('with no authorization header', () async {
         final handler = getHandler();
         final request = Request.get(uri);
+        final context = _MockRequestContext();
+        when(() => context.request).thenReturn(request);
+
+        final response = await handler(context);
+
+        expect(response, unauthorizedResponse);
+      });
+
+      test('with no firebase app check header', () async {
+        final handler = getHandler();
+        final request = Request.get(
+          uri,
+          headers: {
+            'authorization': 'Bearer myToken',
+          },
+        );
         final context = _MockRequestContext();
         when(() => context.request).thenReturn(request);
 
@@ -144,12 +193,65 @@ void main() {
         expect(response, unauthorizedResponse);
       });
 
-      test('when parsing token fails', () async {
+      test('without an app check token', () async {
+        final handler = getHandler();
+        final request = Request.get(
+          uri,
+          headers: {
+            'authorization': 'Bearer myToken',
+            'X-Firebase-AppCheck': '',
+          },
+        );
+        final context = _MockRequestContext();
+        when(() => context.request).thenReturn(request);
+
+        final response = await handler(context);
+
+        expect(response, unauthorizedResponse);
+      });
+
+      test('when parsing id token fails', () async {
         parseJwt = (_) => throw Exception();
         final request = Request.get(
           uri,
           headers: {
             'authorization': 'Bearer myToken',
+          },
+        );
+        final context = _MockRequestContext();
+        when(() => context.request).thenReturn(request);
+
+        final handler = getHandler();
+        final response = await handler(context);
+
+        expect(response, unauthorizedResponse);
+      });
+
+      test('when parsing json web key set fails', () async {
+        parseJwks = (_) => throw Exception();
+        final request = Request.get(
+          uri,
+          headers: {
+            'authorization': 'Bearer myToken',
+            'X-Firebase-AppCheck': 'myToken',
+          },
+        );
+        final context = _MockRequestContext();
+        when(() => context.request).thenReturn(request);
+
+        final handler = getHandler();
+        final response = await handler(context);
+
+        expect(response, unauthorizedResponse);
+      });
+
+      test('when parsing json web signature fails', () async {
+        parseJws = (_) => throw Exception();
+        final request = Request.get(
+          uri,
+          headers: {
+            'authorization': 'Bearer myToken',
+            'X-Firebase-AppCheck': 'myToken',
           },
         );
         final context = _MockRequestContext();
@@ -226,12 +328,13 @@ void main() {
     });
 
     group('request succeeds', () {
-      test('when parsing token succeeds and isEmulator is true', () async {
+      test('when parsing tokens succeeds and isEmulator is true', () async {
         isEmulator = true;
         final request = Request.get(
           uri,
           headers: {
             'authorization': 'Bearer myToken',
+            'X-Firebase-AppCheck': 'myToken',
           },
         );
         final context = _MockRequestContext();
@@ -245,11 +348,12 @@ void main() {
         expect(response, successfulReponse);
       });
 
-      test('when validating and verifying token succeeds', () async {
+      test('when validating and verifying tokens succeeds', () async {
         final request = Request.get(
           uri,
           headers: {
             'authorization': 'Bearer myToken',
+            'X-Firebase-AppCheck': 'myToken',
           },
         );
         final context = _MockRequestContext();
@@ -268,6 +372,7 @@ void main() {
           uri,
           headers: {
             'authorization': 'Bearer myToken',
+            'X-Firebase-AppCheck': 'myToken',
           },
         );
         final context = _MockRequestContext();
@@ -283,7 +388,7 @@ void main() {
         ];
 
         expect(responses, everyElement(successfulReponse));
-        verify(() => get(any())).called(1);
+        verify(() => get(any())).called(4);
       });
 
       test('and updates keys as needed', () async {
@@ -295,6 +400,7 @@ void main() {
             uri,
             headers: {
               'authorization': 'Bearer myToken',
+              'X-Firebase-AppCheck': 'myToken',
             },
           );
           final context = _MockRequestContext();
@@ -316,7 +422,7 @@ void main() {
 
           expect(responses, everyElement(successfulReponse));
           expect(responses2, everyElement(successfulReponse));
-          verify(() => get(any())).called(2);
+          verify(() => get(any())).called(6);
         });
       });
     });
