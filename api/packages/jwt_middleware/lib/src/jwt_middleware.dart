@@ -9,6 +9,10 @@ import 'package:jwt_middleware/src/authenticated_user.dart';
 import 'package:jwt_middleware/src/jwt.dart';
 import 'package:x509/x509.dart';
 
+/// The header used to send the app check token.
+// ignore: constant_identifier_names
+const X_FIREBASE_APPCHECK = 'X-Firebase-AppCheck';
+
 /// Definition of an HTTP GET call used by this client.
 typedef GetCall = Future<http.Response> Function(Uri uri);
 
@@ -74,7 +78,7 @@ class JwtMiddleware {
 
   /// Verifies the app check token in the given request context.
   Future<bool> verifyAppCheckToken(RequestContext context) async {
-    final appCheckToken = context.request.headers['X-Firebase-AppCheck'];
+    final appCheckToken = context.request.headers[X_FIREBASE_APPCHECK];
     if (appCheckToken == null || appCheckToken.isEmpty) return false;
     if (_isEmulator) return true;
 

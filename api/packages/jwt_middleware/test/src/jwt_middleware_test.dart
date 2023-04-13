@@ -207,7 +207,7 @@ void main() {
           uri,
           headers: {
             'authorization': 'Bearer myToken',
-            'X-Firebase-AppCheck': '',
+            X_FIREBASE_APPCHECK: '',
           },
         );
         final context = _MockRequestContext();
@@ -215,7 +215,7 @@ void main() {
 
         final response = await handler(context);
 
-        expect(response, unauthorizedResponse);
+        expect(response, equals(unauthorizedResponse));
       });
 
       test('when parsing id token fails', () async {
@@ -241,7 +241,7 @@ void main() {
           uri,
           headers: {
             'authorization': 'Bearer myToken',
-            'X-Firebase-AppCheck': 'myToken',
+            X_FIREBASE_APPCHECK: 'myToken',
           },
         );
         final context = _MockRequestContext();
@@ -250,7 +250,7 @@ void main() {
         final handler = getHandler();
         final response = await handler(context);
 
-        expect(response, unauthorizedResponse);
+        expect(response, equals(unauthorizedResponse));
       });
 
       test('when validating token fails', () async {
@@ -324,7 +324,7 @@ void main() {
           uri,
           headers: {
             'authorization': 'Bearer myToken',
-            'X-Firebase-AppCheck': 'myToken',
+            X_FIREBASE_APPCHECK: 'myToken',
           },
         );
         final context = _MockRequestContext();
@@ -343,7 +343,7 @@ void main() {
           uri,
           headers: {
             'authorization': 'Bearer myToken',
-            'X-Firebase-AppCheck': 'myToken',
+            X_FIREBASE_APPCHECK: 'myToken',
           },
         );
         final context = _MockRequestContext();
@@ -362,7 +362,7 @@ void main() {
           uri,
           headers: {
             'authorization': 'Bearer myToken',
-            'X-Firebase-AppCheck': 'myToken',
+            X_FIREBASE_APPCHECK: 'myToken',
           },
         );
         final context = _MockRequestContext();
@@ -390,7 +390,7 @@ void main() {
             uri,
             headers: {
               'authorization': 'Bearer myToken',
-              'X-Firebase-AppCheck': 'myToken',
+              X_FIREBASE_APPCHECK: 'myToken',
             },
           );
           final context = _MockRequestContext();

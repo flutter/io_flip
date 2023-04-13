@@ -2,6 +2,7 @@ import 'package:cards_repository/cards_repository.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:game_script_machine/game_script_machine.dart';
 import 'package:gcp/gcp.dart';
+import 'package:jwt_middleware/jwt_middleware.dart';
 import 'package:leaderboard_repository/leaderboard_repository.dart';
 import 'package:logging/logging.dart';
 import 'package:match_repository/match_repository.dart';
@@ -44,7 +45,7 @@ Middleware _allowHeader() {
       final accessControlAllowHeaders = headers[ACCESS_CONTROL_ALLOW_HEADERS];
       if (accessControlAllowHeaders != null) {
         headers[ACCESS_CONTROL_ALLOW_HEADERS] =
-            '$accessControlAllowHeaders, X-Firebase-AppCheck';
+            '$accessControlAllowHeaders, $X_FIREBASE_APPCHECK';
 
         return response.copyWith(headers: headers);
       }
