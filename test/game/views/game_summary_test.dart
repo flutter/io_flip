@@ -49,7 +49,6 @@ void main() {
           .thenReturn(null);
       when(() => bloc.canPlayerPlay(any())).thenReturn(true);
       when(() => bloc.isPlayerAllowedToPlay).thenReturn(true);
-      when(bloc.hasPlayerWon).thenReturn(false);
     });
 
     void mockState(GameState state) {
@@ -200,7 +199,6 @@ void main() {
               turnAnimationsFinished: true,
             ),
           );
-          when(bloc.hasPlayerWon).thenReturn(true);
           await tester.pumpSubject(bloc);
 
           expect(
@@ -215,7 +213,6 @@ void main() {
         (tester) async {
           defaultMockState();
 
-          when(bloc.hasPlayerWon).thenReturn(false);
           await tester.pumpSubject(bloc);
 
           expect(
@@ -292,7 +289,6 @@ void main() {
           final goRouter = MockGoRouter();
 
           defaultMockState();
-          when(bloc.hasPlayerWon).thenReturn(true);
           await tester.pumpSubject(
             bloc,
             goRouter: goRouter,
@@ -311,7 +307,6 @@ void main() {
           final goRouter = MockGoRouter();
 
           defaultMockState();
-          when(bloc.hasPlayerWon).thenReturn(true);
           await tester.pumpSubject(
             bloc,
             goRouter: goRouter,
@@ -336,7 +331,6 @@ void main() {
           final goRouter = MockGoRouter();
 
           defaultMockState();
-          when(bloc.hasPlayerWon).thenReturn(true);
           await tester.pumpSubject(
             bloc,
             goRouter: goRouter,
