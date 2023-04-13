@@ -11,6 +11,7 @@ part 'how_to_play_state.dart';
 class HowToPlayBloc extends Bloc<HowToPlayEvent, HowToPlayState> {
   HowToPlayBloc() : super(const HowToPlayState()) {
     on<NextPageRequested>(_onNextPageRequested);
+    on<PreviousPageRequested>(_onPreviousPageRequested);
   }
 
   void _onNextPageRequested(
@@ -22,6 +23,23 @@ class HowToPlayBloc extends Bloc<HowToPlayEvent, HowToPlayState> {
       elementsWheelState = state.elementsWheelState.next;
     }
     final position = state.position + 1;
+    emit(
+      state.copyWith(
+        position: position,
+        elementsWheelState: elementsWheelState,
+      ),
+    );
+  }
+
+  void _onPreviousPageRequested(
+    PreviousPageRequested event,
+    Emitter<HowToPlayState> emit,
+  ) {
+    var elementsWheelState = state.elementsWheelState;
+    if (state.position > HowToPlayState.initialSteps.length) {
+      elementsWheelState = state.elementsWheelState.previous;
+    }
+    final position = state.position - 1;
     emit(
       state.copyWith(
         position: position,

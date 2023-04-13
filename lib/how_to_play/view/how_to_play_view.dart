@@ -56,17 +56,34 @@ class HowToPlayView extends StatelessWidget {
                     ),
                   ),
                 ),
-                RoundedButton.icon(
-                  const Icon(Icons.arrow_forward),
-                  onPressed: () {
-                    final bloc = context.read<HowToPlayBloc>();
-                    if (bloc.state.position == totalSteps - 1) {
-                      maybePop(context);
-                    } else {
-                      bloc.add(const NextPageRequested());
-                    }
-                  },
-                )
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    RoundedButton.icon(
+                      const Icon(Icons.arrow_back),
+                      onPressed: () {
+                        final bloc = context.read<HowToPlayBloc>();
+                        if (bloc.state.position == 0) {
+                          maybePop(context);
+                        } else {
+                          bloc.add(const PreviousPageRequested());
+                        }
+                      },
+                    ),
+                    const SizedBox(width: TopDashSpacing.md),
+                    RoundedButton.icon(
+                      const Icon(Icons.arrow_forward),
+                      onPressed: () {
+                        final bloc = context.read<HowToPlayBloc>();
+                        if (bloc.state.position == totalSteps - 1) {
+                          maybePop(context);
+                        } else {
+                          bloc.add(const NextPageRequested());
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ],
             ),
             Align(

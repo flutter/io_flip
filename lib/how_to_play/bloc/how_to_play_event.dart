@@ -10,3 +10,7 @@ abstract class HowToPlayEvent extends Equatable {
 class NextPageRequested extends HowToPlayEvent {
   const NextPageRequested();
 }
+
+class PreviousPageRequested extends HowToPlayEvent {
+  const PreviousPageRequested();
+}

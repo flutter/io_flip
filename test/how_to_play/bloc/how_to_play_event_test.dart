@@ -14,5 +14,15 @@ void main() {
         expect(NextPageRequested(), equals(NextPageRequested()));
       });
     });
+
+    group('PreviousPageRequested', () {
+      test('can be instantiated', () {
+        expect(PreviousPageRequested(), isNotNull);
+      });
+
+      test('supports equality', () {
+        expect(PreviousPageRequested(), equals(PreviousPageRequested()));
+      });
+    });
   });
 }

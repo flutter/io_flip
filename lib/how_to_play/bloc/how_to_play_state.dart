@@ -50,6 +50,7 @@ abstract class ElementsWheelState extends Equatable {
     return elementsAffected.map((e) => allElements.indexOf(e) - 1).toList();
   }
 
+  ElementsWheelState get previous;
   ElementsWheelState get next;
 }
 
@@ -68,6 +69,9 @@ class ElementsWheelFire extends ElementsWheelState {
             Elements.metal,
           ],
         );
+
+  @override
+  ElementsWheelState get previous => const ElementsWheelWater();
 
   @override
   ElementsWheelState get next => const ElementsWheelAir();
@@ -94,6 +98,9 @@ class ElementsWheelAir extends ElementsWheelState {
         );
 
   @override
+  ElementsWheelState get previous => const ElementsWheelFire();
+
+  @override
   ElementsWheelState get next => const ElementsWheelMetal();
 
   @override
@@ -116,6 +123,9 @@ class ElementsWheelMetal extends ElementsWheelState {
             Elements.water,
           ],
         );
+
+  @override
+  ElementsWheelState get previous => const ElementsWheelAir();
 
   @override
   ElementsWheelState get next => const ElementsWheelEarth();
@@ -142,6 +152,9 @@ class ElementsWheelEarth extends ElementsWheelState {
         );
 
   @override
+  ElementsWheelState get previous => const ElementsWheelMetal();
+
+  @override
   ElementsWheelState get next => const ElementsWheelWater();
 
   @override
@@ -164,6 +177,9 @@ class ElementsWheelWater extends ElementsWheelState {
             Elements.earth,
           ],
         );
+
+  @override
+  ElementsWheelState get previous => const ElementsWheelEarth();
 
   @override
   ElementsWheelState get next => const ElementsWheelFire();

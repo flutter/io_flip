@@ -10,7 +10,7 @@ class ElementIcon extends StatelessWidget {
   ElementIcon.air({
     super.key,
     this.scale = 1,
-  })  : icon = Assets.images.elements.air,
+  })  : asset = Assets.images.elements.air,
         _width = 66.41,
         _height = 57.87;
 
@@ -19,7 +19,7 @@ class ElementIcon extends StatelessWidget {
   ElementIcon.earth({
     super.key,
     this.scale = 1,
-  })  : icon = Assets.images.elements.earth,
+  })  : asset = Assets.images.elements.earth,
         _width = 65.93,
         _height = 64.62;
 
@@ -27,7 +27,7 @@ class ElementIcon extends StatelessWidget {
   ElementIcon.fire({
     super.key,
     this.scale = 1,
-  })  : icon = Assets.images.elements.fire,
+  })  : asset = Assets.images.elements.fire,
         _width = 50.17,
         _height = 80.95;
 
@@ -35,7 +35,7 @@ class ElementIcon extends StatelessWidget {
   ElementIcon.metal({
     super.key,
     this.scale = 1,
-  })  : icon = Assets.images.elements.metal,
+  })  : asset = Assets.images.elements.metal,
         _width = 69.36,
         _height = 68.44;
 
@@ -43,12 +43,12 @@ class ElementIcon extends StatelessWidget {
   ElementIcon.water({
     super.key,
     this.scale = 1,
-  })  : icon = Assets.images.elements.water,
+  })  : asset = Assets.images.elements.water,
         _width = 58.24,
         _height = 79.37;
 
   /// Image icon for the element.
-  final String icon;
+  final String asset;
 
   /// Original width of the image.
   final double _width;
@@ -71,7 +71,7 @@ class ElementIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SvgPicture.asset(
-      icon,
+      asset,
       package: package,
       height: height,
       width: width,
