@@ -11,7 +11,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/game/game.dart';
+import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class _MockGameResource extends Mock implements GameResource {}
@@ -19,6 +21,8 @@ class _MockGameResource extends Mock implements GameResource {}
 class _MockConnectionRepository extends Mock implements ConnectionRepository {}
 
 class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
+
+class _MockAudioController extends Mock implements AudioController {}
 
 class _MockMatchSolver extends Mock implements MatchSolver {}
 
@@ -47,6 +51,7 @@ void main() {
     late GameResource gameResource;
     late MatchMakerRepository matchMakerRepository;
     late MatchSolver matchSolver;
+    late AudioController audioController;
     late User user;
     late ConnectionRepository connectionRepository;
     const isHost = true;
@@ -59,6 +64,7 @@ void main() {
     setUp(() {
       connectionRepository = _MockConnectionRepository();
       matchSolver = _MockMatchSolver();
+      audioController = _MockAudioController();
       gameResource = _MockGameResource();
       matchMakerRepository = _MockMatchMakerRepository();
       user = _MockUser();
@@ -176,6 +182,7 @@ void main() {
         GameBloc(
           gameResource: _MockGameResource(),
           matchMakerRepository: _MockMatchMakerRepository(),
+          audioController: audioController,
           matchSolver: matchSolver,
           user: user,
           isHost: true,
@@ -191,6 +198,7 @@ void main() {
           gameResource: _MockGameResource(),
           matchMakerRepository: _MockMatchMakerRepository(),
           matchSolver: matchSolver,
+          audioController: audioController,
           user: user,
           isHost: false,
           connectionRepository: _MockConnectionRepository(),
@@ -204,6 +212,7 @@ void main() {
       build: () => GameBloc(
         gameResource: gameResource,
         matchMakerRepository: matchMakerRepository,
+        audioController: audioController,
         matchSolver: matchSolver,
         user: user,
         isHost: isHost,
@@ -227,10 +236,28 @@ void main() {
     );
 
     blocTest<GameBloc, GameState>(
+      'plays the startGame sfx when match is loaded',
+      build: () => GameBloc(
+        gameResource: gameResource,
+        matchMakerRepository: matchMakerRepository,
+        audioController: audioController,
+        matchSolver: matchSolver,
+        user: user,
+        isHost: isHost,
+        connectionRepository: connectionRepository,
+      ),
+      act: (bloc) => bloc.add(MatchRequested(match.id)),
+      verify: (_) {
+        verify(() => audioController.playSfx(Assets.sfx.startGame)).called(1);
+      },
+    );
+
+    blocTest<GameBloc, GameState>(
       'fails when the match is not found',
       build: () => GameBloc(
         gameResource: gameResource,
         matchMakerRepository: matchMakerRepository,
+        audioController: audioController,
         matchSolver: matchSolver,
         user: user,
         isHost: isHost,
@@ -252,6 +279,7 @@ void main() {
       build: () => GameBloc(
         gameResource: gameResource,
         matchMakerRepository: matchMakerRepository,
+        audioController: audioController,
         matchSolver: matchSolver,
         user: user,
         isHost: isHost,
@@ -288,6 +316,7 @@ void main() {
         final bloc = GameBloc(
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
+          audioController: audioController,
           matchSolver: matchSolver,
           user: user,
           isHost: true,
@@ -328,6 +357,7 @@ void main() {
         final bloc = GameBloc(
           user: User(id: 'userId'),
           gameResource: gameResource,
+          audioController: audioController,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
           isHost: true,
@@ -357,6 +387,7 @@ void main() {
         build: () => GameBloc(
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
+          audioController: audioController,
           matchSolver: matchSolver,
           user: user,
           isHost: true,
@@ -387,6 +418,7 @@ void main() {
         build: () => GameBloc(
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
+          audioController: audioController,
           matchSolver: matchSolver,
           user: user,
           isHost: true,
@@ -418,6 +450,7 @@ void main() {
         'hasPlayerWon returns true if the host won, and the player is the host',
         build: () => GameBloc(
           connectionRepository: connectionRepository,
+          audioController: audioController,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
@@ -444,6 +477,7 @@ void main() {
         build: () => GameBloc(
           connectionRepository: connectionRepository,
           gameResource: gameResource,
+          audioController: audioController,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
           user: user,
@@ -468,6 +502,7 @@ void main() {
         build: () => GameBloc(
           connectionRepository: connectionRepository,
           gameResource: gameResource,
+          audioController: audioController,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
           isHost: false,
@@ -486,6 +521,7 @@ void main() {
             gameResource: gameResource,
             matchMakerRepository: matchMakerRepository,
             matchSolver: matchSolver,
+            audioController: audioController,
             user: user,
             isHost: true,
             connectionRepository: connectionRepository,
@@ -524,6 +560,7 @@ void main() {
           'returns correctly when is host and card is from opponent',
           build: () => GameBloc(
             gameResource: gameResource,
+            audioController: audioController,
             matchMakerRepository: matchMakerRepository,
             matchSolver: matchSolver,
             user: user,
@@ -565,6 +602,7 @@ void main() {
           'returns correctly when is guest and card is from player',
           build: () => GameBloc(
             connectionRepository: connectionRepository,
+            audioController: audioController,
             gameResource: gameResource,
             matchMakerRepository: matchMakerRepository,
             matchSolver: matchSolver,
@@ -608,6 +646,7 @@ void main() {
             connectionRepository: connectionRepository,
             gameResource: gameResource,
             matchMakerRepository: matchMakerRepository,
+            audioController: audioController,
             matchSolver: matchSolver,
             isHost: false,
             user: user,
@@ -649,6 +688,7 @@ void main() {
         build: () => GameBloc(
           connectionRepository: connectionRepository,
           gameResource: gameResource,
+          audioController: audioController,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
           user: user,
@@ -679,6 +719,7 @@ void main() {
           connectionRepository: connectionRepository,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
+          audioController: audioController,
           matchSolver: matchSolver,
           user: user,
           isHost: false,
@@ -708,6 +749,7 @@ void main() {
         build: () => GameBloc(
           connectionRepository: connectionRepository,
           gameResource: gameResource,
+          audioController: audioController,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
           user: user,
@@ -803,6 +845,7 @@ void main() {
         'plays a player card and opponent card and another opponent one',
         build: () => GameBloc(
           connectionRepository: connectionRepository,
+          audioController: audioController,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
@@ -946,6 +989,7 @@ void main() {
               connectionRepository: connectionRepository,
               gameResource: gameResource,
               matchMakerRepository: matchMakerRepository,
+              audioController: audioController,
               matchSolver: matchSolver,
               user: user,
               isHost: true,
@@ -986,6 +1030,7 @@ void main() {
 
             final bloc = GameBloc(
               connectionRepository: connectionRepository,
+              audioController: audioController,
               gameResource: gameResource,
               matchMakerRepository: matchMakerRepository,
               matchSolver: matchSolver,
@@ -1023,6 +1068,7 @@ void main() {
             final bloc = GameBloc(
               connectionRepository: connectionRepository,
               gameResource: gameResource,
+              audioController: audioController,
               matchMakerRepository: matchMakerRepository,
               matchSolver: matchSolver,
               user: user,
@@ -1051,6 +1097,7 @@ void main() {
       build: () => GameBloc(
         connectionRepository: connectionRepository,
         gameResource: gameResource,
+        audioController: audioController,
         matchMakerRepository: matchMakerRepository,
         matchSolver: matchSolver,
         isHost: true,
@@ -1067,6 +1114,7 @@ void main() {
       build: () => GameBloc(
         connectionRepository: connectionRepository,
         gameResource: gameResource,
+        audioController: audioController,
         matchMakerRepository: matchMakerRepository,
         matchSolver: matchSolver,
         isHost: false,
@@ -1084,6 +1132,7 @@ void main() {
         connectionRepository: connectionRepository,
         gameResource: gameResource,
         matchMakerRepository: matchMakerRepository,
+        audioController: audioController,
         matchSolver: matchSolver,
         isHost: false,
         user: user,
@@ -1099,6 +1148,7 @@ void main() {
       build: () => GameBloc(
         connectionRepository: connectionRepository,
         gameResource: gameResource,
+        audioController: audioController,
         matchMakerRepository: matchMakerRepository,
         matchSolver: matchSolver,
         isHost: true,
@@ -1116,6 +1166,7 @@ void main() {
       build: () => GameBloc(
         connectionRepository: connectionRepository,
         gameResource: gameResource,
+        audioController: audioController,
         matchMakerRepository: matchMakerRepository,
         matchSolver: matchSolver,
         isHost: true,
@@ -1234,6 +1285,7 @@ void main() {
         'notifies when opponent(guest) is absent',
         build: () => GameBloc(
           connectionRepository: connectionRepository,
+          audioController: audioController,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           user: user,
@@ -1262,6 +1314,7 @@ void main() {
         build: () => GameBloc(
           connectionRepository: connectionRepository,
           gameResource: gameResource,
+          audioController: audioController,
           matchMakerRepository: matchMakerRepository,
           user: user,
           isHost: false,
@@ -1290,6 +1343,7 @@ void main() {
           connectionRepository: connectionRepository,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
+          audioController: audioController,
           user: user,
           isHost: true,
           matchSolver: matchSolver,
@@ -1319,6 +1373,7 @@ void main() {
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           user: user,
+          audioController: audioController,
           isHost: true,
           matchSolver: matchSolver,
         ),
@@ -1359,6 +1414,7 @@ void main() {
           connectionRepository: connectionRepository,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
+          audioController: audioController,
           user: user,
           isHost: true,
           matchSolver: matchSolver,
@@ -1388,6 +1444,7 @@ void main() {
         build: () => GameBloc(
           connectionRepository: connectionRepository,
           gameResource: gameResource,
+          audioController: audioController,
           matchMakerRepository: matchMakerRepository,
           user: user,
           isHost: true,
@@ -1409,6 +1466,7 @@ void main() {
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           user: user,
+          audioController: audioController,
           isHost: true,
           matchSolver: matchSolver,
         ),
@@ -1425,6 +1483,7 @@ void main() {
         'emits state updating showCardsOverlay field',
         build: () => GameBloc(
           connectionRepository: connectionRepository,
+          audioController: audioController,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           user: user,
