@@ -489,6 +489,10 @@ void main() {
 
       group('shareHandUrl', () {
         test('returns the correct url', () {
+          when(
+            () => apiClient.shareHandUrl(any()),
+          ).thenReturn('http://baseurl.com/public/share?deckId=id');
+
           expect(
             resource.shareHandUrl('id'),
             equals('http://baseurl.com/public/share?deckId=id'),
@@ -498,6 +502,10 @@ void main() {
 
       group('shareCardUrl', () {
         test('returns the correct url', () {
+          when(
+            () => apiClient.shareCardUrl(any()),
+          ).thenReturn('http://baseurl.com/public/share?cardId=id');
+
           expect(
             resource.shareCardUrl('id'),
             equals('http://baseurl.com/public/share?cardId=id'),
