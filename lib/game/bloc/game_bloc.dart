@@ -158,7 +158,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       ];
 
       if (event.updatedState.result != null) {
-        switch (gameResult(event.updatedState)) {
+        switch (_gameResult(event.updatedState)) {
           case GameResult.win:
             _audioController.playSfx(Assets.sfx.winMatch);
             break;
@@ -393,7 +393,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     return null;
   }
 
-  GameResult gameResult(MatchState matchState) {
+  GameResult _gameResult(MatchState matchState) {
     if ((isHost && matchState.result == MatchResult.host) ||
         (!isHost && matchState.result == MatchResult.guest)) {
       return GameResult.win;
@@ -403,6 +403,13 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     } else {
       return GameResult.draw;
     }
+  }
+
+  GameResult? gameResult() {
+    if (state is MatchLoadedState) {
+      return _gameResult((state as MatchLoadedState).matchState);
+    }
+    return null;
   }
 
   bool get isPlayerAllowedToPlay {

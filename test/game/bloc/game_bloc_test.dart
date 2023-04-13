@@ -458,17 +458,18 @@ void main() {
             user: user,
             isHost: true,
           ),
+          seed: () => baseState.copyWith(
+            matchState: MatchState(
+              id: baseState.matchState.id,
+              matchId: baseState.matchState.id,
+              guestPlayedCards: baseState.matchState.guestPlayedCards,
+              hostPlayedCards: baseState.matchState.hostPlayedCards,
+              result: MatchResult.host,
+            ),
+          ),
           verify: (bloc) {
             expect(
-              bloc.gameResult(
-                MatchState(
-                  id: baseState.matchState.id,
-                  matchId: baseState.matchState.id,
-                  guestPlayedCards: baseState.matchState.guestPlayedCards,
-                  hostPlayedCards: baseState.matchState.hostPlayedCards,
-                  result: MatchResult.host,
-                ),
-              ),
+              bloc.gameResult(),
               equals(GameResult.win),
             );
           },
@@ -485,17 +486,18 @@ void main() {
             user: user,
             isHost: false,
           ),
+          seed: () => baseState.copyWith(
+            matchState: MatchState(
+              id: baseState.matchState.id,
+              matchId: baseState.matchState.id,
+              guestPlayedCards: baseState.matchState.guestPlayedCards,
+              hostPlayedCards: baseState.matchState.hostPlayedCards,
+              result: MatchResult.guest,
+            ),
+          ),
           verify: (bloc) {
             expect(
-              bloc.gameResult(
-                MatchState(
-                  id: baseState.matchState.id,
-                  matchId: baseState.matchState.id,
-                  guestPlayedCards: baseState.matchState.guestPlayedCards,
-                  hostPlayedCards: baseState.matchState.hostPlayedCards,
-                  result: MatchResult.guest,
-                ),
-              ),
+              bloc.gameResult(),
               equals(GameResult.win),
             );
           },
@@ -512,17 +514,18 @@ void main() {
             user: user,
             isHost: true,
           ),
+          seed: () => baseState.copyWith(
+            matchState: MatchState(
+              id: baseState.matchState.id,
+              matchId: baseState.matchState.id,
+              guestPlayedCards: baseState.matchState.guestPlayedCards,
+              hostPlayedCards: baseState.matchState.hostPlayedCards,
+              result: MatchResult.guest,
+            ),
+          ),
           verify: (bloc) {
             expect(
-              bloc.gameResult(
-                MatchState(
-                  id: baseState.matchState.id,
-                  matchId: baseState.matchState.id,
-                  guestPlayedCards: baseState.matchState.guestPlayedCards,
-                  hostPlayedCards: baseState.matchState.hostPlayedCards,
-                  result: MatchResult.guest,
-                ),
-              ),
+              bloc.gameResult(),
               equals(GameResult.lose),
             );
           },
@@ -539,17 +542,18 @@ void main() {
             user: user,
             isHost: false,
           ),
+          seed: () => baseState.copyWith(
+            matchState: MatchState(
+              id: baseState.matchState.id,
+              matchId: baseState.matchState.id,
+              guestPlayedCards: baseState.matchState.guestPlayedCards,
+              hostPlayedCards: baseState.matchState.hostPlayedCards,
+              result: MatchResult.host,
+            ),
+          ),
           verify: (bloc) {
             expect(
-              bloc.gameResult(
-                MatchState(
-                  id: baseState.matchState.id,
-                  matchId: baseState.matchState.id,
-                  guestPlayedCards: baseState.matchState.guestPlayedCards,
-                  hostPlayedCards: baseState.matchState.hostPlayedCards,
-                  result: MatchResult.host,
-                ),
-              ),
+              bloc.gameResult(),
               equals(GameResult.lose),
             );
           },
