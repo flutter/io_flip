@@ -175,6 +175,7 @@ void main() {
               turnAnimationsFinished: true,
             ),
           );
+          when(() => bloc.gameResult()).thenReturn(GameResult.draw);
           await tester.pumpSubject(bloc);
 
           expect(

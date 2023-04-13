@@ -100,8 +100,7 @@ class _ResultView extends StatelessWidget {
         title = context.l10n.gameTiedTitle;
         break;
       case null:
-        color = TopDashColors.seedGrey50;
-        title = context.l10n.gameTiedTitle;
+        return const Center(child: Text('Error getting game result'));
     }
 
     return Column(
