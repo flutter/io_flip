@@ -188,4 +188,31 @@ enum Elements {
         return ElementIcon.metal(scale: scale);
     }
   }
+
+  Alignment get initialAlignment {
+    switch (this) {
+      case fire:
+        return ElementAlignment.topCenter;
+      case air:
+        return ElementAlignment.centerRight;
+      case metal:
+        return ElementAlignment.bottomRight;
+      case earth:
+        return ElementAlignment.bottomLeft;
+      case water:
+        return ElementAlignment.centerLeft;
+    }
+  }
+}
+
+class ElementAlignment {
+  static const Alignment topCenter = Alignment.topCenter;
+
+  static const Alignment centerRight = Alignment(1, -.1);
+
+  static const Alignment centerLeft = Alignment(-1, -.1);
+
+  static const Alignment bottomRight = Alignment(.6, 1);
+
+  static const Alignment bottomLeft = Alignment(-.6, 1);
 }

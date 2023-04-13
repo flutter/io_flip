@@ -21,11 +21,11 @@ class ElementsWheel extends StatelessWidget {
   final String text;
 
   static const List<Alignment> alignments = [
-    Alignment.topCenter,
-    Alignment(1, -.1),
-    Alignment(.6, 1),
-    Alignment(-.6, 1),
-    Alignment(-1, -.1),
+    ElementAlignment.topCenter,
+    ElementAlignment.centerRight,
+    ElementAlignment.bottomRight,
+    ElementAlignment.bottomLeft,
+    ElementAlignment.centerLeft,
   ];
 
   @override
@@ -50,6 +50,7 @@ class ElementsWheel extends StatelessWidget {
                 (index, element) {
                   return _ElementItem(
                     key: ValueKey(element),
+                    initialAlignment: element.initialAlignment,
                     alignment: alignments[index],
                     isReference: index == 0,
                     isAffected: affectedIndexes.contains(index - 1),
@@ -69,6 +70,7 @@ class ElementsWheel extends StatelessWidget {
 
 class _ElementItem extends StatelessWidget {
   const _ElementItem({
+    required this.initialAlignment,
     required this.alignment,
     required this.isReference,
     required this.isAffected,
@@ -76,6 +78,7 @@ class _ElementItem extends StatelessWidget {
     super.key,
   });
 
+  final Alignment initialAlignment;
   final Alignment alignment;
   final bool isReference;
   final bool isAffected;
@@ -83,9 +86,13 @@ class _ElementItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedAlign(
+    return TweenAnimationBuilder<Alignment>(
       duration: transitionDuration,
-      alignment: alignment,
+      tween: CircularAlignmentTween(begin: initialAlignment, end: alignment),
+      builder: (context, alignment, child) => Align(
+        alignment: alignment,
+        child: child,
+      ),
       child: AnimatedOpacity(
         opacity: isAffected || isReference ? 1 : .2,
         duration: transitionDuration,
