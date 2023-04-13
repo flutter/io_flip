@@ -714,6 +714,42 @@ void main() {
       );
 
       blocTest<GameBloc, GameState>(
+        'Plays playCard sound when card is played by host',
+        build: () => GameBloc(
+          connectionRepository: connectionRepository,
+          gameResource: gameResource,
+          audioController: audioController,
+          matchMakerRepository: matchMakerRepository,
+          matchSolver: matchSolver,
+          user: user,
+          isHost: true,
+        ),
+        seed: () => baseState,
+        act: (bloc) => bloc.add(PlayerPlayed('new_card_1')),
+        verify: (_) {
+          verify(() => audioController.playSfx(Assets.sfx.playCard)).called(1);
+        },
+      );
+
+      blocTest<GameBloc, GameState>(
+        'Plays playCard sound when card is played by guest',
+        build: () => GameBloc(
+          connectionRepository: connectionRepository,
+          gameResource: gameResource,
+          audioController: audioController,
+          matchMakerRepository: matchMakerRepository,
+          matchSolver: matchSolver,
+          user: user,
+          isHost: false,
+        ),
+        seed: () => baseState,
+        act: (bloc) => bloc.add(PlayerPlayed('new_card_1')),
+        verify: (_) {
+          verify(() => audioController.playSfx(Assets.sfx.playCard)).called(1);
+        },
+      );
+
+      blocTest<GameBloc, GameState>(
         'plays a player card when being the guest',
         build: () => GameBloc(
           connectionRepository: connectionRepository,
