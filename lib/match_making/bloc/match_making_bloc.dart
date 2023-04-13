@@ -179,7 +179,8 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
               isHost: true,
             ),
           );
-        } catch (e) {
+        } catch (e, s) {
+          addError(e, s);
           _connectionRepository.send(const WebSocketMessage.matchLeft());
           emit(state.copyWith(status: MatchMakingStatus.timeout));
         }

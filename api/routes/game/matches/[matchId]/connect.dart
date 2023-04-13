@@ -35,8 +35,9 @@ FutureOr<Response> onRequest(RequestContext context, String matchId) async {
           matchId: matchId,
           hostId: user.id,
         );
-      } catch (e) {
+      } catch (e, s) {
         log('Error while connecting to cpu match: $e');
+        log('Stacktrace: $s');
         return Response(statusCode: HttpStatus.internalServerError);
       }
       return Response(statusCode: HttpStatus.noContent);
