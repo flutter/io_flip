@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
+import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/game/game.dart';
 
 class GamePage extends StatelessWidget {
@@ -36,11 +37,13 @@ class GamePage extends StatelessWidget {
         final gameResource = context.read<GameResource>();
         final matchMakerRepository = context.read<MatchMakerRepository>();
         final connectionRepository = context.read<ConnectionRepository>();
+        final audioController = context.read<AudioController>();
         final matchSolver = context.read<MatchSolver>();
         final user = context.read<User>();
         return GameBloc(
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
+          audioController: audioController,
           connectionRepository: connectionRepository,
           matchSolver: matchSolver,
           user: user,
