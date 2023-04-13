@@ -486,6 +486,24 @@ void main() {
           ),
         );
       });
+
+      group('shareHandUrl', () {
+        test('returns the correct url', () {
+          expect(
+            resource.shareHandUrl('id'),
+            equals('http://baseurl.com/public/share?deckId=id'),
+          );
+        });
+      });
+
+      group('shareCardUrl', () {
+        test('returns the correct url', () {
+          expect(
+            resource.shareCardUrl('id'),
+            equals('http://baseurl.com/public/share?cardId=id'),
+          );
+        });
+      });
     });
   });
 }
