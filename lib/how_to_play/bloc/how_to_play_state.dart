@@ -197,18 +197,17 @@ enum Elements {
   metal;
 
   ElementIcon get icon {
-    const scale = 1.3;
     switch (this) {
       case fire:
-        return ElementIcon.fire(scale: scale);
+        return ElementIcon.fire();
       case water:
-        return ElementIcon.water(scale: scale);
+        return ElementIcon.water();
       case air:
-        return ElementIcon.air(scale: scale);
+        return ElementIcon.air();
       case earth:
-        return ElementIcon.earth(scale: scale);
+        return ElementIcon.earth();
       case metal:
-        return ElementIcon.metal(scale: scale);
+        return ElementIcon.metal();
     }
   }
 

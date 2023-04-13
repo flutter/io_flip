@@ -10,71 +10,54 @@ class ElementIcon extends StatelessWidget {
   ElementIcon.air({
     super.key,
     this.scale = 1,
-  })  : asset = Assets.images.elements.air,
-        _width = 66.41,
-        _height = 57.87;
+  }) : asset = Assets.images.elements.air;
 
   /// [ElementIcon] for the earth element.
-
   ElementIcon.earth({
     super.key,
     this.scale = 1,
-  })  : asset = Assets.images.elements.earth,
-        _width = 65.93,
-        _height = 64.62;
+  }) : asset = Assets.images.elements.earth;
 
   /// [ElementIcon] for the fire element.
   ElementIcon.fire({
     super.key,
     this.scale = 1,
-  })  : asset = Assets.images.elements.fire,
-        _width = 50.17,
-        _height = 80.95;
+  }) : asset = Assets.images.elements.fire;
 
   /// [ElementIcon] for the metal element.
   ElementIcon.metal({
     super.key,
     this.scale = 1,
-  })  : asset = Assets.images.elements.metal,
-        _width = 69.36,
-        _height = 68.44;
+  }) : asset = Assets.images.elements.metal;
 
   /// [ElementIcon] for the water element.
   ElementIcon.water({
     super.key,
     this.scale = 1,
-  })  : asset = Assets.images.elements.water,
-        _width = 58.24,
-        _height = 79.37;
+  }) : asset = Assets.images.elements.water;
 
   /// Image icon for the element.
   final String asset;
 
-  /// Original width of the image.
-  final double _width;
-
-  /// Original height of the image.
-  final double _height;
-
   /// Scale factor to resize the image.
   final double scale;
+
+// Original size of the image.
+  static const _size = 96;
 
   /// Package name where the assets are located.
   static const package = 'top_dash_ui';
 
-  /// Rendered height of the image
-  double get height => scale * _height;
-
-  /// Rendered width of the image
-  double get width => scale * _width;
+  /// Rendered size of the image
+  double get size => scale * _size;
 
   @override
   Widget build(BuildContext context) {
     return SvgPicture.asset(
       asset,
       package: package,
-      height: height,
-      width: width,
+      height: size,
+      width: size,
     );
   }
 }

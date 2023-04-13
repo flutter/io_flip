@@ -188,6 +188,7 @@ class HowToPlayElementsIntro extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    const scale = .69;
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -199,23 +200,23 @@ class HowToPlayElementsIntro extends StatelessWidget {
               children: [
                 Align(
                   alignment: Alignment.topCenter,
-                  child: ElementIcon.fire(),
+                  child: ElementIcon.fire(scale: scale),
                 ),
                 Align(
                   alignment: const Alignment(-1, -.1),
-                  child: ElementIcon.water(),
+                  child: ElementIcon.water(scale: scale),
                 ),
                 Align(
                   alignment: const Alignment(1, -.1),
-                  child: ElementIcon.air(),
+                  child: ElementIcon.air(scale: scale),
                 ),
                 Align(
                   alignment: const Alignment(-.6, 1),
-                  child: ElementIcon.earth(),
+                  child: ElementIcon.earth(scale: scale),
                 ),
                 Align(
                   alignment: const Alignment(.6, 1),
-                  child: ElementIcon.metal(),
+                  child: ElementIcon.metal(scale: scale),
                 ),
               ],
             ),
