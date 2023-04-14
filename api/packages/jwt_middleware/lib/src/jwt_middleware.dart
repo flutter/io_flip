@@ -32,12 +32,13 @@ class JwtMiddleware {
     GetCall get = http.get,
     JwtParser parseJwt = JWT.from,
     JwsParser parseJws = JsonWebSignature.fromCompactSerialization,
-    DefaultJsonWebKeySetLoader? jwksLoader,
+    JsonWebKeyStore? jwks,
     bool isEmulator = false,
   })  : _get = get,
         _parseJwt = parseJwt,
         _parseJws = parseJws,
-        _jwksLoader = jwksLoader ?? DefaultJsonWebKeySetLoader(),
+        _jwks = jwks ?? JsonWebKeyStore()
+          ..addKeySetUrl(Uri.parse(_jwksUrl)),
         _projectId = projectId,
         _isEmulator = isEmulator,
         _keys = const {};
@@ -45,7 +46,7 @@ class JwtMiddleware {
   final GetCall _get;
   final JwtParser _parseJwt;
   final JwsParser _parseJws;
-  final DefaultJsonWebKeySetLoader _jwksLoader;
+  final JsonWebKeyStore _jwks;
   final String _projectId;
   final bool _isEmulator;
 
@@ -83,14 +84,8 @@ class JwtMiddleware {
     if (_isEmulator) return true;
 
     try {
-      final jwks = await _jwksLoader.read(Uri.parse(_jwksUrl));
-
       final jws = _parseJws(appCheckToken);
-      final keyId = jws.commonHeader.keyId;
-      final jwk = jwks.keys.firstWhere((key) => key.keyId == keyId);
-      final keyStore = JsonWebKeyStore()..addKey(jwk);
-
-      return jws.verify(keyStore);
+      return jws.verify(_jwks);
     } catch (e) {
       return false;
     }

@@ -25,16 +25,7 @@ class _MockRequestContext extends Mock implements RequestContext {}
 
 class _FakeVerifier extends Fake implements Verifier {}
 
-class _MockDefaultJsonWebKeySetLoader extends Mock
-    implements DefaultJsonWebKeySetLoader {}
-
-class _MockJsonWebKeySet extends Mock implements JsonWebKeySet {}
-
-class _MockJsonWebKey extends Mock implements JsonWebKey {}
-
 class _MockJsonWebSignature extends Mock implements JsonWebSignature {}
-
-class _MockJoseHeader extends Mock implements JoseHeader {}
 
 class _FakeJsonWebKeyStore extends Fake implements JsonWebKeyStore {}
 
@@ -79,11 +70,7 @@ void main() {
     late JWT jwt;
     late JwtMiddleware subject;
     late JwtParser parseJwt;
-    late DefaultJsonWebKeySetLoader jwksLoader;
-    late JsonWebKeySet jwks;
-    late JsonWebKey jwk;
     late JsonWebSignature jws;
-    late JoseHeader joseHeader;
     late JwsParser parseJws;
     late bool isEmulator;
 
@@ -105,17 +92,7 @@ void main() {
       when(() => jwt.keyId).thenReturn(keyId);
       when(() => jwt.verifyWith(any())).thenReturn(true);
 
-      jwksLoader = _MockDefaultJsonWebKeySetLoader();
-      jwks = _MockJsonWebKeySet();
-      jwk = _MockJsonWebKey();
-      when(() => jwksLoader.read(any())).thenAnswer((_) async => jwks);
-      when(() => jwks.keys).thenReturn([jwk]);
-      when(() => jwk.keyId).thenReturn(keyId);
-
       jws = _MockJsonWebSignature();
-      joseHeader = _MockJoseHeader();
-      when(() => jws.commonHeader).thenReturn(joseHeader);
-      when(() => joseHeader.keyId).thenReturn(keyId);
       when(() => jws.verify(any())).thenAnswer((_) async => true);
 
       parseJwt = (_) => jwt;
@@ -129,7 +106,6 @@ void main() {
         get: get,
         parseJwt: parseJwt,
         parseJws: parseJws,
-        jwksLoader: jwksLoader,
         isEmulator: isEmulator,
       );
       return subject.middleware((_) async {
