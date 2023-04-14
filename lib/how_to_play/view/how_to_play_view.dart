@@ -32,11 +32,11 @@ class HowToPlayView extends StatelessWidget {
               const Expanded(
                 child: HowToPlayStepView(),
               ),
-              Padding(
+              Container(
                 padding: const EdgeInsets.symmetric(
                   vertical: TopDashSpacing.xlg,
-                  horizontal: TopDashSpacing.xxxlg,
                 ),
+                constraints: const BoxConstraints(maxWidth: 220),
                 child: Row(
                   key: const Key('how_to_play_page_indicator'),
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -110,22 +110,29 @@ class HowToPlayStepView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    const steps = HowToPlayState.initialSteps;
+    const initialSteps = HowToPlayState.initialSteps;
+    const finalSteps = HowToPlayState.finalSteps;
 
     return BlocBuilder<HowToPlayBloc, HowToPlayState>(
       builder: (context, state) {
         final Widget child;
         final Key key;
-        if (state.position < steps.length) {
+        if (state.position < initialSteps.length) {
           key = ValueKey(state.position);
-          child = steps[state.position];
-        } else {
+          child = initialSteps[state.position];
+        } else if (state.position <
+            initialSteps.length + state.wheelElements.length) {
           key = const ValueKey('elements_wheel');
           child = ElementsWheel(
             allElements: state.wheelElements,
             affectedIndexes: state.affectedIndicatorIndexes,
             text: state.wheelElements.first.text(l10n),
           );
+        } else {
+          key = ValueKey(state.position);
+          final position = state.position -
+              (initialSteps.length + state.wheelElements.length);
+          child = finalSteps[position];
         }
         return FadeAnimatedSwitcher(
           duration: transitionDuration,
@@ -227,6 +234,29 @@ class HowToPlayElementsIntro extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.md),
           child: HowToPlayStyledText(l10n.howToPlayElementsTitle),
+        ),
+      ],
+    );
+  }
+}
+
+class HowToPlaySummary extends StatelessWidget {
+  const HowToPlaySummary({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return Column(
+      children: [
+        const SizedBox(height: TopDashSpacing.xxlg),
+        Image.asset(
+          Assets.images.main.path,
+          width: 268,
+        ),
+        const SizedBox(height: TopDashSpacing.xxlg),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.md),
+          child: HowToPlayStyledText(l10n.howToPlaySummaryTitle),
         ),
       ],
     );

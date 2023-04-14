@@ -19,7 +19,9 @@ class HowToPlayBloc extends Bloc<HowToPlayEvent, HowToPlayState> {
     Emitter<HowToPlayState> emit,
   ) {
     var wheelElements = state.wheelElements;
-    if (state.position >= HowToPlayState.initialSteps.length) {
+    if ((state.position >= HowToPlayState.initialSteps.length) &&
+        (state.position <
+            HowToPlayState.initialSteps.length + wheelElements.length - 1)) {
       wheelElements = nextElementsPositions();
     }
     final position = state.position + 1;
@@ -36,7 +38,9 @@ class HowToPlayBloc extends Bloc<HowToPlayEvent, HowToPlayState> {
     Emitter<HowToPlayState> emit,
   ) {
     var wheelElements = state.wheelElements;
-    if (state.position > HowToPlayState.initialSteps.length) {
+    if ((state.position > HowToPlayState.initialSteps.length) &&
+        (state.position <
+            HowToPlayState.initialSteps.length + wheelElements.length)) {
       wheelElements = previousElementsPositions();
     }
     final position = state.position - 1;

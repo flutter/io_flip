@@ -21,8 +21,14 @@ class HowToPlayState extends Equatable {
     HowToPlayElementsIntro(),
   ];
 
+  static const finalSteps = <Widget>[
+    HowToPlaySummary(),
+  ];
+
   int get totalSteps =>
-      HowToPlayState.initialSteps.length + Elements.values.length;
+      HowToPlayState.initialSteps.length +
+      wheelElements.length +
+      HowToPlayState.finalSteps.length;
 
   List<int> get affectedIndicatorIndexes {
     return wheelElements.first.elementsAffected

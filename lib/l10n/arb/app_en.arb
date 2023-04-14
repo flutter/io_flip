@@ -301,5 +301,9 @@
   "howToPlayElementsWaterTitle": "<blue>Water</blue> puts out <bold>fire</bold> and\nerodes <bold>earth</bold>.",
   "@howToPlayElementsWaterTitle": {
     "description": "Text shown in the water element page of the how to play flow"
+  },
+  "howToPlaySummaryTitle": "<bold>IO Flip</bold> was built using <bold>Flutter, Firebase and AI.</bold>",
+  "@howToPlaySummaryTitle": {
+    "description": "Text shown in the last page of the how to play flow"
   }
 }

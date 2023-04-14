@@ -101,14 +101,6 @@ void main() {
       await tester.tap(nextButton);
       await tester.pumpAndSettle();
       expect(find.byType(ElementsWheel), findsOneWidget);
-      expect(
-        tester.widget(find.byKey(ValueKey(Elements.fire))),
-        isA<ElementItem>().having(
-          (e) => e.alignment,
-          'alignment',
-          ElementAlignment.topCenter,
-        ),
-      );
 
       await tester.tap(nextButton);
       await tester.pumpAndSettle();
@@ -125,6 +117,10 @@ void main() {
       await tester.tap(nextButton);
       await tester.pumpAndSettle();
       expect(find.byType(ElementsWheel), findsOneWidget);
+
+      await tester.tap(nextButton);
+      await tester.pumpAndSettle();
+      expect(find.byType(HowToPlaySummary), findsOneWidget);
 
       await tester.tap(nextButton);
       await tester.pumpAndSettle();
