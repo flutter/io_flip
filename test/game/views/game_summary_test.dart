@@ -275,9 +275,7 @@ void main() {
               'card_inspector',
               extra: any(named: 'extra'),
             ),
-          ).thenAnswer((_) async {
-            return;
-          });
+          ).thenAnswer((_) async {});
           when(
             () => bloc.isWinningCard(any(), isPlayer: any(named: 'isPlayer')),
           ).thenReturn(CardOverlayType.win);
