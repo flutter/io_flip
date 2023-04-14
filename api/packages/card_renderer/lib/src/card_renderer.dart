@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:card_renderer/card_renderer.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:http/http.dart';
 import 'package:image/image.dart';
@@ -120,8 +121,13 @@ class CardRenderer {
           x: 600,
           y: 20,
           color: ColorRgb8(0, 0, 0),
-        )
-        ..encodePng();
+        );
+      if (card.rarity) {
+        compositionCommand
+          ..filter(rainbowFilter)
+          ..chromaticAberration(shift: 2);
+      }
+      compositionCommand.encodePng();
 
       await compositionCommand.execute();
 

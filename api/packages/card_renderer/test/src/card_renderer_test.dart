@@ -57,6 +57,15 @@ void main() {
         suit: Suit.fire,
         rarity: false,
       );
+      const rareCard = Card(
+        id: '',
+        name: 'Card Description',
+        description: '',
+        image: 'http://image.com/bla.png',
+        power: 0,
+        suit: Suit.fire,
+        rarity: true,
+      );
 
       setUp(() {
         illustrationCommand = _MockCommand();
@@ -150,6 +159,14 @@ void main() {
             color: any(named: 'color'),
           ),
         ).called(1);
+      });
+
+      test('applies correct filters when card is rare', () async {
+        await cardRenderer.renderCard(rareCard);
+
+        verify(() => compositionCommand.filter(rainbowFilter)).called(1);
+        verify(() => compositionCommand.chromaticAberration(shift: 2))
+            .called(1);
       });
 
       test('throws CardRendererFailure when the output is null', () async {
