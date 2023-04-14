@@ -7,49 +7,39 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
 
+String? launchedUrl;
+const shareUrl = 'https://example.com';
+const shareText = 'Check out this hand!';
+const card = Card(
+  id: '',
+  name: 'name',
+  description: 'description',
+  image: '',
+  rarity: false,
+  power: 1,
+  suit: Suit.air,
+);
+
 void main() {
   group('ShareCardDialog', () {
-    const shareUrl = 'https://example.com';
-    const shareText = 'Check out this hand!';
-    const card = Card(
-      id: '',
-      name: 'name',
-      description: 'description',
-      image: '',
-      rarity: false,
-      power: 1,
-      suit: Suit.air,
-    );
-
-    String? launchedUrl;
-
-    setUp(() {
+    setUpAll(() {
       launchedUrl = null;
     });
 
-    Widget buildSubject() => ShareCardDialog(
-          shareUrl: shareUrl,
-          shareText: shareText,
-          urlLauncher: (url) async {
-            launchedUrl = url;
-          },
-          card: card,
-        );
-
     testWidgets('renders a Dialog', (tester) async {
-      await tester.pumpSubject(buildSubject());
+      await tester.pumpSubject();
 
       expect(find.byType(Dialog), findsOneWidget);
     });
 
     testWidgets('renders a GameCard', (tester) async {
-      await tester.pumpSubject(buildSubject());
+      await tester.pumpSubject();
 
       expect(find.byType(GameCard), findsOneWidget);
     });
 
     testWidgets('renders a Twitter button', (tester) async {
-      await tester.pumpSubject(buildSubject());
+      await tester.pumpSubject();
 
       expect(find.text(tester.l10n.twitterButtonLabel), findsOneWidget);
     });
@@ -57,7 +47,7 @@ void main() {
     testWidgets(
       'tapping the Twitter button launches the correct url',
       (tester) async {
-        await tester.pumpSubject(buildSubject());
+        await tester.pumpSubject();
 
         await tester.tap(find.text(tester.l10n.twitterButtonLabel));
 
@@ -69,7 +59,7 @@ void main() {
     );
 
     testWidgets('renders a Facebook button', (tester) async {
-      await tester.pumpSubject(buildSubject());
+      await tester.pumpSubject();
 
       expect(find.text(tester.l10n.facebookButtonLabel), findsOneWidget);
     });
@@ -77,7 +67,7 @@ void main() {
     testWidgets(
       'tapping the Facebook button launches the correct url',
       (tester) async {
-        await tester.pumpSubject(buildSubject());
+        await tester.pumpSubject();
 
         await tester.tap(find.text(tester.l10n.facebookButtonLabel));
 
@@ -92,7 +82,7 @@ void main() {
 
     testWidgets('renders landscape mode', (tester) async {
       tester.setLandscapeDisplaySize();
-      await tester.pumpSubject(buildSubject());
+      await tester.pumpSubject();
       expect(
         find.byKey(const Key('large_dialog')),
         findsOneWidget,
@@ -101,7 +91,7 @@ void main() {
 
     testWidgets('renders portrait mode', (tester) async {
       tester.setPortraitDisplaySize();
-      await tester.pumpSubject(buildSubject());
+      await tester.pumpSubject();
       expect(
         find.byKey(const Key('small_dialog')),
         findsOneWidget,
@@ -111,9 +101,18 @@ void main() {
 }
 
 extension ShareCardDialogTest on WidgetTester {
-  Future<void> pumpSubject(Widget widget) async {
+  Future<void> pumpSubject() async {
     await mockNetworkImages(() {
-      return pumpApp(widget);
+      return pumpApp(
+        ShareCardDialog(
+          shareUrl: shareUrl,
+          shareText: shareText,
+          urlLauncher: (url) async {
+            launchedUrl = url;
+          },
+          card: card,
+        ),
+      );
     });
   }
 }

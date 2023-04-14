@@ -7,10 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:top_dash/game/views/share_card_dialog.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
-typedef ShowShareDialog = Future<void> Function(
-  BuildContext context,
-  Card card,
-);
+typedef ShowShareDialog = Future<void> Function(Card card);
 
 class CardInspector extends StatefulWidget {
   const CardInspector({
@@ -38,16 +35,10 @@ class CardInspector extends StatefulWidget {
 }
 
 class _CardInspectorState extends State<CardInspector> {
-  late final PageController controller;
+  late final start = widget.deck.length * 300 + widget.startingIndex;
+  late final PageController controller = PageController(initialPage: start);
 
-  @override
-  void initState() {
-    super.initState();
-    final start = widget.deck.length * 300 + widget.startingIndex;
-    controller = PageController(initialPage: start);
-  }
-
-  Future<void> _shareDialog(BuildContext context, Card card) {
+  Future<void> _shareDialog(Card card) {
     final gameResource = context.read<GameResource>();
     final cardUrl = gameResource.shareCardUrl(card.id);
     final gameUrl = gameResource.shareGameUrl();
@@ -309,7 +300,7 @@ class _CardViewer extends StatelessWidget {
                   left: TopDashSpacing.lg,
                   child: RoundedButton.icon(
                     const Icon(Icons.share_outlined),
-                    onPressed: () => share(context, card),
+                    onPressed: () => share(card),
                     backgroundColor: TopDashColors.seedWhite,
                   ),
                 ),

@@ -44,7 +44,9 @@ void main() {
 
         expect(
           launchedUrl,
-          'https://twitter.com/intent/tweet?url=$shareUrl&text=$shareText',
+          equals(
+            'https://twitter.com/intent/tweet?url=$shareUrl&text=$shareText',
+          ),
         );
       },
     );
@@ -64,7 +66,9 @@ void main() {
 
         expect(
           launchedUrl,
-          'https://www.facebook.com/sharer.php?u=$shareUrl&quote=$shareText',
+          equals(
+            'https://www.facebook.com/sharer.php?u=$shareUrl&quote=$shareText',
+          ),
         );
       },
     );
