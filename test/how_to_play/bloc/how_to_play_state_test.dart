@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -23,7 +24,7 @@ void main() {
 
       expect(
         HowToPlayState(),
-        isNot(equals(HowToPlayState(wheelElements: const [Elements.air]))),
+        isNot(equals(HowToPlayState(wheelSuits: const [Suit.air]))),
       );
     });
 
@@ -34,64 +35,64 @@ void main() {
       );
 
       expect(
-        HowToPlayState().copyWith(wheelElements: const [Elements.air]),
-        equals(HowToPlayState(wheelElements: const [Elements.air])),
+        HowToPlayState().copyWith(wheelSuits: const [Suit.air]),
+        equals(HowToPlayState(wheelSuits: const [Suit.air])),
       );
     });
   });
 
-  group('Elements', () {
+  group('Suit', () {
     test('return icon correctly', () {
-      expect(Elements.fire.icon.asset, equals(ElementIcon.fire().asset));
-      expect(Elements.air.icon.asset, equals(ElementIcon.air().asset));
-      expect(Elements.metal.icon.asset, equals(ElementIcon.metal().asset));
-      expect(Elements.earth.icon.asset, equals(ElementIcon.earth().asset));
-      expect(Elements.water.icon.asset, equals(ElementIcon.water().asset));
+      expect(Suit.fire.icon.asset, equals(SuitIcon.fire().asset));
+      expect(Suit.air.icon.asset, equals(SuitIcon.air().asset));
+      expect(Suit.metal.icon.asset, equals(SuitIcon.metal().asset));
+      expect(Suit.earth.icon.asset, equals(SuitIcon.earth().asset));
+      expect(Suit.water.icon.asset, equals(SuitIcon.water().asset));
     });
 
     test('return initial alignment correctly', () {
       expect(
-        Elements.fire.initialAlignment,
-        equals(ElementAlignment.topCenter),
+        Suit.fire.initialAlignment,
+        equals(SuitAlignment.topCenter),
       );
       expect(
-        Elements.air.initialAlignment,
-        equals(ElementAlignment.centerRight),
+        Suit.air.initialAlignment,
+        equals(SuitAlignment.centerRight),
       );
       expect(
-        Elements.metal.initialAlignment,
-        equals(ElementAlignment.bottomRight),
+        Suit.metal.initialAlignment,
+        equals(SuitAlignment.bottomRight),
       );
       expect(
-        Elements.earth.initialAlignment,
-        equals(ElementAlignment.bottomLeft),
+        Suit.earth.initialAlignment,
+        equals(SuitAlignment.bottomLeft),
       );
       expect(
-        Elements.water.initialAlignment,
-        equals(ElementAlignment.centerLeft),
+        Suit.water.initialAlignment,
+        equals(SuitAlignment.centerLeft),
       );
     });
 
-    test('return elements affected correctly', () {
+    test('return Suit affected correctly', () {
       expect(
-        Elements.fire.elementsAffected,
-        equals([Elements.air, Elements.metal]),
+        Suit.fire.suitsAffected,
+        equals([Suit.air, Suit.metal]),
       );
       expect(
-        Elements.air.elementsAffected,
-        equals([Elements.water, Elements.earth]),
+        Suit.air.suitsAffected,
+        equals([Suit.water, Suit.earth]),
       );
       expect(
-        Elements.metal.elementsAffected,
-        equals([Elements.air, Elements.water]),
+        Suit.metal.suitsAffected,
+        equals([Suit.air, Suit.water]),
       );
       expect(
-        Elements.earth.elementsAffected,
-        equals([Elements.fire, Elements.metal]),
+        Suit.earth.suitsAffected,
+        equals([Suit.fire, Suit.metal]),
       );
       expect(
-        Elements.water.elementsAffected,
-        equals([Elements.fire, Elements.earth]),
+        Suit.water.suitsAffected,
+        equals([Suit.fire, Suit.earth]),
       );
     });
   });

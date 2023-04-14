@@ -12,26 +12,26 @@ import 'package:flutter/widgets.dart';
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
-  $AssetsImagesElementsGen get elements => const $AssetsImagesElementsGen();
+  $AssetsImagesSuitsGen get suits => const $AssetsImagesSuitsGen();
 }
 
-class $AssetsImagesElementsGen {
-  const $AssetsImagesElementsGen();
+class $AssetsImagesSuitsGen {
+  const $AssetsImagesSuitsGen();
 
-  /// File path: assets/images/elements/air.svg
-  String get air => 'assets/images/elements/air.svg';
+  /// File path: assets/images/suits/air.svg
+  String get air => 'assets/images/suits/air.svg';
 
-  /// File path: assets/images/elements/earth.svg
-  String get earth => 'assets/images/elements/earth.svg';
+  /// File path: assets/images/suits/earth.svg
+  String get earth => 'assets/images/suits/earth.svg';
 
-  /// File path: assets/images/elements/fire.svg
-  String get fire => 'assets/images/elements/fire.svg';
+  /// File path: assets/images/suits/fire.svg
+  String get fire => 'assets/images/suits/fire.svg';
 
-  /// File path: assets/images/elements/metal.svg
-  String get metal => 'assets/images/elements/metal.svg';
+  /// File path: assets/images/suits/metal.svg
+  String get metal => 'assets/images/suits/metal.svg';
 
-  /// File path: assets/images/elements/water.svg
-  String get water => 'assets/images/elements/water.svg';
+  /// File path: assets/images/suits/water.svg
+  String get water => 'assets/images/suits/water.svg';
 
   /// List of all assets
   List<String> get values => [air, earth, fire, metal, water];

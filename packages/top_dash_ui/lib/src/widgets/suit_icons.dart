@@ -3,38 +3,38 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:top_dash_ui/gen/assets.gen.dart';
 
 /// {@template element_icon}
-/// IO Flip element icon.
+/// IO Flip suit icon.
 /// {@endtemplate}
-class ElementIcon extends StatelessWidget {
-  /// [ElementIcon] for the air element.
-  ElementIcon.air({
+class SuitIcon extends StatelessWidget {
+  /// [SuitIcon] for the air element.
+  SuitIcon.air({
     super.key,
     this.scale = 1,
-  }) : asset = Assets.images.elements.air;
+  }) : asset = Assets.images.suits.air;
 
-  /// [ElementIcon] for the earth element.
-  ElementIcon.earth({
+  /// [SuitIcon] for the earth element.
+  SuitIcon.earth({
     super.key,
     this.scale = 1,
-  }) : asset = Assets.images.elements.earth;
+  }) : asset = Assets.images.suits.earth;
 
-  /// [ElementIcon] for the fire element.
-  ElementIcon.fire({
+  /// [SuitIcon] for the fire element.
+  SuitIcon.fire({
     super.key,
     this.scale = 1,
-  }) : asset = Assets.images.elements.fire;
+  }) : asset = Assets.images.suits.fire;
 
-  /// [ElementIcon] for the metal element.
-  ElementIcon.metal({
+  /// [SuitIcon] for the metal element.
+  SuitIcon.metal({
     super.key,
     this.scale = 1,
-  }) : asset = Assets.images.elements.metal;
+  }) : asset = Assets.images.suits.metal;
 
-  /// [ElementIcon] for the water element.
-  ElementIcon.water({
+  /// [SuitIcon] for the water element.
+  SuitIcon.water({
     super.key,
     this.scale = 1,
-  }) : asset = Assets.images.elements.water;
+  }) : asset = Assets.images.suits.water;
 
   /// Image icon for the element.
   final String asset;

@@ -96,27 +96,27 @@ void main() {
 
       await tester.tap(nextButton);
       await tester.pumpAndSettle();
-      expect(find.byType(HowToPlayElementsIntro), findsOneWidget);
+      expect(find.byType(HowToPlaySuitsIntro), findsOneWidget);
 
       await tester.tap(nextButton);
       await tester.pumpAndSettle();
-      expect(find.byType(ElementsWheel), findsOneWidget);
+      expect(find.byType(SuitsWheel), findsOneWidget);
 
       await tester.tap(nextButton);
       await tester.pumpAndSettle();
-      expect(find.byType(ElementsWheel), findsOneWidget);
+      expect(find.byType(SuitsWheel), findsOneWidget);
 
       await tester.tap(nextButton);
       await tester.pumpAndSettle();
-      expect(find.byType(ElementsWheel), findsOneWidget);
+      expect(find.byType(SuitsWheel), findsOneWidget);
 
       await tester.tap(nextButton);
       await tester.pumpAndSettle();
-      expect(find.byType(ElementsWheel), findsOneWidget);
+      expect(find.byType(SuitsWheel), findsOneWidget);
 
       await tester.tap(nextButton);
       await tester.pumpAndSettle();
-      expect(find.byType(ElementsWheel), findsOneWidget);
+      expect(find.byType(SuitsWheel), findsOneWidget);
 
       await tester.tap(nextButton);
       await tester.pumpAndSettle();

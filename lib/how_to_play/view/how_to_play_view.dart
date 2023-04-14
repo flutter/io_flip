@@ -121,17 +121,17 @@ class HowToPlayStepView extends StatelessWidget {
           key = ValueKey(state.position);
           child = initialSteps[state.position];
         } else if (state.position <
-            initialSteps.length + state.wheelElements.length) {
-          key = const ValueKey('elements_wheel');
-          child = ElementsWheel(
-            allElements: state.wheelElements,
+            initialSteps.length + state.wheelSuits.length) {
+          key = const ValueKey('suits_wheel');
+          child = SuitsWheel(
+            suits: state.wheelSuits,
             affectedIndexes: state.affectedIndicatorIndexes,
-            text: state.wheelElements.first.text(l10n),
+            text: state.wheelSuits.first.text(l10n),
           );
         } else {
           key = ValueKey(state.position);
-          final position = state.position -
-              (initialSteps.length + state.wheelElements.length);
+          final position =
+              state.position - (initialSteps.length + state.wheelSuits.length);
           child = finalSteps[position];
         }
         return FadeAnimatedSwitcher(
@@ -192,8 +192,8 @@ class HowToPlayHandBuilding extends StatelessWidget {
   }
 }
 
-class HowToPlayElementsIntro extends StatelessWidget {
-  const HowToPlayElementsIntro({super.key});
+class HowToPlaySuitsIntro extends StatelessWidget {
+  const HowToPlaySuitsIntro({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -209,23 +209,23 @@ class HowToPlayElementsIntro extends StatelessWidget {
             children: [
               Align(
                 alignment: Alignment.topCenter,
-                child: ElementIcon.fire(scale: scale),
+                child: SuitIcon.fire(scale: scale),
               ),
               Align(
                 alignment: const Alignment(-1, -.1),
-                child: ElementIcon.water(scale: scale),
+                child: SuitIcon.water(scale: scale),
               ),
               Align(
                 alignment: const Alignment(1, -.1),
-                child: ElementIcon.air(scale: scale),
+                child: SuitIcon.air(scale: scale),
               ),
               Align(
                 alignment: const Alignment(-.6, 1),
-                child: ElementIcon.earth(scale: scale),
+                child: SuitIcon.earth(scale: scale),
               ),
               Align(
                 alignment: const Alignment(.6, 1),
-                child: ElementIcon.metal(scale: scale),
+                child: SuitIcon.metal(scale: scale),
               ),
             ],
           ),

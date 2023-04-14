@@ -1,34 +1,36 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
+import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 const transitionDuration = Duration(milliseconds: 400);
-const elementsWheelSize = 300.0;
+const suitsWheelSize = 300.0;
 
-class ElementsWheel extends StatelessWidget {
-  const ElementsWheel({
-    required this.allElements,
+class SuitsWheel extends StatelessWidget {
+  const SuitsWheel({
+    required this.suits,
     required this.affectedIndexes,
     required this.text,
     super.key,
   }) : assert(
-          allElements.length == 5,
-          '5 elements must be present in the wheel',
+          suits.length == 5,
+          '5 suits must be present in the wheel',
         );
 
-  final List<Elements> allElements;
+  final List<Suit> suits;
   final List<int> affectedIndexes;
   final String text;
 
   static const List<Alignment> alignments = [
-    ElementAlignment.topCenter,
-    ElementAlignment.centerRight,
-    ElementAlignment.bottomRight,
-    ElementAlignment.bottomLeft,
-    ElementAlignment.centerLeft,
+    SuitAlignment.topCenter,
+    SuitAlignment.centerRight,
+    SuitAlignment.bottomRight,
+    SuitAlignment.bottomLeft,
+    SuitAlignment.centerLeft,
   ];
 
   @override
@@ -45,19 +47,19 @@ class ElementsWheel extends StatelessWidget {
         ),
         const SizedBox(height: TopDashSpacing.lg),
         SizedBox(
-          height: elementsWheelSize,
-          width: elementsWheelSize,
+          height: suitsWheelSize,
+          width: suitsWheelSize,
           child: Stack(
             children: [
-              ...allElements.mapIndexed(
-                (index, element) {
-                  return ElementItem(
-                    key: ValueKey(element),
-                    initialAlignment: element.initialAlignment,
+              ...suits.mapIndexed(
+                (index, suit) {
+                  return SuitItem(
+                    key: ValueKey(suit),
+                    initialAlignment: suit.initialAlignment,
                     alignment: alignments[index],
                     isReference: index == 0,
                     isAffected: affectedIndexes.contains(index - 1),
-                    child: element.icon,
+                    child: suit.icon,
                   );
                 },
               ),
@@ -71,8 +73,8 @@ class ElementsWheel extends StatelessWidget {
   }
 }
 
-class ElementItem extends StatelessWidget {
-  const ElementItem({
+class SuitItem extends StatelessWidget {
+  const SuitItem({
     required this.initialAlignment,
     required this.alignment,
     required this.isReference,
@@ -85,7 +87,7 @@ class ElementItem extends StatelessWidget {
   final Alignment alignment;
   final bool isReference;
   final bool isAffected;
-  final ElementIcon child;
+  final SuitIcon child;
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +122,7 @@ class _AffectedArrows extends StatelessWidget {
 
   final List<int> affectedIndexes;
 
-  static const size = elementsWheelSize;
+  static const size = suitsWheelSize;
   static const iconSize = 96;
 
   static const topPosition = Offset(size * .5, iconSize * .5);
@@ -226,4 +228,78 @@ class _AffectedIndicator extends StatelessWidget {
       ),
     );
   }
+}
+
+extension SuitsWheelX on Suit {
+  SuitIcon get icon {
+    switch (this) {
+      case Suit.fire:
+        return SuitIcon.fire();
+      case Suit.water:
+        return SuitIcon.water();
+      case Suit.air:
+        return SuitIcon.air();
+      case Suit.earth:
+        return SuitIcon.earth();
+      case Suit.metal:
+        return SuitIcon.metal();
+    }
+  }
+
+  Alignment get initialAlignment {
+    switch (this) {
+      case Suit.fire:
+        return SuitAlignment.topCenter;
+      case Suit.water:
+        return SuitAlignment.centerRight;
+      case Suit.air:
+        return SuitAlignment.bottomRight;
+      case Suit.earth:
+        return SuitAlignment.bottomLeft;
+      case Suit.metal:
+        return SuitAlignment.centerLeft;
+    }
+  }
+
+  List<Suit> get suitsAffected {
+    switch (this) {
+      case Suit.fire:
+        return [Suit.air, Suit.metal];
+      case Suit.air:
+        return [Suit.water, Suit.earth];
+      case Suit.metal:
+        return [Suit.air, Suit.water];
+      case Suit.earth:
+        return [Suit.fire, Suit.metal];
+      case Suit.water:
+        return [Suit.fire, Suit.earth];
+    }
+  }
+
+  String Function(AppLocalizations) get text {
+    switch (this) {
+      case Suit.fire:
+        return (l10n) => l10n.howToPlayElementsFireTitle;
+      case Suit.air:
+        return (l10n) => l10n.howToPlayElementsAirTitle;
+      case Suit.metal:
+        return (l10n) => l10n.howToPlayElementsMetalTitle;
+      case Suit.earth:
+        return (l10n) => l10n.howToPlayElementsEarthTitle;
+      case Suit.water:
+        return (l10n) => l10n.howToPlayElementsWaterTitle;
+    }
+  }
+}
+
+class SuitAlignment {
+  static const Alignment topCenter = Alignment.topCenter;
+
+  static const Alignment centerRight = Alignment(1, -.1);
+
+  static const Alignment centerLeft = Alignment(-1, -.1);
+
+  static const Alignment bottomRight = Alignment(.6, 1);
+
+  static const Alignment bottomLeft = Alignment(-.6, 1);
 }

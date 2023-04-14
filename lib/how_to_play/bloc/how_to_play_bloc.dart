@@ -1,9 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 
 part 'how_to_play_event.dart';
 part 'how_to_play_state.dart';
@@ -18,19 +17,19 @@ class HowToPlayBloc extends Bloc<HowToPlayEvent, HowToPlayState> {
     NextPageRequested event,
     Emitter<HowToPlayState> emit,
   ) {
-    var wheelElements = state.wheelElements;
-    final elementsWheelPositionEnd =
-        HowToPlayState.initialSteps.length + wheelElements.length - 1;
+    var wheelSuits = state.wheelSuits;
+    final suitsWheelPositionEnd =
+        HowToPlayState.initialSteps.length + wheelSuits.length - 1;
 
     if ((state.position >= HowToPlayState.initialSteps.length) &&
-        (state.position < elementsWheelPositionEnd)) {
-      wheelElements = nextElementsPositions();
+        (state.position < suitsWheelPositionEnd)) {
+      wheelSuits = nextSuitsPositions();
     }
     final position = state.position + 1;
     emit(
       state.copyWith(
         position: position,
-        wheelElements: wheelElements,
+        wheelSuits: wheelSuits,
       ),
     );
   }
@@ -39,32 +38,32 @@ class HowToPlayBloc extends Bloc<HowToPlayEvent, HowToPlayState> {
     PreviousPageRequested event,
     Emitter<HowToPlayState> emit,
   ) {
-    var wheelElements = state.wheelElements;
+    var wheelSuits = state.wheelSuits;
     if ((state.position > HowToPlayState.initialSteps.length) &&
         (state.position <
-            HowToPlayState.initialSteps.length + wheelElements.length)) {
-      wheelElements = previousElementsPositions();
+            HowToPlayState.initialSteps.length + wheelSuits.length)) {
+      wheelSuits = previousSuitsPositions();
     }
     final position = state.position - 1;
     emit(
       state.copyWith(
         position: position,
-        wheelElements: wheelElements,
+        wheelSuits: wheelSuits,
       ),
     );
   }
 
-  List<Elements> nextElementsPositions() {
-    final orderedElements = [...state.wheelElements];
-    orderedElements.add(orderedElements.removeAt(0));
+  List<Suit> nextSuitsPositions() {
+    final orderedSuits = [...state.wheelSuits];
+    orderedSuits.add(orderedSuits.removeAt(0));
 
-    return orderedElements;
+    return orderedSuits;
   }
 
-  List<Elements> previousElementsPositions() {
-    final orderedElements = [...state.wheelElements];
-    orderedElements.insert(0, orderedElements.removeLast());
+  List<Suit> previousSuitsPositions() {
+    final orderedSuits = [...state.wheelSuits];
+    orderedSuits.insert(0, orderedSuits.removeLast());
 
-    return orderedElements;
+    return orderedSuits;
   }
 }

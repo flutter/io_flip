@@ -2,6 +2,7 @@
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 
 void main() {
@@ -44,12 +45,12 @@ void main() {
         expect: () => [
           HowToPlayState(
             position: 4,
-            wheelElements: const [
-              Elements.air,
-              Elements.metal,
-              Elements.earth,
-              Elements.water,
-              Elements.fire,
+            wheelSuits: const [
+              Suit.air,
+              Suit.metal,
+              Suit.earth,
+              Suit.water,
+              Suit.fire,
             ],
           ),
         ],
@@ -60,24 +61,24 @@ void main() {
         build: HowToPlayBloc.new,
         seed: () => HowToPlayState(
           position: 4,
-          wheelElements: const [
-            Elements.air,
-            Elements.metal,
-            Elements.earth,
-            Elements.water,
-            Elements.fire,
+          wheelSuits: const [
+            Suit.air,
+            Suit.metal,
+            Suit.earth,
+            Suit.water,
+            Suit.fire,
           ],
         ),
         act: (bloc) => bloc.add(NextPageRequested()),
         expect: () => [
           HowToPlayState(
             position: 5,
-            wheelElements: const [
-              Elements.metal,
-              Elements.earth,
-              Elements.water,
-              Elements.fire,
-              Elements.air,
+            wheelSuits: const [
+              Suit.metal,
+              Suit.earth,
+              Suit.water,
+              Suit.fire,
+              Suit.air,
             ],
           ),
         ],
@@ -88,24 +89,24 @@ void main() {
         build: HowToPlayBloc.new,
         seed: () => HowToPlayState(
           position: 5,
-          wheelElements: const [
-            Elements.metal,
-            Elements.earth,
-            Elements.water,
-            Elements.fire,
-            Elements.air,
+          wheelSuits: const [
+            Suit.metal,
+            Suit.earth,
+            Suit.water,
+            Suit.fire,
+            Suit.air,
           ],
         ),
         act: (bloc) => bloc.add(NextPageRequested()),
         expect: () => [
           HowToPlayState(
             position: 6,
-            wheelElements: const [
-              Elements.earth,
-              Elements.water,
-              Elements.fire,
-              Elements.air,
-              Elements.metal,
+            wheelSuits: const [
+              Suit.earth,
+              Suit.water,
+              Suit.fire,
+              Suit.air,
+              Suit.metal,
             ],
           ),
         ],
@@ -116,24 +117,24 @@ void main() {
         build: HowToPlayBloc.new,
         seed: () => HowToPlayState(
           position: 6,
-          wheelElements: const [
-            Elements.earth,
-            Elements.water,
-            Elements.fire,
-            Elements.air,
-            Elements.metal,
+          wheelSuits: const [
+            Suit.earth,
+            Suit.water,
+            Suit.fire,
+            Suit.air,
+            Suit.metal,
           ],
         ),
         act: (bloc) => bloc.add(NextPageRequested()),
         expect: () => [
           HowToPlayState(
             position: 7,
-            wheelElements: const [
-              Elements.water,
-              Elements.fire,
-              Elements.air,
-              Elements.metal,
-              Elements.earth,
+            wheelSuits: const [
+              Suit.water,
+              Suit.fire,
+              Suit.air,
+              Suit.metal,
+              Suit.earth,
             ],
           ),
         ],
@@ -144,24 +145,24 @@ void main() {
         build: HowToPlayBloc.new,
         seed: () => HowToPlayState(
           position: 7,
-          wheelElements: const [
-            Elements.water,
-            Elements.fire,
-            Elements.air,
-            Elements.metal,
-            Elements.earth,
+          wheelSuits: const [
+            Suit.water,
+            Suit.fire,
+            Suit.air,
+            Suit.metal,
+            Suit.earth,
           ],
         ),
         act: (bloc) => bloc.add(NextPageRequested()),
         expect: () => [
           HowToPlayState(
             position: 8,
-            wheelElements: const [
-              Elements.water,
-              Elements.fire,
-              Elements.air,
-              Elements.metal,
-              Elements.earth,
+            wheelSuits: const [
+              Suit.water,
+              Suit.fire,
+              Suit.air,
+              Suit.metal,
+              Suit.earth,
             ],
           ),
         ],
@@ -174,24 +175,24 @@ void main() {
         build: HowToPlayBloc.new,
         seed: () => HowToPlayState(
           position: 8,
-          wheelElements: const [
-            Elements.water,
-            Elements.fire,
-            Elements.air,
-            Elements.metal,
-            Elements.earth,
+          wheelSuits: const [
+            Suit.water,
+            Suit.fire,
+            Suit.air,
+            Suit.metal,
+            Suit.earth,
           ],
         ),
         act: (bloc) => bloc.add(PreviousPageRequested()),
         expect: () => [
           HowToPlayState(
             position: 7,
-            wheelElements: const [
-              Elements.water,
-              Elements.fire,
-              Elements.air,
-              Elements.metal,
-              Elements.earth,
+            wheelSuits: const [
+              Suit.water,
+              Suit.fire,
+              Suit.air,
+              Suit.metal,
+              Suit.earth,
             ],
           ),
         ],
@@ -201,24 +202,24 @@ void main() {
         build: HowToPlayBloc.new,
         seed: () => HowToPlayState(
           position: 7,
-          wheelElements: const [
-            Elements.water,
-            Elements.fire,
-            Elements.air,
-            Elements.metal,
-            Elements.earth,
+          wheelSuits: const [
+            Suit.water,
+            Suit.fire,
+            Suit.air,
+            Suit.metal,
+            Suit.earth,
           ],
         ),
         act: (bloc) => bloc.add(PreviousPageRequested()),
         expect: () => [
           HowToPlayState(
             position: 6,
-            wheelElements: const [
-              Elements.earth,
-              Elements.water,
-              Elements.fire,
-              Elements.air,
-              Elements.metal,
+            wheelSuits: const [
+              Suit.earth,
+              Suit.water,
+              Suit.fire,
+              Suit.air,
+              Suit.metal,
             ],
           ),
         ],
@@ -229,24 +230,24 @@ void main() {
         build: HowToPlayBloc.new,
         seed: () => HowToPlayState(
           position: 6,
-          wheelElements: const [
-            Elements.earth,
-            Elements.water,
-            Elements.fire,
-            Elements.air,
-            Elements.metal,
+          wheelSuits: const [
+            Suit.earth,
+            Suit.water,
+            Suit.fire,
+            Suit.air,
+            Suit.metal,
           ],
         ),
         act: (bloc) => bloc.add(PreviousPageRequested()),
         expect: () => [
           HowToPlayState(
             position: 5,
-            wheelElements: const [
-              Elements.metal,
-              Elements.earth,
-              Elements.water,
-              Elements.fire,
-              Elements.air,
+            wheelSuits: const [
+              Suit.metal,
+              Suit.earth,
+              Suit.water,
+              Suit.fire,
+              Suit.air,
             ],
           ),
         ],
@@ -257,24 +258,24 @@ void main() {
         build: HowToPlayBloc.new,
         seed: () => HowToPlayState(
           position: 5,
-          wheelElements: const [
-            Elements.metal,
-            Elements.earth,
-            Elements.water,
-            Elements.fire,
-            Elements.air,
+          wheelSuits: const [
+            Suit.metal,
+            Suit.earth,
+            Suit.water,
+            Suit.fire,
+            Suit.air,
           ],
         ),
         act: (bloc) => bloc.add(PreviousPageRequested()),
         expect: () => [
           HowToPlayState(
             position: 4,
-            wheelElements: const [
-              Elements.air,
-              Elements.metal,
-              Elements.earth,
-              Elements.water,
-              Elements.fire,
+            wheelSuits: const [
+              Suit.air,
+              Suit.metal,
+              Suit.earth,
+              Suit.water,
+              Suit.fire,
             ],
           ),
         ],
@@ -285,12 +286,12 @@ void main() {
         build: HowToPlayBloc.new,
         seed: () => HowToPlayState(
           position: 4,
-          wheelElements: const [
-            Elements.air,
-            Elements.metal,
-            Elements.earth,
-            Elements.water,
-            Elements.fire,
+          wheelSuits: const [
+            Suit.air,
+            Suit.metal,
+            Suit.earth,
+            Suit.water,
+            Suit.fire,
           ],
         ),
         act: (bloc) => bloc.add(PreviousPageRequested()),
