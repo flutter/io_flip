@@ -1,0 +1,24 @@
+name: deploy_app_prod
+
+on: workflow_dispatch
+
+jobs:
+  deploy-prod:
+    runs-on: ubuntu-latest
+    name: Deploy App Production
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.9.0-0.2.pre"
+          channel: "beta"
+      - run: flutter packages get
+      - run: flutter build web --web-renderer canvaskit -t lib/main_production.dart --dart-define SHARING_ENABLED=true --dart-define ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY_PROD }} --dart-define ENCRYPTION_IV=${{ secrets.ENCRYPTION_IV_PROD }} --dart-define RECAPTCHA_KEY=${{ secrets.RECAPTCHA_KEY_PROD }}
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_IO_FLIP }}"
+          projectId: io-flip
+          target: app_prod
+          expires: 30d
+          channelId: live

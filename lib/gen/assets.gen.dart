@@ -9,6 +9,16 @@
 
 import 'package:flutter/widgets.dart';
 
+class $AssetsIconsGen {
+  const $AssetsIconsGen();
+
+  /// File path: assets/icons/cancel.svg
+  String get cancel => 'assets/icons/cancel.svg';
+
+  /// List of all assets
+  List<String> get values => [cancel];
+}
+
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
@@ -152,6 +162,7 @@ class $AssetsSfxGen {
 class Assets {
   Assets._();
 
+  static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
   static const $AssetsMusicGen music = $AssetsMusicGen();
   static const $AssetsSfxGen sfx = $AssetsSfxGen();
