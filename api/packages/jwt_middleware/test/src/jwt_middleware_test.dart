@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:clock/clock.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:http/http.dart' as http;
+import 'package:jose/jose.dart';
 import 'package:jwt_middleware/jwt_middleware.dart';
 import 'package:jwt_middleware/src/jwt.dart';
 import 'package:mocktail/mocktail.dart';
@@ -23,6 +24,10 @@ class _MockJWT extends Mock implements JWT {}
 class _MockRequestContext extends Mock implements RequestContext {}
 
 class _FakeVerifier extends Fake implements Verifier {}
+
+class _MockJsonWebSignature extends Mock implements JsonWebSignature {}
+
+class _FakeJsonWebKeyStore extends Fake implements JsonWebKeyStore {}
 
 const _successfulKeyResponse = r'''
 {
@@ -47,6 +52,7 @@ void main() {
   setUpAll(() {
     registerFallbackValue(Uri());
     registerFallbackValue(_FakeVerifier());
+    registerFallbackValue(_FakeJsonWebKeyStore());
   });
 
   group('JwtMiddleware', () {
@@ -64,6 +70,8 @@ void main() {
     late JWT jwt;
     late JwtMiddleware subject;
     late JwtParser parseJwt;
+    late JsonWebSignature jws;
+    late JwsParser parseJws;
     late bool isEmulator;
 
     setUp(() {
@@ -84,7 +92,11 @@ void main() {
       when(() => jwt.keyId).thenReturn(keyId);
       when(() => jwt.verifyWith(any())).thenReturn(true);
 
+      jws = _MockJsonWebSignature();
+      when(() => jws.verify(any())).thenAnswer((_) async => true);
+
       parseJwt = (_) => jwt;
+      parseJws = (_) => jws;
       isEmulator = false;
     });
 
@@ -93,6 +105,7 @@ void main() {
         projectId: projectId,
         get: get,
         parseJwt: parseJwt,
+        parseJws: parseJws,
         isEmulator: isEmulator,
       );
       return subject.middleware((_) async {
@@ -100,10 +113,30 @@ void main() {
       });
     }
 
+    test('can be instantiated', () {
+      expect(JwtMiddleware(projectId: projectId), isNotNull);
+    });
+
     group('request fails (401)', () {
       test('with no authorization header', () async {
         final handler = getHandler();
         final request = Request.get(uri);
+        final context = _MockRequestContext();
+        when(() => context.request).thenReturn(request);
+
+        final response = await handler(context);
+
+        expect(response, unauthorizedResponse);
+      });
+
+      test('with no firebase app check header', () async {
+        final handler = getHandler();
+        final request = Request.get(
+          uri,
+          headers: {
+            'authorization': 'Bearer myToken',
+          },
+        );
         final context = _MockRequestContext();
         when(() => context.request).thenReturn(request);
 
@@ -144,7 +177,24 @@ void main() {
         expect(response, unauthorizedResponse);
       });
 
-      test('when parsing token fails', () async {
+      test('without an app check token', () async {
+        final handler = getHandler();
+        final request = Request.get(
+          uri,
+          headers: {
+            'authorization': 'Bearer myToken',
+            X_FIREBASE_APPCHECK: '',
+          },
+        );
+        final context = _MockRequestContext();
+        when(() => context.request).thenReturn(request);
+
+        final response = await handler(context);
+
+        expect(response, equals(unauthorizedResponse));
+      });
+
+      test('when parsing id token fails', () async {
         parseJwt = (_) => throw Exception();
         final request = Request.get(
           uri,
@@ -159,6 +209,24 @@ void main() {
         final response = await handler(context);
 
         expect(response, unauthorizedResponse);
+      });
+
+      test('when parsing json web signature fails', () async {
+        parseJws = (_) => throw Exception();
+        final request = Request.get(
+          uri,
+          headers: {
+            'authorization': 'Bearer myToken',
+            X_FIREBASE_APPCHECK: 'myToken',
+          },
+        );
+        final context = _MockRequestContext();
+        when(() => context.request).thenReturn(request);
+
+        final handler = getHandler();
+        final response = await handler(context);
+
+        expect(response, equals(unauthorizedResponse));
       });
 
       test('when validating token fails', () async {
@@ -226,12 +294,13 @@ void main() {
     });
 
     group('request succeeds', () {
-      test('when parsing token succeeds and isEmulator is true', () async {
+      test('when parsing tokens succeeds and isEmulator is true', () async {
         isEmulator = true;
         final request = Request.get(
           uri,
           headers: {
             'authorization': 'Bearer myToken',
+            X_FIREBASE_APPCHECK: 'myToken',
           },
         );
         final context = _MockRequestContext();
@@ -245,11 +314,12 @@ void main() {
         expect(response, successfulReponse);
       });
 
-      test('when validating and verifying token succeeds', () async {
+      test('when validating and verifying tokens succeeds', () async {
         final request = Request.get(
           uri,
           headers: {
             'authorization': 'Bearer myToken',
+            X_FIREBASE_APPCHECK: 'myToken',
           },
         );
         final context = _MockRequestContext();
@@ -268,6 +338,7 @@ void main() {
           uri,
           headers: {
             'authorization': 'Bearer myToken',
+            X_FIREBASE_APPCHECK: 'myToken',
           },
         );
         final context = _MockRequestContext();
@@ -295,6 +366,7 @@ void main() {
             uri,
             headers: {
               'authorization': 'Bearer myToken',
+              X_FIREBASE_APPCHECK: 'myToken',
             },
           );
           final context = _MockRequestContext();
