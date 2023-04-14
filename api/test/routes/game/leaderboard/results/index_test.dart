@@ -152,5 +152,16 @@ void main() {
         }),
       );
     });
+
+    test('responds with the exception thrown', () async {
+      when(
+        () => leaderboardRepository.getScoreCardsWithMostWins(),
+      ).thenThrow(Exception('oops'));
+
+      final response = await route.onRequest(context);
+
+      final json = await response.json();
+      expect(json, equals('Exception: oops'));
+    });
   });
 }
