@@ -7,7 +7,6 @@ environment:
   sdk: ">=3.0.0-134.0.dev <4.0.0"
 
 dependencies:
-  gcloud: ^0.8.7
   card_renderer:
     path: packages/card_renderer
   cards_repository:
@@ -24,6 +23,8 @@ dependencies:
     path: packages/game_domain
   game_script_machine:
     path: packages/game_script_machine
+  gcloud_pubsub:
+    path: packages/gcloud_pubsub
   gcp: ^0.1.0
   image_model_repository:
     path: packages/image_model_repository

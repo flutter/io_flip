@@ -8,6 +8,7 @@ import 'package:encryption_middleware/encryption_middleware.dart';
 import 'package:firebase_cloud_storage/firebase_cloud_storage.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:game_script_machine/game_script_machine.dart';
+import 'package:gcloud_pubsub/gcloud_pubsub.dart';
 import 'package:image_model_repository/image_model_repository.dart';
 import 'package:jwt_middleware/jwt_middleware.dart';
 import 'package:language_model_repository/language_model_repository.dart';
@@ -28,6 +29,7 @@ late EncryptionMiddleware encryptionMiddleware;
 late GameUrl gameUrl;
 late PromptRepository promptRepository;
 late FirebaseCloudStorage firebaseCloudStorage;
+late GcloudPubsub pubsub;
 
 Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   const imageModelRepository = ImageModelRepository();
@@ -99,6 +101,8 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   firebaseCloudStorage = FirebaseCloudStorage(
     bucketName: _firebaseStorageBucket,
   );
+
+  pubsub = const GcloudPubsub();
 
   gameUrl = GameUrl(_gameUrl);
 
