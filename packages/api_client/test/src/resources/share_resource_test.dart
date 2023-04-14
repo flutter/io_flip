@@ -1,5 +1,4 @@
 import 'package:api_client/api_client.dart';
-import 'package:api_client/src/resources/share_resource.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 

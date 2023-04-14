@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:api_client/api_client.dart';
-import 'package:api_client/src/resources/share_resource.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:http/http.dart' as http;
 import 'package:mocktail/mocktail.dart';
