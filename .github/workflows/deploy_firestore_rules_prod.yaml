@@ -3,7 +3,7 @@ name: deploy_firestore_rules_prod
 on: workflow_dispatch
 
 jobs:
-  deploy-dev:
+  deploy-prod:
     runs-on: ubuntu-latest
     name: Deploy Prod Firestore Rules
     steps:
