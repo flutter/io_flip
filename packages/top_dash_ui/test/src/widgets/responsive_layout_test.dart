@@ -4,11 +4,13 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 
 extension _TopDashWidgetTester on WidgetTester {
   void setDisplaySize(Size size) {
-    binding.window.physicalSizeTestValue = size;
-    binding.window.devicePixelRatioTestValue = 1.0;
+    view
+      ..physicalSize = size
+      ..devicePixelRatio = 1.0;
     addTearDown(() {
-      binding.window.clearPhysicalSizeTestValue();
-      binding.window.clearDevicePixelRatioTestValue();
+      view
+        ..resetPhysicalSize()
+        ..resetDevicePixelRatio();
     });
   }
 }
@@ -84,7 +86,7 @@ void main() {
       expect(find.byKey(smallKey), findsNothing);
       expect(find.byKey(childKey), findsOneWidget);
 
-      addTearDown(tester.binding.window.clearPhysicalSizeTestValue);
+      addTearDown(tester.view.resetPhysicalSize);
     });
   });
 }
