@@ -273,5 +273,41 @@
   "unknownConnectionError": "Unable to connect. Please try again in a few moments.",
   "@unknownConnectionError": {
     "description": "Error message shown when an unknown error occurs while connecting"
+  },
+  "howToPlayIntroTitle": "<bold>Harness the power of generative AI to build unique decks of playing cards.</bold>",
+  "@howToPlayIntroTitle": {
+    "description": "Text shown in the first page of the how to play flow"
+  },
+  "howToPlayDeckTitle": "<bold>Build your best hand</bold> and keep your streak alive against opponents from across the globe.",
+  "@howToPlayDeckTitle": {
+    "description": "Text shown in the deck page of the how to play flow"
+  },
+  "howToPlayElementsTitle": "<bold>Flip your way to victory</bold> by <bold>harnessing the elements</bold> to apply an extra 10% damage.",
+  "@howToPlayElementsTitle": {
+    "description": "Text shown in the elements page of the how to play flow"
+  },
+  "howToPlayElementsFireTitle": "<yellow>Fire</yellow> scorches </bold>air</bold> and\nmelts <bold>metal</bold>.",
+  "@howToPlayElementsFireTitle": {
+    "description": "Text shown in the fire element page of the how to play flow"
+  },
+  "howToPlayElementsAirTitle": "<lightblue>Air</lightblue> blasts <bold>water</bold> and\nblows away <bold>earth</bold>.",
+  "@howToPlayElementsAirTitle": {
+    "description": "Text shown in the air element page of the how to play flow"
+  },
+  "howToPlayElementsMetalTitle": "<green>Metal</green> traps <bold>air</bold> and\ndiverts <bold>water</bold>.",
+  "@howToPlayElementsMetalTitle": {
+    "description": "Text shown in the metal element page of the how to play flow"
+  },
+  "howToPlayElementsEarthTitle": "<red>Earth</red> crushes <bold>metal</bold> and\nsnuffs out <bold>fire</bold>.",
+  "@howToPlayElementsEarthTitle": {
+    "description": "Text shown in the earth element page of the how to play flow"
+  },
+  "howToPlayElementsWaterTitle": "<blue>Water</blue> puts out <bold>fire</bold> and\nerodes <bold>earth</bold>.",
+  "@howToPlayElementsWaterTitle": {
+    "description": "Text shown in the water element page of the how to play flow"
+  },
+  "howToPlaySummaryTitle": "<bold>IO Flip</bold> was built using <bold>Flutter, Firebase and AI.</bold>",
+  "@howToPlaySummaryTitle": {
+    "description": "Text shown in the last page of the how to play flow"
   }
 }
