@@ -38,6 +38,7 @@ class HowToPlayView extends StatelessWidget {
                   horizontal: TopDashSpacing.xxxlg,
                 ),
                 child: Row(
+                  key: const Key('how_to_play_page_indicator'),
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: List.generate(
                     totalSteps,
@@ -125,7 +126,7 @@ class HowToPlayStepView extends StatelessWidget {
         }
         return FadeAnimatedSwitcher(
           duration: transitionDuration,
-          child: child,
+          child: SingleChildScrollView(child: child),
         );
       },
     );
@@ -138,21 +139,19 @@ class HowToPlayIntro extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          const SizedBox(height: TopDashSpacing.xxlg),
-          Image.asset(
-            Assets.images.main.path,
-            width: 268,
-          ),
-          const SizedBox(height: TopDashSpacing.xxlg),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.md),
-            child: HowToPlayStyledText(l10n.howToPlayIntroTitle),
-          ),
-        ],
-      ),
+    return Column(
+      children: [
+        const SizedBox(height: TopDashSpacing.xxlg),
+        Image.asset(
+          Assets.images.main.path,
+          width: 268,
+        ),
+        const SizedBox(height: TopDashSpacing.xxlg),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.md),
+          child: HowToPlayStyledText(l10n.howToPlayIntroTitle),
+        ),
+      ],
     );
   }
 }
@@ -163,21 +162,19 @@ class HowToPlayHandBuilding extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          const SizedBox(height: TopDashSpacing.xxlg),
-          Image.asset(
-            Assets.images.main.path,
-            width: 268,
-          ),
-          const SizedBox(height: TopDashSpacing.xxlg),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.md),
-            child: HowToPlayStyledText(l10n.howToPlayDeckTitle),
-          ),
-        ],
-      ),
+    return Column(
+      children: [
+        const SizedBox(height: TopDashSpacing.xxlg),
+        Image.asset(
+          Assets.images.main.path,
+          width: 268,
+        ),
+        const SizedBox(height: TopDashSpacing.xxlg),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.md),
+          child: HowToPlayStyledText(l10n.howToPlayDeckTitle),
+        ),
+      ],
     );
   }
 }
@@ -189,45 +186,43 @@ class HowToPlayElementsIntro extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     const scale = .69;
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          const SizedBox(height: TopDashSpacing.lg),
-          SizedBox(
-            height: 220,
-            width: 220,
-            child: Stack(
-              children: [
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: ElementIcon.fire(scale: scale),
-                ),
-                Align(
-                  alignment: const Alignment(-1, -.1),
-                  child: ElementIcon.water(scale: scale),
-                ),
-                Align(
-                  alignment: const Alignment(1, -.1),
-                  child: ElementIcon.air(scale: scale),
-                ),
-                Align(
-                  alignment: const Alignment(-.6, 1),
-                  child: ElementIcon.earth(scale: scale),
-                ),
-                Align(
-                  alignment: const Alignment(.6, 1),
-                  child: ElementIcon.metal(scale: scale),
-                ),
-              ],
-            ),
+    return Column(
+      children: [
+        const SizedBox(height: TopDashSpacing.lg),
+        SizedBox(
+          height: 220,
+          width: 220,
+          child: Stack(
+            children: [
+              Align(
+                alignment: Alignment.topCenter,
+                child: ElementIcon.fire(scale: scale),
+              ),
+              Align(
+                alignment: const Alignment(-1, -.1),
+                child: ElementIcon.water(scale: scale),
+              ),
+              Align(
+                alignment: const Alignment(1, -.1),
+                child: ElementIcon.air(scale: scale),
+              ),
+              Align(
+                alignment: const Alignment(-.6, 1),
+                child: ElementIcon.earth(scale: scale),
+              ),
+              Align(
+                alignment: const Alignment(.6, 1),
+                child: ElementIcon.metal(scale: scale),
+              ),
+            ],
           ),
-          const SizedBox(height: TopDashSpacing.xxlg),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.md),
-            child: HowToPlayStyledText(l10n.howToPlayElementsTitle),
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(height: TopDashSpacing.xxlg),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.md),
+          child: HowToPlayStyledText(l10n.howToPlayElementsTitle),
+        ),
+      ],
     );
   }
 }

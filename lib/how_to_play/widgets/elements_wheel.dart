@@ -51,7 +51,7 @@ class ElementsWheel extends StatelessWidget {
             children: [
               ...allElements.mapIndexed(
                 (index, element) {
-                  return _ElementItem(
+                  return ElementItem(
                     key: ValueKey(element),
                     initialAlignment: element.initialAlignment,
                     alignment: alignments[index],
@@ -71,8 +71,8 @@ class ElementsWheel extends StatelessWidget {
   }
 }
 
-class _ElementItem extends StatelessWidget {
-  const _ElementItem({
+class ElementItem extends StatelessWidget {
+  const ElementItem({
     required this.initialAlignment,
     required this.alignment,
     required this.isReference,
