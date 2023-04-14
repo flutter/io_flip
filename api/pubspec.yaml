@@ -7,7 +7,7 @@ environment:
   sdk: ">=3.0.0-134.0.dev <4.0.0"
 
 dependencies:
-  firebase_messaging: ^14.4.0
+  gcloud: ^0.8.7
   card_renderer:
     path: packages/card_renderer
   cards_repository:
