@@ -52,15 +52,14 @@ vec4 rainbowEffect(vec2 uv) {
 
 vec4 chromaticAberration(vec2 uv) {
     vec4 srcColor = rainbowEffect(uv);
-    float shift = 3.0 / 1000.0 * dx;
-    float verticalShift = 5.0 / 1000.0 * dy; 
+    float shiftHorizontal = 3.0 / 1000.0 * dx;
+    float shiftVertical = 5.0 / 1000.0 * dy;
 
-    float shiftLeft = clamp(uv.x - shift, 0.0, 1.0);
-    float shiftRight = clamp(uv.x + shift, 0.0, 1.0);
-    float shiftUp = clamp(uv.y - verticalShift, 0.0, 1.0);
-    float shiftDown = clamp(uv.y + verticalShift, 0.0, 1.0);
-    vec4 lc = rainbowEffect(vec2(shiftLeft, shiftUp));
-    vec4 rc = rainbowEffect(vec2(shiftRight, shiftDown));
+    vec2 leftShiftUV = vec2(uv.x - shiftHorizontal, uv.y - shiftVertical);
+    vec2 rightShiftUV = vec2(uv.x + shiftHorizontal, uv.y + shiftVertical);
+
+    vec4 lc = rainbowEffect(leftShiftUV);
+    vec4 rc = rainbowEffect(rightShiftUV);
 
     return vec4(rc.r, srcColor.g, lc.b, srcColor.a);
 }
