@@ -63,7 +63,7 @@ class ArrowPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
+  bool shouldRepaint(ArrowPainter oldDelegate) {
+    return (p1 != oldDelegate.p1) || (p2 != oldDelegate.p2);
   }
 }
