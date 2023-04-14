@@ -3,11 +3,17 @@ part of 'how_to_play_bloc.dart';
 class HowToPlayState extends Equatable {
   const HowToPlayState({
     this.position = 0,
-    this.elementsWheelState = const ElementsWheelFire(),
+    this.wheelElements = const [
+      Elements.fire,
+      Elements.air,
+      Elements.metal,
+      Elements.earth,
+      Elements.water,
+    ],
   });
 
   final int position;
-  final ElementsWheelState elementsWheelState;
+  final List<Elements> wheelElements;
 
   static const initialSteps = <Widget>[
     HowToPlayIntro(),
@@ -18,183 +24,38 @@ class HowToPlayState extends Equatable {
   int get totalSteps =>
       HowToPlayState.initialSteps.length + Elements.values.length;
 
+  List<int> get affectedIndicatorIndexes {
+    return wheelElements.first.elementsAffected
+        .map((e) => wheelElements.indexOf(e) - 1)
+        .toList();
+  }
+
   @override
-  List<Object> get props => [position, elementsWheelState];
+  List<Object> get props => [position, wheelElements];
 
   HowToPlayState copyWith({
     int? position,
-    ElementsWheelState? elementsWheelState,
+    List<Elements>? wheelElements,
   }) {
     return HowToPlayState(
       position: position ?? this.position,
-      elementsWheelState: elementsWheelState ?? this.elementsWheelState,
+      wheelElements: wheelElements ?? this.wheelElements,
     );
   }
 }
 
-abstract class ElementsWheelState extends Equatable {
-  const ElementsWheelState({
-    required this.allElements,
-    required this.elementsAffected,
+enum Elements {
+  fire(initialAlignment: ElementAlignment.topCenter),
+  air(initialAlignment: ElementAlignment.centerRight),
+  metal(initialAlignment: ElementAlignment.bottomRight),
+  earth(initialAlignment: ElementAlignment.bottomLeft),
+  water(initialAlignment: ElementAlignment.centerLeft);
+
+  const Elements({
+    required this.initialAlignment,
   });
 
-  final List<Elements> allElements;
-  final List<Elements> elementsAffected;
-
-  String Function(AppLocalizations) get text;
-
-  @override
-  List<Object> get props => [allElements, elementsAffected];
-
-  List<int> get affectedIndicatorIndexes {
-    return elementsAffected.map((e) => allElements.indexOf(e) - 1).toList();
-  }
-
-  ElementsWheelState get previous;
-  ElementsWheelState get next;
-}
-
-class ElementsWheelFire extends ElementsWheelState {
-  const ElementsWheelFire()
-      : super(
-          allElements: const [
-            Elements.fire,
-            Elements.air,
-            Elements.metal,
-            Elements.earth,
-            Elements.water,
-          ],
-          elementsAffected: const [
-            Elements.air,
-            Elements.metal,
-          ],
-        );
-
-  @override
-  ElementsWheelState get previous => const ElementsWheelWater();
-
-  @override
-  ElementsWheelState get next => const ElementsWheelAir();
-
-  @override
-  String Function(AppLocalizations) get text =>
-      (l10n) => l10n.howToPlayElementsFireTitle;
-}
-
-class ElementsWheelAir extends ElementsWheelState {
-  const ElementsWheelAir()
-      : super(
-          allElements: const [
-            Elements.air,
-            Elements.metal,
-            Elements.earth,
-            Elements.water,
-            Elements.fire,
-          ],
-          elementsAffected: const [
-            Elements.water,
-            Elements.earth,
-          ],
-        );
-
-  @override
-  ElementsWheelState get previous => const ElementsWheelFire();
-
-  @override
-  ElementsWheelState get next => const ElementsWheelMetal();
-
-  @override
-  String Function(AppLocalizations) get text =>
-      (l10n) => l10n.howToPlayElementsAirTitle;
-}
-
-class ElementsWheelMetal extends ElementsWheelState {
-  const ElementsWheelMetal()
-      : super(
-          allElements: const [
-            Elements.metal,
-            Elements.earth,
-            Elements.water,
-            Elements.fire,
-            Elements.air,
-          ],
-          elementsAffected: const [
-            Elements.air,
-            Elements.water,
-          ],
-        );
-
-  @override
-  ElementsWheelState get previous => const ElementsWheelAir();
-
-  @override
-  ElementsWheelState get next => const ElementsWheelEarth();
-
-  @override
-  String Function(AppLocalizations) get text =>
-      (l10n) => l10n.howToPlayElementsMetalTitle;
-}
-
-class ElementsWheelEarth extends ElementsWheelState {
-  const ElementsWheelEarth()
-      : super(
-          allElements: const [
-            Elements.earth,
-            Elements.water,
-            Elements.fire,
-            Elements.air,
-            Elements.metal,
-          ],
-          elementsAffected: const [
-            Elements.fire,
-            Elements.metal,
-          ],
-        );
-
-  @override
-  ElementsWheelState get previous => const ElementsWheelMetal();
-
-  @override
-  ElementsWheelState get next => const ElementsWheelWater();
-
-  @override
-  String Function(AppLocalizations) get text =>
-      (l10n) => l10n.howToPlayElementsEarthTitle;
-}
-
-class ElementsWheelWater extends ElementsWheelState {
-  const ElementsWheelWater()
-      : super(
-          allElements: const [
-            Elements.water,
-            Elements.fire,
-            Elements.air,
-            Elements.metal,
-            Elements.earth,
-          ],
-          elementsAffected: const [
-            Elements.fire,
-            Elements.earth,
-          ],
-        );
-
-  @override
-  ElementsWheelState get previous => const ElementsWheelEarth();
-
-  @override
-  ElementsWheelState get next => const ElementsWheelFire();
-
-  @override
-  String Function(AppLocalizations) get text =>
-      (l10n) => l10n.howToPlayElementsWaterTitle;
-}
-
-enum Elements {
-  fire,
-  water,
-  air,
-  earth,
-  metal;
+  final Alignment initialAlignment;
 
   ElementIcon get icon {
     switch (this) {
@@ -211,18 +72,33 @@ enum Elements {
     }
   }
 
-  Alignment get initialAlignment {
+  List<Elements> get elementsAffected {
     switch (this) {
       case fire:
-        return ElementAlignment.topCenter;
+        return [Elements.air, Elements.metal];
       case air:
-        return ElementAlignment.centerRight;
+        return [Elements.water, Elements.earth];
       case metal:
-        return ElementAlignment.bottomRight;
+        return [Elements.air, Elements.water];
       case earth:
-        return ElementAlignment.bottomLeft;
+        return [Elements.fire, Elements.metal];
       case water:
-        return ElementAlignment.centerLeft;
+        return [Elements.fire, Elements.earth];
+    }
+  }
+
+  String Function(AppLocalizations) get text {
+    switch (this) {
+      case fire:
+        return (l10n) => l10n.howToPlayElementsFireTitle;
+      case air:
+        return (l10n) => l10n.howToPlayElementsAirTitle;
+      case metal:
+        return (l10n) => l10n.howToPlayElementsMetalTitle;
+      case earth:
+        return (l10n) => l10n.howToPlayElementsEarthTitle;
+      case water:
+        return (l10n) => l10n.howToPlayElementsWaterTitle;
     }
   }
 }

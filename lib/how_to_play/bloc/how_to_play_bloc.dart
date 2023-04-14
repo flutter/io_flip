@@ -18,15 +18,15 @@ class HowToPlayBloc extends Bloc<HowToPlayEvent, HowToPlayState> {
     NextPageRequested event,
     Emitter<HowToPlayState> emit,
   ) {
-    var elementsWheelState = state.elementsWheelState;
+    var wheelElements = state.wheelElements;
     if (state.position >= HowToPlayState.initialSteps.length) {
-      elementsWheelState = state.elementsWheelState.next;
+      wheelElements = nextElementsPositions();
     }
     final position = state.position + 1;
     emit(
       state.copyWith(
         position: position,
-        elementsWheelState: elementsWheelState,
+        wheelElements: wheelElements,
       ),
     );
   }
@@ -35,16 +35,30 @@ class HowToPlayBloc extends Bloc<HowToPlayEvent, HowToPlayState> {
     PreviousPageRequested event,
     Emitter<HowToPlayState> emit,
   ) {
-    var elementsWheelState = state.elementsWheelState;
+    var wheelElements = state.wheelElements;
     if (state.position > HowToPlayState.initialSteps.length) {
-      elementsWheelState = state.elementsWheelState.previous;
+      wheelElements = previousElementsPositions();
     }
     final position = state.position - 1;
     emit(
       state.copyWith(
         position: position,
-        elementsWheelState: elementsWheelState,
+        wheelElements: wheelElements,
       ),
     );
+  }
+
+  List<Elements> nextElementsPositions() {
+    final orderedElements = [...state.wheelElements];
+    orderedElements.add(orderedElements.removeAt(0));
+
+    return orderedElements;
+  }
+
+  List<Elements> previousElementsPositions() {
+    final orderedElements = [...state.wheelElements];
+    orderedElements.insert(0, orderedElements.removeLast());
+
+    return orderedElements;
   }
 }

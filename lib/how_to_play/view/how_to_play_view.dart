@@ -115,18 +115,24 @@ class HowToPlayStepView extends StatelessWidget {
     return BlocBuilder<HowToPlayBloc, HowToPlayState>(
       builder: (context, state) {
         final Widget child;
+        final Key key;
         if (state.position < steps.length) {
+          key = ValueKey(state.position);
           child = steps[state.position];
         } else {
+          key = const ValueKey('elements_wheel');
           child = ElementsWheel(
-            allElements: state.elementsWheelState.allElements,
-            affectedIndexes: state.elementsWheelState.affectedIndicatorIndexes,
-            text: state.elementsWheelState.text(l10n),
+            allElements: state.wheelElements,
+            affectedIndexes: state.affectedIndicatorIndexes,
+            text: state.wheelElements.first.text(l10n),
           );
         }
         return FadeAnimatedSwitcher(
           duration: transitionDuration,
-          child: SingleChildScrollView(child: child),
+          child: SingleChildScrollView(
+            key: key,
+            child: child,
+          ),
         );
       },
     );
