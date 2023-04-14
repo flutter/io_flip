@@ -1,0 +1,65 @@
+name: deploy_prod_api
+
+on: workflow_dispatch
+
+env:
+  PROJECT_ID: io-flip
+  SERVICE: io-flip-api
+  REGION: us-central1
+  GAME_URL: https://f1c3862b-bc1f-49ba-a66d-017e47efef13.web.app/
+  INITIALS_BLACKLIST_ID: XEjMPnsdzhCO5l6bw8Kf
+  FB_STORAGE_BUCKET: io-flip.appspot.com
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: beta
+
+      - name: Install Dart Frog
+        run: dart pub global activate dart_frog_cli
+
+      - name: Create Prod Build
+        working-directory: ./api
+        run: dart_frog build
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.CLOUD_RUN_PROD_SA }}
+
+      - name: Authorize Docker push
+        run: gcloud auth configure-docker
+
+      - name: Build and Push Container
+        run: |-
+          cp api/Dockerfile api/build/Dockerfile
+          docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }} api/build
+          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }}
+
+      - name: Deploy to Cloud Run
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v1
+        with:
+          service: ${{ env.SERVICE }}
+          image: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }}
+          region: ${{ env.REGION }}
+          env_vars: |
+            FB_APP_ID=${{ env.PROJECT_ID }}
+            GAME_URL=${{ env.GAME_URL }}
+            INITIALS_BLACKLIST_ID=${{ env.INITIALS_BLACKLIST_ID }}
+            ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY_PROD }}
+            ENCRYPTION_IV=${{ secrets.ENCRYPTION_IV_PROD }}
+            FB_STORAGE_BUCKET=${{ env.FB_STORAGE_BUCKET }}
+            RECAPTCHA_KEY=${{ secrets.RECAPTCHA_KEY_PROD }}
+
+      - name: Show Output
+        run: echo ${{ steps.deploy.outputs.url }}
+
+      - name: Ping
+        run: curl "${{ steps.deploy.outputs.url }}"
