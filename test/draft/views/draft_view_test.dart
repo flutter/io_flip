@@ -392,7 +392,7 @@ void main() {
         await tester.tap(find.byIcon(Icons.question_mark_rounded));
         await tester.pumpAndSettle();
 
-        expect(find.byType(HowToPlayPage), findsOneWidget);
+        expect(find.byType(HowToPlayDialog), findsOneWidget);
       },
     );
   });

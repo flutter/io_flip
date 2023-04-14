@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 
-class HowToPlayPage extends StatelessWidget {
-  const HowToPlayPage({super.key});
+class HowToPlayDialog extends StatelessWidget {
+  const HowToPlayDialog({super.key});
 
   static Future<void> show(BuildContext context) async {
     return showGeneralDialog<void>(
       context: context,
-      pageBuilder: (context, _, __) => const HowToPlayPage(),
+      pageBuilder: (context, _, __) => const HowToPlayDialog(),
       transitionDuration: const Duration(milliseconds: 250),
       transitionBuilder: (context, animation, secondaryAnimation, child) {
         final curvedAnimation = Curves.easeOutBack.transform(animation.value);

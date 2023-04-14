@@ -273,7 +273,7 @@ class _BottomBar extends StatelessWidget {
             child: RoundedButton.icon(
               const Icon(Icons.question_mark_rounded),
               backgroundColor: Colors.white,
-              onPressed: () => HowToPlayPage.show(context),
+              onPressed: () => HowToPlayDialog.show(context),
             ),
           ),
           if (state.status == DraftStateStatus.deckSelected) ...[

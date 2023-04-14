@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/how_to_play/view/how_to_play_page.dart';
+import 'package:top_dash/how_to_play/view/how_to_play_dialog.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/leaderboard/leaderboard.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
@@ -152,7 +152,7 @@ class _Footer extends StatelessWidget {
             RoundedButton.icon(
               const Icon(Icons.question_mark_rounded),
               backgroundColor: TopDashColors.seedWhite,
-              onPressed: () => HowToPlayPage.show(context),
+              onPressed: () => HowToPlayDialog.show(context),
             ),
             _gap,
             RoundedButton.text(
