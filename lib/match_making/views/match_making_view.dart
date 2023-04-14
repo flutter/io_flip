@@ -133,9 +133,12 @@ class _WaitingForMatchView extends StatelessWidget {
           else
             ElevatedButton(
               onPressed: () {
-                setClipboardData(
-                  ClipboardData(text: inviteCode),
-                );
+                final code = inviteCode;
+                if (code != null) {
+                  setClipboardData(
+                    ClipboardData(text: code),
+                  );
+                }
               },
               child: Text(context.l10n.copyInviteCode),
             ),

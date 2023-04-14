@@ -17,5 +17,5 @@ jobs:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
     with:
       flutter_channel: beta
-      flutter_version: 3.9.0-0.2.pre
+      flutter_version: 3.10.0-1.1.pre
       working_directory: packages/match_maker_repository
