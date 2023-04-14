@@ -31,6 +31,8 @@ class RoundedButton extends StatelessWidget {
           ),
         );
 
+  /// Basic [RoundedButton] with black shadow.
+  /// Contains a [image] and a [label] as children
   RoundedButton.image(
     Image image, {
     String? label,

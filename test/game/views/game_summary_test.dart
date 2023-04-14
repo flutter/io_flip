@@ -9,7 +9,6 @@ import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/game/game.dart';
-import 'package:top_dash/game/views/card_inspector.dart';
 import 'package:top_dash/game/views/game_summary.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
