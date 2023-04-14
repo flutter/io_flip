@@ -11,15 +11,24 @@ class PromptFormBloc extends Bloc<PromptFormEvent, PromptFormState> {
     required PromptResource promptResource,
   })  : _promptResource = promptResource,
         super(const PromptFormState()) {
-    _setWhitelist();
+    _setTermsLists();
     on<PromptSubmitted>(_onPromptSubmitted);
   }
 
   final PromptResource _promptResource;
-  late final List<String> whitelist;
+  late final List<String> characterClassList;
+  late final List<String> powerList;
+  late final List<String> secondaryPowerList;
 
-  Future<void> _setWhitelist() async {
-    whitelist = await _promptResource.getPromptWhitelist();
+  Future<void> _setTermsLists() async {
+    final result = await Future.wait<List<String>>([
+      _promptResource.getPromptTerms(PromptTermType.characterClass),
+      _promptResource.getPromptTerms(PromptTermType.power),
+      _promptResource.getPromptTerms(PromptTermType.secondaryPower),
+    ]);
+    characterClassList = result[0];
+    powerList = result[1];
+    secondaryPowerList = result[2];
   }
 
   void _onPromptSubmitted(

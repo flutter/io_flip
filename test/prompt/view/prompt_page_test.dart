@@ -14,8 +14,8 @@ void main() {
   setUp(() {
     promptResource = _MockPromptResource();
 
-    when(() => promptResource.getPromptWhitelist())
-        .thenAnswer((invocation) => Future.value(['']));
+    when(() => promptResource.getPromptTerms(any()))
+        .thenAnswer((_) => Future.value(['']));
   });
 
   group('PromptPage', () {

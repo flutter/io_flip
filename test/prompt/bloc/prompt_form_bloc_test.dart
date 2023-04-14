@@ -20,7 +20,8 @@ void main() {
     setUp(() {
       promptResource = _MockPromptResource();
 
-      when(promptResource.getPromptWhitelist).thenAnswer((_) async => ['test']);
+      when(() => promptResource.getPromptTerms(any()))
+          .thenAnswer((_) async => ['test']);
     });
 
     blocTest<PromptFormBloc, PromptFormState>(

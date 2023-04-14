@@ -65,7 +65,7 @@ void main() {
       when(() => apiClient.gameResource).thenReturn(_MockGameResource());
 
       final promptResource = _MockPromptResource();
-      when(promptResource.getPromptWhitelist)
+      when(() => promptResource.getPromptTerms(any()))
           .thenAnswer((_) async => Future.value(['']));
       when(() => apiClient.promptResource).thenReturn(promptResource);
       when(() => apiClient.scriptsResource).thenReturn(_MockScriptsResource());
