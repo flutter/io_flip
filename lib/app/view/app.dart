@@ -45,6 +45,7 @@ class App extends StatefulWidget {
     required this.gameScriptMachine,
     required this.user,
     this.router,
+    this.audioController,
     super.key,
   });
 
@@ -56,6 +57,7 @@ class App extends StatefulWidget {
   final GameScriptMachine gameScriptMachine;
   final User user;
   final GoRouter? router;
+  final AudioController? audioController;
 
   @override
   State<App> createState() => _AppState();
@@ -90,7 +92,8 @@ class _AppState extends State<App> {
             // and not "only when it's needed", as is default behavior.
             // This way, music starts immediately.
             lazy: false,
-            create: (context) => AudioController()..initialize(),
+            create: (context) =>
+                widget.audioController ?? (AudioController()..initialize()),
             update: updateAudioController,
             dispose: (context, audio) => audio.dispose(),
           ),
