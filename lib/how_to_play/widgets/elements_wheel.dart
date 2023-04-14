@@ -97,10 +97,19 @@ class ElementItem extends StatelessWidget {
         alignment: alignment,
         child: child,
       ),
-      child: AnimatedOpacity(
-        opacity: isAffected || isReference ? 1 : .2,
+      child: TweenAnimationBuilder<double>(
         duration: transitionDuration,
-        child: child,
+        tween: Tween<double>(
+          begin: isAffected ? 1 : 0,
+          end: isAffected ? 1 : 0,
+        ),
+        builder: (_, number, __) {
+          final color = TopDashColors.seedGrey80.withOpacity(number);
+          return ColorFiltered(
+            colorFilter: ColorFilter.mode(color, BlendMode.srcATop),
+            child: child,
+          );
+        },
       ),
     );
   }
