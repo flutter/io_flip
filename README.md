@@ -33,6 +33,10 @@ $ flutter run --flavor production --target lib/main_production.dart
 
 _\*Top Dash works on iOS, Android, Web, and Windows._
 
+## Loading initial data into database
+
+Check [the data loader docs](api/tools/data_loader) for documentation on how the initial data is loaded.
+
 ---
 
 ## Running Tests 🧪

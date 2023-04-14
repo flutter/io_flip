@@ -20,6 +20,7 @@ dependencies:
   connection_repository:
     path: packages/connection_repository
   equatable: ^2.0.5
+  firebase_app_check: ^0.1.2
   firebase_auth: ^4.4.0
   firebase_core: ^2.5.0
   firebase_crashlytics: ^3.1.0

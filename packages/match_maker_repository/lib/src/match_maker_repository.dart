@@ -1,9 +1,8 @@
 import 'dart:developer';
-import 'dart:math' as math;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:game_domain/game_domain.dart' hide Match;
+import 'package:game_domain/game_domain.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:uuid/uuid.dart';
 
@@ -23,9 +22,7 @@ class MatchMakerRepository {
     required this.db,
     ValueGetter<String>? inviteCode,
     this.retryDelay = _defaultRetryDelay,
-    math.Random? randomGenerator,
-  })  : _inviteCode = inviteCode ?? defaultInviteCodeGenerator,
-        _randomGenerator = randomGenerator ?? math.Random() {
+  }) : _inviteCode = inviteCode ?? defaultInviteCodeGenerator {
     collection = db.collection('matches');
     matchStatesCollection = db.collection('match_states');
     scoreCardCollection = db.collection('score_cards');
@@ -54,11 +51,8 @@ class MatchMakerRepository {
   /// Default generator of invite codes.
   static String defaultInviteCodeGenerator() => const Uuid().v4();
 
-  /// Random generator
-  late final math.Random _randomGenerator;
-
   /// Watches a match.
-  Stream<Match> watchMatch(String id) {
+  Stream<DraftMatch> watchMatch(String id) {
     return collection.doc(id).snapshots().map((snapshot) {
       final id = snapshot.id;
       final data = snapshot.data()!;
@@ -67,7 +61,7 @@ class MatchMakerRepository {
       final hostConnected = data['hostConnected'] as bool?;
       final guestConnected = data['guestConnected'] as bool?;
 
-      return Match(
+      return DraftMatch(
         id: id,
         host: host,
         guest: guest == _emptyKey || guest == _inviteKey ? null : guest,
@@ -85,7 +79,6 @@ class MatchMakerRepository {
       final matchId = data['matchId'] as String;
       final hostCards = (data['hostPlayedCards'] as List).cast<String>();
       final guestCards = (data['guestPlayedCards'] as List).cast<String>();
-      final hostStartsMatch = data['hostStartsMatch'] as bool;
       final result = MatchResult.valueOf(data['result'] as String?);
 
       return MatchState(
@@ -93,7 +86,6 @@ class MatchMakerRepository {
         matchId: matchId,
         hostPlayedCards: hostCards,
         guestPlayedCards: guestCards,
-        hostStartsMatch: hostStartsMatch,
         result: result,
       );
     });
@@ -110,7 +102,7 @@ class MatchMakerRepository {
     });
   }
 
-  Match _mapMatchQueryElement(
+  DraftMatch _mapMatchQueryElement(
     QueryDocumentSnapshot<Map<String, dynamic>> element,
   ) {
     final id = element.id;
@@ -120,7 +112,7 @@ class MatchMakerRepository {
     final guestConnected = data['guestConnected'] as bool?;
     final inviteCode = data['inviteCode'] as String?;
 
-    return Match(
+    return DraftMatch(
       id: id,
       host: host,
       hostConnected: hostConnected ?? false,
@@ -140,7 +132,7 @@ class MatchMakerRepository {
   }
 
   /// Finds a match.
-  Future<Match> findMatch(String id, {int retryNumber = 0}) async {
+  Future<DraftMatch> findMatch(String id, {int retryNumber = 0}) async {
     /// Find a match that is not full and has
     /// been updated in the last 4 seconds.
     final matchesResult = await collection
@@ -186,13 +178,13 @@ class MatchMakerRepository {
   }
 
   /// Creates a private match that can only be joined with an invitation code.
-  Future<Match> createPrivateMatch(String id) => _createMatch(
+  Future<DraftMatch> createPrivateMatch(String id) => _createMatch(
         id,
         inviteOnly: true,
       );
 
   /// Searches for and join a private match. Returns null if none is found.
-  Future<Match?> joinPrivateMatch({
+  Future<DraftMatch?> joinPrivateMatch({
     required String guestId,
     required String inviteCode,
   }) async {
@@ -219,7 +211,7 @@ class MatchMakerRepository {
     return null;
   }
 
-  Future<Match> _createMatch(String id, {bool inviteOnly = false}) async {
+  Future<DraftMatch> _createMatch(String id, {bool inviteOnly = false}) async {
     final inviteCode = inviteOnly ? _inviteCode() : null;
     final result = await collection.add({
       'host': id,
@@ -231,9 +223,8 @@ class MatchMakerRepository {
       'matchId': result.id,
       'hostPlayedCards': const <String>[],
       'guestPlayedCards': const <String>[],
-      'hostStartsMatch': _randomGenerator.nextBool(),
     });
-    return Match(
+    return DraftMatch(
       id: result.id,
       host: id,
       inviteCode: inviteCode,

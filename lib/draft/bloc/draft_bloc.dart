@@ -26,6 +26,8 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
   final GameResource _gameResource;
   final AudioController _audioController;
 
+  final List<String> _playedHoloReveal = [];
+
   Future<void> _onDeckRequested(
     DeckRequested event,
     Emitter<DraftState> emit,
@@ -41,6 +43,8 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
           status: DraftStateStatus.deckLoaded,
         ),
       );
+      _audioController.playSfx(Assets.sfx.reveal);
+      _playHoloReveal(cards);
     } catch (e, s) {
       addError(e, s);
       emit(state.copyWith(status: DraftStateStatus.deckFailed));
@@ -52,6 +56,7 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     Emitter<DraftState> emit,
   ) {
     final cards = _retrieveLastCard();
+    _playHoloReveal(cards);
     emit(state.copyWith(cards: cards));
   }
 
@@ -60,6 +65,7 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     Emitter<DraftState> emit,
   ) {
     final cards = _dismissTopCard();
+    _playHoloReveal(cards);
     emit(state.copyWith(cards: cards));
   }
 
@@ -68,6 +74,7 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     Emitter<DraftState> emit,
   ) {
     final cards = _dismissTopCard();
+    _playHoloReveal(cards);
     emit(
       state.copyWith(
         cards: cards,
@@ -102,6 +109,9 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     final selectionCompleted = selectedCards.length == 3;
 
     final cards = selectionCompleted ? null : _dismissTopCard();
+    if (cards != null) {
+      _playHoloReveal(cards);
+    }
 
     emit(
       state.copyWith(
@@ -128,5 +138,14 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     final lastCard = cards.removeLast();
     cards.insert(0, lastCard);
     return cards;
+  }
+
+  void _playHoloReveal(List<Card> cards) {
+    final card = cards.first;
+
+    if (card.rarity && !_playedHoloReveal.contains(card.id)) {
+      _playedHoloReveal.add(card.id);
+      _audioController.playSfx(Assets.sfx.holoReveal);
+    }
   }
 }

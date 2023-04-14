@@ -51,6 +51,7 @@ extension PumpApp on WidgetTester {
     PromptResource? promptResource,
     LeaderboardResource? leaderboardResource,
     MatchMakerRepository? matchMakerRepository,
+    AudioController? audioController,
     ConnectionRepository? connectionRepository,
     MatchSolver? matchSolver,
     GameScriptMachine? gameScriptMachine,
@@ -77,6 +78,9 @@ extension PumpApp on WidgetTester {
           ),
           Provider.value(
             value: matchMakerRepository ?? _MockMatchMakerRepository(),
+          ),
+          Provider.value(
+            value: audioController ?? _MockAudioController(),
           ),
           Provider.value(
             value: connectionRepository ?? _MockConnectionRepository(),

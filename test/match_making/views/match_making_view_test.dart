@@ -5,7 +5,7 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:game_domain/game_domain.dart' hide Match;
+import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
@@ -102,7 +102,7 @@ void main() {
           mockState(
             MatchMakingState(
               status: MatchMakingStatus.processing,
-              match: Match(
+              match: DraftMatch(
                 id: 'matchId',
                 host: 'hostId',
                 guest: 'guestId',
@@ -124,7 +124,7 @@ void main() {
           mockState(
             MatchMakingState(
               status: MatchMakingStatus.processing,
-              match: Match(
+              match: DraftMatch(
                 id: 'matchId',
                 host: 'hostId',
                 guest: 'guestId',
@@ -169,7 +169,7 @@ void main() {
         mockState(
           MatchMakingState(
             status: MatchMakingStatus.completed,
-            match: Match(
+            match: DraftMatch(
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',

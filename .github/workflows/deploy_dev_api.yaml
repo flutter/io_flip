@@ -14,7 +14,6 @@ env:
   REGION: us-central1
   GAME_URL: https://a16e0900d-fe2c-3609-b43c-87093e447b78.web.app/
   INITIALS_BLACKLIST_ID: MdOoZMhusnJTcwfYE0nL
-  PROMPT_WHITELIST_ID: MIsaP8zrRVhuR84MLEic
   FB_STORAGE_BUCKET: top-dash-dev.appspot.com
 
 jobs:
@@ -25,6 +24,8 @@ jobs:
       - uses: actions/checkout@v3
 
       - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: beta
 
       - name: Install Dart Frog
         run: dart pub global activate dart_frog_cli
@@ -43,6 +44,7 @@ jobs:
 
       - name: Build and Push Container
         run: |-
+          cp api/Dockerfile api/build/Dockerfile
           docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }} api/build
           docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }}
 
@@ -57,10 +59,10 @@ jobs:
             FB_APP_ID=${{ env.PROJECT_ID }}
             GAME_URL=${{ env.GAME_URL }}
             INITIALS_BLACKLIST_ID=${{ env.INITIALS_BLACKLIST_ID }}
-            PROMPT_WHITELIST_ID=${{ env.PROMPT_WHITELIST_ID }}
             ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }}
             ENCRYPTION_IV=${{ secrets.ENCRYPTION_IV }}
             FB_STORAGE_BUCKET=${{ env.FB_STORAGE_BUCKET }}
+            RECAPTCHA_KEY=${{ secrets.RECAPTCHA_KEY }}
 
       - name: Show Output
         run: echo ${{ steps.deploy.outputs.url }}

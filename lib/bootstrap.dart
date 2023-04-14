@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -27,6 +28,7 @@ class AppBlocObserver extends BlocObserver {
 typedef BootstrapBuilder = FutureOr<Widget> Function(
   FirebaseFirestore firestore,
   FirebaseAuth firebaseAuth,
+  FirebaseAppCheck appCheck,
 );
 
 Future<void> bootstrap(BootstrapBuilder builder) async {
@@ -53,6 +55,7 @@ Future<void> bootstrap(BootstrapBuilder builder) async {
         await builder(
           FirebaseFirestore.instance,
           FirebaseAuth.instance,
+          FirebaseAppCheck.instance,
         ),
       );
     },

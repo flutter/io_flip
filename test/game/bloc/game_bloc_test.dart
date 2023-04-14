@@ -9,17 +9,20 @@ import 'package:connection_repository/connection_repository.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:match_maker_repository/match_maker_repository.dart' as repo;
+import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/game/game.dart';
+import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class _MockGameResource extends Mock implements GameResource {}
 
 class _MockConnectionRepository extends Mock implements ConnectionRepository {}
 
-class _MockMatchMakerRepository extends Mock
-    implements repo.MatchMakerRepository {}
+class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
+
+class _MockAudioController extends Mock implements AudioController {}
 
 class _MockMatchSolver extends Mock implements MatchSolver {}
 
@@ -40,15 +43,15 @@ void main() {
       matchId: match.id,
       guestPlayedCards: const [],
       hostPlayedCards: const [],
-      hostStartsMatch: true,
     );
 
     late StreamController<MatchState> matchStateController;
-    late StreamController<repo.Match> matchController;
+    late StreamController<DraftMatch> matchController;
     late StreamController<ScoreCard> scoreController;
     late GameResource gameResource;
-    late repo.MatchMakerRepository matchMakerRepository;
+    late MatchMakerRepository matchMakerRepository;
     late MatchSolver matchSolver;
+    late AudioController audioController;
     late User user;
     late ConnectionRepository connectionRepository;
     const isHost = true;
@@ -61,6 +64,7 @@ void main() {
     setUp(() {
       connectionRepository = _MockConnectionRepository();
       matchSolver = _MockMatchSolver();
+      audioController = _MockAudioController();
       gameResource = _MockGameResource();
       matchMakerRepository = _MockMatchMakerRepository();
       user = _MockUser();
@@ -167,9 +171,8 @@ void main() {
         matchId: 'matchId',
         hostPlayedCards: [],
         guestPlayedCards: [],
-        hostStartsMatch: true,
       ),
-      turns: [],
+      rounds: [],
       turnAnimationsFinished: true,
       turnTimeRemaining: 10,
     );
@@ -179,6 +182,7 @@ void main() {
         GameBloc(
           gameResource: _MockGameResource(),
           matchMakerRepository: _MockMatchMakerRepository(),
+          audioController: audioController,
           matchSolver: matchSolver,
           user: user,
           isHost: true,
@@ -194,6 +198,7 @@ void main() {
           gameResource: _MockGameResource(),
           matchMakerRepository: _MockMatchMakerRepository(),
           matchSolver: matchSolver,
+          audioController: audioController,
           user: user,
           isHost: false,
           connectionRepository: _MockConnectionRepository(),
@@ -207,6 +212,7 @@ void main() {
       build: () => GameBloc(
         gameResource: gameResource,
         matchMakerRepository: matchMakerRepository,
+        audioController: audioController,
         matchSolver: matchSolver,
         user: user,
         isHost: isHost,
@@ -219,7 +225,7 @@ void main() {
           playerScoreCard: ScoreCard(id: 'scoreCardId'),
           match: match,
           matchState: matchState,
-          turns: const [],
+          rounds: const [],
           turnAnimationsFinished: true,
           turnTimeRemaining: 10,
         ),
@@ -230,10 +236,28 @@ void main() {
     );
 
     blocTest<GameBloc, GameState>(
+      'plays the startGame sfx when match is loaded',
+      build: () => GameBloc(
+        gameResource: gameResource,
+        matchMakerRepository: matchMakerRepository,
+        audioController: audioController,
+        matchSolver: matchSolver,
+        user: user,
+        isHost: isHost,
+        connectionRepository: connectionRepository,
+      ),
+      act: (bloc) => bloc.add(MatchRequested(match.id)),
+      verify: (_) {
+        verify(() => audioController.playSfx(Assets.sfx.startGame)).called(1);
+      },
+    );
+
+    blocTest<GameBloc, GameState>(
       'fails when the match is not found',
       build: () => GameBloc(
         gameResource: gameResource,
         matchMakerRepository: matchMakerRepository,
+        audioController: audioController,
         matchSolver: matchSolver,
         user: user,
         isHost: isHost,
@@ -255,6 +279,7 @@ void main() {
       build: () => GameBloc(
         gameResource: gameResource,
         matchMakerRepository: matchMakerRepository,
+        audioController: audioController,
         matchSolver: matchSolver,
         user: user,
         isHost: isHost,
@@ -283,11 +308,15 @@ void main() {
 
       test('adds a new state change when the entity changes', () async {
         when(
-          () => matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
+          () => matchSolver.isPlayerAllowedToPlay(
+            any(),
+            isHost: any(named: 'isHost'),
+          ),
         ).thenReturn(true);
         final bloc = GameBloc(
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
+          audioController: audioController,
           matchSolver: matchSolver,
           user: user,
           isHost: true,
@@ -302,7 +331,6 @@ void main() {
             matchId: baseState.matchState.matchId,
             hostPlayedCards: baseState.matchState.hostPlayedCards,
             guestPlayedCards: const ['card6'],
-            hostStartsMatch: true,
           ),
         );
 
@@ -313,10 +341,10 @@ void main() {
 
         final matchLoadedState = state as MatchLoadedState;
         expect(
-          matchLoadedState.turns,
+          matchLoadedState.rounds,
           equals(
             [
-              MatchTurn(
+              MatchRound(
                 playerCardId: null,
                 opponentCardId: 'card6',
               ),
@@ -329,6 +357,7 @@ void main() {
         final bloc = GameBloc(
           user: User(id: 'userId'),
           gameResource: gameResource,
+          audioController: audioController,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
           isHost: true,
@@ -358,6 +387,7 @@ void main() {
         build: () => GameBloc(
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
+          audioController: audioController,
           matchSolver: matchSolver,
           user: user,
           isHost: true,
@@ -365,14 +395,20 @@ void main() {
         ),
         setUp: () {
           when(
-            () => matchSolver.isPlayerTurn(baseState.matchState, isHost: true),
+            () => matchSolver.isPlayerAllowedToPlay(
+              baseState.matchState,
+              isHost: true,
+            ),
           ).thenReturn(true);
         },
         seed: () => baseState,
-        act: (bloc) => bloc.isPlayerTurn,
+        act: (bloc) => bloc.isPlayerAllowedToPlay,
         verify: (_) {
           verify(
-            () => matchSolver.isPlayerTurn(baseState.matchState, isHost: true),
+            () => matchSolver.isPlayerAllowedToPlay(
+              baseState.matchState,
+              isHost: true,
+            ),
           ).called(1);
         },
       );
@@ -382,6 +418,7 @@ void main() {
         build: () => GameBloc(
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
+          audioController: audioController,
           matchSolver: matchSolver,
           user: user,
           isHost: true,
@@ -413,6 +450,7 @@ void main() {
         'hasPlayerWon returns true if the host won, and the player is the host',
         build: () => GameBloc(
           connectionRepository: connectionRepository,
+          audioController: audioController,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
@@ -425,7 +463,6 @@ void main() {
             matchId: baseState.matchState.id,
             guestPlayedCards: baseState.matchState.guestPlayedCards,
             hostPlayedCards: baseState.matchState.hostPlayedCards,
-            hostStartsMatch: true,
             result: MatchResult.host,
           ),
         ),
@@ -440,6 +477,7 @@ void main() {
         build: () => GameBloc(
           connectionRepository: connectionRepository,
           gameResource: gameResource,
+          audioController: audioController,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
           user: user,
@@ -451,7 +489,6 @@ void main() {
             matchId: baseState.matchState.id,
             guestPlayedCards: baseState.matchState.guestPlayedCards,
             hostPlayedCards: baseState.matchState.hostPlayedCards,
-            hostStartsMatch: true,
             result: MatchResult.guest,
           ),
         ),
@@ -465,6 +502,7 @@ void main() {
         build: () => GameBloc(
           connectionRepository: connectionRepository,
           gameResource: gameResource,
+          audioController: audioController,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
           isHost: false,
@@ -483,6 +521,7 @@ void main() {
             gameResource: gameResource,
             matchMakerRepository: matchMakerRepository,
             matchSolver: matchSolver,
+            audioController: audioController,
             user: user,
             isHost: true,
             connectionRepository: connectionRepository,
@@ -497,10 +536,9 @@ void main() {
               matchId: 'matchId',
               hostPlayedCards: const ['card1'],
               guestPlayedCards: const ['card6'],
-              hostStartsMatch: true,
             ),
-            turns: [
-              MatchTurn(
+            rounds: [
+              MatchRound(
                 playerCardId: 'card1',
                 opponentCardId: 'card6',
                 showCardsOverlay: true,
@@ -522,6 +560,7 @@ void main() {
           'returns correctly when is host and card is from opponent',
           build: () => GameBloc(
             gameResource: gameResource,
+            audioController: audioController,
             matchMakerRepository: matchMakerRepository,
             matchSolver: matchSolver,
             user: user,
@@ -538,10 +577,9 @@ void main() {
               matchId: 'matchId',
               hostPlayedCards: const ['card1'],
               guestPlayedCards: const ['card6'],
-              hostStartsMatch: true,
             ),
-            turns: [
-              MatchTurn(
+            rounds: [
+              MatchRound(
                 playerCardId: 'card1',
                 opponentCardId: 'card6',
                 showCardsOverlay: true,
@@ -564,6 +602,7 @@ void main() {
           'returns correctly when is guest and card is from player',
           build: () => GameBloc(
             connectionRepository: connectionRepository,
+            audioController: audioController,
             gameResource: gameResource,
             matchMakerRepository: matchMakerRepository,
             matchSolver: matchSolver,
@@ -580,10 +619,9 @@ void main() {
               matchId: 'matchId',
               hostPlayedCards: const ['card1'],
               guestPlayedCards: const ['card6'],
-              hostStartsMatch: true,
             ),
-            turns: [
-              MatchTurn(
+            rounds: [
+              MatchRound(
                 playerCardId: 'card6',
                 opponentCardId: 'card1',
                 showCardsOverlay: true,
@@ -608,6 +646,7 @@ void main() {
             connectionRepository: connectionRepository,
             gameResource: gameResource,
             matchMakerRepository: matchMakerRepository,
+            audioController: audioController,
             matchSolver: matchSolver,
             isHost: false,
             user: user,
@@ -622,10 +661,9 @@ void main() {
               matchId: 'matchId',
               hostPlayedCards: const ['card1'],
               guestPlayedCards: const ['card6'],
-              hostStartsMatch: true,
             ),
-            turns: [
-              MatchTurn(
+            rounds: [
+              MatchRound(
                 playerCardId: 'card6',
                 opponentCardId: 'card1',
                 showCardsOverlay: true,
@@ -650,6 +688,7 @@ void main() {
         build: () => GameBloc(
           connectionRepository: connectionRepository,
           gameResource: gameResource,
+          audioController: audioController,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
           user: user,
@@ -666,9 +705,8 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const [],
               hostPlayedCards: const [],
-              hostStartsMatch: true,
             ),
-            turns: const [],
+            rounds: const [],
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
           ),
@@ -681,6 +719,7 @@ void main() {
           connectionRepository: connectionRepository,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
+          audioController: audioController,
           matchSolver: matchSolver,
           user: user,
           isHost: false,
@@ -696,9 +735,8 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const [],
               hostPlayedCards: const [],
-              hostStartsMatch: true,
             ),
-            turns: const [],
+            rounds: const [],
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
           ),
@@ -706,11 +744,11 @@ void main() {
       );
 
       blocTest<GameBloc, GameState>(
-        'plays a player card, receives confirmation and then receives an '
-        'opponent card',
+        'Plays playCard sound when card is played by both players',
         build: () => GameBloc(
           connectionRepository: connectionRepository,
           gameResource: gameResource,
+          audioController: audioController,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
           user: user,
@@ -718,7 +756,10 @@ void main() {
         ),
         setUp: () {
           when(
-            () => matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
+            () => matchSolver.isPlayerAllowedToPlay(
+              any(),
+              isHost: any(named: 'isHost'),
+            ),
           ).thenReturn(true);
         },
         seed: () => baseState,
@@ -732,7 +773,6 @@ void main() {
                   matchId: baseState.matchState.matchId,
                   hostPlayedCards: const ['new_card_1'],
                   guestPlayedCards: baseState.matchState.guestPlayedCards,
-                  hostStartsMatch: true,
                 ),
               ),
             )
@@ -743,7 +783,56 @@ void main() {
                   matchId: baseState.matchState.matchId,
                   hostPlayedCards: const ['new_card_1'],
                   guestPlayedCards: const ['new_card_2'],
-                  hostStartsMatch: true,
+                ),
+              ),
+            );
+        },
+        verify: (_) {
+          verify(() => audioController.playSfx(Assets.sfx.playCard)).called(2);
+        },
+      );
+
+      blocTest<GameBloc, GameState>(
+        'plays a player card, receives confirmation and then receives an '
+        'opponent card',
+        build: () => GameBloc(
+          connectionRepository: connectionRepository,
+          gameResource: gameResource,
+          audioController: audioController,
+          matchMakerRepository: matchMakerRepository,
+          matchSolver: matchSolver,
+          user: user,
+          isHost: true,
+        ),
+        setUp: () {
+          when(
+            () => matchSolver.isPlayerAllowedToPlay(
+              any(),
+              isHost: any(named: 'isHost'),
+            ),
+          ).thenReturn(true);
+        },
+        seed: () => baseState,
+        act: (bloc) {
+          bloc
+            ..add(PlayerPlayed('new_card_1'))
+            ..add(
+              MatchStateUpdated(
+                MatchState(
+                  id: baseState.matchState.id,
+                  matchId: baseState.matchState.matchId,
+                  hostPlayedCards: const ['new_card_1'],
+                  guestPlayedCards: baseState.matchState.guestPlayedCards,
+                ),
+              ),
+            )
+            ..add(
+              MatchStateUpdated(
+                MatchState(
+                  id: baseState.matchState.id,
+                  matchId: baseState.matchState.matchId,
+                  hostPlayedCards: const ['new_card_1'],
+                  guestPlayedCards: const ['new_card_2'],
                 ),
               ),
             );
@@ -757,9 +846,8 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const [],
               hostPlayedCards: const [],
-              hostStartsMatch: true,
             ),
-            turns: const [],
+            rounds: const [],
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
           ),
@@ -771,10 +859,9 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const [],
               hostPlayedCards: const ['new_card_1'],
-              hostStartsMatch: true,
             ),
-            turns: const [
-              MatchTurn(
+            rounds: const [
+              MatchRound(
                 opponentCardId: null,
                 playerCardId: 'new_card_1',
               ),
@@ -790,10 +877,9 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const ['new_card_2'],
               hostPlayedCards: const ['new_card_1'],
-              hostStartsMatch: true,
             ),
-            turns: const [
-              MatchTurn(
+            rounds: const [
+              MatchRound(
                 opponentCardId: 'new_card_2',
                 playerCardId: 'new_card_1',
               ),
@@ -808,6 +894,7 @@ void main() {
         'plays a player card and opponent card and another opponent one',
         build: () => GameBloc(
           connectionRepository: connectionRepository,
+          audioController: audioController,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
@@ -816,7 +903,10 @@ void main() {
         ),
         setUp: () {
           when(
-            () => matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
+            () => matchSolver.isPlayerAllowedToPlay(
+              any(),
+              isHost: any(named: 'isHost'),
+            ),
           ).thenReturn(true);
         },
         seed: () => baseState,
@@ -830,7 +920,6 @@ void main() {
                   matchId: baseState.matchState.matchId,
                   hostPlayedCards: const ['new_card_1'],
                   guestPlayedCards: baseState.matchState.guestPlayedCards,
-                  hostStartsMatch: true,
                 ),
               ),
             )
@@ -841,7 +930,6 @@ void main() {
                   matchId: baseState.matchState.matchId,
                   hostPlayedCards: const ['new_card_1'],
                   guestPlayedCards: const ['new_card_2'],
-                  hostStartsMatch: true,
                 ),
               ),
             )
@@ -852,7 +940,6 @@ void main() {
                   matchId: baseState.matchState.matchId,
                   hostPlayedCards: const ['new_card_1'],
                   guestPlayedCards: const ['new_card_2', 'new_card_3'],
-                  hostStartsMatch: true,
                 ),
               ),
             );
@@ -866,9 +953,8 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const [],
               hostPlayedCards: const [],
-              hostStartsMatch: true,
             ),
-            turns: const [],
+            rounds: const [],
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
           ),
@@ -880,10 +966,9 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const [],
               hostPlayedCards: const ['new_card_1'],
-              hostStartsMatch: true,
             ),
-            turns: const [
-              MatchTurn(
+            rounds: const [
+              MatchRound(
                 opponentCardId: null,
                 playerCardId: 'new_card_1',
               ),
@@ -899,10 +984,9 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const ['new_card_2'],
               hostPlayedCards: const ['new_card_1'],
-              hostStartsMatch: true,
             ),
-            turns: const [
-              MatchTurn(
+            rounds: const [
+              MatchRound(
                 opponentCardId: 'new_card_2',
                 playerCardId: 'new_card_1',
               ),
@@ -918,14 +1002,13 @@ void main() {
               matchId: baseState.match.id,
               guestPlayedCards: const ['new_card_2', 'new_card_3'],
               hostPlayedCards: const ['new_card_1'],
-              hostStartsMatch: true,
             ),
-            turns: const [
-              MatchTurn(
+            rounds: const [
+              MatchRound(
                 opponentCardId: 'new_card_2',
                 playerCardId: 'new_card_1',
               ),
-              MatchTurn(
+              MatchRound(
                 opponentCardId: 'new_card_3',
                 playerCardId: null,
               ),
@@ -940,14 +1023,22 @@ void main() {
         test('starts correctly', () {
           fakeAsync((async) {
             when(
-              () =>
-                  matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
+              () => matchSolver.isPlayerAllowedToPlay(
+                any(),
+                isHost: any(named: 'isHost'),
+              ),
             ).thenReturn(true);
+            final stream =
+                StreamController<DraftMatch>(onCancel: () async {}).stream;
+            when(() => matchMakerRepository.watchMatch(any())).thenAnswer(
+              (_) => stream,
+            );
 
             final bloc = GameBloc(
               connectionRepository: connectionRepository,
               gameResource: gameResource,
               matchMakerRepository: matchMakerRepository,
+              audioController: audioController,
               matchSolver: matchSolver,
               user: user,
               isHost: true,
@@ -964,7 +1055,7 @@ void main() {
                   playerScoreCard: ScoreCard(id: 'scoreCardId'),
                   match: match,
                   matchState: matchState,
-                  turns: const [],
+                  rounds: const [],
                   turnAnimationsFinished: true,
                   turnTimeRemaining: 8,
                 ),
@@ -977,8 +1068,10 @@ void main() {
         test('ends and plays card automatically for host', () {
           fakeAsync((async) {
             when(
-              () =>
-                  matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
+              () => matchSolver.isPlayerAllowedToPlay(
+                any(),
+                isHost: any(named: 'isHost'),
+              ),
             ).thenReturn(true);
             when(() => gameResource.getMatch(any())).thenAnswer((_) async {
               return baseState.match;
@@ -986,6 +1079,7 @@ void main() {
 
             final bloc = GameBloc(
               connectionRepository: connectionRepository,
+              audioController: audioController,
               gameResource: gameResource,
               matchMakerRepository: matchMakerRepository,
               matchSolver: matchSolver,
@@ -1011,8 +1105,10 @@ void main() {
         test('ends and plays card automatically for guest', () {
           fakeAsync((async) {
             when(
-              () =>
-                  matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
+              () => matchSolver.isPlayerAllowedToPlay(
+                any(),
+                isHost: any(named: 'isHost'),
+              ),
             ).thenReturn(true);
             when(() => gameResource.getMatch(any())).thenAnswer((_) async {
               return baseState.match;
@@ -1021,6 +1117,7 @@ void main() {
             final bloc = GameBloc(
               connectionRepository: connectionRepository,
               gameResource: gameResource,
+              audioController: audioController,
               matchMakerRepository: matchMakerRepository,
               matchSolver: matchSolver,
               user: user,
@@ -1049,6 +1146,7 @@ void main() {
       build: () => GameBloc(
         connectionRepository: connectionRepository,
         gameResource: gameResource,
+        audioController: audioController,
         matchMakerRepository: matchMakerRepository,
         matchSolver: matchSolver,
         isHost: true,
@@ -1065,6 +1163,7 @@ void main() {
       build: () => GameBloc(
         connectionRepository: connectionRepository,
         gameResource: gameResource,
+        audioController: audioController,
         matchMakerRepository: matchMakerRepository,
         matchSolver: matchSolver,
         isHost: false,
@@ -1082,6 +1181,7 @@ void main() {
         connectionRepository: connectionRepository,
         gameResource: gameResource,
         matchMakerRepository: matchMakerRepository,
+        audioController: audioController,
         matchSolver: matchSolver,
         isHost: false,
         user: user,
@@ -1097,6 +1197,7 @@ void main() {
       build: () => GameBloc(
         connectionRepository: connectionRepository,
         gameResource: gameResource,
+        audioController: audioController,
         matchMakerRepository: matchMakerRepository,
         matchSolver: matchSolver,
         isHost: true,
@@ -1114,6 +1215,7 @@ void main() {
       build: () => GameBloc(
         connectionRepository: connectionRepository,
         gameResource: gameResource,
+        audioController: audioController,
         matchMakerRepository: matchMakerRepository,
         matchSolver: matchSolver,
         isHost: true,
@@ -1123,112 +1225,6 @@ void main() {
       verify: (bloc) {
         expect(bloc.playerCards, isEmpty);
         expect(bloc.opponentCards, isEmpty);
-      },
-    );
-
-    blocTest<GameBloc, GameState>(
-      'lastPlayedCardId returns player card if last turn complete and is '
-      'player turn',
-      setUp: () {
-        when(
-          () => matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
-        ).thenReturn(true);
-      },
-      build: () => GameBloc(
-        connectionRepository: connectionRepository,
-        gameResource: gameResource,
-        matchMakerRepository: matchMakerRepository,
-        matchSolver: matchSolver,
-        isHost: true,
-        user: user,
-      ),
-      seed: () => baseState.copyWith(
-        turns: [
-          MatchTurn(
-            playerCardId: hostCards.first.id,
-            opponentCardId: guestCards.first.id,
-          )
-        ],
-      ),
-      verify: (bloc) {
-        expect(bloc.lastPlayedCardId, equals(hostCards.first.id));
-      },
-    );
-
-    blocTest<GameBloc, GameState>(
-      'lastPlayedCardId returns opponent card if last turn complete and is not '
-      'player turn',
-      setUp: () {
-        when(
-          () => matchSolver.isPlayerTurn(any(), isHost: any(named: 'isHost')),
-        ).thenReturn(false);
-      },
-      build: () => GameBloc(
-        connectionRepository: connectionRepository,
-        gameResource: gameResource,
-        matchMakerRepository: matchMakerRepository,
-        matchSolver: matchSolver,
-        isHost: true,
-        user: user,
-      ),
-      seed: () => baseState.copyWith(
-        turns: [
-          MatchTurn(
-            playerCardId: hostCards.first.id,
-            opponentCardId: guestCards.first.id,
-          )
-        ],
-      ),
-      verify: (bloc) {
-        expect(bloc.lastPlayedCardId, equals(guestCards.first.id));
-      },
-    );
-
-    blocTest<GameBloc, GameState>(
-      'lastPlayedCardId returns player card if last turn not complete and '
-      'only player played',
-      build: () => GameBloc(
-        connectionRepository: connectionRepository,
-        gameResource: gameResource,
-        matchMakerRepository: matchMakerRepository,
-        matchSolver: matchSolver,
-        isHost: true,
-        user: user,
-      ),
-      seed: () => baseState.copyWith(
-        turns: [
-          MatchTurn(
-            playerCardId: hostCards.first.id,
-            opponentCardId: null,
-          )
-        ],
-      ),
-      verify: (bloc) {
-        expect(bloc.lastPlayedCardId, equals(hostCards.first.id));
-      },
-    );
-
-    blocTest<GameBloc, GameState>(
-      'lastPlayedCardId returns opponent card if last turn not complete and '
-      'only opponent played',
-      build: () => GameBloc(
-        connectionRepository: connectionRepository,
-        gameResource: gameResource,
-        matchMakerRepository: matchMakerRepository,
-        matchSolver: matchSolver,
-        isHost: true,
-        user: user,
-      ),
-      seed: () => baseState.copyWith(
-        turns: [
-          MatchTurn(
-            playerCardId: null,
-            opponentCardId: guestCards.first.id,
-          )
-        ],
-      ),
-      verify: (bloc) {
-        expect(bloc.lastPlayedCardId, equals(guestCards.first.id));
       },
     );
 
@@ -1244,7 +1240,6 @@ void main() {
           matchId: match1.id,
           hostPlayedCards: const [],
           guestPlayedCards: const [],
-          hostStartsMatch: true,
         );
         final card = Card(
           id: '1',
@@ -1260,15 +1255,15 @@ void main() {
           playerScoreCard: ScoreCard(id: 'scoreCardId'),
           match: match1,
           matchState: matchState1,
-          turns: const [],
+          rounds: const [],
           turnAnimationsFinished: false,
           turnTimeRemaining: 10,
         );
 
         test('returns true if the card is the winning one', () {
           final state = baseState.copyWith(
-            turns: [
-              MatchTurn(
+            rounds: [
+              MatchRound(
                 opponentCardId: card.id,
                 playerCardId: 'a',
               ),
@@ -1280,8 +1275,8 @@ void main() {
 
         test('returns false if the turn is not complete', () {
           final state = baseState.copyWith(
-            turns: [
-              MatchTurn(
+            rounds: [
+              MatchRound(
                 opponentCardId: card.id,
                 playerCardId: null,
               ),
@@ -1293,12 +1288,12 @@ void main() {
 
         test('can detect the card turn no matter the order', () {
           final state = baseState.copyWith(
-            turns: [
-              MatchTurn(
+            rounds: [
+              MatchRound(
                 opponentCardId: 'a',
                 playerCardId: card.id,
               ),
-              MatchTurn(
+              MatchRound(
                 opponentCardId: 'b',
                 playerCardId: null,
               ),
@@ -1310,25 +1305,25 @@ void main() {
       });
     });
 
-    group('MatchTurn', () {
+    group('MatchRound', () {
       test('isComplete', () {
         expect(
-          MatchTurn(playerCardId: null, opponentCardId: null).isComplete(),
+          MatchRound(playerCardId: null, opponentCardId: null).isComplete(),
           isFalse,
         );
 
         expect(
-          MatchTurn(playerCardId: 'a', opponentCardId: null).isComplete(),
+          MatchRound(playerCardId: 'a', opponentCardId: null).isComplete(),
           isFalse,
         );
 
         expect(
-          MatchTurn(playerCardId: null, opponentCardId: 'a').isComplete(),
+          MatchRound(playerCardId: null, opponentCardId: 'a').isComplete(),
           isFalse,
         );
 
         expect(
-          MatchTurn(playerCardId: 'b', opponentCardId: 'a').isComplete(),
+          MatchRound(playerCardId: 'b', opponentCardId: 'a').isComplete(),
           isTrue,
         );
       });
@@ -1339,6 +1334,7 @@ void main() {
         'notifies when opponent(guest) is absent',
         build: () => GameBloc(
           connectionRepository: connectionRepository,
+          audioController: audioController,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           user: user,
@@ -1348,7 +1344,7 @@ void main() {
         act: (bloc) {
           bloc.add(ManagePlayerPresence(match.id));
           matchController.add(
-            repo.Match(
+            DraftMatch(
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
@@ -1367,6 +1363,7 @@ void main() {
         build: () => GameBloc(
           connectionRepository: connectionRepository,
           gameResource: gameResource,
+          audioController: audioController,
           matchMakerRepository: matchMakerRepository,
           user: user,
           isHost: false,
@@ -1375,7 +1372,7 @@ void main() {
         act: (bloc) {
           bloc.add(ManagePlayerPresence(match.id));
           matchController.add(
-            repo.Match(
+            DraftMatch(
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
@@ -1395,6 +1392,7 @@ void main() {
           connectionRepository: connectionRepository,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
+          audioController: audioController,
           user: user,
           isHost: true,
           matchSolver: matchSolver,
@@ -1402,7 +1400,7 @@ void main() {
         act: (bloc) {
           bloc.add(ManagePlayerPresence(match.id));
           matchController.add(
-            repo.Match(
+            DraftMatch(
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
@@ -1424,6 +1422,7 @@ void main() {
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           user: user,
+          audioController: audioController,
           isHost: true,
           matchSolver: matchSolver,
         ),
@@ -1435,7 +1434,7 @@ void main() {
         act: (bloc) {
           bloc.add(ManagePlayerPresence(match.id));
           matchController.add(
-            repo.Match(
+            DraftMatch(
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
@@ -1457,7 +1456,6 @@ void main() {
               matchId: 'matchId',
               hostPlayedCards: const ['card1', 'card2', 'card3'],
               guestPlayedCards: const ['card4', 'card5', 'card6'],
-              hostStartsMatch: true,
             ),
           );
         },
@@ -1465,6 +1463,7 @@ void main() {
           connectionRepository: connectionRepository,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
+          audioController: audioController,
           user: user,
           isHost: true,
           matchSolver: matchSolver,
@@ -1472,7 +1471,7 @@ void main() {
         act: (bloc) {
           bloc.add(ManagePlayerPresence(match.id));
           matchController.add(
-            repo.Match(
+            DraftMatch(
               id: 'matchId',
               host: 'hostId',
               guest: 'guestId',
@@ -1494,6 +1493,7 @@ void main() {
         build: () => GameBloc(
           connectionRepository: connectionRepository,
           gameResource: gameResource,
+          audioController: audioController,
           matchMakerRepository: matchMakerRepository,
           user: user,
           isHost: true,
@@ -1507,7 +1507,7 @@ void main() {
       );
     });
 
-    group('TurnAnimationsFinished', () {
+    group('turnAnimationsFinished', () {
       blocTest<GameBloc, GameState>(
         'emits state updating turnAnimationsFinished field',
         build: () => GameBloc(
@@ -1515,6 +1515,7 @@ void main() {
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           user: user,
+          audioController: audioController,
           isHost: true,
           matchSolver: matchSolver,
         ),
@@ -1531,6 +1532,7 @@ void main() {
         'emits state updating showCardsOverlay field',
         build: () => GameBloc(
           connectionRepository: connectionRepository,
+          audioController: audioController,
           gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           user: user,
@@ -1538,8 +1540,8 @@ void main() {
           matchSolver: matchSolver,
         ),
         seed: () => baseState.copyWith(
-          turns: [
-            MatchTurn(
+          rounds: [
+            MatchRound(
               playerCardId: hostCards.first.id,
               opponentCardId: guestCards.first.id,
             )
@@ -1548,8 +1550,8 @@ void main() {
         act: (bloc) => bloc.add(CardOverlayRevealed()),
         expect: () => <GameState>[
           baseState.copyWith(
-            turns: [
-              MatchTurn(
+            rounds: [
+              MatchRound(
                 playerCardId: hostCards.first.id,
                 opponentCardId: guestCards.first.id,
                 showCardsOverlay: true,

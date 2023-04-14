@@ -1,3 +1,4 @@
+export 'animated_card.dart';
 export 'card_overlay.dart';
 export 'element_icons.dart';
 export 'fading_dot_loader.dart';

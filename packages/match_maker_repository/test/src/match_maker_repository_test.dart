@@ -1,11 +1,10 @@
 // ignore_for_file: subtype_of_sealed_class, prefer_const_constructors
 
 import 'dart:async';
-import 'dart:math' as math;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:game_domain/game_domain.dart' hide Match;
+import 'package:game_domain/game_domain.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -44,8 +43,6 @@ class _MockDocumentReference<T> extends Mock implements DocumentReference<T> {}
 
 class _MockTransaction extends Mock implements Transaction {}
 
-class _MockRandom extends Mock implements math.Random {}
-
 void main() {
   group('MatchMakerRepository', () {
     late _MockFirebaseFirestore db;
@@ -53,7 +50,6 @@ void main() {
     late CollectionReference<Map<String, dynamic>> matchStateCollection;
     late CollectionReference<Map<String, dynamic>> scoreCardsCollection;
     late MatchMakerRepository matchMakerRepository;
-    late math.Random randomGenerator;
 
     setUpAll(() {
       registerFallbackValue(Timestamp(0, 0));
@@ -64,22 +60,19 @@ void main() {
       collection = _MockCollectionReference();
       matchStateCollection = _MockCollectionReference();
       scoreCardsCollection = _MockCollectionReference();
-      randomGenerator = _MockRandom();
 
       when(() => db.collection('matches')).thenReturn(collection);
       when(() => db.collection('score_cards')).thenReturn(scoreCardsCollection);
       when(() => db.collection('match_states'))
           .thenReturn(matchStateCollection);
-      when(() => randomGenerator.nextBool()).thenReturn(true);
       matchMakerRepository = MatchMakerRepository(
         db: db,
         retryDelay: 0,
         inviteCode: () => 'inviteCode',
-        randomGenerator: randomGenerator,
       );
     });
 
-    void mockQueryResult({List<Match> matches = const []}) {
+    void mockQueryResult({List<DraftMatch> matches = const []}) {
       when(() => collection.where('guest', isEqualTo: 'EMPTY'))
           .thenReturn(collection);
       when(
@@ -109,7 +102,7 @@ void main() {
 
     void mockInviteQueryResult(
       String inviteCode, {
-      List<Match> matches = const [],
+      List<DraftMatch> matches = const [],
     }) {
       when(() => collection.where('guest', isEqualTo: 'INVITE'))
           .thenReturn(collection);
@@ -167,16 +160,14 @@ void main() {
     void mockAddState(
       String matchId,
       List<String> hostPlayedCards,
-      List<String> guestPlayedCards, {
-      required bool hostStartsMatch,
-    }) {
+      List<String> guestPlayedCards,
+    ) {
       when(
         () => matchStateCollection.add(
           {
             'matchId': matchId,
             'hostPlayedCards': hostPlayedCards,
             'guestPlayedCards': guestPlayedCards,
-            'hostStartsMatch': hostStartsMatch,
           },
         ),
       ).thenAnswer(
@@ -245,13 +236,13 @@ void main() {
     test('returns a new match as host when there are no matches', () async {
       mockQueryResult();
       mockAdd('hostId', 'EMPTY', 'matchId');
-      mockAddState('matchId', const [], const [], hostStartsMatch: true);
+      mockAddState('matchId', const [], const []);
 
       final match = await matchMakerRepository.findMatch('hostId');
       expect(
         match,
         equals(
-          Match(
+          DraftMatch(
             id: 'matchId',
             host: 'hostId',
           ),
@@ -264,7 +255,6 @@ void main() {
             'matchId': 'matchId',
             'hostPlayedCards': const <String>[],
             'guestPlayedCards': const <String>[],
-            'hostStartsMatch': true,
           },
         ),
       ).called(1);
@@ -273,13 +263,13 @@ void main() {
     test('creates a new match as host when creating a private match', () async {
       mockQueryResult();
       mockAdd('hostId', 'INVITE', 'matchId', inviteCode: 'inviteCode');
-      mockAddState('matchId', const [], const [], hostStartsMatch: true);
+      mockAddState('matchId', const [], const []);
 
       final match = await matchMakerRepository.createPrivateMatch('hostId');
       expect(
         match,
         equals(
-          Match(
+          DraftMatch(
             id: 'matchId',
             host: 'hostId',
             inviteCode: 'inviteCode',
@@ -293,7 +283,6 @@ void main() {
             'matchId': 'matchId',
             'hostPlayedCards': const <String>[],
             'guestPlayedCards': const <String>[],
-            'hostStartsMatch': true,
           },
         ),
       ).called(1);
@@ -303,7 +292,7 @@ void main() {
       mockInviteQueryResult(
         'inviteCode',
         matches: [
-          Match(
+          DraftMatch(
             id: 'matchId',
             host: 'hostId',
             inviteCode: 'inviteCode',
@@ -319,7 +308,7 @@ void main() {
       expect(
         match,
         equals(
-          Match(
+          DraftMatch(
             id: 'matchId',
             host: 'hostId',
             guest: 'guestId',
@@ -334,7 +323,7 @@ void main() {
       () async {
         mockQueryResult(
           matches: [
-            Match(
+            DraftMatch(
               id: 'match123',
               host: 'host123',
             ),
@@ -346,7 +335,7 @@ void main() {
         expect(
           match,
           equals(
-            Match(
+            DraftMatch(
               id: 'match123',
               host: 'host123',
               guest: 'guest123',
@@ -361,7 +350,7 @@ void main() {
       () async {
         mockQueryResult(
           matches: [
-            Match(
+            DraftMatch(
               id: 'match123',
               host: 'host123',
             ),
@@ -383,7 +372,7 @@ void main() {
 
       mockSnapshots('123', streamController.stream);
 
-      final values = <Match>[];
+      final values = <DraftMatch>[];
       final subscription =
           matchMakerRepository.watchMatch('123').listen(values.add);
 
@@ -403,7 +392,7 @@ void main() {
       expect(
         values,
         equals([
-          Match(
+          DraftMatch(
             id: '123',
             host: 'host1',
             guest: 'guest1',
@@ -422,7 +411,7 @@ void main() {
 
       mockSnapshots('123', streamController.stream);
 
-      final values = <Match>[];
+      final values = <DraftMatch>[];
       final subscription =
           matchMakerRepository.watchMatch('123').listen(values.add);
 
@@ -440,7 +429,7 @@ void main() {
       expect(
         values,
         equals([
-          Match(
+          DraftMatch(
             id: '123',
             host: 'host1',
           )
@@ -466,7 +455,6 @@ void main() {
         'matchId': '1234',
         'guestPlayedCards': ['321'],
         'hostPlayedCards': ['322'],
-        'hostStartsMatch': true,
         'result': 'host',
       });
 
@@ -482,7 +470,6 @@ void main() {
             matchId: '1234',
             guestPlayedCards: const ['321'],
             hostPlayedCards: const ['322'],
-            hostStartsMatch: true,
             result: MatchResult.host,
           )
         ]),
