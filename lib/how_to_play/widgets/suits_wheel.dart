@@ -250,13 +250,13 @@ extension SuitsWheelX on Suit {
     switch (this) {
       case Suit.fire:
         return SuitAlignment.topCenter;
-      case Suit.water:
-        return SuitAlignment.centerRight;
       case Suit.air:
+        return SuitAlignment.centerRight;
+      case Suit.metal:
         return SuitAlignment.bottomRight;
       case Suit.earth:
         return SuitAlignment.bottomLeft;
-      case Suit.metal:
+      case Suit.water:
         return SuitAlignment.centerLeft;
     }
   }
