@@ -83,7 +83,8 @@ void main() {
 
         expect(
           launchedUrl,
-          equals('https://www.facebook.com/sharer.php?u=$shareUrl&quote=$shareText'),
+          equals(
+              'https://www.facebook.com/sharer.php?u=$shareUrl&quote=$shareText'),
         );
       },
     );
