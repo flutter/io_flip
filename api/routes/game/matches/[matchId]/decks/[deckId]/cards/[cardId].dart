@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:jwt_middleware/jwt_middleware.dart';
 import 'package:logging/logging.dart';
 import 'package:match_repository/match_repository.dart';
@@ -23,6 +24,11 @@ FutureOr<Response> onRequest(
         deckId: deckId,
         userId: user.id,
       );
+      await FirebaseMessaging.instance.sendMessage(to: 'playCard', data: {
+        'matchId': matchId,
+        'cardId': cardId,
+        'deckId': deckId,
+      });
     } catch (e, s) {
       context.read<Logger>().severe('Error playing a move', e, s);
       rethrow;
