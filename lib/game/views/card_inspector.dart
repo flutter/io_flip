@@ -42,9 +42,9 @@ class _CardInspectorState extends State<CardInspector> {
 
   @override
   void initState() {
+    super.initState();
     final start = widget.deck.length * 300 + widget.startingIndex;
     controller = PageController(initialPage: start);
-    super.initState();
   }
 
   Future<void> _shareDialog(BuildContext context, Card card) {
