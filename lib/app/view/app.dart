@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:top_dash/app_lifecycle/app_lifecycle.dart';
 import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/connection/connection.dart';
+import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/router/router.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
@@ -101,16 +102,26 @@ class _AppState extends State<App> {
         ],
         child: Builder(
           builder: (context) {
-            return MaterialApp.router(
-              title: 'Top Dash',
-              theme: TopDashTheme.themeData,
-              routeInformationProvider: router.routeInformationProvider,
-              routeInformationParser: router.routeInformationParser,
-              routerDelegate: router.routerDelegate,
-              scaffoldMessengerKey: scaffoldMessengerKey,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
-              supportedLocales: AppLocalizations.supportedLocales,
-              builder: (context, child) => ConnectionOverlay(child: child),
+            return Provider<UISoundAdaptater>(
+              create: (context) {
+                final audio = context.read<AudioController>();
+                return UISoundAdaptater(
+                  playButtonSound: () {
+                    audio.playSfx(Assets.sfx.click);
+                  },
+                );
+              },
+              child: MaterialApp.router(
+                title: 'Top Dash',
+                theme: TopDashTheme.themeData,
+                routeInformationProvider: router.routeInformationProvider,
+                routeInformationParser: router.routeInformationParser,
+                routerDelegate: router.routerDelegate,
+                scaffoldMessengerKey: scaffoldMessengerKey,
+                localizationsDelegates: AppLocalizations.localizationsDelegates,
+                supportedLocales: AppLocalizations.supportedLocales,
+                builder: (context, child) => ConnectionOverlay(child: child),
+              ),
             );
           },
         ),
