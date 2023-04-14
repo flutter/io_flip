@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:api_client/api_client.dart';
+import 'package:api_client/src/resources/share_resource.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:http/http.dart' as http;
 import 'package:mocktail/mocktail.dart';
@@ -485,45 +486,6 @@ void main() {
             ),
           ),
         );
-      });
-
-      group('shareHandUrl', () {
-        test('returns the correct url', () {
-          when(
-            () => apiClient.shareHandUrl(any()),
-          ).thenReturn('http://baseurl.com/public/share?deckId=id');
-
-          expect(
-            resource.shareHandUrl('id'),
-            equals('http://baseurl.com/public/share?deckId=id'),
-          );
-        });
-      });
-
-      group('shareCardUrl', () {
-        test('returns the correct url', () {
-          when(
-            () => apiClient.shareCardUrl(any()),
-          ).thenReturn('baseurl.com/public/share?cardId=id');
-
-          expect(
-            resource.shareCardUrl('id'),
-            equals('baseurl.com/public/share?cardId=id'),
-          );
-        });
-      });
-
-      group('shareGameUrl', () {
-        test('returns the correct url', () {
-          when(
-            () => apiClient.shareGameUrl(),
-          ).thenReturn('baseurl.com');
-
-          expect(
-            resource.shareGameUrl(),
-            equals('baseurl.com'),
-          );
-        });
       });
     });
   });

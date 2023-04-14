@@ -9,7 +9,6 @@ import '../../helpers/helpers.dart';
 
 String? launchedUrl;
 const shareUrl = 'https://example.com';
-const shareText = 'Check out this hand!';
 const card = Card(
   id: '',
   name: 'name',
@@ -53,7 +52,7 @@ void main() {
 
         expect(
           launchedUrl,
-          'https://twitter.com/intent/tweet?text=$shareText',
+          shareUrl,
         );
       },
     );
@@ -74,7 +73,7 @@ void main() {
         expect(
           launchedUrl,
           equals(
-            'https://www.facebook.com/sharer.php?u=$shareUrl&quote=$shareText',
+            shareUrl,
           ),
         );
       },
@@ -105,8 +104,8 @@ extension ShareCardDialogTest on WidgetTester {
     await mockNetworkImages(() {
       return pumpApp(
         ShareCardDialog(
-          shareUrl: shareUrl,
-          shareText: shareText,
+          twitterShareUrl: shareUrl,
+          facebookShareUrl: shareUrl,
           urlLauncher: (url) async {
             launchedUrl = url;
           },

@@ -10,7 +10,7 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
 
-class _MockGameResource extends Mock implements GameResource {}
+class _MockShareResource extends Mock implements ShareResource {}
 
 class _MockGoRouterState extends Mock implements GoRouterState {}
 
@@ -100,11 +100,12 @@ void main() {
     );
 
     testWidgets('renders a dialog on share button tapped', (tester) async {
-      final gameResource = _MockGameResource();
-      when(() => gameResource.shareCardUrl(any())).thenReturn('');
-      when(gameResource.shareGameUrl).thenReturn('');
+      final shareResource = _MockShareResource();
+      when(() => shareResource.facebookShareCardUrl(any())).thenReturn('');
+      when(() => shareResource.twitterShareCardUrl(any())).thenReturn('');
+      when(shareResource.shareGameUrl).thenReturn('');
 
-      await tester.pumpSubject(buildSubject(), gameResource: gameResource);
+      await tester.pumpSubject(buildSubject(), shareResource: shareResource);
       await tester.tap(find.byIcon(Icons.share_outlined));
       await tester.pumpAndSettle();
       expect(find.byType(Dialog), findsOneWidget);
@@ -205,10 +206,10 @@ extension CardInspectorTest on WidgetTester {
   Future<void> pumpSubject(
     Widget widget, {
     GoRouter? router,
-    GameResource? gameResource,
+    ShareResource? shareResource,
   }) async {
     await mockNetworkImages(() {
-      return pumpApp(widget, router: router, gameResource: gameResource);
+      return pumpApp(widget, router: router, shareResource: shareResource);
     });
   }
 }

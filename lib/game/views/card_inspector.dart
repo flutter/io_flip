@@ -39,15 +39,14 @@ class _CardInspectorState extends State<CardInspector> {
   late final PageController controller = PageController(initialPage: start);
 
   Future<void> _shareDialog(Card card) {
-    final gameResource = context.read<GameResource>();
-    final cardUrl = gameResource.shareCardUrl(card.id);
-    final gameUrl = gameResource.shareGameUrl();
+    final shareResource = context.read<ShareResource>();
+    final twitterLink = shareResource.twitterShareCardUrl(card.id);
+    final facebookLink = shareResource.twitterShareCardUrl(card.id);
     return showDialog(
       context: context,
       builder: (context) => ShareCardDialog(
-        shareUrl: cardUrl,
-        shareText:
-            'Check%20my%20best%20card!%20$cardUrl%0aPlay%20I/O%20Bash%20and%20use%20AI%20to%20create%20cards%20and%20compete.%20$gameUrl',
+        twitterShareUrl: twitterLink,
+        facebookShareUrl: facebookLink,
         card: card,
       ),
     );

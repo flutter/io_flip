@@ -9,23 +9,17 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 class ShareCardDialog extends StatelessWidget {
   const ShareCardDialog({
-    required this.shareUrl,
-    required this.shareText,
+    required this.twitterShareUrl,
+    required this.facebookShareUrl,
     required this.card,
     this.urlLauncher = launchUrlString,
     super.key,
   });
 
-  final String shareUrl;
-  final String shareText;
+  final String twitterShareUrl;
+  final String facebookShareUrl;
   final AsyncValueSetter<String> urlLauncher;
   final Card card;
-
-  String get _twitterShareUrl =>
-      'https://twitter.com/intent/tweet?text=$shareText';
-
-  String get _facebookShareUrl =>
-      'https://www.facebook.com/sharer.php?u=$shareUrl&quote=$shareText';
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +36,8 @@ class ShareCardDialog extends StatelessWidget {
                 isMobile: true,
                 card: card,
                 urlLauncher: urlLauncher,
-                twitterShareUrl: _twitterShareUrl,
-                facebookShareUrl: _facebookShareUrl,
+                twitterShareUrl: twitterShareUrl,
+                facebookShareUrl: facebookShareUrl,
               ),
             );
           },
@@ -55,8 +49,8 @@ class ShareCardDialog extends StatelessWidget {
                 isMobile: false,
                 card: card,
                 urlLauncher: urlLauncher,
-                twitterShareUrl: _twitterShareUrl,
-                facebookShareUrl: _facebookShareUrl,
+                twitterShareUrl: twitterShareUrl,
+                facebookShareUrl: facebookShareUrl,
               ),
             );
           },

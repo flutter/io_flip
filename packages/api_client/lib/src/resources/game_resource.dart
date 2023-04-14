@@ -184,19 +184,4 @@ class GameResource {
       );
     }
   }
-
-  /// Returns the share page url for the specified [deckId].
-  String shareHandUrl(String deckId) {
-    return _apiClient.shareHandUrl(deckId);
-  }
-
-  /// Returns the share page url for the specified [cardId].
-  String shareCardUrl(String cardId) {
-    return _apiClient.shareCardUrl(cardId);
-  }
-
-  /// Returns the game url.
-  String shareGameUrl() {
-    return _apiClient.shareGameUrl();
-  }
 }

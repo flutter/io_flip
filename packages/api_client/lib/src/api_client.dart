@@ -96,6 +96,9 @@ class ApiClient {
   /// {@macro game_resource}
   late final GameResource gameResource = GameResource(apiClient: this);
 
+  /// {@macro share_resource}
+  late final ShareResource shareResource = ShareResource(apiClient: this);
+
   /// {@macro prompt_resource}
   late final PromptResource promptResource = PromptResource(apiClient: this);
 
