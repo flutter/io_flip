@@ -1,4 +1,4 @@
-import 'package:card_renderer/src/rainbow_filter.dart';
+import 'package:card_renderer/card_renderer.dart';
 import 'package:image/image.dart';
 import 'package:test/test.dart';
 
