@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:grpc/grpc.dart' hide Response;
 import 'package:http/http.dart';
@@ -67,6 +66,8 @@ class GcloudPubsub {
       },
     );
 
+    print('Topic answered: ${response.statusCode}');
+
     if (response.statusCode != HttpStatus.ok) {
       throw GcloudPubsubFailure(
         response.body,
@@ -77,7 +78,7 @@ class GcloudPubsub {
 
   Future<Map<String, String>> _authenticate(String uri) async {
     final delegate = await _authenticatorBuilder([
-      'https://www.googleapis.com/auth/gcloud',
+      'https://www.googleapis.com/auth/pubsub',
     ]);
 
     final metadata = <String, String>{};

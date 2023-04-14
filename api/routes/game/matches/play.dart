@@ -6,7 +6,6 @@ import 'package:gcloud_pubsub/gcloud_pubsub.dart';
 
 FutureOr<Response> onRequest(RequestContext context) async {
   final pubsub = context.read<GcloudPubsub>();
-  print('play card from topic');
   try {
     await pubsub.pushCardToQueue();
   } catch (e) {

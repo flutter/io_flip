@@ -26,7 +26,7 @@ FutureOr<Response> onRequest(
         userId: user.id,
       );
 
-      await pubsub.pushCardToQueue();
+      unawaited(pubsub.pushCardToQueue());
     } catch (e, s) {
       context.read<Logger>().severe('Error playing a move', e, s);
       rethrow;

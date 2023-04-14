@@ -169,8 +169,6 @@ class GameResource {
       final response = await _apiClient
           .post('/game/matches/$matchId/decks/$deckId/cards/$cardId');
 
-      final response2 = await _apiClient.post('/game/matches/play');
-      print(response2.statusCode);
       if (response.statusCode != HttpStatus.noContent) {
         throw ApiClientError(
           'POST /matches/$matchId/decks/$deckId/cards/$cardId returned status ${response.statusCode} with the following response: "${response.body}"',
