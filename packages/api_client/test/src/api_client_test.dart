@@ -468,7 +468,7 @@ void main() {
       test('returns the correct url', () {
         expect(
           subject.shareHandUrl('id'),
-          equals('http://baseurl.com/public/share?deckId=id'),
+          equals('baseurl.com/public/share?deckId=id'),
         );
       });
     });
@@ -477,7 +477,16 @@ void main() {
       test('returns the correct url', () {
         expect(
           subject.shareCardUrl('id'),
-          equals('http://baseurl.com/public/share?cardId=id'),
+          equals('baseurl.com/public/share?cardId=id'),
+        );
+      });
+    });
+
+    group('shareGameUrl', () {
+      test('returns the correct url', () {
+        expect(
+          subject.shareGameUrl(),
+          equals('baseurl.com'),
         );
       });
     });

@@ -3,6 +3,7 @@ import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:top_dash/game/game.dart';
+import 'package:top_dash/game/views/card_inspector.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -159,17 +160,38 @@ class _CardsView extends StatelessWidget {
       ),
     );
 
+    final cards = bloc.isHost
+        ? [...hostCardsOrdered, ...guestCardsOrdered]
+        : [...guestCardsOrdered, ...hostCardsOrdered];
+
+    final playerCardIds = bloc.isHost
+        ? state.matchState.hostPlayedCards
+        : state.matchState.guestPlayedCards;
+    final gameCards = [...playerCards, ...opponentCards];
     return Align(
       child: ConstrainedBox(
         constraints: const BoxConstraints(
           maxWidth: 500,
           minHeight: 360,
         ),
-        child: GridView.count(
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: TopDashSpacing.md,
+          ),
           shrinkWrap: true,
-          mainAxisSpacing: TopDashSpacing.md,
-          crossAxisCount: 3,
-          children: [...opponentCards, ...playerCards],
+          itemCount: gameCards.length,
+          itemBuilder: (context, index) => GestureDetector(
+            child: gameCards[index],
+            onTap: () => GoRouter.of(context).pushNamed(
+              'card_inspector',
+              extra: CardInspectorData(
+                deck: cards,
+                playerCardIds: playerCardIds,
+                startingIndex: index,
+              ),
+            ),
+          ),
         ),
       ),
     );

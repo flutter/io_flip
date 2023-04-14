@@ -504,11 +504,24 @@ void main() {
         test('returns the correct url', () {
           when(
             () => apiClient.shareCardUrl(any()),
-          ).thenReturn('http://baseurl.com/public/share?cardId=id');
+          ).thenReturn('baseurl.com/public/share?cardId=id');
 
           expect(
             resource.shareCardUrl('id'),
-            equals('http://baseurl.com/public/share?cardId=id'),
+            equals('baseurl.com/public/share?cardId=id'),
+          );
+        });
+      });
+
+      group('shareGameUrl', () {
+        test('returns the correct url', () {
+          when(
+            () => apiClient.shareGameUrl(),
+          ).thenReturn('baseurl.com');
+
+          expect(
+            resource.shareGameUrl(),
+            equals('baseurl.com'),
           );
         });
       });

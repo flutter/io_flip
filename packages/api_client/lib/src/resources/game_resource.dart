@@ -194,4 +194,9 @@ class GameResource {
   String shareCardUrl(String cardId) {
     return _apiClient.shareCardUrl(cardId);
   }
+
+  /// Returns the game url.
+  String shareGameUrl() {
+    return _apiClient.shareGameUrl();
+  }
 }

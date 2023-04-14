@@ -273,5 +273,13 @@
   "unknownConnectionError": "Unable to connect. Please try again in a few moments.",
   "@unknownConnectionError": {
     "description": "Error message shown when an unknown error occurs while connecting"
+  },
+  "twitterButtonLabel": "TWITTER",
+  "@twitterButtonLabel": {
+    "description": "Label for the share to twitter button"
+  },
+  "facebookButtonLabel": "FACEBOOK",
+  "@facebookButtonLabel": {
+    "description": "Label for the share to facebook button"
   }
 }

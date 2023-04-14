@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/game/game.dart';
+import 'package:top_dash/game/views/card_inspector.dart';
 import 'package:top_dash/game/views/game_summary.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -263,6 +264,54 @@ void main() {
             find.byType(CardOverlay),
             findsNWidgets(6),
           );
+        },
+      );
+      testWidgets(
+        'navigates to inspector page when card is tapped',
+        (tester) async {
+          final goRouter = MockGoRouter();
+          when(
+            () => goRouter.pushNamed(
+              'card_inspector',
+              extra: any(named: 'extra'),
+            ),
+          ).thenAnswer((_) async {
+            return;
+          });
+          when(
+            () => bloc.isWinningCard(any(), isPlayer: any(named: 'isPlayer')),
+          ).thenReturn(CardOverlayType.win);
+          when(() => bloc.isHost).thenReturn(false);
+          mockState(
+            baseState.copyWith(
+              matchState: MatchState(
+                id: '',
+                matchId: '',
+                guestPlayedCards: const [
+                  'opponent_card_2',
+                  'opponent_card_3',
+                  'opponent_card'
+                ],
+                hostPlayedCards: const [
+                  'player_card_2',
+                  'player_card',
+                  'player_card_3',
+                ],
+                result: MatchResult.guest,
+              ),
+              turnAnimationsFinished: true,
+            ),
+          );
+          await tester.pumpSubject(bloc, goRouter: goRouter);
+          await tester.tap(find.byType(GameCard).first);
+          await tester.pumpAndSettle();
+
+          verify(
+            () => goRouter.pushNamed(
+              'card_inspector',
+              extra: any(named: 'extra'),
+            ),
+          ).called(1);
         },
       );
 
