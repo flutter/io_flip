@@ -32,6 +32,7 @@ dependencies:
   flutter_highlight: ^0.7.0
   flutter_localizations:
     sdk: flutter
+  flutter_svg: ^2.0.5
   game_domain:
     path: api/packages/game_domain
   game_script_machine:
@@ -45,6 +46,7 @@ dependencies:
   provider: ^6.0.5
   share_plus: ^6.3.1
   shared_preferences: ^2.1.0
+  styled_text: ^7.0.0
   top_dash_ui:
     path: packages/top_dash_ui
   url_launcher: ^6.1.10
@@ -68,6 +70,7 @@ flutter:
   generate: true
 
   assets:
+    - assets/icons/
     - assets/images/
     - assets/music/
     - assets/sfx/
