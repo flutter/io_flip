@@ -44,7 +44,13 @@ void main() {
         expect: () => [
           HowToPlayState(
             position: 4,
-            elementsWheelState: ElementsWheelAir(),
+            wheelElements: const [
+              Elements.air,
+              Elements.metal,
+              Elements.earth,
+              Elements.water,
+              Elements.fire,
+            ],
           ),
         ],
       );
@@ -54,13 +60,25 @@ void main() {
         build: HowToPlayBloc.new,
         seed: () => HowToPlayState(
           position: 4,
-          elementsWheelState: ElementsWheelAir(),
+          wheelElements: const [
+            Elements.air,
+            Elements.metal,
+            Elements.earth,
+            Elements.water,
+            Elements.fire,
+          ],
         ),
         act: (bloc) => bloc.add(NextPageRequested()),
         expect: () => [
           HowToPlayState(
             position: 5,
-            elementsWheelState: ElementsWheelMetal(),
+            wheelElements: const [
+              Elements.metal,
+              Elements.earth,
+              Elements.water,
+              Elements.fire,
+              Elements.air,
+            ],
           ),
         ],
       );
@@ -70,13 +88,25 @@ void main() {
         build: HowToPlayBloc.new,
         seed: () => HowToPlayState(
           position: 5,
-          elementsWheelState: ElementsWheelMetal(),
+          wheelElements: const [
+            Elements.metal,
+            Elements.earth,
+            Elements.water,
+            Elements.fire,
+            Elements.air,
+          ],
         ),
         act: (bloc) => bloc.add(NextPageRequested()),
         expect: () => [
           HowToPlayState(
             position: 6,
-            elementsWheelState: ElementsWheelEarth(),
+            wheelElements: const [
+              Elements.earth,
+              Elements.water,
+              Elements.fire,
+              Elements.air,
+              Elements.metal,
+            ],
           ),
         ],
       );
@@ -86,13 +116,25 @@ void main() {
         build: HowToPlayBloc.new,
         seed: () => HowToPlayState(
           position: 6,
-          elementsWheelState: ElementsWheelEarth(),
+          wheelElements: const [
+            Elements.earth,
+            Elements.water,
+            Elements.fire,
+            Elements.air,
+            Elements.metal,
+          ],
         ),
         act: (bloc) => bloc.add(NextPageRequested()),
         expect: () => [
           HowToPlayState(
             position: 7,
-            elementsWheelState: ElementsWheelWater(),
+            wheelElements: const [
+              Elements.water,
+              Elements.fire,
+              Elements.air,
+              Elements.metal,
+              Elements.earth,
+            ],
           ),
         ],
       );
@@ -104,13 +146,25 @@ void main() {
         build: HowToPlayBloc.new,
         seed: () => HowToPlayState(
           position: 7,
-          elementsWheelState: ElementsWheelWater(),
+          wheelElements: const [
+            Elements.water,
+            Elements.fire,
+            Elements.air,
+            Elements.metal,
+            Elements.earth,
+          ],
         ),
         act: (bloc) => bloc.add(PreviousPageRequested()),
         expect: () => [
           HowToPlayState(
             position: 6,
-            elementsWheelState: ElementsWheelEarth(),
+            wheelElements: const [
+              Elements.earth,
+              Elements.water,
+              Elements.fire,
+              Elements.air,
+              Elements.metal,
+            ],
           ),
         ],
       );
@@ -120,13 +174,25 @@ void main() {
         build: HowToPlayBloc.new,
         seed: () => HowToPlayState(
           position: 6,
-          elementsWheelState: ElementsWheelEarth(),
+          wheelElements: const [
+            Elements.earth,
+            Elements.water,
+            Elements.fire,
+            Elements.air,
+            Elements.metal,
+          ],
         ),
         act: (bloc) => bloc.add(PreviousPageRequested()),
         expect: () => [
           HowToPlayState(
             position: 5,
-            elementsWheelState: ElementsWheelMetal(),
+            wheelElements: const [
+              Elements.metal,
+              Elements.earth,
+              Elements.water,
+              Elements.fire,
+              Elements.air,
+            ],
           ),
         ],
       );
@@ -136,13 +202,25 @@ void main() {
         build: HowToPlayBloc.new,
         seed: () => HowToPlayState(
           position: 5,
-          elementsWheelState: ElementsWheelMetal(),
+          wheelElements: const [
+            Elements.metal,
+            Elements.earth,
+            Elements.water,
+            Elements.fire,
+            Elements.air,
+          ],
         ),
         act: (bloc) => bloc.add(PreviousPageRequested()),
         expect: () => [
           HowToPlayState(
             position: 4,
-            elementsWheelState: ElementsWheelAir(),
+            wheelElements: const [
+              Elements.air,
+              Elements.metal,
+              Elements.earth,
+              Elements.water,
+              Elements.fire,
+            ],
           ),
         ],
       );
@@ -152,7 +230,13 @@ void main() {
         build: HowToPlayBloc.new,
         seed: () => HowToPlayState(
           position: 4,
-          elementsWheelState: ElementsWheelAir(),
+          wheelElements: const [
+            Elements.air,
+            Elements.metal,
+            Elements.earth,
+            Elements.water,
+            Elements.fire,
+          ],
         ),
         act: (bloc) => bloc.add(PreviousPageRequested()),
         expect: () => [

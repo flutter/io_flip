@@ -23,7 +23,7 @@ void main() {
 
       expect(
         HowToPlayState(),
-        isNot(equals(HowToPlayState(elementsWheelState: ElementsWheelAir()))),
+        isNot(equals(HowToPlayState(wheelElements: const [Elements.air]))),
       );
     });
 
@@ -34,57 +34,9 @@ void main() {
       );
 
       expect(
-        HowToPlayState().copyWith(elementsWheelState: ElementsWheelAir()),
-        equals(HowToPlayState(elementsWheelState: ElementsWheelAir())),
+        HowToPlayState().copyWith(wheelElements: const [Elements.air]),
+        equals(HowToPlayState(wheelElements: const [Elements.air])),
       );
-    });
-  });
-
-  group('ElementsWheelState', () {
-    group('ElementsWheelFire', () {
-      test('can be instantiated', () {
-        expect(ElementsWheelFire(), isNotNull);
-      });
-    });
-
-    group('ElementsWheelAir', () {
-      test('can be instantiated', () {
-        expect(ElementsWheelAir(), isNotNull);
-      });
-    });
-
-    group('ElementsWheelMetal', () {
-      test('can be instantiated', () {
-        expect(ElementsWheelMetal(), isNotNull);
-      });
-    });
-
-    group('ElementsWheelEarth', () {
-      test('can be instantiated', () {
-        expect(ElementsWheelEarth(), isNotNull);
-      });
-    });
-
-    group('ElementsWheelWater', () {
-      test('can be instantiated', () {
-        expect(ElementsWheelWater(), isNotNull);
-      });
-    });
-
-    test('supports equality', () {
-      expect(
-        ElementsWheelFire(),
-        equals(ElementsWheelFire()),
-      );
-
-      expect(
-        ElementsWheelFire(),
-        isNot(equals(ElementsWheelAir())),
-      );
-    });
-
-    test('returns affected indicator indexes correctly', () {
-      expect(ElementsWheelFire().affectedIndicatorIndexes, equals([0, 1]));
     });
   });
 
@@ -117,6 +69,29 @@ void main() {
       expect(
         Elements.water.initialAlignment,
         equals(ElementAlignment.centerLeft),
+      );
+    });
+
+    test('return elements affected correctly', () {
+      expect(
+        Elements.fire.elementsAffected,
+        equals([Elements.air, Elements.metal]),
+      );
+      expect(
+        Elements.air.elementsAffected,
+        equals([Elements.water, Elements.earth]),
+      );
+      expect(
+        Elements.metal.elementsAffected,
+        equals([Elements.air, Elements.water]),
+      );
+      expect(
+        Elements.earth.elementsAffected,
+        equals([Elements.fire, Elements.metal]),
+      );
+      expect(
+        Elements.water.elementsAffected,
+        equals([Elements.fire, Elements.earth]),
       );
     });
   });
