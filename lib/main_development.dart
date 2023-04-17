@@ -32,6 +32,7 @@ void main() async {
         await appCheck.activate(
           webRecaptchaSiteKey: const String.fromEnvironment('RECAPTCHA_KEY'),
         );
+        await appCheck.setTokenAutoRefreshEnabled(true);
 
         final authenticationRepository = AuthenticationRepository(
           firebaseAuth: firebaseAuth,
@@ -41,6 +42,8 @@ void main() async {
           baseUrl: 'https://top-dash-dev-api-synvj3dcmq-uc.a.run.app',
           idTokenStream: authenticationRepository.idToken,
           refreshIdToken: authenticationRepository.refreshIdToken,
+          appCheckTokenStream: appCheck.onTokenChange,
+          appCheckToken: await appCheck.getToken(),
         );
 
         await authenticationRepository.signInAnonymously();

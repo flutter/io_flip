@@ -21,9 +21,9 @@ out vec4 fragColor;
 
 vec2 resolution = vec2(width, height);
 
-vec4 rainbowEffect(vec2 uv, vec2 fragCoord) {
+vec4 rainbowEffect(vec2 uv) {
     vec4 srcColor = texture(tSource, uv);
-    float hue = uv.x + dx / 2.0 + dy / 3.0 + sin(uv.x * uv.y * PI * 1.8);
+    float hue = uv.x + dx / 4.0 + dy / 6.0 + sin((uv.x - 3.0) * (uv.y + 2.0) * 1.8);
     hue = fract(hue);
 
     float c = (1.0 - abs(2.0 * LIGHTNESS - 1.0)) * SATURATION;
@@ -50,9 +50,23 @@ vec4 rainbowEffect(vec2 uv, vec2 fragCoord) {
     return mix(srcColor, vec4(rainbow, srcColor.a), STRENGTH);
 }
 
+vec4 chromaticAberration(vec2 uv) {
+    vec4 srcColor = rainbowEffect(uv);
+    float shiftHorizontal = 3.0 / 1000.0 * dx;
+    float shiftVertical = 5.0 / 1000.0 * dy;
+
+    vec2 leftShiftUV = vec2(uv.x - shiftHorizontal, uv.y - shiftVertical);
+    vec2 rightShiftUV = vec2(uv.x + shiftHorizontal, uv.y + shiftVertical);
+
+    vec4 lc = rainbowEffect(leftShiftUV);
+    vec4 rc = rainbowEffect(rightShiftUV);
+
+    return vec4(rc.r, srcColor.g, lc.b, srcColor.a);
+}
+
 void main() {
     vec2 pos = gl_FragCoord.xy;
     vec2 uv = pos / vec2(width, height);
-    fragColor = rainbowEffect(uv, pos);
+    fragColor = chromaticAberration(uv);
 }
 

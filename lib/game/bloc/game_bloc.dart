@@ -8,6 +8,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
+import 'package:top_dash/audio/audio_controller.dart';
+import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 part 'game_event.dart';
@@ -17,6 +19,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   GameBloc({
     required GameResource gameResource,
     required MatchMakerRepository matchMakerRepository,
+    required AudioController audioController,
     required MatchSolver matchSolver,
     required User user,
     required this.isHost,
@@ -24,6 +27,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   })  : _gameResource = gameResource,
         _matchMakerRepository = matchMakerRepository,
         _connectionRepository = connectionRepository,
+        _audioController = audioController,
         _matchSolver = matchSolver,
         _user = user,
         super(const MatchLoadingState()) {
@@ -44,6 +48,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   final MatchSolver _matchSolver;
   final User _user;
   final bool isHost;
+  final AudioController _audioController;
   final ConnectionRepository _connectionRepository;
   final List<String> playedCardsInOrder = [];
   Timer? _turnTimer;
@@ -76,6 +81,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       if (match == null || matchState == null || scoreCard == null) {
         emit(const MatchLoadFailedState());
       } else {
+        _audioController.playSfx(Assets.sfx.startGame);
         emit(
           MatchLoadedState(
             match: match,
@@ -151,6 +157,9 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           ),
       ];
 
+      if (lastPlayedCard != null) {
+        _audioController.playSfx(Assets.sfx.playCard);
+      }
       emit(
         matchLoadedState.copyWith(
           matchState: event.updatedState,

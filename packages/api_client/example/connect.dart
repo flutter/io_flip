@@ -10,6 +10,7 @@ void main() async {
     baseUrl: localUrl,
     idTokenStream: const Stream.empty(),
     refreshIdToken: () async => null,
+    appCheckTokenStream: const Stream.empty(),
   );
 
   final channel = await client.connect('public/connect');
