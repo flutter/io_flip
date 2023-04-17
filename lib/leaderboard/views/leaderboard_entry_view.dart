@@ -16,7 +16,6 @@ class LeaderboardEntryView extends StatelessWidget {
     final l10n = context.l10n;
 
     return Scaffold(
-      backgroundColor: TopDashColors.seedWhite,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.xxlg),
         child: Center(
