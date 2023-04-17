@@ -71,9 +71,9 @@ void main() {
         () => promptFormBloc.add(
           const PromptSubmitted(
             data: Prompt(
-              character: '',
+              characterClass: '',
               power: '',
-              environment: '',
+              secondaryPower: '',
             ),
           ),
         ),

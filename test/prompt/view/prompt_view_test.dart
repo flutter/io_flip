@@ -15,9 +15,9 @@ class _MockPromptFormBloc extends MockBloc<PromptFormEvent, PromptFormState>
 void main() {
   late PromptFormBloc promptFormBloc;
   const prompt = Prompt(
-    character: 'za',
+    characterClass: 'za',
     power: 'zz',
-    environment: 'zz',
+    secondaryPower: 'zz',
   );
 
   setUp(() {

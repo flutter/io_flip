@@ -13,9 +13,9 @@ void main() {
   group('PromptFormBloc', () {
     late PromptResource promptResource;
     const data = Prompt(
-      character: 'character',
+      characterClass: 'character',
       power: 'power',
-      environment: 'environment',
+      secondaryPower: 'environment',
     );
     setUp(() {
       promptResource = _MockPromptResource();

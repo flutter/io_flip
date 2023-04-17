@@ -12,7 +12,7 @@ class PromptForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<PromptFormBloc>();
+    final bloc = context.watch<PromptFormBloc>();
     return Scaffold(
       body: FlowBuilder<Prompt>(
         state: const Prompt(),
@@ -24,21 +24,21 @@ class PromptForm extends StatelessWidget {
             MaterialPage(
               child: PromptFormView(
                 title: context.l10n.characterClassPromptPageTitle,
-                buttonIcon: Icons.arrow_forward,
+                itemsList: bloc.state.characterClasses,
               ),
             ),
-            if (data.character != null)
+            if (data.characterClass != null)
               MaterialPage(
                 child: PromptFormView(
                   title: context.l10n.powerPromptPageTitle,
-                  buttonIcon: Icons.arrow_forward,
+                  itemsList: bloc.state.characterClasses,
                 ),
               ),
             if (data.power != null)
               MaterialPage(
                 child: PromptFormView(
                   title: context.l10n.secondaryPowerPromptPageTitle,
-                  buttonIcon: Icons.check,
+                  itemsList: bloc.state.characterClasses,
                   isLastOfFlow: true,
                 ),
               ),

@@ -7,13 +7,13 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 class PromptFormView extends StatefulWidget {
   const PromptFormView({
     required this.title,
-    required this.buttonIcon,
+    required this.itemsList,
     this.isLastOfFlow = false,
     super.key,
   });
 
   final String title;
-  final IconData buttonIcon;
+  final List<String> itemsList;
   final bool isLastOfFlow;
 
   @override

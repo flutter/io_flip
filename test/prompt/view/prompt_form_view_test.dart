@@ -25,7 +25,8 @@ void main() {
       await tester.tap(find.byIcon(Icons.arrow_forward));
       await tester.pumpAndSettle();
 
-      expect(flowController.state, equals(const Prompt(character: 'text')));
+      expect(
+          flowController.state, equals(const Prompt(characterClass: 'text')));
     });
 
     testWidgets('flow completes correctly', (tester) async {
@@ -35,7 +36,8 @@ void main() {
       await tester.tap(find.byIcon(Icons.arrow_forward));
       await tester.pumpAndSettle();
 
-      expect(flowController.state, equals(const Prompt(character: 'text')));
+      expect(
+          flowController.state, equals(const Prompt(characterClass: 'text')));
       expect(flowController.completed, isTrue);
     });
   });

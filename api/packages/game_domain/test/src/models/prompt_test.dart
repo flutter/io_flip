@@ -23,9 +23,9 @@ void main() {
         data2,
         equals(
           const Prompt(
-            character: 'character',
+            characterClass: 'character',
             power: 'power',
-            environment: 'environment',
+            secondaryPower: 'environment',
           ),
         ),
       );
@@ -34,9 +34,9 @@ void main() {
     test('toJson returns the instance as json', () {
       expect(
         Prompt(
-          character: 'character',
+          characterClass: 'character',
           power: 'power',
-          environment: 'environment',
+          secondaryPower: 'environment',
         ).toJson(),
         equals({
           'character': 'character',
@@ -55,9 +55,9 @@ void main() {
         }),
         equals(
           Prompt(
-            character: 'character',
+            characterClass: 'character',
             power: 'power',
-            environment: 'environment',
+            secondaryPower: 'environment',
           ),
         ),
       );
@@ -66,45 +66,45 @@ void main() {
     test('supports equality', () {
       expect(
         Prompt(
-          character: 'character',
+          characterClass: 'character',
           power: '',
-          environment: '',
+          secondaryPower: '',
         ),
         equals(
           Prompt(
-            character: 'character',
+            characterClass: 'character',
             power: '',
-            environment: '',
+            secondaryPower: '',
           ),
         ),
       );
 
       expect(
         Prompt(
-          character: '',
+          characterClass: '',
           power: 'power',
-          environment: '',
+          secondaryPower: '',
         ),
         equals(
           Prompt(
-            character: '',
+            characterClass: '',
             power: 'power',
-            environment: '',
+            secondaryPower: '',
           ),
         ),
       );
 
       expect(
         Prompt(
-          character: '',
+          characterClass: '',
           power: '',
-          environment: 'environment',
+          secondaryPower: 'environment',
         ),
         equals(
           Prompt(
-            character: '',
+            characterClass: '',
             power: '',
-            environment: 'environment',
+            secondaryPower: 'environment',
           ),
         ),
       );
