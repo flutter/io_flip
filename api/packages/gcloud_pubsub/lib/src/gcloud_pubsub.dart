@@ -33,7 +33,7 @@ typedef PostCall = Future<Response> Function(
 });
 
 /// {@template gcloud_pubsub}
-/// Allows cards to play to be pushed to a topic queue.
+/// Allows played card to be pushed to a topic queue.
 ///
 /// Throws a [GcloudPubsubFailure] if the request fails.
 /// {@endtemplate}
@@ -59,7 +59,7 @@ class GcloudPubsub {
 
     final response = await _post(
       Uri.parse('$url:publish'),
-      body: {'card': 'card'},
+      body: {'card': 'cardf'},
       headers: {
         ...headers,
         'Content-Type': 'application/json',

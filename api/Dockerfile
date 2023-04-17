@@ -10,6 +10,7 @@ COPY packages/cards_repository ./packages/cards_repository
 COPY packages/db_client ./packages/db_client
 COPY packages/encryption_middleware ./packages/encryption_middleware
 COPY packages/firebase_cloud_storage ./packages/firebase_cloud_storage
+COPY packages/gcloud_pubsub ./packages/gcloud_pubsub
 COPY packages/game_domain ./packages/game_domain
 COPY packages/game_script_machine ./packages/game_script_machine
 COPY packages/image_model_repository ./packages/image_model_repository
@@ -28,6 +29,7 @@ RUN dart pub get -C packages/encryption_middleware
 RUN dart pub get -C packages/firebase_cloud_storage
 RUN dart pub get -C packages/game_domain
 RUN dart pub get -C packages/game_script_machine
+RUN dart pub get -C packages/gcloud_pubsub
 RUN dart pub get -C packages/image_model_repository
 RUN dart pub get -C packages/jwt_middleware
 RUN dart pub get -C packages/language_model_repository
