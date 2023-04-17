@@ -31,6 +31,8 @@ class _MockUser extends Mock implements User {
   String get id => 'mock-id';
 }
 
+class _MockTimer extends Mock implements Timer {}
+
 void main() {
   group('GameBloc', () {
     final match = Match(
@@ -1524,6 +1526,27 @@ void main() {
         expect: () => <GameState>[
           baseState.copyWith(turnAnimationsFinished: true),
         ],
+      );
+    });
+
+    group('turnAnimationsFinished', () {
+      blocTest<GameBloc, GameState>(
+        'plays clock running when timer reaches 3 seconds',
+        build: () => GameBloc(
+          connectionRepository: connectionRepository,
+          gameResource: gameResource,
+          matchMakerRepository: matchMakerRepository,
+          user: user,
+          audioController: audioController,
+          isHost: true,
+          matchSolver: matchSolver,
+        ),
+        seed: () => baseState.copyWith(turnTimeRemaining: 4),
+        act: (bloc) => bloc.add(TurnTimerTicked(_MockTimer())),
+        verify: (_) {
+          verify(() => audioController.playSfx(Assets.sfx.clockRunning))
+              .called(1);
+        },
       );
     });
 

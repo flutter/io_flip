@@ -55,6 +55,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
   // Added to easily toggle timer functionality for testing purposes.
   static const _turnTimerEnabled = true;
+  static const _timerWarningSfx = 3;
   static const _turnMaxTime = 10;
 
   StreamSubscription<MatchState>? _stateSubscription;
@@ -304,6 +305,11 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     if (state is MatchLoadedState) {
       final matchLoadedState = state as MatchLoadedState;
       final timeRemaining = matchLoadedState.turnTimeRemaining - 1;
+
+      if (timeRemaining == _timerWarningSfx) {
+        _audioController.playSfx(Assets.sfx.clockRunning);
+      }
+
       if (timeRemaining == 0) {
         event.timer.cancel();
         _onTurnTimerEnds();
