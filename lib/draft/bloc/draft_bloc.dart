@@ -87,6 +87,7 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     CardSwipeStarted event,
     Emitter<DraftState> emit,
   ) {
+    _audioController.playSfx(Assets.sfx.cardMovement);
     final opacity = 1 - event.progress;
     emit(state.copyWith(firstCardOpacity: opacity));
   }
