@@ -77,7 +77,7 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
       await dbClient.set(
         'prompt_terms',
         DbEntityRecord(
-          id: 'id',
+          id: 'id_${value.name}',
           data: {
             'term': 'TST',
             'type': value.name,
