@@ -11,6 +11,10 @@ class ShareResource {
 
   final ApiClient _apiClient;
 
+  final _tweetContent =
+      'Check out my AI powered team of heroes created in the #IOFlipGame. '
+      'See you at #GoogleIO23!';
+
   String _twitterShareUrl(String text) =>
       'https://twitter.com/intent/tweet?text=$text';
 
@@ -24,8 +28,7 @@ class ShareResource {
   String twitterShareCardUrl(String cardId) {
     final cardUrl = _apiClient.shareCardUrl(cardId);
     final content = [
-      'Check my best card!',
-      'Play I/O Flip and use AI to create cards and compete.',
+      _tweetContent,
       cardUrl,
     ];
     return _twitterShareUrl(_encode(content));
@@ -33,11 +36,9 @@ class ShareResource {
 
   /// Returns the url to share a tweet for the specified [deckId].
   String twitterShareHandUrl(String deckId, {bool isWinningHand = false}) {
-    final winning = isWinningHand ? ' winning' : ' awesome';
     final handUrl = _apiClient.shareHandUrl(deckId);
     final content = [
-      'Check my$winning hand!',
-      'Play I/O Flip and use AI to create cards and compete.',
+      _tweetContent,
       handUrl,
     ];
     return _twitterShareUrl(_encode(content));
