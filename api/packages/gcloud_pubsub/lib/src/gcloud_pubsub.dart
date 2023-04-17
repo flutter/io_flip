@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:grpc/grpc.dart' hide Response;
@@ -50,8 +51,13 @@ class GcloudPubsub {
   static const String _projectId = 'top-dash-dev';
   final PostCall _post;
 
-  /// Uploads a file to Firebase Cloud Storage.
-  Future<void> pushCardToQueue() async {
+  /// Pushes played card to queue.
+  Future<void> pushCardToQueue({
+    required String matchId,
+    required String cardId,
+    required String deckId,
+    required String userId,
+  }) async {
     const url =
         'https://pubsub.googleapis.com/v1/projects/$_projectId/topics/playCard:publish';
 
@@ -59,7 +65,11 @@ class GcloudPubsub {
 
     final response = await _post(
       Uri.parse(url),
-      //    body: '{"card": "cardf"}',
+      body: jsonEncode({
+        "messages": [
+          {"data": base64.encode(utf8.encode('{"card": "cardId"}'))}
+        ]
+      }),
       headers: {
         ...headers,
       },

@@ -3,11 +3,13 @@ import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
 import 'package:gcloud_pubsub/gcloud_pubsub.dart';
+import 'package:match_repository/match_repository.dart';
 
 FutureOr<Response> onRequest(RequestContext context) async {
-  final pubsub = context.read<GcloudPubsub>();
+  final matchRepository = context.read<MatchRepository>();
   try {
-    await pubsub.pushCardToQueue();
+    // get elem from body
+    // play card
   } catch (e) {
     return Response(
         statusCode: HttpStatus.internalServerError, body: e.toString());

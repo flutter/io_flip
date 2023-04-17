@@ -2,6 +2,7 @@
 import 'package:cards_repository/cards_repository.dart';
 import 'package:db_client/db_client.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:gcloud_pubsub/gcloud_pubsub.dart';
 import 'package:match_repository/match_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -11,6 +12,8 @@ class _MockCardRepository extends Mock implements CardsRepository {}
 class _MockDbClient extends Mock implements DbClient {}
 
 class _MockMatchSolver extends Mock implements MatchSolver {}
+
+class _MockGcloudPubRun extends Mock implements GcloudPubsub {}
 
 void main() {
   group('MatchRepository', () {
@@ -39,6 +42,8 @@ void main() {
           cardsRepository: _MockCardRepository(),
           dbClient: _MockDbClient(),
           matchSolver: _MockMatchSolver(),
+          gcloudPubsub: _MockGcloudPubRun(),
+          isRunningLocally: true,
         ),
         isNotNull,
       );
@@ -102,6 +107,8 @@ void main() {
           cardsRepository: cardsRepository,
           dbClient: dbClient,
           matchSolver: matchSolver,
+          gcloudPubsub: _MockGcloudPubRun(),
+          isRunningLocally: true,
         );
       });
 
@@ -183,6 +190,8 @@ void main() {
           cardsRepository: cardsRepository,
           dbClient: dbClient,
           matchSolver: matchSolver,
+          gcloudPubsub: _MockGcloudPubRun(),
+          isRunningLocally: true,
         );
       });
 
@@ -253,6 +262,8 @@ void main() {
           cardsRepository: cardsRepository,
           dbClient: dbClient,
           matchSolver: matchSolver,
+          gcloudPubsub: _MockGcloudPubRun(),
+          isRunningLocally: true,
         );
       });
 
@@ -372,6 +383,8 @@ void main() {
           cardsRepository: cardsRepository,
           dbClient: dbClient,
           matchSolver: matchSolver,
+          gcloudPubsub: _MockGcloudPubRun(),
+          isRunningLocally: true,
         );
       });
 
@@ -389,8 +402,6 @@ void main() {
             DbEntityRecord(
               id: matchStateId,
               data: const {
-                'matchId': matchId,
-                'hostPlayedCards': <String>[],
                 'guestPlayedCards': ['A'],
                 'result': null,
               },
@@ -413,9 +424,7 @@ void main() {
             DbEntityRecord(
               id: matchStateId,
               data: const {
-                'matchId': matchId,
                 'hostPlayedCards': <String>['A'],
-                'guestPlayedCards': <String>[],
                 'result': null,
               },
             ),
@@ -430,7 +439,6 @@ void main() {
             DbEntityRecord(
               id: matchStateId,
               data: const {
-                'matchId': matchId,
                 'guestPlayedCards': <String>['A', 'B', 'C'],
                 'hostPlayedCards': <String>['D', 'E'],
               },
@@ -454,9 +462,7 @@ void main() {
             DbEntityRecord(
               id: matchStateId,
               data: const {
-                'matchId': matchId,
                 'hostPlayedCards': <String>['D', 'E', 'F'],
-                'guestPlayedCards': <String>['A', 'B', 'C'],
                 'result': 'host',
               },
             ),
@@ -742,6 +748,8 @@ void main() {
           cardsRepository: cardsRepository,
           dbClient: dbClient,
           matchSolver: matchSolver,
+          gcloudPubsub: _MockGcloudPubRun(),
+          isRunningLocally: true,
         );
         when(() => dbClient.update(any(), any<DbEntityRecord>()))
             .thenAnswer((_) async {});
@@ -797,6 +805,8 @@ void main() {
           cardsRepository: cardsRepository,
           dbClient: dbClient,
           matchSolver: matchSolver,
+          gcloudPubsub: _MockGcloudPubRun(),
+          isRunningLocally: true,
         );
         when(() => dbClient.update(any(), any<DbEntityRecord>()))
             .thenAnswer((_) async {});
@@ -851,6 +861,8 @@ void main() {
           cardsRepository: cardsRepository,
           dbClient: dbClient,
           matchSolver: matchSolver,
+          gcloudPubsub: _MockGcloudPubRun(),
+          isRunningLocally: true,
         );
 
         when(() => dbClient.getById(any(), any())).thenAnswer(
@@ -887,6 +899,8 @@ void main() {
           cardsRepository: cardsRepository,
           dbClient: dbClient,
           matchSolver: matchSolver,
+          gcloudPubsub: _MockGcloudPubRun(),
+          isRunningLocally: true,
         );
 
         when(() => dbClient.update(any(), any())).thenAnswer((_) async {});

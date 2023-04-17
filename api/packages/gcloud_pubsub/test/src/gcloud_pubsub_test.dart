@@ -68,7 +68,12 @@ void main() {
         when(() => response.body).thenReturn('Error');
 
         await expectLater(
-          () => gCloudPubSub.pushCardToQueue(),
+          () => gCloudPubSub.pushCardToQueue(
+            matchId: 'matchId',
+            cardId: 'cardId',
+            deckId: 'deckId',
+            userId: 'userId',
+          ),
           throwsA(
             isA<GcloudPubsubFailure>().having(
               (e) => e.toString(),

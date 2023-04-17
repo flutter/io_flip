@@ -1,6 +1,7 @@
 import 'package:cards_repository/cards_repository.dart';
 import 'package:db_client/db_client.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:gcloud_pubsub/gcloud_pubsub.dart';
 
 /// Throw when getting a match fails.
 class GetMatchFailure extends Error {}
@@ -17,13 +18,19 @@ class MatchRepository {
     required CardsRepository cardsRepository,
     required DbClient dbClient,
     required MatchSolver matchSolver,
+    required GcloudPubsub gcloudPubsub,
+    required bool isRunningLocally,
   })  : _cardsRepository = cardsRepository,
         _dbClient = dbClient,
+        _gcloudPubsub = gcloudPubsub,
+        _isRunningLocally = isRunningLocally,
         _matchSolver = matchSolver;
 
   final CardsRepository _cardsRepository;
   final DbClient _dbClient;
   final MatchSolver _matchSolver;
+  final GcloudPubsub _gcloudPubsub;
+  final bool _isRunningLocally;
 
   /// Return the ScoreCard with the given [scoreCardId].
   Future<ScoreCard> getScoreCard(String scoreCardId, String deckId) async {
@@ -114,10 +121,35 @@ class MatchRepository {
     return null;
   }
 
+  /// if [_isRunningLocally] is true then calls [_playCard].
+  /// Otherwise push card to topic queue
+  Future<void> playCard({
+    required String matchId,
+    required String cardId,
+    required String deckId,
+    required String userId,
+  }) async {
+    if (_isRunningLocally) {
+      await _playCard(
+        matchId: matchId,
+        cardId: cardId,
+        deckId: deckId,
+        userId: userId,
+      );
+    } else {
+      await _gcloudPubsub.pushCardToQueue(
+        matchId: matchId,
+        cardId: cardId,
+        deckId: deckId,
+        userId: userId,
+      );
+    }
+  }
+
   /// Play a card on the given match.
   ///
   /// throws [PlayCardFailure] if the match state isn't found.
-  Future<void> playCard({
+  Future<void> _playCard({
     required String matchId,
     required String cardId,
     required String deckId,

@@ -12,6 +12,8 @@ dependencies:
   db_client:
     path: ../db_client
   equatable: ^2.0.5
+  gcloud_pubsub:
+    path: ../gcloud_pubsub
   game_domain:
     path: ../game_domain
   image_model_repository:

@@ -58,10 +58,14 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
 
   gameScriptMachine = GameScriptMachine.initialize(initialScript);
 
+  pubsub = const GcloudPubsub();
+
   matchRepository = MatchRepository(
     cardsRepository: cardsRepository,
     dbClient: dbClient,
     matchSolver: MatchSolver(gameScriptMachine: gameScriptMachine),
+    gcloudPubsub: pubsub,
+    isRunningLocally: _useEmulator,
   );
 
   if (_useEmulator) {
@@ -101,8 +105,6 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   firebaseCloudStorage = FirebaseCloudStorage(
     bucketName: _firebaseStorageBucket,
   );
-
-  pubsub = const GcloudPubsub();
 
   gameUrl = GameUrl(_gameUrl);
 

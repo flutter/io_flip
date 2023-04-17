@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
-import 'package:gcloud_pubsub/gcloud_pubsub.dart';
 import 'package:jwt_middleware/jwt_middleware.dart';
 import 'package:logging/logging.dart';
 import 'package:match_repository/match_repository.dart';
@@ -16,7 +15,6 @@ FutureOr<Response> onRequest(
   if (context.request.method == HttpMethod.post) {
     final matchRepository = context.read<MatchRepository>();
     final user = context.read<AuthenticatedUser>();
-    final pubsub = context.read<GcloudPubsub>();
 
     try {
       await matchRepository.playCard(
@@ -25,8 +23,6 @@ FutureOr<Response> onRequest(
         deckId: deckId,
         userId: user.id,
       );
-
-      unawaited(pubsub.pushCardToQueue());
     } catch (e, s) {
       context.read<Logger>().severe('Error playing a move', e, s);
       rethrow;
