@@ -23,9 +23,7 @@ class PromptForm extends StatelessWidget {
           return [
             MaterialPage(
               child: PromptFormView(
-                title: context.l10n.characterPromptPageTitle,
-                subtitle: context.l10n.characterPromptPageSubtitle,
-                hint: context.l10n.characterPromptPageHint,
+                title: context.l10n.characterClassPromptPageTitle,
                 buttonIcon: Icons.arrow_forward,
               ),
             ),
@@ -33,17 +31,13 @@ class PromptForm extends StatelessWidget {
               MaterialPage(
                 child: PromptFormView(
                   title: context.l10n.powerPromptPageTitle,
-                  subtitle: context.l10n.powerPromptPageSubtitle,
-                  hint: context.l10n.powerPromptPageHint,
                   buttonIcon: Icons.arrow_forward,
                 ),
               ),
             if (data.power != null)
               MaterialPage(
                 child: PromptFormView(
-                  title: context.l10n.environmentPromptPageTitle,
-                  subtitle: context.l10n.environmentPromptPageSubtitle,
-                  hint: context.l10n.environmentPromptHint,
+                  title: context.l10n.secondaryPowerPromptPageTitle,
                   buttonIcon: Icons.check,
                   isLastOfFlow: true,
                 ),

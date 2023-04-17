@@ -1,21 +1,18 @@
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class PromptFormView extends StatefulWidget {
   const PromptFormView({
     required this.title,
-    required this.subtitle,
-    required this.hint,
     required this.buttonIcon,
     this.isLastOfFlow = false,
     super.key,
   });
 
   final String title;
-  final String subtitle;
-  final String hint;
   final IconData buttonIcon;
   final bool isLastOfFlow;
 
@@ -30,6 +27,7 @@ class _PromptFormViewState extends State<PromptFormView> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -38,8 +36,6 @@ class _PromptFormViewState extends State<PromptFormView> {
           style: TopDashTextStyles.headlineH4Light,
         ),
         _gap,
-        Text(widget.subtitle, style: TopDashTextStyles.bodyLG),
-        _gap,
         Container(
           constraints: const BoxConstraints(minWidth: 100, maxWidth: 400),
           child: TextFormField(
@@ -47,16 +43,11 @@ class _PromptFormViewState extends State<PromptFormView> {
             onFieldSubmitted: _onSubmit,
             style: TopDashTextStyles.headlineMobileH1,
             textAlign: TextAlign.center,
-            decoration: InputDecoration(
-              hintText: widget.hint,
-              hintStyle: TopDashTextStyles.headlineMobileH1
-                  .copyWith(color: TopDashColors.seedGrey70),
-            ),
           ),
         ),
         _gap,
-        RoundedButton.icon(
-          Icon(widget.buttonIcon),
+        RoundedButton.text(
+          l10n.select.toUpperCase(),
           onPressed: () => _onSubmit(_text),
         ),
       ],

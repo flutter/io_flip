@@ -20,41 +20,21 @@
       }
     }
   },
-  "characterPromptPageTitle": "First, what's your character?",
-  "@characterPromptPageTitle": {
-    "description": "Title of the prompt page for character"
+  "select": "Select",
+  "@select": {
+    "description": "label select"
   },
-  "powerPromptPageTitle": "Next, what's your power?",
+  "characterClassPromptPageTitle": "First, what's your team's type?",
+  "@characterClassPromptPageTitle": {
+    "description": "Title of the prompt page for character class"
+  },
+  "powerPromptPageTitle": "Next, what's their first power?",
   "@powerPromptPageTitle": {
     "description": "Title of the prompt page for power"
   },
-  "environmentPromptPageTitle": "Last, where are you from?",
-  "@environmentPromptPageTitle": {
-    "description": "Title of the prompt page for environment"
-  },
-  "characterPromptPageSubtitle": "i.e. athelete, magician, elephant, accountant",
-  "@characterPromptPageSubtitle": {
-    "description": "Subtitle of the prompt page for character"
-  },
-  "powerPromptPageSubtitle": "i.e. lightning, bagels, swords, rainbows",
-  "@powerPromptPageSubtitle": {
-    "description": "Subtitle of the prompt page for power"
-  },
-  "environmentPromptPageSubtitle": "i.e. space, cityscape, underwater, cavern",
-  "@environmentPromptPageSubtitle": {
-    "description": "Subtitle of the prompt page for environment"
-  },
-  "characterPromptPageHint": "Character",
-  "@characterPromptPageHint": {
-    "description": "Hint of the prompt page for character"
-  },
-  "powerPromptPageHint": "Power",
-  "@powerPromptPageHint": {
-    "description": "Hint of the prompt page for power"
-  },
-  "environmentPromptHint": "Environment",
-  "@environmentPromptHint": {
-    "description": "Hint of the prompt page for environment"
+  "secondaryPowerPromptPageTitle": "Last, what's one more power they use?",
+  "@secondaryPowerPromptPageTitle": {
+    "description": "Title of the prompt page for the secondary power"
   },
   "leaderboardLongestStreak": "HIGHEST WIN STREAK",
   "@leaderboardLongestStreak": {
