@@ -17,7 +17,7 @@ class PromptRepository {
     final terms = await _dbClient.findBy(
       'prompt_terms',
       'type',
-      type,
+      type.name,
     );
 
     return terms
