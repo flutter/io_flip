@@ -34,6 +34,8 @@ class _MockApiClient extends Mock implements ApiClient {}
 
 class _MockGameResource extends Mock implements GameResource {}
 
+class _MockShareResource extends Mock implements ShareResource {}
+
 class _MockScriptsResource extends Mock implements ScriptsResource {}
 
 class _MockPromptResource extends Mock implements PromptResource {}
@@ -64,6 +66,7 @@ void main() {
     setUp(() {
       apiClient = _MockApiClient();
       when(() => apiClient.gameResource).thenReturn(_MockGameResource());
+      when(() => apiClient.shareResource).thenReturn(_MockShareResource());
 
       final promptResource = _MockPromptResource();
       when(promptResource.getPromptWhitelist)

@@ -25,11 +25,18 @@ class $AssetsImagesGen {
   /// File path: assets/images/add.png
   AssetGenImage get add => const AssetGenImage('assets/images/add.png');
 
+  /// File path: assets/images/facebook.png
+  AssetGenImage get facebook =>
+      const AssetGenImage('assets/images/facebook.png');
+
   /// File path: assets/images/main.png
   AssetGenImage get main => const AssetGenImage('assets/images/main.png');
 
+  /// File path: assets/images/twitter.png
+  AssetGenImage get twitter => const AssetGenImage('assets/images/twitter.png');
+
   /// List of all assets
-  List<AssetGenImage> get values => [add, main];
+  List<AssetGenImage> get values => [add, facebook, main, twitter];
 }
 
 class $AssetsMusicGen {
