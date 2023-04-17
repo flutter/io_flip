@@ -3,6 +3,7 @@ import 'package:dart_frog/dart_frog.dart';
 import 'package:game_script_machine/game_script_machine.dart';
 import 'package:gcloud_pubsub/gcloud_pubsub.dart';
 import 'package:gcp/gcp.dart';
+import 'package:jwt_middleware/jwt_middleware.dart';
 import 'package:leaderboard_repository/leaderboard_repository.dart';
 import 'package:logging/logging.dart';
 import 'package:match_repository/match_repository.dart';
@@ -34,5 +35,24 @@ Handler middleware(Handler handler) {
             },
           ),
         ),
-      );
+      )
+      .use(_allowHeader());
+}
+
+Middleware _allowHeader() {
+  return (handler) {
+    return (context) async {
+      final response = await handler(context);
+      final headers = Map<String, String>.from(response.headers);
+      final accessControlAllowHeaders = headers[ACCESS_CONTROL_ALLOW_HEADERS];
+      if (accessControlAllowHeaders != null) {
+        headers[ACCESS_CONTROL_ALLOW_HEADERS] =
+            '$accessControlAllowHeaders, $X_FIREBASE_APPCHECK';
+
+        return response.copyWith(headers: headers);
+      }
+
+      return response;
+    };
+  };
 }

@@ -157,6 +157,9 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           ),
       ];
 
+      if (lastPlayedCard != null) {
+        _audioController.playSfx(Assets.sfx.playCard);
+      }
       emit(
         matchLoadedState.copyWith(
           matchState: event.updatedState,

@@ -9,6 +9,13 @@
           "a16e0900d-fe2c-3609-b43c-87093e447b78"
         ]
       }
+    },
+    "io-flip": {
+      "hosting": {
+        "app_prod": [
+          "f1c3862b-bc1f-49ba-a66d-017e47efef13"
+        ]
+      }
     }
   },
   "etags": {}

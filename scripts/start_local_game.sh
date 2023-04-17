@@ -4,6 +4,7 @@ echo ' ## Starting game in local mode ## '
 echo ' ################################# '
 
 flutter run \
+  -d chrome \
   --target lib/main_local.dart \
   --flavor development \
   --dart-define ENCRYPTION_KEY=X9YTchZdcnyZTNBSBgzj29p7RMBAIubD \
