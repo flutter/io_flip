@@ -10,25 +10,38 @@ class PromptFormBloc extends Bloc<PromptFormEvent, PromptFormState> {
   PromptFormBloc({
     required PromptResource promptResource,
   })  : _promptResource = promptResource,
-        super(const PromptFormState()) {
-    _setTermsLists();
+        super(const PromptFormState.initial()) {
+    on<PromptTermsRequested>(_onPromptTermsRequested);
     on<PromptSubmitted>(_onPromptSubmitted);
   }
 
   final PromptResource _promptResource;
-  late final List<String> characterClassList;
-  late final List<String> powerList;
-  late final List<String> secondaryPowerList;
 
-  Future<void> _setTermsLists() async {
-    final result = await Future.wait<List<String>>([
-      _promptResource.getPromptTerms(PromptTermType.characterClass),
-      _promptResource.getPromptTerms(PromptTermType.power),
-      _promptResource.getPromptTerms(PromptTermType.secondaryPower),
-    ]);
-    characterClassList = result[0];
-    powerList = result[1];
-    secondaryPowerList = result[2];
+  Future<void> _onPromptTermsRequested(
+    PromptTermsRequested event,
+    Emitter<PromptFormState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(status: PromptTermsStatus.loading));
+
+      final result = await Future.wait<List<String>>([
+        _promptResource.getPromptTerms(PromptTermType.characterClass),
+        _promptResource.getPromptTerms(PromptTermType.power),
+        _promptResource.getPromptTerms(PromptTermType.secondaryPower),
+      ]);
+
+      emit(
+        state.copyWith(
+          characterClasses: result[0],
+          powers: result[1],
+          secondaryPowers: result[2],
+          status: PromptTermsStatus.loaded,
+        ),
+      );
+    } catch (e, s) {
+      addError(e, s);
+      emit(state.copyWith(status: PromptTermsStatus.failed));
+    }
   }
 
   void _onPromptSubmitted(

@@ -4,6 +4,11 @@ abstract class PromptFormEvent extends Equatable {
   const PromptFormEvent();
 }
 
+class PromptTermsRequested extends PromptFormEvent {
+  @override
+  List<Object?> get props => [];
+}
+
 class PromptSubmitted extends PromptFormEvent {
   const PromptSubmitted({required this.data});
 

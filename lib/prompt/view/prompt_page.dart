@@ -18,7 +18,8 @@ class PromptPage extends StatelessWidget {
 
     return Scaffold(
       body: BlocProvider(
-        create: (_) => PromptFormBloc(promptResource: promptResource),
+        create: (_) => PromptFormBloc(promptResource: promptResource)
+          ..add(PromptTermsRequested()),
         child: const PromptView(),
       ),
     );
