@@ -1,19 +1,23 @@
 import 'package:flow_builder/flow_builder.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:top_dash/l10n/l10n.dart';
+import 'package:top_dash/prompt/prompt.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class PromptFormView extends StatefulWidget {
   const PromptFormView({
     required this.title,
     required this.itemsList,
+    required this.initialItem,
     this.isLastOfFlow = false,
     super.key,
   });
 
   final String title;
   final List<String> itemsList;
+  final int initialItem;
   final bool isLastOfFlow;
 
   @override
@@ -21,9 +25,16 @@ class PromptFormView extends StatefulWidget {
 }
 
 class _PromptFormViewState extends State<PromptFormView> {
-  var _text = '';
+  late int selectedIndex;
 
-  static const _gap = SizedBox(height: TopDashSpacing.spaceUnit);
+  static const _gap = SizedBox(height: TopDashSpacing.xxxlg);
+  static const _itemExtent = 48.0;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedIndex = widget.initialItem;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,37 +42,109 @@ class _PromptFormViewState extends State<PromptFormView> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          widget.title,
-          style: TopDashTextStyles.headlineH4Light,
+        const SizedBox(height: TopDashSpacing.xxlg),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.lg),
+          child: Text(
+            widget.title,
+            style: TopDashTextStyles.headlineH4Light,
+            textAlign: TextAlign.center,
+          ),
         ),
         _gap,
-        Container(
-          constraints: const BoxConstraints(minWidth: 100, maxWidth: 400),
-          child: TextFormField(
-            onChanged: (entry) => setState(() => _text = entry),
-            onFieldSubmitted: _onSubmit,
-            style: TopDashTextStyles.headlineMobileH1,
-            textAlign: TextAlign.center,
+        Expanded(
+          child: Stack(
+            children: [
+              Center(
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(_itemExtent),
+                    color: TopDashColors.seedBlue,
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 6,
+                  ),
+                  child: Text(
+                    text,
+                    style: TopDashTextStyles.headlineMobileH3.copyWith(
+                      color: Colors.transparent,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned.fill(
+                child: Container(
+                  foregroundDecoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        // TODO(jaime): change to dark color when background changes
+                        TopDashColors.seedWhite,
+                        TopDashColors.seedWhite.withOpacity(0),
+                        TopDashColors.seedWhite.withOpacity(0),
+                        TopDashColors.seedWhite,
+                      ],
+                      stops: const [0, .05, .95, 1],
+                    ),
+                  ),
+                  child: ListWheelScrollView.useDelegate(
+                    controller: FixedExtentScrollController(
+                      initialItem: widget.initialItem,
+                    ),
+                    diameterRatio: 500, // flat list in practice
+                    scrollBehavior: ScrollConfiguration.of(context).copyWith(
+                      dragDevices: {
+                        PointerDeviceKind.touch,
+                        PointerDeviceKind.mouse,
+                      },
+                    ),
+                    itemExtent: _itemExtent,
+                    physics:
+                        const SnapItemScrollPhysics(itemExtent: _itemExtent),
+                    onSelectedItemChanged: (index) {
+                      setState(() => selectedIndex = index);
+                    },
+                    childDelegate: ListWheelChildBuilderDelegate(
+                      builder: (_, index) {
+                        return Center(
+                          child: Text(
+                            text,
+                            style: TopDashTextStyles.headlineMobileH3.copyWith(
+                              color: index == selectedIndex
+                                  ? null
+                                  : TopDashColors.seedGrey70,
+                            ),
+                          ),
+                        );
+                      },
+                      childCount: widget.itemsList.length,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         _gap,
         RoundedButton.text(
           l10n.select.toUpperCase(),
-          onPressed: () => _onSubmit(_text),
+          onPressed: () => _onSubmit(text),
         ),
       ],
     );
   }
 
+  String get text => widget.itemsList[selectedIndex];
+
   void _onSubmit(String field) {
-    // TODO(hugo): check in whitelist if entry is valid
     widget.isLastOfFlow
         ? context
             .flow<Prompt>()
-            .complete((data) => data.copyWithNewAttribute(_text))
+            .complete((data) => data.copyWithNewAttribute(text))
         : context
             .flow<Prompt>()
-            .update((data) => data.copyWithNewAttribute(_text));
+            .update((data) => data.copyWithNewAttribute(text));
   }
 }
