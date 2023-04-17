@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 /// {@template rounded_button}
@@ -40,12 +41,17 @@ class RoundedButton extends StatelessWidget {
   /// Button background color
   final Color backgroundColor;
 
+  void _onPressed(BuildContext context) {
+    context.read<UISoundAdaptater>().playButtonSound();
+    onPressed?.call();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: onPressed,
+        onTap: onPressed == null ? null : () => _onPressed(context),
         child: DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(40),

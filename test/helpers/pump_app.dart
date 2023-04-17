@@ -15,6 +15,7 @@ import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/settings/settings.dart';
 import 'package:top_dash/style/snack_bar.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
 
 import 'helpers.dart';
 
@@ -40,7 +41,15 @@ class _MockAudioController extends Mock implements AudioController {}
 
 class _MockUser extends Mock implements User {}
 
+class _MockUISoundAdapter extends Mock implements UISoundAdaptater {}
+
 class _MockGoRouter extends Mock implements GoRouter {}
+
+UISoundAdaptater _createUISoundAdapter() {
+  final adapter = _MockUISoundAdapter();
+  when(() => adapter.playButtonSound).thenReturn(() {});
+  return adapter;
+}
 
 extension PumpApp on WidgetTester {
   Future<void> pumpApp(
@@ -55,6 +64,7 @@ extension PumpApp on WidgetTester {
     ConnectionRepository? connectionRepository,
     MatchSolver? matchSolver,
     GameScriptMachine? gameScriptMachine,
+    UISoundAdaptater? uiSoundAdaptater,
     User? user,
     GoRouter? router,
   }) {
@@ -87,6 +97,9 @@ extension PumpApp on WidgetTester {
           ),
           Provider.value(
             value: matchSolver ?? _MockMatchSolver(),
+          ),
+          Provider.value(
+            value: uiSoundAdaptater ?? _createUISoundAdapter(),
           ),
           Provider.value(
             value: gameScriptMachine ?? _MockGameScriptMachine(),
