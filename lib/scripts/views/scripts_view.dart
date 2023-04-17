@@ -62,7 +62,9 @@ class _ScriptsViewState extends State<ScriptsView> {
                         ),
                 ),
                 Expanded(
-                  child: CodeField(controller: _codeController),
+                  child: SingleChildScrollView(
+                    child: CodeField(controller: _codeController),
+                  ),
                 ),
               ],
             ),
