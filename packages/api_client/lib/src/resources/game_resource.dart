@@ -208,6 +208,7 @@ class GameResource {
         StackTrace.current,
       );
     }
+  }
 
   /// Returns the share page url for the specified [deckId].
   String shareHandUrl(String deckId) {
