@@ -53,13 +53,13 @@ class GcloudPubsub {
   /// Uploads a file to Firebase Cloud Storage.
   Future<void> pushCardToQueue() async {
     const url =
-        'https://pubsub.googleapis.com/v1/projects/$_projectId/topics/playCard';
+        'https://pubsub.googleapis.com/v1/projects/$_projectId/topics/playCard:publish';
 
     final headers = await _authenticate(url);
 
     final response = await _post(
-      Uri.parse('$url:publish'),
-      body: {'card': 'cardf'},
+      Uri.parse(url),
+      body: '{"card": "cardf"}',
       headers: {
         ...headers,
       },
