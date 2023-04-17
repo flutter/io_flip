@@ -235,13 +235,22 @@ void main() {
       );
     });
 
-    test('emits timeout when guest never joins host', () async {
+    test(
+        'emits timeout when guest never joins and fails to connect to CPU game',
+        () {
       fakeAsync((async) {
         when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
           (_) async => DraftMatch(
             id: '',
             host: deckId,
           ),
+        );
+        when(() => gameResource.connectToCpuMatch(matchId: ''))
+            .thenThrow(Exception());
+        final stream =
+            StreamController<DraftMatch>(onCancel: () async {}).stream;
+        when(() => matchMakerRepository.watchMatch(any())).thenAnswer(
+          (_) => stream,
         );
 
         final bloc = MatchMakingBloc(
@@ -252,8 +261,7 @@ void main() {
           hostWaitTime: const Duration(milliseconds: 200),
         )..add(MatchRequested());
 
-        async.elapse(const Duration(seconds: 30));
-
+        async.elapse(Duration(seconds: 30));
         expect(
           bloc.state,
           equals(
@@ -263,6 +271,44 @@ void main() {
                 id: '',
                 host: deckId,
               ),
+            ),
+          ),
+        );
+      });
+    });
+
+    test('creates CPU match when guest never joins host', () {
+      fakeAsync((async) {
+        when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
+          (_) async => DraftMatch(
+            id: '',
+            host: deckId,
+          ),
+        );
+        when(() => gameResource.connectToCpuMatch(matchId: ''))
+            .thenAnswer((_) async {});
+        final stream =
+            StreamController<DraftMatch>(onCancel: () async {}).stream;
+        when(() => matchMakerRepository.watchMatch(any())).thenAnswer(
+          (_) => stream,
+        );
+
+        final bloc = MatchMakingBloc(
+          matchMakerRepository: matchMakerRepository,
+          connectionRepository: connectionRepository,
+          gameResource: gameResource,
+          cardIds: cardIds,
+          hostWaitTime: const Duration(milliseconds: 200),
+        )..add(MatchRequested());
+
+        async.elapse(Duration(seconds: 30));
+        expect(
+          bloc.state,
+          equals(
+            MatchMakingState(
+              status: MatchMakingStatus.completed,
+              match: DraftMatch(id: '', host: deckId, guest: 'CPU_$deckId'),
+              isHost: true,
             ),
           ),
         );

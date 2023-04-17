@@ -77,7 +77,6 @@ void main() {
           .thenReturn(null);
       when(() => bloc.canPlayerPlay(any())).thenReturn(true);
       when(() => bloc.isPlayerAllowedToPlay).thenReturn(true);
-      when(bloc.hasPlayerWon).thenReturn(false);
 
       leaderboardResource = _MockLeaderboardResource();
       when(() => leaderboardResource.getInitialsBlacklist())

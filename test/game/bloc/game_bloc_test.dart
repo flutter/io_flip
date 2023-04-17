@@ -31,6 +31,8 @@ class _MockUser extends Mock implements User {
   String get id => 'mock-id';
 }
 
+class _MockTimer extends Mock implements Timer {}
+
 void main() {
   group('GameBloc', () {
     final match = Match(
@@ -446,8 +448,122 @@ void main() {
         },
       );
 
+      group('GameResult', () {
+        blocTest<GameBloc, GameState>(
+          'gameResult returns win if host won, and the player is the host',
+          build: () => GameBloc(
+            connectionRepository: connectionRepository,
+            audioController: audioController,
+            gameResource: gameResource,
+            matchMakerRepository: matchMakerRepository,
+            matchSolver: matchSolver,
+            user: user,
+            isHost: true,
+          ),
+          seed: () => baseState.copyWith(
+            matchState: MatchState(
+              id: baseState.matchState.id,
+              matchId: baseState.matchState.id,
+              guestPlayedCards: baseState.matchState.guestPlayedCards,
+              hostPlayedCards: baseState.matchState.hostPlayedCards,
+              result: MatchResult.host,
+            ),
+          ),
+          verify: (bloc) {
+            expect(
+              bloc.gameResult(),
+              equals(GameResult.win),
+            );
+          },
+        );
+
+        blocTest<GameBloc, GameState>(
+          'gameResult returns win if guest won, and the player is the guest',
+          build: () => GameBloc(
+            connectionRepository: connectionRepository,
+            gameResource: gameResource,
+            audioController: audioController,
+            matchMakerRepository: matchMakerRepository,
+            matchSolver: matchSolver,
+            user: user,
+            isHost: false,
+          ),
+          seed: () => baseState.copyWith(
+            matchState: MatchState(
+              id: baseState.matchState.id,
+              matchId: baseState.matchState.id,
+              guestPlayedCards: baseState.matchState.guestPlayedCards,
+              hostPlayedCards: baseState.matchState.hostPlayedCards,
+              result: MatchResult.guest,
+            ),
+          ),
+          verify: (bloc) {
+            expect(
+              bloc.gameResult(),
+              equals(GameResult.win),
+            );
+          },
+        );
+
+        blocTest<GameBloc, GameState>(
+          'gameResult returns lose if host lost, and the player is the host',
+          build: () => GameBloc(
+            connectionRepository: connectionRepository,
+            audioController: audioController,
+            gameResource: gameResource,
+            matchMakerRepository: matchMakerRepository,
+            matchSolver: matchSolver,
+            user: user,
+            isHost: true,
+          ),
+          seed: () => baseState.copyWith(
+            matchState: MatchState(
+              id: baseState.matchState.id,
+              matchId: baseState.matchState.id,
+              guestPlayedCards: baseState.matchState.guestPlayedCards,
+              hostPlayedCards: baseState.matchState.hostPlayedCards,
+              result: MatchResult.guest,
+            ),
+          ),
+          verify: (bloc) {
+            expect(
+              bloc.gameResult(),
+              equals(GameResult.lose),
+            );
+          },
+        );
+
+        blocTest<GameBloc, GameState>(
+          'gameResult returns lose if guest lost, and the player is the guest',
+          build: () => GameBloc(
+            connectionRepository: connectionRepository,
+            gameResource: gameResource,
+            audioController: audioController,
+            matchMakerRepository: matchMakerRepository,
+            matchSolver: matchSolver,
+            user: user,
+            isHost: false,
+          ),
+          seed: () => baseState.copyWith(
+            matchState: MatchState(
+              id: baseState.matchState.id,
+              matchId: baseState.matchState.id,
+              guestPlayedCards: baseState.matchState.guestPlayedCards,
+              hostPlayedCards: baseState.matchState.hostPlayedCards,
+              result: MatchResult.host,
+            ),
+          ),
+          verify: (bloc) {
+            expect(
+              bloc.gameResult(),
+              equals(GameResult.lose),
+            );
+          },
+        );
+      });
+
       blocTest<GameBloc, GameState>(
-        'hasPlayerWon returns true if the host won, and the player is the host',
+        'Play gameLost sound when host lost and player is the host',
         build: () => GameBloc(
           connectionRepository: connectionRepository,
           audioController: audioController,
@@ -457,32 +573,14 @@ void main() {
           user: user,
           isHost: true,
         ),
-        seed: () => baseState.copyWith(
-          matchState: MatchState(
-            id: baseState.matchState.id,
-            matchId: baseState.matchState.id,
-            guestPlayedCards: baseState.matchState.guestPlayedCards,
-            hostPlayedCards: baseState.matchState.hostPlayedCards,
-            result: MatchResult.host,
-          ),
-        ),
-        verify: (bloc) {
-          expect(bloc.hasPlayerWon(), isTrue);
+        setUp: () {
+          when(
+            () => matchSolver.isPlayerAllowedToPlay(
+              any(),
+              isHost: any(named: 'isHost'),
+            ),
+          ).thenReturn(true);
         },
-      );
-
-      blocTest<GameBloc, GameState>(
-        'hasPlayerWon returns false if the guest won, and the player '
-        'is the guest',
-        build: () => GameBloc(
-          connectionRepository: connectionRepository,
-          gameResource: gameResource,
-          audioController: audioController,
-          matchMakerRepository: matchMakerRepository,
-          matchSolver: matchSolver,
-          user: user,
-          isHost: false,
-        ),
         seed: () => baseState.copyWith(
           matchState: MatchState(
             id: baseState.matchState.id,
@@ -492,25 +590,205 @@ void main() {
             result: MatchResult.guest,
           ),
         ),
-        verify: (bloc) {
-          expect(bloc.hasPlayerWon(), isTrue);
+        act: (bloc) {
+          bloc.add(
+            MatchStateUpdated(
+              MatchState(
+                id: baseState.matchState.id,
+                matchId: baseState.matchState.matchId,
+                guestPlayedCards: baseState.matchState.guestPlayedCards,
+                hostPlayedCards: baseState.matchState.hostPlayedCards,
+                result: MatchResult.guest,
+              ),
+            ),
+          );
+        },
+        verify: (_) {
+          verify(() => audioController.playSfx(Assets.sfx.lostMatch)).called(1);
         },
       );
 
       blocTest<GameBloc, GameState>(
-        'hasPlayerWon returns false if match is still loading',
+        'Play gameLost sound when guest lost and player is the guest',
         build: () => GameBloc(
           connectionRepository: connectionRepository,
-          gameResource: gameResource,
           audioController: audioController,
+          gameResource: gameResource,
           matchMakerRepository: matchMakerRepository,
           matchSolver: matchSolver,
-          isHost: false,
           user: user,
+          isHost: false,
         ),
-        seed: () => const MatchLoadingState(),
-        verify: (bloc) {
-          expect(bloc.hasPlayerWon(), isFalse);
+        setUp: () {
+          when(
+            () => matchSolver.isPlayerAllowedToPlay(
+              any(),
+              isHost: any(named: 'isHost'),
+            ),
+          ).thenReturn(true);
+        },
+        seed: () => baseState.copyWith(
+          matchState: MatchState(
+            id: baseState.matchState.id,
+            matchId: baseState.matchState.id,
+            guestPlayedCards: baseState.matchState.guestPlayedCards,
+            hostPlayedCards: baseState.matchState.hostPlayedCards,
+            result: MatchResult.guest,
+          ),
+        ),
+        act: (bloc) {
+          bloc.add(
+            MatchStateUpdated(
+              MatchState(
+                id: baseState.matchState.id,
+                matchId: baseState.matchState.matchId,
+                guestPlayedCards: baseState.matchState.guestPlayedCards,
+                hostPlayedCards: baseState.matchState.hostPlayedCards,
+                result: MatchResult.host,
+              ),
+            ),
+          );
+        },
+        verify: (_) {
+          verify(() => audioController.playSfx(Assets.sfx.lostMatch)).called(1);
+        },
+      );
+
+      blocTest<GameBloc, GameState>(
+        'Play gameWin sound when host won and player is the host',
+        build: () => GameBloc(
+          connectionRepository: connectionRepository,
+          audioController: audioController,
+          gameResource: gameResource,
+          matchMakerRepository: matchMakerRepository,
+          matchSolver: matchSolver,
+          user: user,
+          isHost: true,
+        ),
+        setUp: () {
+          when(
+            () => matchSolver.isPlayerAllowedToPlay(
+              any(),
+              isHost: any(named: 'isHost'),
+            ),
+          ).thenReturn(true);
+        },
+        seed: () => baseState.copyWith(
+          matchState: MatchState(
+            id: baseState.matchState.id,
+            matchId: baseState.matchState.id,
+            guestPlayedCards: baseState.matchState.guestPlayedCards,
+            hostPlayedCards: baseState.matchState.hostPlayedCards,
+            result: MatchResult.guest,
+          ),
+        ),
+        act: (bloc) {
+          bloc.add(
+            MatchStateUpdated(
+              MatchState(
+                id: baseState.matchState.id,
+                matchId: baseState.matchState.matchId,
+                guestPlayedCards: baseState.matchState.guestPlayedCards,
+                hostPlayedCards: baseState.matchState.hostPlayedCards,
+                result: MatchResult.host,
+              ),
+            ),
+          );
+        },
+        verify: (_) {
+          verify(() => audioController.playSfx(Assets.sfx.winMatch)).called(1);
+        },
+      );
+
+      blocTest<GameBloc, GameState>(
+        'Play gameWin sound when guest won and player is the guest',
+        build: () => GameBloc(
+          connectionRepository: connectionRepository,
+          audioController: audioController,
+          gameResource: gameResource,
+          matchMakerRepository: matchMakerRepository,
+          matchSolver: matchSolver,
+          user: user,
+          isHost: false,
+        ),
+        setUp: () {
+          when(
+            () => matchSolver.isPlayerAllowedToPlay(
+              any(),
+              isHost: any(named: 'isHost'),
+            ),
+          ).thenReturn(true);
+        },
+        seed: () => baseState.copyWith(
+          matchState: MatchState(
+            id: baseState.matchState.id,
+            matchId: baseState.matchState.id,
+            guestPlayedCards: baseState.matchState.guestPlayedCards,
+            hostPlayedCards: baseState.matchState.hostPlayedCards,
+            result: MatchResult.guest,
+          ),
+        ),
+        act: (bloc) {
+          bloc.add(
+            MatchStateUpdated(
+              MatchState(
+                id: baseState.matchState.id,
+                matchId: baseState.matchState.matchId,
+                guestPlayedCards: baseState.matchState.guestPlayedCards,
+                hostPlayedCards: baseState.matchState.hostPlayedCards,
+                result: MatchResult.guest,
+              ),
+            ),
+          );
+        },
+        verify: (_) {
+          verify(() => audioController.playSfx(Assets.sfx.winMatch)).called(1);
+        },
+      );
+
+      blocTest<GameBloc, GameState>(
+        'Play draw sound when match ends in a draw',
+        build: () => GameBloc(
+          connectionRepository: connectionRepository,
+          audioController: audioController,
+          gameResource: gameResource,
+          matchMakerRepository: matchMakerRepository,
+          matchSolver: matchSolver,
+          user: user,
+          isHost: false,
+        ),
+        setUp: () {
+          when(
+            () => matchSolver.isPlayerAllowedToPlay(
+              any(),
+              isHost: any(named: 'isHost'),
+            ),
+          ).thenReturn(true);
+        },
+        seed: () => baseState.copyWith(
+          matchState: MatchState(
+            id: baseState.matchState.id,
+            matchId: baseState.matchState.id,
+            guestPlayedCards: baseState.matchState.guestPlayedCards,
+            hostPlayedCards: baseState.matchState.hostPlayedCards,
+            result: MatchResult.guest,
+          ),
+        ),
+        act: (bloc) {
+          bloc.add(
+            MatchStateUpdated(
+              MatchState(
+                id: baseState.matchState.id,
+                matchId: baseState.matchState.matchId,
+                guestPlayedCards: baseState.matchState.guestPlayedCards,
+                hostPlayedCards: baseState.matchState.hostPlayedCards,
+                result: MatchResult.draw,
+              ),
+            ),
+          );
+        },
+        verify: (_) {
+          verify(() => audioController.playSfx(Assets.sfx.drawMatch)).called(1);
         },
       );
 
@@ -1524,6 +1802,27 @@ void main() {
         expect: () => <GameState>[
           baseState.copyWith(turnAnimationsFinished: true),
         ],
+      );
+    });
+
+    group('turnAnimationsFinished', () {
+      blocTest<GameBloc, GameState>(
+        'plays clock running when timer reaches 3 seconds',
+        build: () => GameBloc(
+          connectionRepository: connectionRepository,
+          gameResource: gameResource,
+          matchMakerRepository: matchMakerRepository,
+          user: user,
+          audioController: audioController,
+          isHost: true,
+          matchSolver: matchSolver,
+        ),
+        seed: () => baseState.copyWith(turnTimeRemaining: 4),
+        act: (bloc) => bloc.add(TurnTimerTicked(_MockTimer())),
+        verify: (_) {
+          verify(() => audioController.playSfx(Assets.sfx.clockRunning))
+              .called(1);
+        },
       );
     });
 

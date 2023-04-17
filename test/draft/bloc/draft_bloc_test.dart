@@ -303,6 +303,27 @@ void main() {
     );
 
     blocTest<DraftBloc, DraftState>(
+      'plays cardMovement on CardSwipeStarted',
+      build: () => DraftBloc(
+        gameResource: gameResource,
+        audioController: audioController,
+      ),
+      seed: () => DraftState(
+        cards: cards,
+        selectedCards: const [],
+        status: DraftStateStatus.deckLoaded,
+        firstCardOpacity: 1,
+      ),
+      act: (bloc) {
+        bloc.add(CardSwipeStarted(.1));
+      },
+      verify: (_) {
+        verify(() => audioController.playSfx(Assets.sfx.cardMovement))
+            .called(1);
+      },
+    );
+
+    blocTest<DraftBloc, DraftState>(
       'selects a card, changes deck on SelectCard, and plays sfx',
       build: () => DraftBloc(
         gameResource: gameResource,

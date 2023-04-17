@@ -20,6 +20,10 @@
       }
     }
   },
+  "gameResultError": "Error getting game result",
+  "@gameResultError": {
+    "description": "Displayed when error while getting game result"
+  },
   "characterPromptPageTitle": "First, what's your character?",
   "@characterPromptPageTitle": {
     "description": "Title of the prompt page for character"
