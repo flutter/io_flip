@@ -45,7 +45,7 @@
     },
     {
       "label": "firebase:emulate",
-      "command": "firebase emulators:start --only hosting:app_dev,auth,firestore,storage",
+      "command": "firebase emulators:start --only auth,firestore,storage",
       "type": "shell",
       "isBackground": true,
       "presentation": {
