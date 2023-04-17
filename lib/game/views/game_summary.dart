@@ -100,7 +100,7 @@ class _ResultView extends StatelessWidget {
         title = context.l10n.gameTiedTitle;
         break;
       case null:
-        return const Center(child: Text('Error getting game result'));
+        return Center(child: Text(context.l10n.gameResultError));
     }
 
     return Column(

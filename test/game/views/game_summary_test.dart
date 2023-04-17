@@ -175,7 +175,7 @@ void main() {
               turnAnimationsFinished: true,
             ),
           );
-          when(() => bloc.gameResult()).thenReturn(GameResult.draw);
+          when(bloc.gameResult).thenReturn(GameResult.draw);
           await tester.pumpSubject(bloc);
 
           expect(
@@ -200,7 +200,7 @@ void main() {
               turnAnimationsFinished: true,
             ),
           );
-          when(() => bloc.gameResult()).thenReturn(GameResult.win);
+          when(bloc.gameResult).thenReturn(GameResult.win);
           await tester.pumpSubject(bloc);
 
           expect(
@@ -214,7 +214,7 @@ void main() {
         'renders the lose message when the player lost',
         (tester) async {
           defaultMockState();
-          when(() => bloc.gameResult()).thenReturn(GameResult.lose);
+          when(bloc.gameResult).thenReturn(GameResult.lose);
 
           await tester.pumpSubject(bloc);
 
