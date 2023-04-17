@@ -11,14 +11,19 @@ class TopDashTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: _colorScheme,
-      textTheme: _textTheme,
+      textTheme: _textTheme.apply(
+        bodyColor: TopDashColors.seedWhite,
+        displayColor: TopDashColors.seedWhite,
+        decorationColor: TopDashColors.seedWhite,
+      ),
+      tabBarTheme: _tabBarTheme,
     );
   }
 
   static ColorScheme get _colorScheme {
     return ColorScheme.fromSeed(
       seedColor: TopDashColors.seedBlue,
-      background: TopDashColors.seedWhite,
+      background: TopDashColors.seedBlack,
     );
   }
 
@@ -29,5 +34,20 @@ class TopDashTheme {
     return isMobile
         ? TopDashTextStyles.mobile.textTheme
         : TopDashTextStyles.desktop.textTheme;
+  }
+
+  static TabBarTheme get _tabBarTheme {
+    const blue = TopDashColors.seedBlue;
+    const grey = TopDashColors.seedGrey50;
+
+    return const TabBarTheme(
+      labelColor: blue,
+      indicatorColor: blue,
+      unselectedLabelColor: grey,
+      dividerColor: grey,
+      indicator: UnderlineTabIndicator(
+        borderSide: BorderSide(color: blue),
+      ),
+    );
   }
 }
