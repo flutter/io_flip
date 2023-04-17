@@ -157,9 +157,23 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           ),
       ];
 
+      if (event.updatedState.result != null) {
+        switch (_gameResult(event.updatedState)) {
+          case GameResult.win:
+            _audioController.playSfx(Assets.sfx.winMatch);
+            break;
+          case GameResult.lose:
+            _audioController.playSfx(Assets.sfx.lostMatch);
+            break;
+          case GameResult.draw:
+            _audioController.playSfx(Assets.sfx.drawMatch);
+        }
+      }
+
       if (lastPlayedCard != null) {
         _audioController.playSfx(Assets.sfx.playCard);
       }
+
       emit(
         matchLoadedState.copyWith(
           matchState: event.updatedState,
@@ -383,6 +397,25 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     return null;
   }
 
+  GameResult _gameResult(MatchState matchState) {
+    if ((isHost && matchState.result == MatchResult.host) ||
+        (!isHost && matchState.result == MatchResult.guest)) {
+      return GameResult.win;
+    } else if ((isHost && matchState.result == MatchResult.guest) ||
+        (!isHost && matchState.result == MatchResult.host)) {
+      return GameResult.lose;
+    } else {
+      return GameResult.draw;
+    }
+  }
+
+  GameResult? gameResult() {
+    if (state is MatchLoadedState) {
+      return _gameResult((state as MatchLoadedState).matchState);
+    }
+    return null;
+  }
+
   bool get isPlayerAllowedToPlay {
     if (state is MatchLoadedState) {
       final matchLoadedState = state as MatchLoadedState;
@@ -404,17 +437,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       );
     }
 
-    return false;
-  }
-
-  bool hasPlayerWon() {
-    if (state is MatchLoadedState) {
-      final matchState = (state as MatchLoadedState).matchState;
-
-      return isHost
-          ? matchState.result == MatchResult.host
-          : matchState.result == MatchResult.guest;
-    }
     return false;
   }
 
@@ -465,4 +487,10 @@ extension MatchLoadedStateX on MatchLoadedState {
 
     return false;
   }
+}
+
+enum GameResult {
+  win,
+  lose,
+  draw,
 }

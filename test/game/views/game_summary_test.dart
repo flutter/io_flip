@@ -49,7 +49,6 @@ void main() {
           .thenReturn(null);
       when(() => bloc.canPlayerPlay(any())).thenReturn(true);
       when(() => bloc.isPlayerAllowedToPlay).thenReturn(true);
-      when(bloc.hasPlayerWon).thenReturn(false);
     });
 
     void mockState(GameState state) {
@@ -176,6 +175,7 @@ void main() {
               turnAnimationsFinished: true,
             ),
           );
+          when(bloc.gameResult).thenReturn(GameResult.draw);
           await tester.pumpSubject(bloc);
 
           expect(
@@ -200,7 +200,7 @@ void main() {
               turnAnimationsFinished: true,
             ),
           );
-          when(bloc.hasPlayerWon).thenReturn(true);
+          when(bloc.gameResult).thenReturn(GameResult.win);
           await tester.pumpSubject(bloc);
 
           expect(
@@ -214,8 +214,8 @@ void main() {
         'renders the lose message when the player lost',
         (tester) async {
           defaultMockState();
+          when(bloc.gameResult).thenReturn(GameResult.lose);
 
-          when(bloc.hasPlayerWon).thenReturn(false);
           await tester.pumpSubject(bloc);
 
           expect(
@@ -292,7 +292,6 @@ void main() {
           final goRouter = MockGoRouter();
 
           defaultMockState();
-          when(bloc.hasPlayerWon).thenReturn(true);
           await tester.pumpSubject(
             bloc,
             goRouter: goRouter,
@@ -311,7 +310,6 @@ void main() {
           final goRouter = MockGoRouter();
 
           defaultMockState();
-          when(bloc.hasPlayerWon).thenReturn(true);
           await tester.pumpSubject(
             bloc,
             goRouter: goRouter,
@@ -336,7 +334,6 @@ void main() {
           final goRouter = MockGoRouter();
 
           defaultMockState();
-          when(bloc.hasPlayerWon).thenReturn(true);
           await tester.pumpSubject(
             bloc,
             goRouter: goRouter,

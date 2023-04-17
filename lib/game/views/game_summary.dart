@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart' hide Card;
-import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:top_dash/game/game.dart';
@@ -87,17 +86,21 @@ class _ResultView extends StatelessWidget {
     late final String title;
     late final Color color;
 
-    if ((bloc.isHost && state.matchState.result == MatchResult.host) ||
-        (!bloc.isHost && state.matchState.result == MatchResult.guest)) {
-      title = context.l10n.gameWonTitle;
-      color = TopDashColors.seedBlue;
-    } else if ((bloc.isHost && state.matchState.result == MatchResult.guest) ||
-        (!bloc.isHost && state.matchState.result == MatchResult.host)) {
-      color = TopDashColors.seedPaletteRed40;
-      title = context.l10n.gameLostTitle;
-    } else {
-      color = TopDashColors.seedGrey50;
-      title = context.l10n.gameTiedTitle;
+    switch (bloc.gameResult()) {
+      case GameResult.win:
+        title = context.l10n.gameWonTitle;
+        color = TopDashColors.seedBlue;
+        break;
+      case GameResult.lose:
+        color = TopDashColors.seedPaletteRed40;
+        title = context.l10n.gameLostTitle;
+        break;
+      case GameResult.draw:
+        color = TopDashColors.seedGrey50;
+        title = context.l10n.gameTiedTitle;
+        break;
+      case null:
+        return Center(child: Text(context.l10n.gameResultError));
     }
 
     return Column(
