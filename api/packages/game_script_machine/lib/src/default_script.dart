@@ -1,5 +1,22 @@
 /// The default script, used when none is found in the firebase.
 const defaultGameLogic = '''
+external fun rollDoubleValue
+
+fun rollCardRarity() -> bool {
+  var chance = rollDoubleValue();
+  return chance > 0.8;
+}
+
+
+fun rollCardPower(isRare: bool) -> int {
+  var base = rollDoubleValue();
+  var value = (base * 100).toInt();
+  value = if (value < 10) 10 else value;
+  value = if (isRare) value + 100 else value;
+
+  return value;
+}
+
 fun compareCards(valueA: int, valueB: int, suitA: str, suitB: str) -> int {
   var evaluation = compareSuits(suitA, suitB);
 
