@@ -300,7 +300,6 @@ class _CardViewer extends StatelessWidget {
                   child: RoundedButton.icon(
                     const Icon(Icons.share_outlined),
                     onPressed: () => share(card),
-                    backgroundColor: TopDashColors.seedWhite,
                   ),
                 ),
             ],
