@@ -1,5 +1,5 @@
 name: gcloud_pubsub
-description: A package to manages a firebase bucket.
+description: A package to manages a cloud run topic.
 version: 0.1.0+1
 publish_to: none
 

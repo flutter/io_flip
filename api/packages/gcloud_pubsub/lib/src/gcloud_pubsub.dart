@@ -35,7 +35,7 @@ typedef PostCall = Future<Response> Function(
 /// {@template gcloud_pubsub}
 /// Allows cards to play to be pushed to a topic queue.
 ///
-/// Throws a [GcloudPubsubFailure] if the upload fails.
+/// Throws a [GcloudPubsubFailure] if the request fails.
 /// {@endtemplate}
 class GcloudPubsub {
   /// {@macro gcloud_pubsub}
@@ -53,20 +53,18 @@ class GcloudPubsub {
   /// Uploads a file to Firebase Cloud Storage.
   Future<void> pushCardToQueue() async {
     const url =
-        'https://pubsub.googleapis.com/v1/projects/$_projectId/topics/playCard:publish';
+        'https://pubsub.googleapis.com/v1/projects/$_projectId/topics/playCard';
 
     final headers = await _authenticate(url);
 
     final response = await _post(
-      Uri.parse(url),
+      Uri.parse('$url:publish'),
       body: {'card': 'card'},
       headers: {
         ...headers,
         'Content-Type': 'application/json',
       },
     );
-
-    print('Topic answered: ${response.statusCode}');
 
     if (response.statusCode != HttpStatus.ok) {
       throw GcloudPubsubFailure(
