@@ -113,14 +113,19 @@ void main() {
       var wasTapped = false;
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: RoundedButton.image(
-                Image.file(file),
-                label: 'test',
-                onPressed: () {
-                  wasTapped = true;
-                },
+          home: Provider(
+            create: (_) => UISoundAdaptater(
+              playButtonSound: () {},
+            ),
+            child: Scaffold(
+              body: Center(
+                child: RoundedButton.image(
+                  Image.file(file),
+                  label: 'test',
+                  onPressed: () {
+                    wasTapped = true;
+                  },
+                ),
               ),
             ),
           ),
