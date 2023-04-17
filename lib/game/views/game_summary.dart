@@ -14,7 +14,6 @@ class GameSummaryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      backgroundColor: TopDashColors.seedWhite,
       body: Stack(
         children: [
           Align(
@@ -218,36 +217,33 @@ class GameSummaryFooter extends StatelessWidget {
     final state = bloc.state as MatchLoadedState;
     final playerScoreCard = state.playerScoreCard;
 
-    return ColoredBox(
-      color: TopDashColors.seedWhite,
-      child: Padding(
-        padding: const EdgeInsets.all(TopDashSpacing.sm),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            RoundedButton.text(
-              l10n.nextMatch,
-              onPressed: () => GoRouter.of(context).pop(),
+    return Padding(
+      padding: const EdgeInsets.all(TopDashSpacing.sm),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          RoundedButton.text(
+            l10n.nextMatch,
+            onPressed: () => GoRouter.of(context).pop(),
+          ),
+          _gap,
+          RoundedButton.text(
+            l10n.quit,
+            backgroundColor: TopDashColors.seedWhite,
+            onPressed: () => QuitGameDialog.show(
+              context,
+              onConfirm: () => _routerNeglectCall(context, () {
+                if (playerScoreCard.initials != null) {
+                  GoRouter.of(context).go('/');
+                } else {
+                  GoRouter.of(context).pop();
+                  bloc.add(const LeaderboardEntryRequested());
+                }
+              }),
+              onCancel: GoRouter.of(context).pop,
             ),
-            _gap,
-            RoundedButton.text(
-              l10n.quit,
-              backgroundColor: TopDashColors.seedWhite,
-              onPressed: () => QuitGameDialog.show(
-                context,
-                onConfirm: () => _routerNeglectCall(context, () {
-                  if (playerScoreCard.initials != null) {
-                    GoRouter.of(context).go('/');
-                  } else {
-                    GoRouter.of(context).pop();
-                    bloc.add(const LeaderboardEntryRequested());
-                  }
-                }),
-                onCancel: GoRouter.of(context).pop,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

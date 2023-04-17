@@ -25,9 +25,6 @@ class $AssetsImagesGen {
   /// File path: assets/images/add.png
   AssetGenImage get add => const AssetGenImage('assets/images/add.png');
 
-  /// File path: assets/images/back.png
-  AssetGenImage get back => const AssetGenImage('assets/images/back.png');
-
   /// File path: assets/images/facebook.png
   AssetGenImage get facebook =>
       const AssetGenImage('assets/images/facebook.png');
@@ -35,19 +32,11 @@ class $AssetsImagesGen {
   /// File path: assets/images/main.png
   AssetGenImage get main => const AssetGenImage('assets/images/main.png');
 
-  /// File path: assets/images/restart.png
-  AssetGenImage get restart => const AssetGenImage('assets/images/restart.png');
-
-  /// File path: assets/images/settings.png
-  AssetGenImage get settings =>
-      const AssetGenImage('assets/images/settings.png');
-
   /// File path: assets/images/twitter.png
   AssetGenImage get twitter => const AssetGenImage('assets/images/twitter.png');
 
   /// List of all assets
-  List<AssetGenImage> get values =>
-      [add, back, facebook, main, restart, settings, twitter];
+  List<AssetGenImage> get values => [add, facebook, main, twitter];
 }
 
 class $AssetsMusicGen {
