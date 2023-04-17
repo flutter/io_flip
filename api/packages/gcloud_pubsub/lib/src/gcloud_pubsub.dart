@@ -62,7 +62,6 @@ class GcloudPubsub {
       body: {'card': 'cardf'},
       headers: {
         ...headers,
-        'Content-Type': 'application/json',
       },
     );
 
