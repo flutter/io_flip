@@ -1,0 +1,20 @@
+name: api_gcloud_pubsub
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    paths:
+      - "api/packages/gcloud_pubsub/**"
+      - ".github/workflows/api_gcloud_pubsub.yaml"
+    branches:
+      - main
+
+jobs:
+  build:
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v1
+    with:
+      dart_sdk: beta
+      working_directory: api/packages/gcloud_pubsub
