@@ -25,7 +25,7 @@ class ShareResource {
     final cardUrl = _apiClient.shareCardUrl(cardId);
     final content = [
       'Check my best card!',
-      'Play I/O Bash and use AI to create cards and compete.',
+      'Play I/O Flip and use AI to create cards and compete.',
       cardUrl,
     ];
     return _twitterShareUrl(_encode(content));
@@ -37,7 +37,7 @@ class ShareResource {
     final handUrl = _apiClient.shareHandUrl(deckId);
     final content = [
       'Check my$winning hand!',
-      'Play I/O Bash and use AI to create cards and compete.',
+      'Play I/O Flip and use AI to create cards and compete.',
       handUrl,
     ];
     return _twitterShareUrl(_encode(content));
