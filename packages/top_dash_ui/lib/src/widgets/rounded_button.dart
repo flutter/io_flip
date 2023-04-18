@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 /// {@template rounded_button}
@@ -11,7 +12,7 @@ class RoundedButton extends StatelessWidget {
     Icon icon, {
     this.onPressed,
     super.key,
-    this.backgroundColor = TopDashColors.seedPaletteBlue70,
+    this.backgroundColor = TopDashColors.seedWhite,
   }) : child = icon;
 
   /// Basic [RoundedButton] with black shadow.
@@ -27,7 +28,37 @@ class RoundedButton extends StatelessWidget {
           ),
           child: Text(
             text,
-            style: TopDashTextStyles.buttonLGCaps,
+            style: TopDashTextStyles.buttonLGCaps.copyWith(
+              color: TopDashColors.seedBlack,
+            ),
+          ),
+        );
+
+  /// Basic [RoundedButton] with black shadow.
+  /// Contains a [image] and a [label] as children
+  RoundedButton.image(
+    Image image, {
+    String? label,
+    this.onPressed,
+    super.key,
+    this.backgroundColor = TopDashColors.seedPaletteBlue70,
+  }) : child = Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: TopDashSpacing.sm,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              image,
+              if (label != null)
+                Padding(
+                  padding: const EdgeInsets.only(left: TopDashSpacing.md),
+                  child: Text(
+                    label,
+                    style: TopDashTextStyles.buttonLGCaps,
+                  ),
+                ),
+            ],
           ),
         );
 
@@ -40,12 +71,17 @@ class RoundedButton extends StatelessWidget {
   /// Button background color
   final Color backgroundColor;
 
+  void _onPressed(BuildContext context) {
+    context.read<UISoundAdaptater>().playButtonSound();
+    onPressed?.call();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: onPressed,
+        onTap: onPressed == null ? null : () => _onPressed(context),
         child: DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(40),

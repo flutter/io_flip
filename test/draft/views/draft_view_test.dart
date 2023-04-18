@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/draft/draft.dart';
+import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/match_making/views/match_making_page.dart';
 
@@ -374,7 +375,6 @@ void main() {
     testWidgets(
       'navigates to the how to play page',
       (tester) async {
-        final goRouter = MockGoRouter();
         mockState(
           [
             DraftState(
@@ -387,15 +387,12 @@ void main() {
         );
         await tester.pumpSubject(
           draftBloc: draftBloc,
-          goRouter: goRouter,
         );
 
         await tester.tap(find.byIcon(Icons.question_mark_rounded));
         await tester.pumpAndSettle();
 
-        verify(
-          () => goRouter.go('/how_to_play'),
-        ).called(1);
+        expect(find.byType(HowToPlayDialog), findsOneWidget);
       },
     );
   });

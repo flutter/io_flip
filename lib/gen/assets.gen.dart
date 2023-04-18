@@ -9,32 +9,38 @@
 
 import 'package:flutter/widgets.dart';
 
+class $AssetsIconsGen {
+  const $AssetsIconsGen();
+
+  /// File path: assets/icons/cancel.svg
+  String get cancel => 'assets/icons/cancel.svg';
+
+  /// List of all assets
+  List<String> get values => [cancel];
+}
+
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
   /// File path: assets/images/add.png
   AssetGenImage get add => const AssetGenImage('assets/images/add.png');
 
-  /// File path: assets/images/back.png
-  AssetGenImage get back => const AssetGenImage('assets/images/back.png');
-
   /// File path: assets/images/card_master.png
   AssetGenImage get cardMaster =>
       const AssetGenImage('assets/images/card_master.png');
 
+  /// File path: assets/images/facebook.png
+  AssetGenImage get facebook =>
+      const AssetGenImage('assets/images/facebook.png');
+
   /// File path: assets/images/main.png
   AssetGenImage get main => const AssetGenImage('assets/images/main.png');
 
-  /// File path: assets/images/restart.png
-  AssetGenImage get restart => const AssetGenImage('assets/images/restart.png');
-
-  /// File path: assets/images/settings.png
-  AssetGenImage get settings =>
-      const AssetGenImage('assets/images/settings.png');
+  /// File path: assets/images/twitter.png
+  AssetGenImage get twitter => const AssetGenImage('assets/images/twitter.png');
 
   /// List of all assets
-  List<AssetGenImage> get values =>
-      [add, back, cardMaster, main, restart, settings];
+  List<AssetGenImage> get values => [add, cardMaster, facebook, main, twitter];
 }
 
 class $AssetsMusicGen {
@@ -149,6 +155,7 @@ class $AssetsSfxGen {
 class Assets {
   Assets._();
 
+  static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
   static const $AssetsMusicGen music = $AssetsMusicGen();
   static const $AssetsSfxGen sfx = $AssetsSfxGen();

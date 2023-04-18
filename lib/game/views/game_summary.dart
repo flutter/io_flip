@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart' hide Card;
-import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:top_dash/game/game.dart';
+import 'package:top_dash/game/views/card_inspector.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -14,7 +14,6 @@ class GameSummaryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      backgroundColor: TopDashColors.seedWhite,
       body: Stack(
         children: [
           Align(
@@ -87,17 +86,21 @@ class _ResultView extends StatelessWidget {
     late final String title;
     late final Color color;
 
-    if ((bloc.isHost && state.matchState.result == MatchResult.host) ||
-        (!bloc.isHost && state.matchState.result == MatchResult.guest)) {
-      title = context.l10n.gameWonTitle;
-      color = TopDashColors.seedBlue;
-    } else if ((bloc.isHost && state.matchState.result == MatchResult.guest) ||
-        (!bloc.isHost && state.matchState.result == MatchResult.host)) {
-      color = TopDashColors.seedPaletteRed40;
-      title = context.l10n.gameLostTitle;
-    } else {
-      color = TopDashColors.seedGrey50;
-      title = context.l10n.gameTiedTitle;
+    switch (bloc.gameResult()) {
+      case GameResult.win:
+        title = context.l10n.gameWonTitle;
+        color = TopDashColors.seedBlue;
+        break;
+      case GameResult.lose:
+        color = TopDashColors.seedPaletteRed40;
+        title = context.l10n.gameLostTitle;
+        break;
+      case GameResult.draw:
+        color = TopDashColors.seedGrey50;
+        title = context.l10n.gameTiedTitle;
+        break;
+      case null:
+        return Center(child: Text(context.l10n.gameResultError));
     }
 
     return Column(
@@ -159,17 +162,38 @@ class _CardsView extends StatelessWidget {
       ),
     );
 
+    final cards = bloc.isHost
+        ? [...hostCardsOrdered, ...guestCardsOrdered]
+        : [...guestCardsOrdered, ...hostCardsOrdered];
+
+    final playerCardIds = bloc.isHost
+        ? state.matchState.hostPlayedCards
+        : state.matchState.guestPlayedCards;
+    final gameCards = [...playerCards, ...opponentCards];
     return Align(
       child: ConstrainedBox(
         constraints: const BoxConstraints(
           maxWidth: 500,
           minHeight: 360,
         ),
-        child: GridView.count(
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: TopDashSpacing.md,
+          ),
           shrinkWrap: true,
-          mainAxisSpacing: TopDashSpacing.md,
-          crossAxisCount: 3,
-          children: [...opponentCards, ...playerCards],
+          itemCount: gameCards.length,
+          itemBuilder: (context, index) => GestureDetector(
+            child: gameCards[index],
+            onTap: () => GoRouter.of(context).pushNamed(
+              'card_inspector',
+              extra: CardInspectorData(
+                deck: cards,
+                playerCardIds: playerCardIds,
+                startingIndex: index,
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -193,36 +217,33 @@ class GameSummaryFooter extends StatelessWidget {
     final state = bloc.state as MatchLoadedState;
     final playerScoreCard = state.playerScoreCard;
 
-    return ColoredBox(
-      color: TopDashColors.seedWhite,
-      child: Padding(
-        padding: const EdgeInsets.all(TopDashSpacing.sm),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            RoundedButton.text(
-              l10n.nextMatch,
-              onPressed: () => GoRouter.of(context).pop(),
+    return Padding(
+      padding: const EdgeInsets.all(TopDashSpacing.sm),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          RoundedButton.text(
+            l10n.nextMatch,
+            onPressed: () => GoRouter.of(context).pop(),
+          ),
+          _gap,
+          RoundedButton.text(
+            l10n.quit,
+            backgroundColor: TopDashColors.seedWhite,
+            onPressed: () => QuitGameDialog.show(
+              context,
+              onConfirm: () => _routerNeglectCall(context, () {
+                if (playerScoreCard.initials != null) {
+                  GoRouter.of(context).go('/');
+                } else {
+                  GoRouter.of(context).pop();
+                  bloc.add(const LeaderboardEntryRequested());
+                }
+              }),
+              onCancel: GoRouter.of(context).pop,
             ),
-            _gap,
-            RoundedButton.text(
-              l10n.quit,
-              backgroundColor: TopDashColors.seedWhite,
-              onPressed: () => QuitGameDialog.show(
-                context,
-                onConfirm: () => _routerNeglectCall(context, () {
-                  if (playerScoreCard.initials != null) {
-                    GoRouter.of(context).go('/');
-                  } else {
-                    GoRouter.of(context).pop();
-                    bloc.add(const LeaderboardEntryRequested());
-                  }
-                }),
-                onCancel: GoRouter.of(context).pop,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

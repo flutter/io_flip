@@ -4,15 +4,23 @@ import 'dart:io';
 import 'package:clock/clock.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:http/http.dart' as http;
+import 'package:jose/jose.dart';
 import 'package:jwt_middleware/src/authenticated_user.dart';
 import 'package:jwt_middleware/src/jwt.dart';
 import 'package:x509/x509.dart';
+
+/// The header used to send the app check token.
+// ignore: constant_identifier_names
+const X_FIREBASE_APPCHECK = 'X-Firebase-AppCheck';
 
 /// Definition of an HTTP GET call used by this client.
 typedef GetCall = Future<http.Response> Function(Uri uri);
 
 /// Definition of a function for parsing encoded JWTs.
 typedef JwtParser = JWT Function(String token);
+
+/// Definition of a function for parsing JWS.
+typedef JwsParser = JsonWebSignature Function(String);
 
 /// {@template jwt_middleware}
 /// A dart_frog middleware for checking JWT authorization.
@@ -23,20 +31,29 @@ class JwtMiddleware {
     required String projectId,
     GetCall get = http.get,
     JwtParser parseJwt = JWT.from,
+    JwsParser parseJws = JsonWebSignature.fromCompactSerialization,
+    JsonWebKeyStore? jwks,
     bool isEmulator = false,
   })  : _get = get,
         _parseJwt = parseJwt,
+        _parseJws = parseJws,
+        _jwks = jwks ?? JsonWebKeyStore()
+          ..addKeySetUrl(Uri.parse(_jwksUrl)),
         _projectId = projectId,
         _isEmulator = isEmulator,
         _keys = const {};
 
   final GetCall _get;
   final JwtParser _parseJwt;
+  final JwsParser _parseJws;
+  final JsonWebKeyStore _jwks;
   final String _projectId;
   final bool _isEmulator;
 
   static const _keyUrl =
       'https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com';
+  static const _jwksUrl = 'https://firebaseappcheck.googleapis.com/v1/jwks';
+
   DateTime? _keyExpiration;
   Map<String, Verifier<PublicKey>> _keys;
 
@@ -51,7 +68,7 @@ class JwtMiddleware {
             final token = authorization.last;
 
             final userId = await verifyToken(token);
-            if (userId != null) {
+            if (userId != null && await verifyAppCheckToken(context)) {
               return handler(context.provide(() => AuthenticatedUser(userId)));
             }
           }
@@ -59,6 +76,20 @@ class JwtMiddleware {
           return Response(statusCode: HttpStatus.unauthorized);
         };
       };
+
+  /// Verifies the app check token in the given request context.
+  Future<bool> verifyAppCheckToken(RequestContext context) async {
+    final appCheckToken = context.request.headers[X_FIREBASE_APPCHECK];
+    if (appCheckToken == null || appCheckToken.isEmpty) return false;
+    if (_isEmulator) return true;
+
+    try {
+      final jws = _parseJws(appCheckToken);
+      return jws.verify(_jwks);
+    } catch (e) {
+      return false;
+    }
+  }
 
   /// Verifies the given token and returns the user id if valid.
   Future<String?> verifyToken(String token) async {

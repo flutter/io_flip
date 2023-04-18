@@ -9,7 +9,7 @@ import 'package:game_script_machine/game_script_machine.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:top_dash/app/app.dart';
 import 'package:top_dash/bootstrap.dart';
-import 'package:top_dash/firebase_options_development.dart';
+import 'package:top_dash/firebase_options_production.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
 
 void main() async {
@@ -23,15 +23,18 @@ void main() async {
         await appCheck.activate(
           webRecaptchaSiteKey: const String.fromEnvironment('RECAPTCHA_KEY'),
         );
+        await appCheck.setTokenAutoRefreshEnabled(true);
 
         final authenticationRepository = AuthenticationRepository(
           firebaseAuth: firebaseAuth,
         );
 
         final apiClient = ApiClient(
-          baseUrl: 'https://top-dash-dev-api-synvj3dcmq-uc.a.run.app',
+          baseUrl: 'https://io-flip-api-5eji7gzgvq-uc.a.run.app',
           idTokenStream: authenticationRepository.idToken,
           refreshIdToken: authenticationRepository.refreshIdToken,
+          appCheckTokenStream: appCheck.onTokenChange,
+          appCheckToken: await appCheck.getToken(),
         );
 
         await authenticationRepository.signInAnonymously();

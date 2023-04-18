@@ -61,6 +61,8 @@ class ApiClient {
     required String baseUrl,
     required Stream<String?> idTokenStream,
     required Future<String?> Function() refreshIdToken,
+    required Stream<String?> appCheckTokenStream,
+    String? appCheckToken,
     PostCall postCall = http.post,
     PutCall putCall = http.put,
     GetCall getCall = http.get,
@@ -72,9 +74,13 @@ class ApiClient {
         _get = getCall,
         _webSocketFactory = webSocketFactory,
         _webSocketTimeout = webSocketTimeout,
+        _appCheckToken = appCheckToken,
         _refreshIdToken = refreshIdToken {
     _idTokenSubscription = idTokenStream.listen((idToken) {
       _idToken = idToken;
+    });
+    _appCheckTokenSubscription = appCheckTokenStream.listen((appCheckToken) {
+      _appCheckToken = appCheckToken;
     });
   }
 
@@ -87,14 +93,20 @@ class ApiClient {
   final Duration _webSocketTimeout;
 
   late final StreamSubscription<String?> _idTokenSubscription;
+  late final StreamSubscription<String?> _appCheckTokenSubscription;
   String? _idToken;
+  String? _appCheckToken;
 
   Map<String, String> get _headers => {
         if (_idToken != null) 'Authorization': 'Bearer $_idToken',
+        if (_appCheckToken != null) 'X-Firebase-AppCheck': _appCheckToken!,
       };
 
   /// {@macro game_resource}
   late final GameResource gameResource = GameResource(apiClient: this);
+
+  /// {@macro share_resource}
+  late final ShareResource shareResource = ShareResource(apiClient: this);
 
   /// {@macro prompt_resource}
   late final PromptResource promptResource = PromptResource(apiClient: this);
@@ -121,6 +133,7 @@ class ApiClient {
   /// Dispose of resources used by this client.
   Future<void> dispose() async {
     await _idTokenSubscription.cancel();
+    await _appCheckTokenSubscription.cancel();
   }
 
   /// Sends a POST request to the specified [path] with the given [body].
@@ -215,12 +228,17 @@ class ApiClient {
 
   /// Returns the share page url for the specified [deckId].
   String shareHandUrl(String deckId) {
-    return '$_base/public/share?deckId=$deckId';
+    return '${_base.host}/public/share?deckId=$deckId';
   }
 
   /// Returns the share page url for the specified [cardId].
   String shareCardUrl(String cardId) {
-    return '$_base/public/share?cardId=$cardId';
+    return '${_base.host}/public/share?cardId=$cardId';
+  }
+
+  /// Returns the game url.
+  String shareGameUrl() {
+    return _base.host;
   }
 }
 

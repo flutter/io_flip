@@ -65,7 +65,6 @@ class MatchMakingView extends StatelessWidget {
 
         if (state.status == MatchMakingStatus.timeout) {
           return const Scaffold(
-            backgroundColor: TopDashColors.seedWhite,
             body: Center(
               child: Text('Match making timed out, sorry!'),
             ),
@@ -74,7 +73,6 @@ class MatchMakingView extends StatelessWidget {
 
         if (state.status == MatchMakingStatus.failed) {
           return const Scaffold(
-            backgroundColor: TopDashColors.seedWhite,
             body: Center(
               child: Text('Match making failed, sorry!'),
             ),
@@ -82,7 +80,6 @@ class MatchMakingView extends StatelessWidget {
         }
 
         return Scaffold(
-          backgroundColor: TopDashColors.seedWhite,
           body: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -117,7 +114,6 @@ class _WaitingForMatchView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: TopDashColors.seedWhite,
       body: Column(
         children: [
           const Spacer(),
@@ -133,9 +129,12 @@ class _WaitingForMatchView extends StatelessWidget {
           else
             ElevatedButton(
               onPressed: () {
-                setClipboardData(
-                  ClipboardData(text: inviteCode),
-                );
+                final code = inviteCode;
+                if (code != null) {
+                  setClipboardData(
+                    ClipboardData(text: code),
+                  );
+                }
               },
               child: Text(context.l10n.copyInviteCode),
             ),

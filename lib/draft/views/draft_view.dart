@@ -4,6 +4,7 @@ import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/gen/assets.gen.dart';
+import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/match_making/match_making.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
@@ -26,7 +27,6 @@ class DraftView extends StatelessWidget {
 
     if (state.status == DraftStateStatus.deckFailed) {
       return Scaffold(
-        backgroundColor: TopDashColors.seedWhite,
         body: Center(
           child: Text(l10n.cardGenerationError),
         ),
@@ -36,7 +36,6 @@ class DraftView extends StatelessWidget {
     if (state.status == DraftStateStatus.deckLoading ||
         state.status == DraftStateStatus.initial) {
       return const Scaffold(
-        backgroundColor: TopDashColors.seedWhite,
         body: Center(
           child: CircularProgressIndicator(),
         ),
@@ -44,7 +43,6 @@ class DraftView extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: TopDashColors.seedWhite,
       body: Center(
         child: Column(
           children: [
@@ -211,8 +209,8 @@ class SelectedCard extends StatelessWidget {
           height: 136,
           width: 104,
           decoration: BoxDecoration(
-            color: TopDashColors.seedPaletteLightBlue99,
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(TopDashSpacing.sm),
+            border: Border.all(color: TopDashColors.seedWhite),
           ),
           child: Stack(
             children: [
@@ -232,7 +230,7 @@ class SelectedCard extends StatelessWidget {
                   width: 32,
                   height: 32,
                   decoration: BoxDecoration(
-                    color: TopDashColors.seedLightBlue,
+                    color: TopDashColors.seedWhite,
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Image.asset(Assets.images.add.path),
@@ -271,8 +269,7 @@ class _BottomBar extends StatelessWidget {
             alignment: Alignment.centerRight,
             child: RoundedButton.icon(
               const Icon(Icons.question_mark_rounded),
-              backgroundColor: Colors.white,
-              onPressed: () => GoRouter.of(context).go('/how_to_play'),
+              onPressed: () => HowToPlayDialog.show(context),
             ),
           ),
           if (state.status == DraftStateStatus.deckSelected) ...[

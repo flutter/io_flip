@@ -486,31 +486,58 @@ void main() {
           ),
         );
       });
+    });
 
-      group('shareHandUrl', () {
-        test('returns the correct url', () {
-          when(
-            () => apiClient.shareHandUrl(any()),
-          ).thenReturn('http://baseurl.com/public/share?deckId=id');
+    group('connectToCpuMatch', () {
+      test('Makes the correct call', () {
+        when(
+          () => apiClient.post(any()),
+        ).thenAnswer((_) async => response);
+        const matchId = 'matchId';
+        when(() => response.statusCode).thenReturn(HttpStatus.noContent);
+        resource.connectToCpuMatch(matchId: matchId);
 
-          expect(
-            resource.shareHandUrl('id'),
-            equals('http://baseurl.com/public/share?deckId=id'),
-          );
-        });
+        verify(
+          () => apiClient.post(
+            '/game/matches/$matchId/connect',
+            queryParameters: any(named: 'queryParameters'),
+          ),
+        ).called(1);
       });
 
-      group('shareCardUrl', () {
-        test('returns the correct url', () {
-          when(
-            () => apiClient.shareCardUrl(any()),
-          ).thenReturn('http://baseurl.com/public/share?cardId=id');
+      test('Answers with error', () async {
+        when(
+          () => apiClient.post(any()),
+        ).thenAnswer((_) async => response);
+        when(() => response.body).thenReturn('Ops');
 
-          expect(
-            resource.shareCardUrl('id'),
-            equals('http://baseurl.com/public/share?cardId=id'),
-          );
-        });
+        when(() => response.statusCode).thenReturn(HttpStatus.methodNotAllowed);
+
+        await expectLater(
+          resource.connectToCpuMatch(matchId: ''),
+          throwsA(
+            isA<ApiClientError>().having(
+              (e) => e.cause,
+              'cause',
+              contains(
+                'POST game/matches/connect returned status ${HttpStatus.methodNotAllowed}',
+              ),
+            ),
+          ),
+        );
+      });
+
+      test('Catches error', () async {
+        when(
+          () => apiClient.post(any()),
+        ).thenThrow(Exception('oops'));
+
+        await expectLater(
+          resource.connectToCpuMatch(matchId: ''),
+          throwsA(
+            isA<ApiClientError>(),
+          ),
+        );
       });
     });
   });
