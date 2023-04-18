@@ -278,6 +278,14 @@
   "@unknownConnectionError": {
     "description": "Error message shown when an unknown error occurs while connecting"
   },
+  "twitterButtonLabel": "TWITTER",
+  "@twitterButtonLabel": {
+    "description": "Label for the share to twitter button"
+  },
+  "facebookButtonLabel": "FACEBOOK",
+  "@facebookButtonLabel": {
+    "description": "Label for the share to facebook button"
+  },
   "howToPlayIntroTitle": "<bold>Harness the power of generative AI to build unique decks of playing cards.</bold>",
   "@howToPlayIntroTitle": {
     "description": "Text shown in the first page of the how to play flow"

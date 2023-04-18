@@ -105,6 +105,9 @@ class ApiClient {
   /// {@macro game_resource}
   late final GameResource gameResource = GameResource(apiClient: this);
 
+  /// {@macro share_resource}
+  late final ShareResource shareResource = ShareResource(apiClient: this);
+
   /// {@macro prompt_resource}
   late final PromptResource promptResource = PromptResource(apiClient: this);
 
@@ -225,12 +228,17 @@ class ApiClient {
 
   /// Returns the share page url for the specified [deckId].
   String shareHandUrl(String deckId) {
-    return '$_base/public/share?deckId=$deckId';
+    return '${_base.host}/public/share?deckId=$deckId';
   }
 
   /// Returns the share page url for the specified [cardId].
   String shareCardUrl(String cardId) {
-    return '$_base/public/share?cardId=$cardId';
+    return '${_base.host}/public/share?cardId=$cardId';
+  }
+
+  /// Returns the game url.
+  String shareGameUrl() {
+    return _base.host;
   }
 }
 
