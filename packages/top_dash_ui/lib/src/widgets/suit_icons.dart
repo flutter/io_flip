@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:top_dash_ui/gen/assets.gen.dart';
 
-/// {@template element_icon}
+/// {@template suit_icon}
 /// IO Flip suit icon.
 /// {@endtemplate}
 class SuitIcon extends StatelessWidget {
