@@ -11,8 +11,8 @@ void main() {
       var wasTapped = false;
       await tester.pumpWidget(
         MaterialApp(
-          home: Provider<UISoundAdaptater>(
-            create: (_) => UISoundAdaptater(playButtonSound: () {}),
+          home: Provider<UISoundAdapter>(
+            create: (_) => UISoundAdapter(playButtonSound: () {}),
             child: Scaffold(
               body: Center(
                 child: RoundedButton.icon(
@@ -35,7 +35,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Provider(
-            create: (_) => UISoundAdaptater(playButtonSound: () {}),
+            create: (_) => UISoundAdapter(playButtonSound: () {}),
             child: Scaffold(
               body: Center(
                 child: RoundedButton.text(
@@ -59,7 +59,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Provider(
-            create: (_) => UISoundAdaptater(
+            create: (_) => UISoundAdapter(
               playButtonSound: () {
                 soundPlayed = true;
               },
@@ -87,7 +87,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: Provider(
-              create: (_) => UISoundAdaptater(
+              create: (_) => UISoundAdapter(
                 playButtonSound: () {
                   soundPlayed = true;
                 },
@@ -114,7 +114,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Provider(
-            create: (_) => UISoundAdaptater(
+            create: (_) => UISoundAdapter(
               playButtonSound: () {},
             ),
             child: Scaffold(
