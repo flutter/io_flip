@@ -12,7 +12,13 @@ import 'package:flutter/widgets.dart';
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/io_flip_logo.svg
+  String get ioFlipLogo => 'assets/images/io_flip_logo.svg';
+
   $AssetsImagesSuitsGen get suits => const $AssetsImagesSuitsGen();
+
+  /// List of all assets
+  List<String> get values => [ioFlipLogo];
 }
 
 class $AssetsImagesSuitsGen {

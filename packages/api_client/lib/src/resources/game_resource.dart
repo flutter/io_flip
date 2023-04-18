@@ -185,13 +185,28 @@ class GameResource {
     }
   }
 
-  /// Returns the share page url for the specified [deckId].
-  String shareHandUrl(String deckId) {
-    return _apiClient.shareHandUrl(deckId);
-  }
+  /// WebSocket connect to  game/matches/connect
+  Future<void> connectToCpuMatch({
+    required String matchId,
+  }) async {
+    try {
+      final response = await _apiClient.post(
+        '/game/matches/$matchId/connect',
+      );
 
-  /// Returns the share page url for the specified [cardId].
-  String shareCardUrl(String cardId) {
-    return _apiClient.shareCardUrl(cardId);
+      if (response.statusCode != HttpStatus.noContent) {
+        throw ApiClientError(
+          'POST game/matches/connect returned status ${response.statusCode} with the following response: "${response.body}"',
+          StackTrace.current,
+        );
+      }
+    } on ApiClientError {
+      rethrow;
+    } catch (error) {
+      throw ApiClientError(
+        'POST game/matches/connect returned with the following error: "$error"',
+        StackTrace.current,
+      );
+    }
   }
 }

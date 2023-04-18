@@ -53,18 +53,18 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
     print('${record.level.name}: ${record.time}: ${record.message}');
   });
 
-  cardsRepository = CardsRepository(
-    imageModelRepository: imageModelRepository,
-    languageModelRepository: languageModelRepository,
-    dbClient: dbClient,
-  );
-
   scriptsRepository = ScriptsRepository(dbClient: dbClient);
   final initialScript = await scriptsRepository.getCurrentScript();
 
   gameScriptMachine = GameScriptMachine.initialize(initialScript);
 
   pubsub = const GcloudPubsub();
+  cardsRepository = CardsRepository(
+    imageModelRepository: imageModelRepository,
+    languageModelRepository: languageModelRepository,
+    dbClient: dbClient,
+    gameScriptMachine: gameScriptMachine,
+  );
 
   matchRepository = MatchRepository(
     cardsRepository: cardsRepository,

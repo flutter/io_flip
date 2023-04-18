@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:top_dash/app_lifecycle/app_lifecycle.dart';
 import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/connection/connection.dart';
+import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/router/router.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
@@ -44,6 +45,7 @@ class App extends StatefulWidget {
     required this.gameScriptMachine,
     required this.user,
     this.router,
+    this.audioController,
     super.key,
   });
 
@@ -55,6 +57,7 @@ class App extends StatefulWidget {
   final GameScriptMachine gameScriptMachine;
   final User user;
   final GoRouter? router;
+  final AudioController? audioController;
 
   @override
   State<App> createState() => _AppState();
@@ -72,6 +75,7 @@ class _AppState extends State<App> {
           Provider.value(value: widget.apiClient.scriptsResource),
           Provider.value(value: widget.apiClient.promptResource),
           Provider.value(value: widget.apiClient.leaderboardResource),
+          Provider.value(value: widget.apiClient.shareResource),
           Provider.value(value: widget.matchMakerRepository),
           Provider.value(value: widget.connectionRepository),
           Provider.value(value: widget.matchSolver),
@@ -89,7 +93,8 @@ class _AppState extends State<App> {
             // and not "only when it's needed", as is default behavior.
             // This way, music starts immediately.
             lazy: false,
-            create: (context) => AudioController()..initialize(),
+            create: (context) =>
+                widget.audioController ?? (AudioController()..initialize()),
             update: updateAudioController,
             dispose: (context, audio) => audio.dispose(),
           ),
@@ -101,16 +106,26 @@ class _AppState extends State<App> {
         ],
         child: Builder(
           builder: (context) {
-            return MaterialApp.router(
-              title: 'Top Dash',
-              theme: TopDashTheme.themeData,
-              routeInformationProvider: router.routeInformationProvider,
-              routeInformationParser: router.routeInformationParser,
-              routerDelegate: router.routerDelegate,
-              scaffoldMessengerKey: scaffoldMessengerKey,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
-              supportedLocales: AppLocalizations.supportedLocales,
-              builder: (context, child) => ConnectionOverlay(child: child),
+            return Provider<UISoundAdaptater>(
+              create: (context) {
+                final audio = context.read<AudioController>();
+                return UISoundAdaptater(
+                  playButtonSound: () {
+                    audio.playSfx(Assets.sfx.click);
+                  },
+                );
+              },
+              child: MaterialApp.router(
+                title: 'Top Dash',
+                theme: TopDashTheme.themeData,
+                routeInformationProvider: router.routeInformationProvider,
+                routeInformationParser: router.routeInformationParser,
+                routerDelegate: router.routerDelegate,
+                scaffoldMessengerKey: scaffoldMessengerKey,
+                localizationsDelegates: AppLocalizations.localizationsDelegates,
+                supportedLocales: AppLocalizations.supportedLocales,
+                builder: (context, child) => ConnectionOverlay(child: child),
+              ),
             );
           },
         ),

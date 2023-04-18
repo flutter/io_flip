@@ -10,6 +10,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/app/app.dart';
 import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/connection/connection.dart';
+import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/main_menu/main_menu_screen.dart';
 import 'package:top_dash/prompt/prompt.dart';
@@ -32,6 +33,8 @@ class _MockLifecycleNotifier extends Mock
 class _MockApiClient extends Mock implements ApiClient {}
 
 class _MockGameResource extends Mock implements GameResource {}
+
+class _MockShareResource extends Mock implements ShareResource {}
 
 class _MockScriptsResource extends Mock implements ScriptsResource {}
 
@@ -63,6 +66,7 @@ void main() {
     setUp(() {
       apiClient = _MockApiClient();
       when(() => apiClient.gameResource).thenReturn(_MockGameResource());
+      when(() => apiClient.shareResource).thenReturn(_MockShareResource());
 
       final promptResource = _MockPromptResource();
       when(promptResource.getPromptWhitelist)
@@ -273,6 +277,29 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(SharePage), findsOneWidget);
+    });
+
+    testWidgets('plays a button click when a button is played', (tester) async {
+      final audioController = _MockAudioController();
+      when(audioController.initialize).thenAnswer((_) async {});
+      when(() => audioController.playSfx(any())).thenAnswer((_) async {});
+      await tester.pumpWidget(
+        App(
+          settingsPersistence: MemoryOnlySettingsPersistence(),
+          apiClient: apiClient,
+          matchMakerRepository: _MockMatchMakerRepository(),
+          connectionRepository: _MockConnectionRepository(),
+          matchSolver: _MockMatchSolver(),
+          gameScriptMachine: _MockGameScriptEngine(),
+          audioController: audioController,
+          user: _MockUser(),
+        ),
+      );
+
+      await tester.tap(find.text(tester.l10n.play));
+      await tester.pumpAndSettle();
+
+      verify(() => audioController.playSfx(Assets.sfx.click)).called(1);
     });
   });
 }

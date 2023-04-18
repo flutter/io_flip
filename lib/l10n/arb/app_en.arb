@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "play": "Play Now",
+  "play": "PLAY NOW",
   "@play": {
     "description": "Label play"
   },
@@ -19,6 +19,10 @@
         "type": "int"
       }
     }
+  },
+  "gameResultError": "Error getting game result",
+  "@gameResultError": {
+    "description": "Displayed when error while getting game result"
   },
   "characterPromptPageTitle": "First, what's your character?",
   "@characterPromptPageTitle": {
@@ -273,6 +277,14 @@
   "unknownConnectionError": "Unable to connect. Please try again in a few moments.",
   "@unknownConnectionError": {
     "description": "Error message shown when an unknown error occurs while connecting"
+  },
+  "twitterButtonLabel": "TWITTER",
+  "@twitterButtonLabel": {
+    "description": "Label for the share to twitter button"
+  },
+  "facebookButtonLabel": "FACEBOOK",
+  "@facebookButtonLabel": {
+    "description": "Label for the share to facebook button"
   },
   "howToPlayIntroTitle": "<bold>Harness the power of generative AI to build unique decks of playing cards.</bold>",
   "@howToPlayIntroTitle": {

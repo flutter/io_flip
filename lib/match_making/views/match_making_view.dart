@@ -48,8 +48,8 @@ class MatchMakingView extends StatelessWidget {
               deck: deck,
               setClipboardData: _setClipboardData,
               inviteCode: state.match?.inviteCode,
-              title: TopDashTextStyles.headlineMobileH4Light,
-              subtitle: TopDashTextStyles.headlineMobileH6Light,
+              title: TopDashTextStyles.mobileH4Light,
+              subtitle: TopDashTextStyles.mobileH6Light,
               key: const Key('small_waiting_for_match_view'),
             ),
             large: (_, __) => _WaitingForMatchView(
@@ -65,7 +65,6 @@ class MatchMakingView extends StatelessWidget {
 
         if (state.status == MatchMakingStatus.timeout) {
           return const Scaffold(
-            backgroundColor: TopDashColors.seedWhite,
             body: Center(
               child: Text('Match making timed out, sorry!'),
             ),
@@ -74,7 +73,6 @@ class MatchMakingView extends StatelessWidget {
 
         if (state.status == MatchMakingStatus.failed) {
           return const Scaffold(
-            backgroundColor: TopDashColors.seedWhite,
             body: Center(
               child: Text('Match making failed, sorry!'),
             ),
@@ -82,7 +80,6 @@ class MatchMakingView extends StatelessWidget {
         }
 
         return Scaffold(
-          backgroundColor: TopDashColors.seedWhite,
           body: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -117,7 +114,6 @@ class _WaitingForMatchView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: TopDashColors.seedWhite,
       body: Column(
         children: [
           const Spacer(),

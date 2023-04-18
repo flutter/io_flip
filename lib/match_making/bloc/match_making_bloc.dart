@@ -168,10 +168,22 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
       return Future.value(false);
     }).timeout(
       const Duration(seconds: 30),
-      onTimeout: () {
-        subscription.cancel();
-        _connectionRepository.send(const WebSocketMessage.matchLeft());
-        emit(state.copyWith(status: MatchMakingStatus.timeout));
+      onTimeout: () async {
+        await subscription.cancel();
+        try {
+          await _gameResource.connectToCpuMatch(matchId: match.id);
+          emit(
+            state.copyWith(
+              match: match.copyWithGuest(guest: 'CPU_${match.host}'),
+              status: MatchMakingStatus.completed,
+              isHost: true,
+            ),
+          );
+        } catch (e, s) {
+          addError(e, s);
+          _connectionRepository.send(const WebSocketMessage.matchLeft());
+          emit(state.copyWith(status: MatchMakingStatus.timeout));
+        }
       },
     );
   }

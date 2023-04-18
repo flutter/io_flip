@@ -432,6 +432,53 @@ void main() {
         ).called(1);
       });
 
+      test('correctly updates the match state when is against cpu', () async {
+        final cpuDeck = Deck(
+          id: 'guestDeckId',
+          userId: 'CPU_UserId',
+          cards: [cards[3], cards[4], cards[5]],
+        );
+        when(() => cardsRepository.getDeck(guestDeck.id))
+            .thenAnswer((_) async => cpuDeck);
+
+        await matchRepository.playCard(
+          matchId: matchId,
+          cardId: 'A',
+          deckId: hostDeck.id,
+          userId: hostDeck.userId,
+        );
+
+        await Future<void>.delayed(const Duration(seconds: 2));
+        verify(
+          () => dbClient.update(
+            'match_states',
+            DbEntityRecord(
+              id: matchStateId,
+              data: const {
+                'matchId': matchId,
+                'hostPlayedCards': <String>['A'],
+                'guestPlayedCards': <String>[],
+                'result': null,
+              },
+            ),
+          ),
+        ).called(1);
+        verify(
+          () => dbClient.update(
+            'match_states',
+            DbEntityRecord(
+              id: matchStateId,
+              data: const {
+                'matchId': matchId,
+                'hostPlayedCards': <String>[],
+                'guestPlayedCards': <String>['card_3'],
+                'result': null,
+              },
+            ),
+          ),
+        ).called(1);
+      });
+
       test('when the match is over, updates the result', () async {
         when(() => dbClient.findBy('match_states', 'matchId', matchId))
             .thenAnswer(
@@ -733,6 +780,46 @@ void main() {
             ),
           );
         });
+      });
+    });
+
+    group('setCpuConnectivity', () {
+      late final MatchRepository matchRepository;
+      final dbClient = _MockDbClient();
+      final cardsRepository = _MockCardRepository();
+      final matchSolver = _MockMatchSolver();
+      const matchId = 'matchId';
+      const hostId = 'hostId';
+
+      setUp(() {
+        matchRepository = MatchRepository(
+          cardsRepository: cardsRepository,
+          dbClient: dbClient,
+          matchSolver: matchSolver,
+          gcloudPubsub: _MockGcloudPubRun(),
+          isRunningLocally: true,
+        );
+        when(() => dbClient.update(any(), any<DbEntityRecord>()))
+            .thenAnswer((_) async {});
+      });
+
+      test('updates the correct field', () async {
+        await matchRepository.setCpuConnectivity(
+          matchId: matchId,
+          hostId: hostId,
+        );
+        verify(
+          () => dbClient.update(
+            'matches',
+            DbEntityRecord(
+              id: matchId,
+              data: const {
+                'guestConnected': true,
+                'guest': 'CPU_$hostId',
+              },
+            ),
+          ),
+        );
       });
     });
 

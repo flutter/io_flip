@@ -16,7 +16,6 @@ class LeaderboardEntryView extends StatelessWidget {
     final l10n = context.l10n;
 
     return Scaffold(
-      backgroundColor: TopDashColors.seedWhite,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.xxlg),
         child: Center(
@@ -26,7 +25,7 @@ class LeaderboardEntryView extends StatelessWidget {
               Text(
                 l10n.enterYourInitials,
                 textAlign: TextAlign.center,
-                style: TopDashTextStyles.headlineMobileH4,
+                style: TopDashTextStyles.mobileH4,
               ),
               const SizedBox(height: TopDashSpacing.xlg),
               InitialsForm(scoreCardId: scoreCardId)

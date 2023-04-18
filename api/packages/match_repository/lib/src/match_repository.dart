@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cards_repository/cards_repository.dart';
 import 'package:db_client/db_client.dart';
 import 'package:game_domain/game_domain.dart';
@@ -31,6 +33,7 @@ class MatchRepository {
   final MatchSolver _matchSolver;
   final GcloudPubsub _gcloudPubsub;
   final bool _isRunningLocally;
+  static const _cpuPrefix = 'CPU_';
 
   /// Return the ScoreCard with the given [scoreCardId].
   Future<ScoreCard> getScoreCard(String scoreCardId, String deckId) async {
@@ -209,6 +212,27 @@ class MatchRepository {
         },
       ),
     );
+
+    if (match.guestDeck.userId.contains(_cpuPrefix) &&
+        newMatchState.guestPlayedCards.length < 3 &&
+        newMatchState.guestPlayedCards.length <=
+            newMatchState.hostPlayedCards.length) {
+      unawaited(
+        Future.delayed(const Duration(seconds: 1), () {
+          playCard(
+            matchId: matchId,
+            cardId: match.guestDeck.cards
+                .firstWhere(
+                  (element) =>
+                      !newMatchState.guestPlayedCards.contains(element.id),
+                )
+                .id,
+            deckId: match.guestDeck.id,
+            userId: match.guestDeck.userId,
+          );
+        }),
+      );
+    }
   }
 
   Future<void> _playerWon(ScoreCard scoreCard) async {
@@ -273,6 +297,23 @@ class MatchRepository {
         id: match,
         data: {
           'guestConnected': active,
+        },
+      ),
+    );
+  }
+
+  /// Sets the `guestConnected` attribute as true for CPU guest.
+  Future<void> setCpuConnectivity({
+    required String matchId,
+    required String hostId,
+  }) async {
+    await _dbClient.update(
+      'matches',
+      DbEntityRecord(
+        id: matchId,
+        data: {
+          'guestConnected': true,
+          'guest': _cpuPrefix + hostId,
         },
       ),
     );

@@ -9,7 +9,7 @@ import 'package:game_script_machine/game_script_machine.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:top_dash/app/app.dart';
 import 'package:top_dash/bootstrap.dart';
-import 'package:top_dash/firebase_options_development.dart';
+import 'package:top_dash/firebase_options_production.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
 
 void main() async {
@@ -30,7 +30,7 @@ void main() async {
         );
 
         final apiClient = ApiClient(
-          baseUrl: 'https://top-dash-dev-api-synvj3dcmq-uc.a.run.app',
+          baseUrl: 'https://io-flip-api-5eji7gzgvq-uc.a.run.app',
           idTokenStream: authenticationRepository.idToken,
           refreshIdToken: authenticationRepository.refreshIdToken,
           appCheckTokenStream: appCheck.onTokenChange,

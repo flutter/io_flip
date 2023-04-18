@@ -15,12 +15,15 @@ import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/settings/settings.dart';
 import 'package:top_dash/style/snack_bar.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
 
 import 'helpers.dart';
 
 class _MockSettingsController extends Mock implements SettingsController {}
 
 class _MockGameResource extends Mock implements GameResource {}
+
+class _MockShareResource extends Mock implements ShareResource {}
 
 class _MockPromptResource extends Mock implements PromptResource {}
 
@@ -40,13 +43,22 @@ class _MockAudioController extends Mock implements AudioController {}
 
 class _MockUser extends Mock implements User {}
 
+class _MockUISoundAdapter extends Mock implements UISoundAdaptater {}
+
 class _MockGoRouter extends Mock implements GoRouter {}
+
+UISoundAdaptater _createUISoundAdapter() {
+  final adapter = _MockUISoundAdapter();
+  when(() => adapter.playButtonSound).thenReturn(() {});
+  return adapter;
+}
 
 extension PumpApp on WidgetTester {
   Future<void> pumpApp(
     Widget widget, {
     SettingsController? settingsController,
     GameResource? gameResource,
+    ShareResource? shareResource,
     ScriptsResource? scriptsResource,
     PromptResource? promptResource,
     LeaderboardResource? leaderboardResource,
@@ -55,6 +67,7 @@ extension PumpApp on WidgetTester {
     ConnectionRepository? connectionRepository,
     MatchSolver? matchSolver,
     GameScriptMachine? gameScriptMachine,
+    UISoundAdaptater? uiSoundAdaptater,
     User? user,
     GoRouter? router,
   }) {
@@ -66,6 +79,9 @@ extension PumpApp on WidgetTester {
           ),
           Provider.value(
             value: gameResource ?? _MockGameResource(),
+          ),
+          Provider.value(
+            value: shareResource ?? _MockShareResource(),
           ),
           Provider.value(
             value: scriptsResource ?? _MockScriptsResource(),
@@ -87,6 +103,9 @@ extension PumpApp on WidgetTester {
           ),
           Provider.value(
             value: matchSolver ?? _MockMatchSolver(),
+          ),
+          Provider.value(
+            value: uiSoundAdaptater ?? _createUISoundAdapter(),
           ),
           Provider.value(
             value: gameScriptMachine ?? _MockGameScriptMachine(),
@@ -114,6 +133,7 @@ extension PumpAppWithRouter on WidgetTester {
     GoRouter router, {
     SettingsController? settingsController,
     GameResource? gameResource,
+    ShareResource? shareResource,
     PromptResource? promptResource,
     ScriptsResource? scriptsResource,
     LeaderboardResource? leaderboardResource,
@@ -135,6 +155,9 @@ extension PumpAppWithRouter on WidgetTester {
           ),
           Provider.value(
             value: gameResource ?? _MockGameResource(),
+          ),
+          Provider.value(
+            value: shareResource ?? _MockShareResource(),
           ),
           Provider.value(
             value: scriptsResource ?? _MockScriptsResource(),

@@ -49,7 +49,6 @@ void main() {
           .thenReturn(null);
       when(() => bloc.canPlayerPlay(any())).thenReturn(true);
       when(() => bloc.isPlayerAllowedToPlay).thenReturn(true);
-      when(bloc.hasPlayerWon).thenReturn(false);
     });
 
     void mockState(GameState state) {
@@ -176,6 +175,7 @@ void main() {
               turnAnimationsFinished: true,
             ),
           );
+          when(bloc.gameResult).thenReturn(GameResult.draw);
           await tester.pumpSubject(bloc);
 
           expect(
@@ -200,7 +200,7 @@ void main() {
               turnAnimationsFinished: true,
             ),
           );
-          when(bloc.hasPlayerWon).thenReturn(true);
+          when(bloc.gameResult).thenReturn(GameResult.win);
           await tester.pumpSubject(bloc);
 
           expect(
@@ -214,8 +214,8 @@ void main() {
         'renders the lose message when the player lost',
         (tester) async {
           defaultMockState();
+          when(bloc.gameResult).thenReturn(GameResult.lose);
 
-          when(bloc.hasPlayerWon).thenReturn(false);
           await tester.pumpSubject(bloc);
 
           expect(
@@ -265,6 +265,54 @@ void main() {
           );
         },
       );
+      testWidgets(
+        'navigates to inspector page when card is tapped',
+        (tester) async {
+          final goRouter = MockGoRouter();
+          when(
+            () => goRouter.pushNamed(
+              'card_inspector',
+              extra: any(named: 'extra'),
+            ),
+          ).thenAnswer((_) async {
+            return;
+          });
+          when(
+            () => bloc.isWinningCard(any(), isPlayer: any(named: 'isPlayer')),
+          ).thenReturn(CardOverlayType.win);
+          when(() => bloc.isHost).thenReturn(false);
+          mockState(
+            baseState.copyWith(
+              matchState: MatchState(
+                id: '',
+                matchId: '',
+                guestPlayedCards: const [
+                  'opponent_card_2',
+                  'opponent_card_3',
+                  'opponent_card'
+                ],
+                hostPlayedCards: const [
+                  'player_card_2',
+                  'player_card',
+                  'player_card_3',
+                ],
+                result: MatchResult.guest,
+              ),
+              turnAnimationsFinished: true,
+            ),
+          );
+          await tester.pumpSubject(bloc, goRouter: goRouter);
+          await tester.tap(find.byType(GameCard).first);
+          await tester.pumpAndSettle();
+
+          verify(
+            () => goRouter.pushNamed(
+              'card_inspector',
+              extra: any(named: 'extra'),
+            ),
+          ).called(1);
+        },
+      );
 
       testWidgets('renders the game summary in landscape', (tester) async {
         tester.setLandscapeDisplaySize();
@@ -292,7 +340,6 @@ void main() {
           final goRouter = MockGoRouter();
 
           defaultMockState();
-          when(bloc.hasPlayerWon).thenReturn(true);
           await tester.pumpSubject(
             bloc,
             goRouter: goRouter,
@@ -311,7 +358,6 @@ void main() {
           final goRouter = MockGoRouter();
 
           defaultMockState();
-          when(bloc.hasPlayerWon).thenReturn(true);
           await tester.pumpSubject(
             bloc,
             goRouter: goRouter,
@@ -336,7 +382,6 @@ void main() {
           final goRouter = MockGoRouter();
 
           defaultMockState();
-          when(bloc.hasPlayerWon).thenReturn(true);
           await tester.pumpSubject(
             bloc,
             goRouter: goRouter,
