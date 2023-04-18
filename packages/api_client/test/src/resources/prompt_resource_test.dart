@@ -26,7 +26,12 @@ void main() {
 
     group('getPromptTerms', () {
       setUp(() {
-        when(() => apiClient.get(any())).thenAnswer((_) async => response);
+        when(
+          () => apiClient.get(
+            any(),
+            queryParameters: any(named: 'queryParameters'),
+          ),
+        ).thenAnswer((_) async => response);
       });
 
       test('gets correct list', () async {
