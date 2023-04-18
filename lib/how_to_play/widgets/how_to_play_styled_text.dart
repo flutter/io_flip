@@ -22,7 +22,7 @@ class HowToPlayStyledText extends StatelessWidget {
 
   TextStyle textStyle(BuildContext context) {
     return isScreenSmall(context)
-        ? TopDashTextStyles.headlineMobileH4Light
+        ? TopDashTextStyles.mobileH4Light
         : TopDashTextStyles.headlineH4Light;
   }
 
@@ -30,7 +30,7 @@ class HowToPlayStyledText extends StatelessWidget {
     return {
       'bold': StyledTextTag(
         style: isScreenSmall(context)
-            ? TopDashTextStyles.headlineMobileH4
+            ? TopDashTextStyles.mobileH4
             : TopDashTextStyles.headlineH4,
       ),
       'yellow': StyledTextTag(

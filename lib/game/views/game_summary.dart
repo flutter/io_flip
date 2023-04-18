@@ -108,11 +108,11 @@ class _ResultView extends StatelessWidget {
       children: [
         Text(
           title,
-          style: TopDashTextStyles.headlineMobileH1,
+          style: TopDashTextStyles.mobileH1,
         ),
         Text(
           context.l10n.gameSummaryStreak(state.playerScoreCard.currentStreak),
-          style: TopDashTextStyles.headlineMobileH6.copyWith(color: color),
+          style: TopDashTextStyles.mobileH6.copyWith(color: color),
         ),
       ],
     );

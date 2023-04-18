@@ -52,8 +52,11 @@ abstract class TopDashColors {
   /// seedWhite
   static const Color seedWhite = Color(0xffffffff);
 
+  /// seedPatternTint
+  static const Color seedPatternTint = Color(0x08e8eaed);
+
   /// seedScrim
-  static const Color seedScrim = Color(0x3d000000);
+  static const Color seedScrim = Color(0xbf000000);
 
   /// seedPaletteLightBlue0
   static const Color seedPaletteLightBlue0 = Color(0xff000000);
