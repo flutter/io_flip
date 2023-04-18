@@ -334,6 +334,7 @@ class _OpponentCard extends StatelessWidget {
     final allOpponentPlayedCards =
         rounds.map((turn) => turn.opponentCardId).toList();
 
+
     return AnimatedBuilder(
       animation: animation,
       builder: (context, _) {
