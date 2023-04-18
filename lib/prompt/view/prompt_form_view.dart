@@ -39,6 +39,7 @@ class _PromptFormViewState extends State<PromptFormView> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -80,11 +81,10 @@ class _PromptFormViewState extends State<PromptFormView> {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        // TODO(jaime): change to dark color when background changes
-                        TopDashColors.seedWhite,
-                        TopDashColors.seedWhite.withOpacity(0),
-                        TopDashColors.seedWhite.withOpacity(0),
-                        TopDashColors.seedWhite,
+                        backgroundColor,
+                        backgroundColor.withOpacity(0),
+                        backgroundColor.withOpacity(0),
+                        backgroundColor,
                       ],
                       stops: const [0, .05, .95, 1],
                     ),
