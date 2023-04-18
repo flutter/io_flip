@@ -20,7 +20,7 @@ class DataLoader {
   /// Loads the data from the CSV file into the database
   /// [onProgress] is called everytime there is progress,
   /// it takes in the current inserted and the total to insert.
-  Future<void> loadPrompties(void Function(int, int) onProgress) async {
+  Future<void> loadPromptTerms(void Function(int, int) onProgress) async {
     final prompts = <PromptTerm>[];
 
     final lines = await _csv.readAsLines();

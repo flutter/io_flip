@@ -45,7 +45,7 @@ void main() {
       );
     });
 
-    group('loadPrompties', () {
+    group('loadPromptTerms', () {
       test('load prompties correctly', () async {
         when(() => csv.readAsLines()).thenAnswer(
           (_) async => [
@@ -55,7 +55,7 @@ void main() {
           ],
         );
 
-        await dataLoader.loadPrompties((_, __) {});
+        await dataLoader.loadPromptTerms((_, __) {});
 
         verify(
           () => promptRepository.createPromptTerm(
@@ -125,7 +125,7 @@ void main() {
         );
 
         final progress = <List<int>>[];
-        await dataLoader.loadPrompties((current, total) {
+        await dataLoader.loadPromptTerms((current, total) {
           progress.add([current, total]);
         });
 

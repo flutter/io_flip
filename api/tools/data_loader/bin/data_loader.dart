@@ -31,7 +31,7 @@ void main(List<String> args) async {
         csv: csvFile,
       );
 
-      await dataLoader.loadPrompties((current, total) {
+      await dataLoader.loadPromptTerms((current, total) {
         print('Progress: ($current of $total)');
       });
     } else {
