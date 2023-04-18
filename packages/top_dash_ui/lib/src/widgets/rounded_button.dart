@@ -34,6 +34,34 @@ class RoundedButton extends StatelessWidget {
           ),
         );
 
+  /// Basic [RoundedButton] with black shadow.
+  /// Contains a [image] and a [label] as children
+  RoundedButton.image(
+    Image image, {
+    String? label,
+    this.onPressed,
+    super.key,
+    this.backgroundColor = TopDashColors.seedPaletteBlue70,
+  }) : child = Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: TopDashSpacing.sm,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              image,
+              if (label != null)
+                Padding(
+                  padding: const EdgeInsets.only(left: TopDashSpacing.md),
+                  child: Text(
+                    label,
+                    style: TopDashTextStyles.buttonLGCaps,
+                  ),
+                ),
+            ],
+          ),
+        );
+
   /// Button Child
   final Widget child;
 
