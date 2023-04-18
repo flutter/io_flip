@@ -491,31 +491,6 @@ void main() {
             initialState: baseState,
           );
 
-          //whenListen(
-          //  bloc,
-          //  Stream.fromIterable([
-          //    baseState,
-          //    baseState.copyWith(
-          //      lastPlayedCardId: playerCards.first.id,
-          //      rounds: [
-          //        MatchRound(
-          //          playerCardId: playerCards.first.id,
-          //          opponentCardId: null,
-          //        )
-          //      ],
-          //    ),
-          //    baseState.copyWith(
-          //      lastPlayedCardId: opponentCards.first.id,
-          //      rounds: [
-          //        MatchRound(
-          //          playerCardId: playerCards.first.id,
-          //          opponentCardId: opponentCards.first.id,
-          //        )
-          //      ],
-          //    )
-          //  ]),
-          //  initialState: baseState,
-          //);
           await tester.pumpSubject(bloc);
 
           final playerCardFinder =
