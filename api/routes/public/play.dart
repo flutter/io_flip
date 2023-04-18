@@ -14,5 +14,5 @@ FutureOr<Response> onRequest(RequestContext context) async {
     return Response(
         statusCode: HttpStatus.internalServerError, body: e.toString());
   }
-  return Response();
+  return Response(body: await context.request.body());
 }
