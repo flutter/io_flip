@@ -28,7 +28,7 @@ class RoundedButton extends StatelessWidget {
           ),
           child: Text(
             text,
-            style: TopDashTextStyles.buttonLGCaps.copyWith(
+            style: TopDashTextStyles.buttonLG.copyWith(
               color: TopDashColors.seedBlack,
             ),
           ),
@@ -55,7 +55,7 @@ class RoundedButton extends StatelessWidget {
                   padding: const EdgeInsets.only(left: TopDashSpacing.md),
                   child: Text(
                     label,
-                    style: TopDashTextStyles.buttonLGCaps,
+                    style: TopDashTextStyles.buttonLG,
                   ),
                 ),
             ],
@@ -72,7 +72,7 @@ class RoundedButton extends StatelessWidget {
   final Color backgroundColor;
 
   void _onPressed(BuildContext context) {
-    context.read<UISoundAdaptater>().playButtonSound();
+    context.read<UISoundAdapter>().playButtonSound();
     onPressed?.call();
   }
 

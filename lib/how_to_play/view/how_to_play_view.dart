@@ -21,10 +21,7 @@ class HowToPlayView extends StatelessWidget {
     return Container(
       constraints: const BoxConstraints.expand(width: 400, height: 584),
       padding: const EdgeInsets.all(TopDashSpacing.lg),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        color: TopDashColors.seedWhite,
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
       child: Stack(
         children: [
           Column(
@@ -88,6 +85,7 @@ class HowToPlayView extends StatelessWidget {
           Align(
             alignment: Alignment.topRight,
             child: CloseButton(
+              color: TopDashColors.seedWhite,
               onPressed: () => maybePop(context),
             ),
           ),
@@ -155,10 +153,7 @@ class HowToPlayIntro extends StatelessWidget {
     return Column(
       children: [
         const SizedBox(height: TopDashSpacing.xxlg),
-        Image.asset(
-          Assets.images.main.path,
-          width: 268,
-        ),
+        const IoFlipLogo(width: 282),
         const SizedBox(height: TopDashSpacing.xxlg),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.md),

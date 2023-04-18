@@ -43,11 +43,11 @@ class _MockAudioController extends Mock implements AudioController {}
 
 class _MockUser extends Mock implements User {}
 
-class _MockUISoundAdapter extends Mock implements UISoundAdaptater {}
+class _MockUISoundAdapter extends Mock implements UISoundAdapter {}
 
 class _MockGoRouter extends Mock implements GoRouter {}
 
-UISoundAdaptater _createUISoundAdapter() {
+UISoundAdapter _createUISoundAdapter() {
   final adapter = _MockUISoundAdapter();
   when(() => adapter.playButtonSound).thenReturn(() {});
   return adapter;
@@ -67,7 +67,7 @@ extension PumpApp on WidgetTester {
     ConnectionRepository? connectionRepository,
     MatchSolver? matchSolver,
     GameScriptMachine? gameScriptMachine,
-    UISoundAdaptater? uiSoundAdaptater,
+    UISoundAdapter? uiSoundAdaptater,
     User? user,
     GoRouter? router,
   }) {

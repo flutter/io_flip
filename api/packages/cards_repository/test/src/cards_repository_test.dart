@@ -4,12 +4,11 @@ import 'dart:math';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:db_client/db_client.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:game_script_machine/game_script_machine.dart';
 import 'package:image_model_repository/image_model_repository.dart';
 import 'package:language_model_repository/language_model_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
-
-class _MockCardRng extends Mock implements CardRng {}
 
 class _MockImageModelRepository extends Mock implements ImageModelRepository {}
 
@@ -20,13 +19,16 @@ class _MockRandom extends Mock implements Random {}
 
 class _MockDbClient extends Mock implements DbClient {}
 
+class _MockGameScriptMachine extends Mock implements GameScriptMachine {}
+
 void main() {
   group('CardsRepository', () {
-    late CardRng cardRng;
     late ImageModelRepository imageModelRepository;
     late LanguageModelRepository languageModelRepository;
     late CardsRepository cardsRepository;
     late DbClient dbClient;
+    late GameScriptMachine gameScriptMachine;
+    late Random rng;
 
     setUpAll(() {
       registerFallbackValue(
@@ -38,20 +40,16 @@ void main() {
 
     setUp(() {
       dbClient = _MockDbClient();
-      cardRng = _MockCardRng();
-      when(cardRng.rollRarity).thenReturn(false);
+      rng = _MockRandom();
+      when(() => rng.nextInt(any())).thenReturn(0);
+
+      gameScriptMachine = _MockGameScriptMachine();
+      when(gameScriptMachine.rollCardRarity).thenReturn(false);
       when(
-        () => cardRng.rollAttribute(
-          base: 10,
-          modifier: any(named: 'modifier'),
+        () => gameScriptMachine.rollCardPower(
+          isRare: any(named: 'isRare'),
         ),
       ).thenReturn(10);
-      when(
-        () => cardRng.rollAttribute(
-          base: Suit.values.length - 1,
-          modifier: any(named: 'modifier'),
-        ),
-      ).thenReturn(Suit.air.index);
       imageModelRepository = _MockImageModelRepository();
       languageModelRepository = _MockLanguageModelRepository();
 
@@ -59,7 +57,8 @@ void main() {
         imageModelRepository: imageModelRepository,
         languageModelRepository: languageModelRepository,
         dbClient: dbClient,
-        rng: cardRng,
+        gameScriptMachine: gameScriptMachine,
+        rng: rng,
       );
     });
 
@@ -69,6 +68,7 @@ void main() {
           imageModelRepository: const ImageModelRepository(),
           languageModelRepository: const LanguageModelRepository(),
           dbClient: dbClient,
+          gameScriptMachine: gameScriptMachine,
         ),
         isNotNull,
       );
@@ -99,7 +99,7 @@ void main() {
             image: 'https://image.png',
             rarity: false,
             power: 10,
-            suit: Suit.air,
+            suit: Suit.fire,
           ),
         );
       });
@@ -114,13 +114,13 @@ void main() {
             'image': 'https://image.png',
             'rarity': false,
             'power': 10,
-            'suit': 'air',
+            'suit': 'fire',
           }),
         ).called(1);
       });
 
       test('generates a rare card', () async {
-        when(cardRng.rollRarity).thenReturn(true);
+        when(gameScriptMachine.rollCardRarity).thenReturn(true);
         final card = await cardsRepository.generateCard();
 
         expect(
@@ -132,12 +132,32 @@ void main() {
             image: 'https://image.png',
             rarity: true,
             power: 10,
-            suit: Suit.air,
+            suit: Suit.fire,
           ),
         );
 
-        verify(() => cardRng.rollAttribute(base: 10, modifier: 10)).called(1);
+        verify(() => gameScriptMachine.rollCardPower(isRare: true)).called(1);
       });
+
+      for (var i = 0; i < Suit.values.length; i++) {
+        test('generates a card from the ${Suit.values[i]} element', () async {
+          when(() => rng.nextInt(Suit.values.length)).thenReturn(i);
+          final card = await cardsRepository.generateCard();
+
+          expect(
+            card,
+            Card(
+              id: 'abc',
+              name: 'Super Bird',
+              description: 'Super Bird Is Ready!',
+              image: 'https://image.png',
+              rarity: false,
+              power: 10,
+              suit: Suit.values[i],
+            ),
+          );
+        });
+      }
     });
 
     group('createDeck', () {
@@ -234,7 +254,7 @@ void main() {
         image: 'image',
         power: 10,
         rarity: true,
-        suit: Suit.air,
+        suit: Suit.fire,
       );
 
       test('returns the card', () async {
@@ -247,7 +267,7 @@ void main() {
               'image': 'image',
               'power': 10,
               'rarity': true,
-              'suit': 'air',
+              'suit': 'fire',
             },
           ),
         );
@@ -275,7 +295,7 @@ void main() {
           image: 'https://image.png',
           rarity: false,
           power: 10,
-          suit: Suit.air,
+          suit: Suit.fire,
           shareImage: 'https://share.png',
         );
 
@@ -296,7 +316,7 @@ void main() {
                 'image': 'https://image.png',
                 'rarity': false,
                 'power': 10,
-                'suit': 'air',
+                'suit': 'fire',
                 'shareImage': 'https://share.png',
               },
             ),
@@ -345,43 +365,6 @@ void main() {
           ),
         ).called(1);
       });
-    });
-  });
-
-  group('CardRng', () {
-    late Random rng;
-    late CardRng cardRng;
-
-    setUp(() {
-      rng = _MockRandom();
-      cardRng = CardRng(rng: rng);
-    });
-
-    test('can be instantiated', () {
-      expect(CardRng(), isNotNull);
-    });
-
-    test('rollRarity returns true when less than the chance threshold', () {
-      when(rng.nextDouble).thenReturn(CardRng.rareChance - .1);
-      expect(cardRng.rollRarity(), isTrue);
-    });
-
-    test('rollRarity returns false when greater than the chance threshold', () {
-      when(rng.nextDouble).thenReturn(CardRng.rareChance + .1);
-      expect(cardRng.rollRarity(), isFalse);
-    });
-
-    test('rollAttribute returns a value between the base value', () {
-      when(rng.nextDouble).thenReturn(.3);
-      expect(cardRng.rollAttribute(base: 10), equals(3));
-    });
-
-    test('rollAttribute adds the given modifier', () {
-      when(rng.nextDouble).thenReturn(.3);
-      expect(
-        cardRng.rollAttribute(base: 10, modifier: 3),
-        equals(6),
-      );
     });
   });
 }

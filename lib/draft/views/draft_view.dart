@@ -298,7 +298,7 @@ class _BottomBar extends StatelessWidget {
                 children: [
                   Text(
                     l10n.deckBuildingTitle,
-                    style: TopDashTextStyles.headlineMobileH6Light,
+                    style: TopDashTextStyles.mobileH6Light,
                   ),
                   const SizedBox(height: TopDashSpacing.xs),
                   Text(

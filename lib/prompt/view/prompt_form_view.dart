@@ -45,11 +45,11 @@ class _PromptFormViewState extends State<PromptFormView> {
           child: TextFormField(
             onChanged: (entry) => setState(() => _text = entry),
             onFieldSubmitted: _onSubmit,
-            style: TopDashTextStyles.headlineMobileH1,
+            style: TopDashTextStyles.mobileH1,
             textAlign: TextAlign.center,
             decoration: InputDecoration(
               hintText: widget.hint,
-              hintStyle: TopDashTextStyles.headlineMobileH1
+              hintStyle: TopDashTextStyles.mobileH1
                   .copyWith(color: TopDashColors.seedGrey70),
             ),
           ),
