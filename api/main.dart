@@ -71,7 +71,7 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
     dbClient: dbClient,
     matchSolver: MatchSolver(gameScriptMachine: gameScriptMachine),
     gcloudPubsub: pubsub,
-    isRunningLocally: _useEmulator,
+    isRunningLocally: !_useEmulator,
   );
 
   if (_useEmulator) {

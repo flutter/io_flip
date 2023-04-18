@@ -23,7 +23,6 @@ class LeaderboardBloc extends Bloc<LeaderboardEvent, LeaderboardState> {
       emit(state.copyWith(status: LeaderboardStateStatus.loading));
 
       final leaderboard = await _leaderboardResource.getLeaderboardResults();
-
       emit(
         state.copyWith(
           leaderboard: leaderboard,
