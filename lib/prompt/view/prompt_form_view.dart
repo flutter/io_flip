@@ -20,6 +20,8 @@ class PromptFormView extends StatefulWidget {
   final int initialItem;
   final bool isLastOfFlow;
 
+  static const itemExtent = 48.0;
+
   @override
   State<PromptFormView> createState() => _PromptFormViewState();
 }
@@ -28,7 +30,6 @@ class _PromptFormViewState extends State<PromptFormView> {
   late int selectedIndex;
 
   static const _gap = SizedBox(height: TopDashSpacing.xxxlg);
-  static const _itemExtent = 48.0;
 
   @override
   void initState() {
@@ -59,7 +60,8 @@ class _PromptFormViewState extends State<PromptFormView> {
               Center(
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(_itemExtent),
+                    borderRadius:
+                        BorderRadius.circular(PromptFormView.itemExtent),
                     color: TopDashColors.seedBlue,
                   ),
                   padding: const EdgeInsets.symmetric(
@@ -100,9 +102,10 @@ class _PromptFormViewState extends State<PromptFormView> {
                         PointerDeviceKind.mouse,
                       },
                     ),
-                    itemExtent: _itemExtent,
-                    physics:
-                        const SnapItemScrollPhysics(itemExtent: _itemExtent),
+                    itemExtent: PromptFormView.itemExtent,
+                    physics: const SnapItemScrollPhysics(
+                      itemExtent: PromptFormView.itemExtent,
+                    ),
                     onSelectedItemChanged: (index) {
                       setState(() => selectedIndex = index);
                     },

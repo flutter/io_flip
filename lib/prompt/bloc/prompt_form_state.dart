@@ -6,9 +6,9 @@ class PromptFormState extends Equatable {
   const PromptFormState({
     required this.status,
     required this.prompts,
-    required this.characterClasses,
-    required this.powers,
-    required this.secondaryPowers,
+    this.characterClasses = const [],
+    this.powers = const [],
+    this.secondaryPowers = const [],
   });
 
   const PromptFormState.initial()

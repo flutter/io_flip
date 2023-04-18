@@ -30,12 +30,7 @@ class SnapItemScrollPhysics extends ScrollPhysics {
     Tolerance tolerance,
     double velocity,
   ) {
-    var page = _getPage(position);
-    if (velocity < -tolerance.velocity) {
-      page -= 0.5;
-    } else if (velocity > tolerance.velocity) {
-      page += 0.5;
-    }
+    final page = _getPage(position);
     return _getPixels(position, page.roundToDouble());
   }
 

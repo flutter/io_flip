@@ -60,6 +60,10 @@ class _MockUser extends Mock implements User {}
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  setUpAll(() {
+    registerFallbackValue(PromptTermType.characterClass);
+  });
+
   group('App', () {
     late ApiClient apiClient;
 
