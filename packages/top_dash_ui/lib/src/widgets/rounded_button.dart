@@ -72,7 +72,7 @@ class RoundedButton extends StatelessWidget {
   final Color backgroundColor;
 
   void _onPressed(BuildContext context) {
-    context.read<UISoundAdaptater>().playButtonSound();
+    context.read<UISoundAdapter>().playButtonSound();
     onPressed?.call();
   }
 

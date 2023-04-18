@@ -106,10 +106,10 @@ class _AppState extends State<App> {
         ],
         child: Builder(
           builder: (context) {
-            return Provider<UISoundAdaptater>(
+            return Provider<UISoundAdapter>(
               create: (context) {
                 final audio = context.read<AudioController>();
-                return UISoundAdaptater(
+                return UISoundAdapter(
                   playButtonSound: () {
                     audio.playSfx(Assets.sfx.click);
                   },
