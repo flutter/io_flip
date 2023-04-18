@@ -133,21 +133,21 @@ class MatchRepository {
     required String deckId,
     required String userId,
   }) async {
-    if (_isRunningLocally) {
+    /* if (_isRunningLocally) {
       await playCard(
         matchId: matchId,
         cardId: cardId,
         deckId: deckId,
         userId: userId,
       );
-    } else {
-      await _gcloudPubsub.pushCardToQueue(
-        matchId: matchId,
-        cardId: cardId,
-        deckId: deckId,
-        userId: userId,
-      );
-    }
+    } else {*/
+    await _gcloudPubsub.pushCardToQueue(
+      matchId: matchId,
+      cardId: cardId,
+      deckId: deckId,
+      userId: userId,
+    );
+    //}
   }
 
   /// Play a card on the given match.
