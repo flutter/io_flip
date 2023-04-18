@@ -170,7 +170,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
   List<AnimatedCardController> createAnimatedCardControllers({
     required List<AnimationController> controllers,
   }) {
-    return controllers.mapIndexed((i, e) {
+    return controllers.map((e) {
       final cardController = AnimatedCardController();
       e.addStatusListener((status) {
         if (status == AnimationStatus.completed ||
