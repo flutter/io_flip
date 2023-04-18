@@ -25,13 +25,45 @@ dart pub get
 
 ## Run the tool
 
-This tool is used to insert the prompt terms in the firestore database of the project.
+This tool is used to insert data in firebase,
+
+It have two commands, one to load the prompt terms in the firestore database of the project, and one to load placeholder images in firestore cloud storage for those prompts.
+
+Download the prompts CSV which must have the following format:
+
+```
+'Character,Class,Power,Location,'
+'Dash,Alien,Banjos,City,'
+...
+```
+
+### Loading prompts
+
+Run:
+
+```
+dart bin/data_loader.dart prompts projectId csv_file_location.csv
+```
 
 It uses the gcloud default admin app for auth, so you must have it properly configured
 in your machine before running it.
 
-Then, download the CSV with the prompts and run:
+### Loading images placeholder
+
+The images placeholder command will create the expected file structure in a `destination_folder`
+which should then be uploaded to firebase cloud storage.
+
+In order to do so, run:
 
 ```
-dart bin/data_loader.dart projectId csv_file_location.csv
+dart bin/data_loader.dart images destination_folder csv_file_location.csv placeholder_images_folder
 ```
+
+Then, inside the `destination_folder`, run: 
+
+```
+gcloud storage cp --gzip-local-all --recursive . gs://<bucket-id>
+```
+
+Similar to the prompts command, you need to have the gcloud cli properly configured
+and authenticated.

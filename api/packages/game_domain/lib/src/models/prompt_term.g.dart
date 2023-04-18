@@ -23,6 +23,5 @@ const _$PromptTermTypeEnumMap = {
   PromptTermType.character: 'character',
   PromptTermType.characterClass: 'characterClass',
   PromptTermType.power: 'power',
-  PromptTermType.secondaryPower: 'secondaryPower',
   PromptTermType.location: 'location',
 };

@@ -83,6 +83,29 @@ class FirebaseCloudStorage {
     return 'https://firebasestorage.googleapis.com/v0/b/$bucketName/o/$urlFilename?alt=media';
   }
 
+  /// Copy a file from one location to another
+  Future<void> copyFile(String sourceFile, String destinationFile) async {
+    final sourceObject = Uri.encodeComponent(sourceFile);
+    final destinationObject = Uri.encodeComponent(destinationFile);
+
+    final url =
+        'https://storage.googleapis.com/storage/v1/b/$bucketName/o/$sourceObject/copyTo/b/$bucketName/o/$destinationObject';
+
+    final headers = await _authenticate(url);
+
+    final response = await _post(
+      Uri.parse(url),
+      headers: headers,
+    );
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw FirebaseCloudStorageUploadFailure(
+        response.body,
+        StackTrace.current,
+      );
+    }
+  }
+
   Future<Map<String, String>> _authenticate(String uri) async {
     final delegate = await _authenticatorBuilder([
       'https://www.googleapis.com/auth/storage',
