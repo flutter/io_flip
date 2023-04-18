@@ -163,6 +163,26 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     end: clashCardOffsets.first & clashCardSize,
   );
 
+  late final playerAnimatedCardControllers = createAnimatedCardControllers(
+    controllers: playerCardControllers,
+  );
+
+  List<AnimatedCardController> createAnimatedCardControllers({
+    required List<AnimationController> controllers,
+  }) {
+    return controllers.mapIndexed((i, e) {
+      final cardController = AnimatedCardController();
+      e.addStatusListener((status) {
+        if (status == AnimationStatus.completed ||
+            status == AnimationStatus.dismissed) {
+          cardController.run(bigFlipAnimation);
+        }
+      });
+
+      return cardController;
+    }).toList();
+  }
+
   List<Animation<Rect?>> createAnimations({
     required List<AnimationController> controllers,
     required Rect Function(int) begin,
@@ -261,6 +281,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
                   return _PlayerCard(
                     card: card,
                     animation: playerCardAnimations[i],
+                    animatedCardController: playerAnimatedCardControllers[i],
                   );
                 },
               ),
@@ -274,9 +295,18 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    final controllers = [...playerCardControllers, ...opponentCardControllers];
+    final controllers = [
+      ...playerCardControllers,
+      ...opponentCardControllers,
+      ...playerAnimatedCardControllers,
+    ];
     for (final element in controllers) {
-      element.dispose();
+      if (element is AnimationController) {
+        element.dispose();
+      }
+      if (element is AnimatedCardController) {
+        element.dispose();
+      }
     }
 
     super.dispose();
@@ -343,10 +373,12 @@ class _PlayerCard extends StatelessWidget {
   const _PlayerCard({
     required this.card,
     required this.animation,
+    required this.animatedCardController,
   });
 
   final game.Card card;
   final Animation<Rect?> animation;
+  final AnimatedCardController animatedCardController;
 
   @override
   Widget build(BuildContext context) {
@@ -367,6 +399,7 @@ class _PlayerCard extends StatelessWidget {
         return Positioned.fromRect(
           rect: rect,
           child: InkWell(
+            key: Key('player_card_${card.id}'),
             onTap: () {
               final bloc = context.read<GameBloc>();
               final state = bloc.state as MatchLoadedState;
@@ -376,16 +409,22 @@ class _PlayerCard extends StatelessWidget {
                 context.read<GameBloc>().add(PlayerPlayed(card.id));
               }
             },
-            child: GameCard(
-              key: Key('player_card_${card.id}'),
-              image: card.image,
-              name: card.name,
-              power: card.power,
-              suitName: card.suit.name,
-              isRare: card.rarity,
-              width: rect.width,
-              height: rect.height,
-              overlay: overlay,
+            child: AnimatedCard(
+              controller: animatedCardController,
+              front: GameCard(
+                image: card.image,
+                name: card.name,
+                power: card.power,
+                suitName: card.suit.name,
+                isRare: card.rarity,
+                width: rect.width,
+                height: rect.height,
+                overlay: overlay,
+              ),
+              back: FlippedGameCard(
+                width: TopDashCardSizes.xs.width,
+                height: TopDashCardSizes.xs.height,
+              ),
             ),
           ),
         );

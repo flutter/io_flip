@@ -477,6 +477,7 @@ void main() {
         verify(() => bloc.add(CardOverlayRevealed())).called(1);
       });
 
+      // TODO(willhlas): figure out failing test.
       testWidgets(
         'completes and goes back when both players play a card',
         (tester) async {
