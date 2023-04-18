@@ -18,6 +18,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/back.png
   AssetGenImage get back => const AssetGenImage('assets/images/back.png');
 
+  /// File path: assets/images/card_master.png
+  AssetGenImage get cardMaster =>
+      const AssetGenImage('assets/images/card_master.png');
+
   /// File path: assets/images/main.png
   AssetGenImage get main => const AssetGenImage('assets/images/main.png');
 
@@ -29,7 +33,8 @@ class $AssetsImagesGen {
       const AssetGenImage('assets/images/settings.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [add, back, main, restart, settings];
+  List<AssetGenImage> get values =>
+      [add, back, cardMaster, main, restart, settings];
 }
 
 class $AssetsMusicGen {

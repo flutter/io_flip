@@ -6,8 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:provider/provider.dart';
 import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/prompt/bloc/prompt_form_bloc.dart';
-import 'package:top_dash/prompt/view/prompt_form_view.dart';
+import 'package:top_dash/prompt/prompt.dart';
 
 class PromptForm extends StatelessWidget {
   PromptForm({
@@ -30,13 +29,17 @@ class PromptForm extends StatelessWidget {
         },
         onGeneratePages: (data, pages) {
           return [
-            MaterialPage(
-              child: PromptFormView(
-                title: context.l10n.characterClassPromptPageTitle,
-                itemsList: bloc.state.characterClasses,
-                initialItem: _rng.nextInt(bloc.state.characterClasses.length),
-              ),
+            const MaterialPage(
+              child: PromptFormIntroView(),
             ),
+            if (data.isIntroSeen ?? false)
+              MaterialPage(
+                child: PromptFormView(
+                  title: context.l10n.characterClassPromptPageTitle,
+                  itemsList: bloc.state.characterClasses,
+                  initialItem: _rng.nextInt(bloc.state.characterClasses.length),
+                ),
+              ),
             if (data.characterClass != null)
               MaterialPage(
                 child: PromptFormView(

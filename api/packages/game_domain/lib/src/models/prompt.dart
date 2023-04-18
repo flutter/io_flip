@@ -9,28 +9,47 @@ part 'prompt.g.dart';
 @JsonSerializable(ignoreUnannotated: true, explicitToJson: true)
 class Prompt extends Equatable {
   /// {@macro prompt}
-  const Prompt({this.characterClass, this.power, this.secondaryPower});
+  const Prompt({
+    this.isIntroSeen,
+    this.characterClass,
+    this.power,
+    this.secondaryPower,
+  });
 
   /// {@macro prompt}
   factory Prompt.fromJson(Map<String, dynamic> json) => _$PromptFromJson(json);
 
-  /// character.
+  /// Whether the prompt building intro has been seen.
+  final bool? isIntroSeen;
+
+  /// Character class.
   @JsonKey()
   final String? characterClass;
 
-  /// power
+  /// Primary power.
   @JsonKey()
   final String? power;
 
-  /// environment
+  /// Secondary power.
   @JsonKey()
   final String? secondaryPower;
+
+  /// Returns a copy of the instance setting the [isIntroSeen] to true.
+  Prompt setIntroSeen() {
+    return Prompt(
+      isIntroSeen: true,
+      characterClass: characterClass,
+      power: power,
+      secondaryPower: secondaryPower,
+    );
+  }
 
   /// Returns a copy of the instance and
   /// sets the new [attribute] to the first null in this order:
   /// [characterClass], [power], [secondaryPower]
   Prompt copyWithNewAttribute(String attribute) {
     return Prompt(
+      isIntroSeen: isIntroSeen,
       characterClass: characterClass ?? attribute,
       power: characterClass != null ? power ?? attribute : null,
       secondaryPower: power != null ? secondaryPower ?? attribute : null,
@@ -41,5 +60,10 @@ class Prompt extends Equatable {
   Map<String, dynamic> toJson() => _$PromptToJson(this);
 
   @override
-  List<Object?> get props => [characterClass, power, secondaryPower];
+  List<Object?> get props => [
+        isIntroSeen,
+        characterClass,
+        power,
+        secondaryPower,
+      ];
 }
