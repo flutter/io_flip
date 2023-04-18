@@ -2,40 +2,9 @@ import 'dart:math';
 
 import 'package:db_client/db_client.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:game_script_machine/game_script_machine.dart';
 import 'package:image_model_repository/image_model_repository.dart';
 import 'package:language_model_repository/language_model_repository.dart';
-import 'package:meta/meta.dart';
-
-/// {@template card_rng}
-/// Generate random attributes to be used in the card generation.
-/// {@endtemplate}
-class CardRng {
-  /// {@macro card_rng}
-  CardRng({
-    Random? rng,
-  }) {
-    _rng = rng ?? Random();
-  }
-
-  /// Then chance of the rare card to be generated.
-  @visibleForTesting
-  static const rareChance = .2;
-
-  late final Random _rng;
-
-  /// Rolls the chances to generate a rare card.
-  bool rollRarity() {
-    return _rng.nextDouble() < rareChance;
-  }
-
-  /// Rolls the value for an attribute.
-  int rollAttribute({
-    required int base,
-    int modifier = 0,
-  }) {
-    return (_rng.nextDouble() * base + modifier).round();
-  }
-}
 
 /// {@template cards_repository}
 /// Access to Cards Datasource.
@@ -46,21 +15,23 @@ class CardsRepository {
     required ImageModelRepository imageModelRepository,
     required LanguageModelRepository languageModelRepository,
     required DbClient dbClient,
-    CardRng? rng,
+    required GameScriptMachine gameScriptMachine,
+    Random? rng,
   })  : _dbClient = dbClient,
-        _rng = rng ?? CardRng(),
         _imageModelRepository = imageModelRepository,
-        _languageModelRepository = languageModelRepository;
+        _languageModelRepository = languageModelRepository,
+        _gameScriptMachine = gameScriptMachine,
+        _rng = rng ?? Random();
 
   final DbClient _dbClient;
-  final CardRng _rng;
+  final Random _rng;
+  final GameScriptMachine _gameScriptMachine;
   final ImageModelRepository _imageModelRepository;
   final LanguageModelRepository _languageModelRepository;
 
   /// Generates a random card.
   Future<Card> generateCard() async {
-    final isRare = _rng.rollRarity();
-    final modifier = isRare ? _rng.rollAttribute(base: 10) : 0;
+    final isRare = _gameScriptMachine.rollCardRarity();
 
     final values = await Future.wait([
       _languageModelRepository.generateCardName(),
@@ -72,8 +43,8 @@ class CardsRepository {
     final description = values[1];
     final image = values.last;
     final rarity = isRare;
-    final power = _rng.rollAttribute(base: 10, modifier: modifier);
-    final suit = Suit.values[_rng.rollAttribute(base: Suit.values.length - 1)];
+    final power = _gameScriptMachine.rollCardPower(isRare: isRare);
+    final suit = Suit.values[_rng.nextInt(Suit.values.length)];
 
     final id = await _dbClient.add('cards', {
       'name': name,

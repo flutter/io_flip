@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
 
 class HowToPlayDialog extends StatelessWidget {
   const HowToPlayDialog({super.key});
@@ -27,6 +28,7 @@ class HowToPlayDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      insetPadding: const EdgeInsets.all(TopDashSpacing.sm),
       child: BlocProvider(
         create: (context) => HowToPlayBloc(),
         child: const HowToPlayView(),

@@ -1,7 +1,12 @@
 // ignore_for_file: prefer_const_constructors
+import 'dart:math';
+
 import 'package:game_domain/game_domain.dart';
 import 'package:game_script_machine/game_script_machine.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
+
+class _MockRandom extends Mock implements Random {}
 
 Card _makeCard(Suit suit, [int power = 0]) => Card(
       id: 'id',
@@ -112,6 +117,51 @@ void main() {
           }
         },
       );
+    });
+
+    group('rollCardRarity', () {
+      late GameScriptMachine machine;
+      late Random rng;
+
+      setUp(() {
+        rng = _MockRandom();
+        machine = GameScriptMachine.initialize(defaultGameLogic, rng: rng);
+      });
+
+      test('returns true if the double value is bigger than .8', () {
+        when(() => rng.nextDouble()).thenReturn(.9);
+        expect(machine.rollCardRarity(), isTrue);
+      });
+
+      test('returns false if the double value is lessen than .8', () {
+        when(() => rng.nextDouble()).thenReturn(.4);
+        expect(machine.rollCardRarity(), isFalse);
+      });
+    });
+
+    group('rollCardPower', () {
+      late GameScriptMachine machine;
+      late Random rng;
+
+      setUp(() {
+        rng = _MockRandom();
+        machine = GameScriptMachine.initialize(defaultGameLogic, rng: rng);
+      });
+
+      test('returns a valid number if card is not rare', () {
+        when(() => rng.nextDouble()).thenReturn(.8);
+        expect(machine.rollCardPower(isRare: false), equals(80));
+      });
+
+      test('returns a valid number if card is not rare and too weak', () {
+        when(() => rng.nextDouble()).thenReturn(.05);
+        expect(machine.rollCardPower(isRare: false), equals(10));
+      });
+
+      test('returns a valid number if card is rare', () {
+        when(() => rng.nextDouble()).thenReturn(.8);
+        expect(machine.rollCardPower(isRare: true), equals(180));
+      });
     });
   });
 }

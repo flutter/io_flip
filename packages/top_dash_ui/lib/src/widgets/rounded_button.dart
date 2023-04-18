@@ -12,7 +12,7 @@ class RoundedButton extends StatelessWidget {
     Icon icon, {
     this.onPressed,
     super.key,
-    this.backgroundColor = TopDashColors.seedPaletteBlue70,
+    this.backgroundColor = TopDashColors.seedWhite,
   }) : child = icon;
 
   /// Basic [RoundedButton] with black shadow.
@@ -28,7 +28,37 @@ class RoundedButton extends StatelessWidget {
           ),
           child: Text(
             text,
-            style: TopDashTextStyles.buttonLGCaps,
+            style: TopDashTextStyles.buttonLG.copyWith(
+              color: TopDashColors.seedBlack,
+            ),
+          ),
+        );
+
+  /// Basic [RoundedButton] with black shadow.
+  /// Contains a [image] and a [label] as children
+  RoundedButton.image(
+    Image image, {
+    String? label,
+    this.onPressed,
+    super.key,
+    this.backgroundColor = TopDashColors.seedPaletteBlue70,
+  }) : child = Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: TopDashSpacing.sm,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              image,
+              if (label != null)
+                Padding(
+                  padding: const EdgeInsets.only(left: TopDashSpacing.md),
+                  child: Text(
+                    label,
+                    style: TopDashTextStyles.buttonLG,
+                  ),
+                ),
+            ],
           ),
         );
 
@@ -42,7 +72,7 @@ class RoundedButton extends StatelessWidget {
   final Color backgroundColor;
 
   void _onPressed(BuildContext context) {
-    context.read<UISoundAdaptater>().playButtonSound();
+    context.read<UISoundAdapter>().playButtonSound();
     onPressed?.call();
   }
 

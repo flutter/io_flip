@@ -9,10 +9,10 @@ void main() {
         expect(TopDashTheme.themeData.useMaterial3, isTrue);
       });
 
-      test('background color is TopDashColors.backgroundMain', () {
+      test('background color is TopDashColors.seedBlack', () {
         expect(
           TopDashTheme.themeData.colorScheme.background,
-          TopDashColors.seedWhite,
+          TopDashColors.seedBlack,
         );
       });
 

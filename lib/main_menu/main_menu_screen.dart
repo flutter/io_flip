@@ -18,7 +18,6 @@ class MainMenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      backgroundColor: TopDashColors.seedWhite,
       body: Stack(
         children: [
           Align(
@@ -130,39 +129,33 @@ class _Footer extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    return ColoredBox(
-      color: TopDashColors.seedWhite,
-      child: Padding(
-        padding: const EdgeInsets.all(TopDashSpacing.sm),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            RoundedButton.icon(
-              const Icon(Icons.more_horiz_rounded),
-              backgroundColor: TopDashColors.seedWhite,
-              onPressed: () => GoRouter.of(context).push('/settings'),
-            ),
-            _gap,
-            RoundedButton.icon(
-              const Icon(Icons.share),
-              backgroundColor: TopDashColors.seedWhite,
-              onPressed: () => GoRouter.of(context).goNamed('share'),
-            ),
-            _gap,
-            RoundedButton.icon(
-              const Icon(Icons.question_mark_rounded),
-              backgroundColor: TopDashColors.seedWhite,
-              onPressed: () => HowToPlayDialog.show(context),
-            ),
-            _gap,
-            RoundedButton.text(
-              l10n.play,
-              onPressed: () {
-                GoRouter.of(context).go('/prompt');
-              },
-            ),
-          ],
-        ),
+    return Padding(
+      padding: const EdgeInsets.all(TopDashSpacing.sm),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          RoundedButton.icon(
+            const Icon(Icons.more_horiz_rounded),
+            onPressed: () => GoRouter.of(context).push('/settings'),
+          ),
+          _gap,
+          RoundedButton.icon(
+            const Icon(Icons.share),
+            onPressed: () => GoRouter.of(context).goNamed('share'),
+          ),
+          _gap,
+          RoundedButton.icon(
+            const Icon(Icons.question_mark_rounded),
+            onPressed: () => HowToPlayDialog.show(context),
+          ),
+          _gap,
+          RoundedButton.text(
+            l10n.play,
+            onPressed: () {
+              GoRouter.of(context).go('/prompt');
+            },
+          ),
+        ],
       ),
     );
   }

@@ -75,6 +75,7 @@ class _AppState extends State<App> {
           Provider.value(value: widget.apiClient.scriptsResource),
           Provider.value(value: widget.apiClient.promptResource),
           Provider.value(value: widget.apiClient.leaderboardResource),
+          Provider.value(value: widget.apiClient.shareResource),
           Provider.value(value: widget.matchMakerRepository),
           Provider.value(value: widget.connectionRepository),
           Provider.value(value: widget.matchSolver),
@@ -105,10 +106,10 @@ class _AppState extends State<App> {
         ],
         child: Builder(
           builder: (context) {
-            return Provider<UISoundAdaptater>(
+            return Provider<UISoundAdapter>(
               create: (context) {
                 final audio = context.read<AudioController>();
-                return UISoundAdaptater(
+                return UISoundAdapter(
                   playButtonSound: () {
                     audio.playSfx(Assets.sfx.click);
                   },

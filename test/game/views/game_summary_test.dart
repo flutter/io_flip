@@ -265,6 +265,54 @@ void main() {
           );
         },
       );
+      testWidgets(
+        'navigates to inspector page when card is tapped',
+        (tester) async {
+          final goRouter = MockGoRouter();
+          when(
+            () => goRouter.pushNamed(
+              'card_inspector',
+              extra: any(named: 'extra'),
+            ),
+          ).thenAnswer((_) async {
+            return;
+          });
+          when(
+            () => bloc.isWinningCard(any(), isPlayer: any(named: 'isPlayer')),
+          ).thenReturn(CardOverlayType.win);
+          when(() => bloc.isHost).thenReturn(false);
+          mockState(
+            baseState.copyWith(
+              matchState: MatchState(
+                id: '',
+                matchId: '',
+                guestPlayedCards: const [
+                  'opponent_card_2',
+                  'opponent_card_3',
+                  'opponent_card'
+                ],
+                hostPlayedCards: const [
+                  'player_card_2',
+                  'player_card',
+                  'player_card_3',
+                ],
+                result: MatchResult.guest,
+              ),
+              turnAnimationsFinished: true,
+            ),
+          );
+          await tester.pumpSubject(bloc, goRouter: goRouter);
+          await tester.tap(find.byType(GameCard).first);
+          await tester.pumpAndSettle();
+
+          verify(
+            () => goRouter.pushNamed(
+              'card_inspector',
+              extra: any(named: 'extra'),
+            ),
+          ).called(1);
+        },
+      );
 
       testWidgets('renders the game summary in landscape', (tester) async {
         tester.setLandscapeDisplaySize();

@@ -28,4 +28,5 @@ flutter:
     - shaders/foil.frag
 
   assets:
+    - assets/images/
     - assets/images/suits/

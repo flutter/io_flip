@@ -102,11 +102,11 @@ class SuitItem extends StatelessWidget {
       child: TweenAnimationBuilder<double>(
         duration: transitionDuration,
         tween: Tween<double>(
-          begin: isAffected ? 1 : 0,
-          end: isAffected ? 1 : 0,
+          begin: 0,
+          end: isAffected || isReference ? 0 : 1,
         ),
         builder: (_, number, __) {
-          final color = TopDashColors.seedGrey80.withOpacity(number);
+          final color = TopDashColors.seedGrey30.withOpacity(number);
           return ColorFiltered(
             colorFilter: ColorFilter.mode(color, BlendMode.srcATop),
             child: child,
@@ -209,12 +209,14 @@ class _AffectedIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final backgroundColor = Theme.of(context).dialogBackgroundColor;
     return DecoratedBox(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
           width: 4,
           strokeAlign: BorderSide.strokeAlignCenter,
+          color: backgroundColor,
         ),
         color: TopDashColors.seedRed,
       ),
