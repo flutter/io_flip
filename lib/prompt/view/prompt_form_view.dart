@@ -66,7 +66,7 @@ class _PromptFormViewState extends State<PromptFormView> {
                     vertical: 6,
                   ),
                   child: Text(
-                    text,
+                    selectedText,
                     style: TopDashTextStyles.headlineMobileH3.copyWith(
                       color: Colors.transparent,
                     ),
@@ -110,7 +110,7 @@ class _PromptFormViewState extends State<PromptFormView> {
                       builder: (_, index) {
                         return Center(
                           child: Text(
-                            text,
+                            widget.itemsList[index],
                             style: TopDashTextStyles.headlineMobileH3.copyWith(
                               color: index == selectedIndex
                                   ? null
@@ -130,21 +130,21 @@ class _PromptFormViewState extends State<PromptFormView> {
         _gap,
         RoundedButton.text(
           l10n.select.toUpperCase(),
-          onPressed: () => _onSubmit(text),
+          onPressed: () => _onSubmit(selectedText),
         ),
       ],
     );
   }
 
-  String get text => widget.itemsList[selectedIndex];
+  String get selectedText => widget.itemsList[selectedIndex];
 
   void _onSubmit(String field) {
     widget.isLastOfFlow
         ? context
             .flow<Prompt>()
-            .complete((data) => data.copyWithNewAttribute(text))
+            .complete((data) => data.copyWithNewAttribute(selectedText))
         : context
             .flow<Prompt>()
-            .update((data) => data.copyWithNewAttribute(text));
+            .update((data) => data.copyWithNewAttribute(selectedText));
   }
 }
