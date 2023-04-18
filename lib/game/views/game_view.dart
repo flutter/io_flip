@@ -303,7 +303,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
       element.dispose();
     }
 
-    for (final element in playerCardControllers) {
+    for (final element in playerAnimatedCardControllers) {
       element.dispose();
     }
 
