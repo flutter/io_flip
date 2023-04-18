@@ -21,10 +21,7 @@ class HowToPlayView extends StatelessWidget {
     return Container(
       constraints: const BoxConstraints.expand(width: 400, height: 584),
       padding: const EdgeInsets.all(TopDashSpacing.lg),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        color: TopDashColors.seedWhite,
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
       child: Stack(
         children: [
           Column(
@@ -88,6 +85,7 @@ class HowToPlayView extends StatelessWidget {
           Align(
             alignment: Alignment.topRight,
             child: CloseButton(
+              color: TopDashColors.seedWhite,
               onPressed: () => maybePop(context),
             ),
           ),
