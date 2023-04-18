@@ -32,9 +32,9 @@ class PromptFormBloc extends Bloc<PromptFormEvent, PromptFormState> {
 
       emit(
         state.copyWith(
-          characterClasses: result[0],
-          powers: result[1],
-          secondaryPowers: result[2],
+          characterClasses: result[0]..sort(),
+          powers: result[1]..sort(),
+          secondaryPowers: result[2]..sort(),
           status: PromptTermsStatus.loaded,
         ),
       );
