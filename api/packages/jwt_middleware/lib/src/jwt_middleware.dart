@@ -32,13 +32,12 @@ class JwtMiddleware {
     GetCall get = http.get,
     JwtParser parseJwt = JWT.from,
     JwsParser parseJws = JsonWebSignature.fromCompactSerialization,
-    JsonWebKeyStore? jwks,
+    String? jwks,
     bool isEmulator = false,
   })  : _get = get,
         _parseJwt = parseJwt,
         _parseJws = parseJws,
-        _jwks = jwks ?? JsonWebKeyStore()
-          ..addKeySetUrl(Uri.parse(_jwksUrl)),
+        _jwks = JsonWebKeyStore()..addKeySetUrl(Uri.parse(jwks ?? _jwksUrl)),
         _projectId = projectId,
         _isEmulator = isEmulator,
         _keys = const {};

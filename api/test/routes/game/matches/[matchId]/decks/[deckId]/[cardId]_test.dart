@@ -34,7 +34,7 @@ void main() {
     setUp(() {
       matchRepository = _MockMatchRepository();
       when(
-        () => matchRepository.playCard(
+        () => matchRepository.pushCardToQueue(
           matchId: matchId,
           deckId: deckId,
           cardId: cardId,
@@ -63,7 +63,7 @@ void main() {
 
     test("rethrows error when the card can't be played", () async {
       when(
-        () => matchRepository.playCard(
+        () => matchRepository.pushCardToQueue(
           matchId: matchId,
           cardId: cardId,
           deckId: deckId,

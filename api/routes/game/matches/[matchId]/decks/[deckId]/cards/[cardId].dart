@@ -17,7 +17,7 @@ FutureOr<Response> onRequest(
     final user = context.read<AuthenticatedUser>();
 
     try {
-      await matchRepository.playCard(
+      await matchRepository.pushCardToQueue(
         matchId: matchId,
         cardId: cardId,
         deckId: deckId,

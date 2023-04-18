@@ -121,16 +121,17 @@ class MatchRepository {
     return null;
   }
 
-  /// if [_isRunningLocally] is true then calls [_playCard].
-  /// Otherwise push card to topic queue
-  Future<void> playCard({
+  /// Push card to playing queue
+  ///
+  /// if [_isRunningLocally] is true then calls directly [playCard].
+  Future<void> pushCardToQueue({
     required String matchId,
     required String cardId,
     required String deckId,
     required String userId,
   }) async {
     if (_isRunningLocally) {
-      await _playCard(
+      await playCard(
         matchId: matchId,
         cardId: cardId,
         deckId: deckId,
@@ -149,7 +150,7 @@ class MatchRepository {
   /// Play a card on the given match.
   ///
   /// throws [PlayCardFailure] if the match state isn't found.
-  Future<void> _playCard({
+  Future<void> playCard({
     required String matchId,
     required String cardId,
     required String deckId,

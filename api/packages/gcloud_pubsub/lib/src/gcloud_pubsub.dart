@@ -63,11 +63,17 @@ class GcloudPubsub {
 
     final headers = await _authenticate(url);
 
+    final data = {
+      'matchId': matchId,
+      'cardId': cardId,
+      'deckId': deckId,
+      'userId': userId,
+    };
     final response = await _post(
       Uri.parse(url),
       body: jsonEncode({
-        "messages": [
-          {"data": base64.encode(utf8.encode('{"card": "cardId"}'))}
+        'messages': [
+          {'data': base64.encode(utf8.encode(jsonEncode(data)))}
         ]
       }),
       headers: {

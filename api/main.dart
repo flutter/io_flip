@@ -25,6 +25,7 @@ late LeaderboardRepository leaderboardRepository;
 late DbClient dbClient;
 late GameScriptMachine gameScriptMachine;
 late JwtMiddleware jwtMiddleware;
+late GCloudMiddleware gCloudJwtMiddleware;
 late EncryptionMiddleware encryptionMiddleware;
 late GameUrl gameUrl;
 late PromptRepository promptRepository;
@@ -34,6 +35,11 @@ late GcloudPubsub pubsub;
 Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   const imageModelRepository = ImageModelRepository();
   const languageModelRepository = LanguageModelRepository();
+  gCloudJwtMiddleware = GCloudMiddleware(
+    projectId: _appId,
+    isEmulator: _useEmulator,
+    jwks: '',
+  );
   jwtMiddleware = JwtMiddleware(
     projectId: _appId,
     isEmulator: _useEmulator,

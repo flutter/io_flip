@@ -389,7 +389,7 @@ void main() {
       });
 
       test('correctly updates the match state when is guest', () async {
-        await matchRepository.playCard(
+        await matchRepository.pushCardToQueue(
           matchId: matchId,
           cardId: 'A',
           deckId: guestDeck.id,
@@ -411,7 +411,7 @@ void main() {
       });
 
       test('correctly updates the match state when is host', () async {
-        await matchRepository.playCard(
+        await matchRepository.pushCardToQueue(
           matchId: matchId,
           cardId: 'A',
           deckId: hostDeck.id,
@@ -449,7 +449,7 @@ void main() {
         when(() => matchSolver.calculateMatchResult(any(), any()))
             .thenReturn(MatchResult.host);
 
-        await matchRepository.playCard(
+        await matchRepository.pushCardToQueue(
           matchId: matchId,
           cardId: 'F',
           deckId: hostDeck.id,
@@ -475,7 +475,7 @@ void main() {
             .thenAnswer((_) async => []);
 
         await expectLater(
-          () => matchRepository.playCard(
+          () => matchRepository.pushCardToQueue(
             matchId: matchId,
             cardId: 'F',
             deckId: hostDeck.id,
@@ -508,7 +508,7 @@ void main() {
           );
 
           await expectLater(
-            () => matchRepository.playCard(
+            () => matchRepository.pushCardToQueue(
               matchId: matchId,
               cardId: 'F',
               deckId: hostDeck.id,
@@ -530,7 +530,7 @@ void main() {
         ).thenReturn(false);
 
         await expectLater(
-          () => matchRepository.playCard(
+          () => matchRepository.pushCardToQueue(
             matchId: matchId,
             cardId: 'F',
             deckId: hostDeck.id,
@@ -573,7 +573,7 @@ void main() {
             ),
           );
 
-          await matchRepository.playCard(
+          await matchRepository.pushCardToQueue(
             matchId: matchId,
             cardId: 'F',
             deckId: hostDeck.id,
@@ -625,7 +625,7 @@ void main() {
             ),
           );
 
-          await matchRepository.playCard(
+          await matchRepository.pushCardToQueue(
             matchId: matchId,
             cardId: 'F',
             deckId: hostDeck.id,
@@ -679,7 +679,7 @@ void main() {
             ),
           );
 
-          await matchRepository.playCard(
+          await matchRepository.pushCardToQueue(
             matchId: matchId,
             cardId: 'F',
             deckId: hostDeck.id,
@@ -719,7 +719,7 @@ void main() {
           when(() => matchSolver.calculateMatchResult(any(), any()))
               .thenReturn(MatchResult.draw);
 
-          await matchRepository.playCard(
+          await matchRepository.pushCardToQueue(
             matchId: matchId,
             cardId: 'F',
             deckId: hostDeck.id,

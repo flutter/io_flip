@@ -108,4 +108,41 @@ class JWT {
 
     return true;
   }
+
+  /// Validates the fields of this token for gcloud user.
+  bool validateGcloudUser() {
+    if (_header['alg'] != 'RS256') {
+      return false;
+    }
+    final nowSeconds = clock.now().millisecondsSinceEpoch ~/ 1000;
+    final exp = _payload['exp'] as int?;
+    final iat = _payload['iat'] as int?;
+    final aud = _payload['aud'] as String?;
+    final iss = _payload['iss'] as String?;
+    final sub = _payload['sub'] as String?;
+
+    if (exp == null ||
+        iat == null ||
+        aud == null ||
+        iss == null ||
+        sub == null) {
+      return false;
+    }
+
+    if (exp <= nowSeconds) {
+      return false;
+    }
+    if (iat > nowSeconds) {
+      return false;
+    }
+
+    if (iss != 'https://accounts.google.com') {
+      return false;
+    }
+    if (sub != userId) {
+      return false;
+    }
+
+    return true;
+  }
 }
