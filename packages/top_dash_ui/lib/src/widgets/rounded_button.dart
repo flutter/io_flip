@@ -76,7 +76,7 @@ class RoundedButton extends StatefulWidget {
   /// Button background color
   final Color backgroundColor;
 
-  /// Button background color
+  /// Button border color
   final Color borderColor;
 
   @override
