@@ -120,14 +120,14 @@ class JWT {
     final aud = _payload['aud'] as String?;
     final iss = _payload['iss'] as String?;
     final sub = _payload['sub'] as String?;
+    final email = _payload['email'] as String?;
 
     if (exp == null ||
         iat == null ||
         aud == null ||
         iss == null ||
-        sub == null) {
-      return false;
-    }
+        sub == null ||
+        email == null) return false;
 
     if (exp <= nowSeconds) {
       return false;
@@ -139,7 +139,7 @@ class JWT {
     if (iss != 'https://accounts.google.com') {
       return false;
     }
-    if (sub != userId) {
+    if (email != 'api-service-account@top-dash-dev.iam.gserviceaccount.com') {
       return false;
     }
 
