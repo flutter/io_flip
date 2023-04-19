@@ -188,6 +188,9 @@ void main() {
           isHost: true,
           matchId: 'matchId',
         );
+
+        await tester.pump(Duration(seconds: 3));
+
         verify(
           () => goRouter.goNamed(
             'game',
