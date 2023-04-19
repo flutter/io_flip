@@ -22,9 +22,6 @@ class EncryptionMiddleware {
   Middleware get middleware => (handler) {
         return (context) async {
           final response = await handler(context);
-          if (response.statusCode == 500) {
-            return response;
-          }
           final body = await response.body();
 
           if (body.isEmpty) {
