@@ -86,12 +86,15 @@ class RoundedButton extends StatefulWidget {
   final Color borderColor;
 
   @override
-  State<RoundedButton> createState() => _RoundedButtonState();
+  State<RoundedButton> createState() => RoundedButtonState();
 }
 
-class _RoundedButtonState extends State<RoundedButton> {
+/// Top Dash Rounded Button state.
+class RoundedButtonState extends State<RoundedButton> {
+  /// Whether the button is pressed or not.
   bool isPressed = false;
 
+  /// Offset to move the button when pressed, and draw a shadow when not.
   static const Offset offset = Offset(-2, 2);
 
   @override
