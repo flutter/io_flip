@@ -25,7 +25,7 @@ class LeaderboardEntryView extends StatelessWidget {
               Text(
                 l10n.enterYourInitials,
                 textAlign: TextAlign.center,
-                style: TopDashTextStyles.headlineMobileH4,
+                style: TopDashTextStyles.mobileH4,
               ),
               const SizedBox(height: TopDashSpacing.xlg),
               InitialsForm(scoreCardId: scoreCardId)

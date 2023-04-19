@@ -48,8 +48,8 @@ class MatchMakingView extends StatelessWidget {
               deck: deck,
               setClipboardData: _setClipboardData,
               inviteCode: state.match?.inviteCode,
-              title: TopDashTextStyles.headlineMobileH4Light,
-              subtitle: TopDashTextStyles.headlineMobileH6Light,
+              title: TopDashTextStyles.mobileH4Light,
+              subtitle: TopDashTextStyles.mobileH6Light,
               key: const Key('small_waiting_for_match_view'),
             ),
             large: (_, __) => _WaitingForMatchView(

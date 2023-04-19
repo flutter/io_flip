@@ -17,6 +17,7 @@ class TopDashTheme {
         decorationColor: TopDashColors.seedWhite,
       ),
       tabBarTheme: _tabBarTheme,
+      dialogTheme: _dialogTheme,
     );
   }
 
@@ -48,6 +49,15 @@ class TopDashTheme {
       indicator: UnderlineTabIndicator(
         borderSide: BorderSide(color: blue),
       ),
+    );
+  }
+
+  static DialogTheme get _dialogTheme {
+    const black = TopDashColors.seedBlack;
+
+    return const DialogTheme(
+      backgroundColor: black,
+      surfaceTintColor: Colors.transparent,
     );
   }
 }

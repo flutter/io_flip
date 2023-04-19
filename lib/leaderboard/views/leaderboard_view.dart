@@ -63,7 +63,7 @@ class LeaderboardViewState extends State<LeaderboardView> {
           child: Column(
             children: [
               TabBar(
-                labelStyle: TopDashTextStyles.buttonSMCaps,
+                labelStyle: TopDashTextStyles.buttonSM,
                 tabs: [for (final tab in tabs.keys) Tab(text: tab)],
                 onTap: (i) => setState(() => index = i),
               ),

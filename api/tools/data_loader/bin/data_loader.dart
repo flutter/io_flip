@@ -7,26 +7,61 @@ import 'package:db_client/db_client.dart';
 import 'package:prompt_repository/prompt_repository.dart';
 
 void main(List<String> args) async {
-  if (args.length == 2) {
-    final projectId = args.first;
-    final csv = args.last;
+  if (args.isEmpty) {
+    print('No command specified');
+    return;
+  }
 
-    final csvFile = File(csv);
+  final subcommand = args.first;
 
-    final dbClient = DbClient.initialize(projectId);
-    final promptRepository = PromptRepository(
-      dbClient: dbClient,
-    );
+  if (subcommand == 'prompts') {
+    if (args.length == 3) {
+      final projectId = args[1];
+      final csv = args[2];
 
-    final dataLoader = DataLoader(
-      promptRepository: promptRepository,
-      csv: csvFile,
-    );
+      final csvFile = File(csv);
 
-    await dataLoader.load((current, total) {
-      print('Progress: ($current of $total)');
-    });
+      final dbClient = DbClient.initialize(projectId);
+      final promptRepository = PromptRepository(
+        dbClient: dbClient,
+      );
+
+      final dataLoader = DataLoader(
+        promptRepository: promptRepository,
+        csv: csvFile,
+      );
+
+      await dataLoader.loadPromptTerms((current, total) {
+        print('Progress: ($current of $total)');
+      });
+    } else {
+      print('Usage: dart data_loader.dart prompts <projectId> <csv>');
+    }
+  } else if (subcommand == 'images') {
+    if (args.length == 4) {
+      final dest = args[1];
+      final csv = args[2];
+      final image = args.last;
+
+      final csvFile = File(csv);
+      final imageFile = File(image);
+
+      final imageLoader = ImageLoader(
+        csv: csvFile,
+        image: imageFile,
+        dest: dest,
+      );
+
+      await imageLoader.loadImages((current, total) {
+        print('Progress: ($current of $total)');
+      });
+    } else {
+      print(
+        'Usage: dart data_loader.dart images <dest> <csv> '
+        '<images_folder>',
+      );
+    }
   } else {
-    print('Usage: dart data_loader.dart <projectId> <csv>');
+    print('Unknown command: $subcommand');
   }
 }

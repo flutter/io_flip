@@ -70,7 +70,7 @@ class _PromptFormViewState extends State<PromptFormView> {
                   ),
                   child: Text(
                     selectedText,
-                    style: TopDashTextStyles.headlineMobileH3.copyWith(
+                    style: TopDashTextStyles.mobileH3.copyWith(
                       color: Colors.transparent,
                     ),
                   ),
@@ -114,7 +114,7 @@ class _PromptFormViewState extends State<PromptFormView> {
                         return Center(
                           child: Text(
                             widget.itemsList[index],
-                            style: TopDashTextStyles.headlineMobileH3.copyWith(
+                            style: TopDashTextStyles.mobileH3.copyWith(
                               color: index == selectedIndex
                                   ? null
                                   : TopDashColors.seedGrey70,

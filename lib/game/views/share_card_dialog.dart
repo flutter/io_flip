@@ -105,7 +105,7 @@ class _DialogContent extends StatelessWidget {
             const SizedBox(height: TopDashSpacing.xlg),
             Text(
               card.name,
-              style: TopDashTextStyles.headlineMobileH4,
+              style: TopDashTextStyles.mobileH4,
             ),
             Text(card.description, style: TopDashTextStyles.bodyLG),
             const SizedBox(height: TopDashSpacing.xlg),

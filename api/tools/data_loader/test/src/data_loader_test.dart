@@ -45,99 +45,106 @@ void main() {
       );
     });
 
-    test('load correctly', () async {
-      when(() => csv.readAsLines()).thenAnswer(
-        (_) async => [
-          'Character,Class,Power 1,Power 2,Location,',
-          'Dash,Alien,Banjos,Bass Guitars,City,',
-          'Android,Alien,Banjos,Bass Guitars,City,',
-        ],
-      );
+    group('loadPromptTerms', () {
+      test('load prompties correctly', () async {
+        when(() => csv.readAsLines()).thenAnswer(
+          (_) async => [
+            'Character,Class,Power,Power,Location,',
+            'Dash,Alien,Banjos,City,',
+            ',Mage,Bass,Forest,',
+          ],
+        );
 
-      await dataLoader.load((_, __) {});
+        await dataLoader.loadPromptTerms((_, __) {});
 
-      verify(
-        () => promptRepository.createPromptTerm(
-          PromptTerm(
-            term: 'Dash',
-            type: PromptTermType.character,
+        verify(
+          () => promptRepository.createPromptTerm(
+            PromptTerm(
+              term: 'Dash',
+              type: PromptTermType.character,
+            ),
           ),
-        ),
-      ).called(1);
-      verify(
-        () => promptRepository.createPromptTerm(
-          PromptTerm(
-            term: 'Android',
-            type: PromptTermType.character,
+        ).called(1);
+        verify(
+          () => promptRepository.createPromptTerm(
+            PromptTerm(
+              term: 'Alien',
+              type: PromptTermType.characterClass,
+            ),
           ),
-        ),
-      ).called(1);
-      verify(
-        () => promptRepository.createPromptTerm(
-          PromptTerm(
-            term: 'Alien',
-            type: PromptTermType.characterClass,
+        ).called(1);
+        verify(
+          () => promptRepository.createPromptTerm(
+            PromptTerm(
+              term: 'Banjos',
+              type: PromptTermType.power,
+            ),
           ),
-        ),
-      ).called(2);
-      verify(
-        () => promptRepository.createPromptTerm(
-          PromptTerm(
-            term: 'Banjos',
-            type: PromptTermType.power,
+        ).called(1);
+        verify(
+          () => promptRepository.createPromptTerm(
+            PromptTerm(
+              term: 'Bass',
+              type: PromptTermType.power,
+            ),
           ),
-        ),
-      ).called(2);
-      verify(
-        () => promptRepository.createPromptTerm(
-          PromptTerm(
-            term: 'Bass Guitars',
-            type: PromptTermType.secondaryPower,
+        ).called(1);
+        verify(
+          () => promptRepository.createPromptTerm(
+            PromptTerm(
+              term: 'City',
+              type: PromptTermType.location,
+            ),
           ),
-        ),
-      ).called(2);
-      verify(
-        () => promptRepository.createPromptTerm(
-          PromptTerm(
-            term: 'City',
-            type: PromptTermType.location,
+        ).called(1);
+        verify(
+          () => promptRepository.createPromptTerm(
+            PromptTerm(
+              term: 'Forest',
+              type: PromptTermType.location,
+            ),
           ),
-        ),
-      ).called(2);
-    });
-
-    test('progress is called correctly', () async {
-      when(() => csv.readAsLines()).thenAnswer(
-        (_) async => [
-          'Character,Class,Power 1,Power 2,Location,',
-          'Dash,Alien,Banjos,Bass Guitars,City,',
-          'Android,Alien,Banjos,Bass Guitars,City,',
-        ],
-      );
-
-      final progress = <List<int>>[];
-      await dataLoader.load((current, total) {
-        progress.add([current, total]);
+        ).called(1);
+        verifyNever(
+          () => promptRepository.createPromptTerm(
+            PromptTerm(
+              term: '',
+              type: PromptTermType.character,
+            ),
+          ),
+        );
       });
 
-      expect(
-        progress,
-        equals(
-          [
-            [0, 10],
-            [1, 10],
-            [2, 10],
-            [3, 10],
-            [4, 10],
-            [5, 10],
-            [6, 10],
-            [7, 10],
-            [8, 10],
-            [9, 10],
-            [10, 10],
+      test('progress is called correctly', () async {
+        when(() => csv.readAsLines()).thenAnswer(
+          (_) async => [
+            'Character,Class,Power,Power,Location,',
+            'Dash,Alien,Banjos,City,',
+            ',Mage,Bass,Forest,',
           ],
-        ),
-      );
+        );
+
+        final progress = <List<int>>[];
+        await dataLoader.loadPromptTerms((current, total) {
+          progress.add([current, total]);
+        });
+
+        expect(
+          progress,
+          equals(
+            [
+              [0, 7],
+              [1, 7],
+              [2, 7],
+              [3, 7],
+              [4, 7],
+              [5, 7],
+              [6, 7],
+              [7, 7],
+            ],
+          ),
+        );
+      });
     });
   });
 }
