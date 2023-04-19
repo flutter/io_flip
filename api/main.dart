@@ -61,6 +61,7 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
     cardsRepository: cardsRepository,
     dbClient: dbClient,
     matchSolver: MatchSolver(gameScriptMachine: gameScriptMachine),
+    trackPlayerPresence: Platform.environment['DISABLE_TAB_CHECK'] != 'true',
   );
 
   if (_useEmulator) {
