@@ -26,12 +26,11 @@ Handler middleware(Handler handler) {
       .use(provider<LeaderboardRepository>((_) => leaderboardRepository))
       .use(provider<GameScriptMachine>((_) => gameScriptMachine))
       .use(gCloudJwtMiddleware.middleware)
-      .use(encryptionMiddleware.middleware)
       .use(
         fromShelfMiddleware(
           corsHeaders(
             headers: {
-              ACCESS_CONTROL_ALLOW_ORIGIN: gameUrl.url,
+              ACCESS_CONTROL_ALLOW_ORIGIN: '*',
             },
           ),
         ),
