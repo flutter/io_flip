@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
@@ -13,7 +14,7 @@ FutureOr<Response> onRequest(RequestContext context) async {
           jsonDecode(await context.request.body()) as Map<String, dynamic>;
       final data =
           jsonDecode(utf8.decode(base64Decode(body['data'].toString())))
-              as Map<String, dynamic>;
+              as Map<String, String>;
 
       await matchRepository.playCard(
         matchId: data['matchId'].toString(),
@@ -23,7 +24,8 @@ FutureOr<Response> onRequest(RequestContext context) async {
       );
 
       return Response(statusCode: HttpStatus.noContent);
-    } catch (e) {
+    } catch (e, s) {
+      log('Error while playing card: $e', stackTrace: s);
       return Response(
         statusCode: HttpStatus.internalServerError,
         body: e.toString(),
