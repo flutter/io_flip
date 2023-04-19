@@ -11,6 +11,7 @@ class RoundedButton extends StatefulWidget {
   RoundedButton.icon(
     IconData icon, {
     this.onPressed,
+    this.onLongPress,
     super.key,
     this.backgroundColor = TopDashColors.seedBlack,
     Color? foregroundColor = TopDashColors.seedWhite,
@@ -22,6 +23,7 @@ class RoundedButton extends StatefulWidget {
   RoundedButton.text(
     String text, {
     this.onPressed,
+    this.onLongPress,
     super.key,
     this.backgroundColor = TopDashColors.seedYellow,
     Color? foregroundColor = TopDashColors.seedBlack,
@@ -42,6 +44,7 @@ class RoundedButton extends StatefulWidget {
     Image image, {
     String? label,
     this.onPressed,
+    this.onLongPress,
     super.key,
     this.backgroundColor = TopDashColors.seedWhite,
     Color? foregroundColor = TopDashColors.seedBlack,
@@ -73,6 +76,9 @@ class RoundedButton extends StatefulWidget {
   /// On pressed callback
   final GestureTapCallback? onPressed;
 
+  /// On long pressed callback
+  final GestureTapCallback? onLongPress;
+
   /// Button background color
   final Color backgroundColor;
 
@@ -98,6 +104,11 @@ class _RoundedButtonState extends State<RoundedButton> {
     widget.onPressed?.call();
   }
 
+  void _onLongPress(BuildContext context) {
+    context.read<UISoundAdapter>().playButtonSound();
+    widget.onLongPress?.call();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
@@ -107,6 +118,8 @@ class _RoundedButtonState extends State<RoundedButton> {
         onTapDown: (_) => setState(() => isPressed = true),
         onTapUp: (_) => setState(() => isPressed = false),
         onTapCancel: () => setState(() => isPressed = false),
+        onLongPress:
+            widget.onLongPress == null ? null : () => _onLongPress(context),
         child: Transform.translate(
           offset: isPressed ? offset : Offset.zero,
           child: DecoratedBox(
