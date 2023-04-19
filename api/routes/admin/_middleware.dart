@@ -25,7 +25,7 @@ Handler middleware(Handler handler) {
       .use(provider<ScriptsRepository>((_) => scriptsRepository))
       .use(provider<LeaderboardRepository>((_) => leaderboardRepository))
       .use(provider<GameScriptMachine>((_) => gameScriptMachine))
-      .use(gCloudJwtMiddleware.middleware)
+      //   .use(gCloudJwtMiddleware.middleware)
       .use(
         fromShelfMiddleware(
           corsHeaders(
