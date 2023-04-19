@@ -477,6 +477,34 @@ void main() {
       );
     });
 
+    test(
+      'sends connected when player is already connected but reconnect is true',
+      () async {
+        when(
+          () => matchRepository.getPlayerConnectivity(userId: userId),
+        ).thenAnswer((_) async => true);
+
+        final response = await route.onRequest(context);
+        expect(response, isA<_FakeResponse>());
+
+        connectToSocket();
+
+        channelStream.add(
+          jsonEncode(
+            WebSocketMessage.token(
+              'token',
+              reconnect: true,
+            ),
+          ),
+        );
+
+        await waitAndVerify(
+          () => matchRepository.getPlayerConnectivity(userId: userId),
+        );
+        await checkResponseSent(jsonEncode(const WebSocketMessage.connected()));
+      },
+    );
+
     test('sends error when cannot update player connectivity', () async {
       when(
         () => matchRepository.getPlayerConnectivity(userId: userId),
