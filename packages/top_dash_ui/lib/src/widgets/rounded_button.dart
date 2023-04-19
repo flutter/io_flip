@@ -106,6 +106,7 @@ class _RoundedButtonState extends State<RoundedButton> {
         onTap: widget.onPressed == null ? null : () => _onPressed(context),
         onTapDown: (_) => setState(() => isPressed = true),
         onTapUp: (_) => setState(() => isPressed = false),
+        onTapCancel: () => setState(() => isPressed = false),
         child: Transform.translate(
           offset: isPressed ? offset : Offset.zero,
           child: DecoratedBox(
