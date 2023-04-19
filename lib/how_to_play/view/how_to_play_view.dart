@@ -45,7 +45,7 @@ class HowToPlayView extends StatelessWidget {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: selectedPageIndex == index
-                            ? TopDashColors.seedBlue
+                            ? TopDashColors.seedYellow
                             : TopDashColors.seedGrey70,
                       ),
                     ),
@@ -56,7 +56,7 @@ class HowToPlayView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   RoundedButton.icon(
-                    const Icon(Icons.arrow_back),
+                    Icons.arrow_back,
                     onPressed: () {
                       final bloc = context.read<HowToPlayBloc>();
                       if (bloc.state.position == 0) {
@@ -68,7 +68,7 @@ class HowToPlayView extends StatelessWidget {
                   ),
                   const SizedBox(width: TopDashSpacing.md),
                   RoundedButton.icon(
-                    const Icon(Icons.arrow_forward),
+                    Icons.arrow_forward,
                     onPressed: () {
                       final bloc = context.read<HowToPlayBloc>();
                       if (bloc.state.position == totalSteps - 1) {

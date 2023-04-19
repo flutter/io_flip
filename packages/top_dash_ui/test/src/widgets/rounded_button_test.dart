@@ -16,7 +16,7 @@ void main() {
             child: Scaffold(
               body: Center(
                 child: RoundedButton.icon(
-                  const Icon(Icons.settings),
+                  Icons.settings,
                   onPressed: () {
                     wasTapped = true;
                   },

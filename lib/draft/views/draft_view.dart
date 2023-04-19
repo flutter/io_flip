@@ -268,7 +268,7 @@ class _BottomBar extends StatelessWidget {
           Align(
             alignment: Alignment.centerRight,
             child: RoundedButton.icon(
-              const Icon(Icons.question_mark_rounded),
+              Icons.question_mark_rounded,
               onPressed: () => HowToPlayDialog.show(context),
             ),
           ),
