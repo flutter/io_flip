@@ -5,15 +5,17 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 /// {@template rounded_button}
 /// Top Dash Rounded Button.
 /// {@endtemplate}
-class RoundedButton extends StatelessWidget {
+class RoundedButton extends StatefulWidget {
   /// Basic [RoundedButton] with black shadow.
   /// Contains an [icon] as child
-  const RoundedButton.icon(
-    Icon icon, {
+  RoundedButton.icon(
+    IconData icon, {
     this.onPressed,
     super.key,
-    this.backgroundColor = TopDashColors.seedWhite,
-  }) : child = icon;
+    this.backgroundColor = TopDashColors.seedBlack,
+    Color? foregroundColor = TopDashColors.seedWhite,
+    this.borderColor = TopDashColors.seedPaletteNeutral40,
+  }) : child = Icon(icon, color: foregroundColor);
 
   /// Basic [RoundedButton] with black shadow.
   /// Contains a [text] as child
@@ -21,16 +23,16 @@ class RoundedButton extends StatelessWidget {
     String text, {
     this.onPressed,
     super.key,
-    this.backgroundColor = TopDashColors.seedPaletteBlue70,
+    this.backgroundColor = TopDashColors.seedYellow,
+    Color? foregroundColor = TopDashColors.seedBlack,
+    this.borderColor = TopDashColors.seedBlack,
   }) : child = Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: TopDashSpacing.sm,
           ),
           child: Text(
             text,
-            style: TopDashTextStyles.buttonLG.copyWith(
-              color: TopDashColors.seedBlack,
-            ),
+            style: TopDashTextStyles.buttonLG.copyWith(color: foregroundColor),
           ),
         );
 
@@ -41,7 +43,9 @@ class RoundedButton extends StatelessWidget {
     String? label,
     this.onPressed,
     super.key,
-    this.backgroundColor = TopDashColors.seedPaletteBlue70,
+    this.backgroundColor = TopDashColors.seedWhite,
+    Color? foregroundColor = TopDashColors.seedBlack,
+    this.borderColor = TopDashColors.seedBlack,
   }) : child = Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: TopDashSpacing.sm,
@@ -55,7 +59,8 @@ class RoundedButton extends StatelessWidget {
                   padding: const EdgeInsets.only(left: TopDashSpacing.md),
                   child: Text(
                     label,
-                    style: TopDashTextStyles.buttonLG,
+                    style: TopDashTextStyles.buttonLG
+                        .copyWith(color: foregroundColor),
                   ),
                 ),
             ],
@@ -71,9 +76,26 @@ class RoundedButton extends StatelessWidget {
   /// Button background color
   final Color backgroundColor;
 
+  /// Button border color
+  final Color borderColor;
+
+  @override
+  State<RoundedButton> createState() => _RoundedButtonState();
+}
+
+class _RoundedButtonState extends State<RoundedButton> {
+  bool isPressed = false;
+
+  static const Offset offset = Offset(-2, 2);
+
+  @override
+  void setState(VoidCallback fn) {
+    if (mounted) super.setState(fn);
+  }
+
   void _onPressed(BuildContext context) {
     context.read<UISoundAdapter>().playButtonSound();
-    onPressed?.call();
+    widget.onPressed?.call();
   }
 
   @override
@@ -81,22 +103,31 @@ class RoundedButton extends StatelessWidget {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: onPressed == null ? null : () => _onPressed(context),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(40),
-            border: Border.all(width: 2),
-            color: backgroundColor,
-            boxShadow: const [
-              BoxShadow(
-                offset: Offset(2, 2),
-                spreadRadius: 1,
-              )
-            ],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(TopDashSpacing.md),
-            child: child,
+        onTap: widget.onPressed == null ? null : () => _onPressed(context),
+        onTapDown: (_) => setState(() => isPressed = true),
+        onTapUp: (_) => setState(() => isPressed = false),
+        child: Transform.translate(
+          offset: isPressed ? offset : Offset.zero,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(40),
+              border: Border.all(
+                width: 2,
+                color: widget.borderColor,
+              ),
+              color: widget.backgroundColor,
+              boxShadow: [
+                if (!isPressed)
+                  const BoxShadow(
+                    offset: offset,
+                    spreadRadius: 1,
+                  ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(TopDashSpacing.md),
+              child: widget.child,
+            ),
           ),
         ),
       ),
