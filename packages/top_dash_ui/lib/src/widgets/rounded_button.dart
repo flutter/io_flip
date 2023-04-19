@@ -100,7 +100,7 @@ class RoundedButton extends StatelessWidget {
             color: backgroundColor,
             boxShadow: const [
               BoxShadow(
-                offset: Offset(2, 2),
+                offset: Offset(-2, 2),
                 spreadRadius: 1,
               )
             ],
