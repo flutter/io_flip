@@ -116,7 +116,6 @@ class _DialogContent extends StatelessWidget {
               ),
               label: l10n.twitterButtonLabel,
               onPressed: () => urlLauncher(_twitterShareUrl),
-              backgroundColor: TopDashColors.seedWhite,
             ),
             const SizedBox(height: TopDashSpacing.sm),
             RoundedButton.image(
@@ -126,7 +125,6 @@ class _DialogContent extends StatelessWidget {
               ),
               label: l10n.facebookButtonLabel,
               onPressed: () => urlLauncher(_facebookShareUrl),
-              backgroundColor: TopDashColors.seedWhite,
             ),
           ],
         )

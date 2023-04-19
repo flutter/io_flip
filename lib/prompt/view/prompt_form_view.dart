@@ -56,7 +56,7 @@ class _PromptFormViewState extends State<PromptFormView> {
         ),
         _gap,
         RoundedButton.icon(
-          Icon(widget.buttonIcon),
+          widget.buttonIcon,
           onPressed: () => _onSubmit(_text),
         ),
       ],

@@ -298,7 +298,7 @@ class _CardViewer extends StatelessWidget {
                   top: TopDashSpacing.lg,
                   left: TopDashSpacing.lg,
                   child: RoundedButton.icon(
-                    const Icon(Icons.share_outlined),
+                    Icons.share_outlined,
                     onPressed: () => share(card),
                   ),
                 ),
