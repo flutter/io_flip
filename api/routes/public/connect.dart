@@ -64,13 +64,13 @@ Future<Response> onRequest(RequestContext context) async {
               userId: userId!,
             );
 
-            if (isConnected) {
+            if (isConnected && !tokenPayload.reconnect) {
               final message = WebSocketMessage.error(
                 WebSocketErrorCode.playerAlreadyConnected,
               );
               channel.sink.add(jsonEncode(message));
               userId = null;
-            } else {
+            } else if (!isConnected) {
               try {
                 await setConnectivity(connected: true);
                 channel.sink
@@ -84,6 +84,8 @@ Future<Response> onRequest(RequestContext context) async {
                   ),
                 );
               }
+            } else if (isConnected) {
+              channel.sink.add(jsonEncode(const WebSocketMessage.connected()));
             }
           }
         }
