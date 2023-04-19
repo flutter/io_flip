@@ -518,6 +518,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+  flame:
+    dependency: transitive
+    description:
+      path: "packages/flame"
+      ref: main
+      resolved-ref: edcabd5591551fb4bc249ded7eb00bcbc39d2316
+      url: "https://github.com/willhlas/flame"
+    source: git
+    version: "1.7.3"
   flow_builder:
     dependency: "direct main"
     description:
@@ -799,6 +808,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
+  ordered_set:
+    dependency: transitive
+    description:
+      name: ordered_set
+      sha256: "3fedcc9121b3ba24c0a84f32da2989c42e36c159b73feadbc2f402dc55966b81"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.1"
   package_config:
     dependency: transitive
     description:
