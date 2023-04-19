@@ -28,13 +28,16 @@ class MatchMakingView extends StatelessWidget {
     return BlocConsumer<MatchMakingBloc, MatchMakingState>(
       listener: (previous, current) {
         if (current.status == MatchMakingStatus.completed) {
-          _routerNeglectCall(
-            context,
-            () => context.goNamed(
-              'game',
-              extra: GamePageData(
-                isHost: current.isHost,
-                matchId: current.match?.id ?? '',
+          Future.delayed(
+            const Duration(seconds: 3),
+            () => _routerNeglectCall(
+              context,
+              () => context.goNamed(
+                'game',
+                extra: GamePageData(
+                  isHost: current.isHost,
+                  matchId: current.match?.id ?? '',
+                ),
               ),
             ),
           );
@@ -79,15 +82,25 @@ class MatchMakingView extends StatelessWidget {
           );
         }
 
+        final l10n = context.l10n;
         return Scaffold(
           body: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('Host:'),
-                Text(state.match?.host ?? ''),
-                const Text('Guest:'),
-                Text(state.match?.guest ?? ''),
+                Text(
+                  l10n.getReadyToFlip,
+                  style: TopDashTextStyles.mobileH1,
+                ),
+                const SizedBox(height: TopDashSpacing.xlg),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 320),
+                  child: Text(
+                    l10n.aiGameByGoogle,
+                    style: TopDashTextStyles.mobileH4Light,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ],
             ),
           ),
@@ -111,57 +124,98 @@ class _WaitingForMatchView extends StatelessWidget {
   final Future<void> Function(ClipboardData) setClipboardData;
   final TextStyle title;
   final TextStyle subtitle;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          const Spacer(),
-          Text(
-            context.l10n.findingMatch,
-            style: title,
-          ),
-          if (inviteCode == null)
-            Text(
-              context.l10n.searchingForOpponents,
-              style: subtitle,
-            )
-          else
-            ElevatedButton(
-              onPressed: () {
-                final code = inviteCode;
-                if (code != null) {
-                  setClipboardData(
-                    ClipboardData(text: code),
-                  );
-                }
-              },
-              child: Text(context.l10n.copyInviteCode),
-            ),
-          const SizedBox(height: TopDashSpacing.xxlg),
-          const FadingDotLoader(),
-          const Spacer(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              for (final card in deck)
-                Padding(
-                  padding: const EdgeInsets.all(TopDashSpacing.xxs),
-                  child: GameCard(
-                    height: 150,
-                    width: 100,
-                    image: card.image,
-                    name: card.name,
-                    suitName: card.suit.name,
-                    power: card.power,
+          Expanded(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 600),
+              child: Column(
+                children: [
+                  const Spacer(),
+                  Text(
+                    context.l10n.findingMatch,
+                    style: title,
                   ),
-                ),
-            ],
+                  if (inviteCode == null)
+                    Text(
+                      context.l10n.searchingForOpponents,
+                      style: subtitle,
+                    )
+                  else
+                    ElevatedButton(
+                      onPressed: () {
+                        final code = inviteCode;
+                        if (code != null) {
+                          setClipboardData(ClipboardData(text: code));
+                        }
+                      },
+                      child: Text(context.l10n.copyInviteCode),
+                    ),
+                  const SizedBox(height: TopDashSpacing.xxlg),
+                  const FadingDotLoader(),
+                  const Spacer(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      for (final card in deck)
+                        Padding(
+                          padding: const EdgeInsets.all(TopDashSpacing.xs),
+                          child: Stack(
+                            children: [
+                              GameCard(
+                                height: 150,
+                                width: 100,
+                                image: card.image,
+                                name: card.name,
+                                suitName: card.suit.name,
+                                power: card.power,
+                              ),
+                              Positioned(
+                                bottom: TopDashSpacing.xs + 2,
+                                right: TopDashSpacing.xs,
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: TopDashColors.seedWhite,
+                                    borderRadius: BorderRadius.circular(4),
+                                    border: Border.all(
+                                      width: 2,
+                                      color: TopDashColors.seedBlack,
+                                    ),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        offset: Offset(-2, 2),
+                                        spreadRadius: 1,
+                                      ),
+                                    ],
+                                  ),
+                                  child: const Icon(Icons.add, size: 32),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ),
           const SizedBox(height: TopDashSpacing.sm),
-          RoundedButton.text(
-            context.l10n.matchmaking,
-            backgroundColor: TopDashColors.seedGrey90,
+          Stack(
+            children: [
+              // TODO(jaime): add audio button here.
+              Center(
+                child: RoundedButton.text(
+                  context.l10n.matchmaking,
+                  backgroundColor: TopDashColors.seedGrey50,
+                  foregroundColor: TopDashColors.seedGrey70,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: TopDashSpacing.xxlg),
         ],
