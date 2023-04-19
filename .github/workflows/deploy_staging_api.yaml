@@ -1,12 +1,6 @@
 name: deploy_staging_api
 
-on:
-  push:
-    paths:
-      - "api/**"
-      - ".github/workflows/deploy_staging_api.yaml"
-    branches:
-      - main
+on: workflow_dispatch
 
 env:
   PROJECT_ID: top-dash-dev
