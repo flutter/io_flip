@@ -164,7 +164,34 @@ void main() {
     });
 
     testWidgets(
-      'renders the host and guest id when match making is completed',
+      'renders transition screen when matchmaking is completed, before going '
+      'to the game page',
+      (tester) async {
+        mockState(
+          MatchMakingState(
+            status: MatchMakingStatus.completed,
+            match: DraftMatch(
+              id: 'matchId',
+              host: 'hostId',
+              guest: 'guestId',
+            ),
+            isHost: true,
+          ),
+        );
+        await tester.pumpSubject(
+          bloc,
+          routerNeglectCall: router.neglect,
+        );
+
+        expect(find.text(tester.l10n.getReadyToFlip), findsOneWidget);
+
+        // Let timers finish before ending test
+        await tester.pump(Duration(seconds: 3));
+      },
+    );
+
+    testWidgets(
+      'navigates to game page once matchmaking is completed',
       (tester) async {
         mockState(
           MatchMakingState(
