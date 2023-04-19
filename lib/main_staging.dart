@@ -39,7 +39,7 @@ void main() async {
         );
 
         final apiClient = ApiClient(
-          baseUrl: 'https://top-dash-dev-api-synvj3dcmq-uc.a.run.app',
+          baseUrl: 'https://top-dash-dev-staging-synvj3dcmq-uc.a.run.app',
           idTokenStream: authenticationRepository.idToken,
           refreshIdToken: authenticationRepository.refreshIdToken,
           appCheckTokenStream: appCheck.onTokenChange,
