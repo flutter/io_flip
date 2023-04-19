@@ -25,7 +25,6 @@ void main() {
 
   const characterClasses = ['Archer', 'Magician'];
   const powers = ['Speed', 'Lazy'];
-  const secondaryPowers = ['Teleportation', 'Mind-reading'];
 
   setUp(() {
     promptFormBloc = _MockPromptFormBloc();
@@ -59,7 +58,6 @@ void main() {
             status: PromptTermsStatus.loaded,
             characterClasses: characterClasses,
             powers: powers,
-            secondaryPowers: secondaryPowers,
             prompts: prompt,
           ),
         ]),

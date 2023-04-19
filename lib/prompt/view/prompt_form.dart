@@ -52,8 +52,8 @@ class PromptForm extends StatelessWidget {
               MaterialPage(
                 child: PromptFormView(
                   title: context.l10n.secondaryPowerPromptPageTitle,
-                  itemsList: bloc.state.secondaryPowers,
-                  initialItem: _rng.nextInt(bloc.state.secondaryPowers.length),
+                  itemsList: [...bloc.state.powers]..remove(data.power),
+                  initialItem: _rng.nextInt(bloc.state.powers.length),
                   isLastOfFlow: true,
                 ),
               ),

@@ -40,7 +40,6 @@ void main() {
     prompts: Prompt(),
     characterClasses: ['Archer', 'Magician'],
     powers: ['Speed', 'Lazy'],
-    secondaryPowers: ['Teleportation', 'Mind-reading'],
   );
 
   group('PromptForm', () {
@@ -123,7 +122,7 @@ void main() {
                 isIntroSeen: true,
                 characterClass: 'Archer',
                 power: 'Speed',
-                secondaryPower: 'Teleportation',
+                secondaryPower: 'Lazy',
               ),
             ),
           ),

@@ -27,14 +27,12 @@ class PromptFormBloc extends Bloc<PromptFormEvent, PromptFormState> {
       final result = await Future.wait<List<String>>([
         _promptResource.getPromptTerms(PromptTermType.characterClass),
         _promptResource.getPromptTerms(PromptTermType.power),
-        _promptResource.getPromptTerms(PromptTermType.secondaryPower),
       ]);
 
       emit(
         state.copyWith(
           characterClasses: result[0]..sort(),
           powers: result[1]..sort(),
-          secondaryPowers: result[2]..sort(),
           status: PromptTermsStatus.loaded,
         ),
       );
