@@ -5,7 +5,7 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 /// {@template rounded_button}
 /// Top Dash Rounded Button.
 /// {@endtemplate}
-class RoundedButton extends StatelessWidget {
+class RoundedButton extends StatefulWidget {
   /// Basic [RoundedButton] with black shadow.
   /// Contains an [icon] as child
   RoundedButton.icon(
@@ -79,9 +79,23 @@ class RoundedButton extends StatelessWidget {
   /// Button background color
   final Color borderColor;
 
+  @override
+  State<RoundedButton> createState() => _RoundedButtonState();
+}
+
+class _RoundedButtonState extends State<RoundedButton> {
+  bool isPressed = false;
+
+  static const Offset offset = Offset(-2, 2);
+
+  @override
+  void setState(VoidCallback fn) {
+    if (mounted) super.setState(fn);
+  }
+
   void _onPressed(BuildContext context) {
     context.read<UISoundAdapter>().playButtonSound();
-    onPressed?.call();
+    widget.onPressed?.call();
   }
 
   @override
@@ -89,25 +103,31 @@ class RoundedButton extends StatelessWidget {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: onPressed == null ? null : () => _onPressed(context),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(40),
-            border: Border.all(
-              width: 2,
-              color: borderColor,
+        onTap: widget.onPressed == null ? null : () => _onPressed(context),
+        onTapDown: (_) => setState(() => isPressed = true),
+        onTapUp: (_) => setState(() => isPressed = false),
+        child: Transform.translate(
+          offset: isPressed ? offset : Offset.zero,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(40),
+              border: Border.all(
+                width: 2,
+                color: widget.borderColor,
+              ),
+              color: widget.backgroundColor,
+              boxShadow: [
+                if (!isPressed)
+                  const BoxShadow(
+                    offset: offset,
+                    spreadRadius: 1,
+                  ),
+              ],
             ),
-            color: backgroundColor,
-            boxShadow: const [
-              BoxShadow(
-                offset: Offset(-2, 2),
-                spreadRadius: 1,
-              )
-            ],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(TopDashSpacing.md),
-            child: child,
+            child: Padding(
+              padding: const EdgeInsets.all(TopDashSpacing.md),
+              child: widget.child,
+            ),
           ),
         ),
       ),
