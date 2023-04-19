@@ -6,7 +6,7 @@ import 'package:dart_frog/dart_frog.dart';
 import 'package:match_repository/match_repository.dart';
 
 FutureOr<Response> onRequest(RequestContext context) async {
-  if (context.request.method != HttpMethod.post) {
+  if (context.request.method == HttpMethod.post) {
     final matchRepository = context.read<MatchRepository>();
     try {
       final body =
