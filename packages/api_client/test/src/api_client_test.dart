@@ -45,7 +45,7 @@ class _FakeConnection extends Fake implements Connection {
 class _MockWebSocket extends Mock implements WebSocket {}
 
 class _MockWebSocketFactory extends Mock {
-  WebSocket call(Uri uri, {Duration? timeout});
+  WebSocket call(Uri uri, {Duration? timeout, String? binaryType});
 }
 
 void main() {
@@ -122,6 +122,7 @@ void main() {
         () => webSocketFactory(
           any(),
           timeout: any(named: 'timeout'),
+          binaryType: 'blob',
         ),
       ).thenReturn(webSocket);
 
@@ -422,6 +423,7 @@ void main() {
           () => webSocketFactory(
             Uri.parse('ws://baseurl.com/path'),
             timeout: any(named: 'timeout'),
+            binaryType: 'blob',
           ),
         ).called(1);
       });
@@ -445,6 +447,7 @@ void main() {
           () => webSocketFactory(
             Uri.parse('wss://baseurl.com/path'),
             timeout: any(named: 'timeout'),
+            binaryType: 'blob',
           ),
         ).called(1);
       });
@@ -468,6 +471,7 @@ void main() {
           () => webSocketFactory(
             Uri.parse('ws://baseurl.com/path'),
             timeout: any(named: 'timeout'),
+            binaryType: 'blob',
           ),
         ).called(1);
       });
@@ -522,6 +526,7 @@ void main() {
             () => webSocketFactory(
               Uri.parse('ws://baseurl.com/path'),
               timeout: any(named: 'timeout'),
+              binaryType: 'blob',
             ),
           ).called(1);
         },
@@ -532,6 +537,7 @@ void main() {
           () => webSocketFactory(
             any(),
             timeout: any(named: 'timeout'),
+            binaryType: 'blob',
           ),
         ).thenThrow(Exception('oops'));
 

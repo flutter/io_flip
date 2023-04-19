@@ -50,7 +50,11 @@ typedef GetCall = Future<http.Response> Function(
 });
 
 /// A factory to create and connect to a [WebSocket] instance.
-typedef WebSocketFactory = WebSocket Function(Uri uri, {Duration? timeout});
+typedef WebSocketFactory = WebSocket Function(
+  Uri uri, {
+  Duration? timeout,
+  String? binaryType,
+});
 
 /// {@template api_client}
 /// Client to access the api
@@ -198,7 +202,11 @@ class ApiClient {
     );
 
     try {
-      final webSocket = _webSocketFactory(uri, timeout: _webSocketTimeout);
+      final webSocket = _webSocketFactory(
+        uri,
+        timeout: _webSocketTimeout,
+        binaryType: 'blob',
+      );
       if (_idToken != null) {
         webSocket
           ..onConnected(
