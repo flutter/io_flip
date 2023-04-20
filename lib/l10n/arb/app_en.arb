@@ -77,10 +77,6 @@
   "@leaderboardFailedToLoad": {
     "description": "Label shown on the leaderboard when it fails to load"
   },
-  "menuCatchPhrase": "A global, AI-powered card collection game.",
-  "@menuCatchPhrase": {
-    "description": "Sentence shown on the main menu screen"
-  },
   "howToPlayHeader": "is a Flutter-powered, worldwide, card competition game.",
   "@howToPlayHeader": {
     "description": "Header shown on the how to play page"
