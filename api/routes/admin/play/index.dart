@@ -14,8 +14,8 @@ FutureOr<Response> onRequest(RequestContext context) async {
           jsonDecode(await context.request.body()) as Map<String, dynamic>;
       final message = body['message'] as Map<String, dynamic>;
       final data =
-          jsonDecode(utf8.decode(base64Decode(message['data'].toString())))
-              as Map<String, String>;
+          jsonDecode(utf8.decode(base64.decode(message['data'].toString())))
+              as Map<String, dynamic>;
 
       await matchRepository.playCard(
         matchId: data['matchId'].toString(),
