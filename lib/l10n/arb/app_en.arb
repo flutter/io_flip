@@ -266,13 +266,25 @@
   "@quitGameDialogDescription": {
     "description": "Description of the quit game dialog"
   },
-  "playerAlreadyConnectedError": "Please only use one tab at a time.",
+  "playerAlreadyConnectedError": "I/O Flip is already open on another tab",
   "@playerAlreadyConnectedError": {
     "description": "Error message shown when user connects in multiple tabs"
   },
-  "unknownConnectionError": "Unable to connect. Please try again in a few moments.",
+  "playerAlreadyConnectedErrorBody": "You can only play on one tab at a time.",
+  "@playerAlreadyConnectedErrorBody": {
+    "description": "Error message shown when user connects in multiple tabs"
+  },
+  "unknownConnectionError": "Unable to connect",
   "@unknownConnectionError": {
     "description": "Error message shown when an unknown error occurs while connecting"
+  },
+  "unknownConnectionErrorBody": "Please try again in a few moments.",
+  "@unknownConnectionErrorBody": {
+    "description": "Error message shown when an unknown error occurs while connecting"
+  },
+  "unknownConnectionErrorButton": "RETRY",
+  "@unknownConnectionErrorButton": {
+    "description": "Button shown when an unknown error occurs while connecting"
   },
   "twitterButtonLabel": "TWITTER",
   "@twitterButtonLabel": {
