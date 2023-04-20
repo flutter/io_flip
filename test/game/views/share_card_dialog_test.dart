@@ -66,7 +66,7 @@ void main() {
     testWidgets(
       'tapping the Facebook button launches the correct url',
       (tester) async {
-        // The default display size is too smal to include the facebook button.
+        // The default display size is too small to include the Facebook button.
         tester.setDisplaySize(const Size(1200, 800));
         await tester.pumpSubject();
 
