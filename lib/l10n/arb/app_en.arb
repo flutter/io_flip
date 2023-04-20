@@ -24,41 +24,37 @@
   "@gameResultError": {
     "description": "Displayed when error while getting game result"
   },
-  "characterPromptPageTitle": "First, what's your character?",
-  "@characterPromptPageTitle": {
-    "description": "Title of the prompt page for character"
+  "letsGetStarted": "Let's get started",
+  "@letsGetStarted": {
+    "description": "label let's get started"
   },
-  "powerPromptPageTitle": "Next, what's your power?",
+  "select": "Select",
+  "@select": {
+    "description": "label select"
+  },
+  "cardMaster": "I'm the card master!",
+  "@cardMaster": {
+    "description": "card master name title"
+  },
+  "niceToMeetYou": "Nice to meet you!",
+  "@niceToMeetYou": {
+    "description": "label nice to meet you"
+  },
+  "introTextPromptPage": "With just a few prompts, I can build us an AI-designed pack of cards featuring our favorite Google characters: Dash, Sparky, Android, and Dino imbued with special powers.",
+  "@introTextPromptPage": {
+    "description": "Text for the intro when selecting the prompt to build the deck"
+  },
+  "characterClassPromptPageTitle": "First, what's your team's type?",
+  "@characterClassPromptPageTitle": {
+    "description": "Title of the prompt page for character class"
+  },
+  "powerPromptPageTitle": "Next, what's their first power?",
   "@powerPromptPageTitle": {
     "description": "Title of the prompt page for power"
   },
-  "environmentPromptPageTitle": "Last, where are you from?",
-  "@environmentPromptPageTitle": {
-    "description": "Title of the prompt page for environment"
-  },
-  "characterPromptPageSubtitle": "i.e. athelete, magician, elephant, accountant",
-  "@characterPromptPageSubtitle": {
-    "description": "Subtitle of the prompt page for character"
-  },
-  "powerPromptPageSubtitle": "i.e. lightning, bagels, swords, rainbows",
-  "@powerPromptPageSubtitle": {
-    "description": "Subtitle of the prompt page for power"
-  },
-  "environmentPromptPageSubtitle": "i.e. space, cityscape, underwater, cavern",
-  "@environmentPromptPageSubtitle": {
-    "description": "Subtitle of the prompt page for environment"
-  },
-  "characterPromptPageHint": "Character",
-  "@characterPromptPageHint": {
-    "description": "Hint of the prompt page for character"
-  },
-  "powerPromptPageHint": "Power",
-  "@powerPromptPageHint": {
-    "description": "Hint of the prompt page for power"
-  },
-  "environmentPromptHint": "Environment",
-  "@environmentPromptHint": {
-    "description": "Hint of the prompt page for environment"
+  "secondaryPowerPromptPageTitle": "Last, what's one more power they use?",
+  "@secondaryPowerPromptPageTitle": {
+    "description": "Title of the prompt page for the secondary power"
   },
   "leaderboardLongestStreak": "HIGHEST WIN STREAK",
   "@leaderboardLongestStreak": {
@@ -238,11 +234,11 @@
   "@joinMatch": {
     "description": "Label join a match"
   },
-  "deckBuildingTitle": "Build your best hand",
+  "deckBuildingTitle": "Pick your team",
   "@deckBuildingTitle": {
     "description": "Title of the deck building page"
   },
-  "deckBuildingSubtitle": "Swipe to see the rest of your deck",
+  "deckBuildingSubtitle": "Swipe to see the rest of your pack",
   "@deckBuildingSubtitle": {
     "description": "Subtitle of the deck building page"
   },

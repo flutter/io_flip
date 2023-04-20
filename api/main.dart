@@ -76,16 +76,18 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
     );
 
     for (final value in PromptTermType.values) {
-      await dbClient.set(
-        'prompt_terms',
-        DbEntityRecord(
-          id: 'id',
-          data: {
-            'term': 'TST',
-            'type': value.name,
-          },
-        ),
-      );
+      for (var i = 0; i < 20; i++) {
+        await dbClient.set(
+          'prompt_terms',
+          DbEntityRecord(
+            id: 'id_${value.name}_$i',
+            data: {
+              'term': 'Test_${i.toString().padLeft(2, '0')}',
+              'type': value.name,
+            },
+          ),
+        );
+      }
     }
   }
 
