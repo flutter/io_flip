@@ -6,7 +6,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:prompt_repository/prompt_repository.dart';
 import 'package:test/test.dart';
 
-import '../../../../routes/game/prompt/whitelist.dart' as route;
+import '../../../../../routes/game/prompt/terms/index.dart' as route;
 
 class _MockPromptRepository extends Mock implements PromptRepository {}
 
@@ -23,7 +23,7 @@ void main() {
     late RequestContext context;
     late Uri uri;
 
-    const whitelist = [
+    const termsList = [
       PromptTerm(id: 'AAA', term: 'AAA', type: PromptTermType.character),
       PromptTerm(id: 'BBB', term: 'BBB', type: PromptTermType.character),
       PromptTerm(id: 'CCC', term: 'CCC', type: PromptTermType.character),
@@ -32,7 +32,7 @@ void main() {
     setUp(() {
       promptRepository = _MockPromptRepository();
       when(() => promptRepository.getPromptTerms(PromptTermType.character))
-          .thenAnswer((_) async => whitelist);
+          .thenAnswer((_) async => termsList);
 
       request = _MockRequest();
       when(() => request.method).thenReturn(HttpMethod.get);
@@ -57,14 +57,14 @@ void main() {
       expect(response.statusCode, equals(HttpStatus.methodNotAllowed));
     });
 
-    test('responds with bad request when the query is invalid', () async {
+    test('responds with bad request when the type is invalid', () async {
       when(() => uri.queryParameters).thenReturn({'type': 'not_valid'});
       final response = await route.onRequest(context);
       expect(response.statusCode, equals(HttpStatus.badRequest));
       expect(await response.body(), equals('Invalid type'));
     });
 
-    test('responds with the whitelist', () async {
+    test('responds with the terms list', () async {
       final response = await route.onRequest(context);
 
       final json = await response.json();
