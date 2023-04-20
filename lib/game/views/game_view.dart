@@ -33,7 +33,6 @@ class GameView extends StatelessWidget {
           if (state.matchState.result != null && state.turnAnimationsFinished) {
             return const GameSummaryView();
           }
-
           child = const _GameBoard();
         }
 

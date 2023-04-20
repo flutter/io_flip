@@ -488,6 +488,89 @@ void main() {
       });
     });
 
+    group('calculate result', () {
+      setUp(() {
+        when(
+          () => apiClient.get(any()),
+        ).thenAnswer((_) async => response);
+      });
+
+      test('makes the correct call', () async {
+        when(() => response.statusCode).thenReturn(HttpStatus.ok);
+        await resource.calculateResult(
+          matchId: 'matchId',
+        );
+
+        verify(
+          () => apiClient.get(
+            '/game/matches/matchId/result',
+          ),
+        ).called(1);
+      });
+
+      test('throws an ApiClientError when the request fails', () async {
+        when(
+          () => apiClient.get(
+            any(),
+          ),
+        ).thenThrow(Exception('Ops'));
+
+        await expectLater(
+          () => resource.calculateResult(
+            matchId: 'matchId',
+          ),
+          throwsA(
+            isA<ApiClientError>().having(
+              (e) => e.cause,
+              'cause',
+              equals(
+                'GET /matches/matchId/result failed with the following message: "Exception: Ops"',
+              ),
+            ),
+          ),
+        );
+      });
+
+      test('throws ApiClientError when the returns error code', () async {
+        when(() => response.statusCode).thenReturn(
+          HttpStatus.internalServerError,
+        );
+        when(() => response.body).thenReturn('Ops');
+
+        await expectLater(
+          () => resource.calculateResult(matchId: 'matchId'),
+          throwsA(
+            isA<ApiClientError>().having(
+              (e) => e.cause,
+              'cause',
+              equals(
+                'GET /matches/matchId/result returned status 500 with the following response: "Ops"',
+              ),
+            ),
+          ),
+        );
+      });
+
+      test('throws ApiClientError when the request breaks', () async {
+        when(
+          () => apiClient.get(any()),
+        ).thenThrow(Exception('Ops'));
+
+        await expectLater(
+          () => resource.calculateResult(matchId: 'matchId'),
+          throwsA(
+            isA<ApiClientError>().having(
+              (e) => e.cause,
+              'cause',
+              equals(
+                'GET /matches/matchId/result failed with the following message: "Exception: Ops"',
+              ),
+            ),
+          ),
+        );
+      });
+    });
+
     group('connectToCpuMatch', () {
       test('Makes the correct call', () {
         when(
