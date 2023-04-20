@@ -1,15 +1,29 @@
+import 'package:flame/cache.dart';
 import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:provider/provider.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
+
+class _MockImages extends Mock implements Images {}
 
 void main() {
   group('FlipCountdown', () {
+    late Images images;
+
+    setUp(() {
+      images = _MockImages();
+    });
+
     testWidgets('renders SpriteAnimationWidget', (tester) async {
       await tester.pumpWidget(
-        const Directionality(
+        Directionality(
           textDirection: TextDirection.ltr,
-          child: FlipCountdown(),
+          child: Provider.value(
+            value: images,
+            child: const FlipCountdown(),
+          ),
         ),
       );
 

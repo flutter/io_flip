@@ -2,6 +2,7 @@ import 'package:flame/cache.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:top_dash_ui/gen/assets.gen.dart';
 
 /// {@template flip_countdown}
@@ -31,12 +32,14 @@ class FlipCountdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final images = context.read<Images>();
+
     return SizedBox(
       height: height,
       width: width,
       child: SpriteAnimationWidget.asset(
         path: Assets.images.flipCountdown.keyName,
-        images: Images()..prefix = '',
+        images: images,
         anchor: Anchor.center,
         onComplete: onComplete,
         data: SpriteAnimationData.sequenced(

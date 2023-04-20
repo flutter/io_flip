@@ -1,6 +1,7 @@
 import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:connection_repository/connection_repository.dart';
+import 'package:flame/cache.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
@@ -81,6 +82,7 @@ class _AppState extends State<App> {
           Provider.value(value: widget.matchSolver),
           Provider.value(value: widget.gameScriptMachine),
           Provider.value(value: widget.user),
+          Provider.value(value: Images(prefix: '')),
           Provider<SettingsController>(
             lazy: false,
             create: (context) => SettingsController(
