@@ -15,7 +15,7 @@ class ConnectionRepository {
   }) : _apiClient = apiClient;
 
   final ApiClient _apiClient;
-  late WebSocket _webSocket;
+  WebSocket? _webSocket;
 
   /// Connects to the server using a WebSocket.
   Future<void> connect() async {
@@ -23,7 +23,8 @@ class ConnectionRepository {
   }
 
   /// The stream of [WebSocketMessage] received from the server.
-  Stream<WebSocketMessage> get messages => _webSocket.messages.transform(
+  Stream<WebSocketMessage> get messages =>
+      _webSocket?.messages.transform(
         StreamTransformer.fromHandlers(
           handleData: (rawMessage, sink) {
             try {
@@ -42,15 +43,17 @@ class ConnectionRepository {
             }
           },
         ),
-      );
+      ) ??
+      const Stream.empty();
 
   /// Sends a [WebSocketMessage] to the server.
   void send(WebSocketMessage message) {
-    _webSocket.send(jsonEncode(message));
+    _webSocket?.send(jsonEncode(message));
   }
 
   /// Closes the connection to the server.
   void close() {
-    _webSocket.close();
+    _webSocket?.close();
+    _webSocket = null;
   }
 }
