@@ -91,7 +91,7 @@ class _DraftDeck extends StatelessWidget {
     const cardSize = GameCardSize.lg();
 
     final bottomPadding = translateTween.transform(1).dy -
-        ((cardSize.size.height * (1 - scaleTween.transform(1))) / 2);
+        ((cardSize.height * (1 - scaleTween.transform(1))) / 2);
 
     final showArrows = MediaQuery.of(context).size.width > 500;
 

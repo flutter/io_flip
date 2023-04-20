@@ -198,7 +198,7 @@ class _LandscapeCardViewer extends StatelessWidget {
           transitionDuration: transitionDuration,
         ),
         SizedBox(
-          width: size.size.width + TopDashSpacing.xxxlg,
+          width: size.width + TopDashSpacing.xxxlg,
           child: _CardViewer(
             controller: controller,
             deck: deck,

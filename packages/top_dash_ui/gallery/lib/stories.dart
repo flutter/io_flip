@@ -67,7 +67,7 @@ void addStories(Dashbook dashbook) {
           description: context.textProperty(
             'description',
             'Dash, the Great, is the most popular bird in all of the dashland, '
-                'matering the development skills in all of the possible '
+                'mastering the development skills in all of the possible '
                 'platforms.',
           ),
         ),

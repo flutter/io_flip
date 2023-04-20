@@ -15,8 +15,8 @@ class GameCardStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cardList = [
-      _SmallGameCardItem(size: const GameCardSize.xs().size, name: 'xs'),
-      _SmallGameCardItem(size: const GameCardSize.sm().size, name: 'sm'),
+      const _SmallGameCardItem(size: GameCardSize.xs(), name: 'xs'),
+      const _SmallGameCardItem(size: GameCardSize.sm(), name: 'sm'),
       _GameCardItem(
         size: const GameCardSize.md(),
         name: 'md',
@@ -59,7 +59,7 @@ class GameCardStory extends StatelessWidget {
 class _SmallGameCardItem extends StatelessWidget {
   const _SmallGameCardItem({required this.size, required this.name});
 
-  final Size size;
+  final GameCardSize size;
   final String name;
 
   @override
@@ -113,7 +113,7 @@ class _GameCardItem extends StatelessWidget {
             size: size,
           ),
           const SizedBox(width: TopDashSpacing.md),
-          Text('$name (${size.size.width} x ${size.size.height})'),
+          Text('$name (${size.width} x ${size.height})'),
         ],
       ),
     );

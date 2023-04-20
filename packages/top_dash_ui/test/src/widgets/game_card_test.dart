@@ -109,12 +109,12 @@ void main() {
         ),
         isA<GameCardSize>()
             .having(
-              (size) => size.size.width,
+              (size) => size.width,
               'width',
               equals(75),
             )
             .having(
-              (size) => size.size.height,
+              (size) => size.height,
               'height',
               equals(100),
             )
@@ -138,12 +138,12 @@ void main() {
         ),
         isA<GameCardSize>()
             .having(
-              (size) => size.size.width,
+              (size) => size.width,
               'width',
               equals(100),
             )
             .having(
-              (size) => size.size.height.round(),
+              (size) => size.height.round(),
               'height',
               equals(133),
             )

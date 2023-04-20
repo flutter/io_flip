@@ -18,8 +18,8 @@ class FlippedGameCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: size.size.width,
-      height: size.size.height,
+      width: size.width,
+      height: size.height,
       child: Image.asset(
         Assets.images.cardFrames.cardBack.keyName,
         fit: BoxFit.cover,

@@ -9,10 +9,10 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 class GameCardSize {
   /// {@macro game_card_size}
   const GameCardSize({
-    required this.size,
+    required Size size,
     required this.titleTextStyle,
     required this.descriptionTextStyle,
-  });
+  }) : _size = size;
 
   /// XS size.
   const GameCardSize.xs()
@@ -62,8 +62,7 @@ class GameCardSize {
           descriptionTextStyle: TopDashTextStyles.cardDescriptionXXL,
         );
 
-  /// Size
-  final Size size;
+  final Size _size;
 
   /// Name text style
   final TextStyle titleTextStyle;
@@ -71,18 +70,24 @@ class GameCardSize {
   /// Description text style
   final TextStyle descriptionTextStyle;
 
+  /// Get the width of the card.
+  double get width => _size.width;
+
+  /// Get the height of the card.
+  double get height => _size.height;
+
   /// Scale the card by the given rect.
   ///
   /// The card will scale in a proportionate way to the rect.
   /// It will use the biggest scale factor based on width or height.
   GameCardSize scaleByRect(Rect rect) {
-    final widthFactor = size.width / rect.width;
-    final heightFactor = size.height / rect.height;
+    final widthFactor = width / rect.width;
+    final heightFactor = height / rect.height;
 
     final factor = math.max(widthFactor, heightFactor);
 
     return GameCardSize(
-      size: Size(size.width / factor, size.height / factor),
+      size: Size(width / factor, height / factor),
       titleTextStyle: titleTextStyle.copyWith(
         fontSize: titleTextStyle.fontSize! / factor,
       ),
@@ -156,16 +161,16 @@ class GameCard extends StatelessWidget {
     return Stack(
       children: [
         SizedBox(
-          width: size.size.width,
-          height: size.size.height,
+          width: size.width,
+          height: size.height,
           child: Stack(
             children: [
               Align(
                 alignment: Alignment.topCenter,
                 child: ClipRRect(
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(size.size.width * 0.25),
-                    topRight: Radius.circular(size.size.width * 0.25),
+                    topLeft: Radius.circular(size.width * 0.25),
+                    topRight: Radius.circular(size.width * 0.25),
                   ),
                   child: Image.network(image),
                 ),
@@ -194,8 +199,8 @@ class GameCard extends StatelessWidget {
               Align(
                 alignment: const Alignment(0, .85),
                 child: SizedBox(
-                  width: size.size.width * 0.8,
-                  height: size.size.height * 0.2,
+                  width: size.width * 0.8,
+                  height: size.height * 0.2,
                   child: Center(
                     child: Text(
                       description,
@@ -213,8 +218,8 @@ class GameCard extends StatelessWidget {
         if (overlay != null)
           CardOverlay.ofType(
             overlay!,
-            size.size.width,
-            size.size.height,
+            size.width,
+            size.height,
           )
       ],
     );
