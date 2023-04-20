@@ -15,8 +15,11 @@ class $AssetsIconsGen {
   /// File path: assets/icons/cancel.svg
   String get cancel => 'assets/icons/cancel.svg';
 
+  /// File path: assets/icons/info.svg
+  String get info => 'assets/icons/info.svg';
+
   /// List of all assets
-  List<String> get values => [cancel];
+  List<String> get values => [cancel, info];
 }
 
 class $AssetsImagesGen {

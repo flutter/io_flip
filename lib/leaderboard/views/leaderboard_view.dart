@@ -59,11 +59,12 @@ class LeaderboardViewState extends State<LeaderboardView> {
       child: DefaultTabController(
         length: tabs.length,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 500),
+          constraints: const BoxConstraints(maxWidth: 340),
           child: Column(
             children: [
               TabBar(
                 labelStyle: TopDashTextStyles.buttonSM,
+                labelPadding: EdgeInsets.zero,
                 tabs: [for (final tab in tabs.keys) Tab(text: tab)],
                 onTap: (i) => setState(() => index = i),
               ),

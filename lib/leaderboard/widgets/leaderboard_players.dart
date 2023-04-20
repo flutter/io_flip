@@ -50,30 +50,36 @@ class LeaderboardPlayer extends StatelessWidget {
         break;
     }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Container(
-              width: 24,
-              height: 24,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: color,
-                shape: BoxShape.circle,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.sm),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 24,
+                height: 24,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: color,
+                  shape: BoxShape.circle,
+                ),
+                child: Text(
+                  (index + 1).toString(),
+                  style: TopDashTextStyles.cardNumberXS,
+                ),
               ),
-              child: Text((index + 1).toString()),
-            ),
-            const SizedBox(width: TopDashSpacing.lg),
-            Text(initials, style: TopDashTextStyles.headlineH6),
-          ],
-        ),
-        Text(
-          value.toString(),
-          style: TopDashTextStyles.buttonLG,
-        ),
-      ],
+              const SizedBox(width: TopDashSpacing.xlg),
+              Text(initials, style: TopDashTextStyles.headlineH6),
+            ],
+          ),
+          Text(
+            value.toString(),
+            style: TopDashTextStyles.buttonLG,
+          ),
+        ],
+      ),
     );
   }
 }
