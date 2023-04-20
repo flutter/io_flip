@@ -8,9 +8,15 @@ environment:
 
 dependencies:
   dashbook: ^0.1.11
+  flame:
+    git:
+      url: https://github.com/willhlas/flame
+      path: packages/flame
+      ref: main
   flutter:
     sdk: flutter
   intl: ^0.17.0
+  provider: ^6.0.5
   top_dash_ui:
     path: ../
 

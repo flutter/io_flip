@@ -49,6 +49,11 @@ void addStories(Dashbook dashbook) {
         (_) => const FoilShaderStory(),
       );
 
+  dashbook.storiesOf('Flip Countdown').add(
+        'Flip Countdown',
+        (_) => const FlipCountdownStory(),
+      );
+
   dashbook
       .storiesOf('Cards')
       .add(
