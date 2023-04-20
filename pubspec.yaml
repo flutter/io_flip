@@ -25,6 +25,11 @@ dependencies:
   firebase_core: ^2.5.0
   firebase_crashlytics: ^3.1.0
   firebase_storage: ^11.1.0
+  flame:
+    git:
+      url: https://github.com/willhlas/flame
+      path: packages/flame
+      ref: main
   flow_builder: ^0.0.9
   flutter:
     sdk: flutter

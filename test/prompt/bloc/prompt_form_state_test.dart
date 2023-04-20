@@ -5,7 +5,7 @@ void main() {
   group('PromptFormState', () {
     group('copyWith', () {
       test('does not update omitted params', () {
-        const state = PromptFormState();
+        const state = PromptFormState.initial();
         expect(state.copyWith(), equals(state));
       });
     });

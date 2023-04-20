@@ -12,10 +12,13 @@ import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/match_making/views/match_making_page.dart';
+import 'package:top_dash/settings/settings.dart';
 
 import '../../helpers/helpers.dart';
 
 class _MockDraftBloc extends Mock implements DraftBloc {}
+
+class _MockSettingsController extends Mock implements SettingsController {}
 
 abstract class __Router {
   void neglect(BuildContext context, VoidCallback callback);
@@ -278,7 +281,7 @@ void main() {
           routerNeglectCall: router.neglect,
         );
 
-        await tester.tap(find.text('Private match'));
+        await tester.longPress(find.text(tester.l10n.joinMatch.toUpperCase()));
         await tester.pumpAndSettle();
 
         await tester.tap(find.text('Create private match'));
@@ -315,7 +318,7 @@ void main() {
           routerNeglectCall: router.neglect,
         );
 
-        await tester.tap(find.text('Private match'));
+        await tester.longPress(find.text(tester.l10n.joinMatch.toUpperCase()));
         await tester.pumpAndSettle();
 
         await tester.enterText(find.byType(TextField), 'invite-code');
@@ -353,7 +356,7 @@ void main() {
           goRouter: goRouter,
         );
 
-        await tester.tap(find.text('Private match'));
+        await tester.longPress(find.text(tester.l10n.joinMatch.toUpperCase()));
         await tester.pumpAndSettle();
 
         await tester.enterText(find.byType(TextField), 'invite-code');
@@ -404,6 +407,9 @@ extension DraftViewTest on WidgetTester {
     GoRouter? goRouter,
     RouterNeglectCall routerNeglectCall = Router.neglect,
   }) async {
+    final SettingsController settingsController = _MockSettingsController();
+    when(() => settingsController.muted).thenReturn(ValueNotifier(true));
+
     await mockNetworkImages(() {
       return pumpApp(
         BlocProvider.value(
@@ -413,6 +419,7 @@ extension DraftViewTest on WidgetTester {
           ),
         ),
         router: goRouter,
+        settingsController: settingsController,
       );
     });
   }

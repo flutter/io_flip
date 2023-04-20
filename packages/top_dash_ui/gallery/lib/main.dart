@@ -5,9 +5,15 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 
 void main() {
   final dashbook = Dashbook(
-    title: 'I/O Flip Dashbook',
+    title: 'I/O Flip Dashbookk',
     theme: TopDashTheme.themeData.copyWith(
+      // Edits to make drawer and its text visible with the dark theme.
       cardColor: TopDashColors.seedBlack,
+      expansionTileTheme:
+          const ExpansionTileThemeData(textColor: TopDashColors.seedWhite),
+      inputDecorationTheme: const InputDecorationTheme(
+        hintStyle: TextStyle(color: TopDashColors.seedWhite),
+      ),
     ),
   );
 

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
+import 'package:top_dash/audio/audio.dart';
 import 'package:top_dash/draft/draft.dart';
-import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/match_making/match_making.dart';
@@ -127,6 +127,9 @@ class _DraftDeck extends StatelessWidget {
                       (i + 1) / state.cards.length,
                     ),
                     child: Dismissible(
+                      direction: i == 0
+                          ? DismissDirection.horizontal
+                          : DismissDirection.none,
                       key: ValueKey(state.cards[i].id),
                       onDismissed: (direction) {
                         bloc.add(const CardSwiped());
@@ -197,6 +200,7 @@ class SelectedCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = context.watch<DraftBloc>();
     final selectedCards = bloc.state.selectedCards;
+    final card = index < selectedCards.length ? selectedCards[index] : null;
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
@@ -204,36 +208,46 @@ class SelectedCard extends StatelessWidget {
           bloc.add(const SelectCard());
         },
         child: Container(
-          height: 136,
-          width: 104,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(TopDashSpacing.sm),
-            border: Border.all(color: TopDashColors.seedWhite),
-          ),
+          height: 145,
+          width: 103,
+          decoration: card == null
+              ? BoxDecoration(
+                  borderRadius: BorderRadius.circular(TopDashSpacing.sm),
+                  border: Border.all(color: TopDashColors.seedGrey90),
+                )
+              : null,
           child: Stack(
             children: [
-              if (index < selectedCards.length) ...[
+              if (card != null) ...[
                 GameCard(
-                  name: selectedCards[index].name,
-                  description: selectedCards[index].name,
-                  power: selectedCards[index].power,
-                  suitName: selectedCards[index].suit.name,
-                  isRare: selectedCards[index].rarity,
-                  image: selectedCards[index].image,
+                  image: card.image,
+                  name: card.name,
+                  description: card.description,
+                  suitName: card.suit.name,
+                  power: card.power,
+                  isRare: card.rarity,
                   size: const GameCardSize.sm(),
                 ),
               ],
               Positioned(
                 bottom: TopDashSpacing.xs,
                 right: TopDashSpacing.xs,
-                child: Container(
-                  width: 32,
-                  height: 32,
+                child: DecoratedBox(
                   decoration: BoxDecoration(
                     color: TopDashColors.seedWhite,
                     borderRadius: BorderRadius.circular(4),
+                    border: Border.all(
+                      width: 2,
+                      color: TopDashColors.seedBlack,
+                    ),
+                    boxShadow: const [
+                      BoxShadow(
+                        offset: Offset(-2, 2),
+                        spreadRadius: 1,
+                      ),
+                    ],
                   ),
-                  child: Image.asset(Assets.images.add.path),
+                  child: const Icon(Icons.add, size: 32),
                 ),
               ),
             ],
@@ -272,13 +286,11 @@ class _BottomBar extends StatelessWidget {
               onPressed: () => HowToPlayDialog.show(context),
             ),
           ),
+          const Align(
+            alignment: Alignment.centerLeft,
+            child: AudioToggleButton(),
+          ),
           if (state.status == DraftStateStatus.deckSelected) ...[
-            Align(
-              alignment: Alignment.centerLeft,
-              child: _PrivateMatchButton(
-                routerNeglectCall: routerNeglectCall,
-              ),
-            ),
             Center(
               child: RoundedButton.text(
                 l10n.joinMatch.toUpperCase(),
@@ -289,6 +301,7 @@ class _BottomBar extends StatelessWidget {
                     extra: MatchMakingPageData(deck: state.selectedCards),
                   ),
                 ),
+                onLongPress: () => showPrivateMatchDialog(context),
               ),
             ),
           ] else ...[
@@ -313,47 +326,33 @@ class _BottomBar extends StatelessWidget {
       ),
     );
   }
-}
 
-class _PrivateMatchButton extends StatelessWidget {
-  const _PrivateMatchButton({
-    required this.routerNeglectCall,
-  });
-
-  final RouterNeglectCall routerNeglectCall;
-
-  @override
-  Widget build(BuildContext context) {
-    final bloc = context.watch<DraftBloc>();
+  void showPrivateMatchDialog(BuildContext context) {
+    final bloc = context.read<DraftBloc>();
     final state = bloc.state;
-    return ElevatedButton(
-      onPressed: () {
-        final goRouter = GoRouter.of(context);
+    final goRouter = GoRouter.of(context);
 
-        showDialog<String?>(
-          context: context,
-          builder: (_) => _JoinPrivateMatchDialog(
-            selectedCards: state.selectedCards,
-            routerNeglectCall: routerNeglectCall,
+    showDialog<String?>(
+      context: context,
+      builder: (_) => _JoinPrivateMatchDialog(
+        selectedCards: state.selectedCards,
+        routerNeglectCall: routerNeglectCall,
+      ),
+    ).then((inviteCode) {
+      if (inviteCode != null) {
+        routerNeglectCall(
+          context,
+          () => goRouter.goNamed(
+            'match_making',
+            queryParams: {
+              'inviteCode': inviteCode,
+            },
+            extra: MatchMakingPageData(deck: state.selectedCards),
           ),
-        ).then((inviteCode) {
-          if (inviteCode != null) {
-            routerNeglectCall(
-              context,
-              () => goRouter.goNamed(
-                'match_making',
-                queryParams: {
-                  'inviteCode': inviteCode,
-                },
-                extra: MatchMakingPageData(deck: state.selectedCards),
-              ),
-            );
-          }
-          return inviteCode;
-        });
-      },
-      child: const Text('Private match'),
-    );
+        );
+      }
+      return inviteCode;
+    });
   }
 }
 

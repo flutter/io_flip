@@ -15,13 +15,17 @@ class $AssetsImagesGen {
   $AssetsImagesCardFramesGen get cardFrames =>
       const $AssetsImagesCardFramesGen();
 
+  /// File path: assets/images/flip_countdown.png
+  AssetGenImage get flipCountdown =>
+      const AssetGenImage('assets/images/flip_countdown.png');
+
   /// File path: assets/images/io_flip_logo.svg
   String get ioFlipLogo => 'assets/images/io_flip_logo.svg';
 
   $AssetsImagesSuitsGen get suits => const $AssetsImagesSuitsGen();
 
   /// List of all assets
-  List<String> get values => [ioFlipLogo];
+  List<dynamic> get values => [flipCountdown, ioFlipLogo];
 }
 
 class $AssetsImagesCardFramesGen {
@@ -109,7 +113,7 @@ class AssetGenImage {
     bool matchTextDirection = false,
     bool gaplessPlayback = false,
     bool isAntiAlias = false,
-    String? package,
+    String? package = 'top_dash_ui',
     FilterQuality filterQuality = FilterQuality.low,
     int? cacheWidth,
     int? cacheHeight,
@@ -155,5 +159,5 @@ class AssetGenImage {
 
   String get path => _assetName;
 
-  String get keyName => _assetName;
+  String get keyName => 'packages/top_dash_ui/$_assetName';
 }
