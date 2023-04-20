@@ -23,7 +23,6 @@ class FlippedGameCard extends StatelessWidget {
       child: Image.asset(
         Assets.images.cardFrames.cardBack.keyName,
         fit: BoxFit.cover,
-        package: 'top_dash_ui',
       ),
     );
   }

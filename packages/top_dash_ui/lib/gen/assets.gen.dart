@@ -148,7 +148,7 @@ class AssetGenImage {
 
   ImageProvider provider({
     AssetBundle? bundle,
-    String? package,
+    String? package = 'top_dash_ui',
   }) {
     return AssetImage(
       _assetName,

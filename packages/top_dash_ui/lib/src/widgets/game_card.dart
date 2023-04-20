@@ -173,7 +173,6 @@ class GameCard extends StatelessWidget {
               Positioned.fill(
                 child: Image.asset(
                   _mapSuitNameToAsset(),
-                  package: 'top_dash_ui',
                 ),
               ),
               Align(

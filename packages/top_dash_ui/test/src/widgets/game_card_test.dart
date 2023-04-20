@@ -33,7 +33,7 @@ void main() {
                   if (widget is Image && widget.image is AssetImage) {
                     final assetImage = widget.image as AssetImage;
                     return assetImage.assetName ==
-                        'assets/images/card_frames/card_$suitName.png';
+                        'packages/top_dash_ui/assets/images/card_frames/card_$suitName.png';
                   }
                   return false;
                 },
