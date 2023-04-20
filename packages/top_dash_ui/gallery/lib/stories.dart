@@ -2,6 +2,7 @@ import 'package:dashbook/dashbook.dart';
 import 'package:gallery/colors/app_colors_story.dart';
 import 'package:gallery/spacing/app_spacing_story.dart';
 import 'package:gallery/typography/typography_story.dart';
+import 'package:gallery/widgets/bottom_bar_story.dart';
 import 'package:gallery/widgets/widgets.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -26,6 +27,11 @@ void addStories(Dashbook dashbook) {
   dashbook.storiesOf('Layouts').add(
         'Responsive Layout',
         (_) => const ResponsiveLayoutStory(),
+      );
+
+  dashbook.storiesOf('Layout Components').add(
+        'Bottom bar',
+        (_) => const BottomBarStory(),
       );
 
   dashbook.storiesOf('Buttons').add(

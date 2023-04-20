@@ -5,6 +5,7 @@ export 'flip_countdown.dart';
 export 'flipped_game_card.dart';
 export 'foil_shader.dart';
 export 'game_card.dart';
+export 'io_flip_bottom_bar.dart';
 export 'io_flip_logo.dart';
 export 'responsive_layout.dart';
 export 'rounded_button.dart';
