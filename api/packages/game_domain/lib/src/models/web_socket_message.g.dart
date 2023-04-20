@@ -24,12 +24,14 @@ WebSocketTokenPayload _$WebSocketTokenPayloadFromJson(
         Map<String, dynamic> json) =>
     WebSocketTokenPayload(
       token: json['token'] as String,
+      reconnect: json['reconnect'] as bool,
     );
 
 Map<String, dynamic> _$WebSocketTokenPayloadToJson(
         WebSocketTokenPayload instance) =>
     <String, dynamic>{
       'token': instance.token,
+      'reconnect': instance.reconnect,
     };
 
 WebSocketErrorPayload _$WebSocketErrorPayloadFromJson(
