@@ -1,15 +1,19 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/match_making/match_making.dart';
+import 'package:top_dash/settings/settings.dart';
 
 import '../../helpers/helpers.dart';
 
 class _MockGoRouterState extends Mock implements GoRouterState {}
+
+class _MockSettingsController extends Mock implements SettingsController {}
 
 const deck = [
   Card(
@@ -103,6 +107,8 @@ extension GameSummaryViewTest on WidgetTester {
   Future<void> pumpSubject({
     GoRouter? goRouter,
   }) {
+    final SettingsController settingsController = _MockSettingsController();
+    when(() => settingsController.muted).thenReturn(ValueNotifier(true));
     return mockNetworkImages(() {
       return pumpApp(
         MatchMakingPage(
@@ -111,6 +117,7 @@ extension GameSummaryViewTest on WidgetTester {
           inviteCode: null,
         ),
         router: goRouter,
+        settingsController: settingsController,
       );
     });
   }

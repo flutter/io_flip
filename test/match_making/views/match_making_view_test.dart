@@ -12,11 +12,14 @@ import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash/match_making/match_making.dart';
+import 'package:top_dash/settings/settings.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
 
 class _MockMatchMakingBloc extends Mock implements MatchMakingBloc {}
+
+class _MockSettingsController extends Mock implements SettingsController {}
 
 abstract class __Router {
   void neglect(BuildContext context, VoidCallback callback);
@@ -236,6 +239,9 @@ extension MatchMakingViewTest on WidgetTester {
     Future<void> Function(ClipboardData)? setClipboardData,
     RouterNeglectCall routerNeglectCall = Router.neglect,
   }) {
+    final SettingsController settingsController = _MockSettingsController();
+    when(() => settingsController.muted).thenReturn(ValueNotifier(true));
+
     return mockNetworkImages(() {
       return pumpApp(
         BlocProvider<MatchMakingBloc>.value(
@@ -275,6 +281,7 @@ extension MatchMakingViewTest on WidgetTester {
           ),
         ),
         router: goRouter,
+        settingsController: settingsController,
       );
     });
   }
