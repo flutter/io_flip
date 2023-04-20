@@ -10,6 +10,9 @@ class GetMatchFailure extends Error {}
 /// Throw when adding a move to a match fails.
 class PlayCardFailure extends Error {}
 
+/// Throw when calculating the result of a match fails.
+class CalculateResultFailure extends Error {}
+
 /// {@template match_repository}
 /// Access to Match datasource
 /// {@endtemplate}
@@ -157,18 +160,7 @@ class MatchRepository {
       final result = _matchSolver.calculateMatchResult(match, newMatchState);
       newMatchState = newMatchState.setResult(result);
 
-      final host = await getScoreCard(match.hostDeck.userId, match.hostDeck.id);
-      final guest = await getScoreCard(
-        match.guestDeck.userId,
-        match.guestDeck.id,
-      );
-      if (result == MatchResult.host) {
-        await _playerWon(host);
-        await _playerLost(guest);
-      } else if (result == MatchResult.guest) {
-        await _playerWon(guest);
-        await _playerLost(host);
-      }
+      await _setScoreCard(match, result);
     }
 
     await _dbClient.update(
@@ -203,6 +195,54 @@ class MatchRepository {
           );
         }),
       );
+    }
+  }
+
+  /// calculates and updates the result of a match
+  ///
+  /// Throws a [CalculateResultFailure] if match_state isn't found
+  Future<void> calculateMatchResult(String matchId) async {
+    final match = await getMatch(matchId);
+
+    if (match == null) throw CalculateResultFailure();
+
+    final matchState = await getMatchState(matchId);
+
+    if (matchState == null) throw CalculateResultFailure();
+
+    if (matchState.isOver() && matchState.result == null) {
+      final result = _matchSolver.calculateMatchResult(match, matchState);
+      final newMatchState = matchState.setResult(result);
+
+      await _setScoreCard(match, result);
+
+      await _dbClient.update(
+        'match_states',
+        DbEntityRecord(
+          id: newMatchState.id,
+          data: {
+            'matchId': matchId,
+            'hostPlayedCards': newMatchState.hostPlayedCards,
+            'guestPlayedCards': newMatchState.guestPlayedCards,
+            'result': newMatchState.result?.name,
+          },
+        ),
+      );
+    }
+  }
+
+  Future<void> _setScoreCard(Match match, MatchResult result) async {
+    final host = await getScoreCard(match.hostDeck.userId, match.hostDeck.id);
+    final guest = await getScoreCard(
+      match.guestDeck.userId,
+      match.guestDeck.id,
+    );
+    if (result == MatchResult.host) {
+      await _playerWon(host);
+      await _playerLost(guest);
+    } else if (result == MatchResult.guest) {
+      await _playerWon(guest);
+      await _playerLost(host);
     }
   }
 

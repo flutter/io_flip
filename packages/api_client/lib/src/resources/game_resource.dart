@@ -185,6 +185,31 @@ class GameResource {
     }
   }
 
+  /// Get the result of a match
+  ///
+  /// Get /matches/:matchId/result
+  Future<void> calculateResult({
+    required String matchId,
+  }) async {
+    try {
+      final response = await _apiClient.get('/game/matches/$matchId/result');
+
+      if (response.statusCode != HttpStatus.ok) {
+        throw ApiClientError(
+          'GET /matches/$matchId/result returned status ${response.statusCode} with the following response: "${response.body}"',
+          StackTrace.current,
+        );
+      }
+    } on ApiClientError {
+      rethrow;
+    } catch (e) {
+      throw ApiClientError(
+        'GET /matches/$matchId/result failed with the following message: "$e"',
+        StackTrace.current,
+      );
+    }
+  }
+
   /// WebSocket connect to  game/matches/connect
   Future<void> connectToCpuMatch({
     required String matchId,
