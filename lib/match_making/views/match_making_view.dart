@@ -2,8 +2,7 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:go_router/go_router.dart';
-import 'package:top_dash/game/views/game_page.dart';
+import 'package:top_dash/audio/audio.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/match_making/match_making.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
@@ -27,44 +26,44 @@ class MatchMakingView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<MatchMakingBloc, MatchMakingState>(
       listener: (previous, current) {
-        if (current.status == MatchMakingStatus.completed) {
-          Future.delayed(
-            const Duration(seconds: 3),
-            () => _routerNeglectCall(
-              context,
-              () => context.goNamed(
-                'game',
-                extra: GamePageData(
-                  isHost: current.isHost,
-                  matchId: current.match?.id ?? '',
-                ),
-              ),
-            ),
-          );
-        }
+        // if (current.status == MatchMakingStatus.completed) {
+        //   Future.delayed(
+        //     const Duration(seconds: 3),
+        //     () => _routerNeglectCall(
+        //       context,
+        //       () => context.goNamed(
+        //         'game',
+        //         extra: GamePageData(
+        //           isHost: current.isHost,
+        //           matchId: current.match?.id ?? '',
+        //         ),
+        //       ),
+        //     ),
+        //   );
+        // }
       },
       builder: (context, state) {
-        if (state.status == MatchMakingStatus.processing ||
-            state.status == MatchMakingStatus.initial) {
-          return ResponsiveLayoutBuilder(
-            small: (_, __) => _WaitingForMatchView(
-              deck: deck,
-              setClipboardData: _setClipboardData,
-              inviteCode: state.match?.inviteCode,
-              title: TopDashTextStyles.mobileH4Light,
-              subtitle: TopDashTextStyles.mobileH6Light,
-              key: const Key('small_waiting_for_match_view'),
-            ),
-            large: (_, __) => _WaitingForMatchView(
-              deck: deck,
-              setClipboardData: _setClipboardData,
-              inviteCode: state.match?.inviteCode,
-              title: TopDashTextStyles.headlineH4Light,
-              subtitle: TopDashTextStyles.headlineH6Light,
-              key: const Key('large_waiting_for_match_view'),
-            ),
-          );
-        }
+        // if (state.status == MatchMakingStatus.processing ||
+        //     state.status == MatchMakingStatus.initial) {
+        return ResponsiveLayoutBuilder(
+          small: (_, __) => _WaitingForMatchView(
+            deck: deck,
+            setClipboardData: _setClipboardData,
+            inviteCode: state.match?.inviteCode,
+            title: TopDashTextStyles.mobileH4Light,
+            subtitle: TopDashTextStyles.mobileH6Light,
+            key: const Key('small_waiting_for_match_view'),
+          ),
+          large: (_, __) => _WaitingForMatchView(
+            deck: deck,
+            setClipboardData: _setClipboardData,
+            inviteCode: state.match?.inviteCode,
+            title: TopDashTextStyles.headlineH4Light,
+            subtitle: TopDashTextStyles.headlineH6Light,
+            key: const Key('large_waiting_for_match_view'),
+          ),
+        );
+        // }
 
         if (state.status == MatchMakingStatus.timeout) {
           return const Scaffold(
@@ -127,6 +126,8 @@ class _WaitingForMatchView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmall = screenWidth < TopDashBreakpoints.small;
     return Scaffold(
       body: Column(
         children: [
@@ -205,17 +206,13 @@ class _WaitingForMatchView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: TopDashSpacing.sm),
-          Stack(
-            children: [
-              // TODO(jaime): add audio button here.
-              Center(
-                child: RoundedButton.text(
-                  context.l10n.matchmaking,
-                  backgroundColor: TopDashColors.seedGrey50,
-                  foregroundColor: TopDashColors.seedGrey70,
-                ),
-              ),
-            ],
+          IoFlipBottomBar(
+            leading: const AudioToggleButton(),
+            middle: RoundedButton.text(
+              context.l10n.matchmaking,
+              backgroundColor: TopDashColors.seedGrey50,
+              foregroundColor: TopDashColors.seedGrey70,
+            ),
           ),
           const SizedBox(height: TopDashSpacing.xxlg),
         ],
