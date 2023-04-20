@@ -22,7 +22,7 @@ class ShareResource {
       'https://www.facebook.com/sharer.php?u=$shareUrl';
 
   String _encode(List<String> content) =>
-      content.join('%0a').replaceAll(' ', '%20');
+      content.join('%0a').replaceAll(' ', '%20').replaceAll('#', '%23');
 
   /// Returns the url to share a tweet for the specified [cardId].
   String twitterShareCardUrl(String cardId) {
@@ -35,7 +35,7 @@ class ShareResource {
   }
 
   /// Returns the url to share a tweet for the specified [deckId].
-  String twitterShareHandUrl(String deckId, {bool isWinningHand = false}) {
+  String twitterShareHandUrl(String deckId) {
     final handUrl = _apiClient.shareHandUrl(deckId);
     final content = [
       _tweetContent,

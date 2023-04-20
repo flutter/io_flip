@@ -321,5 +321,33 @@
   "howToPlaySummaryTitle": "<bold>IO Flip</bold> was built using <bold>Flutter, Firebase and AI.</bold>",
   "@howToPlaySummaryTitle": {
     "description": "Text shown in the last page of the how to play flow"
+  },
+  "shareTeamTitle": "Share your team!",
+  "@shareTeamTitle": {
+    "description": "Title shown in the share hand page"
+  },
+  "winStreakLabel": "win streak!",
+  "@winStreakLabel": {
+    "description": "Label for how many wins the user has"
+  },
+  "shareButtonLabel": "SHARE",
+  "@shareButtonLabel": {
+    "description": "Text shown on the share button"
+  },
+  "mainMenuButtonLabel": "MAIN MENU",
+  "@mainMenuButtonLabel": {
+    "description": "Text shown on the main menu button"
+  },
+  "ioLinkLabel": "Google I/O",
+  "@ioLinkLabel": {
+    "description": "Text shown on the Google I/O link"
+  },
+  "howItsMadeLinkLabel": "How it's made",
+  "@howItsMadeLinkLabel": {
+    "description": "Text shown on the How it's made link"
+  },
+  "shareTeamDialogDescription": "Share your team from I/O Flip and challenge your friends to beat your streak!",
+  "@shareTeamDialogDescription": {
+    "description": "Text shown on the share team dialog"
   }
 }

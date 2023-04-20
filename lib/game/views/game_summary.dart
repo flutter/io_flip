@@ -2,7 +2,7 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:top_dash/game/game.dart';
-import 'package:top_dash/game/views/card_inspector.dart';
+import 'package:top_dash/share/views/card_inspector.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 

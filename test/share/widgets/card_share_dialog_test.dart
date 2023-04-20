@@ -2,7 +2,8 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
-import 'package:top_dash/game/views/share_card_dialog.dart';
+import 'package:top_dash/share/views/share_card_dialog.dart';
+import 'package:top_dash/share/widgets/widgets.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
@@ -20,7 +21,7 @@ const card = Card(
 );
 
 void main() {
-  group('ShareCardDialog', () {
+  group('CardShareDialog', () {
     setUpAll(() {
       launchedUrl = null;
     });
@@ -31,10 +32,10 @@ void main() {
       expect(find.byType(Dialog), findsOneWidget);
     });
 
-    testWidgets('renders a GameCard', (tester) async {
-      await tester.pumpSubject();
+    testWidgets('renders the content', (tester) async {
+      await tester.pumpSubject(content: const Text('test'));
 
-      expect(find.byType(GameCard), findsOneWidget);
+      expect(find.text('test'), findsOneWidget);
     });
 
     testWidgets('renders a Twitter button', (tester) async {
@@ -59,7 +60,6 @@ void main() {
 
     testWidgets('renders a Facebook button', (tester) async {
       await tester.pumpSubject();
-
       expect(find.text(tester.l10n.facebookButtonLabel), findsOneWidget);
     });
 
@@ -100,16 +100,16 @@ void main() {
 }
 
 extension ShareCardDialogTest on WidgetTester {
-  Future<void> pumpSubject() async {
+  Future<void> pumpSubject({Widget? content}) async {
     await mockNetworkImages(() {
       return pumpApp(
-        ShareCardDialog(
+        CardShareDialog(
+          content: content ?? Container(),
           twitterShareUrl: shareUrl,
           facebookShareUrl: shareUrl,
           urlLauncher: (url) async {
             launchedUrl = url;
           },
-          card: card,
         ),
       );
     });
