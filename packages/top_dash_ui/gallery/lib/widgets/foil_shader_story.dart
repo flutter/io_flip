@@ -32,15 +32,14 @@ class _FoilShaderStoryState extends State<FoilShaderStory> {
                 child: FoilShader(
                   dx: ((mousePosition?.dx ?? 0) / size.width) * 2 - 1,
                   dy: ((mousePosition?.dy ?? 0) / size.height) * 2 - 1,
-                  child: GameCard(
+                  child: const GameCard(
                     image:
                         'https://firebasestorage.googleapis.com/v0/b/top-dash-dev.appspot.com/o/public%2Fdash_3.png?alt=media',
                     name: 'Dash the Great',
+                    description: 'The best Dash in all the Dashland',
                     suitName: 'earth',
                     power: 57,
                     isRare: true,
-                    width: size.width,
-                    height: size.height,
                   ),
                 ),
               ),

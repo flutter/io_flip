@@ -6,14 +6,17 @@ class StoryScaffold extends StatelessWidget {
     super.key,
     required this.title,
     required this.body,
+    this.backgroundColor,
   });
 
   final String title;
   final Widget body;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text(title),
         titleTextStyle: TopDashTextStyles.mobile.titleSmall,

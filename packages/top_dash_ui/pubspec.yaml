@@ -30,3 +30,4 @@ flutter:
   assets:
     - assets/images/
     - assets/images/suits/
+    - assets/images/card_frames/

@@ -80,7 +80,7 @@ class _CardInspectorState extends State<CardInspector> {
                 deck: widget.deck,
                 transitionDuration: transitionDuration,
                 share: _shareDialog,
-                size: const Size(327, 435),
+                size: const GameCardSize.xxl(),
                 startingIndex: widget.startingIndex,
                 controller: controller,
                 playerCardIds: widget.playerCardIds,
@@ -90,7 +90,7 @@ class _CardInspectorState extends State<CardInspector> {
                 deck: widget.deck,
                 transitionDuration: transitionDuration,
                 share: _shareDialog,
-                size: const Size(327, 435),
+                size: const GameCardSize.xxl(),
                 startingIndex: widget.startingIndex,
                 controller: controller,
                 playerCardIds: widget.playerCardIds,
@@ -124,7 +124,7 @@ class _PortraitCardViewer extends StatelessWidget {
   final List<Card> deck;
   final Duration transitionDuration;
   final ShowShareDialog share;
-  final Size size;
+  final GameCardSize size;
   final int startingIndex;
   final PageController controller;
   final List<String> playerCardIds;
@@ -182,7 +182,7 @@ class _LandscapeCardViewer extends StatelessWidget {
   final List<Card> deck;
   final Duration transitionDuration;
   final ShowShareDialog share;
-  final Size size;
+  final GameCardSize size;
   final int startingIndex;
   final PageController controller;
   final List<String> playerCardIds;
@@ -198,7 +198,7 @@ class _LandscapeCardViewer extends StatelessWidget {
           transitionDuration: transitionDuration,
         ),
         SizedBox(
-          width: size.width + TopDashSpacing.xxxlg,
+          width: size.size.width + TopDashSpacing.xxxlg,
           child: _CardViewer(
             controller: controller,
             deck: deck,
@@ -270,7 +270,7 @@ class _CardViewer extends StatelessWidget {
 
   final PageController controller;
   final List<Card> deck;
-  final Size size;
+  final GameCardSize size;
   final ShowShareDialog share;
   final List<String> playerCardIds;
 
@@ -286,10 +286,10 @@ class _CardViewer extends StatelessWidget {
             children: [
               GameCard(
                 key: ValueKey('GameCard$index'),
-                width: size.width,
-                height: size.height,
+                size: size,
                 image: card.image,
                 name: card.name,
+                description: card.description,
                 suitName: card.suit.name,
                 power: card.power,
               ),

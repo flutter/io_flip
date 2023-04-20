@@ -88,11 +88,10 @@ class _DraftDeck extends StatelessWidget {
       end: .8,
     );
 
-    const cardWidth = 230.0;
-    const cardHeight = 328.0;
+    const cardSize = GameCardSize.lg();
 
     final bottomPadding = translateTween.transform(1).dy -
-        ((cardHeight * (1 - scaleTween.transform(1))) / 2);
+        ((cardSize.size.height * (1 - scaleTween.transform(1))) / 2);
 
     final showArrows = MediaQuery.of(context).size.width > 500;
 
@@ -138,10 +137,9 @@ class _DraftDeck extends StatelessWidget {
                       child: Opacity(
                         opacity: i == 0 ? state.firstCardOpacity : 1,
                         child: GameCard(
-                          width: cardWidth,
-                          height: cardHeight,
                           image: state.cards[i].image,
                           name: state.cards[i].name,
+                          description: state.cards[i].description,
                           power: state.cards[i].power,
                           suitName: state.cards[i].suit.name,
                           isRare: state.cards[i].rarity,
@@ -215,13 +213,15 @@ class SelectedCard extends StatelessWidget {
           child: Stack(
             children: [
               if (index < selectedCards.length) ...[
-                Center(
-                  child: Text(
-                    '${selectedCards[index].name}\n'
-                    '${selectedCards[index].power}',
-                    textAlign: TextAlign.center,
-                  ),
-                )
+                GameCard(
+                  name: selectedCards[index].name,
+                  description: selectedCards[index].name,
+                  power: selectedCards[index].power,
+                  suitName: selectedCards[index].suit.name,
+                  isRare: selectedCards[index].rarity,
+                  image: selectedCards[index].image,
+                  size: const GameCardSize.sm(),
+                ),
               ],
               Positioned(
                 bottom: TopDashSpacing.xs,

@@ -51,8 +51,8 @@ void main() {
     );
 
     const card3 = Card(
-      id: '2',
-      name: 'card2',
+      id: '3',
+      name: 'card3',
       description: '',
       rarity: true,
       image: '',

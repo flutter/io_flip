@@ -148,10 +148,10 @@ class _WaitingForMatchView extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(TopDashSpacing.xxs),
                   child: GameCard(
-                    height: 150,
-                    width: 100,
+                    size: const GameCardSize.sm(),
                     image: card.image,
                     name: card.name,
+                    description: card.description,
                     suitName: card.suit.name,
                     power: card.power,
                   ),

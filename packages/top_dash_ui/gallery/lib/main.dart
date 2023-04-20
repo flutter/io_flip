@@ -5,8 +5,10 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 
 void main() {
   final dashbook = Dashbook(
-    title: 'Top Dashbook',
-    theme: TopDashTheme.themeData,
+    title: 'I/O Flip Dashbook',
+    theme: TopDashTheme.themeData.copyWith(
+      cardColor: TopDashColors.seedBlack,
+    ),
   );
 
   addStories(dashbook);

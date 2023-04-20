@@ -347,19 +347,18 @@ class _OpponentCard extends StatelessWidget {
                           key: Key('opponent_revealed_card_${card.id}'),
                           image: card.image,
                           name: card.name,
+                          description: card.description,
                           power: card.power,
                           suitName: card.suit.name,
                           isRare: card.rarity,
-                          width: rect.width,
-                          height: rect.height,
+                          size: const GameCardSize.xs().scaleByRect(rect),
                           overlay: overlay,
                         ),
                       ],
                     )
                   : FlippedGameCard(
                       key: Key('opponent_hidden_card_${card.id}'),
-                      width: TopDashCardSizes.xs.width,
-                      height: TopDashCardSizes.xs.height,
+                      size: const GameCardSize.xs(),
                     ),
         );
       },
@@ -412,16 +411,15 @@ class _PlayerCard extends StatelessWidget {
               front: GameCard(
                 image: card.image,
                 name: card.name,
+                description: card.description,
                 power: card.power,
                 suitName: card.suit.name,
                 isRare: card.rarity,
-                width: rect.width,
-                height: rect.height,
+                size: const GameCardSize.xs().scaleByRect(rect),
                 overlay: overlay,
               ),
-              back: FlippedGameCard(
-                width: TopDashCardSizes.xs.width,
-                height: TopDashCardSizes.xs.height,
+              back: const FlippedGameCard(
+                size: GameCardSize.xs(),
               ),
             ),
           ),
