@@ -1,4 +1,6 @@
+import 'package:api_client/api_client.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/how_to_play/view/how_to_play_dialog.dart';
@@ -17,21 +19,29 @@ class MainMenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Stack(
-        children: [
-          Align(
-            child: _MainMenuScreenView(key: Key('main menu view')),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Align(
-              child: _Footer(key: Key('main menu footer')),
+    return BlocProvider<LeaderboardBloc>(
+      create: (context) {
+        final leaderboardResource = context.read<LeaderboardResource>();
+        return LeaderboardBloc(
+          leaderboardResource: leaderboardResource,
+        )..add(const LeaderboardRequested());
+      },
+      child: const Scaffold(
+        body: Stack(
+          children: [
+            Align(
+              child: _MainMenuScreenView(key: Key('main menu view')),
             ),
-          )
-        ],
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Align(
+                child: _Footer(key: Key('main menu footer')),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -58,7 +68,7 @@ class PortraitMenuView extends StatelessWidget {
       child: Column(
         children: [
           _MainImage(key: Key('main menu image')),
-          LeaderboardPage(),
+          LeaderboardView(),
           SizedBox(height: TopDashSpacing.xxlg),
         ],
       ),
@@ -86,7 +96,7 @@ class LandscapeMenuView extends StatelessWidget {
             ),
           ),
           const SingleChildScrollView(
-            child: LeaderboardPage(),
+            child: LeaderboardView(),
           ),
         ],
       ),
