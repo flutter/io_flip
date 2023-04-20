@@ -45,7 +45,7 @@ void main() {
       expect(response.statusCode, equals(HttpStatus.ok));
     });
 
-    test("responds 404 when the match doesn't exists", () async {
+    test("responds 400 when the match doesn't exists", () async {
       when(() => matchRepository.calculateMatchResult(any()))
           .thenThrow(CalculateResultFailure());
       final response = await route.onRequest(context, 'matchId');

@@ -205,7 +205,6 @@ class MatchRepository {
     final match = await getMatch(matchId);
 
     if (match == null) throw CalculateResultFailure();
-
     final matchState = await getMatchState(matchId);
 
     if (matchState == null) throw CalculateResultFailure();

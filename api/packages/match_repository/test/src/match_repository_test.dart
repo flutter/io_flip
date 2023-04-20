@@ -777,6 +777,309 @@ void main() {
       });
     });
 
+    group('calculateMatchResult', () {
+      late CardsRepository cardsRepository;
+      late DbClient dbClient;
+      late MatchRepository matchRepository;
+      late MatchSolver matchSolver;
+
+      const matchId = 'matchId';
+      const matchStateId = 'matchStateId';
+
+      final cards = List.generate(
+        6,
+        (i) => Card(
+          id: 'card_$i',
+          name: 'card_$i',
+          description: 'card_$i',
+          image: 'card_$i',
+          power: 10,
+          rarity: false,
+          suit: Suit.values[i % Suit.values.length],
+        ),
+      );
+
+      final hostDeck = Deck(
+        id: 'hostDeckId',
+        userId: 'hostUserId',
+        cards: [cards[0], cards[1], cards[2]],
+      );
+
+      final guestDeck = Deck(
+        id: 'guestDeckId',
+        userId: 'guestUserId',
+        cards: [cards[3], cards[4], cards[5]],
+      );
+
+      setUp(() {
+        cardsRepository = _MockCardRepository();
+        when(() => cardsRepository.getDeck(hostDeck.id))
+            .thenAnswer((_) async => hostDeck);
+        when(() => cardsRepository.getDeck(guestDeck.id))
+            .thenAnswer((_) async => guestDeck);
+
+        dbClient = _MockDbClient();
+
+        when(() => dbClient.getById('score_cards', any())).thenAnswer(
+          (_) async => DbEntityRecord(
+            id: 'scoreCardId',
+          ),
+        );
+
+        when(() => dbClient.getById('matches', matchId)).thenAnswer(
+          (_) async => DbEntityRecord(
+            id: matchId,
+            data: {
+              'host': hostDeck.id,
+              'guest': guestDeck.id,
+            },
+          ),
+        );
+
+        when(() => dbClient.findBy('match_states', 'matchId', matchId))
+            .thenAnswer(
+          (_) async => [
+            DbEntityRecord(
+              id: matchStateId,
+              data: const {
+                'matchId': matchId,
+                'guestPlayedCards': <String>['A', 'B', 'C'],
+                'hostPlayedCards': <String>['D', 'E', 'F'],
+              },
+            ),
+          ],
+        );
+
+        when(() => dbClient.update(any(), any())).thenAnswer((_) async {});
+
+        matchSolver = _MockMatchSolver();
+
+        matchRepository = MatchRepository(
+          cardsRepository: cardsRepository,
+          dbClient: dbClient,
+          matchSolver: matchSolver,
+        );
+      });
+
+      test('correctly updates the match state when is guest', () async {
+        when(() => matchSolver.calculateMatchResult(any(), any()))
+            .thenReturn(MatchResult.host);
+
+        await matchRepository.calculateMatchResult(matchId);
+
+        verify(
+          () => dbClient.update(
+            'match_states',
+            DbEntityRecord(
+              id: matchStateId,
+              data: const {
+                'matchId': matchId,
+                'hostPlayedCards': <String>['D', 'E', 'F'],
+                'guestPlayedCards': <String>['A', 'B', 'C'],
+                'result': 'host',
+              },
+            ),
+          ),
+        ).called(1);
+      });
+
+      test('throws CalculateResultFailure when match state is not found',
+          () async {
+        when(() => dbClient.findBy('match_states', 'matchId', matchId))
+            .thenAnswer((_) async => []);
+
+        await expectLater(
+          () => matchRepository.calculateMatchResult(matchId),
+          throwsA(isA<CalculateResultFailure>()),
+        );
+      });
+
+      test('throws CalculateResultFailure when match is not found', () async {
+        when(() => dbClient.getById('matches', matchId))
+            .thenAnswer((_) async => null);
+
+        await expectLater(
+          () => matchRepository.calculateMatchResult(matchId),
+          throwsA(isA<CalculateResultFailure>()),
+        );
+      });
+
+      group('score card', () {
+        setUp(() {
+          when(() => dbClient.findBy('match_states', 'matchId', matchId))
+              .thenAnswer(
+            (_) async => [
+              DbEntityRecord(
+                id: matchStateId,
+                data: const {
+                  'matchId': matchId,
+                  'guestPlayedCards': <String>['A', 'B', 'C'],
+                  'hostPlayedCards': <String>['D', 'E', 'F'],
+                },
+              ),
+            ],
+          );
+        });
+
+        test('updates correctly when host wins', () async {
+          when(() => matchSolver.calculateMatchResult(any(), any()))
+              .thenReturn(MatchResult.host);
+          when(() => dbClient.getById('score_cards', hostDeck.userId))
+              .thenAnswer(
+            (_) async => DbEntityRecord(
+              id: hostDeck.userId,
+              data: const {
+                'wins': 0,
+                'currentStreak': 0,
+                'longestStreak': 0,
+                'currentDeck': 'anyId',
+              },
+            ),
+          );
+
+          await matchRepository.calculateMatchResult(matchId);
+
+          verify(
+            () => dbClient.update(
+              'score_cards',
+              DbEntityRecord(
+                id: hostDeck.userId,
+                data: {
+                  'wins': 1,
+                  'currentStreak': 1,
+                  'longestStreak': 1,
+                  'longestStreakDeck': hostDeck.id,
+                  'currentDeck': hostDeck.id,
+                },
+              ),
+            ),
+          ).called(1);
+
+          verify(
+            () => dbClient.update(
+              'score_cards',
+              DbEntityRecord(
+                id: guestDeck.userId,
+                data: const {
+                  'currentStreak': 0,
+                },
+              ),
+            ),
+          ).called(1);
+        });
+
+        test('updates correctly when guest wins', () async {
+          when(() => matchSolver.calculateMatchResult(any(), any()))
+              .thenReturn(MatchResult.guest);
+          when(() => dbClient.getById('score_cards', guestDeck.userId))
+              .thenAnswer(
+            (_) async => DbEntityRecord(
+              id: guestDeck.userId,
+              data: const {
+                'wins': 0,
+                'currentStreak': 0,
+                'longestStreak': 0,
+                'currentDeck': 'anyId',
+              },
+            ),
+          );
+
+          await matchRepository.calculateMatchResult(matchId);
+
+          verify(
+            () => dbClient.update(
+              'score_cards',
+              DbEntityRecord(
+                id: guestDeck.userId,
+                data: {
+                  'wins': 1,
+                  'currentStreak': 1,
+                  'longestStreak': 1,
+                  'currentDeck': guestDeck.id,
+                  'longestStreakDeck': guestDeck.id,
+                },
+              ),
+            ),
+          ).called(1);
+
+          verify(
+            () => dbClient.update(
+              'score_cards',
+              DbEntityRecord(
+                id: hostDeck.userId,
+                data: const {
+                  'currentStreak': 0,
+                },
+              ),
+            ),
+          ).called(1);
+        });
+
+        test('updates correctly when any player wins but is not longest streak',
+            () async {
+          when(() => matchSolver.calculateMatchResult(any(), any()))
+              .thenReturn(MatchResult.guest);
+          when(() => dbClient.getById('score_cards', guestDeck.userId))
+              .thenAnswer(
+            (_) async => DbEntityRecord(
+              id: guestDeck.userId,
+              data: {
+                'wins': 0,
+                'currentStreak': 0,
+                'longestStreak': 2,
+                'currentDeck': guestDeck.id,
+                'longestStreakDeck': 'longestStreakDeckId'
+              },
+            ),
+          );
+
+          await matchRepository.calculateMatchResult(matchId);
+
+          verify(
+            () => dbClient.update(
+              'score_cards',
+              DbEntityRecord(
+                id: guestDeck.userId,
+                data: {
+                  'wins': 1,
+                  'currentStreak': 1,
+                  'longestStreak': 2,
+                  'currentDeck': guestDeck.id,
+                  'longestStreakDeck': 'longestStreakDeckId',
+                },
+              ),
+            ),
+          ).called(1);
+
+          verify(
+            () => dbClient.update(
+              'score_cards',
+              DbEntityRecord(
+                id: hostDeck.userId,
+                data: const {
+                  'currentStreak': 0,
+                },
+              ),
+            ),
+          ).called(1);
+        });
+
+        test('do not update when there is a draw', () async {
+          when(() => matchSolver.calculateMatchResult(any(), any()))
+              .thenReturn(MatchResult.draw);
+
+          await matchRepository.calculateMatchResult(matchId);
+
+          verifyNever(
+            () => dbClient.update(
+              'score_cards',
+              any(),
+            ),
+          );
+        });
+      });
+    });
+
     group('setCpuConnectivity', () {
       late final MatchRepository matchRepository;
       final dbClient = _MockDbClient();
