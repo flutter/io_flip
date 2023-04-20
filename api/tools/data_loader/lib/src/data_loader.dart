@@ -20,7 +20,7 @@ class DataLoader {
   /// Loads the data from the CSV file into the database
   /// [onProgress] is called everytime there is progress,
   /// it takes in the current inserted and the total to insert.
-  Future<void> load(void Function(int, int) onProgress) async {
+  Future<void> loadPromptTerms(void Function(int, int) onProgress) async {
     final prompts = <PromptTerm>[];
 
     final lines = await _csv.readAsLines();
@@ -28,13 +28,15 @@ class DataLoader {
     for (final line in lines.skip(1)) {
       final parts = line.split(',');
 
-      for (var j = 0; j < 5; j++) {
-        prompts.add(
-          PromptTerm(
-            term: parts[j],
-            type: PromptTermType.values[j],
-          ),
-        );
+      for (var j = 0; j < 4; j++) {
+        if (parts[j].isNotEmpty) {
+          prompts.add(
+            PromptTerm(
+              term: parts[j],
+              type: PromptTermType.values[j],
+            ),
+          );
+        }
       }
     }
 

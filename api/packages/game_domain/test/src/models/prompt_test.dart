@@ -15,17 +15,17 @@ void main() {
     test('Prompt correctly copies', () {
       const data1 = Prompt();
       final data2 = data1
-          .copyWithNewAttribute('character')
+          .copyWithNewAttribute('characterClass')
           .copyWithNewAttribute('power')
-          .copyWithNewAttribute('environment');
+          .copyWithNewAttribute('secondaryPower');
 
       expect(
         data2,
         equals(
           const Prompt(
-            character: 'character',
+            characterClass: 'characterClass',
             power: 'power',
-            environment: 'environment',
+            secondaryPower: 'secondaryPower',
           ),
         ),
       );
@@ -34,14 +34,14 @@ void main() {
     test('toJson returns the instance as json', () {
       expect(
         Prompt(
-          character: 'character',
+          characterClass: 'characterClass',
           power: 'power',
-          environment: 'environment',
+          secondaryPower: 'secondaryPower',
         ).toJson(),
         equals({
-          'character': 'character',
+          'characterClass': 'characterClass',
           'power': 'power',
-          'environment': 'environment',
+          'secondaryPower': 'secondaryPower',
         }),
       );
     });
@@ -49,15 +49,15 @@ void main() {
     test('fromJson returns the correct instance', () {
       expect(
         Prompt.fromJson(const {
-          'character': 'character',
+          'characterClass': 'characterClass',
           'power': 'power',
-          'environment': 'environment',
+          'secondaryPower': 'secondaryPower',
         }),
         equals(
           Prompt(
-            character: 'character',
+            characterClass: 'characterClass',
             power: 'power',
-            environment: 'environment',
+            secondaryPower: 'secondaryPower',
           ),
         ),
       );
@@ -66,47 +66,55 @@ void main() {
     test('supports equality', () {
       expect(
         Prompt(
-          character: 'character',
+          characterClass: 'characterClass',
           power: '',
-          environment: '',
+          secondaryPower: '',
         ),
         equals(
           Prompt(
-            character: 'character',
+            characterClass: 'characterClass',
             power: '',
-            environment: '',
+            secondaryPower: '',
           ),
         ),
       );
 
       expect(
         Prompt(
-          character: '',
+          characterClass: '',
           power: 'power',
-          environment: '',
+          secondaryPower: '',
         ),
         equals(
           Prompt(
-            character: '',
+            characterClass: '',
             power: 'power',
-            environment: '',
+            secondaryPower: '',
           ),
         ),
       );
 
       expect(
         Prompt(
-          character: '',
+          characterClass: '',
           power: '',
-          environment: 'environment',
+          secondaryPower: 'secondaryPower',
         ),
         equals(
           Prompt(
-            character: '',
+            characterClass: '',
             power: '',
-            environment: 'environment',
+            secondaryPower: 'secondaryPower',
           ),
         ),
+      );
+    });
+
+    test('sets intro seen', () {
+      final prompt = Prompt();
+      expect(
+        prompt.setIntroSeen(),
+        equals(Prompt(isIntroSeen: true)),
       );
     });
   });

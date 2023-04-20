@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:async';
+
 import 'package:api_client/api_client.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart' hide Card;
@@ -480,31 +482,14 @@ void main() {
       testWidgets(
         'completes and goes back when both players play a card',
         (tester) async {
+          final controller = StreamController<GameState>.broadcast();
+
           whenListen(
             bloc,
-            Stream.fromIterable([
-              baseState,
-              baseState.copyWith(
-                lastPlayedCardId: playerCards.first.id,
-                rounds: [
-                  MatchRound(
-                    playerCardId: playerCards.first.id,
-                    opponentCardId: null,
-                  )
-                ],
-              ),
-              baseState.copyWith(
-                lastPlayedCardId: opponentCards.first.id,
-                rounds: [
-                  MatchRound(
-                    playerCardId: playerCards.first.id,
-                    opponentCardId: opponentCards.first.id,
-                  )
-                ],
-              )
-            ]),
+            controller.stream,
             initialState: baseState,
           );
+
           await tester.pumpSubject(bloc);
 
           final playerCardFinder =
@@ -516,13 +501,38 @@ void main() {
           final playerInitialOffset = tester.getCenter(playerCardFinder);
           final opponentInitialOffset = tester.getCenter(opponentCardFinder);
 
+          controller.add(
+            baseState.copyWith(
+              lastPlayedCardId: playerCards.first.id,
+              rounds: [
+                MatchRound(
+                  playerCardId: playerCards.first.id,
+                  opponentCardId: null,
+                )
+              ],
+            ),
+          );
+
           // Get card offset after both players play and cards are in the clash
           // zone
           await tester.pumpAndSettle();
           final playerClashOffset = tester.getCenter(playerCardFinder);
           expect(playerInitialOffset, isNot(equals(playerClashOffset)));
 
+          controller.add(
+            baseState.copyWith(
+              lastPlayedCardId: opponentCards.first.id,
+              rounds: [
+                MatchRound(
+                  playerCardId: playerCards.first.id,
+                  opponentCardId: opponentCards.first.id,
+                )
+              ],
+            ),
+          );
+
           await tester.pumpAndSettle();
+
           final opponentClashOffset = tester.getCenter(opponentCardFinder);
           expect(opponentInitialOffset, isNot(equals(opponentClashOffset)));
 
@@ -536,7 +546,7 @@ void main() {
           expect(playerInitialOffset, equals(playerFinalOffset));
           expect(opponentInitialOffset, equals(opponentFinalOffset));
 
-          verify(() => bloc.add(CardOverlayRevealed())).called(2);
+          verify(() => bloc.add(CardOverlayRevealed())).called(1);
           verify(() => bloc.add(TurnAnimationsFinished())).called(2);
         },
       );

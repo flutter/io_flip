@@ -85,6 +85,49 @@
         }
       ],
       "predeploy": []
+    },
+    {
+      "target": "app_staging",
+      "public": "build/web",
+      "cleanUrls": true,
+      "trailingSlash": false,
+      "ignore": [
+        ".firebase",
+        "firebase.json",
+        "functions/node_modules",
+        "functions/src",
+        "__/**"
+      ],
+      "headers": [
+        {
+          "source": "**/*.@(eot|otf|ttf|ttc|woff|font.css)",
+          "headers": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            }
+          ]
+        },
+        {
+          "source": "**/*.@(jpg|jpeg|gif|png)",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "max-age=3600"
+            }
+          ]
+        },
+        {
+          "source": "**",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-cache, no-store, must-revalidate"
+            }
+          ]
+        }
+      ],
+      "predeploy": []
     }
   ],
   "firestore": {

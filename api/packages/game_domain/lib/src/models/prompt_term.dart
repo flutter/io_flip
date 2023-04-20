@@ -14,9 +14,6 @@ enum PromptTermType {
   /// Primary power type.
   power,
 
-  /// Secondary power class.
-  secondaryPower,
-
   /// A location.
   location;
 }

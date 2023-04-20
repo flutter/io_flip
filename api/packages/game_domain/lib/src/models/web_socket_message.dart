@@ -52,10 +52,10 @@ class WebSocketMessage extends Equatable {
         );
 
   /// A message containing an authentication token.
-  WebSocketMessage.token(String token)
+  WebSocketMessage.token(String token, {bool reconnect = false})
       : this(
           messageType: MessageType.token,
-          payload: WebSocketTokenPayload(token: token),
+          payload: WebSocketTokenPayload(token: token, reconnect: reconnect),
         );
 
   /// A message indicating a match has been joined.
@@ -136,6 +136,7 @@ class WebSocketTokenPayload extends WebSocketMessagePayload {
   /// {@macro web_socket_token_payload}
   const WebSocketTokenPayload({
     required this.token,
+    required this.reconnect,
   });
 
   /// Deserializes a [WebSocketTokenPayload] from a json map.
@@ -149,8 +150,12 @@ class WebSocketTokenPayload extends WebSocketMessagePayload {
   @JsonKey()
   final String token;
 
+  /// Whether or not the user is reconnecting.
+  @JsonKey()
+  final bool reconnect;
+
   @override
-  List<Object?> get props => [token];
+  List<Object?> get props => [token, reconnect];
 }
 
 /// {@template web_socket_error_payload}

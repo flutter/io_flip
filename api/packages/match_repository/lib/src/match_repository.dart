@@ -22,6 +22,7 @@ class MatchRepository {
     required MatchSolver matchSolver,
     required GcloudPubsub gcloudPubsub,
     required bool isRunningLocally,
+    this.trackPlayerPresence = true,
   })  : _cardsRepository = cardsRepository,
         _dbClient = dbClient,
         _gcloudPubsub = gcloudPubsub,
@@ -34,6 +35,10 @@ class MatchRepository {
   final GcloudPubsub _gcloudPubsub;
   final bool _isRunningLocally;
   static const _cpuPrefix = 'CPU_';
+
+  /// Configures whether we should actually track player presence or not.
+  /// Used to disable the multiple tab check in staging.
+  final bool trackPlayerPresence;
 
   /// Return the ScoreCard with the given [scoreCardId].
   Future<ScoreCard> getScoreCard(String scoreCardId, String deckId) async {
@@ -323,7 +328,8 @@ class MatchRepository {
   Future<bool> getPlayerConnectivity({required String userId}) async {
     final entity = await _dbClient.getById('connection_states', userId);
 
-    return (entity?.data['connected'] as bool?) ?? false;
+    return ((entity?.data['connected'] as bool?) ?? false) &&
+        trackPlayerPresence;
   }
 
   /// Sets the player with the given [userId] as connected or disconnected.

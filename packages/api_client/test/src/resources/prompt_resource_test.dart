@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:api_client/api_client.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:http/http.dart' as http;
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -23,26 +24,31 @@ void main() {
       resource = PromptResource(apiClient: apiClient);
     });
 
-    group('getPromptWhitelist', () {
+    group('getPromptTerms', () {
       setUp(() {
-        when(() => apiClient.get(any())).thenAnswer((_) async => response);
+        when(
+          () => apiClient.get(
+            any(),
+            queryParameters: any(named: 'queryParameters'),
+          ),
+        ).thenAnswer((_) async => response);
       });
 
-      test('gets whitelist', () async {
-        const whitelist = ['WTF'];
+      test('gets correct list', () async {
+        const powersList = ['Scientist'];
 
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
-        when(() => response.body).thenReturn(jsonEncode({'list': whitelist}));
-        final result = await resource.getPromptWhitelist();
+        when(() => response.body).thenReturn(jsonEncode({'list': powersList}));
+        final result = await resource.getPromptTerms(PromptTermType.power);
 
-        expect(result, equals(whitelist));
+        expect(result, equals(powersList));
       });
 
-      test('gets empty whitelist if endpoint not found', () async {
+      test('gets empty list if endpoint not found', () async {
         const emptyList = <String>[];
 
         when(() => response.statusCode).thenReturn(HttpStatus.notFound);
-        final result = await resource.getPromptWhitelist();
+        final result = await resource.getPromptTerms(PromptTermType.power);
 
         expect(result, equals(emptyList));
       });
@@ -53,13 +59,13 @@ void main() {
         when(() => response.body).thenReturn('Oops');
 
         await expectLater(
-          resource.getPromptWhitelist(),
+          resource.getPromptTerms(PromptTermType.power),
           throwsA(
             isA<ApiClientError>().having(
               (e) => e.cause,
               'cause',
               equals(
-                'GET /prompt/whitelist returned status 500 with the following response: "Oops"',
+                'GET /prompt/terms returned status 500 with the following response: "Oops"',
               ),
             ),
           ),
@@ -71,13 +77,13 @@ void main() {
         when(() => response.body).thenReturn('Oops');
 
         await expectLater(
-          resource.getPromptWhitelist(),
+          resource.getPromptTerms(PromptTermType.power),
           throwsA(
             isA<ApiClientError>().having(
               (e) => e.cause,
               'cause',
               equals(
-                'GET /prompt/whitelist returned invalid response "Oops"',
+                'GET /prompt/terms returned invalid response "Oops"',
               ),
             ),
           ),

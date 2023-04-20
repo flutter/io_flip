@@ -36,12 +36,16 @@ class _FakeConnection extends Fake implements Connection {
     ConnectionState Function()? orElse,
   }) =>
       stream.firstWhere(test, orElse: orElse);
+
+  @override
+  Stream<ConnectionState> where(bool Function(ConnectionState event) test) =>
+      stream.where(test);
 }
 
 class _MockWebSocket extends Mock implements WebSocket {}
 
 class _MockWebSocketFactory extends Mock {
-  WebSocket call(Uri uri);
+  WebSocket call(Uri uri, {Duration? timeout, String? binaryType});
 }
 
 void main() {
@@ -114,7 +118,13 @@ void main() {
       when(() => webSocket.connection).thenAnswer(
         (_) => _FakeConnection(connectionStreamController.stream),
       );
-      when(() => webSocketFactory(any())).thenReturn(webSocket);
+      when(
+        () => webSocketFactory(
+          any(),
+          timeout: any(named: 'timeout'),
+          binaryType: 'blob',
+        ),
+      ).thenReturn(webSocket);
 
       subject = ApiClient(
         baseUrl: baseUrl,
@@ -412,6 +422,8 @@ void main() {
         verify(
           () => webSocketFactory(
             Uri.parse('ws://baseurl.com/path'),
+            timeout: any(named: 'timeout'),
+            binaryType: 'blob',
           ),
         ).called(1);
       });
@@ -434,6 +446,8 @@ void main() {
         verify(
           () => webSocketFactory(
             Uri.parse('wss://baseurl.com/path'),
+            timeout: any(named: 'timeout'),
+            binaryType: 'blob',
           ),
         ).called(1);
       });
@@ -456,30 +470,78 @@ void main() {
         verify(
           () => webSocketFactory(
             Uri.parse('ws://baseurl.com/path'),
+            timeout: any(named: 'timeout'),
+            binaryType: 'blob',
           ),
         ).called(1);
       });
 
+      test(
+        'sends the token reconnect message every time the client reconnects',
+        () async {
+          connectionStreamController.onListen = null;
+          idTokenStreamController.add('token');
+          await Future.microtask(() {});
+          final response = subject.connect(path);
+
+          connectionStreamController.add(Connected());
+          expect(await response, equals(webSocket));
+
+          await Future.microtask(() {});
+          verify(
+            () => webSocket.send(jsonEncode(WebSocketMessage.token('token'))),
+          ).called(1);
+
+          connectionStreamController.add(Reconnected());
+          await Future.microtask(() {});
+          verify(
+            () => webSocket.send(
+              jsonEncode(
+                WebSocketMessage.token('token', reconnect: true),
+              ),
+            ),
+          ).called(1);
+
+          connectionStreamController.add(Reconnected());
+          await Future.microtask(() {});
+          verify(
+            () => webSocket.send(
+              jsonEncode(
+                WebSocketMessage.token('token', reconnect: true),
+              ),
+            ),
+          ).called(1);
+
+          connectionStreamController.add(Reconnected());
+          await Future.microtask(() {});
+          verify(
+            () => webSocket.send(
+              jsonEncode(
+                WebSocketMessage.token('token', reconnect: true),
+              ),
+            ),
+          ).called(1);
+
+          verify(
+            () => webSocketFactory(
+              Uri.parse('ws://baseurl.com/path'),
+              timeout: any(named: 'timeout'),
+              binaryType: 'blob',
+            ),
+          ).called(1);
+        },
+      );
+
       test('throws ApiClientError on error', () async {
         when(
-          () => webSocketFactory(any()),
+          () => webSocketFactory(
+            any(),
+            timeout: any(named: 'timeout'),
+            binaryType: 'blob',
+          ),
         ).thenThrow(Exception('oops'));
 
         await expectLater(
-          () => subject.connect(path),
-          throwsA(isA<ApiClientError>()),
-        );
-      });
-
-      test('throws ApiClientError when socket takes too long', () async {
-        connectionStreamController.onListen = () {
-          Future.delayed(
-            const Duration(seconds: 1),
-            () => connectionStreamController.add(Connected()),
-          );
-        };
-
-        expect(
           () => subject.connect(path),
           throwsA(isA<ApiClientError>()),
         );

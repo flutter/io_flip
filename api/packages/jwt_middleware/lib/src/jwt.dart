@@ -5,7 +5,12 @@ import 'package:clock/clock.dart';
 import 'package:x509/x509.dart';
 
 Uint8List _base64Decode(String encoded) {
-  final padding = '=' * (4 - encoded.length % 4);
+  final String padding;
+  if (encoded.length % 4 != 0) {
+    padding = '=' * (4 - encoded.length % 4);
+  } else {
+    padding = '';
+  }
   return base64Url.decode(encoded + padding);
 }
 

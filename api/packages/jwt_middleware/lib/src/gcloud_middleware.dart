@@ -1,10 +1,8 @@
 import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
-import 'package:jose/jose.dart';
 import 'package:jwt_middleware/jwt_middleware.dart';
 import 'package:jwt_middleware/src/jwt.dart';
-import 'package:x509/x509.dart';
 
 /// {@template gcloud_middleware}
 /// A dart_frog middleware for checking JWT authorization for gcloud token.

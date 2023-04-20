@@ -135,17 +135,17 @@ class _Footer extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           RoundedButton.icon(
-            const Icon(Icons.more_horiz_rounded),
+            Icons.more_horiz_rounded,
             onPressed: () => GoRouter.of(context).push('/settings'),
           ),
           _gap,
           RoundedButton.icon(
-            const Icon(Icons.share),
+            Icons.share,
             onPressed: () => GoRouter.of(context).goNamed('share'),
           ),
           _gap,
           RoundedButton.icon(
-            const Icon(Icons.question_mark_rounded),
+            Icons.question_mark_rounded,
             onPressed: () => HowToPlayDialog.show(context),
           ),
           _gap,

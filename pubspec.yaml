@@ -86,3 +86,8 @@ flutter:
         - asset: assets/fonts/RobotoSerif-Regular.ttf
         - asset: assets/fonts/RobotoSerif-Italic.ttf
           style: italic
+    - family: Saira
+      fonts:
+        - asset: assets/fonts/Saira-Regular.ttf
+        - asset: assets/fonts/Saira-Italic.ttf
+          style: italic
