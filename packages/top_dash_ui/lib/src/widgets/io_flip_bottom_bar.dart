@@ -63,11 +63,10 @@ enum _ToolbarSlot {
   trailing,
 }
 
-///
+/// Layout delegate that positions 3 widgets along a horizontal axis in order to
+/// keep the middle widget centered and leading and trailing in the left and
+/// right side of the screen respectively.
 class ToolbarLayout extends MultiChildLayoutDelegate {
-  ///
-  ToolbarLayout();
-
   /// The default spacing around the middle widget.
   static const double kMiddleSpacing = 16;
 
