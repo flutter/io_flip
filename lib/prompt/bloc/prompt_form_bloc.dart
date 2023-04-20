@@ -10,16 +10,36 @@ class PromptFormBloc extends Bloc<PromptFormEvent, PromptFormState> {
   PromptFormBloc({
     required PromptResource promptResource,
   })  : _promptResource = promptResource,
-        super(const PromptFormState()) {
-    _setWhitelist();
+        super(const PromptFormState.initial()) {
+    on<PromptTermsRequested>(_onPromptTermsRequested);
     on<PromptSubmitted>(_onPromptSubmitted);
   }
 
   final PromptResource _promptResource;
-  late final List<String> whitelist;
 
-  Future<void> _setWhitelist() async {
-    whitelist = await _promptResource.getPromptWhitelist();
+  Future<void> _onPromptTermsRequested(
+    PromptTermsRequested event,
+    Emitter<PromptFormState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(status: PromptTermsStatus.loading));
+
+      final result = await Future.wait<List<String>>([
+        _promptResource.getPromptTerms(PromptTermType.characterClass),
+        _promptResource.getPromptTerms(PromptTermType.power),
+      ]);
+
+      emit(
+        state.copyWith(
+          characterClasses: result[0]..sort(),
+          powers: result[1]..sort(),
+          status: PromptTermsStatus.loaded,
+        ),
+      );
+    } catch (e, s) {
+      addError(e, s);
+      emit(state.copyWith(status: PromptTermsStatus.failed));
+    }
   }
 
   void _onPromptSubmitted(

@@ -88,7 +88,7 @@ void main() {
       group('json', () {
         final json = {
           'messageType': 'token',
-          'payload': {'token': 'abcd'},
+          'payload': {'token': 'abcd', 'reconnect': false},
         };
 
         final message = WebSocketMessage.token('abcd');

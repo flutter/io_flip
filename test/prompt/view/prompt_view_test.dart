@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,23 +17,31 @@ class _MockPromptFormBloc extends MockBloc<PromptFormEvent, PromptFormState>
 void main() {
   late PromptFormBloc promptFormBloc;
   const prompt = Prompt(
-    character: 'za',
-    power: 'zz',
-    environment: 'zz',
+    isIntroSeen: true,
+    characterClass: 'class',
+    power: 'power',
+    secondaryPower: 'secPower',
   );
+
+  const characterClasses = ['Archer', 'Magician'];
+  const powers = ['Speed', 'Lazy'];
 
   setUp(() {
     promptFormBloc = _MockPromptFormBloc();
   });
 
   group('PromptView', () {
-    setUp(() {
-      when(() => promptFormBloc.state).thenReturn(
-        const PromptFormState(),
-      );
+    testWidgets('renders prompt view', (tester) async {
+      when(() => promptFormBloc.state).thenReturn(PromptFormState.initial());
+      await tester.pumpSubject(promptFormBloc, null);
+
+      expect(find.byType(PromptView), findsOneWidget);
     });
 
-    testWidgets('renders prompt view', (tester) async {
+    testWidgets('renders error message view', (tester) async {
+      when(() => promptFormBloc.state).thenReturn(
+        PromptFormState(status: PromptTermsStatus.failed, prompts: Prompt()),
+      );
       await tester.pumpSubject(promptFormBloc, null);
 
       expect(find.byType(PromptView), findsOneWidget);
@@ -42,12 +52,16 @@ void main() {
     setUp(() {
       whenListen(
         promptFormBloc,
-        Stream<PromptFormState>.value(
-          const PromptFormState(
+        Stream<PromptFormState>.fromIterable([
+          PromptFormState.initial(),
+          PromptFormState(
+            status: PromptTermsStatus.loaded,
+            characterClasses: characterClasses,
+            powers: powers,
             prompts: prompt,
           ),
-        ),
-        initialState: const PromptFormState(),
+        ]),
+        initialState: const PromptFormState.initial(),
       );
     });
 

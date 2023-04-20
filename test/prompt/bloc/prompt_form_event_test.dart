@@ -5,6 +5,18 @@ import 'package:game_domain/game_domain.dart';
 import 'package:top_dash/prompt/prompt.dart';
 
 void main() {
+  group('PromptTermsRequested', () {
+    test('can be instantiated', () {
+      expect(PromptTermsRequested(), isNotNull);
+    });
+
+    test('supports equality', () {
+      expect(
+        PromptTermsRequested(),
+        equals(PromptTermsRequested()),
+      );
+    });
+  });
   group('PromptSubmitted', () {
     test('can be instantiated', () {
       expect(PromptSubmitted(data: Prompt()), isNotNull);

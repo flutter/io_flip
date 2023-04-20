@@ -10,27 +10,62 @@ import 'package:top_dash/prompt/prompt.dart';
 class _MockPromptResource extends Mock implements PromptResource {}
 
 void main() {
+  setUpAll(() {
+    registerFallbackValue(PromptTermType.characterClass);
+  });
+
   group('PromptFormBloc', () {
     late PromptResource promptResource;
     const data = Prompt(
-      character: 'character',
+      characterClass: 'character',
       power: 'power',
-      environment: 'environment',
+      secondaryPower: 'environment',
     );
     setUp(() {
       promptResource = _MockPromptResource();
-
-      when(promptResource.getPromptWhitelist).thenAnswer((_) async => ['test']);
     });
 
     blocTest<PromptFormBloc, PromptFormState>(
       'emits state with prompts',
+      setUp: () {
+        when(() => promptResource.getPromptTerms(any()))
+            .thenAnswer((_) async => ['test']);
+      },
       build: () => PromptFormBloc(promptResource: promptResource),
+      seed: () => PromptFormState(
+        status: PromptTermsStatus.loaded,
+        prompts: Prompt(),
+      ),
       act: (bloc) {
         bloc.add(PromptSubmitted(data: data));
       },
       expect: () => <PromptFormState>[
-        PromptFormState(prompts: data),
+        PromptFormState(
+          status: PromptTermsStatus.loaded,
+          prompts: data,
+        ),
+      ],
+    );
+
+    blocTest<PromptFormBloc, PromptFormState>(
+      'emits state with error status',
+      setUp: () {
+        when(() => promptResource.getPromptTerms(any()))
+            .thenThrow(Exception('Oops'));
+      },
+      build: () => PromptFormBloc(promptResource: promptResource),
+      act: (bloc) {
+        bloc.add(PromptTermsRequested());
+      },
+      expect: () => <PromptFormState>[
+        PromptFormState(
+          status: PromptTermsStatus.loading,
+          prompts: Prompt(),
+        ),
+        PromptFormState(
+          status: PromptTermsStatus.failed,
+          prompts: Prompt(),
+        ),
       ],
     );
   });

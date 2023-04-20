@@ -50,7 +50,11 @@ typedef GetCall = Future<http.Response> Function(
 });
 
 /// A factory to create and connect to a [WebSocket] instance.
-typedef WebSocketFactory = WebSocket Function(Uri uri);
+typedef WebSocketFactory = WebSocket Function(
+  Uri uri, {
+  Duration? timeout,
+  String? binaryType,
+});
 
 /// {@template api_client}
 /// Client to access the api
@@ -198,24 +202,27 @@ class ApiClient {
     );
 
     try {
-      final webSocket = _webSocketFactory(uri);
-      if (_idToken != null) {
-        webSocket.onConnected(
-          () => webSocket.send(jsonEncode(WebSocketMessage.token(_idToken!))),
-        );
-      }
-
-      await webSocket.connection
-          .firstWhere((state) => state is Connected)
-          .timeout(
-        _webSocketTimeout,
-        onTimeout: () async {
-          webSocket.close();
-          throw TimeoutException(
-            'Could not connect within timeout: $_webSocketTimeout',
-          );
-        },
+      final webSocket = _webSocketFactory(
+        uri,
+        timeout: _webSocketTimeout,
+        binaryType: 'blob',
       );
+      if (_idToken != null) {
+        webSocket
+          ..onConnected(
+            () => webSocket.send(jsonEncode(WebSocketMessage.token(_idToken!))),
+          )
+          ..onReconnected(
+            () => webSocket.send(
+              jsonEncode(
+                WebSocketMessage.token(
+                  _idToken!,
+                  reconnect: true,
+                ),
+              ),
+            ),
+          );
+      }
 
       return webSocket;
     } catch (error) {
@@ -289,6 +296,12 @@ extension on WebSocket {
   void onConnected(void Function() onConnected) {
     connection.firstWhere((state) => state is Connected).then((_) {
       onConnected();
+    });
+  }
+
+  void onReconnected(void Function() onReconnected) {
+    connection.where((state) => state is Reconnected).forEach((_) {
+      onReconnected();
     });
   }
 }
