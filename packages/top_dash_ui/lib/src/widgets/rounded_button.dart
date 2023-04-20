@@ -11,6 +11,7 @@ class RoundedButton extends StatefulWidget {
   RoundedButton.icon(
     IconData icon, {
     this.onPressed,
+    this.onLongPress,
     super.key,
     this.backgroundColor = TopDashColors.seedBlack,
     Color? foregroundColor = TopDashColors.seedWhite,
@@ -22,6 +23,7 @@ class RoundedButton extends StatefulWidget {
   RoundedButton.text(
     String text, {
     this.onPressed,
+    this.onLongPress,
     super.key,
     this.backgroundColor = TopDashColors.seedYellow,
     Color? foregroundColor = TopDashColors.seedBlack,
@@ -42,6 +44,7 @@ class RoundedButton extends StatefulWidget {
     Image image, {
     String? label,
     this.onPressed,
+    this.onLongPress,
     super.key,
     this.backgroundColor = TopDashColors.seedWhite,
     Color? foregroundColor = TopDashColors.seedBlack,
@@ -73,6 +76,9 @@ class RoundedButton extends StatefulWidget {
   /// On pressed callback
   final GestureTapCallback? onPressed;
 
+  /// On long pressed callback
+  final GestureTapCallback? onLongPress;
+
   /// Button background color
   final Color backgroundColor;
 
@@ -80,12 +86,15 @@ class RoundedButton extends StatefulWidget {
   final Color borderColor;
 
   @override
-  State<RoundedButton> createState() => _RoundedButtonState();
+  State<RoundedButton> createState() => RoundedButtonState();
 }
 
-class _RoundedButtonState extends State<RoundedButton> {
+/// Top Dash Rounded Button state.
+class RoundedButtonState extends State<RoundedButton> {
+  /// Whether the button is pressed or not.
   bool isPressed = false;
 
+  /// Offset to move the button when pressed, and draw a shadow when not.
   static const Offset offset = Offset(-2, 2);
 
   @override
@@ -98,6 +107,11 @@ class _RoundedButtonState extends State<RoundedButton> {
     widget.onPressed?.call();
   }
 
+  void _onLongPress(BuildContext context) {
+    context.read<UISoundAdapter>().playButtonSound();
+    widget.onLongPress?.call();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
@@ -106,6 +120,9 @@ class _RoundedButtonState extends State<RoundedButton> {
         onTap: widget.onPressed == null ? null : () => _onPressed(context),
         onTapDown: (_) => setState(() => isPressed = true),
         onTapUp: (_) => setState(() => isPressed = false),
+        onTapCancel: () => setState(() => isPressed = false),
+        onLongPress:
+            widget.onLongPress == null ? null : () => _onLongPress(context),
         child: Transform.translate(
           offset: isPressed ? offset : Offset.zero,
           child: DecoratedBox(

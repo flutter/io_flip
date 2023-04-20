@@ -15,4 +15,7 @@ class FontFamily {
 
   /// Font family: Roboto Serif
   static const String robotoSerif = 'Roboto Serif';
+
+  /// Font family: Saira
+  static const String saira = 'Saira';
 }

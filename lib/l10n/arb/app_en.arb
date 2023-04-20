@@ -234,11 +234,11 @@
   "@joinMatch": {
     "description": "Label join a match"
   },
-  "deckBuildingTitle": "Build your best hand",
+  "deckBuildingTitle": "Pick your team",
   "@deckBuildingTitle": {
     "description": "Title of the deck building page"
   },
-  "deckBuildingSubtitle": "Swipe to see the rest of your deck",
+  "deckBuildingSubtitle": "Swipe to see the rest of your pack",
   "@deckBuildingSubtitle": {
     "description": "Subtitle of the deck building page"
   },

@@ -30,6 +30,54 @@ void main() {
       expect(wasTapped, isTrue);
     });
 
+    testWidgets('responds to long press', (tester) async {
+      var wasTapped = false;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Provider<UISoundAdapter>(
+            create: (_) => UISoundAdapter(playButtonSound: () {}),
+            child: Scaffold(
+              body: Center(
+                child: RoundedButton.icon(
+                  Icons.settings,
+                  onLongPress: () {
+                    wasTapped = true;
+                  },
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.longPress(find.byIcon(Icons.settings));
+      expect(wasTapped, isTrue);
+    });
+
+    testWidgets('cancelling tap animates correctly', (tester) async {
+      var wasTapped = false;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Provider<UISoundAdapter>(
+            create: (_) => UISoundAdapter(playButtonSound: () {}),
+            child: Scaffold(
+              body: Center(
+                child: RoundedButton.icon(
+                  Icons.settings,
+                  onPressed: () => wasTapped = true,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      final state =
+          tester.state(find.byType(RoundedButton)) as RoundedButtonState;
+
+      await tester.drag(find.byIcon(Icons.settings), const Offset(0, 100));
+      expect(wasTapped, isFalse);
+      expect(state.isPressed, isFalse);
+    });
+
     testWidgets('renders the given text and responds to taps', (tester) async {
       var wasTapped = false;
       await tester.pumpWidget(
