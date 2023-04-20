@@ -58,6 +58,12 @@ class JWT {
   /// The key id of the key used to sign this token.
   String? get keyId => _header['kid'] as String?;
 
+  /// The aud of this token
+  String? get aud => _payload['aud'] as String?;
+
+  /// The iss of this token
+  String? get iss => _payload['iss'] as String?;
+
   /// Verifies the signature of this token with the given [verifier].
   bool verifyWith(Verifier<PublicKey> verifier) {
     if (_signature == null) return false;
@@ -65,27 +71,22 @@ class JWT {
     return verifier.verify(_body, _signature!);
   }
 
-  /// Validates the fields of this token.
-  bool validate(String projectId) {
+  /// Validates the common fields of this token.
+  bool validateCommonFields(int nowSeconds) {
     if (_header['alg'] != 'RS256') {
       return false;
     }
-    final nowSeconds = clock.now().millisecondsSinceEpoch ~/ 1000;
     final exp = _payload['exp'] as int?;
     final iat = _payload['iat'] as int?;
-    final aud = _payload['aud'] as String?;
-    final iss = _payload['iss'] as String?;
     final sub = _payload['sub'] as String?;
-    final authTime = _payload['auth_time'] as int?;
-    final userId = _payload['user_id'] as String?;
 
     if (exp == null ||
         iat == null ||
         aud == null ||
         iss == null ||
-        sub == null ||
-        authTime == null ||
-        userId == null) return false;
+        sub == null) {
+      return false;
+    }
 
     if (exp <= nowSeconds) {
       return false;
@@ -93,12 +94,29 @@ class JWT {
     if (iat > nowSeconds) {
       return false;
     }
+    return true;
+  }
+
+  /// Validates the fields of this token.
+  bool validate(String projectId) {
+    final nowSeconds = clock.now().millisecondsSinceEpoch ~/ 1000;
+    final sub = _payload['sub'] as String?;
+    final authTime = _payload['auth_time'] as int?;
+    final userId = _payload['user_id'] as String?;
+
+    if (authTime == null ||
+        userId == null ||
+        !validateCommonFields(nowSeconds)) {
+      return false;
+    }
+
     if (aud != projectId) {
       return false;
     }
     if (iss != 'https://securetoken.google.com/$projectId') {
       return false;
     }
+
     if (authTime > nowSeconds) {
       return false;
     }
@@ -110,36 +128,16 @@ class JWT {
   }
 
   /// Validates the fields of this token for gcloud user.
-  bool validateGcloudUser() {
-    if (_header['alg'] != 'RS256') {
-      return false;
-    }
+  bool validateGcloudUser(String projectId) {
     final nowSeconds = clock.now().millisecondsSinceEpoch ~/ 1000;
-    final exp = _payload['exp'] as int?;
-    final iat = _payload['iat'] as int?;
-    final aud = _payload['aud'] as String?;
-    final iss = _payload['iss'] as String?;
-    final sub = _payload['sub'] as String?;
     final email = _payload['email'] as String?;
 
-    if (exp == null ||
-        iat == null ||
-        aud == null ||
-        iss == null ||
-        sub == null ||
-        email == null) return false;
-
-    if (exp <= nowSeconds) {
-      return false;
-    }
-    if (iat > nowSeconds) {
-      return false;
-    }
+    if (email == null || !validateCommonFields(nowSeconds)) return false;
 
     if (iss != 'https://accounts.google.com') {
       return false;
     }
-    if (email != 'api-service-account@top-dash-dev.iam.gserviceaccount.com') {
+    if (email != 'api-service-account@$projectId.iam.gserviceaccount.com') {
       return false;
     }
 

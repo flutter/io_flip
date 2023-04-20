@@ -14,29 +14,16 @@ class GCloudMiddleware {
   GCloudMiddleware({
     required String projectId,
     JwtParser parseJwt = JWT.from,
-    JwsParser parseJws = JsonWebSignature.fromCompactSerialization,
-    String? jwks,
     bool isEmulator = false,
   })  : _parseJwt = parseJwt,
-        _parseJws = parseJws,
-        _jwks = JsonWebKeyStore()..addKeySetUrl(Uri.parse(jwks ?? _jwksUrl)),
         _projectId = projectId,
-        _isEmulator = isEmulator,
-        _keys = const {};
+        _isEmulator = isEmulator;
 
   final JwtParser _parseJwt;
-  final JwsParser _parseJws;
-  final JsonWebKeyStore _jwks;
   final String _projectId;
   final bool _isEmulator;
 
-  static const _keyUrl =
-      'https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com';
-  static const _jwksUrl = 'https://firebaseappcheck.googleapis.com/v1/jwks';
-
-  DateTime? _keyExpiration;
-  Map<String, Verifier<PublicKey>> _keys;
-
+  /// The middleware function used by dart_frog.
   Middleware get middleware => (handler) {
         return (context) async {
           final authorization =
@@ -55,15 +42,16 @@ class GCloudMiddleware {
         };
       };
 
+  /// Verifies the given token and returns true if valid.
   Future<bool> verifyToken(String token) async {
     final JWT jwt;
     try {
-      jwt = JWT.from(token);
+      jwt = _parseJwt(token);
     } catch (e) {
       return false;
     }
 
-    if (jwt.validateGcloudUser()) {
+    if (_isEmulator || jwt.validateGcloudUser(_projectId)) {
       return true;
     }
 

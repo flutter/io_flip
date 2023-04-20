@@ -38,7 +38,6 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   gCloudJwtMiddleware = GCloudMiddleware(
     projectId: _appId,
     isEmulator: _useEmulator,
-    jwks: '',
   );
   jwtMiddleware = JwtMiddleware(
     projectId: _appId,
