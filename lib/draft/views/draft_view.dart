@@ -271,58 +271,37 @@ class _BottomBar extends StatelessWidget {
     final state = bloc.state;
     final l10n = context.l10n;
 
-    final viewPortHeight = MediaQuery.of(context).size.height;
-    final isSmall = viewPortHeight < 700;
-
-    return Container(
-      padding: const EdgeInsets.all(TopDashSpacing.sm),
-      height: isSmall ? 64 : 96,
-      child: Stack(
-        children: [
-          Align(
-            alignment: Alignment.centerRight,
-            child: RoundedButton.icon(
-              Icons.question_mark_rounded,
-              onPressed: () => HowToPlayDialog.show(context),
-            ),
-          ),
-          const Align(
-            alignment: Alignment.centerLeft,
-            child: AudioToggleButton(),
-          ),
-          if (state.status == DraftStateStatus.deckSelected) ...[
-            Center(
-              child: RoundedButton.text(
-                l10n.joinMatch.toUpperCase(),
-                onPressed: () => routerNeglectCall(
-                  context,
-                  () => GoRouter.of(context).goNamed(
-                    'match_making',
-                    extra: MatchMakingPageData(deck: state.selectedCards),
-                  ),
+    return IoFlipBottomBar(
+      leading: const AudioToggleButton(),
+      middle: state.status == DraftStateStatus.deckSelected
+          ? RoundedButton.text(
+              l10n.joinMatch.toUpperCase(),
+              onPressed: () => routerNeglectCall(
+                context,
+                () => GoRouter.of(context).goNamed(
+                  'match_making',
+                  extra: MatchMakingPageData(deck: state.selectedCards),
                 ),
-                onLongPress: () => showPrivateMatchDialog(context),
               ),
-            ),
-          ] else ...[
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    l10n.deckBuildingTitle,
-                    style: TopDashTextStyles.mobileH6Light,
-                  ),
-                  const SizedBox(height: TopDashSpacing.xs),
-                  Text(
-                    l10n.deckBuildingSubtitle,
-                    style: TopDashTextStyles.bodySM,
-                  ),
-                ],
-              ),
+              onLongPress: () => showPrivateMatchDialog(context),
             )
-          ],
-        ],
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  l10n.deckBuildingTitle,
+                  style: TopDashTextStyles.mobileH6Light,
+                ),
+                const SizedBox(height: TopDashSpacing.xs),
+                Text(
+                  l10n.deckBuildingSubtitle,
+                  style: TopDashTextStyles.bodySM,
+                ),
+              ],
+            ),
+      trailing: RoundedButton.icon(
+        Icons.question_mark_rounded,
+        onPressed: () => HowToPlayDialog.show(context),
       ),
     );
   }
