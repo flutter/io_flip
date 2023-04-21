@@ -864,8 +864,18 @@ void main() {
       test('correctly updates the match state when host wins', () async {
         when(() => matchSolver.calculateMatchResult(any(), any()))
             .thenReturn(MatchResult.host);
+        final match = Match(id: 'id', hostDeck: hostDeck, guestDeck: guestDeck);
+        final matchState = MatchState(
+          id: 'matchStateId',
+          matchId: matchId,
+          hostPlayedCards: const ['A', 'B', 'C'],
+          guestPlayedCards: const ['D', 'E', 'F'],
+        );
 
-        await matchRepository.calculateMatchResult(matchId);
+        await matchRepository.calculateMatchResult(
+          match: match,
+          matchState: matchState,
+        );
 
         verify(
           () => dbClient.update(
@@ -883,70 +893,47 @@ void main() {
         ).called(1);
       });
 
-      test('correctly updates the match state when guest wins', () async {
-        when(() => matchSolver.calculateMatchResult(any(), any()))
-            .thenReturn(MatchResult.guest);
-
-        await matchRepository.calculateMatchResult(matchId);
-
-        verify(
-          () => dbClient.update(
-            'match_states',
-            DbEntityRecord(
-              id: matchStateId,
-              data: const {
-                'matchId': matchId,
-                'hostPlayedCards': <String>['D', 'E', 'F'],
-                'guestPlayedCards': <String>['A', 'B', 'C'],
-                'result': 'guest',
-              },
-            ),
-          ),
-        ).called(1);
-      });
-
-      test("correctly updates the match state when it's a draw", () async {
-        when(() => matchSolver.calculateMatchResult(any(), any()))
-            .thenReturn(MatchResult.draw);
-
-        await matchRepository.calculateMatchResult(matchId);
-
-        verify(
-          () => dbClient.update(
-            'match_states',
-            DbEntityRecord(
-              id: matchStateId,
-              data: const {
-                'matchId': matchId,
-                'hostPlayedCards': <String>['D', 'E', 'F'],
-                'guestPlayedCards': <String>['A', 'B', 'C'],
-                'result': 'draw',
-              },
-            ),
-          ),
-        ).called(1);
-      });
-
-      test('throws CalculateResultFailure when match state is not found',
-          () async {
-        when(() => dbClient.findBy('match_states', 'matchId', matchId))
-            .thenAnswer((_) async => []);
+      test('throws CalculateResultFailure when match is not over', () async {
+        final match = Match(id: 'id', hostDeck: hostDeck, guestDeck: guestDeck);
+        final matchState = MatchState(
+          id: 'matchStateId',
+          matchId: matchId,
+          hostPlayedCards: const ['A'],
+          guestPlayedCards: const ['B'],
+        );
 
         await expectLater(
-          () => matchRepository.calculateMatchResult(matchId),
+          () => matchRepository.calculateMatchResult(
+            match: match,
+            matchState: matchState,
+          ),
           throwsA(isA<CalculateResultFailure>()),
         );
       });
 
-      test('throws CalculateResultFailure when match is not found', () async {
-        when(() => dbClient.getById('matches', matchId))
-            .thenAnswer((_) async => null);
+      test(
+        'throws CalculateResultFailure when match is over and already has a '
+        'result',
+        () async {
+          final match =
+              Match(id: 'id', hostDeck: hostDeck, guestDeck: guestDeck);
+          final matchState = MatchState(
+            id: 'matchStateId',
+            matchId: matchId,
+            hostPlayedCards: const ['A', 'B', 'C'],
+            guestPlayedCards: const ['D', 'E', 'F'],
+            result: MatchResult.draw,
+          );
 
-        await expectLater(
-          () => matchRepository.calculateMatchResult(matchId),
-          throwsA(isA<CalculateResultFailure>()),
-        );
-      });
+          await expectLater(
+            () => matchRepository.calculateMatchResult(
+              match: match,
+              matchState: matchState,
+            ),
+            throwsA(isA<CalculateResultFailure>()),
+          );
+        },
+      );
 
       group('score card', () {
         setUp(() {
@@ -981,7 +968,19 @@ void main() {
             ),
           );
 
-          await matchRepository.calculateMatchResult(matchId);
+          final match =
+              Match(id: 'id', hostDeck: hostDeck, guestDeck: guestDeck);
+          final matchState = MatchState(
+            id: 'matchStateId',
+            matchId: matchId,
+            hostPlayedCards: const ['A', 'B', 'C'],
+            guestPlayedCards: const ['D', 'E', 'F'],
+          );
+
+          await matchRepository.calculateMatchResult(
+            match: match,
+            matchState: matchState,
+          );
 
           verify(
             () => dbClient.update(
@@ -1028,7 +1027,19 @@ void main() {
             ),
           );
 
-          await matchRepository.calculateMatchResult(matchId);
+          final match =
+              Match(id: 'id', hostDeck: hostDeck, guestDeck: guestDeck);
+          final matchState = MatchState(
+            id: 'matchStateId',
+            matchId: matchId,
+            hostPlayedCards: const ['A', 'B', 'C'],
+            guestPlayedCards: const ['D', 'E', 'F'],
+          );
+
+          await matchRepository.calculateMatchResult(
+            match: match,
+            matchState: matchState,
+          );
 
           verify(
             () => dbClient.update(
@@ -1077,7 +1088,19 @@ void main() {
             ),
           );
 
-          await matchRepository.calculateMatchResult(matchId);
+          final match =
+              Match(id: 'id', hostDeck: hostDeck, guestDeck: guestDeck);
+          final matchState = MatchState(
+            id: 'matchStateId',
+            matchId: matchId,
+            hostPlayedCards: const ['A', 'B', 'C'],
+            guestPlayedCards: const ['D', 'E', 'F'],
+          );
+
+          await matchRepository.calculateMatchResult(
+            match: match,
+            matchState: matchState,
+          );
 
           verify(
             () => dbClient.update(
@@ -1112,7 +1135,19 @@ void main() {
           when(() => matchSolver.calculateMatchResult(any(), any()))
               .thenReturn(MatchResult.draw);
 
-          await matchRepository.calculateMatchResult(matchId);
+          final match =
+              Match(id: 'id', hostDeck: hostDeck, guestDeck: guestDeck);
+          final matchState = MatchState(
+            id: 'matchStateId',
+            matchId: matchId,
+            hostPlayedCards: const ['A', 'B', 'C'],
+            guestPlayedCards: const ['D', 'E', 'F'],
+          );
+
+          await matchRepository.calculateMatchResult(
+            match: match,
+            matchState: matchState,
+          );
 
           verifyNever(
             () => dbClient.update(

@@ -189,10 +189,18 @@ class GameResource {
   ///
   /// Patch /matches/:matchId/result
   Future<void> calculateResult({
-    required String matchId,
+    required Match match,
+    required MatchState matchState,
   }) async {
+    final matchId = match.id;
     try {
-      final response = await _apiClient.patch('/game/matches/$matchId/result');
+      final response = await _apiClient.patch(
+        '/game/matches/$matchId/result',
+        body: {
+          'match': match.toJson(),
+          'matchState': matchState.toJson(),
+        },
+      );
 
       if (response.statusCode != HttpStatus.ok) {
         throw ApiClientError(

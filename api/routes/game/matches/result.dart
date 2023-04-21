@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:match_repository/match_repository.dart';
 
 FutureOr<Response> onRequest(RequestContext context, String matchId) async {
@@ -10,7 +12,16 @@ FutureOr<Response> onRequest(RequestContext context, String matchId) async {
     final matchRepository = context.read<MatchRepository>();
 
     try {
-      await matchRepository.calculateMatchResult(matchId);
+      final body =
+          jsonDecode(await context.request.body()) as Map<String, dynamic>;
+      final match = Match.fromJson(body['match'] as Map<String, dynamic>);
+      final matchState =
+          MatchState.fromJson(body['matchState'] as Map<String, dynamic>);
+
+      await matchRepository.calculateMatchResult(
+        match: match,
+        matchState: matchState,
+      );
     } catch (e, s) {
       log('Error calculating match result: $e', stackTrace: s);
       return Response(statusCode: HttpStatus.badRequest);
