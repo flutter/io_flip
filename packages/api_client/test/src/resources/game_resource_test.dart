@@ -515,7 +515,7 @@ void main() {
 
         verify(
           () => apiClient.patch(
-            '/game/matches/matchId/result',
+            '/game/matches/result',
             body: any(named: 'body'),
           ),
         ).called(1);
@@ -536,7 +536,7 @@ void main() {
               (e) => e.cause,
               'cause',
               equals(
-                'PATCH /matches/matchId/result failed with the following message: "Exception: Ops"',
+                'PATCH /matches/result failed with the following message: "Exception: Ops"',
               ),
             ),
           ),
@@ -559,7 +559,7 @@ void main() {
               (e) => e.cause,
               'cause',
               equals(
-                'PATCH /matches/matchId/result returned status 500 with the following response: "Ops"',
+                'PATCH /matches/result returned status 500 with the following response: "Ops"',
               ),
             ),
           ),
@@ -581,7 +581,7 @@ void main() {
               (e) => e.cause,
               'cause',
               equals(
-                'PATCH /matches/matchId/result failed with the following message: "Exception: Ops"',
+                'PATCH /matches/result failed with the following message: "Exception: Ops"',
               ),
             ),
           ),

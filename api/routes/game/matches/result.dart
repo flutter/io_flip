@@ -7,7 +7,7 @@ import 'package:dart_frog/dart_frog.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:match_repository/match_repository.dart';
 
-FutureOr<Response> onRequest(RequestContext context, String matchId) async {
+FutureOr<Response> onRequest(RequestContext context) async {
   if (context.request.method == HttpMethod.patch) {
     final matchRepository = context.read<MatchRepository>();
 

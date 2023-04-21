@@ -72,7 +72,7 @@ void main() {
     });
 
     test('responds with a 204', () async {
-      final response = await route.onRequest(context, 'matchId');
+      final response = await route.onRequest(context);
       expect(response.statusCode, equals(HttpStatus.noContent));
     });
 
@@ -83,14 +83,14 @@ void main() {
           matchState: any(named: 'matchState'),
         ),
       ).thenThrow(CalculateResultFailure());
-      final response = await route.onRequest(context, 'matchId');
+      final response = await route.onRequest(context);
 
       expect(response.statusCode, equals(HttpStatus.badRequest));
     });
 
     test('allows only patch methods', () async {
       when(() => request.method).thenReturn(HttpMethod.post);
-      final response = await route.onRequest(context, 'matchId');
+      final response = await route.onRequest(context);
       expect(response.statusCode, equals(HttpStatus.methodNotAllowed));
     });
   });
