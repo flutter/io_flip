@@ -40,6 +40,7 @@ class MainMenuScreen extends StatelessWidget {
               right: 0,
               child: IoFlipBottomBar(
                 leading: RoundedButton.svg(
+                  key: const Key('info_button'),
                   Assets.icons.info,
                   onPressed: () {
                     // TODO(all): add info screen
