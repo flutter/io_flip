@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class LeaderboardPlayers extends StatelessWidget {
@@ -11,9 +12,22 @@ class LeaderboardPlayers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final topPlayers = players.length >= 3 ? players.sublist(0, 3) : players;
+    final restPlayers =
+        players.length >= 3 ? players.sublist(3) : <LeaderboardPlayer>[];
     return Column(
       children: [
-        for (final player in players) ...[
+        for (final player in topPlayers) ...[
+          const SizedBox(height: TopDashSpacing.md),
+          player,
+        ],
+        if (restPlayers.isNotEmpty) ...[
+          const Divider(
+            thickness: 2,
+            color: TopDashColors.seedGrey30,
+          ),
+        ],
+        for (final player in restPlayers) ...[
           player,
           const SizedBox(height: TopDashSpacing.md),
         ],
@@ -37,43 +51,53 @@ class LeaderboardPlayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var color = Colors.transparent;
+    Widget number = Text(
+      (index + 1).toString(),
+      style: TopDashTextStyles.cardNumberXS,
+    );
 
     switch (index) {
       case 0:
         color = TopDashColors.seedGold;
+        number = Assets.images.leaderboard.num1.image();
         break;
       case 1:
         color = TopDashColors.seedSilver;
+        number = Assets.images.leaderboard.num2.image();
         break;
       case 2:
         color = TopDashColors.seedBronze;
+        number = Assets.images.leaderboard.num3.image();
         break;
     }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Container(
-              width: 24,
-              height: 24,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: color,
-                shape: BoxShape.circle,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.sm),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 24,
+                height: 24,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: color,
+                  shape: BoxShape.circle,
+                ),
+                child: number,
               ),
-              child: Text((index + 1).toString()),
-            ),
-            const SizedBox(width: TopDashSpacing.lg),
-            Text(initials, style: TopDashTextStyles.headlineH6),
-          ],
-        ),
-        Text(
-          value.toString(),
-          style: TopDashTextStyles.buttonLG,
-        ),
-      ],
+              const SizedBox(width: TopDashSpacing.xlg),
+              Text(initials, style: TopDashTextStyles.headlineH6),
+            ],
+          ),
+          Text(
+            value.toString(),
+            style: TopDashTextStyles.buttonLG,
+          ),
+        ],
+      ),
     );
   }
 }
