@@ -94,7 +94,7 @@ void main() {
           router: goRouter,
           shareHandPageData: data,
         );
-        verify(() => goRouter.goNamed('share_page', extra: data)).called(1);
+        verify(() => goRouter.goNamed('share_hand', extra: data)).called(1);
       },
     );
 
