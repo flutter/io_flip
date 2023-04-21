@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class LeaderboardPlayers extends StatelessWidget {
@@ -37,16 +38,23 @@ class LeaderboardPlayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var color = Colors.transparent;
+    Widget number = Text(
+      (index + 1).toString(),
+      style: TopDashTextStyles.cardNumberXS,
+    );
 
     switch (index) {
       case 0:
         color = TopDashColors.seedGold;
+        number = Assets.images.leaderboard.num1.image();
         break;
       case 1:
         color = TopDashColors.seedSilver;
+        number = Assets.images.leaderboard.num2.image();
         break;
       case 2:
         color = TopDashColors.seedBronze;
+        number = Assets.images.leaderboard.num3.image();
         break;
     }
 
@@ -65,10 +73,7 @@ class LeaderboardPlayer extends StatelessWidget {
                   color: color,
                   shape: BoxShape.circle,
                 ),
-                child: Text(
-                  (index + 1).toString(),
-                  style: TopDashTextStyles.cardNumberXS,
-                ),
+                child: number,
               ),
               const SizedBox(width: TopDashSpacing.xlg),
               Text(initials, style: TopDashTextStyles.headlineH6),

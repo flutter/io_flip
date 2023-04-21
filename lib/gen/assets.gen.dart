@@ -33,6 +33,9 @@ class $AssetsImagesGen {
   AssetGenImage get facebook =>
       const AssetGenImage('assets/images/facebook.png');
 
+  $AssetsImagesLeaderboardGen get leaderboard =>
+      const $AssetsImagesLeaderboardGen();
+
   /// File path: assets/images/main.png
   AssetGenImage get main => const AssetGenImage('assets/images/main.png');
 
@@ -150,6 +153,25 @@ class $AssetsSfxGen {
         winMatch,
         wind
       ];
+}
+
+class $AssetsImagesLeaderboardGen {
+  const $AssetsImagesLeaderboardGen();
+
+  /// File path: assets/images/leaderboard/num1.png
+  AssetGenImage get num1 =>
+      const AssetGenImage('assets/images/leaderboard/num1.png');
+
+  /// File path: assets/images/leaderboard/num2.png
+  AssetGenImage get num2 =>
+      const AssetGenImage('assets/images/leaderboard/num2.png');
+
+  /// File path: assets/images/leaderboard/num3.png
+  AssetGenImage get num3 =>
+      const AssetGenImage('assets/images/leaderboard/num3.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [num1, num2, num3];
 }
 
 class Assets {
