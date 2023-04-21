@@ -11,6 +11,10 @@ class _MockApiClient extends Mock implements ApiClient {}
 
 class _MockResponse extends Mock implements http.Response {}
 
+class _FakeMatch extends Fake implements Match {}
+
+class _FakeMatchState extends Fake implements MatchState {}
+
 void main() {
   group('GameResource', () {
     late ApiClient apiClient;
@@ -498,7 +502,8 @@ void main() {
       test('makes the correct call', () async {
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
         await resource.calculateResult(
-          matchId: 'matchId',
+          match: _FakeMatch(),
+          matchState: _FakeMatchState(),
         );
 
         verify(
@@ -517,7 +522,8 @@ void main() {
 
         await expectLater(
           () => resource.calculateResult(
-            matchId: 'matchId',
+            match: _FakeMatch(),
+            matchState: _FakeMatchState(),
           ),
           throwsA(
             isA<ApiClientError>().having(
@@ -538,7 +544,10 @@ void main() {
         when(() => response.body).thenReturn('Ops');
 
         await expectLater(
-          () => resource.calculateResult(matchId: 'matchId'),
+          () => resource.calculateResult(
+            match: _FakeMatch(),
+            matchState: _FakeMatchState(),
+          ),
           throwsA(
             isA<ApiClientError>().having(
               (e) => e.cause,
@@ -557,7 +566,10 @@ void main() {
         ).thenThrow(Exception('Ops'));
 
         await expectLater(
-          () => resource.calculateResult(matchId: 'matchId'),
+          () => resource.calculateResult(
+            match: _FakeMatch(),
+            matchState: _FakeMatchState(),
+          ),
           throwsA(
             isA<ApiClientError>().having(
               (e) => e.cause,

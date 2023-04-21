@@ -1041,7 +1041,8 @@ void main() {
           ).thenReturn(true);
           when(
             () => gameResource.calculateResult(
-              matchId: any(named: 'matchId'),
+              match: any(named: 'match'),
+              matchState: any(named: 'matchState'),
             ),
           ).thenAnswer((invocation) async {});
         },
@@ -1063,7 +1064,8 @@ void main() {
         verify: (_) {
           verify(
             () => gameResource.calculateResult(
-              matchId: baseState.matchState.matchId,
+              match: baseState.match,
+              matchState: baseState.matchState,
             ),
           ).called(1);
         },

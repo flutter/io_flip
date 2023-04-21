@@ -25,7 +25,12 @@ void main() {
 
     setUp(() {
       matchRepository = _MockMatchRepository();
-      when(() => matchRepository.calculateMatchResult(any())).thenAnswer(
+      when(
+        () => matchRepository.calculateMatchResult(
+          match: any(named: 'match'),
+          matchState: any(named: 'matchState'),
+        ),
+      ).thenAnswer(
         (_) async {},
       );
 
@@ -46,8 +51,12 @@ void main() {
     });
 
     test("responds 400 when the match doesn't exists", () async {
-      when(() => matchRepository.calculateMatchResult(any()))
-          .thenThrow(CalculateResultFailure());
+      when(
+        () => matchRepository.calculateMatchResult(
+          match: any(named: 'match'),
+          matchState: any(named: 'matchState'),
+        ),
+      ).thenThrow(CalculateResultFailure());
       final response = await route.onRequest(context, 'matchId');
 
       expect(response.statusCode, equals(HttpStatus.badRequest));
