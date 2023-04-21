@@ -57,7 +57,7 @@ class GameView extends StatelessWidget {
           );
         }
 
-        return Scaffold(
+        return IoFlipScaffold(
           body: child,
         );
       },

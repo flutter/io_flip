@@ -16,12 +16,10 @@ class PromptPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final promptResource = context.read<PromptResource>();
 
-    return Scaffold(
-      body: BlocProvider(
-        create: (_) => PromptFormBloc(promptResource: promptResource)
-          ..add(const PromptTermsRequested()),
-        child: const PromptView(),
-      ),
+    return BlocProvider(
+      create: (_) => PromptFormBloc(promptResource: promptResource)
+        ..add(const PromptTermsRequested()),
+      child: const PromptView(),
     );
   }
 }

@@ -12,6 +12,10 @@ import 'package:flutter/widgets.dart';
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/background_pattern.png
+  AssetGenImage get backgroundPattern =>
+      const AssetGenImage('assets/images/background_pattern.png');
+
   $AssetsImagesCardFramesGen get cardFrames =>
       const $AssetsImagesCardFramesGen();
 
@@ -25,7 +29,7 @@ class $AssetsImagesGen {
   $AssetsImagesSuitsGen get suits => const $AssetsImagesSuitsGen();
 
   /// List of all assets
-  List<dynamic> get values => [flipCountdown, ioFlipLogo];
+  List<dynamic> get values => [backgroundPattern, flipCountdown, ioFlipLogo];
 }
 
 class $AssetsImagesCardFramesGen {
@@ -146,16 +150,7 @@ class AssetGenImage {
     );
   }
 
-  ImageProvider provider({
-    AssetBundle? bundle,
-    String? package = 'top_dash_ui',
-  }) {
-    return AssetImage(
-      _assetName,
-      bundle: bundle,
-      package: package,
-    );
-  }
+  ImageProvider provider() => AssetImage(_assetName);
 
   String get path => _assetName;
 
