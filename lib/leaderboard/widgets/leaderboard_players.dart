@@ -12,9 +12,22 @@ class LeaderboardPlayers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final topPlayers = players.length >= 3 ? players.sublist(0, 3) : players;
+    final restPlayers =
+        players.length >= 3 ? players.sublist(3) : <LeaderboardPlayer>[];
     return Column(
       children: [
-        for (final player in players) ...[
+        for (final player in topPlayers) ...[
+          const SizedBox(height: TopDashSpacing.md),
+          player,
+        ],
+        if (restPlayers.isNotEmpty) ...[
+          const Divider(
+            thickness: 2,
+            color: TopDashColors.seedGrey30,
+          ),
+        ],
+        for (final player in restPlayers) ...[
           player,
           const SizedBox(height: TopDashSpacing.md),
         ],

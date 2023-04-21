@@ -68,7 +68,7 @@ class LeaderboardViewState extends State<LeaderboardView> {
                 tabs: [for (final tab in tabs.keys) Tab(text: tab)],
                 onTap: (i) => setState(() => index = i),
               ),
-              const SizedBox(height: TopDashSpacing.lg),
+              const SizedBox(height: TopDashSpacing.xs),
               tabs.values.elementAt(index),
             ],
           ),
