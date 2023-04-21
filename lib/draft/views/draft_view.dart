@@ -106,7 +106,7 @@ class _DraftDeck extends StatelessWidget {
             },
             icon: const Icon(
               Icons.arrow_back_ios_new,
-              color: TopDashColors.seedBlack,
+              color: TopDashColors.seedWhite,
             ),
             iconSize: 20,
           ),
@@ -164,7 +164,7 @@ class _DraftDeck extends StatelessWidget {
             },
             icon: const Icon(
               Icons.arrow_forward_ios,
-              color: TopDashColors.seedBlack,
+              color: TopDashColors.seedWhite,
             ),
             iconSize: 20,
           ),
