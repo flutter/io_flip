@@ -783,7 +783,7 @@ void main() {
       final cardsRepository = _MockCardRepository();
       final matchSolver = _MockMatchSolver();
       const matchId = 'matchId';
-      const hostId = 'hostId';
+      const deckId = 'deckId';
 
       setUp(() {
         matchRepository = MatchRepository(
@@ -798,7 +798,7 @@ void main() {
       test('updates the correct field', () async {
         await matchRepository.setCpuConnectivity(
           matchId: matchId,
-          hostId: hostId,
+          deckId: deckId,
         );
         verify(
           () => dbClient.update(
@@ -807,7 +807,7 @@ void main() {
               id: matchId,
               data: const {
                 'guestConnected': true,
-                'guest': 'CPU_$hostId',
+                'guest': deckId,
               },
             ),
           ),

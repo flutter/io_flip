@@ -26,14 +26,14 @@ FutureOr<Response> onRequest(RequestContext context, String matchId) async {
           ),
         );
 
-        await cardsRepository.createDeck(
+        final deckId = await cardsRepository.createDeck(
           cardIds: cards.map((e) => e.id).toList(),
           userId: 'CPU_${user.id}',
         );
 
         await matchRepository.setCpuConnectivity(
           matchId: matchId,
-          hostId: user.id,
+          deckId: deckId,
         );
       } catch (e, s) {
         log('Error while connecting to cpu match: $e', stackTrace: s);
