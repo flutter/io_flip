@@ -38,16 +38,16 @@ class TopDashTheme {
   }
 
   static TabBarTheme get _tabBarTheme {
-    const blue = TopDashColors.seedBlue;
+    const yellow = TopDashColors.seedYellow;
     const grey = TopDashColors.seedGrey50;
 
     return const TabBarTheme(
-      labelColor: blue,
-      indicatorColor: blue,
+      labelColor: yellow,
+      indicatorColor: yellow,
       unselectedLabelColor: grey,
       dividerColor: grey,
       indicator: UnderlineTabIndicator(
-        borderSide: BorderSide(color: blue),
+        borderSide: BorderSide(color: yellow),
       ),
     );
   }

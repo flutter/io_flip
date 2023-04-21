@@ -488,6 +488,107 @@ void main() {
       });
     });
 
+    group('calculate result', () {
+      const deck = Deck(id: 'id', userId: 'userId', cards: []);
+      const match = Match(id: 'matchId', hostDeck: deck, guestDeck: deck);
+      const matchState = MatchState(
+        id: 'id',
+        matchId: 'matchId',
+        hostPlayedCards: [],
+        guestPlayedCards: [],
+      );
+      setUp(() {
+        when(
+          () => apiClient.patch(
+            any(),
+            body: any(named: 'body'),
+          ),
+        ).thenAnswer((_) async => response);
+      });
+
+      test('makes the correct call', () async {
+        when(() => response.statusCode).thenReturn(HttpStatus.noContent);
+        await resource.calculateResult(
+          match: match,
+          matchState: matchState,
+        );
+
+        verify(
+          () => apiClient.patch(
+            '/game/matches/matchId/result',
+            body: any(named: 'body'),
+          ),
+        ).called(1);
+      });
+
+      test('throws an ApiClientError when the request fails', () async {
+        when(
+          () => apiClient.patch(any(), body: any(named: 'body')),
+        ).thenThrow(Exception('Ops'));
+
+        await expectLater(
+          () => resource.calculateResult(
+            match: match,
+            matchState: matchState,
+          ),
+          throwsA(
+            isA<ApiClientError>().having(
+              (e) => e.cause,
+              'cause',
+              equals(
+                'PATCH /matches/matchId/result failed with the following message: "Exception: Ops"',
+              ),
+            ),
+          ),
+        );
+      });
+
+      test('throws ApiClientError when the returns error code', () async {
+        when(() => response.statusCode).thenReturn(
+          HttpStatus.internalServerError,
+        );
+        when(() => response.body).thenReturn('Ops');
+
+        await expectLater(
+          () => resource.calculateResult(
+            match: match,
+            matchState: matchState,
+          ),
+          throwsA(
+            isA<ApiClientError>().having(
+              (e) => e.cause,
+              'cause',
+              equals(
+                'PATCH /matches/matchId/result returned status 500 with the following response: "Ops"',
+              ),
+            ),
+          ),
+        );
+      });
+
+      test('throws ApiClientError when the request breaks', () async {
+        when(
+          () => apiClient.patch(any(), body: any(named: 'body')),
+        ).thenThrow(Exception('Ops'));
+
+        await expectLater(
+          () => resource.calculateResult(
+            match: match,
+            matchState: matchState,
+          ),
+          throwsA(
+            isA<ApiClientError>().having(
+              (e) => e.cause,
+              'cause',
+              equals(
+                'PATCH /matches/matchId/result failed with the following message: "Exception: Ops"',
+              ),
+            ),
+          ),
+        );
+      });
+    });
+
     group('connectToCpuMatch', () {
       test('Makes the correct call', () {
         when(

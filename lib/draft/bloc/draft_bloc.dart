@@ -96,11 +96,10 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     SelectCard event,
     Emitter<DraftState> emit,
   ) {
-    if (state.selectedCards.length == 3) return;
-
-    _audioController.playSfx(Assets.sfx.addToHand);
-
     final topCard = state.cards.first;
+    if (state.selectedCards.length == 3 ||
+        state.selectedCards.contains(topCard)) return;
+    _audioController.playSfx(Assets.sfx.addToHand);
 
     final selectedCards = [
       ...state.selectedCards,

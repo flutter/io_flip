@@ -15,33 +15,35 @@ class $AssetsIconsGen {
   /// File path: assets/icons/cancel.svg
   String get cancel => 'assets/icons/cancel.svg';
 
+  /// File path: assets/icons/info.svg
+  String get info => 'assets/icons/info.svg';
+
   /// List of all assets
-  List<String> get values => [cancel];
+  List<String> get values => [cancel, info];
 }
 
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
-  /// File path: assets/images/add.png
-  AssetGenImage get add => const AssetGenImage('assets/images/add.png');
+  /// File path: assets/images/card_master.png
+  AssetGenImage get cardMaster =>
+      const AssetGenImage('assets/images/card_master.png');
 
   /// File path: assets/images/facebook.png
   AssetGenImage get facebook =>
       const AssetGenImage('assets/images/facebook.png');
 
+  $AssetsImagesLeaderboardGen get leaderboard =>
+      const $AssetsImagesLeaderboardGen();
+
   /// File path: assets/images/main.png
   AssetGenImage get main => const AssetGenImage('assets/images/main.png');
-
-  /// File path: assets/images/temp_preferences_custom.png
-  AssetGenImage get tempPreferencesCustom =>
-      const AssetGenImage('assets/images/temp_preferences_custom.png');
 
   /// File path: assets/images/twitter.png
   AssetGenImage get twitter => const AssetGenImage('assets/images/twitter.png');
 
   /// List of all assets
-  List<AssetGenImage> get values =>
-      [add, facebook, main, tempPreferencesCustom, twitter];
+  List<AssetGenImage> get values => [cardMaster, facebook, main, twitter];
 }
 
 class $AssetsMusicGen {
@@ -151,6 +153,25 @@ class $AssetsSfxGen {
         winMatch,
         wind
       ];
+}
+
+class $AssetsImagesLeaderboardGen {
+  const $AssetsImagesLeaderboardGen();
+
+  /// File path: assets/images/leaderboard/num1.png
+  AssetGenImage get num1 =>
+      const AssetGenImage('assets/images/leaderboard/num1.png');
+
+  /// File path: assets/images/leaderboard/num2.png
+  AssetGenImage get num2 =>
+      const AssetGenImage('assets/images/leaderboard/num2.png');
+
+  /// File path: assets/images/leaderboard/num3.png
+  AssetGenImage get num3 =>
+      const AssetGenImage('assets/images/leaderboard/num3.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [num1, num2, num3];
 }
 
 class Assets {

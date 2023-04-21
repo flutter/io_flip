@@ -55,7 +55,7 @@ void main() {
     when(
       () => matchRepository.setCpuConnectivity(
         matchId: matchId,
-        hostId: userId,
+        deckId: any(named: 'deckId'),
       ),
     ).thenAnswer(
       (_) async {},
@@ -108,7 +108,7 @@ void main() {
       when(
         () => matchRepository.setCpuConnectivity(
           matchId: matchId,
-          hostId: userId,
+          deckId: any(named: 'deckId'),
         ),
       ).thenThrow(Exception(''));
       final response = await route.onRequest(context, matchId);

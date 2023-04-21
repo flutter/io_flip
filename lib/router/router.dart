@@ -5,7 +5,6 @@ import 'package:top_dash/main_menu/main_menu_screen.dart';
 import 'package:top_dash/match_making/match_making.dart';
 import 'package:top_dash/prompt/prompt.dart';
 import 'package:top_dash/scripts/scripts.dart';
-import 'package:top_dash/settings/settings_screen.dart';
 import 'package:top_dash/share/share.dart';
 
 GoRouter createRouter() {
@@ -15,10 +14,6 @@ GoRouter createRouter() {
         path: '/',
         builder: MainMenuScreen.routeBuilder,
         routes: [
-          GoRoute(
-            path: 'settings',
-            builder: SettingsScreen.routeBuilder,
-          ),
           GoRoute(
             path: 'draft',
             builder: DraftPage.routeBuilder,

@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/connection/connection.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -51,26 +52,62 @@ void main() {
         expect(find.byWidget(child), findsOneWidget);
       });
 
-      testWidgets('shows unknown error code', (tester) async {
+      testWidgets('shows unknown error messages', (tester) async {
         await tester.pumpApp(buildSubject());
 
         expect(find.text(tester.l10n.unknownConnectionError), findsOneWidget);
-      });
-
-      testWidgets('shows player already connected error code', (tester) async {
-        when(() => connectionBloc.state).thenReturn(
-          const ConnectionFailure(
-            WebSocketErrorCode.playerAlreadyConnected,
-          ),
-        );
-
-        await tester.pumpApp(buildSubject());
-
         expect(
-          find.text(tester.l10n.playerAlreadyConnectedError),
+          find.text(tester.l10n.unknownConnectionErrorBody),
           findsOneWidget,
         );
       });
+
+      testWidgets('shows retry button for unknown error', (tester) async {
+        await tester.pumpApp(buildSubject());
+
+        expect(
+          find.widgetWithText(
+            RoundedButton,
+            tester.l10n.unknownConnectionErrorButton,
+          ),
+          findsOneWidget,
+        );
+      });
+
+      testWidgets('tapping retry button adds event to bloc', (tester) async {
+        await tester.pumpApp(buildSubject());
+
+        await tester.tap(
+          find.widgetWithText(
+            RoundedButton,
+            tester.l10n.unknownConnectionErrorButton,
+          ),
+        );
+
+        verify(() => connectionBloc.add(const ConnectionRequested())).called(1);
+      });
+
+      testWidgets(
+        'shows player already connected error messages',
+        (tester) async {
+          when(() => connectionBloc.state).thenReturn(
+            const ConnectionFailure(
+              WebSocketErrorCode.playerAlreadyConnected,
+            ),
+          );
+
+          await tester.pumpApp(buildSubject());
+
+          expect(
+            find.text(tester.l10n.playerAlreadyConnectedError),
+            findsOneWidget,
+          );
+          expect(
+            find.text(tester.l10n.playerAlreadyConnectedErrorBody),
+            findsOneWidget,
+          );
+        },
+      );
     });
   });
 }

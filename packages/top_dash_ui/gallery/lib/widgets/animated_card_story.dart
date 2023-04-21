@@ -9,25 +9,22 @@ class AnimatedCardStory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const size = TopDashCardSizes.md;
     return StoryScaffold(
+      backgroundColor: Colors.black,
       title: 'Animated Card',
       body: Center(
         child: AnimatedCard(
           controller: controller,
-          front: GameCard(
+          front: const GameCard(
             image:
-                'https://firebasestorage.googleapis.com/v0/b/top-dash-dev.appspot.com/o/public%2Fdash_3.png?alt=media',
+                'https://firebasestorage.googleapis.com/v0/b/top-dash-dev.appspot.com/o/public%2FDash_pirate_trumpets_field.png?alt=media',
             name: 'Dash the Great',
+            description: 'The best Dash in all the Dashland',
             suitName: 'earth',
             power: 57,
-            width: size.width,
-            height: size.height,
+            size: GameCardSize.md(),
           ),
-          back: FlippedGameCard(
-            width: size.width,
-            height: size.height,
-          ),
+          back: const FlippedGameCard(),
         ),
       ),
     );

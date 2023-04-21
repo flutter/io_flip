@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:api_client/api_client.dart';
+import 'package:game_domain/game_domain.dart';
 
 /// {@template prompt_resource}
-/// An api resource to get the prompt whitelist.
+/// An api resource to get the prompt terms.
 /// {@endtemplate}
 class PromptResource {
   /// {@macro prompt_resource}
@@ -14,11 +15,14 @@ class PromptResource {
 
   final ApiClient _apiClient;
 
-  /// Get /game/prompt/whitelist
+  /// Get /game/prompt/terms
   ///
   /// Returns a [List<String>].
-  Future<List<String>> getPromptWhitelist() async {
-    final response = await _apiClient.get('/game/prompt/whitelist');
+  Future<List<String>> getPromptTerms(PromptTermType termType) async {
+    final response = await _apiClient.get(
+      '/game/prompt/terms',
+      queryParameters: {'type': termType.name},
+    );
 
     if (response.statusCode == HttpStatus.notFound) {
       return [];
@@ -26,7 +30,7 @@ class PromptResource {
 
     if (response.statusCode != HttpStatus.ok) {
       throw ApiClientError(
-        'GET /prompt/whitelist returned status ${response.statusCode} with the following response: "${response.body}"',
+        'GET /prompt/terms returned status ${response.statusCode} with the following response: "${response.body}"',
         StackTrace.current,
       );
     }
@@ -36,7 +40,7 @@ class PromptResource {
       return (json['list'] as List).cast<String>();
     } catch (e) {
       throw ApiClientError(
-        'GET /prompt/whitelist returned invalid response "${response.body}"',
+        'GET /prompt/terms returned invalid response "${response.body}"',
         StackTrace.current,
       );
     }

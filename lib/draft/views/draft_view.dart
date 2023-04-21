@@ -2,8 +2,8 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
+import 'package:top_dash/audio/audio.dart';
 import 'package:top_dash/draft/draft.dart';
-import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/match_making/match_making.dart';
@@ -88,11 +88,10 @@ class _DraftDeck extends StatelessWidget {
       end: .8,
     );
 
-    const cardWidth = 230.0;
-    const cardHeight = 328.0;
+    const cardSize = GameCardSize.lg();
 
     final bottomPadding = translateTween.transform(1).dy -
-        ((cardHeight * (1 - scaleTween.transform(1))) / 2);
+        ((cardSize.height * (1 - scaleTween.transform(1))) / 2);
 
     final showArrows = MediaQuery.of(context).size.width > 500;
 
@@ -106,7 +105,7 @@ class _DraftDeck extends StatelessWidget {
             },
             icon: const Icon(
               Icons.arrow_back_ios_new,
-              color: TopDashColors.seedBlack,
+              color: TopDashColors.seedWhite,
             ),
             iconSize: 20,
           ),
@@ -128,6 +127,9 @@ class _DraftDeck extends StatelessWidget {
                       (i + 1) / state.cards.length,
                     ),
                     child: Dismissible(
+                      direction: i == 0
+                          ? DismissDirection.horizontal
+                          : DismissDirection.none,
                       key: ValueKey(state.cards[i].id),
                       onDismissed: (direction) {
                         bloc.add(const CardSwiped());
@@ -138,10 +140,9 @@ class _DraftDeck extends StatelessWidget {
                       child: Opacity(
                         opacity: i == 0 ? state.firstCardOpacity : 1,
                         child: GameCard(
-                          width: cardWidth,
-                          height: cardHeight,
                           image: state.cards[i].image,
                           name: state.cards[i].name,
+                          description: state.cards[i].description,
                           power: state.cards[i].power,
                           suitName: state.cards[i].suit.name,
                           isRare: state.cards[i].rarity,
@@ -161,7 +162,7 @@ class _DraftDeck extends StatelessWidget {
             },
             icon: const Icon(
               Icons.arrow_forward_ios,
-              color: TopDashColors.seedBlack,
+              color: TopDashColors.seedWhite,
             ),
             iconSize: 20,
           ),
@@ -199,6 +200,7 @@ class SelectedCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = context.watch<DraftBloc>();
     final selectedCards = bloc.state.selectedCards;
+    final card = index < selectedCards.length ? selectedCards[index] : null;
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
@@ -206,34 +208,46 @@ class SelectedCard extends StatelessWidget {
           bloc.add(const SelectCard());
         },
         child: Container(
-          height: 136,
-          width: 104,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(TopDashSpacing.sm),
-            border: Border.all(color: TopDashColors.seedWhite),
-          ),
+          height: 145,
+          width: 103,
+          decoration: card == null
+              ? BoxDecoration(
+                  borderRadius: BorderRadius.circular(TopDashSpacing.sm),
+                  border: Border.all(color: TopDashColors.seedGrey90),
+                )
+              : null,
           child: Stack(
             children: [
-              if (index < selectedCards.length) ...[
-                Center(
-                  child: Text(
-                    '${selectedCards[index].name}\n'
-                    '${selectedCards[index].power}',
-                    textAlign: TextAlign.center,
-                  ),
-                )
+              if (card != null) ...[
+                GameCard(
+                  image: card.image,
+                  name: card.name,
+                  description: card.description,
+                  suitName: card.suit.name,
+                  power: card.power,
+                  isRare: card.rarity,
+                  size: const GameCardSize.sm(),
+                ),
               ],
               Positioned(
                 bottom: TopDashSpacing.xs,
                 right: TopDashSpacing.xs,
-                child: Container(
-                  width: 32,
-                  height: 32,
+                child: DecoratedBox(
                   decoration: BoxDecoration(
                     color: TopDashColors.seedWhite,
                     borderRadius: BorderRadius.circular(4),
+                    border: Border.all(
+                      width: 2,
+                      color: TopDashColors.seedBlack,
+                    ),
+                    boxShadow: const [
+                      BoxShadow(
+                        offset: Offset(-2, 2),
+                        spreadRadius: 1,
+                      ),
+                    ],
                   ),
-                  child: Image.asset(Assets.images.add.path),
+                  child: const Icon(Icons.add, size: 32),
                 ),
               ),
             ],
@@ -257,103 +271,67 @@ class _BottomBar extends StatelessWidget {
     final state = bloc.state;
     final l10n = context.l10n;
 
-    final viewPortHeight = MediaQuery.of(context).size.height;
-    final isSmall = viewPortHeight < 700;
-
-    return Container(
-      padding: const EdgeInsets.all(TopDashSpacing.sm),
-      height: isSmall ? 64 : 96,
-      child: Stack(
-        children: [
-          Align(
-            alignment: Alignment.centerRight,
-            child: RoundedButton.icon(
-              Icons.question_mark_rounded,
-              onPressed: () => HowToPlayDialog.show(context),
-            ),
-          ),
-          if (state.status == DraftStateStatus.deckSelected) ...[
-            Align(
-              alignment: Alignment.centerLeft,
-              child: _PrivateMatchButton(
-                routerNeglectCall: routerNeglectCall,
-              ),
-            ),
-            Center(
-              child: RoundedButton.text(
-                l10n.joinMatch.toUpperCase(),
-                onPressed: () => routerNeglectCall(
-                  context,
-                  () => GoRouter.of(context).goNamed(
-                    'match_making',
-                    extra: MatchMakingPageData(deck: state.selectedCards),
-                  ),
+    return IoFlipBottomBar(
+      leading: const AudioToggleButton(),
+      middle: state.status == DraftStateStatus.deckSelected
+          ? RoundedButton.text(
+              l10n.joinMatch.toUpperCase(),
+              onPressed: () => routerNeglectCall(
+                context,
+                () => GoRouter.of(context).goNamed(
+                  'match_making',
+                  extra: MatchMakingPageData(deck: state.selectedCards),
                 ),
               ),
-            ),
-          ] else ...[
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    l10n.deckBuildingTitle,
-                    style: TopDashTextStyles.mobileH6Light,
-                  ),
-                  const SizedBox(height: TopDashSpacing.xs),
-                  Text(
-                    l10n.deckBuildingSubtitle,
-                    style: TopDashTextStyles.bodySM,
-                  ),
-                ],
-              ),
+              onLongPress: () => showPrivateMatchDialog(context),
             )
-          ],
-        ],
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  l10n.deckBuildingTitle,
+                  style: TopDashTextStyles.mobileH6Light,
+                ),
+                const SizedBox(height: TopDashSpacing.xs),
+                Text(
+                  l10n.deckBuildingSubtitle,
+                  style: TopDashTextStyles.bodySM,
+                ),
+              ],
+            ),
+      trailing: RoundedButton.icon(
+        Icons.question_mark_rounded,
+        onPressed: () => HowToPlayDialog.show(context),
       ),
     );
   }
-}
 
-class _PrivateMatchButton extends StatelessWidget {
-  const _PrivateMatchButton({
-    required this.routerNeglectCall,
-  });
-
-  final RouterNeglectCall routerNeglectCall;
-
-  @override
-  Widget build(BuildContext context) {
-    final bloc = context.watch<DraftBloc>();
+  void showPrivateMatchDialog(BuildContext context) {
+    final bloc = context.read<DraftBloc>();
     final state = bloc.state;
-    return ElevatedButton(
-      onPressed: () {
-        final goRouter = GoRouter.of(context);
+    final goRouter = GoRouter.of(context);
 
-        showDialog<String?>(
-          context: context,
-          builder: (_) => _JoinPrivateMatchDialog(
-            selectedCards: state.selectedCards,
-            routerNeglectCall: routerNeglectCall,
+    showDialog<String?>(
+      context: context,
+      builder: (_) => _JoinPrivateMatchDialog(
+        selectedCards: state.selectedCards,
+        routerNeglectCall: routerNeglectCall,
+      ),
+    ).then((inviteCode) {
+      if (inviteCode != null) {
+        routerNeglectCall(
+          context,
+          () => goRouter.goNamed(
+            'match_making',
+            queryParams: {
+              'inviteCode': inviteCode,
+            },
+            extra: MatchMakingPageData(deck: state.selectedCards),
           ),
-        ).then((inviteCode) {
-          if (inviteCode != null) {
-            routerNeglectCall(
-              context,
-              () => goRouter.goNamed(
-                'match_making',
-                queryParams: {
-                  'inviteCode': inviteCode,
-                },
-                extra: MatchMakingPageData(deck: state.selectedCards),
-              ),
-            );
-          }
-          return inviteCode;
-        });
-      },
-      child: const Text('Private match'),
-    );
+        );
+      }
+      return inviteCode;
+    });
   }
 }
 

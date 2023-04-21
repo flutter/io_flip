@@ -1,4 +1,6 @@
+import 'package:api_client/api_client.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/how_to_play/view/how_to_play_dialog.dart';
@@ -17,21 +19,47 @@ class MainMenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Stack(
-        children: [
-          Align(
-            child: _MainMenuScreenView(key: Key('main menu view')),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Align(
-              child: _Footer(key: Key('main menu footer')),
+    final l10n = context.l10n;
+    return BlocProvider<LeaderboardBloc>(
+      create: (context) {
+        final leaderboardResource = context.read<LeaderboardResource>();
+        return LeaderboardBloc(
+          leaderboardResource: leaderboardResource,
+        )..add(const LeaderboardRequested());
+      },
+      child: Scaffold(
+        body: Stack(
+          children: [
+            const Align(
+              alignment: Alignment.topCenter,
+              child: _MainMenuScreenView(key: Key('main menu view')),
             ),
-          )
-        ],
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: IoFlipBottomBar(
+                leading: RoundedButton.svg(
+                  key: const Key('info_button'),
+                  Assets.icons.info,
+                  onPressed: () {
+                    // TODO(all): add info screen
+                  },
+                ),
+                middle: RoundedButton.text(
+                  l10n.play,
+                  onPressed: () {
+                    GoRouter.of(context).go('/prompt');
+                  },
+                ),
+                trailing: RoundedButton.icon(
+                  Icons.question_mark_rounded,
+                  onPressed: () => HowToPlayDialog.show(context),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -42,119 +70,16 @@ class _MainMenuScreenView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ResponsiveLayoutBuilder(
-      small: (context, widget) => const PortraitMenuView(),
-      large: (context, widget) => const LandscapeMenuView(),
-    );
-  }
-}
-
-class PortraitMenuView extends StatelessWidget {
-  const PortraitMenuView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const SingleChildScrollView(
+    return SingleChildScrollView(
       child: Column(
         children: [
-          _MainImage(key: Key('main menu image')),
-          LeaderboardPage(),
-          SizedBox(height: TopDashSpacing.xxlg),
-        ],
-      ),
-    );
-  }
-}
-
-@visibleForTesting
-class LandscapeMenuView extends StatelessWidget {
-  const LandscapeMenuView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(TopDashSpacing.lg),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const _MainImage(key: Key('main menu image')),
-          Flexible(
-            child: Container(
-              constraints: const BoxConstraints(
-                maxWidth: 2 * TopDashSpacing.xxxlg,
-              ),
-            ),
-          ),
-          const SingleChildScrollView(
-            child: LeaderboardPage(),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MainImage extends StatelessWidget {
-  const _MainImage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 590),
-          child: Image.asset(
+          Image.asset(
             Assets.images.main.path,
+            height: 312,
+            fit: BoxFit.fitHeight,
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: TopDashSpacing.xxlg),
-          child: Text(
-            context.l10n.menuCatchPhrase,
-            style: TopDashTextStyles.headlineH6Light,
-          ),
-        )
-      ],
-    );
-  }
-}
-
-class _Footer extends StatelessWidget {
-  const _Footer({super.key});
-
-  static const Widget _gap = SizedBox(width: TopDashSpacing.md);
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-
-    return Padding(
-      padding: const EdgeInsets.all(TopDashSpacing.sm),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          RoundedButton.icon(
-            Icons.more_horiz_rounded,
-            onPressed: () => GoRouter.of(context).push('/settings'),
-          ),
-          _gap,
-          RoundedButton.icon(
-            Icons.share,
-            onPressed: () => GoRouter.of(context).goNamed('share'),
-          ),
-          _gap,
-          RoundedButton.icon(
-            Icons.question_mark_rounded,
-            onPressed: () => HowToPlayDialog.show(context),
-          ),
-          _gap,
-          RoundedButton.text(
-            l10n.play,
-            onPressed: () {
-              GoRouter.of(context).go('/prompt');
-            },
-          ),
+          const LeaderboardView(),
+          const SizedBox(height: TopDashSpacing.xxlg),
         ],
       ),
     );

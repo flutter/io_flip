@@ -1,52 +1,72 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
+import 'package:top_dash_ui/gen/assets.gen.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 void main() {
   group('RoundedButton', () {
     testWidgets('renders the given icon and responds to taps', (tester) async {
       var wasTapped = false;
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Provider<UISoundAdapter>(
-            create: (_) => UISoundAdapter(playButtonSound: () {}),
-            child: Scaffold(
-              body: Center(
-                child: RoundedButton.icon(
-                  Icons.settings,
-                  onPressed: () {
-                    wasTapped = true;
-                  },
-                ),
-              ),
-            ),
-          ),
+      await tester.pumpSubject(
+        RoundedButton.icon(
+          Icons.settings,
+          onPressed: () => wasTapped = true,
         ),
       );
       await tester.tap(find.byIcon(Icons.settings));
       expect(wasTapped, isTrue);
     });
 
+    testWidgets('responds to long press', (tester) async {
+      var wasTapped = false;
+      await tester.pumpSubject(
+        RoundedButton.icon(
+          Icons.settings,
+          onLongPress: () => wasTapped = true,
+        ),
+      );
+      await tester.longPress(find.byIcon(Icons.settings));
+      expect(wasTapped, isTrue);
+    });
+
+    testWidgets('cancelling tap animates correctly', (tester) async {
+      var wasTapped = false;
+      await tester.pumpSubject(
+        RoundedButton.icon(
+          Icons.settings,
+          onPressed: () => wasTapped = true,
+        ),
+      );
+      final state =
+          tester.state(find.byType(RoundedButton)) as RoundedButtonState;
+
+      await tester.drag(find.byIcon(Icons.settings), const Offset(0, 100));
+      expect(wasTapped, isFalse);
+      expect(state.isPressed, isFalse);
+    });
+
+    testWidgets('renders the given svg and responds to taps', (tester) async {
+      var wasTapped = false;
+      await tester.pumpSubject(
+        RoundedButton.svg(
+          Assets.images.ioFlipLogo,
+          onPressed: () => wasTapped = true,
+        ),
+      );
+      await tester.tap(find.byType(SvgPicture));
+      expect(wasTapped, isTrue);
+    });
+
     testWidgets('renders the given text and responds to taps', (tester) async {
       var wasTapped = false;
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Provider(
-            create: (_) => UISoundAdapter(playButtonSound: () {}),
-            child: Scaffold(
-              body: Center(
-                child: RoundedButton.text(
-                  'test',
-                  onPressed: () {
-                    wasTapped = true;
-                  },
-                ),
-              ),
-            ),
-          ),
+      await tester.pumpSubject(
+        RoundedButton.text(
+          'test',
+          onPressed: () => wasTapped = true,
         ),
       );
       await tester.tap(find.text('test'));
@@ -56,24 +76,12 @@ void main() {
     testWidgets('plays a sound when tapped', (tester) async {
       var soundPlayed = false;
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Provider(
-            create: (_) => UISoundAdapter(
-              playButtonSound: () {
-                soundPlayed = true;
-              },
-            ),
-            child: Scaffold(
-              body: Center(
-                child: RoundedButton.text(
-                  'test',
-                  onPressed: () {},
-                ),
-              ),
-            ),
-          ),
+      await tester.pumpSubject(
+        RoundedButton.text(
+          'test',
+          onPressed: () {},
         ),
+        playButtonSound: () => soundPlayed = true,
       );
       await tester.tap(find.text('test'));
       expect(soundPlayed, isTrue);
@@ -84,23 +92,9 @@ void main() {
       (tester) async {
         var soundPlayed = false;
 
-        await tester.pumpWidget(
-          MaterialApp(
-            home: Provider(
-              create: (_) => UISoundAdapter(
-                playButtonSound: () {
-                  soundPlayed = true;
-                },
-              ),
-              child: Scaffold(
-                body: Center(
-                  child: RoundedButton.text(
-                    'test',
-                  ),
-                ),
-              ),
-            ),
-          ),
+        await tester.pumpSubject(
+          RoundedButton.text('test'),
+          playButtonSound: () => soundPlayed = true,
         );
         await tester.tap(find.text('test'));
         expect(soundPlayed, isFalse);
@@ -111,24 +105,13 @@ void main() {
         (tester) async {
       final file = File('');
       var wasTapped = false;
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Provider(
-            create: (_) => UISoundAdapter(
-              playButtonSound: () {},
-            ),
-            child: Scaffold(
-              body: Center(
-                child: RoundedButton.image(
-                  Image.file(file),
-                  label: 'test',
-                  onPressed: () {
-                    wasTapped = true;
-                  },
-                ),
-              ),
-            ),
-          ),
+      await tester.pumpSubject(
+        RoundedButton.image(
+          Image.file(file),
+          label: 'test',
+          onPressed: () {
+            wasTapped = true;
+          },
         ),
       );
       await tester.tap(find.text('test'));
@@ -136,4 +119,26 @@ void main() {
       expect(wasTapped, isTrue);
     });
   });
+}
+
+extension RoundedButtonTest on WidgetTester {
+  Future<void> pumpSubject(
+    Widget child, {
+    void Function()? playButtonSound,
+  }) {
+    return pumpWidget(
+      MaterialApp(
+        home: Provider(
+          create: (_) => UISoundAdapter(
+            playButtonSound: playButtonSound ?? () {},
+          ),
+          child: Scaffold(
+            body: Center(
+              child: child,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

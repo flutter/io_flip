@@ -34,7 +34,7 @@ void main() {
           () => dbClient.findBy(
             'prompt_terms',
             'type',
-            PromptTermType.location,
+            PromptTermType.location.name,
           ),
         ).thenAnswer(
           (_) async => [

@@ -10,7 +10,7 @@ void main() {
         await tester.pumpWidget(const FlippedGameCard());
 
         expect(
-          find.byType(Container),
+          find.byType(Image),
           findsOneWidget,
         );
       },

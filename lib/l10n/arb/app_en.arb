@@ -24,41 +24,37 @@
   "@gameResultError": {
     "description": "Displayed when error while getting game result"
   },
-  "characterPromptPageTitle": "First, what's your character?",
-  "@characterPromptPageTitle": {
-    "description": "Title of the prompt page for character"
+  "letsGetStarted": "Let's get started",
+  "@letsGetStarted": {
+    "description": "label let's get started"
   },
-  "powerPromptPageTitle": "Next, what's your power?",
+  "select": "Select",
+  "@select": {
+    "description": "label select"
+  },
+  "cardMaster": "I'm the card master!",
+  "@cardMaster": {
+    "description": "card master name title"
+  },
+  "niceToMeetYou": "Nice to meet you!",
+  "@niceToMeetYou": {
+    "description": "label nice to meet you"
+  },
+  "introTextPromptPage": "With just a few prompts, I can build us an AI-designed pack of cards featuring our favorite Google characters: Dash, Sparky, Android, and Dino imbued with special powers.",
+  "@introTextPromptPage": {
+    "description": "Text for the intro when selecting the prompt to build the deck"
+  },
+  "characterClassPromptPageTitle": "First, what's your team's type?",
+  "@characterClassPromptPageTitle": {
+    "description": "Title of the prompt page for character class"
+  },
+  "powerPromptPageTitle": "Next, what's their first power?",
   "@powerPromptPageTitle": {
     "description": "Title of the prompt page for power"
   },
-  "environmentPromptPageTitle": "Last, where are you from?",
-  "@environmentPromptPageTitle": {
-    "description": "Title of the prompt page for environment"
-  },
-  "characterPromptPageSubtitle": "i.e. athelete, magician, elephant, accountant",
-  "@characterPromptPageSubtitle": {
-    "description": "Subtitle of the prompt page for character"
-  },
-  "powerPromptPageSubtitle": "i.e. lightning, bagels, swords, rainbows",
-  "@powerPromptPageSubtitle": {
-    "description": "Subtitle of the prompt page for power"
-  },
-  "environmentPromptPageSubtitle": "i.e. space, cityscape, underwater, cavern",
-  "@environmentPromptPageSubtitle": {
-    "description": "Subtitle of the prompt page for environment"
-  },
-  "characterPromptPageHint": "Character",
-  "@characterPromptPageHint": {
-    "description": "Hint of the prompt page for character"
-  },
-  "powerPromptPageHint": "Power",
-  "@powerPromptPageHint": {
-    "description": "Hint of the prompt page for power"
-  },
-  "environmentPromptHint": "Environment",
-  "@environmentPromptHint": {
-    "description": "Hint of the prompt page for environment"
+  "secondaryPowerPromptPageTitle": "Last, what's one more power they use?",
+  "@secondaryPowerPromptPageTitle": {
+    "description": "Title of the prompt page for the secondary power"
   },
   "leaderboardLongestStreak": "HIGHEST WIN STREAK",
   "@leaderboardLongestStreak": {
@@ -80,10 +76,6 @@
   "leaderboardFailedToLoad": "Failed to load leaderboard",
   "@leaderboardFailedToLoad": {
     "description": "Label shown on the leaderboard when it fails to load"
-  },
-  "menuCatchPhrase": "A global, AI-powered card collection game.",
-  "@menuCatchPhrase": {
-    "description": "Sentence shown on the main menu screen"
   },
   "howToPlayHeader": "is a Flutter-powered, worldwide, card competition game.",
   "@howToPlayHeader": {
@@ -238,11 +230,11 @@
   "@joinMatch": {
     "description": "Label join a match"
   },
-  "deckBuildingTitle": "Build your best hand",
+  "deckBuildingTitle": "Pick your team",
   "@deckBuildingTitle": {
     "description": "Title of the deck building page"
   },
-  "deckBuildingSubtitle": "Swipe to see the rest of your deck",
+  "deckBuildingSubtitle": "Swipe to see the rest of your pack",
   "@deckBuildingSubtitle": {
     "description": "Subtitle of the deck building page"
   },
@@ -252,7 +244,7 @@
   },
   "searchingForOpponents": "Searching for opponents",
   "@searchingForOpponents": {
-    "description": "Subitle displayed while waiting to find match"
+    "description": "Subtitle displayed while waiting to find match"
   },
   "copyInviteCode": "Copy invite code",
   "@copyInviteCode": {
@@ -262,6 +254,14 @@
   "@matchmaking": {
     "description": "Label of the match making page button"
   },
+  "getReadyToFlip": "Get ready to flip!",
+  "@getReadyToFlip": {
+    "description": "Title displayed when match is found, before entering the game"
+  },
+  "aiGameByGoogle": "An AI-designed card game powered by Google",
+  "@aiGameByGoogle": {
+    "description": "Subtitle displayed when match is found, before entering the game"
+  },
   "quitGameDialogTitle": "Are you sure?",
   "@quitGameDialogTitle": {
     "description": "Title of the quit game dialog"
@@ -270,13 +270,25 @@
   "@quitGameDialogDescription": {
     "description": "Description of the quit game dialog"
   },
-  "playerAlreadyConnectedError": "Please only use one tab at a time.",
+  "playerAlreadyConnectedError": "I/O Flip is already open on another tab",
   "@playerAlreadyConnectedError": {
     "description": "Error message shown when user connects in multiple tabs"
   },
-  "unknownConnectionError": "Unable to connect. Please try again in a few moments.",
+  "playerAlreadyConnectedErrorBody": "You can only play on one tab at a time.",
+  "@playerAlreadyConnectedErrorBody": {
+    "description": "Error message shown when user connects in multiple tabs"
+  },
+  "unknownConnectionError": "Unable to connect",
   "@unknownConnectionError": {
     "description": "Error message shown when an unknown error occurs while connecting"
+  },
+  "unknownConnectionErrorBody": "Please try again in a few moments.",
+  "@unknownConnectionErrorBody": {
+    "description": "Error message shown when an unknown error occurs while connecting"
+  },
+  "unknownConnectionErrorButton": "RETRY",
+  "@unknownConnectionErrorButton": {
+    "description": "Button shown when an unknown error occurs while connecting"
   },
   "twitterButtonLabel": "TWITTER",
   "@twitterButtonLabel": {

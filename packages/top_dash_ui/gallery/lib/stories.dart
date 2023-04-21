@@ -2,6 +2,7 @@ import 'package:dashbook/dashbook.dart';
 import 'package:gallery/colors/app_colors_story.dart';
 import 'package:gallery/spacing/app_spacing_story.dart';
 import 'package:gallery/typography/typography_story.dart';
+import 'package:gallery/widgets/bottom_bar_story.dart';
 import 'package:gallery/widgets/widgets.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -28,6 +29,11 @@ void addStories(Dashbook dashbook) {
         (_) => const ResponsiveLayoutStory(),
       );
 
+  dashbook.storiesOf('Layout Components').add(
+        'Bottom bar',
+        (_) => const BottomBarStory(),
+      );
+
   dashbook.storiesOf('Buttons').add(
         'Rounded Button',
         (_) => const RoundedButtonStory(),
@@ -43,11 +49,28 @@ void addStories(Dashbook dashbook) {
         (_) => const FoilShaderStory(),
       );
 
+  dashbook.storiesOf('Flip Countdown').add(
+        'Flip Countdown',
+        (_) => const FlipCountdownStory(),
+      );
+
   dashbook
       .storiesOf('Cards')
       .add(
+        'Game Card Suits',
+        (_) => const GameCardSuitsStory(),
+      )
+      .add(
         'Game Card',
-        (_) => const GameCardStory(),
+        (context) => GameCardStory(
+          name: context.textProperty('name', 'Dash, the Great'),
+          description: context.textProperty(
+            'description',
+            'Dash, the Great, is the most popular bird in all of the dashland, '
+                'mastering the development skills in all of the possible '
+                'platforms.',
+          ),
+        ),
       )
       .add(
         'Game Card Overlay',

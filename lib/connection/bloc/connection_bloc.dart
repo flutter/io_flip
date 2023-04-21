@@ -34,6 +34,8 @@ class ConnectionBloc extends Bloc<ConnectionEvent, ConnectionState> {
   ) async {
     emit(const ConnectionInProgress());
     try {
+      await _messageSubscription?.cancel();
+      _connectionRepository.close();
       await _connectionRepository.connect();
       _messageSubscription = _connectionRepository.messages.listen(
         (message) => add(WebSocketMessageReceived(message)),

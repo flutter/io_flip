@@ -138,10 +138,10 @@ class _CardsView extends StatelessWidget {
     final playerCards =
         (bloc.isHost ? hostCardsOrdered : guestCardsOrdered).map(
       (card) => GameCard(
-        width: 120,
-        height: 180,
+        size: const GameCardSize.sm(),
         image: card.image,
         name: card.name,
+        description: card.description,
         power: card.power,
         suitName: card.suit.name,
         overlay: bloc.isWinningCard(card, isPlayer: true),
@@ -152,10 +152,10 @@ class _CardsView extends StatelessWidget {
     final opponentCards =
         (bloc.isHost ? guestCardsOrdered : hostCardsOrdered).map(
       (card) => GameCard(
-        width: 120,
-        height: 180,
+        size: const GameCardSize.sm(),
         image: card.image,
         name: card.name,
+        description: card.description,
         power: card.power,
         suitName: card.suit.name,
         overlay: bloc.isWinningCard(card, isPlayer: false),

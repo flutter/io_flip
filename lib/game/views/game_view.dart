@@ -66,9 +66,9 @@ class GameView extends StatelessWidget {
   }
 }
 
-const clashCardSize = TopDashCardSizes.md;
-const playerHandCardSize = TopDashCardSizes.sm;
-const opponentHandCardSize = TopDashCardSizes.xs;
+const clashCardSize = GameCardSize.md();
+const playerHandCardSize = GameCardSize.sm();
+const opponentHandCardSize = GameCardSize.xs();
 const counterSize = Size(56, 56);
 
 const cardSpacingX = TopDashSpacing.sm;
@@ -151,8 +151,14 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
 
   late final opponentCardAnimations = createAnimations(
     controllers: opponentCardControllers,
-    begin: (i) => opponentCardOffsets[i] & opponentHandCardSize,
-    end: clashCardOffsets.last & clashCardSize,
+    begin: (i) => GameCardRect(
+      offset: opponentCardOffsets[i],
+      gameCardSize: opponentHandCardSize,
+    ),
+    end: GameCardRect(
+      offset: clashCardOffsets.last,
+      gameCardSize: clashCardSize,
+    ),
   );
 
   // Player animation controllers
@@ -160,8 +166,14 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
 
   late final playerCardAnimations = createAnimations(
     controllers: playerCardControllers,
-    begin: (i) => playerCardOffsets[i] & playerHandCardSize,
-    end: clashCardOffsets.first & clashCardSize,
+    begin: (i) => GameCardRect(
+      offset: playerCardOffsets[i],
+      gameCardSize: playerHandCardSize,
+    ),
+    end: GameCardRect(
+      offset: clashCardOffsets.first,
+      gameCardSize: clashCardSize,
+    ),
   );
 
   late final playerAnimatedCardControllers = createAnimatedCardControllers(
@@ -184,14 +196,14 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     }).toList();
   }
 
-  List<Animation<Rect?>> createAnimations({
+  List<Animation<GameCardRect?>> createAnimations({
     required List<AnimationController> controllers,
-    required Rect Function(int) begin,
-    required Rect end,
+    required GameCardRect Function(int) begin,
+    required GameCardRect end,
   }) {
     return controllers
         .mapIndexed(
-          (i, e) => RectTween(begin: begin(i), end: end).animate(e)
+          (i, e) => GameCardRectTween(begin: begin(i), end: end).animate(e)
             ..addStatusListener(turnCompleted)
             ..addStatusListener(turnAnimationsCompleted),
         )
@@ -265,7 +277,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
               ...clashCardOffsets.mapIndexed(
                 (i, offset) {
                   return _ClashCard(
-                    rect: offset & clashCardSize,
+                    rect: offset & clashCardSize.size,
                   );
                 },
               ),
@@ -319,7 +331,7 @@ class _OpponentCard extends StatelessWidget {
   });
 
   final game.Card card;
-  final Animation<Rect?> animation;
+  final Animation<GameCardRect?> animation;
 
   @override
   Widget build(BuildContext context) {
@@ -336,10 +348,10 @@ class _OpponentCard extends StatelessWidget {
     return AnimatedBuilder(
       animation: animation,
       builder: (context, _) {
-        final rect = animation.value!;
+        final position = animation.value!;
         return Positioned.fromRect(
           key: Key('opponent_card_${card.id}'),
-          rect: rect,
+          rect: position.rect,
           child:
               allOpponentPlayedCards.contains(card.id) && animation.isDismissed
                   ? Stack(
@@ -348,19 +360,18 @@ class _OpponentCard extends StatelessWidget {
                           key: Key('opponent_revealed_card_${card.id}'),
                           image: card.image,
                           name: card.name,
+                          description: card.description,
                           power: card.power,
                           suitName: card.suit.name,
                           isRare: card.rarity,
-                          width: rect.width,
-                          height: rect.height,
+                          size: position.gameCardSize,
                           overlay: overlay,
                         ),
                       ],
                     )
                   : FlippedGameCard(
                       key: Key('opponent_hidden_card_${card.id}'),
-                      width: TopDashCardSizes.xs.width,
-                      height: TopDashCardSizes.xs.height,
+                      size: const GameCardSize.xs(),
                     ),
         );
       },
@@ -376,7 +387,7 @@ class _PlayerCard extends StatelessWidget {
   });
 
   final game.Card card;
-  final Animation<Rect?> animation;
+  final Animation<GameCardRect?> animation;
   final AnimatedCardController animatedCardController;
 
   @override
@@ -394,9 +405,9 @@ class _PlayerCard extends StatelessWidget {
     return AnimatedBuilder(
       animation: animation,
       builder: (context, _) {
-        final rect = animation.value!;
+        final position = animation.value!;
         return Positioned.fromRect(
-          rect: rect,
+          rect: position.rect,
           child: InkWell(
             key: Key('player_card_${card.id}'),
             onTap: () {
@@ -413,16 +424,15 @@ class _PlayerCard extends StatelessWidget {
               front: GameCard(
                 image: card.image,
                 name: card.name,
+                description: card.description,
                 power: card.power,
                 suitName: card.suit.name,
                 isRare: card.rarity,
-                width: rect.width,
-                height: rect.height,
+                size: position.gameCardSize,
                 overlay: overlay,
               ),
-              back: FlippedGameCard(
-                width: TopDashCardSizes.xs.width,
-                height: TopDashCardSizes.xs.height,
+              back: const FlippedGameCard(
+                size: GameCardSize.xs(),
               ),
             ),
           ),
@@ -472,31 +482,28 @@ class _BoardCounter extends StatelessWidget {
     return Positioned(
       left: counterOffset.dx,
       top: counterOffset.dy,
-      child: Offstage(
-        offstage: !bloc.isPlayerAllowedToPlay,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: TopDashColors.seedWhite.withOpacity(.25),
-              width: 8,
-              strokeAlign: BorderSide.strokeAlignOutside,
-            ),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: TopDashColors.seedWhite.withOpacity(.25),
+            width: 8,
+            strokeAlign: BorderSide.strokeAlignOutside,
           ),
-          child: Container(
-            alignment: Alignment.center,
-            width: counterSize.width,
-            height: counterSize.height,
-            decoration: BoxDecoration(
-              color: TopDashColors.seedWhite,
-              shape: BoxShape.circle,
-              border: Border.all(color: TopDashColors.seedBlue, width: 2),
-            ),
-            child: Text(
-              '${state.turnTimeRemaining}',
-              style: TopDashTextStyles.cardNumberLG
-                  .copyWith(color: TopDashColors.seedBlue),
-            ),
+        ),
+        child: Container(
+          alignment: Alignment.center,
+          width: counterSize.width,
+          height: counterSize.height,
+          decoration: BoxDecoration(
+            color: TopDashColors.seedWhite,
+            shape: BoxShape.circle,
+            border: Border.all(color: TopDashColors.seedBlue, width: 2),
+          ),
+          child: Text(
+            '${state.turnTimeRemaining}',
+            style: TopDashTextStyles.cardNumberLG
+                .copyWith(color: TopDashColors.seedBlue),
           ),
         ),
       ),

@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 /// Colors used in the Top Dash UI.
 abstract class TopDashColors {
   /// Gold
-  static const Color seedGold = Color(0xfff9a52f);
+  static const Color seedGold = Color(0xffffbb00);
 
   /// Silver
-  static const Color seedSilver = Color(0xffe0e4e3);
+  static const Color seedSilver = Color(0xffdadce0);
 
   /// Bronze
-  static const Color seedBronze = Color(0xffc47542);
+  static const Color seedBronze = Color(0xffff5145);
 
   /// seedLightBlue
   static const Color seedLightBlue = Color(0xff54c5f8);
