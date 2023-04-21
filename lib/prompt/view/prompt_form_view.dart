@@ -42,8 +42,6 @@ class _PromptFormViewState extends State<PromptFormView> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
-    final viewPortHeight = MediaQuery.of(context).size.height;
-    final isSmall = viewPortHeight < 700;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -135,22 +133,11 @@ class _PromptFormViewState extends State<PromptFormView> {
           ),
         ),
         _gap,
-        Container(
-          padding: const EdgeInsets.all(TopDashSpacing.sm),
-          height: isSmall ? 64 : 96,
-          child: Stack(
-            children: [
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: AudioToggleButton(),
-              ),
-              Center(
-                child: RoundedButton.text(
-                  l10n.select.toUpperCase(),
-                  onPressed: () => _onSubmit(selectedText),
-                ),
-              ),
-            ],
+        IoFlipBottomBar(
+          leading: const AudioToggleButton(),
+          middle: RoundedButton.text(
+            l10n.select.toUpperCase(),
+            onPressed: () => _onSubmit(selectedText),
           ),
         ),
       ],
