@@ -41,7 +41,7 @@ class ShareHandPage extends StatelessWidget {
       body: Column(
         children: [
           const SizedBox(height: TopDashSpacing.xlg),
-          const IoFlipLogo(width: 96.96, height: 64),
+          IoFlipLogo(width: 96.96, height: 64),
           const Spacer(),
           Text(
             l10n.shareTeamTitle,
