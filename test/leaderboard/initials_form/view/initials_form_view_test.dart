@@ -69,6 +69,33 @@ void main() {
       },
     );
 
+    testWidgets(
+      'routes navigation to route passed in '
+      'when initials submission is successful',
+      (tester) async {
+        final goRouter = MockGoRouter();
+
+        whenListen(
+          initialsFormBloc,
+          Stream.fromIterable([
+            const InitialsFormState(
+              initials: 'AAA',
+              status: InitialsFormStatus.success,
+            ),
+          ]),
+          initialState: const InitialsFormState(),
+        );
+        var test = '';
+
+        await tester.pumpSubject(
+          initialsFormBloc,
+          router: goRouter,
+          route: (BuildContext _, String value) => test = value,
+        );
+        expect(test, equals('AAA'));
+      },
+    );
+
     group('initials textfield', () {
       testWidgets('renders correctly', (tester) async {
         when(() => initialsFormBloc.state)
@@ -155,11 +182,16 @@ extension InitialsFormViewTest on WidgetTester {
   Future<void> pumpSubject(
     InitialsFormBloc bloc, {
     GoRouter? router,
+    void Function(BuildContext, String)? route,
   }) async {
     return pumpApp(
       BlocProvider.value(
         value: bloc,
-        child: const Scaffold(body: InitialsFormView()),
+        child: Scaffold(
+          body: InitialsFormView(
+            route: route,
+          ),
+        ),
       ),
       router: router,
     );

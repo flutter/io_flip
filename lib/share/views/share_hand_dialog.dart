@@ -1,5 +1,4 @@
 import 'package:api_client/api_client.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:game_domain/game_domain.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +30,7 @@ class ShareHandDialog extends StatelessWidget {
       twitterShareUrl: twitterLink,
       facebookShareUrl: facebookLink,
       content: _DialogContent(
-        cards: const [],
+        cards: cards,
         wins: wins,
         initials: initials,
       ),
@@ -60,7 +59,9 @@ class _DialogContent extends StatelessWidget {
           padding: const EdgeInsets.all(TopDashSpacing.lg),
           child: FittedBox(
             fit: BoxFit.scaleDown,
-            child: CardFan(),
+            child: CardFan(
+              deck: cards,
+            ),
           ),
         ),
         const SizedBox(height: TopDashSpacing.lg),

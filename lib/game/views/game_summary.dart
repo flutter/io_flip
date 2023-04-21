@@ -2,8 +2,9 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:top_dash/game/game.dart';
-import 'package:top_dash/share/views/card_inspector.dart';
 import 'package:top_dash/l10n/l10n.dart';
+import 'package:top_dash/share/views/card_inspector.dart';
+import 'package:top_dash/share/views/share_hand_page.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 typedef RouterNeglectCall = void Function(BuildContext, VoidCallback);
@@ -215,7 +216,15 @@ class GameSummaryFooter extends StatelessWidget {
     final l10n = context.l10n;
     final bloc = context.read<GameBloc>();
     final state = bloc.state as MatchLoadedState;
+    final match = state.matchState;
     final playerScoreCard = state.playerScoreCard;
+    final playerDeck =
+        bloc.isHost ? state.match.hostDeck : state.match.guestDeck;
+    final playerCardIds =
+        bloc.isHost ? match.hostPlayedCards : match.guestPlayedCards;
+    final playerCards = playerCardIds
+        .map((id) => playerDeck.cards.firstWhere((card) => card.id == id))
+        .toList();
 
     return Padding(
       padding: const EdgeInsets.all(TopDashSpacing.sm),
@@ -234,10 +243,32 @@ class GameSummaryFooter extends StatelessWidget {
               context,
               onConfirm: () => _routerNeglectCall(context, () {
                 if (playerScoreCard.initials != null) {
-                  GoRouter.of(context).go('/');
+                  GoRouter.of(context).goNamed(
+                    'share_hand',
+                    extra: ShareHandPageData(
+                      initials: playerScoreCard.initials!,
+                      wins: state.playerScoreCard.currentStreak,
+                      deckId: playerDeck.id,
+                      deck: playerCards,
+                    ),
+                  );
                 } else {
                   GoRouter.of(context).pop();
-                  bloc.add(const LeaderboardEntryRequested());
+                  bloc.add(
+                    LeaderboardEntryRequested(
+                      route: (newContext, initials) {
+                        GoRouter.of(newContext).goNamed(
+                          'share_hand',
+                          extra: ShareHandPageData(
+                            initials: initials,
+                            wins: state.playerScoreCard.currentStreak,
+                            deckId: playerDeck.id,
+                            deck: playerCards,
+                          ),
+                        );
+                      },
+                    ),
+                  );
                 }
               }),
               onCancel: GoRouter.of(context).pop,

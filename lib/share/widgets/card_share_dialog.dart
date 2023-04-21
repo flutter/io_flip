@@ -121,9 +121,7 @@ class _DialogContent extends StatelessWidget {
 }
 
 class _CloseButton extends StatelessWidget {
-  const _CloseButton({
-    super.key,
-  });
+  const _CloseButton();
 
   @override
   Widget build(BuildContext context) {

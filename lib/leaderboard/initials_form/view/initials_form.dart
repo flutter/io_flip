@@ -6,10 +6,12 @@ import 'package:top_dash/leaderboard/initials_form/initials_form.dart';
 class InitialsForm extends StatelessWidget {
   const InitialsForm({
     required this.scoreCardId,
+    this.route,
     super.key,
   });
 
   final String scoreCardId;
+  final void Function(BuildContext, String)? route;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,9 @@ class InitialsForm extends StatelessWidget {
         leaderboardResource: leaderboardResource,
         scoreCardId: scoreCardId,
       ),
-      child: const InitialsFormView(),
+      child: InitialsFormView(
+        route: route,
+      ),
     );
   }
 }

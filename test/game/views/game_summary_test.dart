@@ -10,6 +10,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash/game/views/game_summary.dart';
+import 'package:top_dash/share/views/share_hand_page.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
@@ -40,6 +41,7 @@ void main() {
           suit: Suit.air,
         ),
       );
+      registerFallbackValue(LeaderboardEntryRequested());
     });
 
     setUp(() {
@@ -423,6 +425,7 @@ void main() {
           final goRouter = MockGoRouter();
 
           defaultMockState();
+
           await tester.pumpApp(
             BlocProvider<GameBloc>.value(
               value: bloc,
@@ -442,7 +445,7 @@ void main() {
           await tester.pumpAndSettle();
 
           verify(goRouter.pop).called(1);
-          verify(() => bloc.add(LeaderboardEntryRequested())).called(1);
+          verify(() => bloc.add(any())).called(1);
         },
       );
 
@@ -474,7 +477,60 @@ void main() {
           await tester.tap(find.text(tester.l10n.quit).last);
           await tester.pumpAndSettle();
 
-          verify(() => goRouter.go('/')).called(1);
+          verify(
+            () => goRouter.goNamed(
+              'share_hand',
+              extra: ShareHandPageData(
+                initials: 'AAA',
+                wins: 0,
+                deckId: '',
+                deck: const [],
+              ),
+            ),
+          ).called(1);
+        },
+      );
+
+      testWidgets(
+        'pops navigation when the quit button is tapped and confirmed and '
+        'player score card has initials an player is guest',
+        (tester) async {
+          final goRouter = MockGoRouter();
+
+          when(() => bloc.isHost).thenReturn(false);
+          defaultMockState(
+            scoreCard: ScoreCard(id: 'id', initials: 'AAA'),
+          );
+
+          await tester.pumpApp(
+            BlocProvider<GameBloc>.value(
+              value: bloc,
+              child: GameSummaryFooter(
+                routerNeglectCall: router.neglect,
+              ),
+            ),
+            router: goRouter,
+          );
+
+          await tester.tap(find.text(tester.l10n.quit));
+          await tester.pumpAndSettle();
+
+          expect(find.byType(QuitGameDialog), findsOneWidget);
+
+          await tester.tap(find.text(tester.l10n.quit).last);
+          await tester.pumpAndSettle();
+
+          verify(
+            () => goRouter.goNamed(
+              'share_hand',
+              extra: ShareHandPageData(
+                initials: 'AAA',
+                wins: 0,
+                deckId: '',
+                deck: const [],
+              ),
+            ),
+          ).called(1);
         },
       );
     });

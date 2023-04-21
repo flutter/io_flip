@@ -9,7 +9,9 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 // TODO(willhlas): update design.
 
 class InitialsFormView extends StatelessWidget {
-  const InitialsFormView({super.key});
+  const InitialsFormView({super.key, this.route});
+
+  final void Function(BuildContext, String)? route;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,11 @@ class InitialsFormView extends StatelessWidget {
     return BlocConsumer<InitialsFormBloc, InitialsFormState>(
       listener: (context, state) {
         if (state.status == InitialsFormStatus.success) {
-          GoRouter.of(context).go('/');
+          if (route == null) {
+            GoRouter.of(context).go('/');
+          } else {
+            route!(context, state.initials);
+          }
         }
       },
       builder: (context, state) {

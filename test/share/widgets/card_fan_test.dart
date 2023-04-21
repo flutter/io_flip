@@ -2,7 +2,6 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
-import 'package:top_dash/share/views/share_card_dialog.dart';
 import 'package:top_dash/share/widgets/widgets.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -37,8 +36,10 @@ extension ShareCardDialogTest on WidgetTester {
   Future<void> pumpSubject() async {
     await mockNetworkImages(() {
       return pumpApp(
-        Scaffold(
-          body: CardFan(),
+        const Scaffold(
+          body: CardFan(
+            deck: [card, card, card],
+          ),
         ),
       );
     });

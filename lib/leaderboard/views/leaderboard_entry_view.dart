@@ -6,10 +6,12 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 class LeaderboardEntryView extends StatelessWidget {
   const LeaderboardEntryView({
     required this.scoreCardId,
+    this.route,
     super.key,
   });
 
   final String scoreCardId;
+  final void Function(BuildContext, String)? route;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,10 @@ class LeaderboardEntryView extends StatelessWidget {
                 style: TopDashTextStyles.mobileH4,
               ),
               const SizedBox(height: TopDashSpacing.xlg),
-              InitialsForm(scoreCardId: scoreCardId)
+              InitialsForm(
+                scoreCardId: scoreCardId,
+                route: route,
+              )
             ],
           ),
         ),

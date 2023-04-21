@@ -1,4 +1,3 @@
-import 'package:api_client/api_client.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:game_domain/game_domain.dart';
@@ -13,24 +12,28 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 
 class ShareHandPage extends StatelessWidget {
   const ShareHandPage({
-    super.key,
     required this.initials,
     required this.wins,
     required this.deckId,
+    required this.deck,
+    super.key,
   });
 
   factory ShareHandPage.routeBuilder(_, GoRouterState state) {
-    final data = state.extra as SharePageData?;
+    final data = state.extra as ShareHandPageData?;
     return ShareHandPage(
       key: const Key('share_hand_page'),
       initials: data?.initials ?? '',
       wins: data?.wins ?? 0,
       deckId: data?.deckId ?? '',
+      deck: data?.deck ?? [],
     );
   }
+
   final String initials;
   final int wins;
   final String deckId;
+  final List<Card> deck;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +51,9 @@ class ShareHandPage extends StatelessWidget {
           const SizedBox(height: TopDashSpacing.xxlg),
           Align(
             alignment: Alignment.topCenter,
-            child: CardFan(),
+            child: CardFan(
+              deck: deck,
+            ),
           ),
           Text(
             initials,
@@ -78,7 +83,7 @@ class ShareHandPage extends StatelessWidget {
               const SizedBox(width: TopDashSpacing.sm),
               RoundedButton.text(
                 l10n.shareButtonLabel,
-                onPressed: () => _shareDialog(context, []),
+                onPressed: () => _shareDialog(context, deck),
               ),
               const SizedBox(width: TopDashSpacing.sm),
               RoundedButton.text(
@@ -157,15 +162,17 @@ class _MusicButton extends StatelessWidget {
   }
 }
 
-class SharePageData extends Equatable {
-  const SharePageData({
+class ShareHandPageData extends Equatable {
+  const ShareHandPageData({
     required this.initials,
     required this.wins,
     required this.deckId,
+    required this.deck,
   });
   final String initials;
   final int wins;
   final String deckId;
+  final List<Card> deck;
 
   @override
   List<Object> get props => [wins, initials, deckId];
