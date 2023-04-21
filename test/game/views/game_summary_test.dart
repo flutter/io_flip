@@ -423,7 +423,7 @@ void main() {
         'initials is null',
         (tester) async {
           final goRouter = MockGoRouter();
-
+          when(() => bloc.playerCards).thenReturn([]);
           defaultMockState();
 
           await tester.pumpApp(
@@ -461,54 +461,13 @@ void main() {
       );
 
       testWidgets(
-        'pops navigation when the quit button is tapped and confirmed and '
+        'routes to share hand page when the quit button is tapped and confirmed and '
         'player score card has initials',
         (tester) async {
           final goRouter = MockGoRouter();
 
-          defaultMockState(
-            scoreCard: ScoreCard(id: 'id', initials: 'AAA'),
-          );
+          when(() => bloc.playerCards).thenReturn([]);
 
-          await tester.pumpApp(
-            BlocProvider<GameBloc>.value(
-              value: bloc,
-              child: GameSummaryFooter(
-                routerNeglectCall: router.neglect,
-              ),
-            ),
-            router: goRouter,
-          );
-
-          await tester.tap(find.text(tester.l10n.quit));
-          await tester.pumpAndSettle();
-
-          expect(find.byType(QuitGameDialog), findsOneWidget);
-
-          await tester.tap(find.text(tester.l10n.quit).last);
-          await tester.pumpAndSettle();
-
-          verify(
-            () => goRouter.goNamed(
-              'share_hand',
-              extra: ShareHandPageData(
-                initials: 'AAA',
-                wins: 0,
-                deckId: '',
-                deck: const [],
-              ),
-            ),
-          ).called(1);
-        },
-      );
-
-      testWidgets(
-        'pops navigation when the quit button is tapped and confirmed and '
-        'player score card has initials an player is guest',
-        (tester) async {
-          final goRouter = MockGoRouter();
-
-          when(() => bloc.isHost).thenReturn(false);
           defaultMockState(
             scoreCard: ScoreCard(id: 'id', initials: 'AAA'),
           );

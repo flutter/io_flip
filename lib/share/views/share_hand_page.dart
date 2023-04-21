@@ -2,10 +2,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
+import 'package:top_dash/audio/audio.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/settings/settings.dart';
 import 'package:top_dash/share/views/views.dart';
 import 'package:top_dash/share/widgets/widgets.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
@@ -38,7 +37,7 @@ class ShareHandPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return Scaffold(
+    return IoFlipScaffold(
       body: Column(
         children: [
           const SizedBox(height: TopDashSpacing.xlg),
@@ -75,32 +74,29 @@ class ShareHandPage extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          Row(
-            children: [
-              const SizedBox(width: TopDashSpacing.lg),
-              const _MusicButton(),
-              const Spacer(),
-              const SizedBox(width: TopDashSpacing.sm),
-              RoundedButton.text(
-                l10n.shareButtonLabel,
-                onPressed: () => _shareDialog(context, deck),
-              ),
-              const SizedBox(width: TopDashSpacing.sm),
-              RoundedButton.text(
-                l10n.mainMenuButtonLabel,
-                backgroundColor: TopDashColors.seedBlack,
-                foregroundColor: TopDashColors.seedWhite,
-                borderColor: TopDashColors.seedPaletteNeutral40,
-                onPressed: () => GoRouter.of(context).go('/'),
-              ),
-              const SizedBox(width: TopDashSpacing.sm),
-              const Spacer(),
-              RoundedButton.icon(
-                Icons.info,
-                // TODO(Samobrien): Route to FAQ Page
-              ),
-              const SizedBox(width: TopDashSpacing.lg),
-            ],
+          IoFlipBottomBar(
+            leading: const AudioToggleButton(),
+            middle: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                RoundedButton.text(
+                  l10n.shareButtonLabel,
+                  onPressed: () => _shareDialog(context, deck),
+                ),
+                const SizedBox(width: TopDashSpacing.sm),
+                RoundedButton.text(
+                  l10n.mainMenuButtonLabel,
+                  backgroundColor: TopDashColors.seedBlack,
+                  foregroundColor: TopDashColors.seedWhite,
+                  borderColor: TopDashColors.seedPaletteNeutral40,
+                  onPressed: () => GoRouter.of(context).go('/'),
+                ),
+              ],
+            ),
+            trailing: RoundedButton.icon(
+              Icons.info,
+              // TODO(Samobrien): Route to FAQ Page
+            ),
           ),
           const SizedBox(height: TopDashSpacing.md),
           Row(
@@ -141,22 +137,6 @@ class ShareHandPage extends StatelessWidget {
         deckId: deckId,
         initials: initials,
         wins: wins,
-      ),
-    );
-  }
-}
-
-class _MusicButton extends StatelessWidget {
-  const _MusicButton();
-
-  @override
-  Widget build(BuildContext context) {
-    final settings = context.watch<SettingsController>();
-    return ValueListenableBuilder<bool>(
-      valueListenable: settings.musicOn,
-      builder: (context, musicOn, child) => RoundedButton.icon(
-        musicOn ? Icons.volume_up : Icons.volume_off,
-        onPressed: settings.toggleMusicOn,
       ),
     );
   }

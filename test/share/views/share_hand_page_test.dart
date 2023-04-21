@@ -5,6 +5,7 @@ import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
+import 'package:top_dash/audio/widgets/widgets.dart';
 import 'package:top_dash/settings/settings.dart';
 import 'package:top_dash/share/views/views.dart';
 import 'package:top_dash/share/widgets/widgets.dart';
@@ -12,9 +13,9 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
 
-class _MockSettingsController extends Mock implements SettingsController {}
-
 class _MockGoRouterState extends Mock implements GoRouterState {}
+
+class _MockSettingsController extends Mock implements SettingsController {}
 
 class _MockGoRouter extends Mock implements GoRouter {}
 
@@ -33,18 +34,14 @@ const pageData =
     ShareHandPageData(initials: 'AAA', wins: 0, deckId: '', deck: []);
 
 void main() {
-  late SettingsController settingsController;
   late GoRouterState goRouterState;
   setUp(() {
-    settingsController = _MockSettingsController();
     goRouterState = _MockGoRouterState();
     when(() => goRouterState.extra).thenReturn(pageData);
     when(() => goRouterState.queryParams).thenReturn({});
-    when(() => settingsController.musicOn).thenReturn(ValueNotifier(true));
-    when(() => settingsController.toggleMusicOn()).thenAnswer((_) {});
   });
   group('ShareHandPage', () {
-    test('routeBuilder returns a MatchMakingPage', () {
+    test('routeBuilder returns a ShareHandPage', () {
       expect(
         ShareHandPage.routeBuilder(null, goRouterState),
         isA<ShareHandPage>()
@@ -55,33 +52,33 @@ void main() {
       );
     });
     testWidgets('renders', (tester) async {
-      await tester.pumpSubject(settingsController);
+      await tester.pumpSubject();
       expect(find.byType(ShareHandPage), findsOneWidget);
     });
 
     testWidgets('renders a IoFlipLogo widget', (tester) async {
-      await tester.pumpSubject(settingsController);
+      await tester.pumpSubject();
       expect(find.byType(IoFlipLogo), findsOneWidget);
     });
 
     testWidgets('renders a CardFan widget', (tester) async {
-      await tester.pumpSubject(settingsController);
+      await tester.pumpSubject();
       expect(find.byType(CardFan), findsOneWidget);
     });
 
     testWidgets('renders the users wins and initials', (tester) async {
-      await tester.pumpSubject(settingsController);
+      await tester.pumpSubject();
       expect(find.text('5 ${tester.l10n.winStreakLabel}'), findsOneWidget);
       expect(find.text('AAA'), findsOneWidget);
     });
 
     testWidgets('renders the title', (tester) async {
-      await tester.pumpSubject(settingsController);
+      await tester.pumpSubject();
       expect(find.text(tester.l10n.shareTeamTitle), findsOneWidget);
     });
 
     testWidgets('renders a menu button', (tester) async {
-      await tester.pumpSubject(settingsController);
+      await tester.pumpSubject();
       expect(find.text(tester.l10n.mainMenuButtonLabel), findsOneWidget);
     });
 
@@ -90,7 +87,6 @@ void main() {
       final goRouter = _MockGoRouter();
       when(() => goRouter.go('/')).thenAnswer((_) {});
       await tester.pumpSubject(
-        settingsController,
         router: goRouter,
       );
 
@@ -99,7 +95,7 @@ void main() {
     });
 
     testWidgets('renders a share button', (tester) async {
-      await tester.pumpSubject(settingsController);
+      await tester.pumpSubject();
       expect(find.text(tester.l10n.shareButtonLabel), findsOneWidget);
     });
 
@@ -109,7 +105,6 @@ void main() {
       when(() => shareResource.twitterShareHandUrl(any())).thenReturn('');
 
       await tester.pumpSubject(
-        settingsController,
         shareResource: shareResource,
       );
       await tester.tap(find.text(tester.l10n.shareButtonLabel));
@@ -118,39 +113,19 @@ void main() {
     });
 
     testWidgets('renders a music button', (tester) async {
-      await tester.pumpSubject(settingsController);
-      expect(find.byIcon(Icons.volume_up), findsOneWidget);
+      await tester.pumpSubject();
+      expect(find.byType(AudioToggleButton), findsOneWidget);
     });
-
-    testWidgets('renders a music button', (tester) async {
-      await tester.pumpSubject(settingsController);
-      expect(find.byIcon(Icons.volume_up), findsOneWidget);
-    });
-
-    testWidgets('renders a music off button when music is off', (tester) async {
-      when(() => settingsController.musicOn).thenReturn(ValueNotifier(false));
-      await tester.pumpSubject(settingsController);
-      expect(find.byIcon(Icons.volume_off), findsOneWidget);
-    });
-
-    testWidgets(
-      'tapping the music button toggles the music',
-      (tester) async {
-        await tester.pumpSubject(settingsController);
-        await tester.tap(find.byIcon(Icons.volume_up));
-
-        verify(() => settingsController.toggleMusicOn()).called(1);
-      },
-    );
   });
 }
 
 extension ShareCardDialogTest on WidgetTester {
-  Future<void> pumpSubject(
-    SettingsController settingsController, {
+  Future<void> pumpSubject({
     ShareResource? shareResource,
     GoRouter? router,
   }) async {
+    final SettingsController settingsController = _MockSettingsController();
+    when(() => settingsController.muted).thenReturn(ValueNotifier(true));
     await mockNetworkImages(() {
       return pumpApp(
         const ShareHandPage(
@@ -159,9 +134,9 @@ extension ShareCardDialogTest on WidgetTester {
           deckId: '',
           deck: [card, card, card],
         ),
-        settingsController: settingsController,
         shareResource: shareResource,
         router: router,
+        settingsController: settingsController,
       );
     });
   }

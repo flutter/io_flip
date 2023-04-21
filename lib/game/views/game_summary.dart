@@ -216,15 +216,9 @@ class GameSummaryFooter extends StatelessWidget {
     final l10n = context.l10n;
     final bloc = context.read<GameBloc>();
     final state = bloc.state as MatchLoadedState;
-    final match = state.matchState;
     final playerScoreCard = state.playerScoreCard;
     final playerDeck =
         bloc.isHost ? state.match.hostDeck : state.match.guestDeck;
-    final playerCardIds =
-        bloc.isHost ? match.hostPlayedCards : match.guestPlayedCards;
-    final playerCards = playerCardIds
-        .map((id) => playerDeck.cards.firstWhere((card) => card.id == id))
-        .toList();
 
     return Padding(
       padding: const EdgeInsets.all(TopDashSpacing.sm),
@@ -249,7 +243,7 @@ class GameSummaryFooter extends StatelessWidget {
                       initials: playerScoreCard.initials!,
                       wins: state.playerScoreCard.currentStreak,
                       deckId: playerDeck.id,
-                      deck: playerCards,
+                      deck: bloc.playerCards,
                     ),
                   );
                 } else {
@@ -260,7 +254,7 @@ class GameSummaryFooter extends StatelessWidget {
                         initials: '',
                         wins: state.playerScoreCard.currentStreak,
                         deckId: playerDeck.id,
-                        deck: playerCards,
+                        deck: bloc.playerCards,
                       ),
                     ),
                   );

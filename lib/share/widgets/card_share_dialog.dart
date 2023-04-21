@@ -83,7 +83,10 @@ class _DialogContent extends StatelessWidget {
     return ListView(
       shrinkWrap: !isMobile,
       children: [
-        const _CloseButton(),
+        CloseButton(
+          color: TopDashColors.seedWhite,
+          onPressed: GoRouter.of(context).pop,
+        ),
         content,
         Column(
           mainAxisSize: MainAxisSize.min,
@@ -116,24 +119,6 @@ class _DialogContent extends StatelessWidget {
           ],
         ),
       ],
-    );
-  }
-}
-
-class _CloseButton extends StatelessWidget {
-  const _CloseButton();
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.topRight,
-      child: IconButton(
-        icon: const Icon(
-          Icons.close,
-          color: TopDashColors.seedWhite,
-        ),
-        onPressed: GoRouter.of(context).pop,
-      ),
     );
   }
 }
