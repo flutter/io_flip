@@ -15,14 +15,14 @@ class CardFan extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const container = 360.0;
-    const size = Size(139, 185);
+    const size = GameCardSize.sm();
     final offset = size.width / 1.4;
     final center = (container - size.width) / 2;
     final gameCards = deck
         .map(
           (card) => GameCard(
-            height: 185,
-            width: 139,
+            size: size,
+            description: card.description,
             image: card.image,
             name: card.name,
             suitName: card.suit.name,
