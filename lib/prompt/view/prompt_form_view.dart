@@ -2,6 +2,7 @@ import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:top_dash/audio/audio.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/prompt/prompt.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
@@ -41,6 +42,9 @@ class _PromptFormViewState extends State<PromptFormView> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
+    final viewPortHeight = MediaQuery.of(context).size.height;
+    final isSmall = viewPortHeight < 700;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -62,7 +66,7 @@ class _PromptFormViewState extends State<PromptFormView> {
                   decoration: BoxDecoration(
                     borderRadius:
                         BorderRadius.circular(PromptFormView.itemExtent),
-                    color: TopDashColors.seedBlue,
+                    color: TopDashColors.seedYellow,
                   ),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,
@@ -71,7 +75,7 @@ class _PromptFormViewState extends State<PromptFormView> {
                   child: Text(
                     selectedText,
                     style: TopDashTextStyles.mobileH3.copyWith(
-                      color: Colors.transparent,
+                      color: TopDashColors.seedBlack,
                     ),
                   ),
                 ),
@@ -116,7 +120,7 @@ class _PromptFormViewState extends State<PromptFormView> {
                             widget.itemsList[index],
                             style: TopDashTextStyles.mobileH3.copyWith(
                               color: index == selectedIndex
-                                  ? null
+                                  ? TopDashColors.seedBlack
                                   : TopDashColors.seedGrey70,
                             ),
                           ),
@@ -131,9 +135,23 @@ class _PromptFormViewState extends State<PromptFormView> {
           ),
         ),
         _gap,
-        RoundedButton.text(
-          l10n.select.toUpperCase(),
-          onPressed: () => _onSubmit(selectedText),
+        Container(
+          padding: const EdgeInsets.all(TopDashSpacing.sm),
+          height: isSmall ? 64 : 96,
+          child: Stack(
+            children: [
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: AudioToggleButton(),
+              ),
+              Center(
+                child: RoundedButton.text(
+                  l10n.select.toUpperCase(),
+                  onPressed: () => _onSubmit(selectedText),
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );
