@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:top_dash_ui/gen/assets.gen.dart';
 
 /// {@template io_flip_logo}
@@ -7,11 +6,18 @@ import 'package:top_dash_ui/gen/assets.gen.dart';
 /// {@endtemplate}
 class IoFlipLogo extends StatelessWidget {
   /// {@macro io_flip_logo}
-  const IoFlipLogo({
+  IoFlipLogo({
     this.width,
     this.height,
     super.key,
-  });
+  }) : _svg = Assets.images.ioFlipLogo;
+
+  /// White version of the IO Flip logo.
+  IoFlipLogo.white({
+    this.width,
+    this.height,
+    super.key,
+  }) : _svg = Assets.images.ioFlipLogo03;
 
   /// The width to use for the logo.
   final double? width;
@@ -19,11 +25,11 @@ class IoFlipLogo extends StatelessWidget {
   /// The height to use for the logo.
   final double? height;
 
+  final SvgGenImage _svg;
+
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.asset(
-      Assets.images.ioFlipLogo,
-      package: 'top_dash_ui',
+    return _svg.svg(
       width: width,
       height: height,
     );
