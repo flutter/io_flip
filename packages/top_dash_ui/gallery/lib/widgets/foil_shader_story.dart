@@ -14,7 +14,7 @@ class _FoilShaderStoryState extends State<FoilShaderStory> {
 
   @override
   Widget build(BuildContext context) {
-    const size = TopDashCardSizes.md;
+    const size = TopDashCardSizes.lg;
     return StoryScaffold(
       title: 'Foil Shader',
       body: Center(
