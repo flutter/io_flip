@@ -214,8 +214,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         ),
       );
 
-      _turnTimer?.cancel();
-
       final deckId =
           isHost ? matchState.match.hostDeck.id : matchState.match.guestDeck.id;
 
@@ -306,7 +304,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           : matchState.match.guestDeck.cards.map((e) => e.id).toList()
         ..removeWhere(playedCards.contains);
 
-      if (cards.isNotEmpty) {
+      if (cards.isNotEmpty && isPlayerAllowedToPlay) {
         add(PlayerPlayed(cards.first));
       }
     }

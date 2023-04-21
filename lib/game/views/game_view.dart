@@ -471,31 +471,28 @@ class _BoardCounter extends StatelessWidget {
     return Positioned(
       left: counterOffset.dx,
       top: counterOffset.dy,
-      child: Offstage(
-        offstage: !bloc.isPlayerAllowedToPlay,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: TopDashColors.seedWhite.withOpacity(.25),
-              width: 8,
-              strokeAlign: BorderSide.strokeAlignOutside,
-            ),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: TopDashColors.seedWhite.withOpacity(.25),
+            width: 8,
+            strokeAlign: BorderSide.strokeAlignOutside,
           ),
-          child: Container(
-            alignment: Alignment.center,
-            width: counterSize.width,
-            height: counterSize.height,
-            decoration: BoxDecoration(
-              color: TopDashColors.seedWhite,
-              shape: BoxShape.circle,
-              border: Border.all(color: TopDashColors.seedBlue, width: 2),
-            ),
-            child: Text(
-              '${state.turnTimeRemaining}',
-              style: TopDashTextStyles.cardNumberLG
-                  .copyWith(color: TopDashColors.seedBlue),
-            ),
+        ),
+        child: Container(
+          alignment: Alignment.center,
+          width: counterSize.width,
+          height: counterSize.height,
+          decoration: BoxDecoration(
+            color: TopDashColors.seedWhite,
+            shape: BoxShape.circle,
+            border: Border.all(color: TopDashColors.seedBlue, width: 2),
+          ),
+          child: Text(
+            '${state.turnTimeRemaining}',
+            style: TopDashTextStyles.cardNumberLG
+                .copyWith(color: TopDashColors.seedBlue),
           ),
         ),
       ),
