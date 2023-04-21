@@ -4,12 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/leaderboard/initials_form/initials_form.dart';
+import 'package:top_dash/share/share.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 // TODO(willhlas): update design.
 
 class InitialsFormView extends StatelessWidget {
-  const InitialsFormView({super.key});
+  const InitialsFormView({super.key, this.shareHandPageData});
+
+  final ShareHandPageData? shareHandPageData;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +21,19 @@ class InitialsFormView extends StatelessWidget {
     return BlocConsumer<InitialsFormBloc, InitialsFormState>(
       listener: (context, state) {
         if (state.status == InitialsFormStatus.success) {
-          GoRouter.of(context).go('/');
+          if (shareHandPageData != null) {
+            GoRouter.of(context).goNamed(
+              'share_hand',
+              extra: ShareHandPageData(
+                initials: state.initials,
+                wins: shareHandPageData!.wins,
+                deckId: shareHandPageData!.deckId,
+                deck: shareHandPageData!.deck,
+              ),
+            );
+          } else {
+            GoRouter.of(context).go('/');
+          }
         }
       },
       builder: (context, state) {

@@ -50,10 +50,11 @@ class ScoreCardUpdated extends GameEvent {
 }
 
 class LeaderboardEntryRequested extends GameEvent {
-  const LeaderboardEntryRequested();
+  const LeaderboardEntryRequested({this.shareHandPageData});
+  final ShareHandPageData? shareHandPageData;
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [shareHandPageData];
 }
 
 class TurnTimerStarted extends GameEvent {

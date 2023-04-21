@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/leaderboard/initials_form/initials_form.dart';
+import 'package:top_dash/share/share.dart';
 
 import '../../../helpers/helpers.dart';
 
@@ -66,6 +67,34 @@ void main() {
         );
 
         verify(() => goRouter.go('/')).called(1);
+      },
+    );
+
+    testWidgets(
+      'routes navigation to route passed in '
+      'when initials submission is successful',
+      (tester) async {
+        final goRouter = MockGoRouter();
+
+        whenListen(
+          initialsFormBloc,
+          Stream.fromIterable([
+            const InitialsFormState(
+              initials: 'AAA',
+              status: InitialsFormStatus.success,
+            ),
+          ]),
+          initialState: const InitialsFormState(),
+        );
+        const data =
+            ShareHandPageData(initials: 'AAA', wins: 0, deckId: '', deck: []);
+
+        await tester.pumpSubject(
+          initialsFormBloc,
+          router: goRouter,
+          shareHandPageData: data,
+        );
+        verify(() => goRouter.goNamed('share_hand', extra: data)).called(1);
       },
     );
 
@@ -155,11 +184,16 @@ extension InitialsFormViewTest on WidgetTester {
   Future<void> pumpSubject(
     InitialsFormBloc bloc, {
     GoRouter? router,
+    ShareHandPageData? shareHandPageData,
   }) async {
     return pumpApp(
       BlocProvider.value(
         value: bloc,
-        child: const Scaffold(body: InitialsFormView()),
+        child: Scaffold(
+          body: InitialsFormView(
+            shareHandPageData: shareHandPageData,
+          ),
+        ),
       ),
       router: router,
     );

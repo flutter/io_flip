@@ -2,8 +2,7 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
-import 'package:top_dash/game/views/share_card_dialog.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:top_dash/share/widgets/widgets.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -20,8 +19,8 @@ const card = Card(
 );
 
 void main() {
-  group('ShareCardDialog', () {
-    setUp(() {
+  group('CardShareDialog', () {
+    setUpAll(() {
       launchedUrl = null;
     });
 
@@ -31,10 +30,10 @@ void main() {
       expect(find.byType(Dialog), findsOneWidget);
     });
 
-    testWidgets('renders a GameCard', (tester) async {
-      await tester.pumpSubject();
+    testWidgets('renders the content', (tester) async {
+      await tester.pumpSubject(content: const Text('test'));
 
-      expect(find.byType(GameCard), findsOneWidget);
+      expect(find.text('test'), findsOneWidget);
     });
 
     testWidgets('renders a Twitter button', (tester) async {
@@ -52,27 +51,29 @@ void main() {
 
         expect(
           launchedUrl,
-          equals(shareUrl),
+          shareUrl,
         );
       },
     );
 
     testWidgets('renders a Facebook button', (tester) async {
       await tester.pumpSubject();
-
       expect(find.text(tester.l10n.facebookButtonLabel), findsOneWidget);
     });
 
     testWidgets(
       'tapping the Facebook button launches the correct url',
       (tester) async {
-        // The default display size is too small to include the Facebook button.
-        tester.setDisplaySize(const Size(1200, 800));
         await tester.pumpSubject();
 
         await tester.tap(find.text(tester.l10n.facebookButtonLabel));
 
-        expect(launchedUrl, equals(shareUrl));
+        expect(
+          launchedUrl,
+          equals(
+            shareUrl,
+          ),
+        );
       },
     );
 
@@ -97,16 +98,16 @@ void main() {
 }
 
 extension ShareCardDialogTest on WidgetTester {
-  Future<void> pumpSubject() async {
+  Future<void> pumpSubject({Widget? content}) async {
     await mockNetworkImages(() {
       return pumpApp(
-        ShareCardDialog(
+        CardShareDialog(
+          content: content ?? Container(),
           twitterShareUrl: shareUrl,
           facebookShareUrl: shareUrl,
           urlLauncher: (url) async {
             launchedUrl = url;
           },
-          card: card,
         ),
       );
     });

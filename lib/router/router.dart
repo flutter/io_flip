@@ -1,7 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/game/game.dart';
-import 'package:top_dash/game/views/card_inspector.dart';
 import 'package:top_dash/main_menu/main_menu_screen.dart';
 import 'package:top_dash/match_making/match_making.dart';
 import 'package:top_dash/prompt/prompt.dart';
@@ -42,6 +41,11 @@ GoRouter createRouter() {
             name: 'share',
             path: 'share',
             builder: SharePage.routeBuilder,
+          ),
+          GoRoute(
+            name: 'share_hand',
+            path: 'share_hand',
+            builder: ShareHandPage.routeBuilder,
           ),
           GoRoute(
             path: '_super_secret_scripts_page',

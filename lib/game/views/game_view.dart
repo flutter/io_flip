@@ -34,6 +34,7 @@ class GameView extends StatelessWidget {
         } else if (state is LeaderboardEntryState) {
           child = LeaderboardEntryView(
             scoreCardId: state.scoreCardId,
+            shareHandPageData: state.shareHandPageData,
           );
         } else if (state is OpponentAbsentState) {
           child = Center(

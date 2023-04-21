@@ -10,6 +10,7 @@ import 'package:game_domain/game_domain.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/gen/assets.gen.dart';
+import 'package:top_dash/share/share.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 part 'game_event.dart';
@@ -268,7 +269,12 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   ) {
     if (state is MatchLoadedState) {
       final matchLoadedState = state as MatchLoadedState;
-      emit(LeaderboardEntryState(matchLoadedState.playerScoreCard.id));
+      emit(
+        LeaderboardEntryState(
+          matchLoadedState.playerScoreCard.id,
+          shareHandPageData: event.shareHandPageData,
+        ),
+      );
     }
   }
 
