@@ -1416,6 +1416,43 @@ void main() {
             bloc.close();
           });
         });
+
+        test("ends and doesn't play card automatically if already played", () {
+          fakeAsync((async) {
+            when(
+              () => matchSolver.isPlayerAllowedToPlay(
+                any(),
+                isHost: any(named: 'isHost'),
+              ),
+            ).thenReturn(false);
+            when(() => gameResource.getMatch(any())).thenAnswer((_) async {
+              return baseState.match;
+            });
+
+            final bloc = GameBloc(
+              connectionRepository: connectionRepository,
+              gameResource: gameResource,
+              audioController: audioController,
+              matchMakerRepository: matchMakerRepository,
+              matchSolver: matchSolver,
+              user: user,
+              isHost: false,
+            )
+              ..add(MatchRequested(baseState.match.id))
+              ..add(MatchStateUpdated(baseState.matchState));
+
+            async.elapse(Duration(milliseconds: 10500));
+
+            verifyNever(
+              () => gameResource.playCard(
+                matchId: any(named: 'matchId'),
+                cardId: any(named: 'cardId'),
+                deckId: any(named: 'deckId'),
+              ),
+            );
+            bloc.close();
+          });
+        });
       });
     });
 
