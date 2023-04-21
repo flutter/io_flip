@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:top_dash_ui/gen/assets.gen.dart';
 
 /// {@template suit_icon}
@@ -37,7 +36,7 @@ class SuitIcon extends StatelessWidget {
   }) : asset = Assets.images.suits.water;
 
   /// Image icon for the element.
-  final String asset;
+  final SvgGenImage asset;
 
   /// Scale factor to resize the image.
   final double scale;
@@ -45,17 +44,12 @@ class SuitIcon extends StatelessWidget {
 // Original size of the image.
   static const _size = 96;
 
-  /// Package name where the assets are located.
-  static const package = 'top_dash_ui';
-
   /// Rendered size of the image
   double get size => scale * _size;
 
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.asset(
-      asset,
-      package: package,
+    return asset.svg(
       height: size,
       width: size,
     );

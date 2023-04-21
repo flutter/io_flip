@@ -1,7 +1,8 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart' as game;
+import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash/game/views/game_summary.dart';
@@ -15,35 +16,27 @@ class GameView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<GameBloc, GameState>(
       builder: (context, state) {
-        late final Widget child;
+        final Widget child;
 
         if (state is MatchLoadingState) {
           child = const Center(
             child: CircularProgressIndicator(),
           );
-        }
-
-        if (state is MatchLoadFailedState) {
+        } else if (state is MatchLoadFailedState) {
           child = const Center(
             child: Text('Unable to join game!'),
           );
-        }
-
-        if (state is MatchLoadedState) {
+        } else if (state is MatchLoadedState) {
           if (state.matchState.result != null && state.turnAnimationsFinished) {
             return const GameSummaryView();
           }
           child = const _GameBoard();
-        }
-
-        if (state is LeaderboardEntryState) {
+        } else if (state is LeaderboardEntryState) {
           child = LeaderboardEntryView(
             scoreCardId: state.scoreCardId,
             shareHandPageData: state.shareHandPageData,
           );
-        }
-
-        if (state is OpponentAbsentState) {
+        } else if (state is OpponentAbsentState) {
           child = Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -56,6 +49,8 @@ class GameView extends StatelessWidget {
               ],
             ),
           );
+        } else {
+          child = const SizedBox();
         }
 
         return IoFlipScaffold(
@@ -156,7 +151,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
       gameCardSize: opponentHandCardSize,
     ),
     end: GameCardRect(
-      offset: clashCardOffsets.last,
+      offset: clashCardOffsets.first,
       gameCardSize: clashCardSize,
     ),
   );
@@ -171,7 +166,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
       gameCardSize: playerHandCardSize,
     ),
     end: GameCardRect(
-      offset: clashCardOffsets.first,
+      offset: clashCardOffsets.last,
       gameCardSize: clashCardSize,
     ),
   );
@@ -220,13 +215,15 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
   void turnCompleted(AnimationStatus status) {
     if (status == AnimationStatus.completed) {
       final bloc = context.read<GameBloc>();
-      final state = bloc.state as MatchLoadedState;
-      if (state.rounds.isNotEmpty) {
-        if (state.rounds.last.isComplete()) {
-          bloc.add(const CardOverlayRevealed());
-          for (final controller in clashControllers) {
-            Future.delayed(turnEndDuration, controller.reverse);
-            clashControllers = [];
+      if (bloc.state is MatchLoadedState) {
+        final state = bloc.state as MatchLoadedState;
+        if (state.rounds.isNotEmpty) {
+          if (state.rounds.last.isComplete()) {
+            bloc.add(const CardOverlayRevealed());
+            for (final controller in clashControllers) {
+              Future.delayed(turnEndDuration, controller.reverse);
+              clashControllers = [];
+            }
           }
         }
       }
@@ -241,7 +238,10 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.watch<GameBloc>();
+    final playerCards =
+        context.select<GameBloc, List<Card>>((bloc) => bloc.playerCards);
+    final opponentCards =
+        context.select<GameBloc, List<Card>>((bloc) => bloc.opponentCards);
 
     return BlocListener<GameBloc, GameState>(
       listenWhen: (previous, current) {
@@ -253,13 +253,13 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
       listener: (context, state) {
         if (state is MatchLoadedState) {
           final lastPlayedCardId = state.lastPlayedCardId;
-          final playerIndex = bloc.playerCards
+          final playerIndex = playerCards
               .indexWhere((element) => element.id == lastPlayedCardId);
           if (playerIndex >= 0) {
             final controller = playerCardControllers[playerIndex]..forward();
             clashControllers.add(controller);
           }
-          final opponentIndex = bloc.opponentCards
+          final opponentIndex = opponentCards
               .indexWhere((element) => element.id == lastPlayedCardId);
           if (opponentIndex >= 0) {
             final controller = opponentCardControllers[opponentIndex]
@@ -274,14 +274,23 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
           height: boardSize.height,
           child: Stack(
             children: [
+              for (final offset in playerCardOffsets)
+                _PlaceholderCard(
+                  rect: offset & playerHandCardSize.size,
+                ),
+              for (final offset in opponentCardOffsets)
+                _PlaceholderCard(
+                  rect: offset & opponentHandCardSize.size,
+                ),
               ...clashCardOffsets.mapIndexed(
                 (i, offset) {
                   return _ClashCard(
                     rect: offset & clashCardSize.size,
+                    showPlus: i == 1,
                   );
                 },
               ),
-              ...bloc.opponentCards.mapIndexed(
+              ...opponentCards.mapIndexed(
                 (i, card) {
                   return _OpponentCard(
                     card: card,
@@ -289,7 +298,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
                   );
                 },
               ),
-              ...bloc.playerCards.mapIndexed(
+              ...playerCards.mapIndexed(
                 (i, card) {
                   return _PlayerCard(
                     card: card,
@@ -324,6 +333,35 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
   }
 }
 
+class _PlaceholderCard extends StatelessWidget {
+  const _PlaceholderCard({required this.rect});
+
+  final Rect rect;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned.fromRect(
+      rect: rect,
+      child: Container(
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: TopDashColors.seedWhite.withOpacity(0.15),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: TopDashColors.seedPaletteNeutral95,
+          ),
+        ),
+        child: Opacity(
+          opacity: 0.6,
+          child: IoFlipLogo.white(
+            width: rect.width - 20,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _OpponentCard extends StatelessWidget {
   const _OpponentCard({
     required this.card,
@@ -335,15 +373,17 @@ class _OpponentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final rounds = context.select<GameBloc, List<MatchRound>>(
-      (bloc) => (bloc.state as MatchLoadedState).rounds,
-    );
     final overlay = context.select<GameBloc, CardOverlayType?>(
       (bloc) => bloc.isWinningCard(card, isPlayer: false),
     );
 
-    final allOpponentPlayedCards =
-        rounds.map((turn) => turn.opponentCardId).toList();
+    final alreadyPlayed = context.select<GameBloc, bool>((bloc) {
+      if (bloc.state is MatchLoadedState) {
+        final state = bloc.state as MatchLoadedState;
+        return state.rounds.any((element) => element.opponentCardId == card.id);
+      }
+      return false;
+    });
 
     return AnimatedBuilder(
       animation: animation,
@@ -352,27 +392,26 @@ class _OpponentCard extends StatelessWidget {
         return Positioned.fromRect(
           key: Key('opponent_card_${card.id}'),
           rect: position.rect,
-          child:
-              allOpponentPlayedCards.contains(card.id) && animation.isDismissed
-                  ? Stack(
-                      children: [
-                        GameCard(
-                          key: Key('opponent_revealed_card_${card.id}'),
-                          image: card.image,
-                          name: card.name,
-                          description: card.description,
-                          power: card.power,
-                          suitName: card.suit.name,
-                          isRare: card.rarity,
-                          size: position.gameCardSize,
-                          overlay: overlay,
-                        ),
-                      ],
-                    )
-                  : FlippedGameCard(
-                      key: Key('opponent_hidden_card_${card.id}'),
-                      size: const GameCardSize.xs(),
+          child: alreadyPlayed && animation.isDismissed
+              ? Stack(
+                  children: [
+                    GameCard(
+                      key: Key('opponent_revealed_card_${card.id}'),
+                      image: card.image,
+                      name: card.name,
+                      description: card.description,
+                      power: card.power,
+                      suitName: card.suit.name,
+                      isRare: card.rarity,
+                      size: position.gameCardSize,
+                      overlay: overlay,
                     ),
+                  ],
+                )
+              : FlippedGameCard(
+                  key: Key('opponent_hidden_card_${card.id}'),
+                  size: const GameCardSize.xs(),
+                ),
         );
       },
     );
@@ -392,15 +431,9 @@ class _PlayerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final rounds = context.select<GameBloc, List<MatchRound>>(
-      (bloc) => (bloc.state as MatchLoadedState).rounds,
-    );
     final overlay = context.select<GameBloc, CardOverlayType?>(
       (bloc) => bloc.isWinningCard(card, isPlayer: true),
     );
-
-    final allPlayerPlayedCards =
-        rounds.map((turn) => turn.playerCardId).toList();
 
     return AnimatedBuilder(
       animation: animation,
@@ -412,11 +445,12 @@ class _PlayerCard extends StatelessWidget {
             key: Key('player_card_${card.id}'),
             onTap: () {
               final bloc = context.read<GameBloc>();
-              final state = bloc.state as MatchLoadedState;
-              if (!allPlayerPlayedCards.contains(card.id) &&
-                  bloc.canPlayerPlay(card.id) &&
-                  state.turnAnimationsFinished) {
-                context.read<GameBloc>().add(PlayerPlayed(card.id));
+              if (bloc.state is MatchLoadedState) {
+                final state = bloc.state as MatchLoadedState;
+                if (bloc.canPlayerPlay(card.id) &&
+                    state.turnAnimationsFinished) {
+                  context.read<GameBloc>().add(PlayerPlayed(card.id));
+                }
               }
             },
             child: AnimatedCard(
@@ -445,28 +479,61 @@ class _PlayerCard extends StatelessWidget {
 class _ClashCard extends StatelessWidget {
   const _ClashCard({
     required this.rect,
+    required this.showPlus,
   });
 
   final Rect rect;
+  final bool showPlus;
 
   @override
   Widget build(BuildContext context) {
     return Positioned.fromRect(
       rect: rect,
       child: Container(
-        height: clashCardSize.height,
-        width: clashCardSize.width,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: TopDashColors.seedPaletteLightBlue99,
-          borderRadius: BorderRadius.circular(6),
+          color: TopDashColors.seedWhite.withOpacity(0.15),
+          borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: TopDashColors.seedPaletteLightBlue80,
+            color: TopDashColors.seedPaletteNeutral95,
           ),
         ),
+        child: showPlus
+            ? const SizedBox.square(
+                dimension: 57,
+                child: CustomPaint(painter: CrossPainter()),
+              )
+            : const SizedBox(),
       ),
     );
   }
+}
+
+@visibleForTesting
+class CrossPainter extends CustomPainter {
+  const CrossPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = TopDashColors.seedWhite
+      ..style = PaintingStyle.stroke;
+
+    canvas
+      ..drawLine(
+        Offset(size.width / 2, 0),
+        Offset(size.width / 2, size.height),
+        paint,
+      )
+      ..drawLine(
+        Offset(0, size.height / 2),
+        Offset(size.width, size.height / 2),
+        paint,
+      );
+  }
+
+  @override
+  bool shouldRepaint(covariant CrossPainter oldDelegate) => false;
 }
 
 class _BoardCounter extends StatelessWidget {
@@ -476,8 +543,11 @@ class _BoardCounter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.watch<GameBloc>();
-    final state = bloc.state as MatchLoadedState;
+    final turnTimeRemaining = context.select(
+      (GameBloc bloc) => bloc.state is MatchLoadedState
+          ? (bloc.state as MatchLoadedState).turnTimeRemaining
+          : 0,
+    );
 
     return Positioned(
       left: counterOffset.dx,
@@ -498,12 +568,12 @@ class _BoardCounter extends StatelessWidget {
           decoration: BoxDecoration(
             color: TopDashColors.seedWhite,
             shape: BoxShape.circle,
-            border: Border.all(color: TopDashColors.seedBlue, width: 2),
+            border: Border.all(color: TopDashColors.seedBlack, width: 2),
           ),
           child: Text(
-            '${state.turnTimeRemaining}',
+            '$turnTimeRemaining',
             style: TopDashTextStyles.cardNumberLG
-                .copyWith(color: TopDashColors.seedBlue),
+                .copyWith(color: TopDashColors.seedBlack),
           ),
         ),
       ),

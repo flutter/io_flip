@@ -53,7 +53,7 @@ void main() {
       var wasTapped = false;
       await tester.pumpSubject(
         RoundedButton.svg(
-          Assets.images.ioFlipLogo,
+          Assets.images.ioFlipLogo.keyName,
           onPressed: () => wasTapped = true,
         ),
       );

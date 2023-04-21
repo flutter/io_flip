@@ -208,16 +208,8 @@ void main() {
       testWidgets(
         "can't play a card that was already played",
         (tester) async {
-          mockState(
-            baseState.copyWith(
-              rounds: [
-                MatchRound(
-                  playerCardId: 'player_card',
-                  opponentCardId: 'opponent_card',
-                )
-              ],
-            ),
-          );
+          mockState(baseState);
+          when(() => bloc.canPlayerPlay('player_card')).thenReturn(false);
           await tester.pumpSubject(bloc);
 
           await tester.tap(find.byKey(const Key('player_card_player_card')));
@@ -550,6 +542,13 @@ void main() {
           verify(() => bloc.add(TurnAnimationsFinished())).called(2);
         },
       );
+    });
+  });
+
+  group('CrossPainter', () {
+    test('shouldRepaint always returns false', () {
+      final painter = CrossPainter();
+      expect(painter.shouldRepaint(CrossPainter()), isFalse);
     });
   });
 }

@@ -22,7 +22,7 @@ dependencies:
 
 dev_dependencies:
   build_runner: ^2.3.3
-  flutter_gen_runner: ^5.2.0
+  flutter_gen_runner: ^5.3.0
   flutter_test:
     sdk: flutter
   mocktail: ^0.3.0
@@ -43,3 +43,6 @@ flutter_gen:
   assets:
     outputs:
       package_parameter_enabled: true
+
+  integrations:
+    flutter_svg: true

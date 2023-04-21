@@ -14,6 +14,15 @@ void main() {
       );
     });
 
+    testWidgets('white renders correctly', (tester) async {
+      await tester.pumpWidget(IoFlipLogo.white());
+
+      expect(
+        find.byType(IoFlipLogo),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('renders size correctly', (tester) async {
       await tester.pumpWidget(IoFlipLogo(width: 200, height: 100));
       expect(
