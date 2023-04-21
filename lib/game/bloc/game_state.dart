@@ -97,13 +97,18 @@ class MatchLoadedState extends GameState {
 }
 
 class LeaderboardEntryState extends GameState {
-  const LeaderboardEntryState(this.scoreCardId, {this.route});
+  const LeaderboardEntryState(
+    this.scoreCardId, {
+    this.route,
+    this.shareHandPageData,
+  });
 
   final String scoreCardId;
-  final void Function(BuildContext, String)? route;
+  final ShareHandPageData? shareHandPageData;
+  final String? route;
 
   @override
-  List<Object?> get props => [scoreCardId, route];
+  List<Object?> get props => [scoreCardId, route, shareHandPageData];
 }
 
 class OpponentAbsentState extends GameState {

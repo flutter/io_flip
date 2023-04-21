@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/leaderboard/initials_form/initials_form.dart';
+import 'package:top_dash/share/share.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class LeaderboardEntryView extends StatelessWidget {
   const LeaderboardEntryView({
     required this.scoreCardId,
     this.route,
+    this.shareHandPageData,
     super.key,
   });
 
   final String scoreCardId;
-  final void Function(BuildContext, String)? route;
+  final String? route;
+  final ShareHandPageData? shareHandPageData;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +36,7 @@ class LeaderboardEntryView extends StatelessWidget {
               InitialsForm(
                 scoreCardId: scoreCardId,
                 route: route,
+                shareHandPageData: shareHandPageData,
               )
             ],
           ),

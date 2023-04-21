@@ -256,17 +256,13 @@ class GameSummaryFooter extends StatelessWidget {
                   GoRouter.of(context).pop();
                   bloc.add(
                     LeaderboardEntryRequested(
-                      route: (newContext, initials) {
-                        GoRouter.of(newContext).goNamed(
-                          'share_hand',
-                          extra: ShareHandPageData(
-                            initials: initials,
-                            wins: state.playerScoreCard.currentStreak,
-                            deckId: playerDeck.id,
-                            deck: playerCards,
-                          ),
-                        );
-                      },
+                      route: 'share_hand',
+                      shareHandPageData: ShareHandPageData(
+                        initials: '',
+                        wins: state.playerScoreCard.currentStreak,
+                        deckId: playerDeck.id,
+                        deck: playerCards,
+                      ),
                     ),
                   );
                 }

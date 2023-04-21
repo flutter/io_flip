@@ -50,12 +50,12 @@ class ScoreCardUpdated extends GameEvent {
 }
 
 class LeaderboardEntryRequested extends GameEvent {
-  const LeaderboardEntryRequested({this.route});
-
-  final void Function(BuildContext, String)? route;
+  const LeaderboardEntryRequested({this.route, this.shareHandPageData});
+  final ShareHandPageData? shareHandPageData;
+  final String? route;
 
   @override
-  List<Object?> get props => [route];
+  List<Object?> get props => [route, shareHandPageData];
 }
 
 class TurnTimerStarted extends GameEvent {

@@ -445,7 +445,19 @@ void main() {
           await tester.pumpAndSettle();
 
           verify(goRouter.pop).called(1);
-          verify(() => bloc.add(any())).called(1);
+          verify(
+            () => bloc.add(
+              LeaderboardEntryRequested(
+                route: 'share_hand',
+                shareHandPageData: ShareHandPageData(
+                  initials: '',
+                  deck: const [],
+                  deckId: '',
+                  wins: 0,
+                ),
+              ),
+            ),
+          ).called(1);
         },
       );
 

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/leaderboard/initials_form/initials_form.dart';
+import 'package:top_dash/share/share.dart';
 
 import '../../../helpers/helpers.dart';
 
@@ -85,14 +86,16 @@ void main() {
           ]),
           initialState: const InitialsFormState(),
         );
-        var test = '';
+        const data =
+            ShareHandPageData(initials: 'AAA', wins: 0, deckId: '', deck: []);
 
         await tester.pumpSubject(
           initialsFormBloc,
           router: goRouter,
-          route: (BuildContext _, String value) => test = value,
+          route: 'share_page',
+          shareHandPageData: data,
         );
-        expect(test, equals('AAA'));
+        verify(() => goRouter.goNamed('share_page', extra: data)).called(1);
       },
     );
 
@@ -182,7 +185,8 @@ extension InitialsFormViewTest on WidgetTester {
   Future<void> pumpSubject(
     InitialsFormBloc bloc, {
     GoRouter? router,
-    void Function(BuildContext, String)? route,
+    String? route,
+    ShareHandPageData? shareHandPageData,
   }) async {
     return pumpApp(
       BlocProvider.value(
@@ -190,6 +194,7 @@ extension InitialsFormViewTest on WidgetTester {
         child: Scaffold(
           body: InitialsFormView(
             route: route,
+            shareHandPageData: shareHandPageData,
           ),
         ),
       ),
