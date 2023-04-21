@@ -169,6 +169,13 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           case GameResult.draw:
             _audioController.playSfx(Assets.sfx.drawMatch);
         }
+      } else if (event.updatedState.hostPlayedCards.length == 3 &&
+          event.updatedState.hostPlayedCards.length ==
+              event.updatedState.guestPlayedCards.length) {
+        await _gameResource.calculateResult(
+          match: matchLoadedState.match,
+          matchState: matchLoadedState.matchState,
+        );
       }
 
       if (lastPlayedCard != null) {

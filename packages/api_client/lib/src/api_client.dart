@@ -36,6 +36,13 @@ typedef PostCall = Future<http.Response> Function(
   Map<String, String>? headers,
 });
 
+/// Definition of a patch call used by this client.
+typedef PatchCall = Future<http.Response> Function(
+  Uri, {
+  Object? body,
+  Map<String, String>? headers,
+});
+
 /// Definition of a put call used by this client.
 typedef PutCall = Future<http.Response> Function(
   Uri, {
@@ -69,12 +76,14 @@ class ApiClient {
     String? appCheckToken,
     PostCall postCall = http.post,
     PutCall putCall = http.put,
+    PatchCall patchCall = http.patch,
     GetCall getCall = http.get,
     WebSocketFactory webSocketFactory = WebSocket.new,
     Duration webSocketTimeout = const Duration(seconds: 20),
   })  : _base = Uri.parse(baseUrl),
         _post = postCall,
         _put = putCall,
+        _patch = patchCall,
         _get = getCall,
         _webSocketFactory = webSocketFactory,
         _webSocketTimeout = webSocketTimeout,
@@ -91,6 +100,7 @@ class ApiClient {
   final Uri _base;
   final PostCall _post;
   final PostCall _put;
+  final PatchCall _patch;
   final GetCall _get;
   final Future<String?> Function() _refreshIdToken;
   final WebSocketFactory _webSocketFactory;
@@ -148,6 +158,26 @@ class ApiClient {
   }) async {
     return _handleUnauthorized(() async {
       final response = await _post(
+        _base.replace(
+          path: path,
+          queryParameters: queryParameters,
+        ),
+        body: body,
+        headers: _headers,
+      );
+
+      return response.decrypted;
+    });
+  }
+
+  /// Sends a PATCH request to the specified [path] with the given [body].
+  Future<http.Response> patch(
+    String path, {
+    Object? body,
+    Map<String, String>? queryParameters,
+  }) async {
+    return _handleUnauthorized(() async {
+      final response = await _patch(
         _base.replace(
           path: path,
           queryParameters: queryParameters,

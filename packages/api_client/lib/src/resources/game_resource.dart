@@ -185,6 +185,39 @@ class GameResource {
     }
   }
 
+  /// Patch the result of a match
+  ///
+  /// Patch /matches/:matchId/result
+  Future<void> calculateResult({
+    required Match match,
+    required MatchState matchState,
+  }) async {
+    final matchId = match.id;
+    try {
+      final response = await _apiClient.patch(
+        '/game/matches/$matchId/result',
+        body: jsonEncode({
+          'match': match.toJson(),
+          'matchState': matchState.toJson(),
+        }),
+      );
+
+      if (response.statusCode != HttpStatus.noContent) {
+        throw ApiClientError(
+          'PATCH /matches/$matchId/result returned status ${response.statusCode} with the following response: "${response.body}"',
+          StackTrace.current,
+        );
+      }
+    } on ApiClientError {
+      rethrow;
+    } catch (e) {
+      throw ApiClientError(
+        'PATCH /matches/$matchId/result failed with the following message: "$e"',
+        StackTrace.current,
+      );
+    }
+  }
+
   /// WebSocket connect to  game/matches/connect
   Future<void> connectToCpuMatch({
     required String matchId,

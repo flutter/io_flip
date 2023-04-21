@@ -1022,6 +1022,56 @@ void main() {
       );
 
       blocTest<GameBloc, GameState>(
+        'Last card is played with no result then calls calculateResult',
+        build: () => GameBloc(
+          connectionRepository: connectionRepository,
+          gameResource: gameResource,
+          matchMakerRepository: matchMakerRepository,
+          audioController: audioController,
+          matchSolver: matchSolver,
+          user: user,
+          isHost: false,
+        ),
+        setUp: () {
+          when(
+            () => matchSolver.isPlayerAllowedToPlay(
+              any(),
+              isHost: any(named: 'isHost'),
+            ),
+          ).thenReturn(true);
+          when(
+            () => gameResource.calculateResult(
+              match: any(named: 'match'),
+              matchState: any(named: 'matchState'),
+            ),
+          ).thenAnswer((invocation) async {});
+        },
+        seed: () => baseState,
+        act: (bloc) => bloc.add(
+          MatchStateUpdated(
+            MatchState(
+              id: baseState.matchState.id,
+              matchId: baseState.matchState.matchId,
+              hostPlayedCards: const ['new_card_1', 'new_card_2', 'new_card_3'],
+              guestPlayedCards: const [
+                'new_card_4',
+                'new_card_5',
+                'new_card_6',
+              ],
+            ),
+          ),
+        ),
+        verify: (_) {
+          verify(
+            () => gameResource.calculateResult(
+              match: baseState.match,
+              matchState: baseState.matchState,
+            ),
+          ).called(1);
+        },
+      );
+
+      blocTest<GameBloc, GameState>(
         'Plays playCard sound when card is played by both players',
         build: () => GameBloc(
           connectionRepository: connectionRepository,
