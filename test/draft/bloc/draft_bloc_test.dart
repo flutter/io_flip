@@ -366,7 +366,7 @@ void main() {
       ),
       seed: () => DraftState(
         cards: cards,
-        selectedCards: [cards[0], cards[1]],
+        selectedCards: [cards[2], cards[3]],
         status: DraftStateStatus.deckLoaded,
         firstCardOpacity: 1,
       ),
@@ -376,7 +376,7 @@ void main() {
       expect: () => [
         DraftState(
           cards: cards,
-          selectedCards: [cards[0], cards[1], cards.first],
+          selectedCards: [cards[2], cards[3], cards.first],
           status: DraftStateStatus.deckSelected,
           firstCardOpacity: 1,
         ),
