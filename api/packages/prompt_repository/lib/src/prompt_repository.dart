@@ -13,11 +13,29 @@ class PromptRepository {
   final DbClient _dbClient;
 
   /// Retrieves the prompt terms for the given [type].
-  Future<List<PromptTerm>> getPromptTerms(PromptTermType type) async {
+  Future<List<PromptTerm>> getPromptTermsByType(PromptTermType type) async {
     final terms = await _dbClient.findBy(
       'prompt_terms',
       'type',
       type.name,
+    );
+
+    return terms
+        .map(
+          (entity) => PromptTerm.fromJson({
+            'id': entity.id,
+            ...entity.data,
+          }),
+        )
+        .toList();
+  }
+
+  /// Retrieves the prompt terms.
+  Future<List<PromptTerm>> getPromptTerms() async {
+    final terms = await _dbClient.orderBy(
+      'prompt_terms',
+      'type',
+      limit: 100,
     );
 
     return terms

@@ -62,7 +62,7 @@ void main() {
           ],
         );
 
-        final response = await promptRepository.getPromptTerms(
+        final response = await promptRepository.getPromptTermsByType(
           PromptTermType.location,
         );
 
