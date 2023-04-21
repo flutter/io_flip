@@ -196,10 +196,10 @@ class GameResource {
     try {
       final response = await _apiClient.patch(
         '/game/matches/$matchId/result',
-        body: {
+        body: jsonEncode({
           'match': match.toJson(),
           'matchState': matchState.toJson(),
-        },
+        }),
       );
 
       if (response.statusCode != HttpStatus.ok) {

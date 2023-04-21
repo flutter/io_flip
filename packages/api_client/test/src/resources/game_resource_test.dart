@@ -11,10 +11,6 @@ class _MockApiClient extends Mock implements ApiClient {}
 
 class _MockResponse extends Mock implements http.Response {}
 
-class _FakeMatch extends Fake implements Match {}
-
-class _FakeMatchState extends Fake implements MatchState {}
-
 void main() {
   group('GameResource', () {
     late ApiClient apiClient;
@@ -493,37 +489,47 @@ void main() {
     });
 
     group('calculate result', () {
+      const deck = Deck(id: 'id', userId: 'userId', cards: []);
+      const match = Match(id: 'matchId', hostDeck: deck, guestDeck: deck);
+      const matchState = MatchState(
+        id: 'id',
+        matchId: 'matchId',
+        hostPlayedCards: [],
+        guestPlayedCards: [],
+      );
       setUp(() {
         when(
-          () => apiClient.patch(any()),
+          () => apiClient.patch(
+            any(),
+            body: any(named: 'body'),
+          ),
         ).thenAnswer((_) async => response);
       });
 
       test('makes the correct call', () async {
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
         await resource.calculateResult(
-          match: _FakeMatch(),
-          matchState: _FakeMatchState(),
+          match: match,
+          matchState: matchState,
         );
 
         verify(
           () => apiClient.patch(
             '/game/matches/matchId/result',
+            body: any(named: 'body'),
           ),
         ).called(1);
       });
 
       test('throws an ApiClientError when the request fails', () async {
         when(
-          () => apiClient.patch(
-            any(),
-          ),
+          () => apiClient.patch(any(), body: any(named: 'body')),
         ).thenThrow(Exception('Ops'));
 
         await expectLater(
           () => resource.calculateResult(
-            match: _FakeMatch(),
-            matchState: _FakeMatchState(),
+            match: match,
+            matchState: matchState,
           ),
           throwsA(
             isA<ApiClientError>().having(
@@ -545,8 +551,8 @@ void main() {
 
         await expectLater(
           () => resource.calculateResult(
-            match: _FakeMatch(),
-            matchState: _FakeMatchState(),
+            match: match,
+            matchState: matchState,
           ),
           throwsA(
             isA<ApiClientError>().having(
@@ -562,13 +568,13 @@ void main() {
 
       test('throws ApiClientError when the request breaks', () async {
         when(
-          () => apiClient.patch(any()),
+          () => apiClient.patch(any(), body: any(named: 'body')),
         ).thenThrow(Exception('Ops'));
 
         await expectLater(
           () => resource.calculateResult(
-            match: _FakeMatch(),
-            matchState: _FakeMatchState(),
+            match: match,
+            matchState: matchState,
           ),
           throwsA(
             isA<ApiClientError>().having(

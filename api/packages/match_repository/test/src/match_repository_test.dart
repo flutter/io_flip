@@ -864,12 +864,13 @@ void main() {
       test('correctly updates the match state when host wins', () async {
         when(() => matchSolver.calculateMatchResult(any(), any()))
             .thenReturn(MatchResult.host);
-        final match = Match(id: 'id', hostDeck: hostDeck, guestDeck: guestDeck);
+        final match =
+            Match(id: matchId, hostDeck: hostDeck, guestDeck: guestDeck);
         final matchState = MatchState(
-          id: 'matchStateId',
+          id: matchStateId,
           matchId: matchId,
-          hostPlayedCards: const ['A', 'B', 'C'],
-          guestPlayedCards: const ['D', 'E', 'F'],
+          hostPlayedCards: const ['D', 'E', 'F'],
+          guestPlayedCards: const ['A', 'B', 'C'],
         );
 
         await matchRepository.calculateMatchResult(
