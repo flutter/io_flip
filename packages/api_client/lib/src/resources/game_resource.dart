@@ -185,18 +185,18 @@ class GameResource {
     }
   }
 
-  /// Get the result of a match
+  /// Patch the result of a match
   ///
-  /// Get /matches/:matchId/result
+  /// Patch /matches/:matchId/result
   Future<void> calculateResult({
     required String matchId,
   }) async {
     try {
-      final response = await _apiClient.get('/game/matches/$matchId/result');
+      final response = await _apiClient.patch('/game/matches/$matchId/result');
 
       if (response.statusCode != HttpStatus.ok) {
         throw ApiClientError(
-          'GET /matches/$matchId/result returned status ${response.statusCode} with the following response: "${response.body}"',
+          'PATCH /matches/$matchId/result returned status ${response.statusCode} with the following response: "${response.body}"',
           StackTrace.current,
         );
       }
@@ -204,7 +204,7 @@ class GameResource {
       rethrow;
     } catch (e) {
       throw ApiClientError(
-        'GET /matches/$matchId/result failed with the following message: "$e"',
+        'PATCH /matches/$matchId/result failed with the following message: "$e"',
         StackTrace.current,
       );
     }

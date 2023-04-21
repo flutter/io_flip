@@ -18,6 +18,11 @@ class _MockHttpClient extends Mock {
     Object? body,
     Map<String, String>? headers,
   });
+  Future<http.Response> patch(
+    Uri uri, {
+    Object? body,
+    Map<String, String>? headers,
+  });
   Future<http.Response> put(
     Uri uri, {
     Object? body,
@@ -102,6 +107,14 @@ void main() {
       ).thenAnswer((_) async => encryptedResponse);
 
       when(
+        () => httpClient.patch(
+          any(),
+          body: any(named: 'body'),
+          headers: any(named: 'headers'),
+        ),
+      ).thenAnswer((_) async => encryptedResponse);
+
+      when(
         () => httpClient.put(
           any(),
           body: any(named: 'body'),
@@ -130,6 +143,7 @@ void main() {
         baseUrl: baseUrl,
         getCall: httpClient.get,
         postCall: httpClient.post,
+        patchCall: httpClient.patch,
         putCall: httpClient.put,
         idTokenStream: idTokenStreamController.stream,
         refreshIdToken: () => refreshIdToken(),
@@ -320,6 +334,83 @@ void main() {
         ).called(1);
         verify(
           () => httpClient.post(
+            Uri.parse('$baseUrl/path/to/endpoint'),
+            headers: {
+              'Authorization': 'Bearer $mockNewIdToken',
+              'X-Firebase-AppCheck': mockAppCheckToken,
+            },
+          ),
+        ).called(1);
+      });
+    });
+
+    group('patch', () {
+      test('returns the response', () async {
+        final response = await subject.patch('/');
+
+        expect(response.statusCode, equals(expectedResponse.statusCode));
+        expect(response.body, equals(expectedResponse.body));
+      });
+
+      test('sends the request correctly', () async {
+        await subject.patch(
+          '/path/to/endpoint',
+          queryParameters: {'param1': 'value1', 'param2': 'value2'},
+          body: 'BODY_CONTENT',
+        );
+
+        verify(
+          () => httpClient.patch(
+            Uri.parse('$baseUrl/path/to/endpoint?param1=value1&param2=value2'),
+            body: 'BODY_CONTENT',
+            headers: {},
+          ),
+        ).called(1);
+      });
+
+      test('sends the authentication and app check token', () async {
+        idTokenStreamController.add(mockIdToken);
+        appCheckTokenStreamController.add(mockAppCheckToken);
+        await Future.microtask(() {});
+        await subject.patch('/path/to/endpoint');
+
+        verify(
+          () => httpClient.patch(
+            Uri.parse('$baseUrl/path/to/endpoint'),
+            headers: {
+              'Authorization': 'Bearer $mockIdToken',
+              'X-Firebase-AppCheck': mockAppCheckToken,
+            },
+          ),
+        ).called(1);
+      });
+
+      test('refreshes the authentication token when needed', () async {
+        when(
+          () => httpClient.patch(
+            any(),
+            headers: any(named: 'headers'),
+          ),
+        ).thenAnswer((_) async => http.Response('', 401));
+
+        refreshIdToken = () async => mockNewIdToken;
+
+        idTokenStreamController.add(mockIdToken);
+        appCheckTokenStreamController.add(mockAppCheckToken);
+        await Future.microtask(() {});
+        await subject.patch('/path/to/endpoint');
+
+        verify(
+          () => httpClient.patch(
+            Uri.parse('$baseUrl/path/to/endpoint'),
+            headers: {
+              'Authorization': 'Bearer $mockIdToken',
+              'X-Firebase-AppCheck': mockAppCheckToken,
+            },
+          ),
+        ).called(1);
+        verify(
+          () => httpClient.patch(
             Uri.parse('$baseUrl/path/to/endpoint'),
             headers: {
               'Authorization': 'Bearer $mockNewIdToken',

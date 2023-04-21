@@ -491,7 +491,7 @@ void main() {
     group('calculate result', () {
       setUp(() {
         when(
-          () => apiClient.get(any()),
+          () => apiClient.patch(any()),
         ).thenAnswer((_) async => response);
       });
 
@@ -502,7 +502,7 @@ void main() {
         );
 
         verify(
-          () => apiClient.get(
+          () => apiClient.patch(
             '/game/matches/matchId/result',
           ),
         ).called(1);
@@ -510,7 +510,7 @@ void main() {
 
       test('throws an ApiClientError when the request fails', () async {
         when(
-          () => apiClient.get(
+          () => apiClient.patch(
             any(),
           ),
         ).thenThrow(Exception('Ops'));
@@ -524,7 +524,7 @@ void main() {
               (e) => e.cause,
               'cause',
               equals(
-                'GET /matches/matchId/result failed with the following message: "Exception: Ops"',
+                'PATCH /matches/matchId/result failed with the following message: "Exception: Ops"',
               ),
             ),
           ),
@@ -544,7 +544,7 @@ void main() {
               (e) => e.cause,
               'cause',
               equals(
-                'GET /matches/matchId/result returned status 500 with the following response: "Ops"',
+                'PATCH /matches/matchId/result returned status 500 with the following response: "Ops"',
               ),
             ),
           ),
@@ -553,7 +553,7 @@ void main() {
 
       test('throws ApiClientError when the request breaks', () async {
         when(
-          () => apiClient.get(any()),
+          () => apiClient.patch(any()),
         ).thenThrow(Exception('Ops'));
 
         await expectLater(
@@ -563,7 +563,7 @@ void main() {
               (e) => e.cause,
               'cause',
               equals(
-                'GET /matches/matchId/result failed with the following message: "Exception: Ops"',
+                'PATCH /matches/matchId/result failed with the following message: "Exception: Ops"',
               ),
             ),
           ),

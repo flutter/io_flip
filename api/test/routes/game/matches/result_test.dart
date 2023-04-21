@@ -30,7 +30,7 @@ void main() {
       );
 
       request = _MockRequest();
-      when(() => request.method).thenReturn(HttpMethod.get);
+      when(() => request.method).thenReturn(HttpMethod.patch);
 
       logger = _MockLogger();
 
