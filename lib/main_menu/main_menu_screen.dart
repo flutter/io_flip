@@ -27,7 +27,7 @@ class MainMenuScreen extends StatelessWidget {
           leaderboardResource: leaderboardResource,
         )..add(const LeaderboardRequested());
       },
-      child: Scaffold(
+      child: IoFlipScaffold(
         body: Stack(
           children: [
             const Align(

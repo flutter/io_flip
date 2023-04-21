@@ -26,7 +26,7 @@ class DraftView extends StatelessWidget {
     final l10n = context.l10n;
 
     if (state.status == DraftStateStatus.deckFailed) {
-      return Scaffold(
+      return IoFlipScaffold(
         body: Center(
           child: Text(l10n.cardGenerationError),
         ),
@@ -35,14 +35,14 @@ class DraftView extends StatelessWidget {
 
     if (state.status == DraftStateStatus.deckLoading ||
         state.status == DraftStateStatus.initial) {
-      return const Scaffold(
+      return const IoFlipScaffold(
         body: Center(
           child: CircularProgressIndicator(),
         ),
       );
     }
 
-    return Scaffold(
+    return IoFlipScaffold(
       body: Center(
         child: Column(
           children: [

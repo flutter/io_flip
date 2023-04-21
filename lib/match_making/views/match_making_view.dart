@@ -68,7 +68,7 @@ class MatchMakingView extends StatelessWidget {
         }
 
         if (state.status == MatchMakingStatus.timeout) {
-          return const Scaffold(
+          return const IoFlipScaffold(
             body: Center(
               child: Text('Match making timed out, sorry!'),
             ),
@@ -76,7 +76,7 @@ class MatchMakingView extends StatelessWidget {
         }
 
         if (state.status == MatchMakingStatus.failed) {
-          return const Scaffold(
+          return const IoFlipScaffold(
             body: Center(
               child: Text('Match making failed, sorry!'),
             ),
@@ -84,7 +84,7 @@ class MatchMakingView extends StatelessWidget {
         }
 
         final l10n = context.l10n;
-        return Scaffold(
+        return IoFlipScaffold(
           body: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -128,7 +128,7 @@ class _WaitingForMatchView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return IoFlipScaffold(
       body: Column(
         children: [
           Expanded(
