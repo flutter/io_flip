@@ -192,10 +192,9 @@ class GameResource {
     required Match match,
     required MatchState matchState,
   }) async {
-    final matchId = match.id;
     try {
       final response = await _apiClient.patch(
-        '/game/matches/$matchId/result',
+        '/game/matches/result',
         body: jsonEncode({
           'match': match.toJson(),
           'matchState': matchState.toJson(),
@@ -204,7 +203,7 @@ class GameResource {
 
       if (response.statusCode != HttpStatus.noContent) {
         throw ApiClientError(
-          'PATCH /matches/$matchId/result returned status ${response.statusCode} with the following response: "${response.body}"',
+          'PATCH /matches/result returned status ${response.statusCode} with the following response: "${response.body}"',
           StackTrace.current,
         );
       }
@@ -212,7 +211,7 @@ class GameResource {
       rethrow;
     } catch (e) {
       throw ApiClientError(
-        'PATCH /matches/$matchId/result failed with the following message: "$e"',
+        'PATCH /matches/result failed with the following message: "$e"',
         StackTrace.current,
       );
     }
