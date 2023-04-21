@@ -4,13 +4,17 @@ import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/prompt/prompt.dart';
+import 'package:top_dash/settings/settings.dart';
 
 import '../../helpers/helpers.dart';
 
 class _FakePromptFlowController extends FakeFlowController<Prompt> {
   _FakePromptFlowController() : super(const Prompt());
 }
+
+class _MockSettingsController extends Mock implements SettingsController {}
 
 const _itemsList = ['Archer', 'Magician', 'Climber'];
 
@@ -95,6 +99,8 @@ extension PromptFormViewTest on WidgetTester {
     FlowController<Prompt> flowController, {
     bool isLast = false,
   }) {
+    final SettingsController settingsController = _MockSettingsController();
+    when(() => settingsController.muted).thenReturn(ValueNotifier(true));
     return pumpApp(
       Scaffold(
         body: FlowBuilder<Prompt>(
@@ -113,6 +119,7 @@ extension PromptFormViewTest on WidgetTester {
           },
         ),
       ),
+      settingsController: settingsController,
     );
   }
 }
