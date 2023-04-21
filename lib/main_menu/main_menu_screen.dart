@@ -1,4 +1,6 @@
+import 'package:api_client/api_client.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/how_to_play/view/how_to_play_dialog.dart';
@@ -18,37 +20,45 @@ class MainMenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return Scaffold(
-      body: Stack(
-        children: [
-          const Align(
-            alignment: Alignment.topCenter,
-            child: _MainMenuScreenView(key: Key('main menu view')),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: IoFlipBottomBar(
-              leading: RoundedButton.svg(
-                Assets.icons.info,
-                onPressed: () {
-                  // TODO(all): add info screen
-                },
-              ),
-              middle: RoundedButton.text(
-                l10n.play,
-                onPressed: () {
-                  GoRouter.of(context).go('/prompt');
-                },
-              ),
-              trailing: RoundedButton.icon(
-                Icons.question_mark_rounded,
-                onPressed: () => HowToPlayDialog.show(context),
+    return BlocProvider<LeaderboardBloc>(
+      create: (context) {
+        final leaderboardResource = context.read<LeaderboardResource>();
+        return LeaderboardBloc(
+          leaderboardResource: leaderboardResource,
+        )..add(const LeaderboardRequested());
+      },
+      child: Scaffold(
+        body: Stack(
+          children: [
+            const Align(
+              alignment: Alignment.topCenter,
+              child: _MainMenuScreenView(key: Key('main menu view')),
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: IoFlipBottomBar(
+                leading: RoundedButton.svg(
+                  Assets.icons.info,
+                  onPressed: () {
+                    // TODO(all): add info screen
+                  },
+                ),
+                middle: RoundedButton.text(
+                  l10n.play,
+                  onPressed: () {
+                    GoRouter.of(context).go('/prompt');
+                  },
+                ),
+                trailing: RoundedButton.icon(
+                  Icons.question_mark_rounded,
+                  onPressed: () => HowToPlayDialog.show(context),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -67,7 +77,7 @@ class _MainMenuScreenView extends StatelessWidget {
             height: 312,
             fit: BoxFit.fitHeight,
           ),
-          const LeaderboardPage(),
+          const LeaderboardView(),
           const SizedBox(height: TopDashSpacing.xxlg),
         ],
       ),

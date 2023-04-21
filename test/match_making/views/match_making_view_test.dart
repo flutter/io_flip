@@ -12,11 +12,14 @@ import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash/match_making/match_making.dart';
+import 'package:top_dash/settings/settings.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
 
 class _MockMatchMakingBloc extends Mock implements MatchMakingBloc {}
+
+class _MockSettingsController extends Mock implements SettingsController {}
 
 abstract class __Router {
   void neglect(BuildContext context, VoidCallback callback);
@@ -164,7 +167,34 @@ void main() {
     });
 
     testWidgets(
-      'renders the host and guest id when match making is completed',
+      'renders transition screen when matchmaking is completed, before going '
+      'to the game page',
+      (tester) async {
+        mockState(
+          MatchMakingState(
+            status: MatchMakingStatus.completed,
+            match: DraftMatch(
+              id: 'matchId',
+              host: 'hostId',
+              guest: 'guestId',
+            ),
+            isHost: true,
+          ),
+        );
+        await tester.pumpSubject(
+          bloc,
+          routerNeglectCall: router.neglect,
+        );
+
+        expect(find.text(tester.l10n.getReadyToFlip), findsOneWidget);
+
+        // Let timers finish before ending test
+        await tester.pump(Duration(seconds: 3));
+      },
+    );
+
+    testWidgets(
+      'navigates to game page once matchmaking is completed',
       (tester) async {
         mockState(
           MatchMakingState(
@@ -188,6 +218,9 @@ void main() {
           isHost: true,
           matchId: 'matchId',
         );
+
+        await tester.pump(Duration(seconds: 3));
+
         verify(
           () => goRouter.goNamed(
             'game',
@@ -206,6 +239,9 @@ extension MatchMakingViewTest on WidgetTester {
     Future<void> Function(ClipboardData)? setClipboardData,
     RouterNeglectCall routerNeglectCall = Router.neglect,
   }) {
+    final SettingsController settingsController = _MockSettingsController();
+    when(() => settingsController.muted).thenReturn(ValueNotifier(true));
+
     return mockNetworkImages(() {
       return pumpApp(
         BlocProvider<MatchMakingBloc>.value(
@@ -245,6 +281,7 @@ extension MatchMakingViewTest on WidgetTester {
           ),
         ),
         router: goRouter,
+        settingsController: settingsController,
       );
     });
   }
