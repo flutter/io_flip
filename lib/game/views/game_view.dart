@@ -65,9 +65,9 @@ class GameView extends StatelessWidget {
   }
 }
 
-const clashCardSize = TopDashCardSizes.md;
-const playerHandCardSize = TopDashCardSizes.sm;
-const opponentHandCardSize = TopDashCardSizes.xs;
+const clashCardSize = GameCardSize.md();
+const playerHandCardSize = GameCardSize.sm();
+const opponentHandCardSize = GameCardSize.xs();
 const counterSize = Size(56, 56);
 
 const cardSpacingX = TopDashSpacing.sm;
@@ -150,8 +150,14 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
 
   late final opponentCardAnimations = createAnimations(
     controllers: opponentCardControllers,
-    begin: (i) => opponentCardOffsets[i] & opponentHandCardSize,
-    end: clashCardOffsets.last & clashCardSize,
+    begin: (i) => GameCardRect(
+      offset: opponentCardOffsets[i],
+      gameCardSize: opponentHandCardSize,
+    ),
+    end: GameCardRect(
+      offset: clashCardOffsets.last,
+      gameCardSize: clashCardSize,
+    ),
   );
 
   // Player animation controllers
@@ -159,8 +165,14 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
 
   late final playerCardAnimations = createAnimations(
     controllers: playerCardControllers,
-    begin: (i) => playerCardOffsets[i] & playerHandCardSize,
-    end: clashCardOffsets.first & clashCardSize,
+    begin: (i) => GameCardRect(
+      offset: playerCardOffsets[i],
+      gameCardSize: playerHandCardSize,
+    ),
+    end: GameCardRect(
+      offset: clashCardOffsets.first,
+      gameCardSize: clashCardSize,
+    ),
   );
 
   late final playerAnimatedCardControllers = createAnimatedCardControllers(
@@ -183,14 +195,14 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     }).toList();
   }
 
-  List<Animation<Rect?>> createAnimations({
+  List<Animation<GameCardRect?>> createAnimations({
     required List<AnimationController> controllers,
-    required Rect Function(int) begin,
-    required Rect end,
+    required GameCardRect Function(int) begin,
+    required GameCardRect end,
   }) {
     return controllers
         .mapIndexed(
-          (i, e) => RectTween(begin: begin(i), end: end).animate(e)
+          (i, e) => GameCardRectTween(begin: begin(i), end: end).animate(e)
             ..addStatusListener(turnCompleted)
             ..addStatusListener(turnAnimationsCompleted),
         )
@@ -264,7 +276,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
               ...clashCardOffsets.mapIndexed(
                 (i, offset) {
                   return _ClashCard(
-                    rect: offset & clashCardSize,
+                    rect: offset & clashCardSize.size,
                   );
                 },
               ),
@@ -318,7 +330,7 @@ class _OpponentCard extends StatelessWidget {
   });
 
   final game.Card card;
-  final Animation<Rect?> animation;
+  final Animation<GameCardRect?> animation;
 
   @override
   Widget build(BuildContext context) {
@@ -335,10 +347,10 @@ class _OpponentCard extends StatelessWidget {
     return AnimatedBuilder(
       animation: animation,
       builder: (context, _) {
-        final rect = animation.value!;
+        final position = animation.value!;
         return Positioned.fromRect(
           key: Key('opponent_card_${card.id}'),
-          rect: rect,
+          rect: position.rect,
           child:
               allOpponentPlayedCards.contains(card.id) && animation.isDismissed
                   ? Stack(
@@ -351,7 +363,7 @@ class _OpponentCard extends StatelessWidget {
                           power: card.power,
                           suitName: card.suit.name,
                           isRare: card.rarity,
-                          size: const GameCardSize.xs().scaleByRect(rect),
+                          size: position.gameCardSize,
                           overlay: overlay,
                         ),
                       ],
@@ -374,7 +386,7 @@ class _PlayerCard extends StatelessWidget {
   });
 
   final game.Card card;
-  final Animation<Rect?> animation;
+  final Animation<GameCardRect?> animation;
   final AnimatedCardController animatedCardController;
 
   @override
@@ -392,9 +404,9 @@ class _PlayerCard extends StatelessWidget {
     return AnimatedBuilder(
       animation: animation,
       builder: (context, _) {
-        final rect = animation.value!;
+        final position = animation.value!;
         return Positioned.fromRect(
-          rect: rect,
+          rect: position.rect,
           child: InkWell(
             key: Key('player_card_${card.id}'),
             onTap: () {
@@ -415,7 +427,7 @@ class _PlayerCard extends StatelessWidget {
                 power: card.power,
                 suitName: card.suit.name,
                 isRare: card.rarity,
-                size: const GameCardSize.xs().scaleByRect(rect),
+                size: position.gameCardSize,
                 overlay: overlay,
               ),
               back: const FlippedGameCard(

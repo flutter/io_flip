@@ -1,4 +1,4 @@
-import 'dart:math' as math;
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:top_dash_ui/gen/assets.gen.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
@@ -6,13 +6,13 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 /// {@template game_card_size}
 /// A class that holds information about card dimensions.
 /// {@endtemplate}
-class GameCardSize {
+class GameCardSize extends Equatable {
   /// {@macro game_card_size}
   const GameCardSize({
-    required Size size,
+    required this.size,
     required this.titleTextStyle,
     required this.descriptionTextStyle,
-  }) : _size = size;
+  });
 
   /// XS size.
   const GameCardSize.xs()
@@ -62,7 +62,8 @@ class GameCardSize {
           descriptionTextStyle: TopDashTextStyles.cardDescriptionXXL,
         );
 
-  final Size _size;
+  /// The size of the card.
+  final Size size;
 
   /// Name text style
   final TextStyle titleTextStyle;
@@ -71,31 +72,13 @@ class GameCardSize {
   final TextStyle descriptionTextStyle;
 
   /// Get the width of the card.
-  double get width => _size.width;
+  double get width => size.width;
 
   /// Get the height of the card.
-  double get height => _size.height;
+  double get height => size.height;
 
-  /// Scale the card by the given rect.
-  ///
-  /// The card will scale in a proportionate way to the rect.
-  /// It will use the biggest scale factor based on width or height.
-  GameCardSize scaleByRect(Rect rect) {
-    final widthFactor = width / rect.width;
-    final heightFactor = height / rect.height;
-
-    final factor = math.max(widthFactor, heightFactor);
-
-    return GameCardSize(
-      size: Size(width / factor, height / factor),
-      titleTextStyle: titleTextStyle.copyWith(
-        fontSize: titleTextStyle.fontSize! / factor,
-      ),
-      descriptionTextStyle: descriptionTextStyle.copyWith(
-        fontSize: descriptionTextStyle.fontSize! / factor,
-      ),
-    );
-  }
+  @override
+  List<Object?> get props => [size, descriptionTextStyle, titleTextStyle];
 }
 
 /// {@template game_card}
