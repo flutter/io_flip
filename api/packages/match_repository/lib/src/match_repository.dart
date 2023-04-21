@@ -200,14 +200,12 @@ class MatchRepository {
 
   /// calculates and updates the result of a match
   ///
-  /// Throws a [CalculateResultFailure] if match_state isn't found
-  Future<void> calculateMatchResult(String matchId) async {
-    final match = await getMatch(matchId);
-
-    if (match == null) throw CalculateResultFailure();
-    final matchState = await getMatchState(matchId);
-
-    if (matchState == null) throw CalculateResultFailure();
+  /// Throws a [CalculateResultFailure] if match is not over
+  Future<void> calculateMatchResult({
+    required Match match,
+    required MatchState matchState,
+  }) async {
+    final matchId = match.id;
 
     if (matchState.isOver() && matchState.result == null) {
       final result = _matchSolver.calculateMatchResult(match, matchState);
@@ -227,6 +225,8 @@ class MatchRepository {
           },
         ),
       );
+    } else {
+      throw CalculateResultFailure();
     }
   }
 
