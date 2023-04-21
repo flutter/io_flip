@@ -10,9 +10,8 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 // TODO(willhlas): update design.
 
 class InitialsFormView extends StatelessWidget {
-  const InitialsFormView({super.key, this.route, this.shareHandPageData});
+  const InitialsFormView({super.key, this.shareHandPageData});
 
-  final String? route;
   final ShareHandPageData? shareHandPageData;
 
   @override
@@ -22,11 +21,9 @@ class InitialsFormView extends StatelessWidget {
     return BlocConsumer<InitialsFormBloc, InitialsFormState>(
       listener: (context, state) {
         if (state.status == InitialsFormStatus.success) {
-          if (route == null) {
-            GoRouter.of(context).go('/');
-          } else {
+          if (shareHandPageData != null) {
             GoRouter.of(context).goNamed(
-              route!,
+              'share_hand',
               extra: ShareHandPageData(
                 initials: state.initials,
                 wins: shareHandPageData!.wins,
@@ -34,6 +31,8 @@ class InitialsFormView extends StatelessWidget {
                 deck: shareHandPageData!.deck,
               ),
             );
+          } else {
+            GoRouter.of(context).go('/');
           }
         }
       },

@@ -92,7 +92,6 @@ void main() {
         await tester.pumpSubject(
           initialsFormBloc,
           router: goRouter,
-          route: 'share_page',
           shareHandPageData: data,
         );
         verify(() => goRouter.goNamed('share_page', extra: data)).called(1);
@@ -185,7 +184,6 @@ extension InitialsFormViewTest on WidgetTester {
   Future<void> pumpSubject(
     InitialsFormBloc bloc, {
     GoRouter? router,
-    String? route,
     ShareHandPageData? shareHandPageData,
   }) async {
     return pumpApp(
@@ -193,7 +191,6 @@ extension InitialsFormViewTest on WidgetTester {
         value: bloc,
         child: Scaffold(
           body: InitialsFormView(
-            route: route,
             shareHandPageData: shareHandPageData,
           ),
         ),

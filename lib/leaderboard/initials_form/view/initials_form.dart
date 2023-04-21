@@ -7,13 +7,11 @@ import 'package:top_dash/share/share.dart';
 class InitialsForm extends StatelessWidget {
   const InitialsForm({
     required this.scoreCardId,
-    this.route,
     this.shareHandPageData,
     super.key,
   });
 
   final String scoreCardId;
-  final String? route;
   final ShareHandPageData? shareHandPageData;
 
   @override
@@ -26,7 +24,6 @@ class InitialsForm extends StatelessWidget {
         scoreCardId: scoreCardId,
       ),
       child: InitialsFormView(
-        route: route,
         shareHandPageData: shareHandPageData,
       ),
     );

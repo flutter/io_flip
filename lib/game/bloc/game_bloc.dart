@@ -272,7 +272,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       emit(
         LeaderboardEntryState(
           matchLoadedState.playerScoreCard.id,
-          route: event.route,
         ),
       );
     }

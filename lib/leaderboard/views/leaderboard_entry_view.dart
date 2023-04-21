@@ -7,13 +7,11 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 class LeaderboardEntryView extends StatelessWidget {
   const LeaderboardEntryView({
     required this.scoreCardId,
-    this.route,
     this.shareHandPageData,
     super.key,
   });
 
   final String scoreCardId;
-  final String? route;
   final ShareHandPageData? shareHandPageData;
 
   @override
@@ -35,7 +33,6 @@ class LeaderboardEntryView extends StatelessWidget {
               const SizedBox(height: TopDashSpacing.xlg),
               InitialsForm(
                 scoreCardId: scoreCardId,
-                route: route,
                 shareHandPageData: shareHandPageData,
               )
             ],

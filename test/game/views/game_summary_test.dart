@@ -448,7 +448,6 @@ void main() {
           verify(
             () => bloc.add(
               LeaderboardEntryRequested(
-                route: 'share_hand',
                 shareHandPageData: ShareHandPageData(
                   initials: '',
                   deck: const [],
