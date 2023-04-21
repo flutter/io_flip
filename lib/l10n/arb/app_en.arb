@@ -248,7 +248,7 @@
   },
   "searchingForOpponents": "Searching for opponents",
   "@searchingForOpponents": {
-    "description": "Subitle displayed while waiting to find match"
+    "description": "Subtitle displayed while waiting to find match"
   },
   "copyInviteCode": "Copy invite code",
   "@copyInviteCode": {
@@ -257,6 +257,14 @@
   "matchmaking": "MATCHMAKING...",
   "@matchmaking": {
     "description": "Label of the match making page button"
+  },
+  "getReadyToFlip": "Get ready to flip!",
+  "@getReadyToFlip": {
+    "description": "Title displayed when match is found, before entering the game"
+  },
+  "aiGameByGoogle": "An AI-designed card game powered by Google",
+  "@aiGameByGoogle": {
+    "description": "Subtitle displayed when match is found, before entering the game"
   },
   "quitGameDialogTitle": "Are you sure?",
   "@quitGameDialogTitle": {
