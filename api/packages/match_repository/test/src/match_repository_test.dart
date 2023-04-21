@@ -861,7 +861,7 @@ void main() {
         );
       });
 
-      test('correctly updates the match state when is guest', () async {
+      test('correctly updates the match state when host wins', () async {
         when(() => matchSolver.calculateMatchResult(any(), any()))
             .thenReturn(MatchResult.host);
 
@@ -877,6 +877,50 @@ void main() {
                 'hostPlayedCards': <String>['D', 'E', 'F'],
                 'guestPlayedCards': <String>['A', 'B', 'C'],
                 'result': 'host',
+              },
+            ),
+          ),
+        ).called(1);
+      });
+
+      test('correctly updates the match state when guest wins', () async {
+        when(() => matchSolver.calculateMatchResult(any(), any()))
+            .thenReturn(MatchResult.guest);
+
+        await matchRepository.calculateMatchResult(matchId);
+
+        verify(
+          () => dbClient.update(
+            'match_states',
+            DbEntityRecord(
+              id: matchStateId,
+              data: const {
+                'matchId': matchId,
+                'hostPlayedCards': <String>['D', 'E', 'F'],
+                'guestPlayedCards': <String>['A', 'B', 'C'],
+                'result': 'guest',
+              },
+            ),
+          ),
+        ).called(1);
+      });
+
+      test("correctly updates the match state when it's a draw", () async {
+        when(() => matchSolver.calculateMatchResult(any(), any()))
+            .thenReturn(MatchResult.draw);
+
+        await matchRepository.calculateMatchResult(matchId);
+
+        verify(
+          () => dbClient.update(
+            'match_states',
+            DbEntityRecord(
+              id: matchStateId,
+              data: const {
+                'matchId': matchId,
+                'hostPlayedCards': <String>['D', 'E', 'F'],
+                'guestPlayedCards': <String>['A', 'B', 'C'],
+                'result': 'draw',
               },
             ),
           ),

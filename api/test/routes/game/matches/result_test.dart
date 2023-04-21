@@ -53,7 +53,7 @@ void main() {
       expect(response.statusCode, equals(HttpStatus.badRequest));
     });
 
-    test('allows only get methods', () async {
+    test('allows only patch methods', () async {
       when(() => request.method).thenReturn(HttpMethod.post);
       final response = await route.onRequest(context, 'matchId');
       expect(response.statusCode, equals(HttpStatus.methodNotAllowed));
