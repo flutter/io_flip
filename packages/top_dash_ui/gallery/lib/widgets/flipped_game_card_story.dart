@@ -10,10 +10,7 @@ class FlippedGameCardStory extends StatelessWidget {
     return const StoryScaffold(
       title: 'Flipped Game Card',
       body: Center(
-        child: FlippedGameCard(
-          width: 200,
-          height: 300,
-        ),
+        child: FlippedGameCard(),
       ),
     );
   }

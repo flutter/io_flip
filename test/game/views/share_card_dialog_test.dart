@@ -21,7 +21,7 @@ const card = Card(
 
 void main() {
   group('ShareCardDialog', () {
-    setUpAll(() {
+    setUp(() {
       launchedUrl = null;
     });
 
@@ -52,7 +52,7 @@ void main() {
 
         expect(
           launchedUrl,
-          shareUrl,
+          equals(shareUrl),
         );
       },
     );
@@ -66,16 +66,13 @@ void main() {
     testWidgets(
       'tapping the Facebook button launches the correct url',
       (tester) async {
+        // The default display size is too small to include the Facebook button.
+        tester.setDisplaySize(const Size(1200, 800));
         await tester.pumpSubject();
 
         await tester.tap(find.text(tester.l10n.facebookButtonLabel));
 
-        expect(
-          launchedUrl,
-          equals(
-            shareUrl,
-          ),
-        );
+        expect(launchedUrl, equals(shareUrl));
       },
     );
 

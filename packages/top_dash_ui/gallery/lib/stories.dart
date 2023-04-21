@@ -57,8 +57,20 @@ void addStories(Dashbook dashbook) {
   dashbook
       .storiesOf('Cards')
       .add(
+        'Game Card Suits',
+        (_) => const GameCardSuitsStory(),
+      )
+      .add(
         'Game Card',
-        (_) => const GameCardStory(),
+        (context) => GameCardStory(
+          name: context.textProperty('name', 'Dash, the Great'),
+          description: context.textProperty(
+            'description',
+            'Dash, the Great, is the most popular bird in all of the dashland, '
+                'mastering the development skills in all of the possible '
+                'platforms.',
+          ),
+        ),
       )
       .add(
         'Game Card Overlay',

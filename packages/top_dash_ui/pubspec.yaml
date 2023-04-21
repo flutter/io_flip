@@ -8,6 +8,7 @@ environment:
   flutter: 3.10.0-1.1.pre
 
 dependencies:
+  equatable: ^2.0.5
   flame:
     git:
       url: https://github.com/willhlas/flame
@@ -35,6 +36,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/suits/
+    - assets/images/card_frames/
 
 flutter_gen:
   line_length: 80

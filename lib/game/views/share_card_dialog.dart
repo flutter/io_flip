@@ -95,10 +95,9 @@ class _DialogContent extends StatelessWidget {
             ),
             const SizedBox(height: TopDashSpacing.xlg),
             GameCard(
-              height: 233,
-              width: 175,
               image: card.image,
               name: card.name,
+              description: card.description,
               suitName: card.suit.name,
               power: card.power,
             ),

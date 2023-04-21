@@ -12,6 +12,9 @@ import 'package:flutter/widgets.dart';
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  $AssetsImagesCardFramesGen get cardFrames =>
+      const $AssetsImagesCardFramesGen();
+
   /// File path: assets/images/flip_countdown.png
   AssetGenImage get flipCountdown =>
       const AssetGenImage('assets/images/flip_countdown.png');
@@ -23,6 +26,38 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<dynamic> get values => [flipCountdown, ioFlipLogo];
+}
+
+class $AssetsImagesCardFramesGen {
+  const $AssetsImagesCardFramesGen();
+
+  /// File path: assets/images/card_frames/card_air.png
+  AssetGenImage get cardAir =>
+      const AssetGenImage('assets/images/card_frames/card_air.png');
+
+  /// File path: assets/images/card_frames/card_back.png
+  AssetGenImage get cardBack =>
+      const AssetGenImage('assets/images/card_frames/card_back.png');
+
+  /// File path: assets/images/card_frames/card_earth.png
+  AssetGenImage get cardEarth =>
+      const AssetGenImage('assets/images/card_frames/card_earth.png');
+
+  /// File path: assets/images/card_frames/card_fire.png
+  AssetGenImage get cardFire =>
+      const AssetGenImage('assets/images/card_frames/card_fire.png');
+
+  /// File path: assets/images/card_frames/card_metal.png
+  AssetGenImage get cardMetal =>
+      const AssetGenImage('assets/images/card_frames/card_metal.png');
+
+  /// File path: assets/images/card_frames/card_water.png
+  AssetGenImage get cardWater =>
+      const AssetGenImage('assets/images/card_frames/card_water.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values =>
+      [cardAir, cardBack, cardEarth, cardFire, cardMetal, cardWater];
 }
 
 class $AssetsImagesSuitsGen {
@@ -111,7 +146,16 @@ class AssetGenImage {
     );
   }
 
-  ImageProvider provider() => AssetImage(_assetName);
+  ImageProvider provider({
+    AssetBundle? bundle,
+    String? package = 'top_dash_ui',
+  }) {
+    return AssetImage(
+      _assetName,
+      bundle: bundle,
+      package: package,
+    );
+  }
 
   String get path => _assetName;
 
