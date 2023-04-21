@@ -15,7 +15,7 @@ class LeaderboardEntryView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    return Scaffold(
+    return IoFlipScaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.xxlg),
         child: Center(

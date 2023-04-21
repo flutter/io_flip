@@ -21,45 +21,43 @@ class PromptForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = context.watch<PromptFormBloc>();
-    return Scaffold(
-      body: FlowBuilder<Prompt>(
-        state: const Prompt(),
-        onComplete: (data) {
-          bloc.add(PromptSubmitted(data: data));
-        },
-        onGeneratePages: (data, pages) {
-          return [
-            const MaterialPage(
-              child: PromptFormIntroView(),
+    return FlowBuilder<Prompt>(
+      state: const Prompt(),
+      onComplete: (data) {
+        bloc.add(PromptSubmitted(data: data));
+      },
+      onGeneratePages: (data, pages) {
+        return [
+          const MaterialPage(
+            child: PromptFormIntroView(),
+          ),
+          if (data.isIntroSeen ?? false)
+            MaterialPage(
+              child: PromptFormView(
+                title: context.l10n.characterClassPromptPageTitle,
+                itemsList: bloc.state.characterClasses,
+                initialItem: _rng.nextInt(bloc.state.characterClasses.length),
+              ),
             ),
-            if (data.isIntroSeen ?? false)
-              MaterialPage(
-                child: PromptFormView(
-                  title: context.l10n.characterClassPromptPageTitle,
-                  itemsList: bloc.state.characterClasses,
-                  initialItem: _rng.nextInt(bloc.state.characterClasses.length),
-                ),
+          if (data.characterClass != null)
+            MaterialPage(
+              child: PromptFormView(
+                title: context.l10n.powerPromptPageTitle,
+                itemsList: bloc.state.powers,
+                initialItem: _rng.nextInt(bloc.state.powers.length),
               ),
-            if (data.characterClass != null)
-              MaterialPage(
-                child: PromptFormView(
-                  title: context.l10n.powerPromptPageTitle,
-                  itemsList: bloc.state.powers,
-                  initialItem: _rng.nextInt(bloc.state.powers.length),
-                ),
+            ),
+          if (data.power != null)
+            MaterialPage(
+              child: PromptFormView(
+                title: context.l10n.secondaryPowerPromptPageTitle,
+                itemsList: [...bloc.state.powers]..remove(data.power),
+                initialItem: _rng.nextInt(bloc.state.powers.length - 1),
+                isLastOfFlow: true,
               ),
-            if (data.power != null)
-              MaterialPage(
-                child: PromptFormView(
-                  title: context.l10n.secondaryPowerPromptPageTitle,
-                  itemsList: [...bloc.state.powers]..remove(data.power),
-                  initialItem: _rng.nextInt(bloc.state.powers.length - 1),
-                  isLastOfFlow: true,
-                ),
-              ),
-          ];
-        },
-      ),
+            ),
+        ];
+      },
     );
   }
 }

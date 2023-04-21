@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/prompt/prompt.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
 
 class PromptView extends StatelessWidget {
   const PromptView({super.key});
@@ -18,13 +19,15 @@ class PromptView extends StatelessWidget {
       builder: (context, state) {
         if ((state.status == PromptTermsStatus.initial) ||
             (state.status == PromptTermsStatus.loading)) {
-          return const Scaffold(
+          return const IoFlipScaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         } else if (state.status == PromptTermsStatus.loaded) {
-          return PromptForm();
+          return IoFlipScaffold(
+            body: PromptForm(),
+          );
         }
-        return Scaffold(
+        return IoFlipScaffold(
           body: Center(
             child: Text(context.l10n.unknownConnectionError),
           ),
