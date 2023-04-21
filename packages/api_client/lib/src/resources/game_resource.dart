@@ -194,7 +194,7 @@ class GameResource {
     try {
       final response = await _apiClient.patch('/game/matches/$matchId/result');
 
-      if (response.statusCode != HttpStatus.ok) {
+      if (response.statusCode != HttpStatus.noContent) {
         throw ApiClientError(
           'PATCH /matches/$matchId/result returned status ${response.statusCode} with the following response: "${response.body}"',
           StackTrace.current,

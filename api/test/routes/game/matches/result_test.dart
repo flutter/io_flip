@@ -40,9 +40,9 @@ void main() {
       when(() => context.read<Logger>()).thenReturn(logger);
     });
 
-    test('responds with a 200', () async {
+    test('responds with a 204', () async {
       final response = await route.onRequest(context, 'matchId');
-      expect(response.statusCode, equals(HttpStatus.ok));
+      expect(response.statusCode, equals(HttpStatus.noContent));
     });
 
     test("responds 400 when the match doesn't exists", () async {

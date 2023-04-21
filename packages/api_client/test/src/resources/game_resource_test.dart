@@ -496,7 +496,7 @@ void main() {
       });
 
       test('makes the correct call', () async {
-        when(() => response.statusCode).thenReturn(HttpStatus.ok);
+        when(() => response.statusCode).thenReturn(HttpStatus.noContent);
         await resource.calculateResult(
           matchId: 'matchId',
         );

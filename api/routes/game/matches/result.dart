@@ -16,7 +16,7 @@ FutureOr<Response> onRequest(RequestContext context, String matchId) async {
       return Response(statusCode: HttpStatus.badRequest);
     }
 
-    return Response();
+    return Response(statusCode: HttpStatus.noContent);
   }
   return Response(statusCode: HttpStatus.methodNotAllowed);
 }
