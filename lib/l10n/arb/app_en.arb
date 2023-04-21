@@ -77,10 +77,6 @@
   "@leaderboardFailedToLoad": {
     "description": "Label shown on the leaderboard when it fails to load"
   },
-  "menuCatchPhrase": "A global, AI-powered card collection game.",
-  "@menuCatchPhrase": {
-    "description": "Sentence shown on the main menu screen"
-  },
   "howToPlayHeader": "is a Flutter-powered, worldwide, card competition game.",
   "@howToPlayHeader": {
     "description": "Header shown on the how to play page"
@@ -248,7 +244,7 @@
   },
   "searchingForOpponents": "Searching for opponents",
   "@searchingForOpponents": {
-    "description": "Subitle displayed while waiting to find match"
+    "description": "Subtitle displayed while waiting to find match"
   },
   "copyInviteCode": "Copy invite code",
   "@copyInviteCode": {
@@ -258,6 +254,14 @@
   "@matchmaking": {
     "description": "Label of the match making page button"
   },
+  "getReadyToFlip": "Get ready to flip!",
+  "@getReadyToFlip": {
+    "description": "Title displayed when match is found, before entering the game"
+  },
+  "aiGameByGoogle": "An AI-designed card game powered by Google",
+  "@aiGameByGoogle": {
+    "description": "Subtitle displayed when match is found, before entering the game"
+  },
   "quitGameDialogTitle": "Are you sure?",
   "@quitGameDialogTitle": {
     "description": "Title of the quit game dialog"
@@ -266,13 +270,25 @@
   "@quitGameDialogDescription": {
     "description": "Description of the quit game dialog"
   },
-  "playerAlreadyConnectedError": "Please only use one tab at a time.",
+  "playerAlreadyConnectedError": "I/O Flip is already open on another tab",
   "@playerAlreadyConnectedError": {
     "description": "Error message shown when user connects in multiple tabs"
   },
-  "unknownConnectionError": "Unable to connect. Please try again in a few moments.",
+  "playerAlreadyConnectedErrorBody": "You can only play on one tab at a time.",
+  "@playerAlreadyConnectedErrorBody": {
+    "description": "Error message shown when user connects in multiple tabs"
+  },
+  "unknownConnectionError": "Unable to connect",
   "@unknownConnectionError": {
     "description": "Error message shown when an unknown error occurs while connecting"
+  },
+  "unknownConnectionErrorBody": "Please try again in a few moments.",
+  "@unknownConnectionErrorBody": {
+    "description": "Error message shown when an unknown error occurs while connecting"
+  },
+  "unknownConnectionErrorButton": "RETRY",
+  "@unknownConnectionErrorButton": {
+    "description": "Button shown when an unknown error occurs while connecting"
   },
   "twitterButtonLabel": "TWITTER",
   "@twitterButtonLabel": {

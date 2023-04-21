@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -17,6 +18,21 @@ class RoundedButton extends StatefulWidget {
     Color? foregroundColor = TopDashColors.seedWhite,
     this.borderColor = TopDashColors.seedPaletteNeutral40,
   }) : child = Icon(icon, color: foregroundColor);
+
+  /// Basic [RoundedButton] with black shadow.
+  /// Contains an [SvgPicture] as child
+  RoundedButton.svg(
+    String asset, {
+    this.onPressed,
+    this.onLongPress,
+    super.key,
+    this.backgroundColor = TopDashColors.seedBlack,
+    Color foregroundColor = TopDashColors.seedWhite,
+    this.borderColor = TopDashColors.seedPaletteNeutral40,
+  }) : child = SvgPicture.asset(
+          asset,
+          colorFilter: ColorFilter.mode(foregroundColor, BlendMode.srcIn),
+        );
 
   /// Basic [RoundedButton] with black shadow.
   /// Contains a [text] as child

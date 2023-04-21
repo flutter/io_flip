@@ -276,7 +276,7 @@ class MatchRepository {
   /// Sets the `guestConnected` attribute as true for CPU guest.
   Future<void> setCpuConnectivity({
     required String matchId,
-    required String hostId,
+    required String deckId,
   }) async {
     await _dbClient.update(
       'matches',
@@ -284,7 +284,7 @@ class MatchRepository {
         id: matchId,
         data: {
           'guestConnected': true,
-          'guest': _cpuPrefix + hostId,
+          'guest': deckId,
         },
       ),
     );

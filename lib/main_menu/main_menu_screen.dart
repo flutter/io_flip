@@ -19,6 +19,7 @@ class MainMenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return BlocProvider<LeaderboardBloc>(
       create: (context) {
         final leaderboardResource = context.read<LeaderboardResource>();
@@ -26,20 +27,37 @@ class MainMenuScreen extends StatelessWidget {
           leaderboardResource: leaderboardResource,
         )..add(const LeaderboardRequested());
       },
-      child: const Scaffold(
+      child: Scaffold(
         body: Stack(
           children: [
-            Align(
+            const Align(
+              alignment: Alignment.topCenter,
               child: _MainMenuScreenView(key: Key('main menu view')),
             ),
             Positioned(
               bottom: 0,
               left: 0,
               right: 0,
-              child: Align(
-                child: _Footer(key: Key('main menu footer')),
+              child: IoFlipBottomBar(
+                leading: RoundedButton.svg(
+                  key: const Key('info_button'),
+                  Assets.icons.info,
+                  onPressed: () {
+                    // TODO(all): add info screen
+                  },
+                ),
+                middle: RoundedButton.text(
+                  l10n.play,
+                  onPressed: () {
+                    GoRouter.of(context).go('/prompt');
+                  },
+                ),
+                trailing: RoundedButton.icon(
+                  Icons.question_mark_rounded,
+                  onPressed: () => HowToPlayDialog.show(context),
+                ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -52,119 +70,16 @@ class _MainMenuScreenView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ResponsiveLayoutBuilder(
-      small: (context, widget) => const PortraitMenuView(),
-      large: (context, widget) => const LandscapeMenuView(),
-    );
-  }
-}
-
-class PortraitMenuView extends StatelessWidget {
-  const PortraitMenuView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const SingleChildScrollView(
+    return SingleChildScrollView(
       child: Column(
         children: [
-          _MainImage(key: Key('main menu image')),
-          LeaderboardView(),
-          SizedBox(height: TopDashSpacing.xxlg),
-        ],
-      ),
-    );
-  }
-}
-
-@visibleForTesting
-class LandscapeMenuView extends StatelessWidget {
-  const LandscapeMenuView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(TopDashSpacing.lg),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const _MainImage(key: Key('main menu image')),
-          Flexible(
-            child: Container(
-              constraints: const BoxConstraints(
-                maxWidth: 2 * TopDashSpacing.xxxlg,
-              ),
-            ),
-          ),
-          const SingleChildScrollView(
-            child: LeaderboardView(),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MainImage extends StatelessWidget {
-  const _MainImage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 590),
-          child: Image.asset(
+          Image.asset(
             Assets.images.main.path,
+            height: 312,
+            fit: BoxFit.fitHeight,
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: TopDashSpacing.xxlg),
-          child: Text(
-            context.l10n.menuCatchPhrase,
-            style: TopDashTextStyles.headlineH6Light,
-          ),
-        )
-      ],
-    );
-  }
-}
-
-class _Footer extends StatelessWidget {
-  const _Footer({super.key});
-
-  static const Widget _gap = SizedBox(width: TopDashSpacing.md);
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-
-    return Padding(
-      padding: const EdgeInsets.all(TopDashSpacing.sm),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          RoundedButton.icon(
-            Icons.more_horiz_rounded,
-            onPressed: () => GoRouter.of(context).push('/settings'),
-          ),
-          _gap,
-          RoundedButton.icon(
-            Icons.share,
-            onPressed: () => GoRouter.of(context).goNamed('share'),
-          ),
-          _gap,
-          RoundedButton.icon(
-            Icons.question_mark_rounded,
-            onPressed: () => HowToPlayDialog.show(context),
-          ),
-          _gap,
-          RoundedButton.text(
-            l10n.play,
-            onPressed: () {
-              GoRouter.of(context).go('/prompt');
-            },
-          ),
+          const LeaderboardView(),
+          const SizedBox(height: TopDashSpacing.xxlg),
         ],
       ),
     );

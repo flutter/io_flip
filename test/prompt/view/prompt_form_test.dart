@@ -8,11 +8,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/prompt/prompt.dart';
+import 'package:top_dash/settings/settings.dart';
 
 import '../../helpers/helpers.dart';
 
 class _MockPromptFormBloc extends MockBloc<PromptFormEvent, PromptFormState>
     implements PromptFormBloc {}
+
+class _MockSettingsController extends Mock implements SettingsController {}
 
 class _MockRandom extends Mock implements math.Random {}
 
@@ -134,6 +137,8 @@ void main() {
 
 extension PromptFormTest on WidgetTester {
   Future<void> pumpSubject(PromptFormBloc bloc, {math.Random? rng}) {
+    final SettingsController settingsController = _MockSettingsController();
+    when(() => settingsController.muted).thenReturn(ValueNotifier(true));
     return pumpApp(
       Scaffold(
         body: BlocProvider.value(
@@ -143,6 +148,7 @@ extension PromptFormTest on WidgetTester {
           ),
         ),
       ),
+      settingsController: settingsController,
     );
   }
 }
