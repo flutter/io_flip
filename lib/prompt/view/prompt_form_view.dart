@@ -75,7 +75,7 @@ class _PromptFormViewState extends State<PromptFormView> {
                   child: Text(
                     selectedText,
                     style: TopDashTextStyles.mobileH3.copyWith(
-                      color: TopDashColors.seedBlack,
+                      color: Colors.transparent,
                     ),
                   ),
                 ),
