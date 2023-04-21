@@ -461,8 +461,8 @@ void main() {
       );
 
       testWidgets(
-        'routes to share hand page when the quit button is tapped and confirmed and '
-        'player score card has initials',
+        'routes to share hand page when the quit button is tapped '
+        'and confirmed and player score card has initials',
         (tester) async {
           final goRouter = MockGoRouter();
 

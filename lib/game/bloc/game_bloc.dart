@@ -270,8 +270,10 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     if (state is MatchLoadedState) {
       final matchLoadedState = state as MatchLoadedState;
       emit(
-        LeaderboardEntryState(matchLoadedState.playerScoreCard.id,
-            shareHandPageData: event.shareHandPageData),
+        LeaderboardEntryState(
+          matchLoadedState.playerScoreCard.id,
+          shareHandPageData: event.shareHandPageData,
+        ),
       );
     }
   }
