@@ -161,15 +161,71 @@ void main() {
       );
     });
 
-    test('isValidPrompt returns true', () async {
-      final prompt = Prompt(
+    group('isValidPrompt', () {
+      const prompt = Prompt(
         power: 'AAA',
         secondaryPower: 'BBB',
         characterClass: 'CCC',
       );
-      final isValid = await promptRepository.isValidPrompt(prompt);
+      setUp(() {
+        when(
+          () => dbClient.findBy(
+            'prompt_terms',
+            'term',
+            prompt.power,
+          ),
+        ).thenAnswer(
+          (_) async => [
+            DbEntityRecord(
+              id: 'id1',
+              data: const {
+                'type': 'power',
+                'term': 'AAA',
+              },
+            ),
+          ],
+        );
+        when(
+          () => dbClient.findBy(
+            'prompt_terms',
+            'term',
+            prompt.secondaryPower,
+          ),
+        ).thenAnswer(
+          (_) async => [
+            DbEntityRecord(
+              id: 'id2',
+              data: const {
+                'type': 'power',
+                'term': 'BBB',
+              },
+            ),
+          ],
+        );
+        when(
+          () => dbClient.findBy(
+            'prompt_terms',
+            'term',
+            prompt.characterClass,
+          ),
+        ).thenAnswer(
+          (_) async => [
+            DbEntityRecord(
+              id: 'id3',
+              data: const {
+                'type': 'characterClass',
+                'term': 'CCC',
+              },
+            ),
+          ],
+        );
+      });
 
-      expect(isValid, isTrue);
+      test('isValidPrompt returns true', () async {
+        final isValid = await promptRepository.isValidPrompt(prompt);
+
+        expect(isValid, isTrue);
+      });
     });
 
     group('createPromptTerm', () {
