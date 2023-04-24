@@ -48,6 +48,8 @@ class _MockUISoundAdapter extends Mock implements UISoundAdapter {}
 
 class _MockGoRouter extends Mock implements GoRouter {}
 
+class _MockImages extends Mock implements Images {}
+
 UISoundAdapter _createUISoundAdapter() {
   final adapter = _MockUISoundAdapter();
   when(() => adapter.playButtonSound).thenReturn(() {});
@@ -116,7 +118,7 @@ extension PumpApp on WidgetTester {
             value: user ?? _MockUser(),
           ),
           Provider.value(
-            value: Images(prefix: ''),
+            value: images ?? _MockImages(),
           )
         ],
         child: MockGoRouterProvider(
