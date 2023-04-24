@@ -29,12 +29,20 @@ class $AssetsImagesGen {
   AssetGenImage get cardMaster =>
       const AssetGenImage('assets/images/card_master.png');
 
+  /// File path: assets/images/draw_splash.png
+  AssetGenImage get drawSplash =>
+      const AssetGenImage('assets/images/draw_splash.png');
+
   /// File path: assets/images/facebook.png
   AssetGenImage get facebook =>
       const AssetGenImage('assets/images/facebook.png');
 
   $AssetsImagesLeaderboardGen get leaderboard =>
       const $AssetsImagesLeaderboardGen();
+
+  /// File path: assets/images/loss_splash.png
+  AssetGenImage get lossSplash =>
+      const AssetGenImage('assets/images/loss_splash.png');
 
   /// File path: assets/images/main.png
   AssetGenImage get main => const AssetGenImage('assets/images/main.png');
@@ -46,9 +54,21 @@ class $AssetsImagesGen {
   /// File path: assets/images/twitter.png
   AssetGenImage get twitter => const AssetGenImage('assets/images/twitter.png');
 
+  /// File path: assets/images/win_splash.png
+  AssetGenImage get winSplash =>
+      const AssetGenImage('assets/images/win_splash.png');
+
   /// List of all assets
-  List<AssetGenImage> get values =>
-      [cardMaster, facebook, main, tempPreferencesCustom, twitter];
+  List<AssetGenImage> get values => [
+        cardMaster,
+        drawSplash,
+        facebook,
+        lossSplash,
+        main,
+        tempPreferencesCustom,
+        twitter,
+        winSplash
+      ];
 }
 
 class $AssetsMusicGen {

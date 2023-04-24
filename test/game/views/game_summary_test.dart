@@ -513,14 +513,18 @@ extension GameSummaryViewTest on WidgetTester {
     GameBloc bloc, {
     GoRouter? goRouter,
   }) {
-    return mockNetworkImages(() {
-      return pumpApp(
+    return mockNetworkImages(() async {
+      await pumpApp(
         BlocProvider<GameBloc>.value(
           value: bloc,
           child: GameView(),
         ),
         router: goRouter,
       );
+      state<MatchResultSplashState>(
+        find.byType(MatchResultSplash),
+      ).onComplete();
+      await pump();
     });
   }
 }
