@@ -281,6 +281,23 @@ void main() {
       );
 
       testWidgets(
+        'Renders correct message when round is a draw',
+        (tester) async {
+          when(
+            () => bloc.isWinningCard(any(), isPlayer: any(named: 'isPlayer')),
+          ).thenReturn(CardOverlayType.draw);
+          when(() => bloc.isHost).thenReturn(false);
+          defaultMockState();
+          await tester.pumpSubject(bloc);
+
+          expect(
+            find.textContaining('D'),
+            findsNWidgets(3),
+          );
+        },
+      );
+
+      testWidgets(
         'navigates to inspector page when card is tapped',
         (tester) async {
           final goRouter = MockGoRouter();
