@@ -179,7 +179,6 @@ void main() {
             ),
           );
           when(bloc.gameResult).thenReturn(GameResult.draw);
-          // await tester.pumpAndSettle(Duration(seconds: 2));
           await tester.pumpSubject(bloc);
 
           expect(
