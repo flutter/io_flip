@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/how_to_play/view/how_to_play_dialog.dart';
 import 'package:top_dash/info/info.dart';
+import 'package:top_dash/info/widgets/info_button.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/leaderboard/leaderboard.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
@@ -40,11 +41,7 @@ class MainMenuScreen extends StatelessWidget {
               left: 0,
               right: 0,
               child: IoFlipBottomBar(
-                leading: RoundedButton.svg(
-                  key: const Key('info_button'),
-                  Assets.icons.info,
-                  onPressed: () => InfoDialog.show(context),
-                ),
+                leading: const InfoButton(),
                 middle: RoundedButton.text(
                   l10n.play,
                   onPressed: () {

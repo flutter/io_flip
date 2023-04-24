@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart' hide Card;
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:top_dash/audio/audio.dart';
 import 'package:top_dash/game/game.dart';
+import 'package:top_dash/info/widgets/info_button.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/share/views/card_inspector.dart';
 import 'package:top_dash/share/views/share_hand_page.dart';
@@ -18,65 +20,32 @@ class GameSummaryView extends StatelessWidget {
     return IoFlipScaffold(
       body: MatchResultSplash(
         result: result ?? GameResult.draw,
-        child: const Stack(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Align(
-              child: _MatchSummaryScreenView(key: Key('match_summary_view')),
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Align(
-                child: GameSummaryFooter(key: Key('match summary footer')),
+            const SizedBox(height: TopDashSpacing.lg),
+            if (MediaQuery.of(context).size.height > 600)
+              IoFlipLogo(
+                height: 104,
+                width: 158,
               ),
-            )
+            const Spacer(),
+            const SizedBox(height: TopDashSpacing.lg),
+            const _ResultView(key: Key('game_summary_result_view')),
+            const SizedBox(height: TopDashSpacing.xlg),
+            const FittedBox(
+              fit: BoxFit.scaleDown,
+              child: _CardsView(),
+            ),
+            const Spacer(),
+            const IoFlipBottomBar(
+              leading: AudioToggleButton(),
+              middle: GameSummaryFooter(key: Key('match summary footer')),
+              trailing: InfoButton(),
+            ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _MatchSummaryScreenView extends StatelessWidget {
-  const _MatchSummaryScreenView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ResponsiveLayoutBuilder(
-      small: (context, widget) => const PortraitSummaryView(),
-      large: (context, widget) => const LandscapeSummaryView(),
-    );
-  }
-}
-
-class PortraitSummaryView extends StatelessWidget {
-  const PortraitSummaryView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _ResultView(key: Key('game_summary_result_view')),
-        SizedBox(height: TopDashSpacing.xxlg),
-        _CardsView(),
-      ],
-    );
-  }
-}
-
-class LandscapeSummaryView extends StatelessWidget {
-  const LandscapeSummaryView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _ResultView(key: Key('game_summary_result_view')),
-        _CardsView(),
-      ],
     );
   }
 }
@@ -139,33 +108,35 @@ class _CardsView extends StatelessWidget {
       (id) => state.match.guestDeck.cards.firstWhere((card) => card.id == id),
     );
 
-    final playerCards =
-        (bloc.isHost ? hostCardsOrdered : guestCardsOrdered).map(
-      (card) => GameCard(
-        size: const GameCardSize.sm(),
-        image: card.image,
-        name: card.name,
-        description: card.description,
-        power: card.power,
-        suitName: card.suit.name,
-        overlay: bloc.isWinningCard(card, isPlayer: true),
-        isRare: card.rarity,
-      ),
-    );
+    final playerCards = (bloc.isHost ? hostCardsOrdered : guestCardsOrdered)
+        .map(
+          (card) => GameCard(
+            size: const GameCardSize.sm(),
+            image: card.image,
+            name: card.name,
+            description: card.description,
+            power: card.power,
+            suitName: card.suit.name,
+            overlay: bloc.isWinningCard(card, isPlayer: true),
+            isRare: card.rarity,
+          ),
+        )
+        .toList();
 
-    final opponentCards =
-        (bloc.isHost ? guestCardsOrdered : hostCardsOrdered).map(
-      (card) => GameCard(
-        size: const GameCardSize.sm(),
-        image: card.image,
-        name: card.name,
-        description: card.description,
-        power: card.power,
-        suitName: card.suit.name,
-        overlay: bloc.isWinningCard(card, isPlayer: false),
-        isRare: card.rarity,
-      ),
-    );
+    final opponentCards = (bloc.isHost ? guestCardsOrdered : hostCardsOrdered)
+        .map(
+          (card) => GameCard(
+            size: const GameCardSize.sm(),
+            image: card.image,
+            name: card.name,
+            description: card.description,
+            power: card.power,
+            suitName: card.suit.name,
+            overlay: bloc.isWinningCard(card, isPlayer: false),
+            isRare: card.rarity,
+          ),
+        )
+        .toList();
 
     final cards = bloc.isHost
         ? [...hostCardsOrdered, ...guestCardsOrdered]
@@ -174,32 +145,101 @@ class _CardsView extends StatelessWidget {
     final playerCardIds = bloc.isHost
         ? state.matchState.hostPlayedCards
         : state.matchState.guestPlayedCards;
-    final gameCards = [...playerCards, ...opponentCards];
-    return Align(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(
-          maxWidth: 500,
-          minHeight: 360,
-        ),
-        child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-          ),
-          shrinkWrap: true,
-          itemCount: gameCards.length,
-          itemBuilder: (context, index) => GestureDetector(
-            child: gameCards[index],
-            onTap: () => GoRouter.of(context).pushNamed(
-              'card_inspector',
-              extra: CardInspectorData(
-                deck: cards,
-                playerCardIds: playerCardIds,
-                startingIndex: index,
-              ),
-            ),
+
+    final roundSummaries = List.generate(
+      3,
+      (index) => _RoundSummary(
+        playerCard: playerCards[index],
+        opponentCard: opponentCards[index],
+        onTap: (card) => GoRouter.of(context).pushNamed(
+          'card_inspector',
+          extra: CardInspectorData(
+            deck: cards,
+            playerCardIds: playerCardIds,
+            startingIndex: index + card,
           ),
         ),
       ),
+    );
+
+    return Padding(
+      padding: const EdgeInsets.all(TopDashSpacing.lg),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          roundSummaries[0],
+          const SizedBox(
+            height: 340,
+            width: TopDashSpacing.xxlg,
+            child: VerticalDivider(
+              color: TopDashColors.seedGrey50,
+            ),
+          ),
+          roundSummaries[1],
+          const SizedBox(
+            height: 340,
+            width: TopDashSpacing.xxlg,
+            child: VerticalDivider(
+              color: TopDashColors.seedGrey50,
+            ),
+          ),
+          roundSummaries[2],
+        ],
+      ),
+    );
+  }
+}
+
+class _RoundSummary extends StatelessWidget {
+  const _RoundSummary({
+    required this.playerCard,
+    required this.opponentCard,
+    required this.onTap,
+  });
+  final GameCard playerCard;
+  final GameCard opponentCard;
+  final void Function(int index) onTap;
+
+  Color get _resultColor {
+    if (playerCard.overlay == CardOverlayType.draw) {
+      return TopDashColors.seedGrey70;
+    } else {
+      if (playerCard.overlay == CardOverlayType.win) {
+        return TopDashColors.seedGreen;
+      } else {
+        return TopDashColors.seedRed;
+      }
+    }
+  }
+
+  String get _result {
+    final score = '${playerCard.power} - ${opponentCard.power}';
+    if (playerCard.overlay == CardOverlayType.draw) {
+      return 'D $score';
+    } else {
+      if (playerCard.overlay == CardOverlayType.win) {
+        return 'W $score';
+      } else {
+        return 'L $score';
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        GestureDetector(onTap: () => onTap(0), child: playerCard),
+        const SizedBox(height: TopDashSpacing.lg),
+        GestureDetector(onTap: () => onTap(3), child: opponentCard),
+        const SizedBox(height: TopDashSpacing.lg),
+        Text(
+          _result,
+          style: TopDashTextStyles.bodyLG.copyWith(color: _resultColor),
+        )
+      ],
     );
   }
 }
@@ -223,51 +263,48 @@ class GameSummaryFooter extends StatelessWidget {
     final playerDeck =
         bloc.isHost ? state.match.hostDeck : state.match.guestDeck;
 
-    return Padding(
-      padding: const EdgeInsets.all(TopDashSpacing.sm),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          RoundedButton.text(
-            l10n.nextMatch,
-            onPressed: () => GoRouter.of(context).pop(),
-          ),
-          _gap,
-          RoundedButton.text(
-            l10n.quit,
-            backgroundColor: TopDashColors.seedWhite,
-            onPressed: () => QuitGameDialog.show(
-              context,
-              onConfirm: () => _routerNeglectCall(context, () {
-                if (playerScoreCard.initials != null) {
-                  GoRouter.of(context).goNamed(
-                    'share_hand',
-                    extra: ShareHandPageData(
-                      initials: playerScoreCard.initials!,
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        RoundedButton.text(
+          l10n.nextMatch,
+          onPressed: () => GoRouter.of(context).pop(),
+        ),
+        _gap,
+        RoundedButton.text(
+          l10n.quit,
+          backgroundColor: TopDashColors.seedWhite,
+          onPressed: () => QuitGameDialog.show(
+            context,
+            onConfirm: () => _routerNeglectCall(context, () {
+              if (playerScoreCard.initials != null) {
+                GoRouter.of(context).goNamed(
+                  'share_hand',
+                  extra: ShareHandPageData(
+                    initials: playerScoreCard.initials!,
+                    wins: state.playerScoreCard.currentStreak,
+                    deckId: playerDeck.id,
+                    deck: bloc.playerCards,
+                  ),
+                );
+              } else {
+                GoRouter.of(context).pop();
+                bloc.add(
+                  LeaderboardEntryRequested(
+                    shareHandPageData: ShareHandPageData(
+                      initials: '',
                       wins: state.playerScoreCard.currentStreak,
                       deckId: playerDeck.id,
                       deck: bloc.playerCards,
                     ),
-                  );
-                } else {
-                  GoRouter.of(context).pop();
-                  bloc.add(
-                    LeaderboardEntryRequested(
-                      shareHandPageData: ShareHandPageData(
-                        initials: '',
-                        wins: state.playerScoreCard.currentStreak,
-                        deckId: playerDeck.id,
-                        deck: bloc.playerCards,
-                      ),
-                    ),
-                  );
-                }
-              }),
-              onCancel: GoRouter.of(context).pop,
-            ),
+                  ),
+                );
+              }
+            }),
+            onCancel: GoRouter.of(context).pop,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
