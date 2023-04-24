@@ -143,35 +143,33 @@ class GameCard extends StatelessWidget {
   /// Is a rare card
   final bool isRare;
 
-  String _mapSuitNameToAsset() {
+  (String, SvgPicture) _mapSuitNameToAssets() {
     switch (suitName) {
       case 'fire':
-        return Assets.images.cardFrames.cardFire.keyName;
+        return (
+          Assets.images.cardFrames.cardFire.keyName,
+          Assets.images.suits.fire.svg(),
+        );
       case 'water':
-        return Assets.images.cardFrames.cardWater.keyName;
+        return (
+          Assets.images.cardFrames.cardWater.keyName,
+          Assets.images.suits.water.svg(),
+        );
       case 'earth':
-        return Assets.images.cardFrames.cardEarth.keyName;
+        return (
+          Assets.images.cardFrames.cardEarth.keyName,
+          Assets.images.suits.earth.svg(),
+        );
       case 'air':
-        return Assets.images.cardFrames.cardAir.keyName;
+        return (
+          Assets.images.cardFrames.cardAir.keyName,
+          Assets.images.suits.air.svg(),
+        );
       case 'metal':
-        return Assets.images.cardFrames.cardMetal.keyName;
-      default:
-        throw ArgumentError('Invalid suit name');
-    }
-  }
-
-  SvgPicture _mapSuitNameToSvg() {
-    switch (suitName) {
-      case 'fire':
-        return Assets.images.suits.fire.svg();
-      case 'water':
-        return Assets.images.suits.water.svg();
-      case 'earth':
-        return Assets.images.suits.earth.svg();
-      case 'air':
-        return Assets.images.suits.air.svg();
-      case 'metal':
-        return Assets.images.suits.metal.svg();
+        return (
+          Assets.images.cardFrames.cardMetal.keyName,
+          Assets.images.suits.metal.svg(),
+        );
       default:
         throw ArgumentError('Invalid suit name');
     }
@@ -179,6 +177,7 @@ class GameCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final (cardFrame, suitSvg) = _mapSuitNameToAssets();
     return Stack(
       children: [
         SizedBox(
@@ -197,9 +196,7 @@ class GameCard extends StatelessWidget {
                 ),
               ),
               Positioned.fill(
-                child: Image.asset(
-                  _mapSuitNameToAsset(),
-                ),
+                child: Image.asset(cardFrame),
               ),
               Align(
                 alignment: Alignment.topRight,
@@ -208,7 +205,7 @@ class GameCard extends StatelessWidget {
                   height: size.badgeSize.height,
                   child: Stack(
                     children: [
-                      Positioned.fill(child: _mapSuitNameToSvg()),
+                      Positioned.fill(child: suitSvg),
                       Align(
                         child: Text(
                           power.toString(),
