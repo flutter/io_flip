@@ -18,25 +18,26 @@ class LeaderboardEntryView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    return IoFlipScaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.xxlg),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                l10n.enterYourInitials,
-                textAlign: TextAlign.center,
-                style: TopDashTextStyles.mobileH4,
-              ),
-              const SizedBox(height: TopDashSpacing.xlg),
-              InitialsForm(
-                scoreCardId: scoreCardId,
-                shareHandPageData: shareHandPageData,
-              )
-            ],
-          ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.xxlg),
+      child: Center(
+        child: Column(
+          children: [
+            const SizedBox(height: TopDashSpacing.xlg),
+            IoFlipLogo(width: 96.96, height: 64),
+            const Spacer(),
+            Text(
+              l10n.enterYourInitials,
+              textAlign: TextAlign.center,
+              style: TopDashTextStyles.mobileH4,
+            ),
+            const SizedBox(height: TopDashSpacing.xlg),
+            InitialsForm(
+              scoreCardId: scoreCardId,
+              shareHandPageData: shareHandPageData,
+            ),
+            const Spacer(),
+          ],
         ),
       ),
     );

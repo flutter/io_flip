@@ -5,12 +5,13 @@ abstract class InitialsFormEvent extends Equatable {
 }
 
 class InitialsChanged extends InitialsFormEvent {
-  const InitialsChanged({required this.initials});
+  const InitialsChanged({required this.initial, required this.index});
 
-  final String initials;
+  final String initial;
+  final int index;
 
   @override
-  List<Object> get props => [initials];
+  List<Object> get props => [initial, index];
 }
 
 class InitialsSubmitted extends InitialsFormEvent {
