@@ -350,9 +350,45 @@
   "@mainMenuButtonLabel": {
     "description": "Text shown on the main menu button"
   },
+  "infoDialogTitle": "About I/O Flip",
+  "@infoAboutGameTitle": {
+    "description": "Title shown in the info dialog"
+  },
+  "infoDialogDescriptionPrefix": "Learn",
+  "@infoDialogDescription": {
+    "description": "Description prefix text shown in the info dialog"
+  },
+  "infoDialogDescriptionInfixOne": "how I/O Flip was made",
+  "@infoDialogDescriptionInfixOne": {
+    "description": "First description inifix text shown in the info dialog"
+  },
+  "infoDialogDescriptionInfixTwo": "and\ngrab the",
+  "@infoDialogDescriptionInfixTwo": {
+    "description": "Second description inifix text shown in the info dialog"
+  },
+  "infoDialogDescriptionSuffix": "open source code.",
+  "@infoDialogDescriptionSuffix": {
+    "description": "Description suffix text shown in the info dialog"
+  },
+  "infoDialogOtherLinks": "Other Links",
+  "@infoDialogOtherLinks": {
+    "description": "Other links text shown in the info dialog"
+  },
   "ioLinkLabel": "Google I/O",
   "@ioLinkLabel": {
     "description": "Text shown on the Google I/O link"
+  },
+  "privacyPolicyLinkLabel": "Privacy Policy",
+  "@privacyPolicyLinkLabel": {
+    "description": "Text shown on the Privacy Policy link"
+  },
+  "termsOfServiceLinkLabel": "Terms of Service",
+  "@termsOfServiceLinkLabel": {
+    "description": "Text shown on the Terms of Service link"
+  },
+  "faqLinkLabel": "FAQ",
+  "@faqLinkLabel": {
+    "description": "Text shown on the FAQ link"
   },
   "howItsMadeLinkLabel": "How it's made",
   "@howItsMadeLinkLabel": {
