@@ -17,6 +17,44 @@ void main() {
       promptRepository = PromptRepository(
         dbClient: dbClient,
       );
+      when(
+        () => dbClient.orderBy(
+          'prompt_terms',
+          'type',
+          limit: 100,
+        ),
+      ).thenAnswer(
+        (_) async => [
+          DbEntityRecord(
+            id: 'id1',
+            data: const {
+              'type': 'power',
+              'term': 'AAA',
+            },
+          ),
+          DbEntityRecord(
+            id: 'id2',
+            data: const {
+              'type': 'power',
+              'term': 'BBB',
+            },
+          ),
+          DbEntityRecord(
+            id: 'id3',
+            data: const {
+              'type': 'characterClass',
+              'term': 'CCC',
+            },
+          ),
+          DbEntityRecord(
+            id: 'id4',
+            data: const {
+              'type': 'location',
+              'term': 'DDD',
+            },
+          ),
+        ],
+      );
     });
 
     test('can be instantiated', () {
@@ -28,8 +66,8 @@ void main() {
       );
     });
 
-    group('getPromptTerms', () {
-      test('returns a list of terms', () async {
+    group('getPromptTermsByType', () {
+      test('returns a list of terms with location type', () async {
         when(
           () => dbClient.findBy(
             'prompt_terms',
@@ -89,6 +127,49 @@ void main() {
           ),
         );
       });
+    });
+
+    test('getPromptTerms returns a list of terms', () async {
+      final response = await promptRepository.getPromptTerms();
+
+      expect(
+        response,
+        equals(
+          [
+            PromptTerm(
+              id: 'id1',
+              type: PromptTermType.power,
+              term: 'AAA',
+            ),
+            PromptTerm(
+              id: 'id2',
+              type: PromptTermType.power,
+              term: 'BBB',
+            ),
+            PromptTerm(
+              id: 'id3',
+              type: PromptTermType.characterClass,
+              term: 'CCC',
+            ),
+            PromptTerm(
+              id: 'id4',
+              type: PromptTermType.location,
+              term: 'DDD',
+            ),
+          ],
+        ),
+      );
+    });
+
+    test('isValidPrompt returns true', () async {
+      final prompt = Prompt(
+        power: 'AAA',
+        secondaryPower: 'BBB',
+        characterClass: 'CCC',
+      );
+      final isValid = await promptRepository.isValidPrompt(prompt);
+
+      expect(isValid, isTrue);
     });
 
     group('createPromptTerm', () {

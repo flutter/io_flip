@@ -55,4 +55,38 @@ class PromptRepository {
       promptTerm.toJson()..remove('id'),
     );
   }
+
+  /// Check if the attributes in a [Prompt] are valid
+  Future<bool> isValidPrompt(Prompt prompt) async {
+    final promptTerms = await getPromptTerms();
+
+    if (_isValidPrompt(
+          prompt.power!,
+          promptTerms.byType(PromptTermType.power),
+        ) &&
+        _isValidPrompt(
+          prompt.characterClass!,
+          promptTerms.byType(PromptTermType.characterClass),
+        ) &&
+        _isValidPrompt(
+          prompt.secondaryPower!,
+          promptTerms.byType(PromptTermType.power),
+        )) {
+      return true;
+    }
+    return false;
+  }
+
+  bool _isValidPrompt(
+    String prompt,
+    List<PromptTerm> promptTerms,
+  ) {
+    return promptTerms.any((element) => element.term == prompt);
+  }
+}
+
+extension _FilterByType on List<PromptTerm> {
+  List<PromptTerm> byType(PromptTermType type) {
+    return [...where((element) => element.type == type)];
+  }
 }

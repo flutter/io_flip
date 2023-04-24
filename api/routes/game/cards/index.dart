@@ -13,19 +13,12 @@ FutureOr<Response> onRequest(RequestContext context) async {
     try {
       final cardsRepository = context.read<CardsRepository>();
       final promptRepository = context.read<PromptRepository>();
-      final body =
-          jsonDecode(await context.request.body()) as Map<String, dynamic>;
+      final body = await context.request.json() as Map<String, dynamic>;
       final prompt = Prompt.fromJson(body);
-      final promptTerms = await promptRepository.getPromptTerms();
 
-      if (_isValidPrompt(
-            prompt.power!,
-            promptTerms.byType(PromptTermType.power),
-          ) &&
-          _isValidPrompt(
-            prompt.characterClass!,
-            promptTerms.byType(PromptTermType.characterClass),
-          )) {}
+      if (!await promptRepository.isValidPrompt(prompt)) {
+        return Response(statusCode: HttpStatus.badRequest);
+      }
       final cards = await Future.wait(
         List.generate(
           10,
@@ -41,17 +34,4 @@ FutureOr<Response> onRequest(RequestContext context) async {
     }
   }
   return Response(statusCode: HttpStatus.methodNotAllowed);
-}
-
-bool _isValidPrompt(
-  String prompt,
-  List<PromptTerm> promptTerms,
-) {
-  return promptTerms.any((element) => element.term == prompt);
-}
-
-extension ByType on List<PromptTerm> {
-  List<PromptTerm> byType(PromptTermType type) {
-    return [...where((element) => element.type == type)];
-  }
 }
