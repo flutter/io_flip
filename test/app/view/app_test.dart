@@ -14,6 +14,7 @@ import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/connection/connection.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
+import 'package:top_dash/info/info.dart';
 import 'package:top_dash/main_menu/main_menu_screen.dart';
 import 'package:top_dash/prompt/prompt.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
@@ -206,6 +207,25 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(PromptPage), findsOneWidget);
+    });
+
+    testWidgets('can navigate to the info page', (tester) async {
+      await tester.pumpWidget(
+        App(
+          settingsPersistence: MemoryOnlySettingsPersistence(),
+          apiClient: apiClient,
+          matchMakerRepository: _MockMatchMakerRepository(),
+          connectionRepository: _MockConnectionRepository(),
+          matchSolver: _MockMatchSolver(),
+          gameScriptMachine: _MockGameScriptEngine(),
+          user: _MockUser(),
+        ),
+      );
+
+      await tester.tap(find.byKey(const Key('info_button')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(InfoDialog), findsOneWidget);
     });
 
     testWidgets('can navigate to the how to play page', (tester) async {
