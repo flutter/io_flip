@@ -209,7 +209,7 @@ void main() {
       expect(find.byType(PromptPage), findsOneWidget);
     });
 
-    testWidgets('can navigate to the info page', (tester) async {
+    testWidgets('can navigate to the info view', (tester) async {
       await tester.pumpWidget(
         App(
           settingsPersistence: MemoryOnlySettingsPersistence(),
@@ -225,7 +225,7 @@ void main() {
       await tester.tap(find.byKey(const Key('info_button')));
       await tester.pumpAndSettle();
 
-      expect(find.byType(InfoDialog), findsOneWidget);
+      expect(find.byType(InfoView), findsOneWidget);
     });
 
     testWidgets('can navigate to the how to play page', (tester) async {

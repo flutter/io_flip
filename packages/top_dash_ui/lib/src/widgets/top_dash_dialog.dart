@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:top_dash/info/info.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
-class InfoDialog extends StatelessWidget {
-  const InfoDialog({super.key});
+/// {@template top_dash_dialog}
+/// Top Dash themed dialog.
+/// {@endtemplate}
+class TopDashDialog extends StatelessWidget {
+  /// {@macro top_dash_dialog}
+  const TopDashDialog({
+    required this.child,
+    super.key,
+  });
 
-  static Future<void> show(BuildContext context) async {
+  /// Shows the dialog.
+  static Future<void> show(BuildContext context, Widget child) async {
     return showGeneralDialog<void>(
       context: context,
-      pageBuilder: (context, _, __) => const InfoDialog(),
+      pageBuilder: (context, _, __) => TopDashDialog(child: child),
       transitionDuration: const Duration(milliseconds: 250),
       transitionBuilder: (context, animation, secondaryAnimation, child) {
         final curvedAnimation = Curves.easeOutBack.transform(animation.value);
@@ -24,11 +31,14 @@ class InfoDialog extends StatelessWidget {
     );
   }
 
+  /// The child of the dialog.
+  final Widget child;
+
   @override
   Widget build(BuildContext context) {
-    return const Dialog(
-      insetPadding: EdgeInsets.all(TopDashSpacing.sm),
-      child: InfoView(),
+    return Dialog(
+      insetPadding: const EdgeInsets.all(TopDashSpacing.sm),
+      child: child,
     );
   }
 }
