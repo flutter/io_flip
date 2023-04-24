@@ -50,7 +50,10 @@ class MainMenuScreen extends StatelessWidget {
                 ),
                 trailing: RoundedButton.icon(
                   Icons.question_mark_rounded,
-                  onPressed: () => HowToPlayDialog.show(context),
+                  onPressed: () => TopDashDialog.show(
+                    context,
+                    const HowToPlayDialog(),
+                  ),
                 ),
               ),
             ),
