@@ -25,6 +25,7 @@ class TermsOfUseView extends StatelessWidget {
       ),
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             l10n.termsOfUseTitle,
