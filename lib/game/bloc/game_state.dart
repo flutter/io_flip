@@ -53,6 +53,7 @@ class MatchLoadedState extends GameState {
     required this.playerScoreCard,
     required this.turnTimeRemaining,
     required this.turnAnimationsFinished,
+    required this.isFightScene,
     this.lastPlayedCardId,
   });
 
@@ -62,6 +63,7 @@ class MatchLoadedState extends GameState {
   final ScoreCard playerScoreCard;
   final int turnTimeRemaining;
   final bool turnAnimationsFinished;
+  final bool isFightScene;
   final String? lastPlayedCardId;
 
   MatchLoadedState copyWith({
@@ -71,6 +73,7 @@ class MatchLoadedState extends GameState {
     ScoreCard? playerScoreCard,
     int? turnTimeRemaining,
     bool? turnAnimationsFinished,
+    bool? isFightScene,
     String? lastPlayedCardId,
   }) {
     return MatchLoadedState(
@@ -81,6 +84,7 @@ class MatchLoadedState extends GameState {
       turnTimeRemaining: turnTimeRemaining ?? this.turnTimeRemaining,
       turnAnimationsFinished:
           turnAnimationsFinished ?? this.turnAnimationsFinished,
+      isFightScene: isFightScene ?? this.isFightScene,
       lastPlayedCardId: lastPlayedCardId,
     );
   }
@@ -93,6 +97,7 @@ class MatchLoadedState extends GameState {
         playerScoreCard,
         turnTimeRemaining,
         turnAnimationsFinished,
+        isFightScene,
       ];
 }
 

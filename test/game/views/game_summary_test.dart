@@ -141,6 +141,7 @@ void main() {
       rounds: const [],
       turnTimeRemaining: 10,
       turnAnimationsFinished: false,
+      isFightScene: false,
     );
 
     void defaultMockState({

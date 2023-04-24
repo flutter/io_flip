@@ -219,11 +219,10 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
         final state = bloc.state as MatchLoadedState;
         if (state.rounds.isNotEmpty) {
           if (state.rounds.last.isComplete()) {
-            bloc.add(const CardOverlayRevealed());
-            for (final controller in clashControllers) {
-              Future.delayed(turnEndDuration, controller.reverse);
-              clashControllers = [];
-            }
+            Future.delayed(
+              bigFlipAnimation.duration,
+              () => bloc.add(const CardOverlayRevealed()),
+            );
           }
         }
       }
@@ -232,9 +231,22 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
 
   void turnAnimationsCompleted(AnimationStatus status) {
     if (status == AnimationStatus.dismissed) {
-      context.read<GameBloc>().add(const TurnAnimationsFinished());
+      context.read<GameBloc>()
+        ..add(const TurnAnimationsFinished())
+        ..add(const TurnTimerStarted());
     }
   }
+
+  void fightSceneCompleted() {
+    context.read<GameBloc>().add(const FightSceneCompleted());
+    for (final controller in clashControllers) {
+      Future.delayed(turnEndDuration, controller.reverse);
+      clashControllers = [];
+    }
+  }
+
+  int? lastPlayedPlayerCardIndex;
+  int? lastPlayedOpponentCardIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -242,6 +254,8 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
         context.select<GameBloc, List<Card>>((bloc) => bloc.playerCards);
     final opponentCards =
         context.select<GameBloc, List<Card>>((bloc) => bloc.opponentCards);
+
+    final state = context.watch<GameBloc>().state;
 
     return BlocListener<GameBloc, GameState>(
       listenWhen: (previous, current) {
@@ -256,12 +270,14 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
           final playerIndex = playerCards
               .indexWhere((element) => element.id == lastPlayedCardId);
           if (playerIndex >= 0) {
+            lastPlayedPlayerCardIndex = playerIndex;
             final controller = playerCardControllers[playerIndex]..forward();
             clashControllers.add(controller);
           }
           final opponentIndex = opponentCards
               .indexWhere((element) => element.id == lastPlayedCardId);
           if (opponentIndex >= 0) {
+            lastPlayedOpponentCardIndex = opponentIndex;
             final controller = opponentCardControllers[opponentIndex]
               ..forward();
             clashControllers.add(controller);
@@ -308,6 +324,18 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
                 },
               ),
               _BoardCounter(counterOffset),
+              if (state is MatchLoadedState && state.isFightScene)
+                Positioned.fill(
+                  child: FightScene(
+                    onFinished: fightSceneCompleted,
+                    opponentCard: opponentCards.elementAt(
+                      lastPlayedOpponentCardIndex!,
+                    ),
+                    playerCard: playerCards.elementAt(
+                      lastPlayedPlayerCardIndex!,
+                    ),
+                  ),
+                )
             ],
           ),
         ),
