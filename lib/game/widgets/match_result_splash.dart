@@ -17,11 +17,18 @@ class MatchResultSplash extends StatefulWidget {
   final GameResult result;
 
   @override
-  State<MatchResultSplash> createState() => _ResultSplashState();
+  State<MatchResultSplash> createState() => MatchResultSplashState();
 }
 
-class _ResultSplashState extends State<MatchResultSplash> {
+@visibleForTesting
+class MatchResultSplashState extends State<MatchResultSplash> {
   bool isSplashFinished = false;
+
+  void onComplete() {
+    setState(() {
+      isSplashFinished = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,11 +54,7 @@ class _ResultSplashState extends State<MatchResultSplash> {
               path: resultImageKey,
               images: images,
               anchor: Anchor.center,
-              onComplete: () {
-                setState(() {
-                  isSplashFinished = true;
-                });
-              },
+              onComplete: onComplete,
               data: SpriteAnimationData.sequenced(
                 amount: 28,
                 amountPerRow: 4,

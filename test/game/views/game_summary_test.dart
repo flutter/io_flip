@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, one_member_abstracts
 
 import 'package:bloc_test/bloc_test.dart';
+import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -178,6 +179,7 @@ void main() {
             ),
           );
           when(bloc.gameResult).thenReturn(GameResult.draw);
+          // await tester.pumpAndSettle(Duration(seconds: 2));
           await tester.pumpSubject(bloc);
 
           expect(
@@ -512,14 +514,18 @@ extension GameSummaryViewTest on WidgetTester {
     GameBloc bloc, {
     GoRouter? goRouter,
   }) {
-    return mockNetworkImages(() {
-      return pumpApp(
+    return mockNetworkImages(() async {
+      await pumpApp(
         BlocProvider<GameBloc>.value(
           value: bloc,
           child: GameView(),
         ),
         router: goRouter,
       );
+      state<MatchResultSplashState>(
+        find.byType(MatchResultSplash),
+      ).onComplete();
+      await pump();
     });
   }
 }

@@ -178,6 +178,7 @@ class _CardsView extends StatelessWidget {
     return Align(
       child: ConstrainedBox(
         constraints: const BoxConstraints(
+          maxWidth: 500,
           minHeight: 360,
         ),
         child: GridView.builder(
@@ -186,16 +187,14 @@ class _CardsView extends StatelessWidget {
           ),
           shrinkWrap: true,
           itemCount: gameCards.length,
-          itemBuilder: (context, index) => Center(
-            child: GestureDetector(
-              child: gameCards[index],
-              onTap: () => GoRouter.of(context).pushNamed(
-                'card_inspector',
-                extra: CardInspectorData(
-                  deck: cards,
-                  playerCardIds: playerCardIds,
-                  startingIndex: index,
-                ),
+          itemBuilder: (context, index) => GestureDetector(
+            child: gameCards[index],
+            onTap: () => GoRouter.of(context).pushNamed(
+              'card_inspector',
+              extra: CardInspectorData(
+                deck: cards,
+                playerCardIds: playerCardIds,
+                startingIndex: index,
               ),
             ),
           ),
