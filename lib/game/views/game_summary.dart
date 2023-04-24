@@ -14,21 +14,25 @@ class GameSummaryView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const IoFlipScaffold(
-      body: Stack(
-        children: [
-          Align(
-            child: _MatchSummaryScreenView(key: Key('match_summary_view')),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Align(
-              child: GameSummaryFooter(key: Key('match summary footer')),
+    final result = context.select((GameBloc bloc) => bloc.gameResult());
+    return IoFlipScaffold(
+      body: MatchResultSplash(
+        result: result ?? GameResult.draw,
+        child: const Stack(
+          children: [
+            Align(
+              child: _MatchSummaryScreenView(key: Key('match_summary_view')),
             ),
-          )
-        ],
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Align(
+                child: GameSummaryFooter(key: Key('match summary footer')),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -174,24 +178,24 @@ class _CardsView extends StatelessWidget {
     return Align(
       child: ConstrainedBox(
         constraints: const BoxConstraints(
-          maxWidth: 500,
           minHeight: 360,
         ),
         child: GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
-            mainAxisSpacing: TopDashSpacing.md,
           ),
           shrinkWrap: true,
           itemCount: gameCards.length,
-          itemBuilder: (context, index) => GestureDetector(
-            child: gameCards[index],
-            onTap: () => GoRouter.of(context).pushNamed(
-              'card_inspector',
-              extra: CardInspectorData(
-                deck: cards,
-                playerCardIds: playerCardIds,
-                startingIndex: index,
+          itemBuilder: (context, index) => Center(
+            child: GestureDetector(
+              child: gameCards[index],
+              onTap: () => GoRouter.of(context).pushNamed(
+                'card_inspector',
+                extra: CardInspectorData(
+                  deck: cards,
+                  playerCardIds: playerCardIds,
+                  startingIndex: index,
+                ),
               ),
             ),
           ),
