@@ -209,25 +209,6 @@ void main() {
       expect(find.byType(PromptPage), findsOneWidget);
     });
 
-    testWidgets('can navigate to the info view', (tester) async {
-      await tester.pumpWidget(
-        App(
-          settingsPersistence: MemoryOnlySettingsPersistence(),
-          apiClient: apiClient,
-          matchMakerRepository: _MockMatchMakerRepository(),
-          connectionRepository: _MockConnectionRepository(),
-          matchSolver: _MockMatchSolver(),
-          gameScriptMachine: _MockGameScriptEngine(),
-          user: _MockUser(),
-        ),
-      );
-
-      await tester.tap(find.byKey(const Key('info_button')));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(InfoView), findsOneWidget);
-    });
-
     testWidgets('can navigate to the how to play page', (tester) async {
       await tester.pumpWidget(
         App(

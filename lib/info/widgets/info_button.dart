@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/info/view/info_dialog.dart';
+import 'package:top_dash/info/view/info_view.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class InfoButton extends StatelessWidget {
@@ -11,7 +11,10 @@ class InfoButton extends StatelessWidget {
     return RoundedButton.svg(
       key: const Key('info_button'),
       Assets.icons.info,
-      onPressed: () => InfoDialog.show(context),
+      onPressed: () => TopDashDialog.show(
+        context,
+        const InfoView(),
+      ),
     );
   }
 }
