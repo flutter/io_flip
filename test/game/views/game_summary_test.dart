@@ -507,12 +507,13 @@ extension GameSummaryViewTest on WidgetTester {
     when(() => settingsController.muted).thenReturn(ValueNotifier(true));
     return mockNetworkImages(() async {
       await pumpApp(
-          BlocProvider<GameBloc>.value(
-            value: bloc,
-            child: GameView(),
-          ),
-          router: goRouter,
-          settingsController: settingsController);
+        BlocProvider<GameBloc>.value(
+          value: bloc,
+          child: GameView(),
+        ),
+        router: goRouter,
+        settingsController: settingsController,
+      );
       state<MatchResultSplashState>(
         find.byType(MatchResultSplash),
       ).onComplete();
