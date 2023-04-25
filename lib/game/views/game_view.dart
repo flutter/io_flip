@@ -62,8 +62,8 @@ class GameView extends StatelessWidget {
 }
 
 const clashCardSize = GameCardSize.md();
-const playerHandCardSize = GameCardSize.sm();
-const opponentHandCardSize = GameCardSize.xs();
+const playerHandCardSize = GameCardSize.xs();
+const opponentHandCardSize = GameCardSize.xxs();
 const counterSize = Size(56, 56);
 
 const cardSpacingX = TopDashSpacing.sm;
@@ -438,7 +438,7 @@ class _OpponentCard extends StatelessWidget {
                 )
               : FlippedGameCard(
                   key: Key('opponent_hidden_card_${card.id}'),
-                  size: const GameCardSize.xs(),
+                  size: const GameCardSize.xxs(),
                 ),
         );
       },
@@ -494,7 +494,7 @@ class _PlayerCard extends StatelessWidget {
                 overlay: overlay,
               ),
               back: const FlippedGameCard(
-                size: GameCardSize.xs(),
+                size: GameCardSize.xxs(),
               ),
             ),
           ),
