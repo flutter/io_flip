@@ -390,7 +390,6 @@ void main() {
               id: matchStateId,
               data: const {
                 'matchId': matchId,
-                'hostPlayedCards': <String>[],
                 'guestPlayedCards': ['A'],
                 'result': null,
               },
@@ -415,7 +414,6 @@ void main() {
               data: const {
                 'matchId': matchId,
                 'hostPlayedCards': <String>['A'],
-                'guestPlayedCards': <String>[],
                 'result': null,
               },
             ),
@@ -448,7 +446,6 @@ void main() {
               data: const {
                 'matchId': matchId,
                 'hostPlayedCards': <String>['A'],
-                'guestPlayedCards': <String>[],
                 'result': null,
               },
             ),
@@ -461,7 +458,6 @@ void main() {
               id: matchStateId,
               data: const {
                 'matchId': matchId,
-                'hostPlayedCards': <String>[],
                 'guestPlayedCards': <String>['card_3'],
                 'result': null,
               },
@@ -503,7 +499,6 @@ void main() {
               data: const {
                 'matchId': matchId,
                 'hostPlayedCards': <String>['D', 'E', 'F'],
-                'guestPlayedCards': <String>['A', 'B', 'C'],
                 'result': 'host',
               },
             ),
