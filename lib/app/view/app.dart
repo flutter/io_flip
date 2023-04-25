@@ -45,6 +45,7 @@ class App extends StatefulWidget {
     required this.matchSolver,
     required this.gameScriptMachine,
     required this.user,
+    required this.isScriptsEnabled,
     this.router,
     this.audioController,
     super.key,
@@ -59,13 +60,17 @@ class App extends StatefulWidget {
   final User user;
   final GoRouter? router;
   final AudioController? audioController;
+  final bool isScriptsEnabled;
 
   @override
   State<App> createState() => _AppState();
 }
 
 class _AppState extends State<App> {
-  late final router = widget.router ?? createRouter();
+  late final router = widget.router ??
+      createRouter(
+        isScriptsEnabled: widget.isScriptsEnabled,
+      );
 
   @override
   Widget build(BuildContext context) {

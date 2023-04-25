@@ -16,7 +16,7 @@ jobs:
           flutter-version: "3.10.0-1.1.pre"
           channel: "beta"
       - run: flutter packages get
-      - run: flutter build web --web-renderer canvaskit -t lib/main_development.dart --dart-define SHARING_ENABLED=true --dart-define ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }} --dart-define ENCRYPTION_IV=${{ secrets.ENCRYPTION_IV }} --dart-define RECAPTCHA_KEY=${{ secrets.RECAPTCHA_KEY }} --dart-define SCRIPTS_ENABLED=true
+      - run: flutter build web --web-renderer canvaskit -t lib/main_development.dart --dart-define SHARING_ENABLED=true --dart-define ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }} --dart-define ENCRYPTION_IV=${{ secrets.ENCRYPTION_IV }} --dart-define RECAPTCHA_KEY=${{ secrets.RECAPTCHA_KEY }}
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:

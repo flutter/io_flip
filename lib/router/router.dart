@@ -7,8 +7,7 @@ import 'package:top_dash/prompt/prompt.dart';
 import 'package:top_dash/scripts/scripts.dart';
 import 'package:top_dash/share/share.dart';
 
-GoRouter createRouter() {
-  const isScriptsEnabled = String.fromEnvironment('SCRIPTS_ENABLED') == 'true';
+GoRouter createRouter({ required bool isScriptsEnabled }) {
   return GoRouter(
     routes: [
       GoRoute(
@@ -50,6 +49,7 @@ GoRouter createRouter() {
           ),
           if (isScriptsEnabled)
             GoRoute(
+              name: '_super_secret_scripts_page',
               path: '_super_secret_scripts_page',
               builder: ScriptsPage.routeBuilder,
             ),

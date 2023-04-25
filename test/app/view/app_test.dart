@@ -93,6 +93,7 @@ void main() {
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
           user: _MockUser(),
+          isScriptsEnabled: true,
         ),
       );
 
@@ -113,6 +114,7 @@ void main() {
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
           user: _MockUser(),
+          isScriptsEnabled: true,
         ),
       );
 
@@ -184,6 +186,7 @@ void main() {
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
           user: _MockUser(),
+          isScriptsEnabled: true,
         ),
       );
 
@@ -200,6 +203,7 @@ void main() {
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
           user: _MockUser(),
+          isScriptsEnabled: true,
         ),
       );
 
@@ -219,6 +223,7 @@ void main() {
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
           user: _MockUser(),
+          isScriptsEnabled: true,
         ),
       );
 
@@ -238,6 +243,7 @@ void main() {
           matchSolver: _MockMatchSolver(),
           gameScriptMachine: _MockGameScriptEngine(),
           user: _MockUser(),
+          isScriptsEnabled: true,
         ),
       );
 
@@ -261,6 +267,7 @@ void main() {
           gameScriptMachine: _MockGameScriptEngine(),
           audioController: audioController,
           user: _MockUser(),
+          isScriptsEnabled: true,
         ),
       );
 
@@ -284,6 +291,7 @@ void main() {
           gameScriptMachine: _MockGameScriptEngine(),
           audioController: audioController,
           user: _MockUser(),
+          isScriptsEnabled: true,
         ),
       );
 
