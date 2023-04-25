@@ -172,7 +172,11 @@
   },
   "enterInitialsError": "Please enter three initials",
   "@enterInitialsError": {
-    "description": "Leaderboard initials textfeild validation error text"
+    "description": "Leaderboard initials textfield validation error text"
+  },
+  "blacklistedInitialsError": "Keep it PG, use different initials",
+  "@blacklistedInitialsError": {
+    "description": "Leaderboard initials textfield validation error text when the initials are blacklisted"
   },
   "sharePageTitle": "Share your hand!",
   "@sharePageTitle": {
