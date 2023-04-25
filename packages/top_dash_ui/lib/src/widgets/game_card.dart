@@ -15,6 +15,7 @@ class GameCardSize extends Equatable {
     required this.titleTextStyle,
     required this.descriptionTextStyle,
     required this.powerTextStyle,
+    required this.powerTextStrokeWidth,
   });
 
   /// XS size.
@@ -25,6 +26,7 @@ class GameCardSize extends Equatable {
           titleTextStyle: TopDashTextStyles.cardTitleXS,
           descriptionTextStyle: TopDashTextStyles.cardDescriptionXS,
           powerTextStyle: TopDashTextStyles.cardNumberXS,
+          powerTextStrokeWidth: 2,
         );
 
   /// SM size.
@@ -35,6 +37,7 @@ class GameCardSize extends Equatable {
           titleTextStyle: TopDashTextStyles.cardTitleSM,
           descriptionTextStyle: TopDashTextStyles.cardDescriptionSM,
           powerTextStyle: TopDashTextStyles.cardNumberSM,
+          powerTextStrokeWidth: 2,
         );
 
   /// MD size.
@@ -45,6 +48,7 @@ class GameCardSize extends Equatable {
           titleTextStyle: TopDashTextStyles.cardTitleMD,
           descriptionTextStyle: TopDashTextStyles.cardDescriptionMD,
           powerTextStyle: TopDashTextStyles.cardNumberMD,
+          powerTextStrokeWidth: 3,
         );
 
   /// LG size.
@@ -55,6 +59,7 @@ class GameCardSize extends Equatable {
           titleTextStyle: TopDashTextStyles.cardTitleLG,
           descriptionTextStyle: TopDashTextStyles.cardDescriptionLG,
           powerTextStyle: TopDashTextStyles.cardNumberLG,
+          powerTextStrokeWidth: 4,
         );
 
   /// XL size.
@@ -65,6 +70,7 @@ class GameCardSize extends Equatable {
           titleTextStyle: TopDashTextStyles.cardTitleXL,
           descriptionTextStyle: TopDashTextStyles.cardDescriptionXL,
           powerTextStyle: TopDashTextStyles.cardNumberXL,
+          powerTextStrokeWidth: 4,
         );
 
   /// XXL size.
@@ -75,6 +81,7 @@ class GameCardSize extends Equatable {
           titleTextStyle: TopDashTextStyles.cardTitleXXL,
           descriptionTextStyle: TopDashTextStyles.cardDescriptionXXL,
           powerTextStyle: TopDashTextStyles.cardNumberXXL,
+          powerTextStrokeWidth: 4,
         );
 
   /// The size of the card.
@@ -91,6 +98,9 @@ class GameCardSize extends Equatable {
 
   /// Power text style
   final TextStyle powerTextStyle;
+
+  /// Power text stroke width
+  final double powerTextStrokeWidth;
 
   /// Get the width of the card.
   double get width => size.width;
@@ -148,27 +158,27 @@ class GameCard extends StatelessWidget {
       case 'fire':
         return (
           Assets.images.cardFrames.cardFire.keyName,
-          Assets.images.suits.fire.svg(),
+          Assets.images.suits.card.fire.svg(),
         );
       case 'water':
         return (
           Assets.images.cardFrames.cardWater.keyName,
-          Assets.images.suits.water.svg(),
+          Assets.images.suits.card.water.svg(),
         );
       case 'earth':
         return (
           Assets.images.cardFrames.cardEarth.keyName,
-          Assets.images.suits.earth.svg(),
+          Assets.images.suits.card.earth.svg(),
         );
       case 'air':
         return (
           Assets.images.cardFrames.cardAir.keyName,
-          Assets.images.suits.air.svg(),
+          Assets.images.suits.card.air.svg(),
         );
       case 'metal':
         return (
           Assets.images.cardFrames.cardMetal.keyName,
-          Assets.images.suits.metal.svg(),
+          Assets.images.suits.card.metal.svg(),
         );
       default:
         throw ArgumentError('Invalid suit name');
@@ -207,16 +217,30 @@ class GameCard extends StatelessWidget {
                     children: [
                       Positioned.fill(child: suitSvg),
                       Align(
-                        child: Text(
-                          power.toString(),
-                          style: size.powerTextStyle.copyWith(
-                            shadows: const [
-                              Shadow(
-                                offset: Offset(1.68, 2.52),
-                                color: TopDashColors.seedBlack,
+                        alignment: const Alignment(.15, .4),
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Text(
+                              power.toString(),
+                              style: size.powerTextStyle.copyWith(
+                                shadows: const [
+                                  Shadow(
+                                    offset: Offset(1.68, 2.52),
+                                    color: TopDashColors.seedBlack,
+                                  ),
+                                ],
+                                foreground: Paint()
+                                  ..style = PaintingStyle.stroke
+                                  ..strokeWidth = size.powerTextStrokeWidth
+                                  ..color = TopDashColors.seedBlack,
                               ),
-                            ],
-                          ),
+                            ),
+                            Text(
+                              power.toString(),
+                              style: size.powerTextStyle,
+                            ),
+                          ],
                         ),
                       ),
                     ],

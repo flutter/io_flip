@@ -35,7 +35,8 @@ flutter:
 
   assets:
     - assets/images/
-    - assets/images/suits/
+    - assets/images/suits/onboarding/
+    - assets/images/suits/card/
     - assets/images/card_frames/
 
 flutter_gen:
