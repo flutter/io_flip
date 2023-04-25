@@ -26,6 +26,7 @@ class GameCardSize extends Equatable {
           descriptionTextStyle: TopDashTextStyles.cardDescriptionXXS,
           badgeSize: const Size.square(41),
           powerTextStyle: TopDashTextStyles.cardNumberXXS,
+          powerTextStrokeWidth: 2,
         );
 
   /// XS size.
