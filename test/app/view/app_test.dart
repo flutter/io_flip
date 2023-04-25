@@ -2,6 +2,7 @@
 
 import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:bloc_test/bloc_test.dart';
 import 'package:connection_repository/connection_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -20,6 +21,7 @@ import 'package:top_dash/prompt/prompt.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
 import 'package:top_dash/settings/settings.dart';
 import 'package:top_dash/style/snack_bar.dart';
+import 'package:top_dash/terms_of_use/terms_of_use.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -52,6 +54,8 @@ class _MockConnectionRepository extends Mock implements ConnectionRepository {
     when(() => messages).thenAnswer((_) => const Stream.empty());
   }
 }
+
+class _MockTermsOfUseCubit extends MockCubit<bool> implements TermsOfUseCubit {}
 
 class _MockMatchSolver extends Mock implements MatchSolver {}
 
@@ -193,25 +197,88 @@ void main() {
       expect(find.byType(MainMenuScreen), findsOneWidget);
     });
 
-    testWidgets('can navigate to the prompt page', (tester) async {
-      await tester.pumpWidget(
-        App(
-          settingsPersistence: MemoryOnlySettingsPersistence(),
-          apiClient: apiClient,
-          matchMakerRepository: _MockMatchMakerRepository(),
-          connectionRepository: _MockConnectionRepository(),
-          matchSolver: _MockMatchSolver(),
-          gameScriptMachine: _MockGameScriptEngine(),
-          user: _MockUser(),
-          isScriptsEnabled: true,
-        ),
-      );
+    testWidgets(
+      'shows terms of use dialog when terms have not been accepted',
+      (tester) async {
+        final mockCubit = _MockTermsOfUseCubit();
+        when(() => mockCubit.state).thenReturn(false);
 
-      await tester.tap(find.text(tester.l10n.play));
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(
+          App(
+            settingsPersistence: MemoryOnlySettingsPersistence(),
+            apiClient: apiClient,
+            matchMakerRepository: _MockMatchMakerRepository(),
+            connectionRepository: _MockConnectionRepository(),
+            matchSolver: _MockMatchSolver(),
+            gameScriptMachine: _MockGameScriptEngine(),
+            user: _MockUser(),
+            termsOfUseCubit: mockCubit,
+          ),
+        );
 
-      expect(find.byType(PromptPage), findsOneWidget);
-    });
+        await tester.tap(find.text(tester.l10n.play));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(TermsOfUseView), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'navigates to the prompt page when TermsOfUseCubit state changes '
+      'from false to true',
+      (tester) async {
+        final mockCubit = _MockTermsOfUseCubit();
+
+        whenListen(
+          mockCubit,
+          Stream.fromIterable([false, true]),
+          initialState: false,
+        );
+
+        await tester.pumpWidget(
+          App(
+            settingsPersistence: MemoryOnlySettingsPersistence(),
+            apiClient: apiClient,
+            matchMakerRepository: _MockMatchMakerRepository(),
+            connectionRepository: _MockConnectionRepository(),
+            matchSolver: _MockMatchSolver(),
+            gameScriptMachine: _MockGameScriptEngine(),
+            user: _MockUser(),
+            termsOfUseCubit: mockCubit,
+          ),
+        );
+
+        await tester.pumpAndSettle();
+
+        expect(find.byType(PromptPage), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'navigates to the prompt page when terms are accepted',
+      (tester) async {
+        final mockCubit = _MockTermsOfUseCubit();
+        when(() => mockCubit.state).thenReturn(true);
+
+        await tester.pumpWidget(
+          App(
+            settingsPersistence: MemoryOnlySettingsPersistence(),
+            apiClient: apiClient,
+            matchMakerRepository: _MockMatchMakerRepository(),
+            connectionRepository: _MockConnectionRepository(),
+            matchSolver: _MockMatchSolver(),
+            gameScriptMachine: _MockGameScriptEngine(),
+            user: _MockUser(),
+            termsOfUseCubit: mockCubit,
+          ),
+        );
+
+        await tester.tap(find.text(tester.l10n.play));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(PromptPage), findsOneWidget);
+      },
+    );
 
     testWidgets('can navigate to the info view', (tester) async {
       await tester.pumpWidget(

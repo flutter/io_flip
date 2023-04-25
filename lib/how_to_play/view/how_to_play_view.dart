@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/l10n/l10n.dart';
+import 'package:top_dash/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class HowToPlayView extends StatelessWidget {
@@ -60,7 +60,7 @@ class HowToPlayView extends StatelessWidget {
                     onPressed: () {
                       final bloc = context.read<HowToPlayBloc>();
                       if (bloc.state.position == 0) {
-                        maybePop(context);
+                        context.maybePop();
                       } else {
                         bloc.add(const PreviousPageRequested());
                       }
@@ -72,7 +72,7 @@ class HowToPlayView extends StatelessWidget {
                     onPressed: () {
                       final bloc = context.read<HowToPlayBloc>();
                       if (bloc.state.position == totalSteps - 1) {
-                        maybePop(context);
+                        context.maybePop();
                       } else {
                         bloc.add(const NextPageRequested());
                       }
@@ -86,19 +86,12 @@ class HowToPlayView extends StatelessWidget {
             alignment: Alignment.topRight,
             child: CloseButton(
               color: TopDashColors.seedWhite,
-              onPressed: () => maybePop(context),
+              onPressed: context.maybePop,
             ),
           ),
         ],
       ),
     );
-  }
-
-  void maybePop(BuildContext context) {
-    final router = GoRouter.of(context);
-    if (router.canPop()) {
-      router.pop();
-    }
   }
 }
 
