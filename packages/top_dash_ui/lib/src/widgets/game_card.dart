@@ -18,6 +18,16 @@ class GameCardSize extends Equatable {
     required this.powerTextStrokeWidth,
   });
 
+  /// XXS size.
+  const GameCardSize.xxs()
+      : this(
+          size: TopDashCardSizes.xxs,
+          titleTextStyle: TopDashTextStyles.cardTitleXXS,
+          descriptionTextStyle: TopDashTextStyles.cardDescriptionXXS,
+          badgeSize: const Size.square(41),
+          powerTextStyle: TopDashTextStyles.cardNumberXXS,
+        );
+
   /// XS size.
   const GameCardSize.xs()
       : this(
