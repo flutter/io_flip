@@ -94,6 +94,7 @@ void main() {
 
   group('GameCardSize', () {
     test('can be instantiated', () {
+      expect(GameCardSize.xxs(), isNotNull);
       expect(GameCardSize.xs(), isNotNull);
       expect(GameCardSize.sm(), isNotNull);
       expect(GameCardSize.md(), isNotNull);

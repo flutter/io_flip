@@ -226,7 +226,7 @@ class SelectedCard extends StatelessWidget {
                   suitName: card.suit.name,
                   power: card.power,
                   isRare: card.rarity,
-                  size: const GameCardSize.sm(),
+                  size: const GameCardSize.xs(),
                 ),
               ],
               Positioned(
