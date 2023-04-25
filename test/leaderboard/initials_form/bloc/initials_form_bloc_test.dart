@@ -31,9 +31,9 @@ void main() {
         leaderboardResource: leaderboardResource,
         scoreCardId: 'scoreCardId',
       ),
-      act: (bloc) => bloc.add(InitialsChanged(initials: 'ABC')),
+      act: (bloc) => bloc.add(InitialsChanged(index: 0, initial: 'A')),
       expect: () => <InitialsFormState>[
-        InitialsFormState(initials: 'ABC'),
+        InitialsFormState(initials: const ['A', '', '']),
       ],
     );
 
@@ -45,13 +45,23 @@ void main() {
       ),
       act: (bloc) {
         bloc
-          ..add(InitialsChanged(initials: 'ABC'))
+          ..add(InitialsChanged(index: 0, initial: 'A'))
+          ..add(InitialsChanged(index: 1, initial: 'B'))
+          ..add(InitialsChanged(index: 2, initial: 'C'))
           ..add(InitialsSubmitted());
       },
       expect: () => <InitialsFormState>[
-        InitialsFormState(initials: 'ABC'),
-        InitialsFormState(initials: 'ABC', status: InitialsFormStatus.valid),
-        InitialsFormState(initials: 'ABC', status: InitialsFormStatus.success),
+        InitialsFormState(initials: const ['A', '', '']),
+        InitialsFormState(initials: const ['A', 'B', '']),
+        InitialsFormState(initials: const ['A', 'B', 'C']),
+        InitialsFormState(
+          initials: const ['A', 'B', 'C'],
+          status: InitialsFormStatus.valid,
+        ),
+        InitialsFormState(
+          initials: const ['A', 'B', 'C'],
+          status: InitialsFormStatus.success,
+        ),
       ],
     );
 
@@ -62,14 +72,15 @@ void main() {
         leaderboardResource: leaderboardResource,
         scoreCardId: 'scoreCardId',
       ),
+      seed: () => InitialsFormState(initials: const ['W', 'T', 'F']),
       act: (bloc) {
-        bloc
-          ..add(InitialsChanged(initials: 'WTF'))
-          ..add(InitialsSubmitted());
+        bloc.add(InitialsSubmitted());
       },
       expect: () => <InitialsFormState>[
-        InitialsFormState(initials: 'WTF'),
-        InitialsFormState(initials: 'WTF', status: InitialsFormStatus.invalid),
+        InitialsFormState(
+          initials: const ['W', 'T', 'F'],
+          status: InitialsFormStatus.invalid,
+        ),
       ],
     );
 
@@ -87,15 +98,19 @@ void main() {
         leaderboardResource: leaderboardResource,
         scoreCardId: 'scoreCardId',
       ),
+      seed: () => InitialsFormState(initials: const ['A', 'B', 'C']),
       act: (bloc) {
-        bloc
-          ..add(InitialsChanged(initials: 'ABC'))
-          ..add(InitialsSubmitted());
+        bloc.add(InitialsSubmitted());
       },
       expect: () => <InitialsFormState>[
-        InitialsFormState(initials: 'ABC'),
-        InitialsFormState(initials: 'ABC', status: InitialsFormStatus.valid),
-        InitialsFormState(initials: 'ABC', status: InitialsFormStatus.failure),
+        InitialsFormState(
+          initials: const ['A', 'B', 'C'],
+          status: InitialsFormStatus.valid,
+        ),
+        InitialsFormState(
+          initials: const ['A', 'B', 'C'],
+          status: InitialsFormStatus.failure,
+        ),
       ],
     );
   });

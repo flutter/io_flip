@@ -7,6 +7,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/leaderboard/initials_form/initials_form.dart';
 import 'package:top_dash/share/share.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../../helpers/helpers.dart';
 
@@ -29,7 +30,7 @@ void main() {
       final l10n = tester.element(find.byType(InitialsFormView)).l10n;
 
       expect(find.text(l10n.enter), findsOneWidget);
-      expect(find.byType(FilledButton), findsOneWidget);
+      expect(find.byType(RoundedButton), findsOneWidget);
     });
 
     testWidgets(
@@ -80,7 +81,7 @@ void main() {
           initialsFormBloc,
           Stream.fromIterable([
             const InitialsFormState(
-              initials: 'AAA',
+              initials: ['A', 'A', 'A'],
               status: InitialsFormStatus.success,
             ),
           ]),
@@ -104,13 +105,39 @@ void main() {
             .thenReturn(const InitialsFormState());
         await tester.pumpSubject(initialsFormBloc);
 
-        expect(find.byType(TextFormField), findsOneWidget);
+        expect(find.byType(TextFormField), findsNWidgets(3));
+      });
+
+      testWidgets('correctly updates fields and focus', (tester) async {
+        when(() => initialsFormBloc.state)
+            .thenReturn(const InitialsFormState());
+        await tester.pumpSubject(initialsFormBloc);
+
+        final l10n = tester.element(find.byType(InitialsFormView)).l10n;
+
+        final initial0 = find.byKey(const Key('initial_form_field_0'));
+        final initial1 = find.byKey(const Key('initial_form_field_1'));
+        final initial2 = find.byKey(const Key('initial_form_field_2'));
+
+        await tester.enterText(initial0, 'a');
+        await tester.enterText(initial1, 'a');
+        await tester.enterText(initial2, 'a');
+
+        await tester.pumpAndSettle();
+
+        final inputs =
+            tester.widgetList<EditableText>(find.byType(EditableText));
+        for (final input in inputs) {
+          expect(input.controller.text == 'A', isTrue);
+        }
+
+        expect(find.text(l10n.enterInitialsError), findsNothing);
       });
 
       testWidgets('validates initials', (tester) async {
         when(() => initialsFormBloc.state).thenReturn(
           const InitialsFormState(
-            initials: 'AAA',
+            initials: ['A', 'A', 'A'],
             status: InitialsFormStatus.valid,
           ),
         );
@@ -118,7 +145,7 @@ void main() {
 
         final l10n = tester.element(find.byType(InitialsFormView)).l10n;
 
-        await tester.tap(find.byType(FilledButton));
+        await tester.tap(find.byType(RoundedButton));
         await tester.pumpAndSettle();
 
         expect(find.text(l10n.enterInitialsError), findsNothing);
@@ -127,16 +154,13 @@ void main() {
       testWidgets('shows error text on failed validation', (tester) async {
         when(() => initialsFormBloc.state).thenReturn(
           const InitialsFormState(
-            initials: 'AA',
+            initials: ['A', 'A', ''],
             status: InitialsFormStatus.invalid,
           ),
         );
         await tester.pumpSubject(initialsFormBloc);
 
         final l10n = tester.element(find.byType(InitialsFormView)).l10n;
-
-        await tester.tap(find.byType(FilledButton));
-        await tester.pumpAndSettle();
 
         expect(find.text(l10n.enterInitialsError), findsOneWidget);
       });
@@ -146,16 +170,13 @@ void main() {
         (tester) async {
           when(() => initialsFormBloc.state).thenReturn(
             const InitialsFormState(
-              initials: 'WTF',
+              initials: ['W', 'T', 'F'],
               status: InitialsFormStatus.invalid,
             ),
           );
           await tester.pumpSubject(initialsFormBloc);
 
           final l10n = tester.element(find.byType(InitialsFormView)).l10n;
-
-          await tester.tap(find.byType(FilledButton));
-          await tester.pumpAndSettle();
 
           expect(find.text(l10n.enterInitialsError), findsOneWidget);
         },
@@ -168,11 +189,21 @@ void main() {
 
         final l10n = tester.element(find.byType(InitialsFormView)).l10n;
 
-        await tester.enterText(find.byType(TextField), 'aaa');
-        await tester.tap(find.byType(FilledButton));
+        final initial0 = find.byKey(const Key('initial_form_field_0'));
+        final initial1 = find.byKey(const Key('initial_form_field_1'));
+        final initial2 = find.byKey(const Key('initial_form_field_2'));
+
+        await tester.enterText(initial0, 'a');
+        await tester.enterText(initial1, 'a');
+        await tester.enterText(initial2, 'a');
+
         await tester.pumpAndSettle();
-        final input = tester.widget<EditableText>(find.byType(EditableText));
-        expect(input.controller.text == 'AAA', isTrue);
+
+        final inputs =
+            tester.widgetList<EditableText>(find.byType(EditableText));
+        for (final input in inputs) {
+          expect(input.controller.text == 'A', isTrue);
+        }
 
         expect(find.text(l10n.enterInitialsError), findsNothing);
       });

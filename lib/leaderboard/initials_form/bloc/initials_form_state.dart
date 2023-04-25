@@ -12,15 +12,15 @@ enum InitialsFormStatus {
 
 class InitialsFormState extends Equatable {
   const InitialsFormState({
-    String? initials,
+    List<String>? initials,
     this.status = InitialsFormStatus.initial,
-  }) : initials = initials ?? '';
+  }) : initials = initials ?? const ['', '', ''];
 
-  final String initials;
+  final List<String> initials;
   final InitialsFormStatus status;
 
   InitialsFormState copyWith({
-    String? initials,
+    List<String>? initials,
     InitialsFormStatus? status,
   }) {
     return InitialsFormState(

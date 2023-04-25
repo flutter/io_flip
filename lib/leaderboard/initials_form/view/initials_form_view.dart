@@ -24,7 +24,7 @@ class InitialsFormView extends StatelessWidget {
             GoRouter.of(context).goNamed(
               'share_hand',
               extra: ShareHandPageData(
-                initials: state.initials,
+                initials: state.initials.join(),
                 wins: shareHandPageData!.wins,
                 deckId: shareHandPageData!.deckId,
                 deck: shareHandPageData!.deck,
@@ -68,12 +68,15 @@ class InitialsFormView extends StatelessWidget {
               ],
             ),
             const SizedBox(height: TopDashSpacing.xxlg),
-            RoundedButton.text(
-              l10n.enter,
-              onPressed: () {
-                context.read<InitialsFormBloc>().add(InitialsSubmitted());
-              },
-            )
+            if (state.status.isInvalid)
+              Text(l10n.enterInitialsError)
+            else
+              RoundedButton.text(
+                l10n.enter,
+                onPressed: () {
+                  context.read<InitialsFormBloc>().add(InitialsSubmitted());
+                },
+              )
           ],
         );
       },
@@ -106,12 +109,12 @@ class _InitialFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    focusNode.unfocus();
     return Container(
       width: 64,
       height: 76,
       color: Colors.white,
       child: TextFormField(
+        key: Key('initial_form_field_$index'),
         focusNode: focusNode,
         textInputAction: TextInputAction.next,
         inputFormatters: [

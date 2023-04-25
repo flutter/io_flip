@@ -30,9 +30,8 @@ class InitialsFormBloc extends Bloc<InitialsFormEvent, InitialsFormState> {
     InitialsChanged event,
     Emitter<InitialsFormState> emit,
   ) {
-    final initials = state.initials.substring(0, event.index) +
-        event.initial +
-        state.initials.substring(event.index + 1);
+    final initials = [...state.initials];
+    initials[event.index] = event.initial;
     emit(state.copyWith(initials: initials));
   }
 
@@ -46,7 +45,7 @@ class InitialsFormBloc extends Bloc<InitialsFormEvent, InitialsFormState> {
 
         await _leaderboardResource.addInitialsToScoreCard(
           scoreCardId: _scoreCardId,
-          initials: state.initials,
+          initials: state.initials.toString(),
         );
 
         emit(state.copyWith(status: InitialsFormStatus.success));
@@ -60,7 +59,7 @@ class InitialsFormBloc extends Bloc<InitialsFormEvent, InitialsFormState> {
   }
 
   bool _validate() {
-    final value = state.initials;
+    final value = state.initials.join();
     return value.isNotEmpty &&
         initialsRegex.hasMatch(value) &&
         !blacklist.contains(value);
