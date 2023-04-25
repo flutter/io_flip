@@ -44,8 +44,10 @@ class DraftView extends StatelessWidget {
     }
 
     return IoFlipScaffold(
-      body: DeckPack(
-        child: const _DraftDeck(),
+      body: Center(
+        child: DeckPack(
+          child: const _DraftDeck(),
+        ),
       ),
     );
 
