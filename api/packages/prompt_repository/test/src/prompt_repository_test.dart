@@ -17,44 +17,6 @@ void main() {
       promptRepository = PromptRepository(
         dbClient: dbClient,
       );
-      when(
-        () => dbClient.orderBy(
-          'prompt_terms',
-          'type',
-          limit: 100,
-        ),
-      ).thenAnswer(
-        (_) async => [
-          DbEntityRecord(
-            id: 'id1',
-            data: const {
-              'type': 'power',
-              'term': 'AAA',
-            },
-          ),
-          DbEntityRecord(
-            id: 'id2',
-            data: const {
-              'type': 'power',
-              'term': 'BBB',
-            },
-          ),
-          DbEntityRecord(
-            id: 'id3',
-            data: const {
-              'type': 'characterClass',
-              'term': 'CCC',
-            },
-          ),
-          DbEntityRecord(
-            id: 'id4',
-            data: const {
-              'type': 'location',
-              'term': 'DDD',
-            },
-          ),
-        ],
-      );
     });
 
     test('can be instantiated', () {
