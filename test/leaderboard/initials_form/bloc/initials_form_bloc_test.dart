@@ -56,7 +56,25 @@ void main() {
     );
 
     blocTest<InitialsFormBloc, InitialsFormState>(
-      'emits state with invalid field when initials are not valid and '
+      'emits state with invalid status when initials are not valid and '
+      'submitted',
+      build: () => InitialsFormBloc(
+        leaderboardResource: leaderboardResource,
+        scoreCardId: 'scoreCardId',
+      ),
+      act: (bloc) {
+        bloc
+          ..add(InitialsChanged(initials: 'AB'))
+          ..add(InitialsSubmitted());
+      },
+      expect: () => <InitialsFormState>[
+        InitialsFormState(initials: 'AB'),
+        InitialsFormState(initials: 'AB', status: InitialsFormStatus.invalid),
+      ],
+    );
+
+    blocTest<InitialsFormBloc, InitialsFormState>(
+      'emits state with blacklisted status when initials are blacklisted and '
       'submitted',
       build: () => InitialsFormBloc(
         leaderboardResource: leaderboardResource,
@@ -69,7 +87,10 @@ void main() {
       },
       expect: () => <InitialsFormState>[
         InitialsFormState(initials: 'WTF'),
-        InitialsFormState(initials: 'WTF', status: InitialsFormStatus.invalid),
+        InitialsFormState(
+          initials: 'WTF',
+          status: InitialsFormStatus.blacklisted,
+        ),
       ],
     );
 
