@@ -147,7 +147,7 @@ void main() {
           when(() => initialsFormBloc.state).thenReturn(
             const InitialsFormState(
               initials: 'WTF',
-              status: InitialsFormStatus.invalid,
+              status: InitialsFormStatus.blacklisted,
             ),
           );
           await tester.pumpSubject(initialsFormBloc);
@@ -157,7 +157,7 @@ void main() {
           await tester.tap(find.byType(FilledButton));
           await tester.pumpAndSettle();
 
-          expect(find.text(l10n.enterInitialsError), findsOneWidget);
+          expect(find.text(l10n.blacklistedInitialsError), findsOneWidget);
         },
       );
 

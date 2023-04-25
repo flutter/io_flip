@@ -40,6 +40,14 @@ class InitialsFormView extends StatelessWidget {
         if (state.status == InitialsFormStatus.failure) {
           return const Center(child: Text('Error submitting initials'));
         }
+        final String? errorText;
+        if (state.status.isBlacklisted) {
+          errorText = l10n.blacklistedInitialsError;
+        } else if (state.status.isInvalid) {
+          errorText = l10n.enterInitialsError;
+        } else {
+          errorText = null;
+        }
 
         return Column(
           children: [
@@ -55,8 +63,7 @@ class InitialsFormView extends StatelessWidget {
                 textCapitalization: TextCapitalization.characters,
                 decoration: InputDecoration(
                   hintText: 'AAA',
-                  errorText:
-                      state.status.isInvalid ? l10n.enterInitialsError : null,
+                  errorText: errorText,
                 ),
                 textAlign: TextAlign.center,
                 onChanged: (value) {
