@@ -64,6 +64,36 @@ void main() {
       );
     }
 
+    const cards = [
+      Card(
+        id: 'player_card',
+        name: 'host_card',
+        description: '',
+        image: '',
+        rarity: true,
+        power: 2,
+        suit: Suit.air,
+      ),
+      Card(
+        id: 'player_card_2',
+        name: 'host_card_2',
+        description: '',
+        image: '',
+        rarity: true,
+        power: 2,
+        suit: Suit.earth,
+      ),
+      Card(
+        id: 'player_card_3',
+        name: 'host_card_3',
+        description: '',
+        image: '',
+        rarity: true,
+        power: 4,
+        suit: Suit.metal,
+      ),
+    ];
+
     final baseState = MatchLoadedState(
       playerScoreCard: ScoreCard(id: 'scoreCardId'),
       match: Match(
@@ -71,35 +101,7 @@ void main() {
         hostDeck: Deck(
           id: '',
           userId: '',
-          cards: const [
-            Card(
-              id: 'player_card',
-              name: 'host_card',
-              description: '',
-              image: '',
-              rarity: true,
-              power: 2,
-              suit: Suit.air,
-            ),
-            Card(
-              id: 'player_card_2',
-              name: 'host_card_2',
-              description: '',
-              image: '',
-              rarity: true,
-              power: 2,
-              suit: Suit.earth,
-            ),
-            Card(
-              id: 'player_card_3',
-              name: 'host_card_3',
-              description: '',
-              image: '',
-              rarity: true,
-              power: 4,
-              suit: Suit.metal,
-            ),
-          ],
+          cards: cards,
         ),
         guestDeck: Deck(
           id: '',
@@ -281,19 +283,30 @@ void main() {
       );
 
       testWidgets(
-        'Renders correct message when round is a draw',
+        'Renders correct score messages and colors',
         (tester) async {
           when(
-            () => bloc.isWinningCard(any(), isPlayer: any(named: 'isPlayer')),
+            () =>
+                bloc.isWinningCard(cards[0], isPlayer: any(named: 'isPlayer')),
+          ).thenReturn(CardOverlayType.win);
+          when(
+            () =>
+                bloc.isWinningCard(cards[1], isPlayer: any(named: 'isPlayer')),
+          ).thenReturn(CardOverlayType.lose);
+          when(
+            () =>
+                bloc.isWinningCard(cards[2], isPlayer: any(named: 'isPlayer')),
           ).thenReturn(CardOverlayType.draw);
-          when(() => bloc.isHost).thenReturn(false);
+          when(() => bloc.isHost).thenReturn(true);
           defaultMockState();
           await tester.pumpSubject(bloc);
+          final win = tester.widget<Text>(find.textContaining('W'));
+          final lose = tester.widget<Text>(find.textContaining('L'));
+          final draw = tester.widget<Text>(find.textContaining('D'));
 
-          expect(
-            find.textContaining('D'),
-            findsNWidgets(3),
-          );
+          expect(win.style?.color, TopDashColors.seedGreen);
+          expect(lose.style?.color, TopDashColors.seedRed);
+          expect(draw.style?.color, TopDashColors.seedGrey70);
         },
       );
 

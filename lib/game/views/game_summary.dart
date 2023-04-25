@@ -216,7 +216,7 @@ class _RoundSummary extends StatelessWidget {
         resultColor = TopDashColors.seedGrey70;
         break;
       case null:
-        result = '';
+        result = score;
         resultColor = TopDashColors.seedGrey70;
         break;
     }
