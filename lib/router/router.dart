@@ -8,6 +8,7 @@ import 'package:top_dash/scripts/scripts.dart';
 import 'package:top_dash/share/share.dart';
 
 GoRouter createRouter() {
+  const isScriptsEnabled = String.fromEnvironment('SCRIPTS_ENABLED') == 'true';
   return GoRouter(
     routes: [
       GoRoute(
@@ -47,10 +48,11 @@ GoRouter createRouter() {
             path: 'share_hand',
             builder: ShareHandPage.routeBuilder,
           ),
-          GoRoute(
-            path: '_super_secret_scripts_page',
-            builder: ScriptsPage.routeBuilder,
-          ),
+          if (isScriptsEnabled)
+            GoRoute(
+              path: '_super_secret_scripts_page',
+              builder: ScriptsPage.routeBuilder,
+            ),
         ],
       ),
     ],
