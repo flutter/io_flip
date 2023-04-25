@@ -4,6 +4,7 @@ import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/audio/audio.dart';
 import 'package:top_dash/draft/draft.dart';
+import 'package:top_dash/draft/widgets/deck_pack.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/match_making/match_making.dart';
@@ -41,6 +42,12 @@ class DraftView extends StatelessWidget {
         ),
       );
     }
+
+    return IoFlipScaffold(
+      body: DeckPack(
+        child: const _DraftDeck(),
+      ),
+    );
 
     return IoFlipScaffold(
       body: Center(

@@ -37,6 +37,10 @@ class $AssetsImagesGen {
   AssetGenImage get facebook =>
       const AssetGenImage('assets/images/facebook.png');
 
+  /// File path: assets/images/front_pack.png
+  AssetGenImage get frontPack =>
+      const AssetGenImage('assets/images/front_pack.png');
+
   $AssetsImagesLeaderboardGen get leaderboard =>
       const $AssetsImagesLeaderboardGen();
 
@@ -63,6 +67,7 @@ class $AssetsImagesGen {
         cardMaster,
         drawSplash,
         facebook,
+        frontPack,
         lossSplash,
         main,
         tempPreferencesCustom,
