@@ -43,7 +43,10 @@ class MainMenuScreen extends StatelessWidget {
                 leading: RoundedButton.svg(
                   key: const Key('info_button'),
                   Assets.icons.info,
-                  onPressed: () => InfoDialog.show(context),
+                  onPressed: () => TopDashDialog.show(
+                    context,
+                    const InfoView(),
+                  ),
                 ),
                 middle: RoundedButton.text(
                   l10n.play,
@@ -53,7 +56,10 @@ class MainMenuScreen extends StatelessWidget {
                 ),
                 trailing: RoundedButton.icon(
                   Icons.question_mark_rounded,
-                  onPressed: () => HowToPlayDialog.show(context),
+                  onPressed: () => TopDashDialog.show(
+                    context,
+                    const HowToPlayDialog(),
+                  ),
                 ),
               ),
             ),

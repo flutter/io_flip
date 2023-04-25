@@ -5,7 +5,7 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 void main() {
   group('GameCardRect', () {
     test('rect returns the correct value', () {
-      const gameCardSize = GameCardSize.sm();
+      const gameCardSize = GameCardSize.xs();
       const offset = Offset(20, 50);
       const gameCardRect = GameCardRect(
         gameCardSize: gameCardSize,
@@ -18,7 +18,7 @@ void main() {
 
   group('GameCardRectTween', () {
     const begin = GameCardRect(
-      gameCardSize: GameCardSize.sm(),
+      gameCardSize: GameCardSize.xs(),
       offset: Offset(20, 50),
     );
     const end = GameCardRect(

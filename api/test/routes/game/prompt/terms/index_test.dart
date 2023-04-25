@@ -31,8 +31,9 @@ void main() {
 
     setUp(() {
       promptRepository = _MockPromptRepository();
-      when(() => promptRepository.getPromptTerms(PromptTermType.character))
-          .thenAnswer((_) async => termsList);
+      when(
+        () => promptRepository.getPromptTermsByType(PromptTermType.character),
+      ).thenAnswer((_) async => termsList);
 
       request = _MockRequest();
       when(() => request.method).thenReturn(HttpMethod.get);

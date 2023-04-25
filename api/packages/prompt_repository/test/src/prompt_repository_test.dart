@@ -28,8 +28,8 @@ void main() {
       );
     });
 
-    group('getPromptTerms', () {
-      test('returns a list of terms', () async {
+    group('getPromptTermsByType', () {
+      test('returns a list of terms with location type', () async {
         when(
           () => dbClient.findBy(
             'prompt_terms',
@@ -62,7 +62,7 @@ void main() {
           ],
         );
 
-        final response = await promptRepository.getPromptTerms(
+        final response = await promptRepository.getPromptTermsByType(
           PromptTermType.location,
         );
 
@@ -88,6 +88,186 @@ void main() {
             ],
           ),
         );
+      });
+    });
+
+    group('isValidPrompt', () {
+      const prompt = Prompt(
+        power: 'AAA',
+        secondaryPower: 'BBB',
+        characterClass: 'CCC',
+      );
+      setUp(() {
+        when(
+          () => dbClient.findBy(
+            'prompt_terms',
+            'term',
+            prompt.power,
+          ),
+        ).thenAnswer(
+          (_) async => [
+            DbEntityRecord(
+              id: 'id1',
+              data: const {
+                'type': 'power',
+                'term': 'AAA',
+              },
+            ),
+          ],
+        );
+        when(
+          () => dbClient.findBy(
+            'prompt_terms',
+            'term',
+            prompt.secondaryPower,
+          ),
+        ).thenAnswer(
+          (_) async => [
+            DbEntityRecord(
+              id: 'id2',
+              data: const {
+                'type': 'power',
+                'term': 'BBB',
+              },
+            ),
+          ],
+        );
+        when(
+          () => dbClient.findBy(
+            'prompt_terms',
+            'term',
+            prompt.characterClass,
+          ),
+        ).thenAnswer(
+          (_) async => [
+            DbEntityRecord(
+              id: 'id3',
+              data: const {
+                'type': 'characterClass',
+                'term': 'CCC',
+              },
+            ),
+          ],
+        );
+      });
+
+      test('isValidPrompt returns true', () async {
+        final isValid = await promptRepository.isValidPrompt(prompt);
+
+        expect(isValid, isTrue);
+      });
+
+      test('isValidPrompt returns false when power is invalid', () async {
+        when(
+          () => dbClient.findBy(
+            'prompt_terms',
+            'term',
+            prompt.power,
+          ),
+        ).thenAnswer(
+          (_) async => [],
+        );
+        final isValid = await promptRepository.isValidPrompt(prompt);
+
+        expect(isValid, isFalse);
+      });
+
+      test('isValidPrompt returns false when secondaryPower is invalid',
+          () async {
+        when(
+          () => dbClient.findBy(
+            'prompt_terms',
+            'term',
+            prompt.secondaryPower,
+          ),
+        ).thenAnswer(
+          (_) async => [],
+        );
+        final isValid = await promptRepository.isValidPrompt(prompt);
+        expect(isValid, isFalse);
+      });
+
+      test('isValidPrompt returns false when characterClass is invalid',
+          () async {
+        when(
+          () => dbClient.findBy(
+            'prompt_terms',
+            'term',
+            prompt.characterClass,
+          ),
+        ).thenAnswer(
+          (_) async => [],
+        );
+        final isValid = await promptRepository.isValidPrompt(prompt);
+        expect(isValid, isFalse);
+      });
+
+      test('isValidPrompt returns false when power is of wrong type', () async {
+        when(
+          () => dbClient.findBy(
+            'prompt_terms',
+            'term',
+            prompt.power,
+          ),
+        ).thenAnswer(
+          (_) async => [
+            DbEntityRecord(
+              id: 'id2',
+              data: const {
+                'type': 'characterClass',
+                'term': 'BBB',
+              },
+            ),
+          ],
+        );
+        final isValid = await promptRepository.isValidPrompt(prompt);
+        expect(isValid, isFalse);
+      });
+
+      test('isValidPrompt returns false when secondaryPower is of wrong type',
+          () async {
+        when(
+          () => dbClient.findBy(
+            'prompt_terms',
+            'term',
+            prompt.secondaryPower,
+          ),
+        ).thenAnswer(
+          (_) async => [
+            DbEntityRecord(
+              id: 'id2',
+              data: const {
+                'type': 'characterClass',
+                'term': 'BBB',
+              },
+            ),
+          ],
+        );
+        final isValid = await promptRepository.isValidPrompt(prompt);
+        expect(isValid, isFalse);
+      });
+
+      test('isValidPrompt returns false when characterClass is of wrong type',
+          () async {
+        when(
+          () => dbClient.findBy(
+            'prompt_terms',
+            'term',
+            prompt.characterClass,
+          ),
+        ).thenAnswer(
+          (_) async => [
+            DbEntityRecord(
+              id: 'id2',
+              data: const {
+                'type': 'power',
+                'term': 'BBB',
+              },
+            ),
+          ],
+        );
+        final isValid = await promptRepository.isValidPrompt(prompt);
+        expect(isValid, isFalse);
       });
     });
 

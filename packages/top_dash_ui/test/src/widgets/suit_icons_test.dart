@@ -5,11 +5,26 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 void main() {
   group('SuitIcons', () {
     test('use their corresponding asset', () {
-      expect(SuitIcon.fire().asset, equals(Assets.images.suits.fire));
-      expect(SuitIcon.air().asset, equals(Assets.images.suits.air));
-      expect(SuitIcon.metal().asset, equals(Assets.images.suits.metal));
-      expect(SuitIcon.earth().asset, equals(Assets.images.suits.earth));
-      expect(SuitIcon.water().asset, equals(Assets.images.suits.water));
+      expect(
+        SuitIcon.fire().asset,
+        equals(Assets.images.suits.onboarding.fire),
+      );
+      expect(
+        SuitIcon.air().asset,
+        equals(Assets.images.suits.onboarding.air),
+      );
+      expect(
+        SuitIcon.metal().asset,
+        equals(Assets.images.suits.onboarding.metal),
+      );
+      expect(
+        SuitIcon.earth().asset,
+        equals(Assets.images.suits.onboarding.earth),
+      );
+      expect(
+        SuitIcon.water().asset,
+        equals(Assets.images.suits.onboarding.water),
+      );
     });
 
     testWidgets('renders size correctly', (tester) async {

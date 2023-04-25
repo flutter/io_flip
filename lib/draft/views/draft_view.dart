@@ -226,7 +226,7 @@ class SelectedCard extends StatelessWidget {
                   suitName: card.suit.name,
                   power: card.power,
                   isRare: card.rarity,
-                  size: const GameCardSize.sm(),
+                  size: const GameCardSize.xs(),
                 ),
               ],
               Positioned(
@@ -301,7 +301,10 @@ class _BottomBar extends StatelessWidget {
             ),
       trailing: RoundedButton.icon(
         Icons.question_mark_rounded,
-        onPressed: () => HowToPlayDialog.show(context),
+        onPressed: () => TopDashDialog.show(
+          context,
+          const HowToPlayDialog(),
+        ),
       ),
     );
   }
