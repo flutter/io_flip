@@ -4,7 +4,7 @@ version: 0.1.0+1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.0 <3.0.0"
+  sdk: ">=3.0.0-417.1.beta <4.0.0"
   flutter: 3.10.0-1.1.pre
 
 dependencies:
@@ -35,7 +35,8 @@ flutter:
 
   assets:
     - assets/images/
-    - assets/images/suits/
+    - assets/images/suits/onboarding/
+    - assets/images/suits/card/
     - assets/images/card_frames/
 
 flutter_gen:

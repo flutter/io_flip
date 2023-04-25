@@ -42,6 +42,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     on<TurnTimerTicked>(_onTurnTimerTicked);
     on<TurnAnimationsFinished>(_onTurnAnimationsFinished);
     on<CardOverlayRevealed>(_onCardOverlayRevealed);
+    on<FightSceneCompleted>(_onFightSceneCompleted);
   }
 
   final GameResource _gameResource;
@@ -92,6 +93,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             playerScoreCard: scoreCard,
             turnTimeRemaining: _turnMaxTime,
             turnAnimationsFinished: true,
+            isFightScene: false,
           ),
         );
 
@@ -191,7 +193,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         ),
       );
 
-      if (_turnTimerEnabled) {
+      if (_turnTimerEnabled && matchLoadedState.turnAnimationsFinished) {
         add(const TurnTimerStarted());
       }
     }
@@ -290,6 +292,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
               matchLoadedState.matchState.guestPlayedCards.length) {
         emit(matchLoadedState.copyWith(turnTimeRemaining: _turnMaxTime));
 
+        _turnTimer?.cancel();
+
         _turnTimer = Timer.periodic(
           const Duration(seconds: 1),
           (timer) {
@@ -354,7 +358,12 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   ) {
     if (state is MatchLoadedState) {
       final matchLoadedState = state as MatchLoadedState;
-      emit(matchLoadedState.copyWith(turnAnimationsFinished: true));
+      emit(
+        matchLoadedState.copyWith(
+          turnAnimationsFinished: true,
+          isFightScene: false,
+        ),
+      );
     }
   }
 
@@ -363,14 +372,31 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     Emitter<GameState> emit,
   ) {
     if (state is MatchLoadedState) {
+      _turnTimer?.cancel();
+
       final matchLoadedState = state as MatchLoadedState;
       if (matchLoadedState.rounds.isNotEmpty) {
         final lastRound = matchLoadedState.rounds.last;
         final rounds = [...matchLoadedState.rounds]
           ..removeLast()
           ..add(lastRound.copyWith(showCardsOverlay: true));
-        emit(matchLoadedState.copyWith(rounds: rounds));
+        emit(
+          matchLoadedState.copyWith(
+            rounds: rounds,
+            isFightScene: true,
+          ),
+        );
       }
+    }
+  }
+
+  void _onFightSceneCompleted(
+    FightSceneCompleted event,
+    Emitter<GameState> emit,
+  ) {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+      emit(matchLoadedState.copyWith(isFightScene: false));
     }
   }
 

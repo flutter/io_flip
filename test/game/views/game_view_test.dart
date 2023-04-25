@@ -122,6 +122,7 @@ void main() {
         rounds: const [],
         turnTimeRemaining: 10,
         turnAnimationsFinished: true,
+        isFightScene: false,
       );
 
       setUp(() {
@@ -372,6 +373,7 @@ void main() {
         rounds: const [],
         turnTimeRemaining: 10,
         turnAnimationsFinished: true,
+        isFightScene: false,
       );
 
       setUp(() {
@@ -466,13 +468,12 @@ void main() {
         await tester.pumpSubject(bloc);
         await tester.pumpAndSettle();
 
-        await tester.pump(turnEndDuration);
-
         verify(() => bloc.add(CardOverlayRevealed())).called(1);
       });
 
       testWidgets(
-        'completes and goes back when both players play a card',
+        'completes and goes back when both players play a card and '
+        'fight scene finishes',
         (tester) async {
           final controller = StreamController<GameState>.broadcast();
 
@@ -528,6 +529,16 @@ void main() {
           final opponentClashOffset = tester.getCenter(opponentCardFinder);
           expect(opponentInitialOffset, isNot(equals(opponentClashOffset)));
 
+          controller.add(baseState.copyWith(isFightScene: true));
+
+          await tester.pumpAndSettle();
+
+          final fightScene = find.byType(FightScene);
+          expect(fightScene, findsOneWidget);
+          tester.widget<FightScene>(fightScene).onFinished();
+
+          controller.add(baseState.copyWith(isFightScene: false));
+
           // Get card offset once clash is over and both cards are back in the
           // original position
           await tester.pump(turnEndDuration);
@@ -539,7 +550,9 @@ void main() {
           expect(opponentInitialOffset, equals(opponentFinalOffset));
 
           verify(() => bloc.add(CardOverlayRevealed())).called(1);
+          verify(() => bloc.add(FightSceneCompleted())).called(1);
           verify(() => bloc.add(TurnAnimationsFinished())).called(2);
+          verify(() => bloc.add(TurnTimerStarted())).called(2);
         },
       );
     });

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart' hide Card;
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:top_dash_ui/gen/assets.gen.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -10,66 +11,96 @@ class GameCardSize extends Equatable {
   /// {@macro game_card_size}
   const GameCardSize({
     required this.size,
+    required this.badgeSize,
     required this.titleTextStyle,
     required this.descriptionTextStyle,
+    required this.powerTextStyle,
+    required this.powerTextStrokeWidth,
   });
 
   /// XS size.
   const GameCardSize.xs()
       : this(
           size: TopDashCardSizes.xs,
+          badgeSize: const Size.square(41),
           titleTextStyle: TopDashTextStyles.cardTitleXS,
           descriptionTextStyle: TopDashTextStyles.cardDescriptionXS,
+          powerTextStyle: TopDashTextStyles.cardNumberXS,
+          powerTextStrokeWidth: 2,
         );
 
   /// SM size.
   const GameCardSize.sm()
       : this(
           size: TopDashCardSizes.sm,
+          badgeSize: const Size.square(55),
           titleTextStyle: TopDashTextStyles.cardTitleSM,
           descriptionTextStyle: TopDashTextStyles.cardDescriptionSM,
+          powerTextStyle: TopDashTextStyles.cardNumberSM,
+          powerTextStrokeWidth: 2,
         );
 
   /// MD size.
   const GameCardSize.md()
       : this(
           size: TopDashCardSizes.md,
+          badgeSize: const Size.square(70),
           titleTextStyle: TopDashTextStyles.cardTitleMD,
           descriptionTextStyle: TopDashTextStyles.cardDescriptionMD,
+          powerTextStyle: TopDashTextStyles.cardNumberMD,
+          powerTextStrokeWidth: 3,
         );
 
   /// LG size.
   const GameCardSize.lg()
       : this(
           size: TopDashCardSizes.lg,
+          badgeSize: const Size.square(89),
           titleTextStyle: TopDashTextStyles.cardTitleLG,
           descriptionTextStyle: TopDashTextStyles.cardDescriptionLG,
+          powerTextStyle: TopDashTextStyles.cardNumberLG,
+          powerTextStrokeWidth: 4,
         );
 
   /// XL size.
   const GameCardSize.xl()
       : this(
           size: TopDashCardSizes.xl,
+          badgeSize: const Size.square(110),
           titleTextStyle: TopDashTextStyles.cardTitleXL,
           descriptionTextStyle: TopDashTextStyles.cardDescriptionXL,
+          powerTextStyle: TopDashTextStyles.cardNumberXL,
+          powerTextStrokeWidth: 4,
         );
 
   /// XXL size.
   const GameCardSize.xxl()
       : this(
           size: TopDashCardSizes.xxl,
+          badgeSize: const Size.square(130),
           titleTextStyle: TopDashTextStyles.cardTitleXXL,
           descriptionTextStyle: TopDashTextStyles.cardDescriptionXXL,
+          powerTextStyle: TopDashTextStyles.cardNumberXXL,
+          powerTextStrokeWidth: 4,
         );
 
   /// The size of the card.
   final Size size;
+
+  /// The size of the badge.
+  final Size badgeSize;
 
   /// Name text style
   final TextStyle titleTextStyle;
 
   /// Description text style
   final TextStyle descriptionTextStyle;
+
+  /// Power text style
+  final TextStyle powerTextStyle;
+
+  /// Power text stroke width
+  final double powerTextStrokeWidth;
 
   /// Get the width of the card.
   double get width => size.width;
@@ -122,18 +153,33 @@ class GameCard extends StatelessWidget {
   /// Is a rare card
   final bool isRare;
 
-  String _mapSuitNameToAsset() {
+  (String, SvgPicture) _mapSuitNameToAssets() {
     switch (suitName) {
       case 'fire':
-        return Assets.images.cardFrames.cardFire.keyName;
+        return (
+          Assets.images.cardFrames.cardFire.keyName,
+          Assets.images.suits.card.fire.svg(),
+        );
       case 'water':
-        return Assets.images.cardFrames.cardWater.keyName;
+        return (
+          Assets.images.cardFrames.cardWater.keyName,
+          Assets.images.suits.card.water.svg(),
+        );
       case 'earth':
-        return Assets.images.cardFrames.cardEarth.keyName;
+        return (
+          Assets.images.cardFrames.cardEarth.keyName,
+          Assets.images.suits.card.earth.svg(),
+        );
       case 'air':
-        return Assets.images.cardFrames.cardAir.keyName;
+        return (
+          Assets.images.cardFrames.cardAir.keyName,
+          Assets.images.suits.card.air.svg(),
+        );
       case 'metal':
-        return Assets.images.cardFrames.cardMetal.keyName;
+        return (
+          Assets.images.cardFrames.cardMetal.keyName,
+          Assets.images.suits.card.metal.svg(),
+        );
       default:
         throw ArgumentError('Invalid suit name');
     }
@@ -141,6 +187,7 @@ class GameCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final (cardFrame, suitSvg) = _mapSuitNameToAssets();
     return Stack(
       children: [
         SizedBox(
@@ -159,15 +206,45 @@ class GameCard extends StatelessWidget {
                 ),
               ),
               Positioned.fill(
-                child: Image.asset(
-                  _mapSuitNameToAsset(),
-                ),
+                child: Image.asset(cardFrame),
               ),
               Align(
-                alignment: const Alignment(.8, -.8),
-                child: Text(
-                  power.toString(),
-                  style: Theme.of(context).textTheme.headlineMedium,
+                alignment: Alignment.topRight,
+                child: SizedBox(
+                  width: size.badgeSize.width,
+                  height: size.badgeSize.height,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(child: suitSvg),
+                      Align(
+                        alignment: const Alignment(.15, .4),
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Text(
+                              power.toString(),
+                              style: size.powerTextStyle.copyWith(
+                                shadows: const [
+                                  Shadow(
+                                    offset: Offset(1.68, 2.52),
+                                    color: TopDashColors.seedBlack,
+                                  ),
+                                ],
+                                foreground: Paint()
+                                  ..style = PaintingStyle.stroke
+                                  ..strokeWidth = size.powerTextStrokeWidth
+                                  ..color = TopDashColors.seedBlack,
+                              ),
+                            ),
+                            Text(
+                              power.toString(),
+                              style: size.powerTextStyle,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               Align(
