@@ -207,6 +207,27 @@ void main() {
 
         expect(find.text(l10n.enterInitialsError), findsNothing);
       });
+
+      testWidgets('typing two letters in the same field does not work',
+          (tester) async {
+        when(() => initialsFormBloc.state)
+            .thenReturn(const InitialsFormState());
+        await tester.pumpSubject(initialsFormBloc);
+
+        final l10n = tester.element(find.byType(InitialsFormView)).l10n;
+
+        final initial = find.byKey(const Key('initial_form_field_0'));
+
+        await tester.enterText(initial, 'ab');
+
+        await tester.pumpAndSettle();
+
+        final input =
+            tester.widget<EditableText>(find.byType(EditableText).first);
+        expect(input.controller.text == 'A', isTrue);
+
+        expect(find.text(l10n.enterInitialsError), findsNothing);
+      });
     });
   });
 }
