@@ -129,38 +129,6 @@ void main() {
       });
     });
 
-    test('getPromptTerms returns a list of terms', () async {
-      final response = await promptRepository.getPromptTerms();
-
-      expect(
-        response,
-        equals(
-          [
-            PromptTerm(
-              id: 'id1',
-              type: PromptTermType.power,
-              term: 'AAA',
-            ),
-            PromptTerm(
-              id: 'id2',
-              type: PromptTermType.power,
-              term: 'BBB',
-            ),
-            PromptTerm(
-              id: 'id3',
-              type: PromptTermType.characterClass,
-              term: 'CCC',
-            ),
-            PromptTerm(
-              id: 'id4',
-              type: PromptTermType.location,
-              term: 'DDD',
-            ),
-          ],
-        ),
-      );
-    });
-
     group('isValidPrompt', () {
       const prompt = Prompt(
         power: 'AAA',
@@ -225,6 +193,119 @@ void main() {
         final isValid = await promptRepository.isValidPrompt(prompt);
 
         expect(isValid, isTrue);
+      });
+
+      test('isValidPrompt returns false when power is invalid', () async {
+        when(
+          () => dbClient.findBy(
+            'prompt_terms',
+            'term',
+            prompt.power,
+          ),
+        ).thenAnswer(
+          (_) async => [],
+        );
+        final isValid = await promptRepository.isValidPrompt(prompt);
+
+        expect(isValid, isFalse);
+      });
+
+      test('isValidPrompt returns false when secondaryPower is invalid',
+          () async {
+        when(
+          () => dbClient.findBy(
+            'prompt_terms',
+            'term',
+            prompt.secondaryPower,
+          ),
+        ).thenAnswer(
+          (_) async => [],
+        );
+        final isValid = await promptRepository.isValidPrompt(prompt);
+        expect(isValid, isFalse);
+      });
+
+      test('isValidPrompt returns false when characterClass is invalid',
+          () async {
+        when(
+          () => dbClient.findBy(
+            'prompt_terms',
+            'term',
+            prompt.characterClass,
+          ),
+        ).thenAnswer(
+          (_) async => [],
+        );
+        final isValid = await promptRepository.isValidPrompt(prompt);
+        expect(isValid, isFalse);
+      });
+
+      test('isValidPrompt returns false when power is of wrong type', () async {
+        when(
+          () => dbClient.findBy(
+            'prompt_terms',
+            'term',
+            prompt.power,
+          ),
+        ).thenAnswer(
+          (_) async => [
+            DbEntityRecord(
+              id: 'id2',
+              data: const {
+                'type': 'characterClass',
+                'term': 'BBB',
+              },
+            ),
+          ],
+        );
+        final isValid = await promptRepository.isValidPrompt(prompt);
+        expect(isValid, isFalse);
+      });
+
+      test('isValidPrompt returns false when secondaryPower is of wrong type',
+          () async {
+        when(
+          () => dbClient.findBy(
+            'prompt_terms',
+            'term',
+            prompt.secondaryPower,
+          ),
+        ).thenAnswer(
+          (_) async => [
+            DbEntityRecord(
+              id: 'id2',
+              data: const {
+                'type': 'characterClass',
+                'term': 'BBB',
+              },
+            ),
+          ],
+        );
+        final isValid = await promptRepository.isValidPrompt(prompt);
+        expect(isValid, isFalse);
+      });
+
+      test('isValidPrompt returns false when characterClass is of wrong type',
+          () async {
+        when(
+          () => dbClient.findBy(
+            'prompt_terms',
+            'term',
+            prompt.characterClass,
+          ),
+        ).thenAnswer(
+          (_) async => [
+            DbEntityRecord(
+              id: 'id2',
+              data: const {
+                'type': 'power',
+                'term': 'BBB',
+              },
+            ),
+          ],
+        );
+        final isValid = await promptRepository.isValidPrompt(prompt);
+        expect(isValid, isFalse);
       });
     });
 

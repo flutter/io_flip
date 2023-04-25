@@ -30,24 +30,6 @@ class PromptRepository {
         .toList();
   }
 
-  /// Retrieves the prompt terms.
-  Future<List<PromptTerm>> getPromptTerms() async {
-    final terms = await _dbClient.orderBy(
-      'prompt_terms',
-      'type',
-      limit: 100,
-    );
-
-    return terms
-        .map(
-          (entity) => PromptTerm.fromJson({
-            'id': entity.id,
-            ...entity.data,
-          }),
-        )
-        .toList();
-  }
-
   /// Creates a new prompt term.
   Future<void> createPromptTerm(PromptTerm promptTerm) async {
     await _dbClient.add(
@@ -63,14 +45,12 @@ class PromptRepository {
         await _dbClient.findBy('prompt_terms', 'term', prompt.secondaryPower);
     final characterClass =
         await _dbClient.findBy('prompt_terms', 'term', prompt.characterClass);
-    if (power.isEmpty ||
-        power.first.data['type'] != 'power' ||
-        secondaryPower.isEmpty ||
-        secondaryPower.first.data['type'] != 'power' ||
-        characterClass.isEmpty ||
-        characterClass.first.data['type'] != 'characterClass') {
-      return false;
-    }
-    return true;
+    final powerValid = power.isNotEmpty && power.first.data['type'] == 'power';
+    final secondaryPowerValid = secondaryPower.isNotEmpty &&
+        secondaryPower.first.data['type'] == 'power';
+    final characterClassValid = characterClass.isNotEmpty &&
+        characterClass.first.data['type'] == 'characterClass';
+
+    return powerValid && secondaryPowerValid && characterClassValid;
   }
 }
