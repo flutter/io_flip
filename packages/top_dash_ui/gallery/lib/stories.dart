@@ -54,6 +54,11 @@ void addStories(Dashbook dashbook) {
         (_) => const FlipCountdownStory(),
       );
 
+  dashbook.storiesOf('Card Landing Puff').add(
+        'Card landing puff',
+        (_) => const CardLandingPuffStory(),
+      );
+
   dashbook
       .storiesOf('Cards')
       .add(
