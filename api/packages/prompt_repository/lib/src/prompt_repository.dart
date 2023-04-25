@@ -13,7 +13,7 @@ class PromptRepository {
   final DbClient _dbClient;
 
   /// Retrieves the prompt terms for the given [type].
-  Future<List<PromptTerm>> getPromptTerms(PromptTermType type) async {
+  Future<List<PromptTerm>> getPromptTermsByType(PromptTermType type) async {
     final terms = await _dbClient.findBy(
       'prompt_terms',
       'type',
@@ -36,5 +36,21 @@ class PromptRepository {
       'prompt_terms',
       promptTerm.toJson()..remove('id'),
     );
+  }
+
+  /// Check if the attributes in a [Prompt] are valid
+  Future<bool> isValidPrompt(Prompt prompt) async {
+    final power = await _dbClient.findBy('prompt_terms', 'term', prompt.power);
+    final secondaryPower =
+        await _dbClient.findBy('prompt_terms', 'term', prompt.secondaryPower);
+    final characterClass =
+        await _dbClient.findBy('prompt_terms', 'term', prompt.characterClass);
+    final powerValid = power.isNotEmpty && power.first.data['type'] == 'power';
+    final secondaryPowerValid = secondaryPower.isNotEmpty &&
+        secondaryPower.first.data['type'] == 'power';
+    final characterClassValid = characterClass.isNotEmpty &&
+        characterClass.first.data['type'] == 'characterClass';
+
+    return powerValid && secondaryPowerValid && characterClassValid;
   }
 }

@@ -19,7 +19,7 @@ FutureOr<Response> onRequest(RequestContext context) async {
     }
 
     final promptRepository = context.read<PromptRepository>();
-    final list = await promptRepository.getPromptTerms(
+    final list = await promptRepository.getPromptTermsByType(
       promptType,
     );
     return Response.json(body: {'list': list.map((e) => e.term).toList()});
