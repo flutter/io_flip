@@ -74,7 +74,7 @@ class InitialsFormView extends StatelessWidget {
               RoundedButton.text(
                 l10n.enter,
                 onPressed: () {
-                  context.read<InitialsFormBloc>().add(const InitialsSubmitted());
+                  context.read<InitialsFormBloc>().add(InitialsSubmitted());
                 },
               )
           ],
