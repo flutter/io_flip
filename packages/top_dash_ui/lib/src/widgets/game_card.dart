@@ -158,27 +158,27 @@ class GameCard extends StatelessWidget {
       case 'fire':
         return (
           Assets.images.cardFrames.cardFire.keyName,
-          Assets.images.suits.fire.svg(),
+          Assets.images.suits.card.fire.svg(),
         );
       case 'water':
         return (
           Assets.images.cardFrames.cardWater.keyName,
-          Assets.images.suits.water.svg(),
+          Assets.images.suits.card.water.svg(),
         );
       case 'earth':
         return (
           Assets.images.cardFrames.cardEarth.keyName,
-          Assets.images.suits.earth.svg(),
+          Assets.images.suits.card.earth.svg(),
         );
       case 'air':
         return (
           Assets.images.cardFrames.cardAir.keyName,
-          Assets.images.suits.air.svg(),
+          Assets.images.suits.card.air.svg(),
         );
       case 'metal':
         return (
           Assets.images.cardFrames.cardMetal.keyName,
-          Assets.images.suits.metal.svg(),
+          Assets.images.suits.card.metal.svg(),
         );
       default:
         throw ArgumentError('Invalid suit name');
@@ -217,6 +217,7 @@ class GameCard extends StatelessWidget {
                     children: [
                       Positioned.fill(child: suitSvg),
                       Align(
+                        alignment: const Alignment(.15, .4),
                         child: Stack(
                           clipBehavior: Clip.none,
                           children: [
