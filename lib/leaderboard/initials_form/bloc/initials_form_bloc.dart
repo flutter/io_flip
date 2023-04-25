@@ -45,7 +45,7 @@ class InitialsFormBloc extends Bloc<InitialsFormEvent, InitialsFormState> {
 
         await _leaderboardResource.addInitialsToScoreCard(
           scoreCardId: _scoreCardId,
-          initials: state.initials.toString(),
+          initials: state.initials.join(),
         );
 
         emit(state.copyWith(status: InitialsFormStatus.success));
