@@ -45,7 +45,7 @@ void main() {
 
             expect(
               find.text('1'),
-              findsOneWidget,
+              findsNWidgets(2), // Two texts are stacked to draw the border.
             );
           });
         });

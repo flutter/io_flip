@@ -169,8 +169,10 @@ class MatchRepository {
         id: newMatchState.id,
         data: {
           'matchId': matchId,
-          'hostPlayedCards': newMatchState.hostPlayedCards,
-          'guestPlayedCards': newMatchState.guestPlayedCards,
+          if (isHost)
+            'hostPlayedCards': newMatchState.hostPlayedCards
+          else
+            'guestPlayedCards': newMatchState.guestPlayedCards,
           'result': newMatchState.result?.name,
         },
       ),
