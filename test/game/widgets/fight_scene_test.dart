@@ -61,6 +61,46 @@ void main() {
         expect(onFinishedCalled, isTrue);
       },
     );
+
+    testWidgets(
+      'Puts players card over opponents when stronger',
+      (tester) async {
+        await tester.pumpSubject(
+          playerCard,
+          opponentCard,
+          onFinished: () {},
+        );
+
+        final stack = find.byWidgetPredicate((stack) {
+          if (stack is Stack) {
+            return stack.children.first.key == const Key('player_card') &&
+                stack.children[1].key == const Key('opponent_card');
+          }
+          return false;
+        });
+        expect(stack, findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'Puts opponents card over players when stronger',
+      (tester) async {
+        await tester.pumpSubject(
+          opponentCard,
+          playerCard,
+          onFinished: () {},
+        );
+
+        final stack = find.byWidgetPredicate((stack) {
+          if (stack is Stack) {
+            return stack.children.first.key == const Key('opponent_card') &&
+                stack.children[1].key == const Key('player_card');
+          }
+          return false;
+        });
+        expect(stack, findsOneWidget);
+      },
+    );
   });
 }
 
