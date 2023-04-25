@@ -40,7 +40,7 @@ class InitialsFormBloc extends Bloc<InitialsFormEvent, InitialsFormState> {
     try {
       if (!_hasValidPattern()) {
         emit(state.copyWith(status: InitialsFormStatus.invalid));
-      } else if (!_notOnBlacklist()) {
+      } else if (_isBlacklisted()) {
         emit(state.copyWith(status: InitialsFormStatus.blacklisted));
       } else {
         emit(state.copyWith(status: InitialsFormStatus.valid));
@@ -63,7 +63,7 @@ class InitialsFormBloc extends Bloc<InitialsFormEvent, InitialsFormState> {
     return value.isNotEmpty && initialsRegex.hasMatch(value);
   }
 
-  bool _notOnBlacklist() {
-    return !blacklist.contains(state.initials);
+  bool _isBlacklisted() {
+    return blacklist.contains(state.initials);
   }
 }
