@@ -50,7 +50,6 @@ class MainMenuScreen extends StatelessWidget {
                   ),
                 ),
                 middle: BlocConsumer<TermsOfUseCubit, bool>(
-                  listenWhen: (previous, current) => previous != current,
                   listener: (context, termsAccepted) {
                     if (termsAccepted) {
                       GoRouter.of(context).go('/prompt');
