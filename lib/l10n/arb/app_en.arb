@@ -360,11 +360,11 @@
   },
   "infoDialogDescriptionInfixOne": "how I/O Flip was made",
   "@infoDialogDescriptionInfixOne": {
-    "description": "First description inifix text shown in the info dialog"
+    "description": "First description infix text shown in the info dialog"
   },
   "infoDialogDescriptionInfixTwo": "and\ngrab the",
   "@infoDialogDescriptionInfixTwo": {
-    "description": "Second description inifix text shown in the info dialog"
+    "description": "Second description infix text shown in the info dialog"
   },
   "infoDialogDescriptionSuffix": "open source code.",
   "@infoDialogDescriptionSuffix": {
@@ -408,11 +408,11 @@
   },
   "termsOfUseDescriptionInfixOne": "Terms of Service",
   "@termsOfUseDescriptionInfixOne": {
-    "description": "First description inifix text shown on the terms of use page"
+    "description": "First description infix text shown on the terms of use page"
   },
-  "termsOfUseDescriptionInfixTwo": "and acknowledge tat information Google collects about me in connection with I/O Flip will be processed in accordance with the",
+  "termsOfUseDescriptionInfixTwo": "and acknowledge that information Google collects about me in connection with I/O Flip will be processed in accordance with the",
   "@termsOfUseDescriptionInfixTwo": {
-    "description": "Second description inifix text shown on the terms of use page"
+    "description": "Second description infix text shown on the terms of use page"
   },
   "termsOfUseDescriptionSuffix": "Google Privacy Policy.",
   "@termsOfUseDescriptionSuffix": {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/terms_of_use/terms_of_use.dart';
+import 'package:top_dash/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 // TODO(willhlas): add policy links.
@@ -60,7 +60,7 @@ class TermsOfUseView extends StatelessWidget {
             l10n.termsOfUseAcceptLabel,
             onPressed: () {
               context.read<TermsOfUseCubit>().acceptTermsOfUse();
-              maybePop(context);
+              context.maybePop();
             },
           ),
           const SizedBox(height: TopDashSpacing.sm),
@@ -69,17 +69,10 @@ class TermsOfUseView extends StatelessWidget {
             backgroundColor: TopDashColors.seedBlack,
             foregroundColor: TopDashColors.seedWhite,
             borderColor: TopDashColors.seedPaletteNeutral40,
-            onPressed: () => maybePop(context),
+            onPressed: context.maybePop,
           ),
         ],
       ),
     );
-  }
-
-  void maybePop(BuildContext context) {
-    final router = GoRouter.of(context);
-    if (router.canPop()) {
-      router.pop();
-    }
   }
 }
