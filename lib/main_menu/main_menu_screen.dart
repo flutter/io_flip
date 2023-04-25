@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/how_to_play/view/how_to_play_dialog.dart';
-import 'package:top_dash/info/widgets/info_button.dart';
+import 'package:top_dash/info/info.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/leaderboard/leaderboard.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';

@@ -14,6 +14,7 @@ import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/connection/connection.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
+import 'package:top_dash/info/info.dart';
 import 'package:top_dash/main_menu/main_menu_screen.dart';
 import 'package:top_dash/prompt/prompt.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
@@ -187,6 +188,22 @@ void main() {
       );
 
       expect(find.byType(MainMenuScreen), findsOneWidget);
+    });
+
+    testWidgets('renders an info button', (tester) async {
+      await tester.pumpWidget(
+        App(
+          settingsPersistence: MemoryOnlySettingsPersistence(),
+          apiClient: apiClient,
+          matchMakerRepository: _MockMatchMakerRepository(),
+          connectionRepository: _MockConnectionRepository(),
+          matchSolver: _MockMatchSolver(),
+          gameScriptMachine: _MockGameScriptEngine(),
+          user: _MockUser(),
+        ),
+      );
+
+      expect(find.byType(InfoButton), findsOneWidget);
     });
 
     testWidgets('can navigate to the prompt page', (tester) async {

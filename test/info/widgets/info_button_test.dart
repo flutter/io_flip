@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:top_dash/info/info.dart';
-import 'package:top_dash/info/widgets/info_button.dart';
 
 import '../../helpers/helpers.dart';
 

@@ -31,7 +31,7 @@ class GameSummaryView extends StatelessWidget {
               ),
             const Spacer(),
             const SizedBox(height: TopDashSpacing.lg),
-            const _ResultView(key: Key('game_summary_result_view')),
+            const _ResultView(),
             const SizedBox(height: TopDashSpacing.xlg),
             const FittedBox(
               fit: BoxFit.scaleDown,
@@ -40,7 +40,7 @@ class GameSummaryView extends StatelessWidget {
             const Spacer(),
             const IoFlipBottomBar(
               leading: AudioToggleButton(),
-              middle: GameSummaryFooter(key: Key('match summary footer')),
+              middle: GameSummaryFooter(),
               trailing: InfoButton(),
             ),
           ],
@@ -51,11 +51,11 @@ class GameSummaryView extends StatelessWidget {
 }
 
 class _ResultView extends StatelessWidget {
-  const _ResultView({super.key});
+  const _ResultView();
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<GameBloc>();
+    final bloc = context.watch<GameBloc>();
     final state = bloc.state as MatchLoadedState;
     late final String title;
     late final Color color;
@@ -98,7 +98,7 @@ class _CardsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<GameBloc>();
+    final bloc = context.watch<GameBloc>();
     final state = bloc.state as MatchLoadedState;
 
     final hostCardsOrdered = state.matchState.hostPlayedCards.map(
@@ -162,6 +162,14 @@ class _CardsView extends StatelessWidget {
       ),
     );
 
+    const divider = SizedBox(
+      height: 340,
+      width: TopDashSpacing.xxlg,
+      child: VerticalDivider(
+        color: TopDashColors.seedGrey50,
+      ),
+    );
+
     return Padding(
       padding: const EdgeInsets.all(TopDashSpacing.lg),
       child: Row(
@@ -169,21 +177,9 @@ class _CardsView extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           roundSummaries[0],
-          const SizedBox(
-            height: 340,
-            width: TopDashSpacing.xxlg,
-            child: VerticalDivider(
-              color: TopDashColors.seedGrey50,
-            ),
-          ),
+          divider,
           roundSummaries[1],
-          const SizedBox(
-            height: 340,
-            width: TopDashSpacing.xxlg,
-            child: VerticalDivider(
-              color: TopDashColors.seedGrey50,
-            ),
-          ),
+          divider,
           roundSummaries[2],
         ],
       ),
@@ -201,33 +197,29 @@ class _RoundSummary extends StatelessWidget {
   final GameCard opponentCard;
   final void Function(int index) onTap;
 
-  Color get _resultColor {
-    if (playerCard.overlay == CardOverlayType.draw) {
-      return TopDashColors.seedGrey70;
-    } else {
-      if (playerCard.overlay == CardOverlayType.win) {
-        return TopDashColors.seedGreen;
-      } else {
-        return TopDashColors.seedRed;
-      }
-    }
-  }
-
-  String get _result {
-    final score = '${playerCard.power} - ${opponentCard.power}';
-    if (playerCard.overlay == CardOverlayType.draw) {
-      return 'D $score';
-    } else {
-      if (playerCard.overlay == CardOverlayType.win) {
-        return 'W $score';
-      } else {
-        return 'L $score';
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    String result;
+    Color resultColor;
+    final score = '${playerCard.power} - ${opponentCard.power}';
+    switch (playerCard.overlay) {
+      case CardOverlayType.win:
+        result = 'W $score';
+        resultColor = TopDashColors.seedGreen;
+        break;
+      case CardOverlayType.lose:
+        result = 'L $score';
+        resultColor = TopDashColors.seedRed;
+        break;
+      case CardOverlayType.draw:
+        result = 'D $score';
+        resultColor = TopDashColors.seedGrey70;
+        break;
+      case null:
+        result = '';
+        resultColor = TopDashColors.seedGrey70;
+        break;
+    }
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -236,8 +228,8 @@ class _RoundSummary extends StatelessWidget {
         GestureDetector(onTap: () => onTap(3), child: opponentCard),
         const SizedBox(height: TopDashSpacing.lg),
         Text(
-          _result,
-          style: TopDashTextStyles.bodyLG.copyWith(color: _resultColor),
+          result,
+          style: TopDashTextStyles.bodyLG.copyWith(color: resultColor),
         )
       ],
     );
@@ -257,7 +249,7 @@ class GameSummaryFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final bloc = context.read<GameBloc>();
+    final bloc = context.watch<GameBloc>();
     final state = bloc.state as MatchLoadedState;
     final playerScoreCard = state.playerScoreCard;
     final playerDeck =
