@@ -70,6 +70,7 @@ void addStories(Dashbook dashbook) {
                 'mastering the development skills in all of the possible '
                 'platforms.',
           ),
+          isRare: context.boolProperty('isRare', false),
         ),
       )
       .add(

@@ -3,30 +3,23 @@
 
 precision highp float;
 
-const float PI = 3.1415926535897932384626433832795;
-const float STRENGTH = 0.3; // 0.0 = no effect, 1.0 = full effect
-const float SATURATION = 0.95; // Color saturation (0.0 = grayscale, 1.0 = full color)
-const float LIGHTNESS = 0.8; // Color lightness (0.0 = black, 1.0 = white)
+const float STRENGTH = 0.4; // 0.0 = no effect, 1.0 = full effect
+const float SATURATION = 0.9; // Color saturation (0.0 = grayscale, 1.0 = full color)
+const float LIGHTNESS = 0.65; // Color lightness (0.0 = black, 1.0 = white)
  
-// Float uniforms
-uniform float width;  // Width of the canvas
-uniform float height; // Height of the canvas
-uniform float dx;     // Additional X offset of the effect
-uniform float dy;     // Additional Y offset of the effect
-
-// Sampler uniforms
+uniform vec2 resolution;  // Size of the canvas
+uniform vec2 offset;     // Additional offset of the effect
 uniform sampler2D tSource; // Input texture (the application canvas)
 
 out vec4 fragColor;
 
-vec2 resolution = vec2(width, height);
-
 vec4 rainbowEffect(vec2 uv) {
     vec4 srcColor = texture(tSource, uv);
-    float hue = uv.x + dx / 4.0 + dy / 6.0 + sin((uv.x - 3.0) * (uv.y + 2.0) * 1.8);
+    float hue = uv.x / (1.75 + abs(offset.x)) + offset.x / 3.0;
+    float lightness = LIGHTNESS + 0.25 * (0.5 + offset.y * (0.5 - uv.y));
     hue = fract(hue);
 
-    float c = (1.0 - abs(2.0 * LIGHTNESS - 1.0)) * SATURATION;
+    float c = (1.0 - abs(2.0 * lightness - 1.0)) * SATURATION;
     float x = c * (1.0 - abs(mod(hue / (1.0 / 6.0), 2.0) - 1.0));
     float m = LIGHTNESS - c / 2.0;
 
@@ -52,21 +45,17 @@ vec4 rainbowEffect(vec2 uv) {
 
 vec4 chromaticAberration(vec2 uv) {
     vec4 srcColor = rainbowEffect(uv);
-    float shiftHorizontal = 3.0 / 1000.0 * dx;
-    float shiftVertical = 5.0 / 1000.0 * dy;
+    vec2 shift = offset * vec2(3.0, 5.0) / 1000.0;
 
-    vec2 leftShiftUV = vec2(uv.x - shiftHorizontal, uv.y - shiftVertical);
-    vec2 rightShiftUV = vec2(uv.x + shiftHorizontal, uv.y + shiftVertical);
+    vec4 leftColor = rainbowEffect(uv - shift);
+    vec4 rightColor = rainbowEffect(uv + shift);
 
-    vec4 lc = rainbowEffect(leftShiftUV);
-    vec4 rc = rainbowEffect(rightShiftUV);
-
-    return vec4(rc.r, srcColor.g, lc.b, srcColor.a);
+    return vec4(rightColor.r, srcColor.g, leftColor.b, srcColor.a);
 }
 
 void main() {
     vec2 pos = gl_FragCoord.xy;
-    vec2 uv = pos / vec2(width, height);
+    vec2 uv = pos / resolution;
     fragColor = chromaticAberration(uv);
 }
 
