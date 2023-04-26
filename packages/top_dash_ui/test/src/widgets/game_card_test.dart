@@ -45,7 +45,7 @@ void main() {
 
             expect(
               find.text('1'),
-              findsOneWidget,
+              findsNWidgets(2), // Two texts are stacked to draw the border.
             );
           });
         });
@@ -94,6 +94,7 @@ void main() {
 
   group('GameCardSize', () {
     test('can be instantiated', () {
+      expect(GameCardSize.xxs(), isNotNull);
       expect(GameCardSize.xs(), isNotNull);
       expect(GameCardSize.sm(), isNotNull);
       expect(GameCardSize.md(), isNotNull);

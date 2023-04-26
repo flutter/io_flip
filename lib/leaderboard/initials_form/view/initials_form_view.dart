@@ -8,9 +8,9 @@ import 'package:top_dash/share/share.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class InitialsFormView extends StatelessWidget {
-  InitialsFormView({super.key, this.shareHandPageData});
+  const InitialsFormView({super.key, this.shareHandPageData});
 
-  final focusNodes = List.generate(3, (_) => FocusNode());
+  static final focusNodes = List.generate(3, (_) => FocusNode());
   final ShareHandPageData? shareHandPageData;
 
   @override
@@ -39,7 +39,6 @@ class InitialsFormView extends StatelessWidget {
         if (state.status == InitialsFormStatus.failure) {
           return const Center(child: Text('Error submitting initials'));
         }
-
         return Column(
           children: [
             Row(
@@ -74,7 +73,9 @@ class InitialsFormView extends StatelessWidget {
               RoundedButton.text(
                 l10n.enter,
                 onPressed: () {
-                  context.read<InitialsFormBloc>().add(InitialsSubmitted());
+                  context
+                      .read<InitialsFormBloc>()
+                      .add(const InitialsSubmitted());
                 },
               )
           ],

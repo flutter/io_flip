@@ -165,23 +165,6 @@ void main() {
         expect(find.text(l10n.enterInitialsError), findsOneWidget);
       });
 
-      testWidgets(
-        'shows error text on failed validation due to blacklisted initials',
-        (tester) async {
-          when(() => initialsFormBloc.state).thenReturn(
-            const InitialsFormState(
-              initials: ['W', 'T', 'F'],
-              status: InitialsFormStatus.invalid,
-            ),
-          );
-          await tester.pumpSubject(initialsFormBloc);
-
-          final l10n = tester.element(find.byType(InitialsFormView)).l10n;
-
-          expect(find.text(l10n.enterInitialsError), findsOneWidget);
-        },
-      );
-
       testWidgets('capitalizes lowercase letters', (tester) async {
         when(() => initialsFormBloc.state)
             .thenReturn(const InitialsFormState());

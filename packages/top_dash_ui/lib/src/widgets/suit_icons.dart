@@ -9,31 +9,31 @@ class SuitIcon extends StatelessWidget {
   SuitIcon.air({
     super.key,
     this.scale = 1,
-  }) : asset = Assets.images.suits.air;
+  }) : asset = Assets.images.suits.onboarding.air;
 
   /// [SuitIcon] for the earth element.
   SuitIcon.earth({
     super.key,
     this.scale = 1,
-  }) : asset = Assets.images.suits.earth;
+  }) : asset = Assets.images.suits.onboarding.earth;
 
   /// [SuitIcon] for the fire element.
   SuitIcon.fire({
     super.key,
     this.scale = 1,
-  }) : asset = Assets.images.suits.fire;
+  }) : asset = Assets.images.suits.onboarding.fire;
 
   /// [SuitIcon] for the metal element.
   SuitIcon.metal({
     super.key,
     this.scale = 1,
-  }) : asset = Assets.images.suits.metal;
+  }) : asset = Assets.images.suits.onboarding.metal;
 
   /// [SuitIcon] for the water element.
   SuitIcon.water({
     super.key,
     this.scale = 1,
-  }) : asset = Assets.images.suits.water;
+  }) : asset = Assets.images.suits.onboarding.water;
 
   /// Image icon for the element.
   final SvgGenImage asset;

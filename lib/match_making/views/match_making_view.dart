@@ -169,7 +169,7 @@ class _WaitingForMatchView extends StatelessWidget {
                             child: Stack(
                               children: [
                                 GameCard(
-                                  size: const GameCardSize.sm(),
+                                  size: const GameCardSize.xs(),
                                   image: card.image,
                                   name: card.name,
                                   description: card.description,

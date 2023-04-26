@@ -2,6 +2,7 @@ import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:connection_repository/connection_repository.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flame/cache.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -47,6 +48,8 @@ class _MockUISoundAdapter extends Mock implements UISoundAdapter {}
 
 class _MockGoRouter extends Mock implements GoRouter {}
 
+class _MockImages extends Mock implements Images {}
+
 UISoundAdapter _createUISoundAdapter() {
   final adapter = _MockUISoundAdapter();
   when(() => adapter.playButtonSound).thenReturn(() {});
@@ -70,6 +73,7 @@ extension PumpApp on WidgetTester {
     UISoundAdapter? uiSoundAdaptater,
     User? user,
     GoRouter? router,
+    Images? images,
   }) {
     return pumpWidget(
       MultiProvider(
@@ -113,6 +117,9 @@ extension PumpApp on WidgetTester {
           Provider.value(
             value: user ?? _MockUser(),
           ),
+          Provider.value(
+            value: images ?? _MockImages(),
+          )
         ],
         child: MockGoRouterProvider(
           goRouter: router ?? _MockGoRouter(),

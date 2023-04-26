@@ -40,7 +40,11 @@ class InitialsFormBloc extends Bloc<InitialsFormEvent, InitialsFormState> {
     Emitter<InitialsFormState> emit,
   ) async {
     try {
-      if (_validate()) {
+      if (!_hasValidPattern()) {
+        emit(state.copyWith(status: InitialsFormStatus.invalid));
+      } else if (_isBlacklisted()) {
+        emit(state.copyWith(status: InitialsFormStatus.blacklisted));
+      } else {
         emit(state.copyWith(status: InitialsFormStatus.valid));
 
         await _leaderboardResource.addInitialsToScoreCard(
@@ -49,8 +53,6 @@ class InitialsFormBloc extends Bloc<InitialsFormEvent, InitialsFormState> {
         );
 
         emit(state.copyWith(status: InitialsFormStatus.success));
-      } else {
-        emit(state.copyWith(status: InitialsFormStatus.invalid));
       }
     } catch (e, s) {
       addError(e, s);
@@ -58,10 +60,12 @@ class InitialsFormBloc extends Bloc<InitialsFormEvent, InitialsFormState> {
     }
   }
 
-  bool _validate() {
-    final value = state.initials.join();
-    return value.isNotEmpty &&
-        initialsRegex.hasMatch(value) &&
-        !blacklist.contains(value);
+  bool _hasValidPattern() {
+    final value = state.initials;
+    return value.isNotEmpty && initialsRegex.hasMatch(value.join());
+  }
+
+  bool _isBlacklisted() {
+    return blacklist.contains(state.initials.join());
   }
 }

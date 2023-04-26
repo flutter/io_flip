@@ -158,6 +158,19 @@ void main() {
       });
     });
 
+    group('FightSceneCompleted', () {
+      test('can be instantiated', () {
+        expect(FightSceneCompleted(), isNotNull);
+      });
+
+      test('supports equality', () {
+        expect(
+          FightSceneCompleted(),
+          equals(FightSceneCompleted()),
+        );
+      });
+    });
+
     group('CardOverlayRevealed', () {
       test('can be instantiated', () {
         expect(CardOverlayRevealed(), isNotNull);

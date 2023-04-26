@@ -4,8 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/how_to_play/view/how_to_play_dialog.dart';
+import 'package:top_dash/info/info.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/leaderboard/leaderboard.dart';
+import 'package:top_dash/terms_of_use/terms_of_use.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class MainMenuScreen extends StatelessWidget {
@@ -42,19 +44,39 @@ class MainMenuScreen extends StatelessWidget {
                 leading: RoundedButton.svg(
                   key: const Key('info_button'),
                   Assets.icons.info,
-                  onPressed: () {
-                    // TODO(all): add info screen
-                  },
+                  onPressed: () => TopDashDialog.show(
+                    context,
+                    const InfoView(),
+                  ),
                 ),
-                middle: RoundedButton.text(
-                  l10n.play,
-                  onPressed: () {
-                    GoRouter.of(context).go('/prompt');
+                middle: BlocConsumer<TermsOfUseCubit, bool>(
+                  listener: (context, termsAccepted) {
+                    if (termsAccepted) {
+                      GoRouter.of(context).go('/prompt');
+                    }
+                  },
+                  builder: (context, termsAccepted) {
+                    return RoundedButton.text(
+                      l10n.play,
+                      onPressed: () {
+                        if (termsAccepted) {
+                          GoRouter.of(context).go('/prompt');
+                        } else {
+                          TopDashDialog.show(
+                            context,
+                            const TermsOfUseView(),
+                          );
+                        }
+                      },
+                    );
                   },
                 ),
                 trailing: RoundedButton.icon(
                   Icons.question_mark_rounded,
-                  onPressed: () => HowToPlayDialog.show(context),
+                  onPressed: () => TopDashDialog.show(
+                    context,
+                    const HowToPlayDialog(),
+                  ),
                 ),
               ),
             ),

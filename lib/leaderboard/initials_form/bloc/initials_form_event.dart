@@ -15,6 +15,8 @@ class InitialsChanged extends InitialsFormEvent {
 }
 
 class InitialsSubmitted extends InitialsFormEvent {
+  const InitialsSubmitted();
+
   @override
   List<Object?> get props => [];
 }

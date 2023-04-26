@@ -172,7 +172,11 @@
   },
   "enterInitialsError": "Please enter three initials",
   "@enterInitialsError": {
-    "description": "Leaderboard initials textfeild validation error text"
+    "description": "Leaderboard initials textfield validation error text"
+  },
+  "blacklistedInitialsError": "Keep it PG, use different initials",
+  "@blacklistedInitialsError": {
+    "description": "Leaderboard initials textfield validation error text when the initials are blacklisted"
   },
   "sharePageTitle": "Share your hand!",
   "@sharePageTitle": {
@@ -350,9 +354,45 @@
   "@mainMenuButtonLabel": {
     "description": "Text shown on the main menu button"
   },
+  "infoDialogTitle": "About I/O Flip",
+  "@infoAboutGameTitle": {
+    "description": "Title shown in the info dialog"
+  },
+  "infoDialogDescriptionPrefix": "Learn",
+  "@infoDialogDescription": {
+    "description": "Description prefix text shown in the info dialog"
+  },
+  "infoDialogDescriptionInfixOne": "how I/O Flip was made",
+  "@infoDialogDescriptionInfixOne": {
+    "description": "First description infix text shown in the info dialog"
+  },
+  "infoDialogDescriptionInfixTwo": "and\ngrab the",
+  "@infoDialogDescriptionInfixTwo": {
+    "description": "Second description infix text shown in the info dialog"
+  },
+  "infoDialogDescriptionSuffix": "open source code.",
+  "@infoDialogDescriptionSuffix": {
+    "description": "Description suffix text shown in the info dialog"
+  },
+  "infoDialogOtherLinks": "Other Links",
+  "@infoDialogOtherLinks": {
+    "description": "Other links text shown in the info dialog"
+  },
   "ioLinkLabel": "Google I/O",
   "@ioLinkLabel": {
     "description": "Text shown on the Google I/O link"
+  },
+  "privacyPolicyLinkLabel": "Privacy Policy",
+  "@privacyPolicyLinkLabel": {
+    "description": "Text shown on the Privacy Policy link"
+  },
+  "termsOfServiceLinkLabel": "Terms of Service",
+  "@termsOfServiceLinkLabel": {
+    "description": "Text shown on the Terms of Service link"
+  },
+  "faqLinkLabel": "FAQ",
+  "@faqLinkLabel": {
+    "description": "Text shown on the FAQ link"
   },
   "howItsMadeLinkLabel": "How it's made",
   "@howItsMadeLinkLabel": {
@@ -361,5 +401,33 @@
   "shareTeamDialogDescription": "Share your team from I/O Flip and challenge your friends to beat your streak!",
   "@shareTeamDialogDescription": {
     "description": "Text shown on the share team dialog"
+  },
+  "termsOfUseTitle": "I/O Flip Terms of Use",
+  "@termsOfUseTitle": {
+    "description": "Title shown on the terms of use page"
+  },
+  "termsOfUseDescriptionPrefix": "By continuing, I accept the",
+  "@termsOfUseDescriptionPrefix": {
+    "description": "Description prefix text shown on the terms of use page"
+  },
+  "termsOfUseDescriptionInfixOne": "Terms of Service",
+  "@termsOfUseDescriptionInfixOne": {
+    "description": "First description infix text shown on the terms of use page"
+  },
+  "termsOfUseDescriptionInfixTwo": "and acknowledge that information Google collects about me in connection with I/O Flip will be processed in accordance with the",
+  "@termsOfUseDescriptionInfixTwo": {
+    "description": "Second description infix text shown on the terms of use page"
+  },
+  "termsOfUseDescriptionSuffix": "Google Privacy Policy.",
+  "@termsOfUseDescriptionSuffix": {
+    "description": "Description suffix text shown on the terms of use page"
+  },
+  "termsOfUseAcceptLabel": "ACCEPT",
+  "@termsOfUseAcceptLabel": {
+    "description": "Text shown on the accept button on the terms of use page"
+  },
+  "termsOfUseDeclineLabel": "DECLINE",
+  "@termsOfUseDeclineLabel": {
+    "description": "Text shown on the decline button on the terms of use page"
   }
 }

@@ -75,20 +75,59 @@ class $AssetsImagesCardFramesGen {
 class $AssetsImagesSuitsGen {
   const $AssetsImagesSuitsGen();
 
-  /// File path: assets/images/suits/air.svg
-  SvgGenImage get air => const SvgGenImage('assets/images/suits/air.svg');
+  $AssetsImagesSuitsCardGen get card => const $AssetsImagesSuitsCardGen();
+  $AssetsImagesSuitsOnboardingGen get onboarding =>
+      const $AssetsImagesSuitsOnboardingGen();
+}
 
-  /// File path: assets/images/suits/earth.svg
-  SvgGenImage get earth => const SvgGenImage('assets/images/suits/earth.svg');
+class $AssetsImagesSuitsCardGen {
+  const $AssetsImagesSuitsCardGen();
 
-  /// File path: assets/images/suits/fire.svg
-  SvgGenImage get fire => const SvgGenImage('assets/images/suits/fire.svg');
+  /// File path: assets/images/suits/card/air.svg
+  SvgGenImage get air => const SvgGenImage('assets/images/suits/card/air.svg');
 
-  /// File path: assets/images/suits/metal.svg
-  SvgGenImage get metal => const SvgGenImage('assets/images/suits/metal.svg');
+  /// File path: assets/images/suits/card/earth.svg
+  SvgGenImage get earth =>
+      const SvgGenImage('assets/images/suits/card/earth.svg');
 
-  /// File path: assets/images/suits/water.svg
-  SvgGenImage get water => const SvgGenImage('assets/images/suits/water.svg');
+  /// File path: assets/images/suits/card/fire.svg
+  SvgGenImage get fire =>
+      const SvgGenImage('assets/images/suits/card/fire.svg');
+
+  /// File path: assets/images/suits/card/metal.svg
+  SvgGenImage get metal =>
+      const SvgGenImage('assets/images/suits/card/metal.svg');
+
+  /// File path: assets/images/suits/card/water.svg
+  SvgGenImage get water =>
+      const SvgGenImage('assets/images/suits/card/water.svg');
+
+  /// List of all assets
+  List<SvgGenImage> get values => [air, earth, fire, metal, water];
+}
+
+class $AssetsImagesSuitsOnboardingGen {
+  const $AssetsImagesSuitsOnboardingGen();
+
+  /// File path: assets/images/suits/onboarding/air.svg
+  SvgGenImage get air =>
+      const SvgGenImage('assets/images/suits/onboarding/air.svg');
+
+  /// File path: assets/images/suits/onboarding/earth.svg
+  SvgGenImage get earth =>
+      const SvgGenImage('assets/images/suits/onboarding/earth.svg');
+
+  /// File path: assets/images/suits/onboarding/fire.svg
+  SvgGenImage get fire =>
+      const SvgGenImage('assets/images/suits/onboarding/fire.svg');
+
+  /// File path: assets/images/suits/onboarding/metal.svg
+  SvgGenImage get metal =>
+      const SvgGenImage('assets/images/suits/onboarding/metal.svg');
+
+  /// File path: assets/images/suits/onboarding/water.svg
+  SvgGenImage get water =>
+      const SvgGenImage('assets/images/suits/onboarding/water.svg');
 
   /// List of all assets
   List<SvgGenImage> get values => [air, earth, fire, metal, water];

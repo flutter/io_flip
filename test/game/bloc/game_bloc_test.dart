@@ -176,6 +176,7 @@ void main() {
       ),
       rounds: [],
       turnAnimationsFinished: true,
+      isFightScene: false,
       turnTimeRemaining: 10,
     );
 
@@ -230,6 +231,7 @@ void main() {
           rounds: const [],
           turnAnimationsFinished: true,
           turnTimeRemaining: 10,
+          isFightScene: false,
         ),
       ],
       verify: (_) {
@@ -987,6 +989,7 @@ void main() {
             rounds: const [],
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
+            isFightScene: false,
           ),
         ],
       );
@@ -1017,6 +1020,7 @@ void main() {
             rounds: const [],
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
+            isFightScene: false,
           ),
         ],
       );
@@ -1178,6 +1182,7 @@ void main() {
             rounds: const [],
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
+            isFightScene: false,
           ),
           MatchLoadedState(
             playerScoreCard: ScoreCard(id: 'scoreCardId'),
@@ -1196,6 +1201,7 @@ void main() {
             ],
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
+            isFightScene: false,
           ),
           MatchLoadedState(
             playerScoreCard: ScoreCard(id: 'scoreCardId'),
@@ -1214,6 +1220,7 @@ void main() {
             ],
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
+            isFightScene: false,
           ),
         ],
       );
@@ -1285,6 +1292,7 @@ void main() {
             rounds: const [],
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
+            isFightScene: false,
           ),
           MatchLoadedState(
             playerScoreCard: ScoreCard(id: 'scoreCardId'),
@@ -1303,6 +1311,7 @@ void main() {
             ],
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
+            isFightScene: false,
           ),
           MatchLoadedState(
             playerScoreCard: ScoreCard(id: 'scoreCardId'),
@@ -1321,6 +1330,7 @@ void main() {
             ],
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
+            isFightScene: false,
           ),
           MatchLoadedState(
             playerScoreCard: ScoreCard(id: 'scoreCardId'),
@@ -1343,6 +1353,7 @@ void main() {
             ],
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
+            isFightScene: false,
           ),
         ],
       );
@@ -1386,6 +1397,7 @@ void main() {
                   rounds: const [],
                   turnAnimationsFinished: true,
                   turnTimeRemaining: 8,
+                  isFightScene: false,
                 ),
               ),
             );
@@ -1623,6 +1635,7 @@ void main() {
           rounds: const [],
           turnAnimationsFinished: false,
           turnTimeRemaining: 10,
+          isFightScene: false,
         );
 
         test('returns true if the card is the winning one', () {
@@ -1874,7 +1887,8 @@ void main() {
 
     group('turnAnimationsFinished', () {
       blocTest<GameBloc, GameState>(
-        'emits state updating turnAnimationsFinished field',
+        'emits state updating turnAnimationsFinished field and '
+        'adds TurnTimerStarted event',
         build: () => GameBloc(
           connectionRepository: connectionRepository,
           gameResource: gameResource,
@@ -1887,7 +1901,7 @@ void main() {
         seed: () => baseState.copyWith(turnAnimationsFinished: false),
         act: (bloc) => bloc.add(TurnAnimationsFinished()),
         expect: () => <GameState>[
-          baseState.copyWith(turnAnimationsFinished: true),
+          baseState.copyWith(turnAnimationsFinished: true, isFightScene: false),
         ],
       );
     });
@@ -1915,7 +1929,7 @@ void main() {
 
     group('CardOverlayRevealed', () {
       blocTest<GameBloc, GameState>(
-        'emits state updating showCardsOverlay field',
+        'emits state updating showCardsOverlay field and isFightScene',
         build: () => GameBloc(
           connectionRepository: connectionRepository,
           audioController: audioController,
@@ -1943,7 +1957,28 @@ void main() {
                 showCardsOverlay: true,
               )
             ],
+            isFightScene: true,
           ),
+        ],
+      );
+    });
+
+    group('FightSceneCompleted', () {
+      blocTest<GameBloc, GameState>(
+        'emits state updating isFightScene field',
+        build: () => GameBloc(
+          connectionRepository: connectionRepository,
+          audioController: audioController,
+          gameResource: gameResource,
+          matchMakerRepository: matchMakerRepository,
+          user: user,
+          isHost: true,
+          matchSolver: matchSolver,
+        ),
+        seed: () => baseState.copyWith(isFightScene: true),
+        act: (bloc) => bloc.add(FightSceneCompleted()),
+        expect: () => <GameState>[
+          baseState.copyWith(isFightScene: false),
         ],
       );
     });
