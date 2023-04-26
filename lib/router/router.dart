@@ -7,7 +7,7 @@ import 'package:top_dash/prompt/prompt.dart';
 import 'package:top_dash/scripts/scripts.dart';
 import 'package:top_dash/share/share.dart';
 
-GoRouter createRouter() {
+GoRouter createRouter({required bool isScriptsEnabled}) {
   return GoRouter(
     routes: [
       GoRoute(
@@ -47,10 +47,12 @@ GoRouter createRouter() {
             path: 'share_hand',
             builder: ShareHandPage.routeBuilder,
           ),
-          GoRoute(
-            path: '_super_secret_scripts_page',
-            builder: ScriptsPage.routeBuilder,
-          ),
+          if (isScriptsEnabled)
+            GoRoute(
+              name: '_super_secret_scripts_page',
+              path: '_super_secret_scripts_page',
+              builder: ScriptsPage.routeBuilder,
+            ),
         ],
       ),
     ],

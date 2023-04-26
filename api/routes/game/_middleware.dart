@@ -23,6 +23,7 @@ Handler middleware(Handler handler) {
       .use(provider<ScriptsRepository>((_) => scriptsRepository))
       .use(provider<LeaderboardRepository>((_) => leaderboardRepository))
       .use(provider<GameScriptMachine>((_) => gameScriptMachine))
+      .use(provider<ScriptsState>((_) => scriptsState))
       .use(jwtMiddleware.middleware)
       .use(encryptionMiddleware.middleware)
       .use(

@@ -135,21 +135,17 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     Emitter<DraftState> emit,
   ) {
     final topCard = state.cards.first;
-    if (state.selectedCards.length == 3 ||
-        state.selectedCards.contains(topCard)) return;
+    if (state.selectedCards.contains(topCard)) return;
     _audioController.playSfx(Assets.sfx.addToHand);
 
-    final selectedCards = [
-      ...state.selectedCards,
-      topCard,
-    ];
+    final selectedCards = List.of(state.selectedCards);
+    selectedCards[event.index] = topCard;
 
-    final selectionCompleted = selectedCards.length == 3;
+    final selectionCompleted =
+        selectedCards.length == 3 && !selectedCards.contains(null);
 
-    final cards = selectionCompleted ? null : _dismissTopCard();
-    if (cards != null) {
-      _playHoloReveal(cards);
-    }
+    final cards = _dismissTopCard();
+    _playHoloReveal(cards);
 
     emit(
       state.copyWith(
