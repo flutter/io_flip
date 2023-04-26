@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:logging/logging.dart';
 import 'package:match_repository/match_repository.dart';
 
 FutureOr<Response> onRequest(RequestContext context) async {
@@ -23,7 +23,7 @@ FutureOr<Response> onRequest(RequestContext context) async {
         matchState: matchState,
       );
     } catch (e, s) {
-      log('Error calculating match result: $e', stackTrace: s);
+      context.read<Logger>().warning('Error calculating match result', e, s);
       return Response(statusCode: HttpStatus.badRequest);
     }
 
