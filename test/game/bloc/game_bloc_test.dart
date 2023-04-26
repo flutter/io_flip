@@ -177,6 +177,7 @@ void main() {
       rounds: [],
       turnAnimationsFinished: true,
       isFightScene: false,
+      showCardLanding: false,
       turnTimeRemaining: 10,
     );
 
@@ -232,6 +233,7 @@ void main() {
           turnAnimationsFinished: true,
           turnTimeRemaining: 10,
           isFightScene: false,
+          showCardLanding: false,
         ),
       ],
       verify: (_) {
@@ -990,6 +992,7 @@ void main() {
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
             isFightScene: false,
+            showCardLanding: false,
           ),
         ],
       );
@@ -1021,6 +1024,7 @@ void main() {
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
             isFightScene: false,
+            showCardLanding: false,
           ),
         ],
       );
@@ -1183,6 +1187,7 @@ void main() {
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
             isFightScene: false,
+            showCardLanding: false,
           ),
           MatchLoadedState(
             playerScoreCard: ScoreCard(id: 'scoreCardId'),
@@ -1202,6 +1207,7 @@ void main() {
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
             isFightScene: false,
+            showCardLanding: false,
           ),
           MatchLoadedState(
             playerScoreCard: ScoreCard(id: 'scoreCardId'),
@@ -1221,6 +1227,7 @@ void main() {
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
             isFightScene: false,
+            showCardLanding: false,
           ),
         ],
       );
@@ -1293,6 +1300,7 @@ void main() {
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
             isFightScene: false,
+            showCardLanding: false,
           ),
           MatchLoadedState(
             playerScoreCard: ScoreCard(id: 'scoreCardId'),
@@ -1312,6 +1320,7 @@ void main() {
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
             isFightScene: false,
+            showCardLanding: false,
           ),
           MatchLoadedState(
             playerScoreCard: ScoreCard(id: 'scoreCardId'),
@@ -1331,6 +1340,7 @@ void main() {
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
             isFightScene: false,
+            showCardLanding: false,
           ),
           MatchLoadedState(
             playerScoreCard: ScoreCard(id: 'scoreCardId'),
@@ -1354,6 +1364,7 @@ void main() {
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
             isFightScene: false,
+            showCardLanding: false,
           ),
         ],
       );
@@ -1398,6 +1409,7 @@ void main() {
                   turnAnimationsFinished: true,
                   turnTimeRemaining: 8,
                   isFightScene: false,
+                  showCardLanding: false,
                 ),
               ),
             );
@@ -1636,6 +1648,7 @@ void main() {
           turnAnimationsFinished: false,
           turnTimeRemaining: 10,
           isFightScene: false,
+          showCardLanding: false,
         );
 
         test('returns true if the card is the winning one', () {

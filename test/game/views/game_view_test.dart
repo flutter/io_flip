@@ -123,6 +123,7 @@ void main() {
         turnTimeRemaining: 10,
         turnAnimationsFinished: true,
         isFightScene: false,
+        showCardLanding: false,
       );
 
       setUp(() {
@@ -374,6 +375,7 @@ void main() {
         turnTimeRemaining: 10,
         turnAnimationsFinished: true,
         isFightScene: false,
+        showCardLanding: false,
       );
 
       setUp(() {
@@ -466,7 +468,9 @@ void main() {
         );
 
         await tester.pumpSubject(bloc);
-        await tester.pumpAndSettle();
+        await tester.pumpAndSettle(
+          bigFlipAnimation.duration + CardLandingPuff.duration,
+        );
 
         verify(() => bloc.add(ClashSceneStarted())).called(1);
       });
