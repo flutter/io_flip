@@ -90,6 +90,27 @@ void main() {
         expect(find.byType(CardOverlay), findsOneWidget);
       });
     });
+
+    testWidgets('renders FoilShader when card is rare', (tester) async {
+      await mockNetworkImages(() async {
+        await tester.pumpWidget(
+          const Directionality(
+            textDirection: TextDirection.ltr,
+            child: GameCard(
+              package: null,
+              image: 'image',
+              name: 'name',
+              description: 'description',
+              suitName: 'air',
+              power: 1,
+              isRare: true,
+            ),
+          ),
+        );
+
+        expect(find.byType(FoilShader), findsOneWidget);
+      });
+    });
   });
 
   group('GameCardSize', () {

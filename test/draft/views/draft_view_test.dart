@@ -126,7 +126,7 @@ void main() {
       await tester.tap(find.byKey(ValueKey('SelectedCard0')));
       await tester.pumpAndSettle();
 
-      verify(() => draftBloc.add(SelectCard())).called(1);
+      verify(() => draftBloc.add(SelectCard(0))).called(1);
     });
 
     testWidgets('can go to the next card by swiping', (tester) async {

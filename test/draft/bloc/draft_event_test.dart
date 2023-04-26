@@ -93,15 +93,19 @@ void main() {
   group('SelectCard', () {
     test('can be instantiated', () {
       expect(
-        SelectCard(),
+        SelectCard(0),
         isNotNull,
       );
     });
 
     test('supports equality', () {
       expect(
-        SelectCard(),
-        equals(SelectCard()),
+        SelectCard(0),
+        equals(SelectCard(0)),
+      );
+      expect(
+        SelectCard(0),
+        isNot(equals(SelectCard(1))),
       );
     });
   });
