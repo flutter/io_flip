@@ -81,6 +81,7 @@ abstract class TopDashTextStyles {
     fontSize: 40,
     height: 1,
     letterSpacing: 0,
+    package: 'top_dash_ui',
   );
 
   /// headlineH1
@@ -90,6 +91,7 @@ abstract class TopDashTextStyles {
     fontSize: 48,
     height: 1.17,
     letterSpacing: -2,
+    package: 'top_dash_ui',
   );
 
   /// headlineH2
@@ -99,6 +101,7 @@ abstract class TopDashTextStyles {
     fontSize: 36,
     height: 1.33,
     letterSpacing: -1,
+    package: 'top_dash_ui',
   );
 
   /// headlineH3
@@ -108,6 +111,7 @@ abstract class TopDashTextStyles {
     fontSize: 32,
     height: 1.25,
     letterSpacing: -0.5,
+    package: 'top_dash_ui',
   );
 
   /// headlineH4
@@ -117,6 +121,7 @@ abstract class TopDashTextStyles {
     fontSize: 28,
     height: 1.14,
     letterSpacing: -0.5,
+    package: 'top_dash_ui',
   );
 
   /// headlineH4Light
@@ -126,6 +131,7 @@ abstract class TopDashTextStyles {
     fontSize: 28,
     height: 1.29,
     letterSpacing: -0.5,
+    package: 'top_dash_ui',
   );
 
   /// headlineH5
@@ -135,6 +141,7 @@ abstract class TopDashTextStyles {
     fontSize: 24,
     height: 1.17,
     letterSpacing: -0.25,
+    package: 'top_dash_ui',
   );
 
   /// headlineH5Light
@@ -144,6 +151,7 @@ abstract class TopDashTextStyles {
     fontSize: 24,
     height: 1.17,
     letterSpacing: -0.25,
+    package: 'top_dash_ui',
   );
 
   /// headlineH6
@@ -153,6 +161,7 @@ abstract class TopDashTextStyles {
     fontSize: 20,
     height: 1.4,
     letterSpacing: -0.25,
+    package: 'top_dash_ui',
   );
 
   /// headlineH6Light
@@ -162,6 +171,7 @@ abstract class TopDashTextStyles {
     fontSize: 20,
     height: 1.4,
     letterSpacing: -0.25,
+    package: 'top_dash_ui',
   );
 
   /// mobileH1
@@ -171,6 +181,7 @@ abstract class TopDashTextStyles {
     fontSize: 36,
     height: 1.33,
     letterSpacing: -2,
+    package: 'top_dash_ui',
   );
 
   /// mobileH2
@@ -180,6 +191,7 @@ abstract class TopDashTextStyles {
     fontSize: 32,
     height: 1.25,
     letterSpacing: -1,
+    package: 'top_dash_ui',
   );
 
   /// mobileH3
@@ -189,6 +201,7 @@ abstract class TopDashTextStyles {
     fontSize: 28,
     height: 1.29,
     letterSpacing: -0.5,
+    package: 'top_dash_ui',
   );
 
   /// mobileH4
@@ -198,6 +211,7 @@ abstract class TopDashTextStyles {
     fontSize: 24,
     height: 1.33,
     letterSpacing: -0.5,
+    package: 'top_dash_ui',
   );
 
   /// mobileH4Light
@@ -207,6 +221,7 @@ abstract class TopDashTextStyles {
     fontSize: 24,
     height: 1.33,
     letterSpacing: -0.5,
+    package: 'top_dash_ui',
   );
 
   /// mobileH5
@@ -216,6 +231,7 @@ abstract class TopDashTextStyles {
     fontSize: 20,
     height: 1.4,
     letterSpacing: -0.25,
+    package: 'top_dash_ui',
   );
 
   /// mobileH5Light
@@ -225,6 +241,7 @@ abstract class TopDashTextStyles {
     fontSize: 20,
     height: 1.4,
     letterSpacing: -0.25,
+    package: 'top_dash_ui',
   );
 
   /// mobileH6
@@ -234,6 +251,7 @@ abstract class TopDashTextStyles {
     fontSize: 18,
     height: 1.33,
     letterSpacing: -0.25,
+    package: 'top_dash_ui',
   );
 
   /// mobileH6Light
@@ -243,6 +261,7 @@ abstract class TopDashTextStyles {
     fontSize: 18,
     height: 1.33,
     letterSpacing: -0.25,
+    package: 'top_dash_ui',
   );
 
   /// bodyXL
@@ -252,6 +271,7 @@ abstract class TopDashTextStyles {
     fontSize: 18,
     height: 1.56,
     letterSpacing: 0.15,
+    package: 'top_dash_ui',
   );
 
   /// bodyLG
@@ -261,6 +281,7 @@ abstract class TopDashTextStyles {
     fontSize: 16,
     height: 1.5,
     letterSpacing: 0.15,
+    package: 'top_dash_ui',
   );
 
   /// bodyMD
@@ -270,6 +291,7 @@ abstract class TopDashTextStyles {
     fontSize: 14,
     height: 1.43,
     letterSpacing: 0.5,
+    package: 'top_dash_ui',
   );
 
   /// bodySM
@@ -279,6 +301,7 @@ abstract class TopDashTextStyles {
     fontSize: 12,
     height: 1.5,
     letterSpacing: 0.25,
+    package: 'top_dash_ui',
   );
 
   /// bodyXS
@@ -288,6 +311,7 @@ abstract class TopDashTextStyles {
     fontSize: 10,
     height: 1.6,
     letterSpacing: 0.5,
+    package: 'top_dash_ui',
   );
 
   /// bodyXSBold
@@ -297,6 +321,7 @@ abstract class TopDashTextStyles {
     fontSize: 10,
     height: 1.6,
     letterSpacing: 0.5,
+    package: 'top_dash_ui',
   );
 
   /// buttonLG
@@ -306,6 +331,7 @@ abstract class TopDashTextStyles {
     fontSize: 16,
     height: 1.5,
     letterSpacing: 0.25,
+    package: 'top_dash_ui',
   );
 
   /// buttonMD
@@ -315,6 +341,7 @@ abstract class TopDashTextStyles {
     fontSize: 14,
     height: 1.43,
     letterSpacing: 0.25,
+    package: 'top_dash_ui',
   );
 
   /// buttonSM
@@ -324,6 +351,7 @@ abstract class TopDashTextStyles {
     fontSize: 14,
     height: 1.29,
     letterSpacing: -0.25,
+    package: 'top_dash_ui',
   );
 
   /// linkXL
@@ -334,6 +362,7 @@ abstract class TopDashTextStyles {
     height: 1.56,
     letterSpacing: 0.15,
     decoration: TextDecoration.underline,
+    package: 'top_dash_ui',
   );
 
   /// linkLG
@@ -344,6 +373,7 @@ abstract class TopDashTextStyles {
     height: 1.5,
     letterSpacing: 0.15,
     decoration: TextDecoration.underline,
+    package: 'top_dash_ui',
   );
 
   /// linkMD
@@ -354,6 +384,7 @@ abstract class TopDashTextStyles {
     height: 1.43,
     letterSpacing: 0.5,
     decoration: TextDecoration.underline,
+    package: 'top_dash_ui',
   );
 
   /// linkSM
@@ -364,6 +395,7 @@ abstract class TopDashTextStyles {
     height: 1.5,
     letterSpacing: 0.25,
     decoration: TextDecoration.underline,
+    package: 'top_dash_ui',
   );
 
   /// linkXS
@@ -374,6 +406,7 @@ abstract class TopDashTextStyles {
     height: 1.6,
     letterSpacing: 0.5,
     decoration: TextDecoration.underline,
+    package: 'top_dash_ui',
   );
 
   /// cardNumberXXL
@@ -383,6 +416,7 @@ abstract class TopDashTextStyles {
     fontSize: 64,
     height: 1,
     letterSpacing: -1,
+    package: 'top_dash_ui',
   );
 
   /// cardNumberXL
@@ -392,6 +426,7 @@ abstract class TopDashTextStyles {
     fontSize: 54,
     height: 1,
     letterSpacing: -1,
+    package: 'top_dash_ui',
   );
 
   /// cardNumberLG
@@ -401,6 +436,7 @@ abstract class TopDashTextStyles {
     fontSize: 44,
     height: 1,
     letterSpacing: -0.5,
+    package: 'top_dash_ui',
   );
 
   /// cardNumberMD
@@ -410,6 +446,7 @@ abstract class TopDashTextStyles {
     fontSize: 34,
     height: 1,
     letterSpacing: -0.5,
+    package: 'top_dash_ui',
   );
 
   /// cardNumberSM
@@ -419,6 +456,7 @@ abstract class TopDashTextStyles {
     fontSize: 28,
     height: 1,
     letterSpacing: -0.25,
+    package: 'top_dash_ui',
   );
 
   /// cardNumberXS
@@ -428,6 +466,7 @@ abstract class TopDashTextStyles {
     fontSize: 20,
     height: 1,
     letterSpacing: -0.25,
+    package: 'top_dash_ui',
   );
 
   /// cardNumberXXS
@@ -437,6 +476,7 @@ abstract class TopDashTextStyles {
     fontSize: 12,
     height: 1,
     letterSpacing: -0.25,
+    package: 'top_dash_ui',
   );
 
   /// cardTitleXXL
@@ -446,6 +486,7 @@ abstract class TopDashTextStyles {
     fontSize: 28,
     height: 1.14,
     letterSpacing: -0.5,
+    package: 'top_dash_ui',
   );
 
   /// cardTitleXL
@@ -455,6 +496,7 @@ abstract class TopDashTextStyles {
     fontSize: 24,
     height: 1.17,
     letterSpacing: -0.5,
+    package: 'top_dash_ui',
   );
 
   /// cardTitleLG
@@ -464,6 +506,7 @@ abstract class TopDashTextStyles {
     fontSize: 19,
     height: 1.16,
     letterSpacing: -0.25,
+    package: 'top_dash_ui',
   );
 
   /// cardTitleMD
@@ -473,6 +516,7 @@ abstract class TopDashTextStyles {
     fontSize: 15,
     height: 1.13,
     letterSpacing: -0.25,
+    package: 'top_dash_ui',
   );
 
   /// cardTitleSM
@@ -482,6 +526,7 @@ abstract class TopDashTextStyles {
     fontSize: 12,
     height: 1.17,
     letterSpacing: -0.25,
+    package: 'top_dash_ui',
   );
 
   /// cardTitleXS
@@ -491,6 +536,7 @@ abstract class TopDashTextStyles {
     fontSize: 8.5,
     height: 1.18,
     letterSpacing: -0.25,
+    package: 'top_dash_ui',
   );
 
   /// cardTitleXXS
@@ -500,6 +546,7 @@ abstract class TopDashTextStyles {
     fontSize: 4.5,
     height: 1.33,
     letterSpacing: -0.25,
+    package: 'top_dash_ui',
   );
 
   /// cardDescriptionXXL
@@ -509,6 +556,7 @@ abstract class TopDashTextStyles {
     fontSize: 14,
     height: 1.29,
     letterSpacing: 0,
+    package: 'top_dash_ui',
   );
 
   /// cardDescriptionXL
@@ -518,6 +566,7 @@ abstract class TopDashTextStyles {
     fontSize: 12,
     height: 1.25,
     letterSpacing: 0,
+    package: 'top_dash_ui',
   );
 
   /// cardDescriptionLG
@@ -527,6 +576,7 @@ abstract class TopDashTextStyles {
     fontSize: 10,
     height: 1.2,
     letterSpacing: 0,
+    package: 'top_dash_ui',
   );
 
   /// cardDescriptionMD
@@ -536,6 +586,7 @@ abstract class TopDashTextStyles {
     fontSize: 7.5,
     height: 1.27,
     letterSpacing: 0,
+    package: 'top_dash_ui',
   );
 
   /// cardDescriptionSM
@@ -545,6 +596,7 @@ abstract class TopDashTextStyles {
     fontSize: 6,
     height: 1.25,
     letterSpacing: 0,
+    package: 'top_dash_ui',
   );
 
   /// cardDescriptionXS
@@ -554,6 +606,7 @@ abstract class TopDashTextStyles {
     fontSize: 4.5,
     height: 1.22,
     letterSpacing: 0,
+    package: 'top_dash_ui',
   );
 
   /// cardDescriptionXXS
@@ -563,6 +616,7 @@ abstract class TopDashTextStyles {
     fontSize: 2.4000000953674316,
     height: 1.25,
     letterSpacing: 0,
+    package: 'top_dash_ui',
   );
 
   /// initialsInitial
@@ -572,6 +626,7 @@ abstract class TopDashTextStyles {
     fontSize: 48,
     height: 1.17,
     letterSpacing: 2,
+    package: 'top_dash_ui',
   );
 }
 
