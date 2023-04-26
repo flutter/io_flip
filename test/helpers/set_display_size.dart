@@ -24,6 +24,6 @@ extension TopDashWidgetTester on WidgetTester {
   }
 
   void setSmallestPhoneDisplaySize() {
-    setDisplaySize(const Size(360, 665));
+    setDisplaySize(const Size(360, 600));
   }
 }
