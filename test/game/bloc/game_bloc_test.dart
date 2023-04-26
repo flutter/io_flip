@@ -1940,7 +1940,7 @@ void main() {
       );
     });
 
-    group('CardOverlayRevealed', () {
+    group('ClashSceneStarted', () {
       blocTest<GameBloc, GameState>(
         'emits state updating showCardsOverlay field and isFightScene',
         build: () => GameBloc(

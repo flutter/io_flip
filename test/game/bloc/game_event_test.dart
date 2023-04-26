@@ -171,7 +171,7 @@ void main() {
       });
     });
 
-    group('CardOverlayRevealed', () {
+    group('ClashSceneStarted', () {
       test('can be instantiated', () {
         expect(ClashSceneStarted(), isNotNull);
       });
