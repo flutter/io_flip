@@ -5,7 +5,7 @@ void main() {
   group('InitialsFormState', () {
     group('copyWith', () {
       test('does not update omitted params', () {
-        const state = InitialsFormState(initials: 'BBB');
+        const state = InitialsFormState(initials: ['A', 'B', 'C']);
         expect(state.copyWith(), equals(state));
       });
     });
