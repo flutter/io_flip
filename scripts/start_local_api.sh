@@ -8,6 +8,7 @@ export ENCRYPTION_IV=FxC21ctRg9SgiXuZ
 export INITIALS_BLACKLIST_ID=MdOoZMhusnJTcwfYE0nL
 export PROMPT_WHITELIST_ID=MIsaP8zrRVhuR84MLEic
 export FB_STORAGE_BUCKET=top-dash-dev.appspot.com
+export SCRIPTS_ENABLED=true
 
 echo ' ######################## '
 echo ' ## Starting dart frog ## '

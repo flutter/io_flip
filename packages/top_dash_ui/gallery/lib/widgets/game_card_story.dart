@@ -15,8 +15,24 @@ class GameCardStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cardList = [
-      const _SmallGameCardItem(size: GameCardSize.xs(), name: 'xs'),
-      const _SmallGameCardItem(size: GameCardSize.sm(), name: 'sm'),
+      _GameCardItem(
+        size: const GameCardSize.xxs(),
+        name: 'xxs',
+        cardName: name,
+        cardDescription: description,
+      ),
+      _GameCardItem(
+        size: const GameCardSize.xs(),
+        name: 'xs',
+        cardName: name,
+        cardDescription: description,
+      ),
+      _GameCardItem(
+        size: const GameCardSize.sm(),
+        name: 'sm',
+        cardName: name,
+        cardDescription: description,
+      ),
       _GameCardItem(
         size: const GameCardSize.md(),
         name: 'md',

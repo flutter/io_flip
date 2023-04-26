@@ -4,6 +4,7 @@ import 'package:cards_repository/cards_repository.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:prompt_repository/prompt_repository.dart';
 import 'package:test/test.dart';
 
 import '../../../../routes/game/cards/index.dart' as route;
@@ -12,11 +13,14 @@ class _MockRequestContext extends Mock implements RequestContext {}
 
 class _MockCardsRepository extends Mock implements CardsRepository {}
 
+class _MockPromptRepository extends Mock implements PromptRepository {}
+
 class _MockRequest extends Mock implements Request {}
 
 void main() {
   group('POST /game/cards', () {
     late CardsRepository cardsRepository;
+    late PromptRepository promptRepository;
     late Request request;
     late RequestContext context;
 
@@ -29,7 +33,13 @@ void main() {
       power: 1,
       suit: Suit.air,
     );
+    const prompt = Prompt(
+      power: '',
+      secondaryPower: '',
+      characterClass: '',
+    );
     setUp(() {
+      promptRepository = _MockPromptRepository();
       cardsRepository = _MockCardsRepository();
       when(cardsRepository.generateCard).thenAnswer((_) async => card);
 
@@ -38,7 +48,14 @@ void main() {
 
       context = _MockRequestContext();
       when(() => context.request).thenReturn(request);
+      when(() => context.request).thenReturn(request);
+      when(request.json).thenAnswer((_) async => prompt.toJson());
+
       when(() => context.read<CardsRepository>()).thenReturn(cardsRepository);
+      when(() => context.read<PromptRepository>()).thenReturn(promptRepository);
+      registerFallbackValue(prompt);
+      when(() => promptRepository.isValidPrompt(any()))
+          .thenAnswer((invocation) => Future.value(true));
     });
 
     test('responds with a 200', () async {
@@ -74,6 +91,13 @@ void main() {
       when(() => request.method).thenReturn(HttpMethod.get);
       final response = await route.onRequest(context);
       expect(response.statusCode, equals(HttpStatus.methodNotAllowed));
+    });
+
+    test('invalid prompt returns Bad Request', () async {
+      when(() => promptRepository.isValidPrompt(any()))
+          .thenAnswer((invocation) => Future.value(false));
+      final response = await route.onRequest(context);
+      expect(response.statusCode, equals(HttpStatus.badRequest));
     });
   });
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:top_dash/l10n/l10n.dart';
+import 'package:top_dash/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 // TODO(willhlas): add links.
@@ -88,18 +88,11 @@ class InfoView extends StatelessWidget {
             alignment: Alignment.topRight,
             child: CloseButton(
               color: TopDashColors.seedWhite,
-              onPressed: () => maybePop(context),
+              onPressed: context.maybePop,
             ),
           ),
         ],
       ),
     );
-  }
-
-  void maybePop(BuildContext context) {
-    final router = GoRouter.of(context);
-    if (router.canPop()) {
-      router.pop();
-    }
   }
 }

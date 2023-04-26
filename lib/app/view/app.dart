@@ -18,6 +18,7 @@ import 'package:top_dash/router/router.dart';
 import 'package:top_dash/settings/persistence/persistence.dart';
 import 'package:top_dash/settings/settings.dart';
 import 'package:top_dash/style/snack_bar.dart';
+import 'package:top_dash/terms_of_use/terms_of_use.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 typedef CreateAudioController = AudioController Function();
@@ -45,8 +46,10 @@ class App extends StatefulWidget {
     required this.matchSolver,
     required this.gameScriptMachine,
     required this.user,
+    required this.isScriptsEnabled,
     this.router,
     this.audioController,
+    this.termsOfUseCubit,
     super.key,
   });
 
@@ -59,13 +62,18 @@ class App extends StatefulWidget {
   final User user;
   final GoRouter? router;
   final AudioController? audioController;
+  final bool isScriptsEnabled;
+  final TermsOfUseCubit? termsOfUseCubit;
 
   @override
   State<App> createState() => _AppState();
 }
 
 class _AppState extends State<App> {
-  late final router = widget.router ?? createRouter();
+  late final router = widget.router ??
+      createRouter(
+        isScriptsEnabled: widget.isScriptsEnabled,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -105,6 +113,9 @@ class _AppState extends State<App> {
               connectionRepository: widget.connectionRepository,
             )..add(const ConnectionRequested()),
           ),
+          BlocProvider(
+            create: (_) => widget.termsOfUseCubit ?? TermsOfUseCubit(),
+          )
         ],
         child: Builder(
           builder: (context) {
