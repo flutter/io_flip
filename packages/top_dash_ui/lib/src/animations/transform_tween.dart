@@ -66,10 +66,6 @@ class TransformTween extends Tween<Matrix4> {
   /// The translation along the z-axis at the end of the animation.
   final double endTranslateZ;
 
-  Matrix4 get _baseMatrix => Matrix4.zero()
-    ..setIdentity()
-    ..setEntry(3, 2, 0.001);
-
   /// A [Tween] that gives the translation along the x-axis.
   Tween<double> get translateX => Tween(
         begin: beginTranslateX,
@@ -120,11 +116,41 @@ class TransformTween extends Tween<Matrix4> {
 
   @override
   Matrix4 lerp(double t) {
-    return _baseMatrix
-      ..scale(scale.lerp(t))
-      ..translate(translateX.lerp(t), translateY.lerp(t), translateZ.lerp(t))
-      ..rotateX(rotateX.lerp(t))
-      ..rotateY(rotateY.lerp(t))
-      ..rotateZ(rotateZ.lerp(t));
+    return CardTransform(
+      scale: scale.lerp(t),
+      translateX: translateX.lerp(t),
+      translateY: translateY.lerp(t),
+      translateZ: translateZ.lerp(t),
+      rotateX: rotateX.lerp(t),
+      rotateY: rotateY.lerp(t),
+      rotateZ: rotateZ.lerp(t),
+    );
   }
+}
+
+/// {@template card_transform}
+/// Wrapper around [Matrix4] that allows for easy construction of card
+/// transformations.
+/// {@endtemplate}
+class CardTransform extends Matrix4 {
+  /// {@macro card_transform}
+  factory CardTransform({
+    double rotateX = 0,
+    double rotateY = 0,
+    double rotateZ = 0,
+    double scale = 1,
+    double translateX = 0,
+    double translateY = 0,
+    double translateZ = 0,
+  }) =>
+      CardTransform._zero()
+        ..setIdentity()
+        ..setEntry(3, 2, 0.001)
+        ..scale(scale)
+        ..translate(translateX, translateY, translateZ)
+        ..rotateX(rotateX)
+        ..rotateY(rotateY)
+        ..rotateZ(rotateZ);
+
+  CardTransform._zero() : super.zero();
 }
