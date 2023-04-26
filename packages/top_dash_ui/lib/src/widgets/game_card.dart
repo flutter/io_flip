@@ -140,6 +140,7 @@ class GameCard extends StatelessWidget {
     this.isRare = false,
     this.overlay,
     this.tilt = Offset.zero,
+    @visibleForTesting this.package = 'top_dash_ui',
     super.key,
   });
 
@@ -170,6 +171,12 @@ class GameCard extends StatelessWidget {
   /// An offset with x and y values between -1 and 1, representing how much the
   /// card should be tilted.
   final Offset tilt;
+
+  /// The name of the package from which this widget is included.
+  ///
+  /// This is used to lookup the shader asset.
+  @visibleForTesting
+  final String? package;
 
   (String, SvgPicture) _mapSuitNameToAssets() {
     switch (suitName) {
@@ -303,6 +310,7 @@ class GameCard extends StatelessWidget {
                 ? ClipRRect(
                     borderRadius: BorderRadius.circular(size.width * 0.075),
                     child: FoilShader(
+                      package: package,
                       dx: tilt.dx,
                       dy: tilt.dy,
                       child: cardBody,
