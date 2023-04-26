@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart' hide Card;
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:top_dash/audio/audio.dart';
 import 'package:top_dash/game/game.dart';
+import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/info/widgets/info_button.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/share/views/card_inspector.dart';
@@ -17,31 +18,50 @@ class GameSummaryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final result = context.select((GameBloc bloc) => bloc.gameResult());
+    final isPhoneWidth = MediaQuery.of(context).size.width < 400;
+    final screenHeight = MediaQuery.of(context).size.height;
     return IoFlipScaffold(
       body: MatchResultSplash(
         result: result ?? GameResult.draw,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(height: TopDashSpacing.lg),
-            if (MediaQuery.of(context).size.height > 600)
-              IoFlipLogo(
-                height: 104,
-                width: 158,
+            if (!isPhoneWidth && screenHeight > 610)
+              Padding(
+                padding: const EdgeInsets.only(top: TopDashSpacing.lg),
+                child: IoFlipLogo(
+                  height: 97,
+                  width: 64,
+                ),
+              )
+            else if (screenHeight > 660)
+              Padding(
+                padding: const EdgeInsets.only(top: TopDashSpacing.md),
+                child: IoFlipLogo(
+                  height: 88,
+                  width: 133,
+                ),
               ),
             const Spacer(),
-            const SizedBox(height: TopDashSpacing.lg),
+            const SizedBox(height: TopDashSpacing.sm),
             const _ResultView(),
-            const SizedBox(height: TopDashSpacing.xlg),
             const FittedBox(
               fit: BoxFit.scaleDown,
               child: _CardsView(),
             ),
             const Spacer(),
-            const IoFlipBottomBar(
-              leading: AudioToggleButton(),
-              middle: GameSummaryFooter(),
-              trailing: InfoButton(),
+            Padding(
+              padding: const EdgeInsets.all(TopDashSpacing.sm),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  const AudioToggleButton(),
+                  const Spacer(),
+                  GameSummaryFooter(isPhoneWidth: isPhoneWidth),
+                  const Spacer(),
+                  const InfoButton(),
+                ],
+              ),
             ),
           ],
         ),
@@ -58,19 +78,15 @@ class _ResultView extends StatelessWidget {
     final bloc = context.watch<GameBloc>();
     final state = bloc.state as MatchLoadedState;
     late final String title;
-    late final Color color;
 
     switch (bloc.gameResult()) {
       case GameResult.win:
         title = context.l10n.gameWonTitle;
-        color = TopDashColors.seedBlue;
         break;
       case GameResult.lose:
-        color = TopDashColors.seedPaletteRed40;
         title = context.l10n.gameLostTitle;
         break;
       case GameResult.draw:
-        color = TopDashColors.seedGrey50;
         title = context.l10n.gameTiedTitle;
         break;
       case null:
@@ -84,9 +100,21 @@ class _ResultView extends StatelessWidget {
           title,
           style: TopDashTextStyles.mobileH1,
         ),
-        Text(
-          context.l10n.gameSummaryStreak(state.playerScoreCard.currentStreak),
-          style: TopDashTextStyles.mobileH6.copyWith(color: color),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              Assets.images.tempPreferencesCustom.path,
+              color: TopDashColors.seedYellow,
+            ),
+            const SizedBox(width: TopDashSpacing.sm),
+            Text(
+              context.l10n
+                  .gameSummaryStreak(state.playerScoreCard.currentStreak),
+              style: TopDashTextStyles.mobileH6
+                  .copyWith(color: TopDashColors.seedYellow),
+            ),
+          ],
         ),
       ],
     );
@@ -98,6 +126,9 @@ class _CardsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cardSize = (MediaQuery.of(context).size.height > 700)
+        ? const GameCardSize.sm()
+        : const GameCardSize.xs();
     final bloc = context.watch<GameBloc>();
     final state = bloc.state as MatchLoadedState;
 
@@ -111,7 +142,7 @@ class _CardsView extends StatelessWidget {
     final playerCards = (bloc.isHost ? hostCardsOrdered : guestCardsOrdered)
         .map(
           (card) => GameCard(
-            size: const GameCardSize.sm(),
+            size: cardSize,
             image: card.image,
             name: card.name,
             description: card.description,
@@ -126,7 +157,7 @@ class _CardsView extends StatelessWidget {
     final opponentCards = (bloc.isHost ? guestCardsOrdered : hostCardsOrdered)
         .map(
           (card) => GameCard(
-            size: const GameCardSize.sm(),
+            size: cardSize,
             image: card.image,
             name: card.name,
             description: card.description,
@@ -146,42 +177,23 @@ class _CardsView extends StatelessWidget {
         ? state.matchState.hostPlayedCards
         : state.matchState.guestPlayedCards;
 
-    final roundSummaries = List.generate(
-      3,
-      (index) => _RoundSummary(
-        playerCard: playerCards[index],
-        opponentCard: opponentCards[index],
-        onTap: (card) => GoRouter.of(context).pushNamed(
-          'card_inspector',
-          extra: CardInspectorData(
-            deck: cards,
-            playerCardIds: playerCardIds,
-            startingIndex: index + card,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(
+        3,
+        (index) => _RoundSummary(
+          playerCard: playerCards[index],
+          opponentCard: opponentCards[index],
+          onTap: (card) => GoRouter.of(context).pushNamed(
+            'card_inspector',
+            extra: CardInspectorData(
+              deck: cards,
+              playerCardIds: playerCardIds,
+              startingIndex: index + card,
+            ),
           ),
         ),
-      ),
-    );
-
-    const divider = SizedBox(
-      height: 340,
-      width: TopDashSpacing.xxlg,
-      child: VerticalDivider(
-        color: TopDashColors.seedGrey50,
-      ),
-    );
-
-    return Padding(
-      padding: const EdgeInsets.all(TopDashSpacing.lg),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          roundSummaries[0],
-          divider,
-          roundSummaries[1],
-          divider,
-          roundSummaries[2],
-        ],
       ),
     );
   }
@@ -200,51 +212,57 @@ class _RoundSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String result;
-    Color resultColor;
     final score = '${playerCard.power} - ${opponentCard.power}';
     switch (playerCard.overlay) {
       case CardOverlayType.win:
         result = 'W $score';
-        resultColor = TopDashColors.seedGreen;
         break;
       case CardOverlayType.lose:
         result = 'L $score';
-        resultColor = TopDashColors.seedRed;
         break;
       case CardOverlayType.draw:
         result = 'D $score';
-        resultColor = TopDashColors.seedGrey70;
         break;
       case null:
         result = score;
-        resultColor = TopDashColors.seedGrey70;
         break;
     }
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        GestureDetector(onTap: () => onTap(0), child: playerCard),
-        const SizedBox(height: TopDashSpacing.lg),
-        GestureDetector(onTap: () => onTap(3), child: opponentCard),
-        const SizedBox(height: TopDashSpacing.lg),
-        Text(
-          result,
-          style: TopDashTextStyles.bodyLG.copyWith(color: resultColor),
-        )
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: TopDashSpacing.sm,
+        vertical: TopDashSpacing.md,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          GestureDetector(onTap: () => onTap(0), child: playerCard),
+          const SizedBox(height: TopDashSpacing.md),
+          GestureDetector(onTap: () => onTap(3), child: opponentCard),
+          const SizedBox(height: TopDashSpacing.md),
+          Text(
+            result,
+            style: TopDashTextStyles.bodyLG.copyWith(
+              color: TopDashColors.seedWhite,
+            ),
+          )
+        ],
+      ),
     );
   }
 }
 
 class GameSummaryFooter extends StatelessWidget {
   const GameSummaryFooter({
+    required this.isPhoneWidth,
     RouterNeglectCall routerNeglectCall = Router.neglect,
     super.key,
   }) : _routerNeglectCall = routerNeglectCall;
 
   final RouterNeglectCall _routerNeglectCall;
+  final bool isPhoneWidth;
 
-  static const Widget _gap = SizedBox(width: TopDashSpacing.md);
+  static const Widget _gap =
+      SizedBox(width: TopDashSpacing.md, height: TopDashSpacing.md);
 
   @override
   Widget build(BuildContext context) {
@@ -254,49 +272,58 @@ class GameSummaryFooter extends StatelessWidget {
     final playerScoreCard = state.playerScoreCard;
     final playerDeck =
         bloc.isHost ? state.match.hostDeck : state.match.guestDeck;
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        RoundedButton.text(
-          l10n.nextMatch,
-          onPressed: () => GoRouter.of(context).pop(),
-        ),
-        _gap,
-        RoundedButton.text(
-          l10n.quit,
-          backgroundColor: TopDashColors.seedWhite,
-          onPressed: () => QuitGameDialog.show(
-            context,
-            onConfirm: () => _routerNeglectCall(context, () {
-              if (playerScoreCard.initials != null) {
-                GoRouter.of(context).goNamed(
-                  'share_hand',
-                  extra: ShareHandPageData(
-                    initials: playerScoreCard.initials!,
+    final children = [
+      RoundedButton.text(
+        l10n.nextMatch,
+        onPressed: () => GoRouter.of(context).pop(),
+      ),
+      _gap,
+      RoundedButton.text(
+        l10n.quit,
+        backgroundColor: TopDashColors.seedBlack,
+        foregroundColor: TopDashColors.seedWhite,
+        borderColor: TopDashColors.seedPaletteNeutral40,
+        onPressed: () => QuitGameDialog.show(
+          context,
+          onConfirm: () => _routerNeglectCall(context, () {
+            if (playerScoreCard.initials != null) {
+              GoRouter.of(context).goNamed(
+                'share_hand',
+                extra: ShareHandPageData(
+                  initials: playerScoreCard.initials!,
+                  wins: state.playerScoreCard.currentStreak,
+                  deckId: playerDeck.id,
+                  deck: bloc.playerCards,
+                ),
+              );
+            } else {
+              GoRouter.of(context).pop();
+              bloc.add(
+                LeaderboardEntryRequested(
+                  shareHandPageData: ShareHandPageData(
+                    initials: '',
                     wins: state.playerScoreCard.currentStreak,
                     deckId: playerDeck.id,
                     deck: bloc.playerCards,
                   ),
-                );
-              } else {
-                GoRouter.of(context).pop();
-                bloc.add(
-                  LeaderboardEntryRequested(
-                    shareHandPageData: ShareHandPageData(
-                      initials: '',
-                      wins: state.playerScoreCard.currentStreak,
-                      deckId: playerDeck.id,
-                      deck: bloc.playerCards,
-                    ),
-                  ),
-                );
-              }
-            }),
-            onCancel: GoRouter.of(context).pop,
-          ),
+                ),
+              );
+            }
+          }),
+          onCancel: GoRouter.of(context).pop,
         ),
-      ],
-    );
+      ),
+    ];
+    if (isPhoneWidth) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: children,
+      );
+    } else {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: children,
+      );
+    }
   }
 }

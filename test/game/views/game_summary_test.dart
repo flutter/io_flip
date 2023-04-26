@@ -177,6 +177,20 @@ void main() {
 
     group('Gameplay', () {
       testWidgets(
+        'renders in small phone layout',
+        (tester) async {
+          tester.setSmallestPhoneDisplaySize();
+          defaultMockState();
+          when(bloc.gameResult).thenReturn(GameResult.draw);
+          await tester.pumpSubject(bloc);
+
+          expect(
+            find.byType(GameSummaryView),
+            findsOneWidget,
+          );
+        },
+      );
+      testWidgets(
         'renders the draw message when the players make a draw',
         (tester) async {
           defaultMockState();
@@ -283,7 +297,7 @@ void main() {
       );
 
       testWidgets(
-        'Renders correct score messages and colors',
+        'Renders correct score messages',
         (tester) async {
           when(
             () =>
@@ -300,13 +314,10 @@ void main() {
           when(() => bloc.isHost).thenReturn(true);
           defaultMockState();
           await tester.pumpSubject(bloc);
-          final win = tester.widget<Text>(find.textContaining('W'));
-          final lose = tester.widget<Text>(find.textContaining('L'));
-          final draw = tester.widget<Text>(find.textContaining('D'));
 
-          expect(win.style?.color, TopDashColors.seedGreen);
-          expect(lose.style?.color, TopDashColors.seedRed);
-          expect(draw.style?.color, TopDashColors.seedGrey70);
+          expect(find.textContaining('W'), findsOneWidget);
+          expect(find.textContaining('D'), findsOneWidget);
+          expect(find.textContaining('L'), findsOneWidget);
         },
       );
 
@@ -434,6 +445,7 @@ void main() {
             BlocProvider<GameBloc>.value(
               value: bloc,
               child: GameSummaryFooter(
+                isPhoneWidth: false,
                 routerNeglectCall: router.neglect,
               ),
             ),
@@ -480,6 +492,7 @@ void main() {
             BlocProvider<GameBloc>.value(
               value: bloc,
               child: GameSummaryFooter(
+                isPhoneWidth: false,
                 routerNeglectCall: router.neglect,
               ),
             ),
