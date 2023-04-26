@@ -345,12 +345,6 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
                   _BoardCounter(counterOffset),
                   _ClashScene(
                     onFinished: fightSceneCompleted,
-                    opponentCard: () => opponentCards.elementAt(
-                      lastPlayedOpponentCardIndex!,
-                    ),
-                    playerCard: () => playerCards.elementAt(
-                      lastPlayedPlayerCardIndex!,
-                    ),
                   ),
                 ],
               ),
@@ -654,13 +648,9 @@ class _CardLandingPuffEffect extends StatelessWidget {
 class _ClashScene extends StatelessWidget {
   const _ClashScene({
     required this.onFinished,
-    required this.opponentCard,
-    required this.playerCard,
   });
 
   final VoidCallback onFinished;
-  final Card Function() opponentCard;
-  final Card Function() playerCard;
 
   @override
   Widget build(BuildContext context) {
@@ -669,11 +659,17 @@ class _ClashScene extends StatelessWidget {
     );
 
     if (isClashScene) {
+      final opponentCard = context.select<GameBloc, Card>(
+        (bloc) => bloc.lastPlayedOpponentCard,
+      );
+      final playerCard = context.select<GameBloc, Card>(
+        (bloc) => bloc.lastPlayedPlayerCard,
+      );
       return Positioned.fill(
         child: FightScene(
           onFinished: onFinished,
-          opponentCard: opponentCard(),
-          playerCard: playerCard(),
+          opponentCard: opponentCard,
+          playerCard: playerCard,
         ),
       );
     }

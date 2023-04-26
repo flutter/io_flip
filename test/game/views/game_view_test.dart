@@ -381,6 +381,8 @@ void main() {
       setUp(() {
         when(() => bloc.playerCards).thenReturn(playerCards);
         when(() => bloc.opponentCards).thenReturn(opponentCards);
+        when(() => bloc.lastPlayedPlayerCard).thenReturn(playerCards.first);
+        when(() => bloc.lastPlayedOpponentCard).thenReturn(opponentCards.first);
       });
 
       testWidgets('starts when player plays a card', (tester) async {

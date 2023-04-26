@@ -1617,6 +1617,31 @@ void main() {
       },
     );
 
+    blocTest<GameBloc, GameState>(
+      'last played cards for player and opponent return correctly',
+      build: () => GameBloc(
+        connectionRepository: connectionRepository,
+        gameResource: gameResource,
+        audioController: audioController,
+        matchMakerRepository: matchMakerRepository,
+        matchSolver: matchSolver,
+        isHost: true,
+        user: user,
+      ),
+      seed: () => baseState.copyWith(
+        rounds: [
+          MatchRound(
+            playerCardId: hostCards.first.id,
+            opponentCardId: guestCards.first.id,
+          )
+        ],
+      ),
+      verify: (bloc) {
+        expect(bloc.lastPlayedPlayerCard, equals(hostCards.first));
+        expect(bloc.lastPlayedOpponentCard, equals(guestCards.first));
+      },
+    );
+
     group('MatchLoadedState', () {
       group('isCardTurnComplete', () {
         final match1 = Match(
