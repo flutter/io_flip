@@ -52,6 +52,7 @@ void main() async {
           matchSolver: MatchSolver(gameScriptMachine: gameScriptMachine),
           gameScriptMachine: gameScriptMachine,
           user: await authenticationRepository.user.first,
+          isScriptsEnabled: false,
         );
       },
     ),

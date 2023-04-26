@@ -28,6 +28,7 @@ late EncryptionMiddleware encryptionMiddleware;
 late GameUrl gameUrl;
 late PromptRepository promptRepository;
 late FirebaseCloudStorage firebaseCloudStorage;
+late ScriptsState scriptsState;
 
 Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   const imageModelRepository = ImageModelRepository();
@@ -106,6 +107,8 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
 
   gameUrl = GameUrl(_gameUrl);
 
+  scriptsState = _scriptsState;
+
   return serve(
     handler,
     ip,
@@ -149,4 +152,17 @@ String get _firebaseStorageBucket {
     throw ArgumentError('FB_STORAGE_BUCKET is required to run the API');
   }
   return value;
+}
+
+enum ScriptsState {
+  enabled,
+  disabled,
+}
+
+ScriptsState get _scriptsState {
+  final value = Platform.environment['SCRIPTS_ENABLED'];
+  if (value == null) {
+    throw ArgumentError('SCRIPTS_ENABLED is required to run the API');
+  }
+  return value == 'true' ? ScriptsState.enabled : ScriptsState.disabled;
 }

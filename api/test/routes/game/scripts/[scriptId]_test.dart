@@ -7,6 +7,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:scripts_repository/scripts_repository.dart';
 import 'package:test/test.dart';
 
+import '../../../../main.dart';
 import '../../../../routes/game/scripts/[scriptId].dart' as route;
 
 class _MockRequestContext extends Mock implements RequestContext {}
@@ -41,6 +42,8 @@ void main() {
       when(() => context.read<ScriptsRepository>())
           .thenReturn(scriptsRepository);
       when(() => context.read<Logger>()).thenReturn(logger);
+
+      when(() => context.read<ScriptsState>()).thenReturn(ScriptsState.enabled);
     });
 
     test('responds with a 200', () async {
@@ -96,6 +99,8 @@ void main() {
       when(() => context.read<Logger>()).thenReturn(logger);
       when(() => context.read<GameScriptMachine>())
           .thenReturn(gameScriptMachine);
+
+      when(() => context.read<ScriptsState>()).thenReturn(ScriptsState.enabled);
     });
 
     test('responds with a 200', () async {
@@ -123,6 +128,13 @@ void main() {
     test('update the script in the current machine', () async {
       await route.onRequest(context, 'current');
       verify(() => gameScriptMachine.currentScript = 'the script').called(1);
+    });
+
+    test('responds with a 405 if scripts are not enabled', () async {
+      when(() => context.read<ScriptsState>())
+          .thenReturn(ScriptsState.disabled);
+      final response = await route.onRequest(context, 'current');
+      expect(response.statusCode, equals(HttpStatus.methodNotAllowed));
     });
   });
 }
