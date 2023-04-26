@@ -43,6 +43,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     on<TurnAnimationsFinished>(_onTurnAnimationsFinished);
     on<CardOverlayRevealed>(_onCardOverlayRevealed);
     on<FightSceneCompleted>(_onFightSceneCompleted);
+    on<CardLandingStarted>(_onCardLandingStarted);
+    on<CardLandingCompleted>(_onCardLandingCompleted);
   }
 
   final GameResource _gameResource;
@@ -94,6 +96,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             turnTimeRemaining: _turnMaxTime,
             turnAnimationsFinished: true,
             isFightScene: false,
+            showCardLanding: false,
           ),
         );
 
@@ -397,6 +400,26 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     if (state is MatchLoadedState) {
       final matchLoadedState = state as MatchLoadedState;
       emit(matchLoadedState.copyWith(isFightScene: false));
+    }
+  }
+
+  void _onCardLandingStarted(
+    CardLandingStarted event,
+    Emitter<GameState> emit,
+  ) {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+      emit(matchLoadedState.copyWith(showCardLanding: true));
+    }
+  }
+
+  void _onCardLandingCompleted(
+    CardLandingCompleted event,
+    Emitter<GameState> emit,
+  ) {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+      emit(matchLoadedState.copyWith(showCardLanding: false));
     }
   }
 

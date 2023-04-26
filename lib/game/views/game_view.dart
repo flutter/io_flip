@@ -181,8 +181,14 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     return controllers.map((e) {
       final cardController = AnimatedCardController();
       e.addStatusListener((status) {
-        if (status == AnimationStatus.completed ||
-            status == AnimationStatus.dismissed) {
+        if (status == AnimationStatus.completed) {
+          cardController.run(bigFlipAnimation);
+          Future.delayed(
+            bigFlipAnimation.duration * .85,
+            () => context.read<GameBloc>().add(const CardLandingStarted()),
+          );
+        }
+        if (status == AnimationStatus.dismissed) {
           cardController.run(bigFlipAnimation);
         }
       });
@@ -220,7 +226,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
         if (state.rounds.isNotEmpty) {
           if (state.rounds.last.isComplete()) {
             Future.delayed(
-              bigFlipAnimation.duration,
+              bigFlipAnimation.duration + CardLandingPuff.duration,
               () => bloc.add(const CardOverlayRevealed()),
             );
           }
@@ -289,6 +295,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
           width: boardSize.width,
           height: boardSize.height,
           child: Stack(
+            clipBehavior: Clip.none,
             children: [
               for (final offset in playerCardOffsets)
                 _PlaceholderCard(
@@ -314,6 +321,19 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
                   );
                 },
               ),
+              if (state is MatchLoadedState)
+                Positioned(
+                  top: -20,
+                  right: -160,
+                  child: CardLandingPuff(
+                    playing: state.showCardLanding,
+                    onComplete: () {
+                      context
+                          .read<GameBloc>()
+                          .add(const CardLandingCompleted());
+                    },
+                  ),
+                ),
               ...playerCards.mapIndexed(
                 (i, card) {
                   return _PlayerCard(

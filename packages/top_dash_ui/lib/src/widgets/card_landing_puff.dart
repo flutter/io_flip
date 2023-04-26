@@ -28,11 +28,21 @@ class CardLandingPuff extends StatelessWidget {
   /// Defaults to `500`.
   final double width;
 
-  ///
+  /// Whether the animation is being played or not.
   final bool playing;
 
   /// Optional callback to be called when the animation is complete.
   final VoidCallback? onComplete;
+
+  /// Number of frames in the animation.
+  static const frames = 12;
+
+  /// Time between frames in the animation, in seconds.
+  static const stepTime = 0.04;
+
+  /// Animation duration
+  static Duration duration =
+      Duration(milliseconds: (frames * stepTime * 1000).toInt());
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +51,8 @@ class CardLandingPuff extends StatelessWidget {
     return SizedBox(
       height: height,
       width: width,
-      child: Offstage(
-        offstage: !playing,
+      child: Visibility(
+        visible: playing,
         child: SpriteAnimationWidget.asset(
           playing: playing,
           path: Assets.images.cardLanding.keyName,
@@ -50,10 +60,10 @@ class CardLandingPuff extends StatelessWidget {
           anchor: Anchor.center,
           onComplete: onComplete,
           data: SpriteAnimationData.sequenced(
-            amount: 12,
+            amount: frames,
             amountPerRow: 4,
             textureSize: Vector2(496, 698),
-            stepTime: 0.04,
+            stepTime: stepTime,
             loop: false,
           ),
         ),

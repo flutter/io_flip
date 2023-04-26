@@ -93,3 +93,17 @@ class TurnAnimationsFinished extends GameEvent {
   @override
   List<Object?> get props => [];
 }
+
+class CardLandingStarted extends GameEvent {
+  const CardLandingStarted();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class CardLandingCompleted extends GameEvent {
+  const CardLandingCompleted();
+
+  @override
+  List<Object?> get props => [];
+}
