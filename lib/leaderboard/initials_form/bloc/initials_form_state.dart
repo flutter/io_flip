@@ -9,7 +9,6 @@ enum InitialsFormStatus {
   failure;
 
   bool get isInvalid => this == InitialsFormStatus.invalid;
-  bool get isBlacklisted => this == InitialsFormStatus.blacklisted;
 }
 
 class InitialsFormState extends Equatable {
