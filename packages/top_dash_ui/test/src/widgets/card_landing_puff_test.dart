@@ -30,7 +30,7 @@ void main() {
       expect(find.byType(SpriteAnimationWidget), findsOneWidget);
     });
 
-    test('description', () {
+    test('duration is correct', () {
       expect(
         CardLandingPuff.duration.inMilliseconds,
         equals(CardLandingPuff.frames * CardLandingPuff.stepTime * 1000),
