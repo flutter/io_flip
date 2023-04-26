@@ -76,15 +76,63 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
       ),
     );
 
-    for (final value in PromptTermType.values) {
-      for (var i = 0; i < 20; i++) {
+    const characters = [
+      'Dash',
+      'Sparky',
+      'Android',
+      'Dino',
+    ];
+
+    const classes = [
+      'Astronaut',
+      'Captain',
+      'Chef',
+      'Cowboy',
+      'Fairy',
+      'Firefighter',
+      'Ghost',
+      'King',
+      'Mage',
+      'Mermaid',
+    ];
+
+    const powers = [
+      'Apples',
+      'Bagels',
+      'Banjos',
+      'Basketballs',
+      'Books',
+      'Candles',
+      'Cape',
+      'Carrots',
+      'Cookies',
+      'Crayons',
+    ];
+
+    const locations = [
+      'Forrest',
+      'Beach',
+      'Field',
+      'City',
+    ];
+
+    const prompts = {
+      PromptTermType.character: characters,
+      PromptTermType.characterClass: classes,
+      PromptTermType.power: powers,
+      PromptTermType.location: locations,
+    };
+
+    var id = 0;
+    for (final entry in prompts.entries) {
+      for (final prompt in entry.value) {
         await dbClient.set(
           'prompt_terms',
           DbEntityRecord(
-            id: 'id_${value.name}_$i',
+            id: 'id_${prompt}_${id++}',
             data: {
-              'term': 'Test_${i.toString().padLeft(2, '0')}',
-              'type': value.name,
+              'term': prompt,
+              'type': entry.key.name,
             },
           ),
         );
