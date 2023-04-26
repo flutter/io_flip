@@ -288,7 +288,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
       child: Stack(
         children: [
           Transform.scale(
-            scale: 1.2,
+            scale: 1.4,
             child: Center(
               child: Image.asset(
                 Assets.images.stadiumBackground.keyName,
