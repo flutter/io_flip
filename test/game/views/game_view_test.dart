@@ -559,6 +559,44 @@ void main() {
           verify(() => bloc.add(TurnTimerStarted())).called(2);
         },
       );
+
+      testWidgets(
+        'completes and shows card landing puff effect when player plays a card',
+        (tester) async {
+          whenListen(
+            bloc,
+            Stream.fromIterable([
+              baseState,
+              baseState.copyWith(
+                lastPlayedCardId: playerCards.first.id,
+                rounds: [
+                  MatchRound(
+                    playerCardId: playerCards.first.id,
+                    opponentCardId: null,
+                  ),
+                ],
+                showCardLanding: true,
+              ),
+            ]),
+            initialState: baseState,
+          );
+
+          await tester.pumpSubject(bloc);
+          await tester.pump(bigFlipAnimation.duration);
+
+          final cardLandingPuff = find.byType(CardLandingPuff);
+          expect(cardLandingPuff, findsOneWidget);
+
+          await tester.pumpAndSettle(
+            bigFlipAnimation.duration + CardLandingPuff.duration,
+          );
+
+          tester.widget<CardLandingPuff>(cardLandingPuff).onComplete?.call();
+
+          verify(() => bloc.add(CardLandingStarted())).called(1);
+          verify(() => bloc.add(CardLandingCompleted())).called(1);
+        },
+      );
     });
   });
 
