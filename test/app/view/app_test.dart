@@ -213,6 +213,7 @@ void main() {
             gameScriptMachine: _MockGameScriptEngine(),
             user: _MockUser(),
             termsOfUseCubit: mockCubit,
+            isScriptsEnabled: true,
           ),
         );
 
@@ -245,6 +246,7 @@ void main() {
             gameScriptMachine: _MockGameScriptEngine(),
             user: _MockUser(),
             termsOfUseCubit: mockCubit,
+            isScriptsEnabled: true,
           ),
         );
 
@@ -270,6 +272,7 @@ void main() {
             gameScriptMachine: _MockGameScriptEngine(),
             user: _MockUser(),
             termsOfUseCubit: mockCubit,
+            isScriptsEnabled: true,
           ),
         );
 
