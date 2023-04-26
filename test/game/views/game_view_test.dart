@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, one_member_abstracts
 
 import 'dart:async';
 
@@ -13,18 +13,28 @@ import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash/leaderboard/leaderboard.dart';
+import 'package:top_dash/match_making/match_making.dart' hide RouterNeglectCall;
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
 
 class _MockGameBloc extends Mock implements GameBloc {}
 
+abstract class __Router {
+  void neglect(BuildContext context, VoidCallback callback);
+}
+
+class _MockRouter extends Mock implements __Router {}
+
 class _MockLeaderboardResource extends Mock implements LeaderboardResource {}
+
+class _MockBuildContext extends Mock implements BuildContext {}
 
 void main() {
   group('GameView', () {
     late GameBloc bloc;
     late LeaderboardResource leaderboardResource;
+    late __Router router;
 
     const playerCards = [
       Card(
@@ -70,6 +80,7 @@ void main() {
           suit: Suit.air,
         ),
       );
+      registerFallbackValue(_MockBuildContext());
     });
 
     setUp(() {
@@ -83,6 +94,12 @@ void main() {
       leaderboardResource = _MockLeaderboardResource();
       when(() => leaderboardResource.getInitialsBlacklist())
           .thenAnswer((_) async => ['WTF']);
+
+      router = _MockRouter();
+      when(() => router.neglect(any(), any())).thenAnswer((_) {
+        final callback = _.positionalArguments[1] as VoidCallback;
+        callback();
+      });
     });
 
     void mockState(GameState state) {
@@ -161,7 +178,7 @@ void main() {
       testWidgets(
         'renders the opponent absent message when the opponent leaves',
         (tester) async {
-          mockState(OpponentAbsentState());
+          mockState(OpponentAbsentState(playerCards));
           await tester.pumpSubject(bloc);
 
           expect(
@@ -176,21 +193,27 @@ void main() {
       );
 
       testWidgets(
-        'pops navigation when the replay button is tapped on opponent absent',
+        'goes to match making when replay button is tapped on opponent absent',
         (tester) async {
           final goRouter = MockGoRouter();
 
-          mockState(OpponentAbsentState());
+          mockState(OpponentAbsentState(playerCards));
 
           await tester.pumpSubject(
             bloc,
             goRouter: goRouter,
+            routerNeglectCall: router.neglect,
           );
 
           await tester.tap(find.text('Replay'));
           await tester.pumpAndSettle();
 
-          verify(goRouter.pop).called(1);
+          verify(
+            () => goRouter.goNamed(
+              'match_making',
+              extra: MatchMakingPageData(deck: playerCards),
+            ),
+          ).called(1);
         },
       );
 
@@ -571,12 +594,15 @@ extension GameViewTest on WidgetTester {
     GameBloc bloc, {
     GoRouter? goRouter,
     LeaderboardResource? leaderboardResource,
+    RouterNeglectCall routerNeglectCall = Router.neglect,
   }) {
     return mockNetworkImages(() {
       return pumpApp(
         BlocProvider<GameBloc>.value(
           value: bloc,
-          child: GameView(),
+          child: GameView(
+            routerNeglectCall: routerNeglectCall,
+          ),
         ),
         router: goRouter,
         leaderboardResource: leaderboardResource,

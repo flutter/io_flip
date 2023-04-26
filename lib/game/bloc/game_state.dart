@@ -115,7 +115,9 @@ class LeaderboardEntryState extends GameState {
 }
 
 class OpponentAbsentState extends GameState {
-  const OpponentAbsentState();
+  const OpponentAbsentState(this.deck);
+
+  final List<Card> deck;
 
   @override
   List<Object> get props => [];

@@ -461,14 +461,24 @@ void main() {
   });
 
   group('OpponentAbsentState', () {
+    final card = Card(
+      id: 'abc',
+      name: 'Super Bird',
+      description: 'Super Bird Is Ready!',
+      image: 'https://image.png',
+      rarity: false,
+      power: 10,
+      suit: Suit.fire,
+    );
+
     test('can be instantiated', () {
-      expect(OpponentAbsentState(), isNotNull);
+      expect(OpponentAbsentState([card]), isNotNull);
     });
 
     test('supports equality', () {
       expect(
-        OpponentAbsentState(),
-        equals(OpponentAbsentState()),
+        OpponentAbsentState([card]),
+        equals(OpponentAbsentState([card])),
       );
     });
   });

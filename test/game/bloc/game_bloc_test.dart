@@ -1730,7 +1730,7 @@ void main() {
             ),
           );
         },
-        expect: () => [OpponentAbsentState()],
+        expect: () => [OpponentAbsentState(hostCards)],
         verify: (_) {
           verify(() => matchMakerRepository.watchMatch(match.id)).called(1);
         },
@@ -1758,7 +1758,7 @@ void main() {
             ),
           );
         },
-        expect: () => [OpponentAbsentState()],
+        expect: () => [OpponentAbsentState(guestCards)],
         verify: (_) {
           verify(() => matchMakerRepository.watchMatch(match.id)).called(1);
         },

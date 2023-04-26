@@ -253,7 +253,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         final matchState = await _gameResource.getMatchState(match.id);
         final matchOver = matchState?.isOver();
         if (matchOver != true) {
-          emit(const OpponentAbsentState());
+          emit(OpponentAbsentState(playerCards));
         }
         completer.complete();
       });

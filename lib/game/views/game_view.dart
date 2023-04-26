@@ -8,10 +8,18 @@ import 'package:top_dash/game/game.dart';
 import 'package:top_dash/game/views/game_summary.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/leaderboard/leaderboard.dart';
+import 'package:top_dash/match_making/match_making.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
+typedef RouterNeglectCall = void Function(BuildContext, VoidCallback);
+
 class GameView extends StatelessWidget {
-  const GameView({super.key});
+  const GameView({
+    super.key,
+    RouterNeglectCall routerNeglectCall = Router.neglect,
+  }) : _routerNeglectCall = routerNeglectCall;
+
+  final RouterNeglectCall _routerNeglectCall;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +52,13 @@ class GameView extends StatelessWidget {
               children: [
                 const Text('Opponent left the game!'),
                 ElevatedButton(
-                  onPressed: () => GoRouter.of(context).pop(),
+                  onPressed: () => _routerNeglectCall(
+                    context,
+                    () => GoRouter.of(context).goNamed(
+                      'match_making',
+                      extra: MatchMakingPageData(deck: state.deck),
+                    ),
+                  ),
                   child: const Text('Replay'),
                 ),
               ],
