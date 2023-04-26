@@ -6,13 +6,13 @@ import 'package:top_dash/leaderboard/initials_form/initials_form.dart';
 void main() {
   group('InitialsChanged', () {
     test('can be instantiated', () {
-      expect(InitialsChanged(initials: 'ABC'), isNotNull);
+      expect(InitialsChanged(index: 0, initial: 'A'), isNotNull);
     });
 
     test('supports equality', () {
       expect(
-        InitialsChanged(initials: 'ABC'),
-        equals(InitialsChanged(initials: 'ABC')),
+        InitialsChanged(index: 0, initial: 'A'),
+        equals(InitialsChanged(index: 0, initial: 'A')),
       );
     });
   });

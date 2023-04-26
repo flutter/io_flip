@@ -30,7 +30,9 @@ class InitialsFormBloc extends Bloc<InitialsFormEvent, InitialsFormState> {
     InitialsChanged event,
     Emitter<InitialsFormState> emit,
   ) {
-    emit(state.copyWith(initials: event.initials));
+    final initials = [...state.initials];
+    initials[event.index] = event.initial;
+    emit(state.copyWith(initials: initials));
   }
 
   Future<void> _onInitialsSubmitted(
@@ -47,7 +49,7 @@ class InitialsFormBloc extends Bloc<InitialsFormEvent, InitialsFormState> {
 
         await _leaderboardResource.addInitialsToScoreCard(
           scoreCardId: _scoreCardId,
-          initials: state.initials,
+          initials: state.initials.join(),
         );
 
         emit(state.copyWith(status: InitialsFormStatus.success));
@@ -60,10 +62,10 @@ class InitialsFormBloc extends Bloc<InitialsFormEvent, InitialsFormState> {
 
   bool _hasValidPattern() {
     final value = state.initials;
-    return value.isNotEmpty && initialsRegex.hasMatch(value);
+    return value.isNotEmpty && initialsRegex.hasMatch(value.join());
   }
 
   bool _isBlacklisted() {
-    return blacklist.contains(state.initials);
+    return blacklist.contains(state.initials.join());
   }
 }

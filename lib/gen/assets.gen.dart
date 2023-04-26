@@ -47,6 +47,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/main.png
   AssetGenImage get main => const AssetGenImage('assets/images/main.png');
 
+  /// File path: assets/images/stadium_background.png
+  AssetGenImage get stadiumBackground =>
+      const AssetGenImage('assets/images/stadium_background.png');
+
   /// File path: assets/images/temp_preferences_custom.png
   AssetGenImage get tempPreferencesCustom =>
       const AssetGenImage('assets/images/temp_preferences_custom.png');
