@@ -7,11 +7,10 @@ import 'package:top_dash/leaderboard/initials_form/initials_form.dart';
 import 'package:top_dash/share/share.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
-// TODO(willhlas): update design.
-
 class InitialsFormView extends StatelessWidget {
   const InitialsFormView({super.key, this.shareHandPageData});
 
+  static final focusNodes = List.generate(3, (_) => FocusNode());
   final ShareHandPageData? shareHandPageData;
 
   @override
@@ -25,7 +24,7 @@ class InitialsFormView extends StatelessWidget {
             GoRouter.of(context).goNamed(
               'share_hand',
               extra: ShareHandPageData(
-                initials: state.initials,
+                initials: state.initials.join(),
                 wins: shareHandPageData!.wins,
                 deckId: shareHandPageData!.deckId,
                 deck: shareHandPageData!.deck,
@@ -40,42 +39,100 @@ class InitialsFormView extends StatelessWidget {
         if (state.status == InitialsFormStatus.failure) {
           return const Center(child: Text('Error submitting initials'));
         }
-
         return Column(
           children: [
-            Container(
-              constraints: const BoxConstraints(minWidth: 100, maxWidth: 200),
-              child: TextFormField(
-                textInputAction: TextInputAction.go,
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp('[a-zA-Z]')),
-                  UpperCaseTextFormatter(),
-                  LengthLimitingTextInputFormatter(3)
-                ],
-                textCapitalization: TextCapitalization.characters,
-                decoration: InputDecoration(
-                  hintText: 'AAA',
-                  errorText:
-                      state.status.isInvalid ? l10n.enterInitialsError : null,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _InitialFormField(
+                  0,
+                  focusNode: focusNodes[0],
+                  onChanged: (index, value) =>
+                      _onInitialChanged(context, value, index),
                 ),
-                textAlign: TextAlign.center,
-                onChanged: (value) {
-                  context
-                      .read<InitialsFormBloc>()
-                      .add(InitialsChanged(initials: value));
-                },
-              ),
+                const SizedBox(width: TopDashSpacing.sm),
+                _InitialFormField(
+                  1,
+                  focusNode: focusNodes[1],
+                  onChanged: (index, value) =>
+                      _onInitialChanged(context, value, index),
+                ),
+                const SizedBox(width: TopDashSpacing.sm),
+                _InitialFormField(
+                  2,
+                  focusNode: focusNodes[2],
+                  onChanged: (index, value) =>
+                      _onInitialChanged(context, value, index),
+                ),
+              ],
             ),
             const SizedBox(height: TopDashSpacing.xxlg),
-            FilledButton(
-              onPressed: () {
-                context.read<InitialsFormBloc>().add(InitialsSubmitted());
-              },
-              child: Text(l10n.enter),
-            )
+            if (state.status.isInvalid)
+              Text(l10n.enterInitialsError)
+            else
+              RoundedButton.text(
+                l10n.enter,
+                onPressed: () {
+                  context
+                      .read<InitialsFormBloc>()
+                      .add(const InitialsSubmitted());
+                },
+              )
           ],
         );
       },
+    );
+  }
+
+  void _onInitialChanged(BuildContext context, String value, int index) {
+    context
+        .read<InitialsFormBloc>()
+        .add(InitialsChanged(initial: value, index: index));
+    if (value.isNotEmpty) {
+      focusNodes[index].unfocus();
+      if (index < focusNodes.length - 1) {
+        FocusScope.of(context).requestFocus(focusNodes[index + 1]);
+      }
+    }
+  }
+}
+
+class _InitialFormField extends StatelessWidget {
+  const _InitialFormField(
+    this.index, {
+    required this.onChanged,
+    required this.focusNode,
+  });
+
+  final int index;
+  final void Function(int, String) onChanged;
+  final FocusNode focusNode;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 64,
+      height: 76,
+      color: Colors.white,
+      child: TextFormField(
+        key: Key('initial_form_field_$index'),
+        focusNode: focusNode,
+        textInputAction: TextInputAction.next,
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp('[a-zA-Z]')),
+          UpperCaseTextFormatter(),
+          LengthLimitingTextInputFormatter(1)
+        ],
+        style: TopDashTextStyles.headlineH1.copyWith(
+          color: TopDashColors.seedBlue,
+        ),
+        textCapitalization: TextCapitalization.characters,
+        decoration: const InputDecoration(hintText: 'A'),
+        textAlign: TextAlign.center,
+        onChanged: (value) {
+          onChanged(index, value);
+        },
+      ),
     );
   }
 }

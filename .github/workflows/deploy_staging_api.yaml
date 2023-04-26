@@ -58,6 +58,7 @@ jobs:
             FB_STORAGE_BUCKET=${{ env.FB_STORAGE_BUCKET }}
             RECAPTCHA_KEY=${{ secrets.RECAPTCHA_KEY }}
             DISABLE_TAB_CHECK=true
+            SCRIPTS_ENABLED=true
 
       - name: Show Output
         run: echo ${{ steps.deploy.outputs.url }}
