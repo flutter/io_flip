@@ -122,7 +122,7 @@ void main() {
         rounds: const [],
         turnTimeRemaining: 10,
         turnAnimationsFinished: true,
-        isFightScene: false,
+        isClashScene: false,
       );
 
       setUp(() {
@@ -373,7 +373,7 @@ void main() {
         rounds: const [],
         turnTimeRemaining: 10,
         turnAnimationsFinished: true,
-        isFightScene: false,
+        isClashScene: false,
       );
 
       setUp(() {
@@ -473,7 +473,7 @@ void main() {
 
       testWidgets(
         'completes and goes back when both players play a card and '
-        'fight scene finishes',
+        'clash scene finishes',
         (tester) async {
           final controller = StreamController<GameState>.broadcast();
 
@@ -529,15 +529,15 @@ void main() {
           final opponentClashOffset = tester.getCenter(opponentCardFinder);
           expect(opponentInitialOffset, isNot(equals(opponentClashOffset)));
 
-          controller.add(baseState.copyWith(isFightScene: true));
+          controller.add(baseState.copyWith(isClashScene: true));
 
           await tester.pumpAndSettle();
 
-          final fightScene = find.byType(FightScene);
-          expect(fightScene, findsOneWidget);
-          tester.widget<FightScene>(fightScene).onFinished();
+          final clashScene = find.byType(ClashScene);
+          expect(clashScene, findsOneWidget);
+          tester.widget<ClashScene>(clashScene).onFinished();
 
-          controller.add(baseState.copyWith(isFightScene: false));
+          controller.add(baseState.copyWith(isClashScene: false));
 
           // Get card offset once clash is over and both cards are back in the
           // original position
@@ -550,7 +550,7 @@ void main() {
           expect(opponentInitialOffset, equals(opponentFinalOffset));
 
           verify(() => bloc.add(CardOverlayRevealed())).called(1);
-          verify(() => bloc.add(FightSceneCompleted())).called(1);
+          verify(() => bloc.add(ClashSceneCompleted())).called(1);
           verify(() => bloc.add(TurnAnimationsFinished())).called(2);
           verify(() => bloc.add(TurnTimerStarted())).called(2);
         },

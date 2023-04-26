@@ -158,15 +158,15 @@ void main() {
       });
     });
 
-    group('FightSceneCompleted', () {
+    group('ClashSceneCompleted', () {
       test('can be instantiated', () {
-        expect(FightSceneCompleted(), isNotNull);
+        expect(ClashSceneCompleted(), isNotNull);
       });
 
       test('supports equality', () {
         expect(
-          FightSceneCompleted(),
-          equals(FightSceneCompleted()),
+          ClashSceneCompleted(),
+          equals(ClashSceneCompleted()),
         );
       });
     });

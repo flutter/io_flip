@@ -10,7 +10,7 @@ import '../../helpers/helpers.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  group('FightScene', () {
+  group('ClashScene', () {
     const playerCard = Card(
       id: 'player_card',
       name: 'host_card',
@@ -111,7 +111,7 @@ extension GameViewTest on WidgetTester {
     VoidCallback? onFinished,
   }) {
     return pumpApp(
-      FightScene(
+      ClashScene(
         onFinished: onFinished ?? () {},
         opponentCard: opponentCard,
         playerCard: playerCard,

@@ -238,8 +238,8 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     }
   }
 
-  void fightSceneCompleted() {
-    context.read<GameBloc>().add(const FightSceneCompleted());
+  void clashSceneCompleted() {
+    context.read<GameBloc>().add(const ClashSceneCompleted());
     for (final controller in clashControllers) {
       Future.delayed(turnEndDuration, controller.reverse);
       clashControllers = [];
@@ -337,10 +337,10 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
                     },
                   ),
                   _BoardCounter(counterOffset),
-                  if (state is MatchLoadedState && state.isFightScene)
+                  if (state is MatchLoadedState && state.isClashScene)
                     Positioned.fill(
-                      child: FightScene(
-                        onFinished: fightSceneCompleted,
+                      child: ClashScene(
+                        onFinished: clashSceneCompleted,
                         opponentCard: opponentCards.elementAt(
                           lastPlayedOpponentCardIndex!,
                         ),

@@ -67,7 +67,7 @@ void main() {
           rounds: const [],
           turnAnimationsFinished: false,
           turnTimeRemaining: 10,
-          isFightScene: false,
+          isClashScene: false,
         ),
         isNotNull,
       );
@@ -82,7 +82,7 @@ void main() {
           rounds: const [],
           turnAnimationsFinished: false,
           turnTimeRemaining: 10,
-          isFightScene: false,
+          isClashScene: false,
         ),
         equals(
           MatchLoadedState(
@@ -92,7 +92,7 @@ void main() {
             rounds: const [],
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
-            isFightScene: false,
+            isClashScene: false,
           ),
         ),
       );
@@ -105,7 +105,7 @@ void main() {
           rounds: const [],
           turnAnimationsFinished: false,
           turnTimeRemaining: 10,
-          isFightScene: false,
+          isClashScene: false,
         ),
         isNot(
           equals(
@@ -116,7 +116,7 @@ void main() {
               rounds: const [],
               turnAnimationsFinished: false,
               turnTimeRemaining: 10,
-              isFightScene: false,
+              isClashScene: false,
             ),
           ),
         ),
@@ -130,7 +130,7 @@ void main() {
           rounds: const [],
           turnAnimationsFinished: false,
           turnTimeRemaining: 10,
-          isFightScene: false,
+          isClashScene: false,
         ),
         isNot(
           equals(
@@ -141,7 +141,7 @@ void main() {
               rounds: const [],
               turnAnimationsFinished: false,
               turnTimeRemaining: 10,
-              isFightScene: false,
+              isClashScene: false,
             ),
           ),
         ),
@@ -155,7 +155,7 @@ void main() {
           rounds: const [],
           turnAnimationsFinished: false,
           turnTimeRemaining: 10,
-          isFightScene: false,
+          isClashScene: false,
         ),
         isNot(
           equals(
@@ -171,7 +171,7 @@ void main() {
               ],
               turnAnimationsFinished: false,
               turnTimeRemaining: 10,
-              isFightScene: false,
+              isClashScene: false,
             ),
           ),
         ),
@@ -185,7 +185,7 @@ void main() {
           rounds: const [],
           turnAnimationsFinished: false,
           turnTimeRemaining: 10,
-          isFightScene: false,
+          isClashScene: false,
         ),
         isNot(
           equals(
@@ -196,7 +196,7 @@ void main() {
               rounds: const [],
               turnAnimationsFinished: true,
               turnTimeRemaining: 10,
-              isFightScene: false,
+              isClashScene: false,
             ),
           ),
         ),
@@ -210,7 +210,7 @@ void main() {
           rounds: const [],
           turnAnimationsFinished: false,
           turnTimeRemaining: 10,
-          isFightScene: false,
+          isClashScene: false,
         ),
         isNot(
           equals(
@@ -221,7 +221,7 @@ void main() {
               rounds: const [],
               turnAnimationsFinished: false,
               turnTimeRemaining: 9,
-              isFightScene: false,
+              isClashScene: false,
             ),
           ),
         ),
@@ -237,7 +237,7 @@ void main() {
           rounds: const [],
           turnAnimationsFinished: true,
           turnTimeRemaining: 10,
-          isFightScene: false,
+          isClashScene: false,
         ).copyWith(match: match2),
         equals(
           MatchLoadedState(
@@ -247,7 +247,7 @@ void main() {
             rounds: const [],
             turnAnimationsFinished: true,
             turnTimeRemaining: 10,
-            isFightScene: false,
+            isClashScene: false,
           ),
         ),
       );
@@ -260,7 +260,7 @@ void main() {
           rounds: const [],
           turnAnimationsFinished: true,
           turnTimeRemaining: 10,
-          isFightScene: false,
+          isClashScene: false,
         ).copyWith(matchState: matchState2),
         equals(
           MatchLoadedState(
@@ -270,7 +270,7 @@ void main() {
             rounds: const [],
             turnAnimationsFinished: true,
             turnTimeRemaining: 10,
-            isFightScene: false,
+            isClashScene: false,
           ),
         ),
       );
@@ -283,7 +283,7 @@ void main() {
           rounds: const [],
           turnAnimationsFinished: true,
           turnTimeRemaining: 10,
-          isFightScene: false,
+          isClashScene: false,
         ).copyWith(rounds: [MatchRound(playerCardId: '', opponentCardId: '')]),
         equals(
           MatchLoadedState(
@@ -293,7 +293,7 @@ void main() {
             rounds: const [MatchRound(playerCardId: '', opponentCardId: '')],
             turnAnimationsFinished: true,
             turnTimeRemaining: 10,
-            isFightScene: false,
+            isClashScene: false,
           ),
         ),
       );
@@ -306,7 +306,7 @@ void main() {
           rounds: const [],
           turnAnimationsFinished: true,
           turnTimeRemaining: 10,
-          isFightScene: false,
+          isClashScene: false,
         ).copyWith(turnAnimationsFinished: false),
         equals(
           MatchLoadedState(
@@ -316,7 +316,7 @@ void main() {
             rounds: const [],
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
-            isFightScene: false,
+            isClashScene: false,
           ),
         ),
       );
@@ -329,7 +329,7 @@ void main() {
           rounds: const [],
           turnAnimationsFinished: true,
           turnTimeRemaining: 10,
-          isFightScene: false,
+          isClashScene: false,
         ).copyWith(turnTimeRemaining: 9),
         equals(
           MatchLoadedState(
@@ -339,7 +339,7 @@ void main() {
             rounds: const [],
             turnAnimationsFinished: true,
             turnTimeRemaining: 9,
-            isFightScene: false,
+            isClashScene: false,
           ),
         ),
       );

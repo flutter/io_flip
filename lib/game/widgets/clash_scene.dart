@@ -2,8 +2,8 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:game_domain/game_domain.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
-class FightScene extends StatefulWidget {
-  const FightScene({
+class ClashScene extends StatefulWidget {
+  const ClashScene({
     required this.onFinished,
     required this.opponentCard,
     required this.playerCard,
@@ -15,10 +15,10 @@ class FightScene extends StatefulWidget {
   final Card playerCard;
 
   @override
-  State<StatefulWidget> createState() => FightSceneState();
+  State<StatefulWidget> createState() => ClashSceneState();
 }
 
-class FightSceneState extends State<FightScene>
+class ClashSceneState extends State<ClashScene>
     with SingleTickerProviderStateMixin {
   final AnimatedCardController opponentController = AnimatedCardController();
   final AnimatedCardController playerController = AnimatedCardController();
