@@ -190,6 +190,21 @@ void main() {
           );
         },
       );
+
+      testWidgets(
+        'renders in large phone layout',
+        (tester) async {
+          tester.setLargePhoneDisplaySize();
+          defaultMockState();
+          when(bloc.gameResult).thenReturn(GameResult.draw);
+          await tester.pumpSubject(bloc);
+
+          expect(
+            find.byType(GameSummaryView),
+            findsOneWidget,
+          );
+        },
+      );
       testWidgets(
         'renders the draw message when the players make a draw',
         (tester) async {
