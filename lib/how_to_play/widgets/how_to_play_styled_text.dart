@@ -17,22 +17,12 @@ class HowToPlayStyledText extends StatelessWidget {
     );
   }
 
-  bool isScreenSmall(BuildContext context) =>
-      MediaQuery.of(context).size.width < TopDashBreakpoints.medium;
-
   TextStyle textStyle(BuildContext context) {
-    return isScreenSmall(context)
-        ? TopDashTextStyles.mobileH4Light
-        : TopDashTextStyles.headlineH4Light;
+    return TopDashTextStyles.mobileH4Light;
   }
 
   Map<String, StyledTextTagBase> textTags(BuildContext context) {
     return {
-      'bold': StyledTextTag(
-        style: isScreenSmall(context)
-            ? TopDashTextStyles.mobileH4
-            : TopDashTextStyles.headlineH4,
-      ),
       'yellow': StyledTextTag(
         style: const TextStyle(color: TopDashColors.seedYellow),
       ),

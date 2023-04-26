@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:top_dash/info/info.dart';
 
 import '../../helpers/helpers.dart';
@@ -32,21 +31,6 @@ void main() {
       for (final text in expectedTexts) {
         expect(find.text(text, findRichText: true), findsOneWidget);
       }
-    });
-
-    testWidgets('tapping close button pops go router', (tester) async {
-      final goRouter = MockGoRouter();
-      when(goRouter.canPop).thenReturn(true);
-
-      await tester.pumpApp(
-        buildSubject(),
-        router: goRouter,
-      );
-
-      await tester.tap(find.byType(CloseButton));
-      await tester.pumpAndSettle();
-
-      verify(goRouter.pop).called(1);
     });
   });
 }

@@ -4,9 +4,11 @@ import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/audio/audio.dart';
 import 'package:top_dash/gen/assets.gen.dart';
+import 'package:top_dash/info/info.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/share/views/views.dart';
 import 'package:top_dash/share/widgets/widgets.dart';
+import 'package:top_dash/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class ShareHandPage extends StatelessWidget {
@@ -94,8 +96,13 @@ class ShareHandPage extends StatelessWidget {
               ],
             ),
             trailing: RoundedButton.icon(
+              key: const Key('share_page_info_button'),
               Icons.info,
-              // TODO(Samobrien): Route to FAQ Page
+              onPressed: () => TopDashDialog.show(
+                context,
+                child: const InfoView(),
+                onClose: context.maybePop,
+              ),
             ),
           ),
           const SizedBox(height: TopDashSpacing.md),
