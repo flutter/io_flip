@@ -1995,5 +1995,45 @@ void main() {
         ],
       );
     });
+
+    group('CardLandingStarted', () {
+      blocTest<GameBloc, GameState>(
+        'emits state updating showCardLanding field',
+        build: () => GameBloc(
+          connectionRepository: connectionRepository,
+          audioController: audioController,
+          gameResource: gameResource,
+          matchMakerRepository: matchMakerRepository,
+          user: user,
+          isHost: true,
+          matchSolver: matchSolver,
+        ),
+        seed: () => baseState,
+        act: (bloc) => bloc.add(CardLandingStarted()),
+        expect: () => <GameState>[
+          baseState.copyWith(showCardLanding: true),
+        ],
+      );
+    });
+
+    group('CardLandingCompleted', () {
+      blocTest<GameBloc, GameState>(
+        'emits state updating showCardLanding field',
+        build: () => GameBloc(
+          connectionRepository: connectionRepository,
+          audioController: audioController,
+          gameResource: gameResource,
+          matchMakerRepository: matchMakerRepository,
+          user: user,
+          isHost: true,
+          matchSolver: matchSolver,
+        ),
+        seed: () => baseState.copyWith(showCardLanding: true),
+        act: (bloc) => bloc.add(CardLandingCompleted()),
+        expect: () => <GameState>[
+          baseState.copyWith(showCardLanding: false),
+        ],
+      );
+    });
   });
 }
