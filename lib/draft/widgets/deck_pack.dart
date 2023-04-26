@@ -87,13 +87,64 @@ class DeckPack extends StatelessWidget {
   }
 }
 
-class _AnimatedDeck extends StatelessWidget {
+class _AnimatedDeck extends StatefulWidget {
   const _AnimatedDeck({
     required this.child,
     super.key,
   });
 
   final Widget child;
+
+  @override
+  State<_AnimatedDeck> createState() => _AnimatedDeckState();
+}
+
+class _AnimatedDeckState extends State<_AnimatedDeck> {
+  bool underlayVisible = false;
+  bool isAnimationPlaying = false;
+  Widget? anim;
+
+  // @override
+  // void initState() {
+  //   _beginAnimation();
+  //   super.initState();
+  // }
+
+  @override
+  void didChangeDependencies() {
+    _beginAnimation();
+    super.didChangeDependencies();
+  }
+
+  void _beginAnimation() {
+    final images = context.read<Images>();
+    anim = SpriteAnimationWidget.asset(
+      onComplete: () {
+        _beginAnimation();
+      },
+      path: Assets.images.frontPack.keyName,
+      images: images,
+      anchor: Anchor.topCenter,
+      // onComplete: onComplete,
+      data: SpriteAnimationData.sequenced(
+        amount: 56,
+        amountPerRow: 7,
+        textureSize: Vector2(1050, 1219),
+        stepTime: 0.04,
+        loop: false,
+      ),
+    );
+    setState(() {
+      isAnimationPlaying = true;
+      underlayVisible = false;
+    });
+
+    Future.delayed(Duration(milliseconds: 1150)).then((value) {
+      setState(() {
+        underlayVisible = true;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,6 +163,45 @@ class _AnimatedDeck extends StatelessWidget {
     const topFactor = .11;
     const bottomFactor = 0.38;
 
+    return AspectRatio(
+      aspectRatio: 1050 / 1219,
+      child: Stack(
+        children: [
+          if (underlayVisible)
+            Align(
+              alignment: const Alignment(-0.02, -0.6),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return ConstrainedBox(
+                    constraints: BoxConstraints.loose(
+                      Size(
+                        0.25 * constraints.maxWidth,
+                        0.32 * constraints.maxHeight,
+                      ),
+                    ),
+                    child: AspectRatio(
+                      aspectRatio: 1050 / 1312,
+                      child: ColoredBox(color: Colors.green),
+                    ),
+                  );
+                },
+              ),
+            ),
+          AspectRatio(
+            aspectRatio: 1050 / 1219,
+            child: DecoratedBox(
+              child: anim,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
     return ClipRect(
       clipBehavior: Clip.none,
       child: SizedBox(
@@ -124,33 +214,20 @@ class _AnimatedDeck extends StatelessWidget {
             builder: (context, constraints) {
               return Stack(
                 children: [
-                  Positioned(
-                    left: leftFactor * constraints.maxWidth,
-                    right: leftFactor * constraints.maxWidth,
-                    top: topFactor * constraints.maxHeight,
-                    bottom: constraints.maxHeight -
-                        (bottomFactor * constraints.maxHeight),
-                    child: SizedBox.expand(
-                      child: ColoredBox(
-                        color: Colors.red,
+                  if (underlayVisible)
+                    Positioned(
+                      left: leftFactor * constraints.maxWidth,
+                      right: leftFactor * constraints.maxWidth,
+                      top: topFactor * constraints.maxHeight,
+                      bottom: constraints.maxHeight -
+                          (bottomFactor * constraints.maxHeight),
+                      child: SizedBox.expand(
+                        child: ColoredBox(
+                          color: Colors.red,
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox.expand(
-                    child: SpriteAnimationWidget.asset(
-                      path: Assets.images.frontPack.keyName,
-                      images: images,
-                      anchor: Anchor.topCenter,
-                      // onComplete: onComplete,
-                      data: SpriteAnimationData.sequenced(
-                        amount: 56,
-                        amountPerRow: 7,
-                        textureSize: Vector2(1050, 1219),
-                        stepTime: 0.04,
-                        loop: true,
-                      ),
-                    ),
-                  ),
+                  SizedBox.expand(child: anim),
                 ],
               );
             },
