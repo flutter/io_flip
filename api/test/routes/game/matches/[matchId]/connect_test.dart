@@ -6,6 +6,7 @@ import 'package:cards_repository/cards_repository.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:jwt_middleware/jwt_middleware.dart';
+import 'package:logging/logging.dart';
 import 'package:match_repository/match_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -20,6 +21,8 @@ class _MockAuthenticatedUser extends Mock implements AuthenticatedUser {}
 
 class _MockRequestContext extends Mock implements RequestContext {}
 
+class _MockLogger extends Mock implements Logger {}
+
 class _MockRequest extends Mock implements Request {}
 
 void main() {
@@ -28,6 +31,7 @@ void main() {
   late AuthenticatedUser user;
   late Request request;
   late RequestContext context;
+  late Logger logger;
 
   const matchId = 'matchId';
   const userId = 'userId';
@@ -82,6 +86,9 @@ void main() {
     when(() => context.read<CardsRepository>()).thenReturn(cardsRepository);
     when(() => context.read<AuthenticatedUser>()).thenReturn(user);
     when(() => context.read<MatchRepository>()).thenReturn(matchRepository);
+
+    logger = _MockLogger();
+    when(() => context.read<Logger>()).thenReturn(logger);
   });
 
   group('POST /game/matches/connect', () {

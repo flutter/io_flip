@@ -30,7 +30,9 @@ class InitialsFormBloc extends Bloc<InitialsFormEvent, InitialsFormState> {
     InitialsChanged event,
     Emitter<InitialsFormState> emit,
   ) {
-    emit(state.copyWith(initials: event.initials));
+    final initials = [...state.initials];
+    initials[event.index] = event.initial;
+    emit(state.copyWith(initials: initials));
   }
 
   Future<void> _onInitialsSubmitted(
@@ -38,17 +40,19 @@ class InitialsFormBloc extends Bloc<InitialsFormEvent, InitialsFormState> {
     Emitter<InitialsFormState> emit,
   ) async {
     try {
-      if (_validate()) {
+      if (!_hasValidPattern()) {
+        emit(state.copyWith(status: InitialsFormStatus.invalid));
+      } else if (_isBlacklisted()) {
+        emit(state.copyWith(status: InitialsFormStatus.blacklisted));
+      } else {
         emit(state.copyWith(status: InitialsFormStatus.valid));
 
         await _leaderboardResource.addInitialsToScoreCard(
           scoreCardId: _scoreCardId,
-          initials: state.initials,
+          initials: state.initials.join(),
         );
 
         emit(state.copyWith(status: InitialsFormStatus.success));
-      } else {
-        emit(state.copyWith(status: InitialsFormStatus.invalid));
       }
     } catch (e, s) {
       addError(e, s);
@@ -56,10 +60,12 @@ class InitialsFormBloc extends Bloc<InitialsFormEvent, InitialsFormState> {
     }
   }
 
-  bool _validate() {
+  bool _hasValidPattern() {
     final value = state.initials;
-    return value.isNotEmpty &&
-        initialsRegex.hasMatch(value) &&
-        !blacklist.contains(value);
+    return value.isNotEmpty && initialsRegex.hasMatch(value.join());
+  }
+
+  bool _isBlacklisted() {
+    return blacklist.contains(state.initials.join());
   }
 }

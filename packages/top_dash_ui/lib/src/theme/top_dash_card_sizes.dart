@@ -2,11 +2,14 @@ import 'dart:ui';
 
 /// Card sizes used in the Top Dash UI.
 abstract class TopDashCardSizes {
+  /// xxs card size
+  static const Size xxs = Size(54, 72);
+
   /// xs card size
-  static const Size xs = Size(54, 72);
+  static const Size xs = Size(103, 137);
 
   /// sm card size
-  static const Size sm = Size(103, 137);
+  static const Size sm = Size(139, 185);
 
   /// md card size
   static const Size md = Size(175, 233);

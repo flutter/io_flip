@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cards_repository/cards_repository.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:jwt_middleware/jwt_middleware.dart';
+import 'package:logging/logging.dart';
 import 'package:match_repository/match_repository.dart';
 
 FutureOr<Response> onRequest(RequestContext context, String matchId) async {
@@ -36,7 +36,9 @@ FutureOr<Response> onRequest(RequestContext context, String matchId) async {
           deckId: deckId,
         );
       } catch (e, s) {
-        log('Error while connecting to cpu match: $e', stackTrace: s);
+        context
+            .read<Logger>()
+            .warning('Error while connecting to cpu match', e, s);
         return Response(statusCode: HttpStatus.internalServerError);
       }
       return Response(statusCode: HttpStatus.noContent);
