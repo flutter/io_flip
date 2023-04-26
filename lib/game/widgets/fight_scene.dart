@@ -18,7 +18,8 @@ class FightScene extends StatefulWidget {
   State<StatefulWidget> createState() => FightSceneState();
 }
 
-class FightSceneState extends State<FightScene> with TickerProviderStateMixin {
+class FightSceneState extends State<FightScene>
+    with SingleTickerProviderStateMixin {
   final AnimatedCardController opponentController = AnimatedCardController();
   final AnimatedCardController playerController = AnimatedCardController();
   late final AnimationController motionController = AnimationController(
@@ -50,8 +51,8 @@ class FightSceneState extends State<FightScene> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    motionController.forward();
     super.initState();
+    motionController.forward();
   }
 
   @override

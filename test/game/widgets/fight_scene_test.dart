@@ -63,7 +63,7 @@ void main() {
     );
 
     testWidgets(
-      'Puts players card over opponents when stronger',
+      'puts players card over opponents when stronger',
       (tester) async {
         await tester.pumpSubject(
           playerCard,
@@ -83,7 +83,7 @@ void main() {
     );
 
     testWidgets(
-      'Puts opponents card over players when stronger',
+      'puts opponents card over players when stronger',
       (tester) async {
         await tester.pumpSubject(
           opponentCard,
