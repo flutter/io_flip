@@ -173,13 +173,13 @@ void main() {
 
     group('CardOverlayRevealed', () {
       test('can be instantiated', () {
-        expect(CardOverlayRevealed(), isNotNull);
+        expect(ClashSceneStarted(), isNotNull);
       });
 
       test('supports equality', () {
         expect(
-          CardOverlayRevealed(),
-          equals(CardOverlayRevealed()),
+          ClashSceneStarted(),
+          equals(ClashSceneStarted()),
         );
       });
     });

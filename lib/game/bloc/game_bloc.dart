@@ -41,7 +41,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     on<TurnTimerStarted>(_onTurnTimerStarted);
     on<TurnTimerTicked>(_onTurnTimerTicked);
     on<TurnAnimationsFinished>(_onTurnAnimationsFinished);
-    on<CardOverlayRevealed>(_onCardOverlayRevealed);
+    on<ClashSceneStarted>(_onClashSceneStarted);
     on<FightSceneCompleted>(_onFightSceneCompleted);
     on<CardLandingStarted>(_onCardLandingStarted);
     on<CardLandingCompleted>(_onCardLandingCompleted);
@@ -370,8 +370,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     }
   }
 
-  void _onCardOverlayRevealed(
-    CardOverlayRevealed event,
+  void _onClashSceneStarted(
+    ClashSceneStarted event,
     Emitter<GameState> emit,
   ) {
     if (state is MatchLoadedState) {

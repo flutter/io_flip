@@ -227,7 +227,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
           if (state.rounds.last.isComplete()) {
             Future.delayed(
               bigFlipAnimation.duration + CardLandingPuff.duration,
-              () => bloc.add(const CardOverlayRevealed()),
+              () => bloc.add(const ClashSceneStarted()),
             );
           }
         }

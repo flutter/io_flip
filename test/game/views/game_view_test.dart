@@ -468,7 +468,7 @@ void main() {
         await tester.pumpSubject(bloc);
         await tester.pumpAndSettle();
 
-        verify(() => bloc.add(CardOverlayRevealed())).called(1);
+        verify(() => bloc.add(ClashSceneStarted())).called(1);
       });
 
       testWidgets(
@@ -549,7 +549,7 @@ void main() {
           expect(playerInitialOffset, equals(playerFinalOffset));
           expect(opponentInitialOffset, equals(opponentFinalOffset));
 
-          verify(() => bloc.add(CardOverlayRevealed())).called(1);
+          verify(() => bloc.add(ClashSceneStarted())).called(1);
           verify(() => bloc.add(FightSceneCompleted())).called(1);
           verify(() => bloc.add(TurnAnimationsFinished())).called(2);
           verify(() => bloc.add(TurnTimerStarted())).called(2);

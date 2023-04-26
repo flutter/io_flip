@@ -80,8 +80,8 @@ class FightSceneCompleted extends GameEvent {
   List<Object?> get props => [];
 }
 
-class CardOverlayRevealed extends GameEvent {
-  const CardOverlayRevealed();
+class ClashSceneStarted extends GameEvent {
+  const ClashSceneStarted();
 
   @override
   List<Object?> get props => [];

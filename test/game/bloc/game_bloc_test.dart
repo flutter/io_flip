@@ -1947,7 +1947,7 @@ void main() {
             )
           ],
         ),
-        act: (bloc) => bloc.add(CardOverlayRevealed()),
+        act: (bloc) => bloc.add(ClashSceneStarted()),
         expect: () => <GameState>[
           baseState.copyWith(
             rounds: [
