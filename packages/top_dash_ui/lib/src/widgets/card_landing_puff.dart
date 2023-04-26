@@ -51,21 +51,17 @@ class CardLandingPuff extends StatelessWidget {
     return SizedBox(
       height: height,
       width: width,
-      child: Visibility(
-        visible: playing,
-        child: SpriteAnimationWidget.asset(
-          playing: playing,
-          path: Assets.images.cardLanding.keyName,
-          images: images,
-          anchor: Anchor.center,
-          onComplete: onComplete,
-          data: SpriteAnimationData.sequenced(
-            amount: frames,
-            amountPerRow: 4,
-            textureSize: Vector2(496, 698),
-            stepTime: stepTime,
-            loop: false,
-          ),
+      child: SpriteAnimationWidget.asset(
+        path: Assets.images.cardLanding.keyName,
+        images: images,
+        anchor: Anchor.center,
+        onComplete: onComplete,
+        data: SpriteAnimationData.sequenced(
+          amount: frames,
+          amountPerRow: 4,
+          textureSize: Vector2(496, 698),
+          stepTime: stepTime,
+          loop: false,
         ),
       ),
     );

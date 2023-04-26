@@ -261,8 +261,6 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     final opponentCards =
         context.select<GameBloc, List<Card>>((bloc) => bloc.opponentCards);
 
-    final state = context.watch<GameBloc>().state;
-
     return BlocListener<GameBloc, GameState>(
       listenWhen: (previous, current) {
         if (previous is MatchLoadedState && current is MatchLoadedState) {
@@ -321,19 +319,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
                   );
                 },
               ),
-              if (state is MatchLoadedState)
-                Positioned(
-                  top: -20,
-                  right: -160,
-                  child: CardLandingPuff(
-                    playing: state.showCardLanding,
-                    onComplete: () {
-                      context
-                          .read<GameBloc>()
-                          .add(const CardLandingCompleted());
-                    },
-                  ),
-                ),
+              const _CardLandingPuffEffect(),
               ...playerCards.mapIndexed(
                 (i, card) {
                   return _PlayerCard(
@@ -344,18 +330,15 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
                 },
               ),
               _BoardCounter(counterOffset),
-              if (state is MatchLoadedState && state.isFightScene)
-                Positioned.fill(
-                  child: FightScene(
-                    onFinished: fightSceneCompleted,
-                    opponentCard: opponentCards.elementAt(
-                      lastPlayedOpponentCardIndex!,
-                    ),
-                    playerCard: playerCards.elementAt(
-                      lastPlayedPlayerCardIndex!,
-                    ),
-                  ),
-                )
+              _ClashScene(
+                onFinished: fightSceneCompleted,
+                opponentCard: () => opponentCards.elementAt(
+                  lastPlayedOpponentCardIndex!,
+                ),
+                playerCard: () => playerCards.elementAt(
+                  lastPlayedPlayerCardIndex!,
+                ),
+              ),
             ],
           ),
         ),
@@ -626,5 +609,59 @@ class _BoardCounter extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _CardLandingPuffEffect extends StatelessWidget {
+  const _CardLandingPuffEffect();
+
+  @override
+  Widget build(BuildContext context) {
+    final showCardLanding = context.select<GameBloc, bool>(
+      (bloc) => (bloc.state as MatchLoadedState).showCardLanding,
+    );
+    if (showCardLanding) {
+      return Positioned(
+        top: -20,
+        right: -160,
+        child: CardLandingPuff(
+          playing: showCardLanding,
+          onComplete: () {
+            context.read<GameBloc>().add(const CardLandingCompleted());
+          },
+        ),
+      );
+    }
+    return const SizedBox();
+  }
+}
+
+class _ClashScene extends StatelessWidget {
+  const _ClashScene({
+    required this.onFinished,
+    required this.opponentCard,
+    required this.playerCard,
+  });
+
+  final VoidCallback onFinished;
+  final Card Function() opponentCard;
+  final Card Function() playerCard;
+
+  @override
+  Widget build(BuildContext context) {
+    final isClashScene = context.select<GameBloc, bool>(
+      (bloc) => (bloc.state as MatchLoadedState).isFightScene,
+    );
+
+    if (isClashScene) {
+      return Positioned.fill(
+        child: FightScene(
+          onFinished: onFinished,
+          opponentCard: opponentCard(),
+          playerCard: playerCard(),
+        ),
+      );
+    }
+    return const SizedBox();
   }
 }
