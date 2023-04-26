@@ -18,8 +18,8 @@ class GameSummaryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final result = context.select((GameBloc bloc) => bloc.gameResult());
-    final isPhoneWidth = MediaQuery.of(context).size.width < 400;
-    final screenHeight = MediaQuery.of(context).size.height;
+    final isPhoneWidth = MediaQuery.sizeOf(context).width < 400;
+    final screenHeight = MediaQuery.sizeOf(context).height;
     return IoFlipScaffold(
       body: MatchResultSplash(
         result: result ?? GameResult.draw,
@@ -126,7 +126,7 @@ class _CardsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cardSize = (MediaQuery.of(context).size.height > 700)
+    final cardSize = (MediaQuery.sizeOf(context).height > 700)
         ? const GameCardSize.sm()
         : const GameCardSize.xs();
     final bloc = context.watch<GameBloc>();
