@@ -6,6 +6,7 @@ import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash/game/views/game_summary.dart';
+import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/leaderboard/leaderboard.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -288,60 +289,74 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
           }
         }
       },
-      child: Center(
-        child: SizedBox(
-          width: boardSize.width,
-          height: boardSize.height,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              for (final offset in playerCardOffsets)
-                _PlaceholderCard(
-                  rect: offset & playerHandCardSize.size,
-                ),
-              for (final offset in opponentCardOffsets)
-                _PlaceholderCard(
-                  rect: offset & opponentHandCardSize.size,
-                ),
-              ...clashCardOffsets.mapIndexed(
-                (i, offset) {
-                  return _ClashCard(
-                    rect: offset & clashCardSize.size,
-                    showPlus: i == 1,
-                  );
-                },
+      child: Stack(
+        children: [
+          Transform.scale(
+            scale: 1.4,
+            child: Center(
+              child: Image.asset(
+                Assets.images.stadiumBackground.keyName,
+                fit: BoxFit.cover,
               ),
-              ...opponentCards.mapIndexed(
-                (i, card) {
-                  return _OpponentCard(
-                    card: card,
-                    animation: opponentCardAnimations[i],
-                  );
-                },
-              ),
-              const _CardLandingPuffEffect(),
-              ...playerCards.mapIndexed(
-                (i, card) {
-                  return _PlayerCard(
-                    card: card,
-                    animation: playerCardAnimations[i],
-                    animatedCardController: playerAnimatedCardControllers[i],
-                  );
-                },
-              ),
-              _BoardCounter(counterOffset),
-              _ClashScene(
-                onFinished: fightSceneCompleted,
-                opponentCard: () => opponentCards.elementAt(
-                  lastPlayedOpponentCardIndex!,
-                ),
-                playerCard: () => playerCards.elementAt(
-                  lastPlayedPlayerCardIndex!,
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+          Center(
+            child: SizedBox(
+              width: boardSize.width,
+              height: boardSize.height,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  for (final offset in playerCardOffsets)
+                    _PlaceholderCard(
+                      rect: offset & playerHandCardSize.size,
+                    ),
+                  for (final offset in opponentCardOffsets)
+                    _PlaceholderCard(
+                      rect: offset & opponentHandCardSize.size,
+                    ),
+                  ...clashCardOffsets.mapIndexed(
+                    (i, offset) {
+                      return _ClashCard(
+                        rect: offset & clashCardSize.size,
+                        showPlus: i == 1,
+                      );
+                    },
+                  ),
+                  ...opponentCards.mapIndexed(
+                    (i, card) {
+                      return _OpponentCard(
+                        card: card,
+                        animation: opponentCardAnimations[i],
+                      );
+                    },
+                  ),
+                  const _CardLandingPuffEffect(),
+                  ...playerCards.mapIndexed(
+                    (i, card) {
+                      return _PlayerCard(
+                        card: card,
+                        animation: playerCardAnimations[i],
+                        animatedCardController:
+                            playerAnimatedCardControllers[i],
+                      );
+                    },
+                  ),
+                  _BoardCounter(counterOffset),
+                  _ClashScene(
+                    onFinished: fightSceneCompleted,
+                    opponentCard: () => opponentCards.elementAt(
+                      lastPlayedOpponentCardIndex!,
+                    ),
+                    playerCard: () => playerCards.elementAt(
+                      lastPlayedPlayerCardIndex!,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

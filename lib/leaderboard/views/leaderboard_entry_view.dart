@@ -23,8 +23,10 @@ class LeaderboardEntryView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.xxlg),
         child: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              const SizedBox(height: TopDashSpacing.xlg),
+              IoFlipLogo(width: 96.96, height: 64),
+              const Spacer(),
               Text(
                 l10n.enterYourInitials,
                 textAlign: TextAlign.center,
@@ -34,7 +36,8 @@ class LeaderboardEntryView extends StatelessWidget {
               InitialsForm(
                 scoreCardId: scoreCardId,
                 shareHandPageData: shareHandPageData,
-              )
+              ),
+              const Spacer(),
             ],
           ),
         ),
