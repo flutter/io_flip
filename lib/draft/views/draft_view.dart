@@ -305,7 +305,7 @@ class _BottomBar extends StatelessWidget {
         Icons.question_mark_rounded,
         onPressed: () => TopDashDialog.show(
           context,
-          const HowToPlayDialog(),
+          child: const HowToPlayDialog(),
         ),
       ),
     );

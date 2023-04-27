@@ -18,6 +18,26 @@ void main() {
       expect(find.text('test'), findsOneWidget);
     });
 
+    testWidgets('calls onClose method', (tester) async {
+      var onCloseCalled = false;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: TopDashDialog(
+              onClose: () => onCloseCalled = true,
+              child: child,
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.byType(CloseButton));
+      await tester.pumpAndSettle();
+
+      expect(onCloseCalled, isTrue);
+    });
+
     group('show', () {
       testWidgets('renders the dialog with correct child', (tester) async {
         await tester.pumpWidget(
@@ -26,7 +46,10 @@ void main() {
               builder: (BuildContext context) => Scaffold(
                 body: Center(
                   child: ElevatedButton(
-                    onPressed: () => TopDashDialog.show(context, child),
+                    onPressed: () => TopDashDialog.show(
+                      context,
+                      child: child,
+                    ),
                     child: const Text('show'),
                   ),
                 ),
