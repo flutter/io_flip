@@ -123,6 +123,7 @@ void main() {
         turnTimeRemaining: 10,
         turnAnimationsFinished: true,
         isFightScene: false,
+        showCardLanding: false,
       );
 
       setUp(() {
@@ -374,11 +375,14 @@ void main() {
         turnTimeRemaining: 10,
         turnAnimationsFinished: true,
         isFightScene: false,
+        showCardLanding: false,
       );
 
       setUp(() {
         when(() => bloc.playerCards).thenReturn(playerCards);
         when(() => bloc.opponentCards).thenReturn(opponentCards);
+        when(() => bloc.lastPlayedPlayerCard).thenReturn(playerCards.first);
+        when(() => bloc.lastPlayedOpponentCard).thenReturn(opponentCards.first);
       });
 
       testWidgets('starts when player plays a card', (tester) async {
@@ -466,9 +470,11 @@ void main() {
         );
 
         await tester.pumpSubject(bloc);
-        await tester.pumpAndSettle();
+        await tester.pumpAndSettle(
+          bigFlipAnimation.duration + CardLandingPuff.duration,
+        );
 
-        verify(() => bloc.add(CardOverlayRevealed())).called(1);
+        verify(() => bloc.add(ClashSceneStarted())).called(1);
       });
 
       testWidgets(
@@ -549,10 +555,48 @@ void main() {
           expect(playerInitialOffset, equals(playerFinalOffset));
           expect(opponentInitialOffset, equals(opponentFinalOffset));
 
-          verify(() => bloc.add(CardOverlayRevealed())).called(1);
+          verify(() => bloc.add(ClashSceneStarted())).called(1);
           verify(() => bloc.add(FightSceneCompleted())).called(1);
           verify(() => bloc.add(TurnAnimationsFinished())).called(2);
           verify(() => bloc.add(TurnTimerStarted())).called(2);
+        },
+      );
+
+      testWidgets(
+        'completes and shows card landing puff effect when player plays a card',
+        (tester) async {
+          whenListen(
+            bloc,
+            Stream.fromIterable([
+              baseState,
+              baseState.copyWith(
+                lastPlayedCardId: playerCards.first.id,
+                rounds: [
+                  MatchRound(
+                    playerCardId: playerCards.first.id,
+                    opponentCardId: null,
+                  ),
+                ],
+                showCardLanding: true,
+              ),
+            ]),
+            initialState: baseState,
+          );
+
+          await tester.pumpSubject(bloc);
+          await tester.pump(bigFlipAnimation.duration);
+
+          final cardLandingPuff = find.byType(CardLandingPuff);
+          expect(cardLandingPuff, findsOneWidget);
+
+          await tester.pumpAndSettle(
+            bigFlipAnimation.duration + CardLandingPuff.duration,
+          );
+
+          tester.widget<CardLandingPuff>(cardLandingPuff).onComplete?.call();
+
+          verify(() => bloc.add(CardLandingStarted())).called(1);
+          verify(() => bloc.add(CardLandingCompleted())).called(1);
         },
       );
     });
