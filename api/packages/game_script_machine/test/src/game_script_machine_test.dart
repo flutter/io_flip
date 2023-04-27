@@ -128,12 +128,12 @@ void main() {
         machine = GameScriptMachine.initialize(defaultGameLogic, rng: rng);
       });
 
-      test('returns true if the double value is bigger than .8', () {
-        when(() => rng.nextDouble()).thenReturn(.9);
+      test('returns true if the double value is bigger than .9', () {
+        when(() => rng.nextDouble()).thenReturn(.92);
         expect(machine.rollCardRarity(), isTrue);
       });
 
-      test('returns false if the double value is lessen than .8', () {
+      test('returns false if the double value is lessen than .9', () {
         when(() => rng.nextDouble()).thenReturn(.4);
         expect(machine.rollCardRarity(), isFalse);
       });
