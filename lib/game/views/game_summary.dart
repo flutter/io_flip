@@ -272,60 +272,54 @@ class GameSummaryFooter extends StatelessWidget {
     final playerScoreCard = state.playerScoreCard;
     final playerDeck =
         bloc.isHost ? state.match.hostDeck : state.match.guestDeck;
-    final children = [
-      RoundedButton.text(
-        l10n.nextMatch,
-        onPressed: () => GoRouter.of(context).pop(),
-      ),
-      _gap,
-      RoundedButton.text(
-        l10n.quit,
-        backgroundColor: TopDashColors.seedBlack,
-        foregroundColor: TopDashColors.seedWhite,
-        borderColor: TopDashColors.seedPaletteNeutral40,
-        onPressed: () => TopDashDialog.show(
-          context,
-          child: QuitGameDialog(
-            onConfirm: () => _routerNeglectCall(context, () {
-              if (playerScoreCard.initials != null) {
-                GoRouter.of(context).goNamed(
-                  'share_hand',
-                  extra: ShareHandPageData(
-                    initials: playerScoreCard.initials!,
-                    wins: state.playerScoreCard.currentStreak,
-                    deckId: playerDeck.id,
-                    deck: bloc.playerCards,
-                  ),
-                );
-              } else {
-                GoRouter.of(context).pop();
-                bloc.add(
-                  LeaderboardEntryRequested(
-                    shareHandPageData: ShareHandPageData(
-                      initials: '',
+
+    return Flex(
+      direction: isPhoneWidth ? Axis.vertical : Axis.horizontal,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        RoundedButton.text(
+          l10n.nextMatch,
+          onPressed: () => GoRouter.of(context).pop(),
+        ),
+        _gap,
+        RoundedButton.text(
+          l10n.quit,
+          backgroundColor: TopDashColors.seedBlack,
+          foregroundColor: TopDashColors.seedWhite,
+          borderColor: TopDashColors.seedPaletteNeutral40,
+          onPressed: () => TopDashDialog.show(
+            context,
+            child: QuitGameDialog(
+              onConfirm: () => _routerNeglectCall(context, () {
+                if (playerScoreCard.initials != null) {
+                  GoRouter.of(context).goNamed(
+                    'share_hand',
+                    extra: ShareHandPageData(
+                      initials: playerScoreCard.initials!,
                       wins: state.playerScoreCard.currentStreak,
                       deckId: playerDeck.id,
                       deck: bloc.playerCards,
                     ),
-                  ),
-                );
-              }
-            }),
-            onCancel: GoRouter.of(context).pop,
+                  );
+                } else {
+                  GoRouter.of(context).pop();
+                  bloc.add(
+                    LeaderboardEntryRequested(
+                      shareHandPageData: ShareHandPageData(
+                        initials: '',
+                        wins: state.playerScoreCard.currentStreak,
+                        deckId: playerDeck.id,
+                        deck: bloc.playerCards,
+                      ),
+                    ),
+                  );
+                }
+              }),
+              onCancel: GoRouter.of(context).pop,
+            ),
           ),
         ),
-      ),
-    ];
-    if (isPhoneWidth) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: children,
-      );
-    } else {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: children,
-      );
-    }
+      ],
+    );
   }
 }
