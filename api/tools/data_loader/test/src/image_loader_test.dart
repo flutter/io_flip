@@ -28,6 +28,7 @@ void main() {
         csv: csv,
         image: image,
         dest: dest,
+        totalDeckSize: 8,
       );
     });
 
@@ -37,6 +38,7 @@ void main() {
           csv: _MockFile(),
           image: _MockFile(),
           dest: '',
+          totalDeckSize: 8,
         ),
         isNotNull,
       );
@@ -54,22 +56,22 @@ void main() {
       await imageLoader.loadImages((_, __) {});
 
       final expectedFilePaths = [
-        path.join('dash', 'alien', 'banjos', 'city.png'),
-        path.join('dash', 'alien', 'banjos', 'forest.png'),
-        path.join('dash', 'alien', 'bass', 'city.png'),
-        path.join('dash', 'alien', 'bass', 'forest.png'),
-        path.join('dash', 'mage', 'banjos', 'city.png'),
-        path.join('dash', 'mage', 'banjos', 'forest.png'),
-        path.join('dash', 'mage', 'bass', 'city.png'),
-        path.join('dash', 'mage', 'bass', 'forest.png'),
-        path.join('android', 'alien', 'banjos', 'city.png'),
-        path.join('android', 'alien', 'banjos', 'forest.png'),
-        path.join('android', 'alien', 'bass', 'city.png'),
-        path.join('android', 'alien', 'bass', 'forest.png'),
-        path.join('android', 'mage', 'banjos', 'city.png'),
-        path.join('android', 'mage', 'banjos', 'forest.png'),
-        path.join('android', 'mage', 'bass', 'city.png'),
-        path.join('android', 'mage', 'bass', 'forest.png'),
+        'dash_alien_banjos_1.png',
+        'dash_alien_bass_2.png',
+        'dash_alien_banjos_1.png',
+        'dash_alien_bass_2.png',
+        'dash_mage_banjos_1.png',
+        'dash_mage_bass_2.png',
+        'dash_mage_banjos_1.png',
+        'dash_mage_bass_2.png',
+        'android_alien_banjos_1.png',
+        'android_alien_bass_2.png',
+        'android_alien_banjos_1.png',
+        'android_alien_bass_2.png',
+        'android_mage_banjos_1.png',
+        'android_mage_bass_2.png',
+        'android_mage_banjos_1.png',
+        'android_mage_bass_2.png',
       ];
 
       for (final filePath in expectedFilePaths) {
