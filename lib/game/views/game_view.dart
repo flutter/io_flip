@@ -387,8 +387,8 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     return false;
   }
 
-  Future<void> fightSceneCompleted() async {
-    final bloc = context.read<GameBloc>()..add(const FightSceneCompleted());
+  Future<void> clashSceneCompleted() async {
+    final bloc = context.read<GameBloc>()..add(const ClashSceneCompleted());
     for (final controller in clashControllers) {
       controller.value = 1;
     }
@@ -559,7 +559,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
                       ),
                     _BoardCounter(counterOffset),
                     _ClashScene(
-                      onFinished: fightSceneCompleted,
+                      onFinished: clashSceneCompleted,
                     ),
                   ],
                 ),
@@ -861,7 +861,7 @@ class _ClashScene extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isClashScene = context.select<GameBloc, bool>(
-      (bloc) => (bloc.state as MatchLoadedState).isFightScene,
+      (bloc) => (bloc.state as MatchLoadedState).isClashScene,
     );
 
     if (isClashScene) {
@@ -872,7 +872,7 @@ class _ClashScene extends StatelessWidget {
         (bloc) => bloc.lastPlayedPlayerCard,
       );
       return Positioned.fill(
-        child: FightScene(
+        child: ClashScene(
           onFinished: onFinished,
           opponentCard: opponentCard,
           playerCard: playerCard,
