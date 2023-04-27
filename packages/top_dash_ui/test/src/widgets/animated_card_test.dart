@@ -128,4 +128,24 @@ void main() {
       });
     });
   });
+
+  group('AnimatedCardController', () {
+    test(
+      'run returns a complete future when the controller has no state attached',
+      () async {
+        final controller = AnimatedCardController();
+
+        var isComplete = false;
+        unawaited(
+          controller
+              .run(smallFlipAnimation)
+              .whenComplete(() => isComplete = true),
+        );
+
+        await Future.microtask(() {});
+
+        expect(isComplete, isTrue);
+      },
+    );
+  });
 }
