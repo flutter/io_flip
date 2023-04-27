@@ -41,8 +41,10 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     on<TurnTimerStarted>(_onTurnTimerStarted);
     on<TurnTimerTicked>(_onTurnTimerTicked);
     on<TurnAnimationsFinished>(_onTurnAnimationsFinished);
-    on<CardOverlayRevealed>(_onCardOverlayRevealed);
+    on<ClashSceneStarted>(_onClashSceneStarted);
     on<FightSceneCompleted>(_onFightSceneCompleted);
+    on<CardLandingStarted>(_onCardLandingStarted);
+    on<CardLandingCompleted>(_onCardLandingCompleted);
   }
 
   final GameResource _gameResource;
@@ -94,6 +96,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             turnTimeRemaining: _turnMaxTime,
             turnAnimationsFinished: true,
             isFightScene: false,
+            showCardLanding: false,
           ),
         );
 
@@ -367,8 +370,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     }
   }
 
-  void _onCardOverlayRevealed(
-    CardOverlayRevealed event,
+  void _onClashSceneStarted(
+    ClashSceneStarted event,
     Emitter<GameState> emit,
   ) {
     if (state is MatchLoadedState) {
@@ -397,6 +400,26 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     if (state is MatchLoadedState) {
       final matchLoadedState = state as MatchLoadedState;
       emit(matchLoadedState.copyWith(isFightScene: false));
+    }
+  }
+
+  void _onCardLandingStarted(
+    CardLandingStarted event,
+    Emitter<GameState> emit,
+  ) {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+      emit(matchLoadedState.copyWith(showCardLanding: true));
+    }
+  }
+
+  void _onCardLandingCompleted(
+    CardLandingCompleted event,
+    Emitter<GameState> emit,
+  ) {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+      emit(matchLoadedState.copyWith(showCardLanding: false));
     }
   }
 
@@ -491,6 +514,18 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           : matchLoadedState.match.guestDeck.cards;
     }
     return [];
+  }
+
+  Card get lastPlayedPlayerCard {
+    final matchLoadedState = state as MatchLoadedState;
+    final cardId = matchLoadedState.rounds.last.playerCardId;
+    return playerCards.firstWhere((card) => card.id == cardId);
+  }
+
+  Card get lastPlayedOpponentCard {
+    final matchLoadedState = state as MatchLoadedState;
+    final cardId = matchLoadedState.rounds.last.opponentCardId;
+    return opponentCards.firstWhere((card) => card.id == cardId);
   }
 
   List<Card> get opponentCards {
