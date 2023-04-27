@@ -518,27 +518,33 @@ void main() {
       });
 
       testWidgets('completes when both players play a card', (tester) async {
+        final controller = StreamController<GameState>();
+        final playedState = baseState.copyWith(
+          lastPlayedCardId: playerCards.first.id,
+          rounds: [
+            MatchRound(
+              playerCardId: playerCards.first.id,
+              opponentCardId: opponentCards.first.id,
+            )
+          ],
+        );
         whenListen(
           bloc,
-          Stream.fromIterable([
-            baseState,
-            baseState.copyWith(
-              lastPlayedCardId: playerCards.first.id,
-              rounds: [
-                MatchRound(
-                  playerCardId: playerCards.first.id,
-                  opponentCardId: opponentCards.first.id,
-                )
-              ],
-            )
-          ]),
+          controller.stream,
           initialState: baseState,
         );
+        when(() => bloc.add(CardLandingStarted())).thenAnswer((_) {
+          controller.add(playedState.copyWith(showCardLanding: true));
+        });
 
         await tester.pumpSubject(bloc);
-        await tester.pumpAndSettle(
-          bigFlipAnimation.duration + CardLandingPuff.duration,
-        );
+        controller
+          ..add(baseState)
+          ..add(playedState);
+
+        await tester.pumpAndSettle();
+        controller.add(playedState.copyWith(showCardLanding: false));
+        await tester.pumpAndSettle();
 
         verify(() => bloc.add(ClashSceneStarted())).called(1);
       });
