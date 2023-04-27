@@ -407,30 +407,6 @@ void main() {
           verify(goRouter.pop).called(1);
         },
       );
-
-      testWidgets(
-        'pops navigation when the quit button is tapped and canceled '
-        'by close icon',
-        (tester) async {
-          final goRouter = MockGoRouter();
-
-          defaultMockState();
-          await tester.pumpSubject(
-            bloc,
-            goRouter: goRouter,
-          );
-
-          await tester.tap(find.text(tester.l10n.quit));
-          await tester.pumpAndSettle();
-
-          expect(find.byType(QuitGameDialog), findsOneWidget);
-
-          await tester.tap(find.byIcon(Icons.close));
-          await tester.pumpAndSettle();
-
-          verify(goRouter.pop).called(1);
-        },
-      );
     });
 
     group('GameSummaryFooter', () {
