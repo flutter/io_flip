@@ -57,22 +57,22 @@ class ImageLoader {
     for (final character in map[PromptTermType.character]!) {
       for (final characterClass in map[PromptTermType.characterClass]!) {
         for (final power in map[PromptTermType.power]!) {
-            for (var i = 0; i < charsPerDeck; i++) {
-              fileNames.add(
-                path
-                    .join(
-                      _dest,
-                      'public',
-                      'illustrations',
-                      [
-                        character,
-                        characterClass,
-                        power,
-                        '${i + 1}.png',
-                      ].join('_').replaceAll(' ', '_'),
-                    )
-                    .toLowerCase(),
-              );
+          for (var i = 0; i < charsPerDeck; i++) {
+            fileNames.add(
+              path
+                  .join(
+                    _dest,
+                    'public',
+                    'illustrations',
+                    [
+                      character,
+                      characterClass,
+                      power,
+                      '${i + 1}.png',
+                    ].join('_').replaceAll(' ', '_'),
+                  )
+                  .toLowerCase(),
+            );
           }
         }
       }
