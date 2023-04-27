@@ -48,9 +48,9 @@ void main() {
           onFinished: () => onFinishedCalled = true,
         );
 
-        final flipCoutdown = find.byType(FlipCountdown);
-        expect(flipCoutdown, findsOneWidget);
-        tester.widget<FlipCountdown>(flipCoutdown).onComplete?.call();
+        final flipCountdown = find.byType(FlipCountdown);
+        expect(flipCountdown, findsOneWidget);
+        tester.widget<FlipCountdown>(flipCountdown).onComplete?.call();
 
         await mockNetworkImages(() async {
           await tester.pump(smallFlipAnimation.duration * 2);

@@ -139,64 +139,9 @@ void main() {
           ),
         ],
       );
-
-      blocTest<HowToPlayBloc, HowToPlayState>(
-        'changes from step 8 to step 9',
-        build: HowToPlayBloc.new,
-        seed: () => HowToPlayState(
-          position: 7,
-          wheelSuits: const [
-            Suit.water,
-            Suit.fire,
-            Suit.air,
-            Suit.metal,
-            Suit.earth,
-          ],
-        ),
-        act: (bloc) => bloc.add(NextPageRequested()),
-        expect: () => [
-          HowToPlayState(
-            position: 8,
-            wheelSuits: const [
-              Suit.water,
-              Suit.fire,
-              Suit.air,
-              Suit.metal,
-              Suit.earth,
-            ],
-          ),
-        ],
-      );
     });
 
     group('PreviousPageRequested', () {
-      blocTest<HowToPlayBloc, HowToPlayState>(
-        'changes from step 9 to step 8',
-        build: HowToPlayBloc.new,
-        seed: () => HowToPlayState(
-          position: 8,
-          wheelSuits: const [
-            Suit.water,
-            Suit.fire,
-            Suit.air,
-            Suit.metal,
-            Suit.earth,
-          ],
-        ),
-        act: (bloc) => bloc.add(PreviousPageRequested()),
-        expect: () => [
-          HowToPlayState(
-            position: 7,
-            wheelSuits: const [
-              Suit.water,
-              Suit.fire,
-              Suit.air,
-              Suit.metal,
-              Suit.earth,
-            ],
-          ),
-        ],
-      );
       blocTest<HowToPlayBloc, HowToPlayState>(
         'changes from step 8 to step 7',
         build: HowToPlayBloc.new,

@@ -142,6 +142,7 @@ void main() {
       turnTimeRemaining: 10,
       turnAnimationsFinished: false,
       isClashScene: false,
+      showCardLanding: false,
     );
 
     void defaultMockState({

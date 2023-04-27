@@ -36,8 +36,8 @@ class SuitsWheel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        const SizedBox(height: TopDashSpacing.xxlg),
         FadeAnimatedSwitcher(
           duration: transitionDuration,
           child: HowToPlayStyledText(

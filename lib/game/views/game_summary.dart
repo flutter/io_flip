@@ -236,34 +236,37 @@ class GameSummaryFooter extends StatelessWidget {
           RoundedButton.text(
             l10n.quit,
             backgroundColor: TopDashColors.seedWhite,
-            onPressed: () => QuitGameDialog.show(
+            onPressed: () => TopDashDialog.show(
               context,
-              onConfirm: () => _routerNeglectCall(context, () {
-                if (playerScoreCard.initials != null) {
-                  GoRouter.of(context).goNamed(
-                    'share_hand',
-                    extra: ShareHandPageData(
-                      initials: playerScoreCard.initials!,
-                      wins: state.playerScoreCard.currentStreak,
-                      deckId: playerDeck.id,
-                      deck: bloc.playerCards,
-                    ),
-                  );
-                } else {
-                  GoRouter.of(context).pop();
-                  bloc.add(
-                    LeaderboardEntryRequested(
-                      shareHandPageData: ShareHandPageData(
-                        initials: '',
+              child: QuitGameDialog(
+                onConfirm: () => _routerNeglectCall(context, () {
+                  if (playerScoreCard.initials != null) {
+                    GoRouter.of(context).goNamed(
+                      'share_hand',
+                      extra: ShareHandPageData(
+                        initials: playerScoreCard.initials!,
                         wins: state.playerScoreCard.currentStreak,
                         deckId: playerDeck.id,
                         deck: bloc.playerCards,
                       ),
-                    ),
-                  );
-                }
-              }),
-              onCancel: GoRouter.of(context).pop,
+                    );
+                  } else {
+                    GoRouter.of(context).pop();
+                    bloc.add(
+                      LeaderboardEntryRequested(
+                        shareHandPageData: ShareHandPageData(
+                          initials: '',
+                          wins: state.playerScoreCard.currentStreak,
+                          deckId: playerDeck.id,
+                          deck: bloc.playerCards,
+                        ),
+                      ),
+                    );
+                  }
+                }),
+                onCancel: GoRouter.of(context).pop,
+              ),
+              onClose: GoRouter.of(context).pop,
             ),
           ),
         ],

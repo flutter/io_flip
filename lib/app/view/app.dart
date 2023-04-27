@@ -131,9 +131,7 @@ class _AppState extends State<App> {
               child: MaterialApp.router(
                 title: 'Top Dash',
                 theme: TopDashTheme.themeData,
-                routeInformationProvider: router.routeInformationProvider,
-                routeInformationParser: router.routeInformationParser,
-                routerDelegate: router.routerDelegate,
+                routerConfig: router,
                 scaffoldMessengerKey: scaffoldMessengerKey,
                 localizationsDelegates: AppLocalizations.localizationsDelegates,
                 supportedLocales: AppLocalizations.supportedLocales,
