@@ -8,7 +8,6 @@ import 'package:top_dash/info/info.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/leaderboard/leaderboard.dart';
 import 'package:top_dash/terms_of_use/terms_of_use.dart';
-import 'package:top_dash/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class MainMenuScreen extends StatelessWidget {

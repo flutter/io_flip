@@ -13,7 +13,7 @@ class InfoButton extends StatelessWidget {
       Assets.icons.info,
       onPressed: () => TopDashDialog.show(
         context,
-        const InfoView(),
+        child: const InfoView(),
       ),
     );
   }
