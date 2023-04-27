@@ -301,6 +301,44 @@ void main() {
           hostWaitTime: const Duration(milliseconds: 200),
         )..add(MatchRequested());
 
+        async.elapse(Duration(seconds: 8));
+        expect(
+          bloc.state,
+          equals(
+            MatchMakingState(
+              status: MatchMakingStatus.completed,
+              match: DraftMatch(id: '', host: deckId, guest: 'CPU_$deckId'),
+              isHost: true,
+            ),
+          ),
+        );
+      });
+    });
+
+    test('creates CPU match when guest never joins a private match', () {
+      fakeAsync((async) {
+        when(() => matchMakerRepository.createPrivateMatch(deckId)).thenAnswer(
+          (_) async => DraftMatch(
+            id: '',
+            host: deckId,
+          ),
+        );
+        when(() => gameResource.connectToCpuMatch(matchId: ''))
+            .thenAnswer((_) async {});
+        final stream =
+            StreamController<DraftMatch>(onCancel: () async {}).stream;
+        when(() => matchMakerRepository.watchMatch(any())).thenAnswer(
+          (_) => stream,
+        );
+
+        final bloc = MatchMakingBloc(
+          matchMakerRepository: matchMakerRepository,
+          connectionRepository: connectionRepository,
+          gameResource: gameResource,
+          cardIds: cardIds,
+          hostWaitTime: const Duration(milliseconds: 200),
+        )..add(PrivateMatchRequested());
+
         async.elapse(Duration(seconds: 30));
         expect(
           bloc.state,
