@@ -14,15 +14,16 @@ class _FoilShaderStoryState extends State<FoilShaderStory> {
 
   @override
   Widget build(BuildContext context) {
-    const size = TopDashCardSizes.lg;
     return StoryScaffold(
       title: 'Foil Shader',
       body: Center(
         child: LayoutBuilder(
           builder: (context, constraints) {
-            return SizedBox(
-              width: size.width,
-              height: size.height,
+            final size = Size.square(constraints.biggest.shortestSide * 0.5);
+            final dx = ((mousePosition?.dx ?? 0) / size.width) * 2 - 1;
+            final dy = ((mousePosition?.dy ?? 0) / size.height) * 2 - 1;
+            return SizedBox.fromSize(
+              size: size,
               child: MouseRegion(
                 onHover: (event) {
                   setState(() {
@@ -30,16 +31,16 @@ class _FoilShaderStoryState extends State<FoilShaderStory> {
                   });
                 },
                 child: FoilShader(
-                  dx: ((mousePosition?.dx ?? 0) / size.width) * 2 - 1,
-                  dy: ((mousePosition?.dy ?? 0) / size.height) * 2 - 1,
-                  child: const GameCard(
-                    image:
-                        'https://firebasestorage.googleapis.com/v0/b/top-dash-dev.appspot.com/o/public%2Fdash_3.png?alt=media',
-                    name: 'Dash the Great',
-                    description: 'The best Dash in all the Dashland',
-                    suitName: 'earth',
-                    power: 57,
-                    isRare: true,
+                  dx: dx,
+                  dy: dy,
+                  child: ColoredBox(
+                    color: Colors.white,
+                    child: Center(
+                      child: IoFlipLogo(
+                        width: size.width,
+                        height: size.height,
+                      ),
+                    ),
                   ),
                 ),
               ),

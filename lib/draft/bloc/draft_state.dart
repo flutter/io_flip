@@ -19,19 +19,19 @@ class DraftState extends Equatable {
   const DraftState.initial()
       : this(
           cards: const [],
-          selectedCards: const [],
+          selectedCards: const [null, null, null],
           status: DraftStateStatus.initial,
           firstCardOpacity: 1,
         );
 
   final List<Card> cards;
-  final List<Card> selectedCards;
+  final List<Card?> selectedCards;
   final DraftStateStatus status;
   final double firstCardOpacity;
 
   DraftState copyWith({
     List<Card>? cards,
-    List<Card>? selectedCards,
+    List<Card?>? selectedCards,
     DraftStateStatus? status,
     double? firstCardOpacity,
   }) {

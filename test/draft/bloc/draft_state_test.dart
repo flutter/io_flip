@@ -44,7 +44,7 @@ void main() {
         equals(
           DraftState(
             cards: const [],
-            selectedCards: const [],
+            selectedCards: const [null, null, null],
             status: DraftStateStatus.initial,
             firstCardOpacity: 1,
           ),

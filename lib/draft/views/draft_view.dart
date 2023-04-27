@@ -205,7 +205,7 @@ class SelectedCard extends StatelessWidget {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: () {
-          bloc.add(const SelectCard());
+          bloc.add(SelectCard(index));
         },
         child: Container(
           height: 145,
@@ -280,7 +280,9 @@ class _BottomBar extends StatelessWidget {
                 context,
                 () => GoRouter.of(context).goNamed(
                   'match_making',
-                  extra: MatchMakingPageData(deck: state.selectedCards),
+                  extra: MatchMakingPageData(
+                    deck: state.selectedCards.cast<Card>(),
+                  ),
                 ),
               ),
               onLongPress: () => showPrivateMatchDialog(context),
@@ -317,7 +319,7 @@ class _BottomBar extends StatelessWidget {
     showDialog<String?>(
       context: context,
       builder: (_) => _JoinPrivateMatchDialog(
-        selectedCards: state.selectedCards,
+        selectedCards: state.selectedCards.cast<Card>(),
         routerNeglectCall: routerNeglectCall,
       ),
     ).then((inviteCode) {
@@ -329,7 +331,7 @@ class _BottomBar extends StatelessWidget {
             queryParams: {
               'inviteCode': inviteCode,
             },
-            extra: MatchMakingPageData(deck: state.selectedCards),
+            extra: MatchMakingPageData(deck: state.selectedCards.cast<Card>()),
           ),
         );
       }
