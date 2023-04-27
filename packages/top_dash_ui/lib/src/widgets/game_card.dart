@@ -137,6 +137,8 @@ class GameCardSize extends Equatable {
         size,
         descriptionTextStyle,
         titleTextStyle,
+        powerTextStyle,
+        powerTextStrokeWidth,
         imageInset,
       ];
 }
