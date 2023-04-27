@@ -15,9 +15,7 @@ abstract class ElementalDamage {
     required String damageSendPath,
     required String victoryChargeBackPath,
     required String victoryChargeFrontPath,
-    this.height = 500,
-    this.width = 500,
-    this.onComplete,
+    this.size = const GameCardSize.lg(),
   })  : _chargeBackPath = chargeBackPath,
         _chargeFrontPath = chargeFrontPath,
         _damageReceivePath = damageReceivePath,
@@ -25,76 +23,84 @@ abstract class ElementalDamage {
         _victoryChargeFrontPath = victoryChargeBackPath,
         _victoryChargeBackPath = victoryChargeFrontPath;
 
-  /// The height of the widget.
-  ///
-  /// Defaults to `500`.
-  final double height;
+  /// Size of the card.
+  final GameCardSize size;
 
-  /// The width of the widget.
-  ///
-  /// Defaults to `500`.
-  final double width;
-
-  /// Optional callback to be called when the animation is complete.
-  final VoidCallback? onComplete;
-
-  /// Widget containing the [ChargeBack] animation
+  /// String containing the [ChargeBack] animation path.
   final String _chargeBackPath;
 
-  /// Widget containing the [ChargeFront] animation
+  /// String containing the [ChargeFront] animation path.
   final String _chargeFrontPath;
 
-  /// Widget containing the [DamageReceive] animation
+  /// String containing the [DamageReceive] animation path.
   final String _damageReceivePath;
 
-  /// Widget containing the [DamageSend] animation
+  /// String containing the [DamageSend] animation path.
   final String _damageSendPath;
 
-  /// Widget containing the [VictoryChargeBack] animation
+  /// String containing the [VictoryChargeBack] animation path.
   final String _victoryChargeBackPath;
 
-  /// Widget containing the [VictoryChargeFront] animation
+  /// String containing the [VictoryChargeFront] animation path.
   final String _victoryChargeFrontPath;
 
-  /// Widget containing the [ChargeBack] animation
-  ChargeBack get chargeBack => ChargeBack(
-        _chargeBackPath,
-        width: width,
-        height: height,
-      );
+  /// Widget builder returning the [ChargeBack] animation.
+  ChargeBack chargeBackBuilder(VoidCallback? onComplete) {
+    return ChargeBack(
+      _chargeBackPath,
+      width: size.width,
+      height: size.height,
+      onComplete: onComplete,
+    );
+  }
 
-  /// Widget containing the [ChargeFront] animation
-  ChargeFront get chargeFront => ChargeFront(
-        _chargeFrontPath,
-        width: width,
-        height: height,
-      );
+  /// Widget builder returning the [ChargeFront] animation.
+  ChargeFront chargeFrontBuilder(VoidCallback? onComplete) {
+    return ChargeFront(
+      _chargeFrontPath,
+      width: size.width,
+      height: size.height,
+      onComplete: onComplete,
+    );
+  }
 
-  /// Widget containing the [DamageReceive] animation
-  DamageReceive get damageReceive => DamageReceive(
-        _damageReceivePath,
-        width: width,
-        height: height,
-      );
+  /// Widget builder returning the [DamageReceive] animation.
+  DamageReceive damageReceiveBuilder(VoidCallback? onComplete) {
+    return DamageReceive(
+      _damageReceivePath,
+      width: size.width,
+      height: size.height,
+      onComplete: onComplete,
+    );
+  }
 
-  /// Widget containing the [DamageSend] animation
-  DamageSend get damageSend => DamageSend(
-        _damageSendPath,
-        width: width,
-        height: height,
-      );
+  /// Widget builder returning the [DamageSend] animation.
+  DamageSend damageSendBuilder(VoidCallback? onComplete) {
+    return DamageSend(
+      _damageSendPath,
+      width: size.width,
+      height: size.height,
+      onComplete: onComplete,
+    );
+  }
 
-  /// Widget containing the [VictoryChargeBack] animation
-  VictoryChargeBack get victoryChargeBack => VictoryChargeBack(
-        _victoryChargeBackPath,
-        width: width,
-        height: height,
-      );
+  /// Widget builder returning the [VictoryChargeBack] animation.
+  VictoryChargeBack victoryChargeBackBuilder(VoidCallback? onComplete) {
+    return VictoryChargeBack(
+      _victoryChargeBackPath,
+      width: size.width,
+      height: size.height,
+      onComplete: onComplete,
+    );
+  }
 
-  /// Widget containing the [VictoryChargeFront] animation
-  VictoryChargeFront get victoryChargeFront => VictoryChargeFront(
-        _victoryChargeFrontPath,
-        width: width,
-        height: height,
-      );
+  /// Widget builder returning the [VictoryChargeFront] animation.
+  VictoryChargeFront victoryChargeFrontBuilder(VoidCallback? onComplete) {
+    return VictoryChargeFront(
+      _victoryChargeFrontPath,
+      width: size.width,
+      height: size.height,
+      onComplete: onComplete,
+    );
+  }
 }
