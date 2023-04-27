@@ -128,7 +128,8 @@ class MatchRepository {
   /// Plays a card on the given match. If the match is against a CPU, it plays
   /// the CPU card next.
   ///
-  /// throws [PlayCardFailure] if the match state isn't found.
+  /// throws [PlayCardFailure] if any of the match, deck or match state
+  /// are not found.
   Future<void> playCard({
     required String matchId,
     required String cardId,
@@ -179,7 +180,7 @@ class MatchRepository {
 
   /// Plays a card on the given match.
   ///
-  /// throws [PlayCardFailure] if the match state isn't found.
+  /// throws [PlayCardFailure] if the card cannot be played.
   Future<MatchState> _playCard({
     required Match match,
     required MatchState matchState,
