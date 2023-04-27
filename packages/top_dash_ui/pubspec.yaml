@@ -39,6 +39,23 @@ flutter:
     - assets/images/suits/card/
     - assets/images/card_frames/
 
+  fonts:
+    - family: Google Sans
+      fonts:
+        - asset: assets/fonts/GoogleSansText-Regular.ttf
+        - asset: assets/fonts/GoogleSansText-Italic.ttf
+          style: italic
+    - family: Roboto Serif
+      fonts:
+        - asset: assets/fonts/RobotoSerif-Regular.ttf
+        - asset: assets/fonts/RobotoSerif-Italic.ttf
+          style: italic
+    - family: Saira
+      fonts:
+        - asset: assets/fonts/Saira-Regular.ttf
+        - asset: assets/fonts/Saira-Italic.ttf
+          style: italic
+
 flutter_gen:
   line_length: 80
   assets:

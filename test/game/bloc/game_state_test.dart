@@ -68,6 +68,7 @@ void main() {
           turnAnimationsFinished: false,
           turnTimeRemaining: 10,
           isFightScene: false,
+          showCardLanding: false,
         ),
         isNotNull,
       );
@@ -83,6 +84,7 @@ void main() {
           turnAnimationsFinished: false,
           turnTimeRemaining: 10,
           isFightScene: false,
+          showCardLanding: false,
         ),
         equals(
           MatchLoadedState(
@@ -93,6 +95,7 @@ void main() {
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
             isFightScene: false,
+            showCardLanding: false,
           ),
         ),
       );
@@ -106,6 +109,7 @@ void main() {
           turnAnimationsFinished: false,
           turnTimeRemaining: 10,
           isFightScene: false,
+          showCardLanding: false,
         ),
         isNot(
           equals(
@@ -117,6 +121,7 @@ void main() {
               turnAnimationsFinished: false,
               turnTimeRemaining: 10,
               isFightScene: false,
+              showCardLanding: false,
             ),
           ),
         ),
@@ -131,6 +136,7 @@ void main() {
           turnAnimationsFinished: false,
           turnTimeRemaining: 10,
           isFightScene: false,
+          showCardLanding: false,
         ),
         isNot(
           equals(
@@ -142,6 +148,7 @@ void main() {
               turnAnimationsFinished: false,
               turnTimeRemaining: 10,
               isFightScene: false,
+              showCardLanding: false,
             ),
           ),
         ),
@@ -156,6 +163,7 @@ void main() {
           turnAnimationsFinished: false,
           turnTimeRemaining: 10,
           isFightScene: false,
+          showCardLanding: false,
         ),
         isNot(
           equals(
@@ -172,6 +180,7 @@ void main() {
               turnAnimationsFinished: false,
               turnTimeRemaining: 10,
               isFightScene: false,
+              showCardLanding: false,
             ),
           ),
         ),
@@ -186,6 +195,7 @@ void main() {
           turnAnimationsFinished: false,
           turnTimeRemaining: 10,
           isFightScene: false,
+          showCardLanding: false,
         ),
         isNot(
           equals(
@@ -197,6 +207,7 @@ void main() {
               turnAnimationsFinished: true,
               turnTimeRemaining: 10,
               isFightScene: false,
+              showCardLanding: false,
             ),
           ),
         ),
@@ -211,6 +222,7 @@ void main() {
           turnAnimationsFinished: false,
           turnTimeRemaining: 10,
           isFightScene: false,
+          showCardLanding: false,
         ),
         isNot(
           equals(
@@ -222,6 +234,7 @@ void main() {
               turnAnimationsFinished: false,
               turnTimeRemaining: 9,
               isFightScene: false,
+              showCardLanding: false,
             ),
           ),
         ),
@@ -238,6 +251,7 @@ void main() {
           turnAnimationsFinished: true,
           turnTimeRemaining: 10,
           isFightScene: false,
+          showCardLanding: false,
         ).copyWith(match: match2),
         equals(
           MatchLoadedState(
@@ -248,6 +262,7 @@ void main() {
             turnAnimationsFinished: true,
             turnTimeRemaining: 10,
             isFightScene: false,
+            showCardLanding: false,
           ),
         ),
       );
@@ -261,6 +276,7 @@ void main() {
           turnAnimationsFinished: true,
           turnTimeRemaining: 10,
           isFightScene: false,
+          showCardLanding: false,
         ).copyWith(matchState: matchState2),
         equals(
           MatchLoadedState(
@@ -271,6 +287,7 @@ void main() {
             turnAnimationsFinished: true,
             turnTimeRemaining: 10,
             isFightScene: false,
+            showCardLanding: false,
           ),
         ),
       );
@@ -284,6 +301,7 @@ void main() {
           turnAnimationsFinished: true,
           turnTimeRemaining: 10,
           isFightScene: false,
+          showCardLanding: false,
         ).copyWith(rounds: [MatchRound(playerCardId: '', opponentCardId: '')]),
         equals(
           MatchLoadedState(
@@ -294,6 +312,7 @@ void main() {
             turnAnimationsFinished: true,
             turnTimeRemaining: 10,
             isFightScene: false,
+            showCardLanding: false,
           ),
         ),
       );
@@ -307,6 +326,7 @@ void main() {
           turnAnimationsFinished: true,
           turnTimeRemaining: 10,
           isFightScene: false,
+          showCardLanding: false,
         ).copyWith(turnAnimationsFinished: false),
         equals(
           MatchLoadedState(
@@ -317,6 +337,7 @@ void main() {
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
             isFightScene: false,
+            showCardLanding: false,
           ),
         ),
       );
@@ -330,6 +351,7 @@ void main() {
           turnAnimationsFinished: true,
           turnTimeRemaining: 10,
           isFightScene: false,
+          showCardLanding: false,
         ).copyWith(turnTimeRemaining: 9),
         equals(
           MatchLoadedState(
@@ -340,6 +362,57 @@ void main() {
             turnAnimationsFinished: true,
             turnTimeRemaining: 9,
             isFightScene: false,
+            showCardLanding: false,
+          ),
+        ),
+      );
+
+      expect(
+        MatchLoadedState(
+          playerScoreCard: ScoreCard(id: 'scoreCardId'),
+          match: match1,
+          matchState: matchState1,
+          rounds: const [],
+          turnAnimationsFinished: true,
+          turnTimeRemaining: 10,
+          isFightScene: false,
+          showCardLanding: false,
+        ).copyWith(isFightScene: true),
+        equals(
+          MatchLoadedState(
+            playerScoreCard: ScoreCard(id: 'scoreCardId'),
+            match: match1,
+            matchState: matchState1,
+            rounds: const [],
+            turnAnimationsFinished: true,
+            turnTimeRemaining: 10,
+            isFightScene: true,
+            showCardLanding: false,
+          ),
+        ),
+      );
+
+      expect(
+        MatchLoadedState(
+          playerScoreCard: ScoreCard(id: 'scoreCardId'),
+          match: match1,
+          matchState: matchState1,
+          rounds: const [],
+          turnAnimationsFinished: true,
+          turnTimeRemaining: 10,
+          isFightScene: false,
+          showCardLanding: false,
+        ).copyWith(showCardLanding: true),
+        equals(
+          MatchLoadedState(
+            playerScoreCard: ScoreCard(id: 'scoreCardId'),
+            match: match1,
+            matchState: matchState1,
+            rounds: const [],
+            turnAnimationsFinished: true,
+            turnTimeRemaining: 10,
+            isFightScene: false,
+            showCardLanding: true,
           ),
         ),
       );

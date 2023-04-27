@@ -16,7 +16,7 @@ final smallFlipAnimation = CardAnimation(
 
 /// A flip that moves the card toward the viewer while it flips.
 final bigFlipAnimation = CardAnimation(
-  curve: Curves.easeOutExpo,
+  curve: Curves.ease,
   duration: const Duration(milliseconds: 800),
   flipsCard: true,
   animatable: TweenSequence<Matrix4>([
@@ -24,23 +24,32 @@ final bigFlipAnimation = CardAnimation(
       tween: TransformTween(
         endTranslateZ: -100,
       ),
-      weight: 0.5,
+      weight: .2,
     ),
     TweenSequenceItem(
       tween: TransformTween(
-        endRotateY: math.pi / 2,
+        endRotateY: 3 * math.pi / 4,
         beginTranslateZ: -100,
         endTranslateZ: -300,
       ),
-      weight: 1,
+      weight: .6,
     ),
     TweenSequenceItem(
       tween: TransformTween(
-        beginRotateY: math.pi / 2,
+        beginRotateY: 3 * math.pi / 4,
         endRotateY: math.pi,
         beginTranslateZ: -300,
+        endTranslateZ: -200,
       ),
-      weight: 1,
+      weight: .2,
+    ),
+    TweenSequenceItem(
+      tween: TransformTween(
+        beginRotateY: math.pi,
+        endRotateY: math.pi,
+        beginTranslateZ: -200,
+      ),
+      weight: .1,
     ),
   ]),
 );

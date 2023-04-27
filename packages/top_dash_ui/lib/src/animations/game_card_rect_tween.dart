@@ -59,6 +59,11 @@ class GameCardRectTween extends Tween<GameCardRect?> {
       end?.gameCardSize.powerTextStrokeWidth,
       t,
     )!;
+    final imageInset = RelativeRect.lerp(
+      begin?.gameCardSize.imageInset,
+      end?.gameCardSize.imageInset,
+      t,
+    )!;
     final gameCardSize = GameCardSize(
       size: Size.lerp(begin?.gameCardSize.size, end?.gameCardSize.size, t)!,
       badgeSize: Size.lerp(
@@ -70,6 +75,7 @@ class GameCardRectTween extends Tween<GameCardRect?> {
       descriptionTextStyle: descriptionTextStyle,
       powerTextStyle: powerTextStyle,
       powerTextStrokeWidth: powerTextStrokeWidth,
+      imageInset: imageInset,
     );
 
     return GameCardRect(

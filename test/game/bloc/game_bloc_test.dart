@@ -177,6 +177,7 @@ void main() {
       rounds: [],
       turnAnimationsFinished: true,
       isFightScene: false,
+      showCardLanding: false,
       turnTimeRemaining: 10,
     );
 
@@ -232,6 +233,7 @@ void main() {
           turnAnimationsFinished: true,
           turnTimeRemaining: 10,
           isFightScene: false,
+          showCardLanding: false,
         ),
       ],
       verify: (_) {
@@ -990,6 +992,7 @@ void main() {
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
             isFightScene: false,
+            showCardLanding: false,
           ),
         ],
       );
@@ -1021,6 +1024,7 @@ void main() {
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
             isFightScene: false,
+            showCardLanding: false,
           ),
         ],
       );
@@ -1183,6 +1187,7 @@ void main() {
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
             isFightScene: false,
+            showCardLanding: false,
           ),
           MatchLoadedState(
             playerScoreCard: ScoreCard(id: 'scoreCardId'),
@@ -1202,6 +1207,7 @@ void main() {
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
             isFightScene: false,
+            showCardLanding: false,
           ),
           MatchLoadedState(
             playerScoreCard: ScoreCard(id: 'scoreCardId'),
@@ -1221,6 +1227,7 @@ void main() {
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
             isFightScene: false,
+            showCardLanding: false,
           ),
         ],
       );
@@ -1293,6 +1300,7 @@ void main() {
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
             isFightScene: false,
+            showCardLanding: false,
           ),
           MatchLoadedState(
             playerScoreCard: ScoreCard(id: 'scoreCardId'),
@@ -1312,6 +1320,7 @@ void main() {
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
             isFightScene: false,
+            showCardLanding: false,
           ),
           MatchLoadedState(
             playerScoreCard: ScoreCard(id: 'scoreCardId'),
@@ -1331,6 +1340,7 @@ void main() {
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
             isFightScene: false,
+            showCardLanding: false,
           ),
           MatchLoadedState(
             playerScoreCard: ScoreCard(id: 'scoreCardId'),
@@ -1354,6 +1364,7 @@ void main() {
             turnAnimationsFinished: false,
             turnTimeRemaining: 10,
             isFightScene: false,
+            showCardLanding: false,
           ),
         ],
       );
@@ -1398,6 +1409,7 @@ void main() {
                   turnAnimationsFinished: true,
                   turnTimeRemaining: 8,
                   isFightScene: false,
+                  showCardLanding: false,
                 ),
               ),
             );
@@ -1605,6 +1617,31 @@ void main() {
       },
     );
 
+    blocTest<GameBloc, GameState>(
+      'last played cards for player and opponent return correctly',
+      build: () => GameBloc(
+        connectionRepository: connectionRepository,
+        gameResource: gameResource,
+        audioController: audioController,
+        matchMakerRepository: matchMakerRepository,
+        matchSolver: matchSolver,
+        isHost: true,
+        user: user,
+      ),
+      seed: () => baseState.copyWith(
+        rounds: [
+          MatchRound(
+            playerCardId: hostCards.first.id,
+            opponentCardId: guestCards.first.id,
+          )
+        ],
+      ),
+      verify: (bloc) {
+        expect(bloc.lastPlayedPlayerCard, equals(hostCards.first));
+        expect(bloc.lastPlayedOpponentCard, equals(guestCards.first));
+      },
+    );
+
     group('MatchLoadedState', () {
       group('isCardTurnComplete', () {
         final match1 = Match(
@@ -1636,6 +1673,7 @@ void main() {
           turnAnimationsFinished: false,
           turnTimeRemaining: 10,
           isFightScene: false,
+          showCardLanding: false,
         );
 
         test('returns true if the card is the winning one', () {
@@ -1927,7 +1965,7 @@ void main() {
       );
     });
 
-    group('CardOverlayRevealed', () {
+    group('ClashSceneStarted', () {
       blocTest<GameBloc, GameState>(
         'emits state updating showCardsOverlay field and isFightScene',
         build: () => GameBloc(
@@ -1947,7 +1985,7 @@ void main() {
             )
           ],
         ),
-        act: (bloc) => bloc.add(CardOverlayRevealed()),
+        act: (bloc) => bloc.add(ClashSceneStarted()),
         expect: () => <GameState>[
           baseState.copyWith(
             rounds: [
@@ -1979,6 +2017,46 @@ void main() {
         act: (bloc) => bloc.add(FightSceneCompleted()),
         expect: () => <GameState>[
           baseState.copyWith(isFightScene: false),
+        ],
+      );
+    });
+
+    group('CardLandingStarted', () {
+      blocTest<GameBloc, GameState>(
+        'emits state updating showCardLanding field',
+        build: () => GameBloc(
+          connectionRepository: connectionRepository,
+          audioController: audioController,
+          gameResource: gameResource,
+          matchMakerRepository: matchMakerRepository,
+          user: user,
+          isHost: true,
+          matchSolver: matchSolver,
+        ),
+        seed: () => baseState,
+        act: (bloc) => bloc.add(CardLandingStarted()),
+        expect: () => <GameState>[
+          baseState.copyWith(showCardLanding: true),
+        ],
+      );
+    });
+
+    group('CardLandingCompleted', () {
+      blocTest<GameBloc, GameState>(
+        'emits state updating showCardLanding field',
+        build: () => GameBloc(
+          connectionRepository: connectionRepository,
+          audioController: audioController,
+          gameResource: gameResource,
+          matchMakerRepository: matchMakerRepository,
+          user: user,
+          isHost: true,
+          matchSolver: matchSolver,
+        ),
+        seed: () => baseState.copyWith(showCardLanding: true),
+        act: (bloc) => bloc.add(CardLandingCompleted()),
+        expect: () => <GameState>[
+          baseState.copyWith(showCardLanding: false),
         ],
       );
     });
