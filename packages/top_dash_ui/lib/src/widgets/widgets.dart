@@ -1,5 +1,6 @@
 export 'animated_card.dart';
 export 'card_overlay.dart';
+export 'damages/damages.dart';
 export 'fading_dot_loader.dart';
 export 'flip_countdown.dart';
 export 'flipped_game_card.dart';

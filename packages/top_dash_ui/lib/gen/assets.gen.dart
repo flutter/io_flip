@@ -3,13 +3,13 @@
 ///  FlutterGen
 /// *****************************************************
 
+import 'package:flutter/services.dart';
 // coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: directives_ordering,unnecessary_import,implicit_dynamic_list_literal,deprecated_member_use
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter/services.dart';
 
 class $AssetsImagesGen {
   const $AssetsImagesGen();
@@ -20,6 +20,7 @@ class $AssetsImagesGen {
 
   $AssetsImagesCardFramesGen get cardFrames =>
       const $AssetsImagesCardFramesGen();
+  $AssetsImagesElementsGen get elements => const $AssetsImagesElementsGen();
 
   /// File path: assets/images/flip_countdown.png
   AssetGenImage get flipCountdown =>
@@ -72,12 +73,57 @@ class $AssetsImagesCardFramesGen {
       [cardAir, cardBack, cardEarth, cardFire, cardMetal, cardWater];
 }
 
+class $AssetsImagesElementsGen {
+  const $AssetsImagesElementsGen();
+
+  $AssetsImagesElementsMetalGen get metal =>
+      const $AssetsImagesElementsMetalGen();
+}
+
 class $AssetsImagesSuitsGen {
   const $AssetsImagesSuitsGen();
 
   $AssetsImagesSuitsCardGen get card => const $AssetsImagesSuitsCardGen();
   $AssetsImagesSuitsOnboardingGen get onboarding =>
       const $AssetsImagesSuitsOnboardingGen();
+}
+
+class $AssetsImagesElementsMetalGen {
+  const $AssetsImagesElementsMetalGen();
+
+  /// File path: assets/images/elements/metal/charge_back.png
+  AssetGenImage get chargeBack =>
+      const AssetGenImage('assets/images/elements/metal/charge_back.png');
+
+  /// File path: assets/images/elements/metal/charge_front.png
+  AssetGenImage get chargeFront =>
+      const AssetGenImage('assets/images/elements/metal/charge_front.png');
+
+  /// File path: assets/images/elements/metal/damage_receive.png
+  AssetGenImage get damageReceive =>
+      const AssetGenImage('assets/images/elements/metal/damage_receive.png');
+
+  /// File path: assets/images/elements/metal/damage_send.png
+  AssetGenImage get damageSend =>
+      const AssetGenImage('assets/images/elements/metal/damage_send.png');
+
+  /// File path: assets/images/elements/metal/victory_charge_back.png
+  AssetGenImage get victoryChargeBack => const AssetGenImage(
+      'assets/images/elements/metal/victory_charge_back.png');
+
+  /// File path: assets/images/elements/metal/victory_charge_front.png
+  AssetGenImage get victoryChargeFront => const AssetGenImage(
+      'assets/images/elements/metal/victory_charge_front.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+        chargeBack,
+        chargeFront,
+        damageReceive,
+        damageSend,
+        victoryChargeBack,
+        victoryChargeFront
+      ];
 }
 
 class $AssetsImagesSuitsCardGen {
@@ -197,16 +243,7 @@ class AssetGenImage {
     );
   }
 
-  ImageProvider provider({
-    AssetBundle? bundle,
-    String? package = 'top_dash_ui',
-  }) {
-    return AssetImage(
-      _assetName,
-      bundle: bundle,
-      package: package,
-    );
-  }
+  ImageProvider provider() => AssetImage(_assetName);
 
   String get path => _assetName;
 
@@ -233,9 +270,9 @@ class SvgGenImage {
     bool excludeFromSemantics = false,
     SvgTheme theme = const SvgTheme(),
     ColorFilter? colorFilter,
-    Clip clipBehavior = Clip.hardEdge,
     @deprecated Color? color,
     @deprecated BlendMode colorBlendMode = BlendMode.srcIn,
+    @deprecated Clip? clipBehavior,
     @deprecated bool cacheColorFilter = false,
   }) {
     return SvgPicture.asset(
@@ -256,7 +293,7 @@ class SvgGenImage {
       colorFilter: colorFilter,
       color: color,
       colorBlendMode: colorBlendMode,
-      clipBehavior: clipBehavior,
+      clipBehavior: clipBehavior!,
       cacheColorFilter: cacheColorFilter,
     );
   }

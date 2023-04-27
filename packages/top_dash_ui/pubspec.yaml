@@ -35,6 +35,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/elements/metal/
     - assets/images/suits/onboarding/
     - assets/images/suits/card/
     - assets/images/card_frames/
@@ -44,6 +45,7 @@ flutter_gen:
   assets:
     outputs:
       package_parameter_enabled: true
+  generate: true
 
   integrations:
     flutter_svg: true
