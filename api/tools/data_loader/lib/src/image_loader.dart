@@ -12,11 +12,11 @@ class ImageLoader {
     required File csv,
     required File image,
     required String dest,
-    required int totalDeckSize,
+    required int variations,
   })  : _csv = csv,
         _image = image,
         _dest = dest,
-        _totalDeckSize = totalDeckSize;
+        _variations = variations;
 
   final File _csv;
 
@@ -24,7 +24,7 @@ class ImageLoader {
 
   final String _dest;
 
-  final int _totalDeckSize;
+  final int _variations;
 
   /// Creates placeholder images for prompts stored in csv file.
   /// [onProgress] is called everytime there is progress,
@@ -51,13 +51,10 @@ class ImageLoader {
     final fileNames = <String>[];
     var progress = 0;
 
-    final charsPerDeck =
-        _totalDeckSize ~/ map[PromptTermType.character]!.length;
-
     for (final character in map[PromptTermType.character]!) {
       for (final characterClass in map[PromptTermType.characterClass]!) {
-        for (final power in map[PromptTermType.power]!) {
-          for (var i = 0; i < charsPerDeck; i++) {
+        for (final location in map[PromptTermType.location]!) {
+          for (var i = 0; i < _variations; i++) {
             fileNames.add(
               path
                   .join(
@@ -67,8 +64,8 @@ class ImageLoader {
                     [
                       character,
                       characterClass,
-                      power,
-                      '${i + 1}.png',
+                      location,
+                      '$i.png',
                     ].join('_').replaceAll(' ', '_'),
                   )
                   .toLowerCase(),

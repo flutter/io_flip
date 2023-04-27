@@ -56,7 +56,7 @@ which should then be uploaded to firebase cloud storage.
 In order to do so, run:
 
 ```
-dart bin/data_loader.dart images destination_folder csv_file_location.csv placeholder_image_path <number_of_cards_in_deck>
+dart bin/data_loader.dart images destination_folder csv_file_location.csv placeholder_image_path <card_variation_number>
 ```
 
 Then, inside the `destination_folder`, run:

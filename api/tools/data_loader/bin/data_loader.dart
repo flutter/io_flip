@@ -42,7 +42,7 @@ void main(List<String> args) async {
       final dest = args[1];
       final csv = args[2];
       final image = args[3];
-      final totalDeckSize = int.parse(args.last);
+      final cardVariation = int.parse(args.last);
 
       final csvFile = File(csv);
       final imageFile = File(image);
@@ -51,7 +51,7 @@ void main(List<String> args) async {
         csv: csvFile,
         image: imageFile,
         dest: dest,
-        totalDeckSize: totalDeckSize,
+        variations: cardVariation,
       );
 
       await imageLoader.loadImages((current, total) {
@@ -60,7 +60,7 @@ void main(List<String> args) async {
     } else {
       print(
         'Usage: dart data_loader.dart images <dest> <csv> '
-        '<images_folder>',
+        '<images_folder> <card_variation_number>',
       );
     }
   } else {
