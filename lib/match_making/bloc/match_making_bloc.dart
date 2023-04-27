@@ -167,7 +167,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
 
       return Future.value(false);
     }).timeout(
-      const Duration(seconds: 30),
+      const Duration(seconds: 8),
       onTimeout: () async {
         await subscription.cancel();
         try {
