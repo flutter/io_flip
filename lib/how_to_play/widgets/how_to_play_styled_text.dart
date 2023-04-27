@@ -11,17 +11,15 @@ class HowToPlayStyledText extends StatelessWidget {
   Widget build(BuildContext context) {
     return StyledText(
       text: text,
-      style: textStyle(context),
-      tags: textTags(context),
+      style: textStyle,
+      tags: textTags(),
       textAlign: TextAlign.center,
     );
   }
 
-  TextStyle textStyle(BuildContext context) {
-    return TopDashTextStyles.mobileH4Light;
-  }
+  TextStyle get textStyle => TopDashTextStyles.mobileH4Light;
 
-  Map<String, StyledTextTagBase> textTags(BuildContext context) {
+  Map<String, StyledTextTagBase> textTags() {
     return {
       'yellow': StyledTextTag(
         style: const TextStyle(color: TopDashColors.seedYellow),

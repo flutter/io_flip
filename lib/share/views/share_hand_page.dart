@@ -95,9 +95,9 @@ class ShareHandPage extends StatelessWidget {
                 ),
               ],
             ),
-            trailing: RoundedButton.icon(
+            trailing: RoundedButton.svg(
               key: const Key('share_page_info_button'),
-              Icons.info,
+              Assets.icons.info,
               onPressed: () => TopDashDialog.show(
                 context,
                 child: const InfoView(),

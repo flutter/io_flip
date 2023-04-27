@@ -56,22 +56,6 @@ void main() {
       });
     });
 
-    // testWidgets('close button closes dialog', (tester) async {
-    //   final goRouter = MockGoRouter();
-    //   when(goRouter.canPop).thenReturn(true);
-    //   mockStates([HowToPlayState()]);
-
-    //   await tester.pumpSubject(
-    //     bloc,
-    //     goRouter: goRouter,
-    //   );
-
-    //   await tester.tap(find.byType(CloseButton));
-    //   await tester.pumpAndSettle();
-
-    //   verify(goRouter.pop).called(1);
-    // });
-
     testWidgets('can navigate the entire tutorial', (tester) async {
       final goRouter = MockGoRouter();
       when(goRouter.canPop).thenReturn(true);
