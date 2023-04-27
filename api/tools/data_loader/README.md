@@ -56,10 +56,10 @@ which should then be uploaded to firebase cloud storage.
 In order to do so, run:
 
 ```
-dart bin/data_loader.dart images destination_folder csv_file_location.csv placeholder_images_folder
+dart bin/data_loader.dart images destination_folder csv_file_location.csv placeholder_image_path <number_of_cards_in_deck>
 ```
 
-Then, inside the `destination_folder`, run: 
+Then, inside the `destination_folder`, run:
 
 ```
 gcloud storage cp --gzip-local-all --recursive . gs://<bucket-id>

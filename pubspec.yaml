@@ -4,8 +4,8 @@ version: 1.0.0+1
 publish_to: none
 
 environment:
-  sdk: ">=3.0.0-417.1.beta <4.0.0"
-  flutter: 3.10.0-1.1.pre
+  sdk: ">=3.0.0-417.3.beta <4.0.0"
+  flutter: 3.10.0-1.4.pre
 
 dependencies:
   api_client:
@@ -42,7 +42,7 @@ dependencies:
     path: api/packages/game_domain
   game_script_machine:
     path: api/packages/game_script_machine
-  go_router: ^6.5.5
+  go_router: ^6.5.8
   highlight: ^0.7.0
   intl: ^0.18.0
   logging: ^1.1.1
