@@ -481,6 +481,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
               resetCardAnimations();
 
               didPlayerPlay = false;
+              cardLandingShown = false;
 
               bloc.add(const ClashSceneStarted());
             }
