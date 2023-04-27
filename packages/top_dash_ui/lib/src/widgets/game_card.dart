@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart' hide Card;
@@ -131,6 +132,61 @@ class GameCardSize extends Equatable {
 
   /// Get the height of the card.
   double get height => size.height;
+
+  /// Interpolates between two [GameCardSize]s, linearly by a factor of [t].
+  static GameCardSize? lerp(GameCardSize? a, GameCardSize? b, double t) {
+    final titleTextStyle = TextStyle.lerp(
+      a?.titleTextStyle,
+      b?.titleTextStyle,
+      t,
+    );
+    final descriptionTextStyle = TextStyle.lerp(
+      a?.descriptionTextStyle,
+      b?.descriptionTextStyle,
+      t,
+    );
+    final powerTextStyle = TextStyle.lerp(
+      a?.powerTextStyle,
+      b?.powerTextStyle,
+      t,
+    );
+    final powerTextStrokeWidth = lerpDouble(
+      a?.powerTextStrokeWidth,
+      b?.powerTextStrokeWidth,
+      t,
+    );
+    final imageInset = RelativeRect.lerp(
+      a?.imageInset,
+      b?.imageInset,
+      t,
+    );
+    final size = Size.lerp(a?.size, b?.size, t);
+    final badgeSize = Size.lerp(
+      a?.badgeSize,
+      b?.badgeSize,
+      t,
+    );
+
+    if (titleTextStyle == null ||
+        descriptionTextStyle == null ||
+        powerTextStyle == null ||
+        powerTextStrokeWidth == null ||
+        size == null ||
+        badgeSize == null ||
+        imageInset == null) {
+      return null;
+    }
+
+    return GameCardSize(
+      imageInset: imageInset,
+      size: size,
+      badgeSize: badgeSize,
+      titleTextStyle: titleTextStyle,
+      descriptionTextStyle: descriptionTextStyle,
+      powerTextStyle: powerTextStyle,
+      powerTextStrokeWidth: powerTextStrokeWidth,
+    );
+  }
 
   @override
   List<Object?> get props => [
