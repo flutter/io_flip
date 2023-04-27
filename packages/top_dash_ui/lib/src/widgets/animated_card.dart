@@ -9,24 +9,23 @@ class AnimatedCardController {
 
   /// Runs the given [animation] on the [AnimatedCard] associated with this
   /// controller.
-  Future<void> run(CardAnimation animation) async {
+  TickerFuture run(CardAnimation animation) {
     _state?._animatable = animation.animatable;
     _state?._controller.value = 0;
-    try {
-      await _state?._controller
-          .animateTo(
-            1,
-            curve: animation.curve,
-            duration: animation.duration,
-          )
-          .orCancel;
-      _state?._controller.value = 0;
-    } on TickerCanceled {
-      // ignore
-    } finally {
-      if (animation.flipsCard) {
-        _state?._flip();
-      }
+
+    if (_state == null) {
+      return TickerFuture.complete();
+    } else {
+      return _state!._controller.animateTo(
+        1,
+        curve: animation.curve,
+        duration: animation.duration,
+      )..whenCompleteOrCancel(() {
+          _state?._controller.value = 0;
+          if (animation.flipsCard) {
+            _state?._flip();
+          }
+        });
     }
   }
 

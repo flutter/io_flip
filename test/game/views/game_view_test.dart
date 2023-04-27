@@ -242,6 +242,72 @@ void main() {
       );
 
       testWidgets(
+        'plays a player card when dragged',
+        (tester) async {
+          mockState(baseState);
+          await tester.pumpSubject(bloc);
+
+          final start = tester
+              .getCenter(find.byKey(const Key('player_card_player_card')));
+          final end = tester.getCenter(find.byKey(const Key('clash_card_1')));
+
+          await tester.dragFrom(start, end - start);
+          await tester.pumpAndSettle();
+
+          verify(() => bloc.add(PlayerPlayed('player_card'))).called(1);
+        },
+      );
+
+      testWidgets(
+        'dragging a player card not to the correct spot does not play it',
+        (tester) async {
+          mockState(baseState);
+          await tester.pumpSubject(bloc);
+
+          final start = tester
+              .getCenter(find.byKey(const Key('player_card_player_card')));
+          final end = tester.getCenter(find.byKey(const Key('clash_card_0')));
+
+          await tester.dragFrom(start, end - start);
+          await tester.pumpAndSettle();
+
+          verifyNever(() => bloc.add(PlayerPlayed('player_card')));
+        },
+      );
+
+      testWidgets(
+        'dragging a player card moves it with the pointer',
+        (tester) async {
+          mockState(baseState);
+          await tester.pumpSubject(bloc);
+
+          Rect getClashRect() =>
+              tester.getRect(find.byKey(const Key('clash_card_1')));
+          Offset getPlayerCenter() => tester.getCenter(
+                find.byKey(const Key('player_card_player_card')),
+              );
+
+          final startClashRect = getClashRect();
+          final start = getPlayerCenter();
+          final end = getClashRect().center;
+          final offset = end - start;
+          final gesture = await tester.startGesture(start);
+          await gesture.moveBy(Offset(kDragSlopDefault, -kDragSlopDefault));
+          await gesture.moveBy(
+            Offset(
+              offset.dx - kDragSlopDefault,
+              offset.dy + kDragSlopDefault,
+            ),
+          );
+
+          await tester.pumpAndSettle();
+
+          expect(getClashRect().contains(getPlayerCenter()), isTrue);
+          expect(getClashRect(), equals(startClashRect.inflate(8)));
+        },
+      );
+
+      testWidgets(
         'render the opponent card instantly when played',
         (tester) async {
           mockState(
@@ -510,7 +576,7 @@ void main() {
           // zone
           await tester.pumpAndSettle();
           final playerClashOffset = tester.getCenter(playerCardFinder);
-          expect(playerInitialOffset, isNot(equals(playerClashOffset)));
+          expect(playerClashOffset, isNot(equals(playerInitialOffset)));
 
           controller.add(
             baseState.copyWith(
@@ -524,10 +590,12 @@ void main() {
             ),
           );
 
-          await tester.pumpAndSettle();
+          await tester.pump();
+          await tester.pump();
+          await tester.pump(Duration(milliseconds: 400));
 
           final opponentClashOffset = tester.getCenter(opponentCardFinder);
-          expect(opponentInitialOffset, isNot(equals(opponentClashOffset)));
+          expect(opponentClashOffset, isNot(equals(opponentInitialOffset)));
 
           controller.add(baseState.copyWith(isFightScene: true));
 
@@ -546,13 +614,13 @@ void main() {
           final playerFinalOffset = tester.getCenter(playerCardFinder);
           final opponentFinalOffset = tester.getCenter(opponentCardFinder);
 
-          expect(playerInitialOffset, equals(playerFinalOffset));
-          expect(opponentInitialOffset, equals(opponentFinalOffset));
+          expect(playerFinalOffset, equals(playerInitialOffset));
+          expect(opponentFinalOffset, equals(opponentInitialOffset));
 
           verify(() => bloc.add(CardOverlayRevealed())).called(1);
           verify(() => bloc.add(FightSceneCompleted())).called(1);
-          verify(() => bloc.add(TurnAnimationsFinished())).called(2);
-          verify(() => bloc.add(TurnTimerStarted())).called(2);
+          verify(() => bloc.add(TurnAnimationsFinished())).called(1);
+          verify(() => bloc.add(TurnTimerStarted())).called(1);
         },
       );
     });

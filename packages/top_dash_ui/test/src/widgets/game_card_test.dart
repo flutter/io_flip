@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
@@ -122,6 +124,73 @@ void main() {
       expect(GameCardSize.lg(), isNotNull);
       expect(GameCardSize.xl(), isNotNull);
       expect(GameCardSize.xxl(), isNotNull);
+    });
+
+    group('lerp', () {
+      const a = GameCardSize.xs();
+      const b = GameCardSize.lg();
+
+      test('with t = 0', () {
+        final result = GameCardSize.lerp(a, b, 0);
+
+        expect(result, a);
+      });
+
+      test('with t = 1', () {
+        final result = GameCardSize.lerp(a, b, 1);
+
+        expect(result, b);
+      });
+
+      for (var i = 1; i < 10; i += 1) {
+        final t = i / 10;
+
+        test('with t = $t', () {
+          final result = GameCardSize.lerp(a, b, t)!;
+
+          expect(result.size, equals(Size.lerp(a.size, b.size, t)));
+          expect(
+            result.badgeSize,
+            equals(Size.lerp(a.badgeSize, b.badgeSize, t)),
+          );
+          expect(
+            result.titleTextStyle,
+            equals(
+              TextStyle.lerp(
+                a.titleTextStyle,
+                b.titleTextStyle,
+                t,
+              ),
+            ),
+          );
+          expect(
+            result.descriptionTextStyle,
+            equals(
+              TextStyle.lerp(
+                a.descriptionTextStyle,
+                b.descriptionTextStyle,
+                t,
+              ),
+            ),
+          );
+          expect(
+            result.powerTextStyle,
+            equals(
+              TextStyle.lerp(
+                a.powerTextStyle,
+                b.powerTextStyle,
+                t,
+              ),
+            ),
+          );
+          expect(
+            result.powerTextStrokeWidth,
+            equals(
+              lerpDouble(a.powerTextStrokeWidth, b.powerTextStrokeWidth, t),
+            ),
+          );
+        });
+      }
     });
   });
 }
