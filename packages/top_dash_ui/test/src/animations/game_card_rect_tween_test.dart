@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -44,42 +43,15 @@ void main() {
         final t = i / 10;
 
         test('with t = $t', () {
-          final result = tween.lerp(t);
-          final gameCardSize = result!.gameCardSize;
+          final result = tween.lerp(t)!;
 
           expect(
             result.offset,
             equals(Offset.lerp(begin.offset, end.offset, t)),
           );
           expect(
-            gameCardSize.size,
-            equals(
-              Size.lerp(
-                begin.gameCardSize.size,
-                end.gameCardSize.size,
-                t,
-              ),
-            ),
-          );
-          expect(
-            gameCardSize.titleTextStyle,
-            equals(
-              TextStyle.lerp(
-                begin.gameCardSize.titleTextStyle,
-                end.gameCardSize.titleTextStyle,
-                t,
-              ),
-            ),
-          );
-          expect(
-            gameCardSize.descriptionTextStyle,
-            equals(
-              TextStyle.lerp(
-                begin.gameCardSize.descriptionTextStyle,
-                end.gameCardSize.descriptionTextStyle,
-                t,
-              ),
-            ),
+            result.gameCardSize,
+            equals(GameCardSize.lerp(begin.gameCardSize, end.gameCardSize, t)),
           );
         });
       }

@@ -1,7 +1,5 @@
 // ignore_for_file: overridden_fields
 
-import 'dart:ui';
-
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
@@ -39,41 +37,14 @@ class GameCardRectTween extends Tween<GameCardRect?> {
 
   @override
   GameCardRect? lerp(double t) {
-    final titleTextStyle = TextStyle.lerp(
-      begin?.gameCardSize.titleTextStyle,
-      end?.gameCardSize.titleTextStyle,
+    final gameCardSize = GameCardSize.lerp(
+      begin?.gameCardSize,
+      end?.gameCardSize,
       t,
-    )!;
-    final descriptionTextStyle = TextStyle.lerp(
-      begin?.gameCardSize.descriptionTextStyle,
-      end?.gameCardSize.descriptionTextStyle,
-      t,
-    )!;
-    final powerTextStyle = TextStyle.lerp(
-      begin?.gameCardSize.powerTextStyle,
-      end?.gameCardSize.powerTextStyle,
-      t,
-    )!;
-    final powerTextStrokeWidth = lerpDouble(
-      begin?.gameCardSize.powerTextStrokeWidth,
-      end?.gameCardSize.powerTextStrokeWidth,
-      t,
-    )!;
-    final gameCardSize = GameCardSize(
-      size: Size.lerp(begin?.gameCardSize.size, end?.gameCardSize.size, t)!,
-      badgeSize: Size.lerp(
-        begin?.gameCardSize.badgeSize,
-        end?.gameCardSize.badgeSize,
-        t,
-      )!,
-      titleTextStyle: titleTextStyle,
-      descriptionTextStyle: descriptionTextStyle,
-      powerTextStyle: powerTextStyle,
-      powerTextStrokeWidth: powerTextStrokeWidth,
     );
 
     return GameCardRect(
-      gameCardSize: gameCardSize,
+      gameCardSize: gameCardSize!,
       offset: Offset.lerp(begin?.offset, end?.offset, t)!,
     );
   }

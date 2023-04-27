@@ -28,6 +28,7 @@ void main() {
         csv: csv,
         image: image,
         dest: dest,
+        variations: 8,
       );
     });
 
@@ -37,6 +38,7 @@ void main() {
           csv: _MockFile(),
           image: _MockFile(),
           dest: '',
+          variations: 8,
         ),
         isNotNull,
       );
@@ -45,7 +47,7 @@ void main() {
     test('load the images', () async {
       when(() => csv.readAsLines()).thenAnswer(
         (_) async => [
-          'Character,Class,Power,Power,Location,',
+          'Character,Class,Power,Location,',
           'Dash,Alien,Banjos,City,',
           'Android,Mage,Bass,Forest,',
         ],
@@ -54,22 +56,22 @@ void main() {
       await imageLoader.loadImages((_, __) {});
 
       final expectedFilePaths = [
-        path.join('dash', 'alien', 'banjos', 'city.png'),
-        path.join('dash', 'alien', 'banjos', 'forest.png'),
-        path.join('dash', 'alien', 'bass', 'city.png'),
-        path.join('dash', 'alien', 'bass', 'forest.png'),
-        path.join('dash', 'mage', 'banjos', 'city.png'),
-        path.join('dash', 'mage', 'banjos', 'forest.png'),
-        path.join('dash', 'mage', 'bass', 'city.png'),
-        path.join('dash', 'mage', 'bass', 'forest.png'),
-        path.join('android', 'alien', 'banjos', 'city.png'),
-        path.join('android', 'alien', 'banjos', 'forest.png'),
-        path.join('android', 'alien', 'bass', 'city.png'),
-        path.join('android', 'alien', 'bass', 'forest.png'),
-        path.join('android', 'mage', 'banjos', 'city.png'),
-        path.join('android', 'mage', 'banjos', 'forest.png'),
-        path.join('android', 'mage', 'bass', 'city.png'),
-        path.join('android', 'mage', 'bass', 'forest.png'),
+        'dash_alien_city_1.png',
+        'dash_alien_forest_2.png',
+        'dash_alien_city_1.png',
+        'dash_alien_forest_2.png',
+        'dash_mage_city_1.png',
+        'dash_mage_forest_2.png',
+        'dash_mage_city_1.png',
+        'dash_mage_forest_2.png',
+        'android_alien_city_1.png',
+        'android_alien_forest_2.png',
+        'android_alien_city_1.png',
+        'android_alien_forest_2.png',
+        'android_mage_city_1.png',
+        'android_mage_forest_2.png',
+        'android_mage_city_1.png',
+        'android_mage_forest_2.png',
       ];
 
       for (final filePath in expectedFilePaths) {
@@ -82,10 +84,7 @@ void main() {
           ),
         );
 
-        expect(
-          file.existsSync(),
-          isTrue,
-        );
+        expect(file.existsSync(), isTrue);
       }
     });
   });

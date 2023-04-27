@@ -1,3 +1,6 @@
+import 'dart:math' as math;
+import 'dart:ui';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_svg/flutter_svg.dart';
@@ -16,6 +19,7 @@ class GameCardSize extends Equatable {
     required this.descriptionTextStyle,
     required this.powerTextStyle,
     required this.powerTextStrokeWidth,
+    required this.imageInset,
   });
 
   /// XXS size.
@@ -24,9 +28,10 @@ class GameCardSize extends Equatable {
           size: TopDashCardSizes.xxs,
           titleTextStyle: TopDashTextStyles.cardTitleXXS,
           descriptionTextStyle: TopDashTextStyles.cardDescriptionXXS,
-          badgeSize: const Size.square(41),
+          badgeSize: const Size.square(22),
           powerTextStyle: TopDashTextStyles.cardNumberXXS,
           powerTextStrokeWidth: 2,
+          imageInset: const RelativeRect.fromLTRB(4, 3, 4, 24),
         );
 
   /// XS size.
@@ -38,6 +43,7 @@ class GameCardSize extends Equatable {
           descriptionTextStyle: TopDashTextStyles.cardDescriptionXS,
           powerTextStyle: TopDashTextStyles.cardNumberXS,
           powerTextStrokeWidth: 2,
+          imageInset: const RelativeRect.fromLTRB(8, 6, 8, 44),
         );
 
   /// SM size.
@@ -49,6 +55,7 @@ class GameCardSize extends Equatable {
           descriptionTextStyle: TopDashTextStyles.cardDescriptionSM,
           powerTextStyle: TopDashTextStyles.cardNumberSM,
           powerTextStrokeWidth: 2,
+          imageInset: const RelativeRect.fromLTRB(12, 10, 12, 60),
         );
 
   /// MD size.
@@ -60,6 +67,7 @@ class GameCardSize extends Equatable {
           descriptionTextStyle: TopDashTextStyles.cardDescriptionMD,
           powerTextStyle: TopDashTextStyles.cardNumberMD,
           powerTextStrokeWidth: 3,
+          imageInset: const RelativeRect.fromLTRB(14, 12, 14, 74),
         );
 
   /// LG size.
@@ -71,6 +79,7 @@ class GameCardSize extends Equatable {
           descriptionTextStyle: TopDashTextStyles.cardDescriptionLG,
           powerTextStyle: TopDashTextStyles.cardNumberLG,
           powerTextStrokeWidth: 4,
+          imageInset: const RelativeRect.fromLTRB(18, 14, 18, 96),
         );
 
   /// XL size.
@@ -82,6 +91,7 @@ class GameCardSize extends Equatable {
           descriptionTextStyle: TopDashTextStyles.cardDescriptionXL,
           powerTextStyle: TopDashTextStyles.cardNumberXL,
           powerTextStrokeWidth: 4,
+          imageInset: const RelativeRect.fromLTRB(20, 16, 20, 116),
         );
 
   /// XXL size.
@@ -93,6 +103,7 @@ class GameCardSize extends Equatable {
           descriptionTextStyle: TopDashTextStyles.cardDescriptionXXL,
           powerTextStyle: TopDashTextStyles.cardNumberXXL,
           powerTextStrokeWidth: 4,
+          imageInset: const RelativeRect.fromLTRB(24, 20, 24, 136),
         );
 
   /// The size of the card.
@@ -113,14 +124,79 @@ class GameCardSize extends Equatable {
   /// Power text stroke width
   final double powerTextStrokeWidth;
 
+  /// The inset of  the image.
+  final RelativeRect imageInset;
+
   /// Get the width of the card.
   double get width => size.width;
 
   /// Get the height of the card.
   double get height => size.height;
 
+  /// Interpolates between two [GameCardSize]s, linearly by a factor of [t].
+  static GameCardSize? lerp(GameCardSize? a, GameCardSize? b, double t) {
+    final titleTextStyle = TextStyle.lerp(
+      a?.titleTextStyle,
+      b?.titleTextStyle,
+      t,
+    );
+    final descriptionTextStyle = TextStyle.lerp(
+      a?.descriptionTextStyle,
+      b?.descriptionTextStyle,
+      t,
+    );
+    final powerTextStyle = TextStyle.lerp(
+      a?.powerTextStyle,
+      b?.powerTextStyle,
+      t,
+    );
+    final powerTextStrokeWidth = lerpDouble(
+      a?.powerTextStrokeWidth,
+      b?.powerTextStrokeWidth,
+      t,
+    );
+    final imageInset = RelativeRect.lerp(
+      a?.imageInset,
+      b?.imageInset,
+      t,
+    );
+    final size = Size.lerp(a?.size, b?.size, t);
+    final badgeSize = Size.lerp(
+      a?.badgeSize,
+      b?.badgeSize,
+      t,
+    );
+
+    if (titleTextStyle == null ||
+        descriptionTextStyle == null ||
+        powerTextStyle == null ||
+        powerTextStrokeWidth == null ||
+        size == null ||
+        badgeSize == null ||
+        imageInset == null) {
+      return null;
+    }
+
+    return GameCardSize(
+      imageInset: imageInset,
+      size: size,
+      badgeSize: badgeSize,
+      titleTextStyle: titleTextStyle,
+      descriptionTextStyle: descriptionTextStyle,
+      powerTextStyle: powerTextStyle,
+      powerTextStrokeWidth: powerTextStrokeWidth,
+    );
+  }
+
   @override
-  List<Object?> get props => [size, descriptionTextStyle, titleTextStyle];
+  List<Object?> get props => [
+        size,
+        descriptionTextStyle,
+        titleTextStyle,
+        powerTextStyle,
+        powerTextStrokeWidth,
+        imageInset,
+      ];
 }
 
 /// {@template game_card}
@@ -137,6 +213,8 @@ class GameCard extends StatelessWidget {
     this.size = const GameCardSize.lg(),
     this.isRare = false,
     this.overlay,
+    this.tilt = Offset.zero,
+    @visibleForTesting this.package = 'top_dash_ui',
     super.key,
   });
 
@@ -163,6 +241,16 @@ class GameCard extends StatelessWidget {
 
   /// Is a rare card
   final bool isRare;
+
+  /// An offset with x and y values between -1 and 1, representing how much the
+  /// card should be tilted.
+  final Offset tilt;
+
+  /// The name of the package from which this widget is included.
+  ///
+  /// This is used to lookup the shader asset.
+  @visibleForTesting
+  final String? package;
 
   (String, SvgPicture) _mapSuitNameToAssets() {
     switch (suitName) {
@@ -199,91 +287,108 @@ class GameCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (cardFrame, suitSvg) = _mapSuitNameToAssets();
+    final cardBody = Stack(
+      children: [
+        Positioned.fromRelativeRect(
+          rect: size.imageInset,
+          child: Image.network(image),
+        ),
+        Positioned.fill(
+          child: Image.asset(cardFrame),
+        ),
+        Align(
+          alignment: Alignment.topRight,
+          child: SizedBox(
+            width: size.badgeSize.width,
+            height: size.badgeSize.height,
+            child: Stack(
+              children: [
+                Positioned.fill(child: suitSvg),
+                Align(
+                  alignment: const Alignment(.15, .4),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Text(
+                        power.toString(),
+                        style: size.powerTextStyle.copyWith(
+                          shadows: [
+                            Shadow(
+                              offset: Offset(
+                                size.size.width * 0.014,
+                                size.size.height * 0.013,
+                              ),
+                              color: TopDashColors.seedBlack,
+                            ),
+                          ],
+                          foreground: Paint()
+                            ..style = PaintingStyle.stroke
+                            ..strokeWidth = size.powerTextStrokeWidth
+                            ..color = TopDashColors.seedBlack,
+                        ),
+                      ),
+                      Text(
+                        power.toString(),
+                        style: size.powerTextStyle,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Align(
+          alignment: const Alignment(0, .5),
+          child: Text(
+            name,
+            style: size.titleTextStyle.copyWith(
+              color: TopDashColors.seedBlack,
+            ),
+          ),
+        ),
+        Align(
+          alignment: const Alignment(0, .95),
+          child: SizedBox(
+            width: size.width * 0.8,
+            height: size.height * 0.2,
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Text(
+                description,
+                textAlign: TextAlign.center,
+                style: size.descriptionTextStyle.copyWith(
+                  color: TopDashColors.seedBlack,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+
     return Stack(
       children: [
         SizedBox(
           width: size.width,
           height: size.height,
-          child: Stack(
-            children: [
-              Align(
-                alignment: Alignment.topCenter,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(size.width * 0.25),
-                    topRight: Radius.circular(size.width * 0.25),
-                  ),
-                  child: Image.network(image),
-                ),
-              ),
-              Positioned.fill(
-                child: Image.asset(cardFrame),
-              ),
-              Align(
-                alignment: Alignment.topRight,
-                child: SizedBox(
-                  width: size.badgeSize.width,
-                  height: size.badgeSize.height,
-                  child: Stack(
-                    children: [
-                      Positioned.fill(child: suitSvg),
-                      Align(
-                        alignment: const Alignment(.15, .4),
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            Text(
-                              power.toString(),
-                              style: size.powerTextStyle.copyWith(
-                                shadows: const [
-                                  Shadow(
-                                    offset: Offset(1.68, 2.52),
-                                    color: TopDashColors.seedBlack,
-                                  ),
-                                ],
-                                foreground: Paint()
-                                  ..style = PaintingStyle.stroke
-                                  ..strokeWidth = size.powerTextStrokeWidth
-                                  ..color = TopDashColors.seedBlack,
-                              ),
-                            ),
-                            Text(
-                              power.toString(),
-                              style: size.powerTextStyle,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Align(
-                alignment: const Alignment(0, .45),
-                child: Text(
-                  name,
-                  style: size.titleTextStyle.copyWith(
-                    color: TopDashColors.seedBlack,
-                  ),
-                ),
-              ),
-              Align(
-                alignment: const Alignment(0, .85),
-                child: SizedBox(
-                  width: size.width * 0.8,
-                  height: size.height * 0.2,
-                  child: Center(
-                    child: Text(
-                      description,
-                      textAlign: TextAlign.center,
-                      style: size.descriptionTextStyle.copyWith(
-                        color: TopDashColors.seedBlack,
-                      ),
+          child: Transform(
+            alignment: Alignment.center,
+            transform: CardTransform(
+              rotateY: -tilt.dx * math.pi / 8,
+              rotateX: tilt.dy * math.pi / 8,
+            ),
+            child: isRare
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(size.width * 0.075),
+                    child: FoilShader(
+                      package: package,
+                      dx: tilt.dx,
+                      dy: tilt.dy,
+                      child: cardBody,
                     ),
-                  ),
-                ),
-              ),
-            ],
+                  )
+                : cardBody,
           ),
         ),
         if (overlay != null)

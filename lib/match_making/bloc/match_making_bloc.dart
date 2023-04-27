@@ -73,6 +73,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
         );
       } else {
         await _waitGuestToJoin(
+          isPrivate: false,
           match: match,
           emit: emit,
         );
@@ -97,6 +98,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
         isHost: true,
       );
       await _waitGuestToJoin(
+        isPrivate: true,
         match: match,
         emit: emit,
       );
@@ -136,6 +138,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   }
 
   Future<void> _waitGuestToJoin({
+    required bool isPrivate,
     required DraftMatch match,
     required Emitter<MatchMakingState> emit,
   }) async {
@@ -167,7 +170,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
 
       return Future.value(false);
     }).timeout(
-      const Duration(seconds: 30),
+      Duration(seconds: isPrivate ? 30 : 8),
       onTimeout: () async {
         await subscription.cancel();
         try {

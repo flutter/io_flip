@@ -54,6 +54,11 @@ void addStories(Dashbook dashbook) {
         (_) => const FlipCountdownStory(),
       );
 
+  dashbook.storiesOf('Card Landing Puff').add(
+        'Card landing puff',
+        (_) => const CardLandingPuffStory(),
+      );
+
   dashbook
       .storiesOf('Cards')
       .add(
@@ -70,6 +75,7 @@ void addStories(Dashbook dashbook) {
                 'mastering the development skills in all of the possible '
                 'platforms.',
           ),
+          isRare: context.boolProperty('isRare', false),
         ),
       )
       .add(

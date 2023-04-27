@@ -44,8 +44,10 @@ class CardSwipeStarted extends DraftEvent {
 }
 
 class SelectCard extends DraftEvent {
-  const SelectCard();
+  const SelectCard(this.index);
+
+  final int index;
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [index];
 }

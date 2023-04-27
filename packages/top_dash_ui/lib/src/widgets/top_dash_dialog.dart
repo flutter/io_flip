@@ -8,14 +8,25 @@ class TopDashDialog extends StatelessWidget {
   /// {@macro top_dash_dialog}
   const TopDashDialog({
     required this.child,
+    this.showCloseButton = true,
+    this.onClose,
     super.key,
   });
 
   /// Shows the dialog.
-  static Future<void> show(BuildContext context, Widget child) async {
+  static Future<void> show(
+    BuildContext context, {
+    required Widget child,
+    bool showCloseButton = true,
+    VoidCallback? onClose,
+  }) async {
     return showGeneralDialog<void>(
       context: context,
-      pageBuilder: (context, _, __) => TopDashDialog(child: child),
+      pageBuilder: (context, _, __) => TopDashDialog(
+        showCloseButton: showCloseButton,
+        onClose: onClose,
+        child: child,
+      ),
       transitionDuration: const Duration(milliseconds: 250),
       transitionBuilder: (context, animation, secondaryAnimation, child) {
         final curvedAnimation = Curves.easeOutBack.transform(animation.value);
@@ -34,11 +45,41 @@ class TopDashDialog extends StatelessWidget {
   /// The child of the dialog.
   final Widget child;
 
+  /// Whether to show the close button.
+  ///
+  /// Defaults to `true`.
+  final bool showCloseButton;
+
+  /// The callback to call when the close button is pressed.
+  final VoidCallback? onClose;
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
       insetPadding: const EdgeInsets.all(TopDashSpacing.sm),
-      child: child,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(TopDashSpacing.lg),
+        child: SingleChildScrollView(
+          child: Container(
+            width: 327,
+            padding: const EdgeInsets.all(TopDashSpacing.lg),
+            child: Column(
+              children: [
+                if (showCloseButton)
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: CloseButton(
+                      onPressed: onClose,
+                      color: TopDashColors.seedWhite,
+                    ),
+                  ),
+                const SizedBox(height: TopDashSpacing.lg),
+                child,
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

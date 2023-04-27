@@ -80,13 +80,13 @@ void main() {
       expect: () => [
         DraftState(
           cards: const [],
-          selectedCards: const [],
+          selectedCards: const [null, null, null],
           status: DraftStateStatus.deckLoading,
           firstCardOpacity: 1,
         ),
         DraftState(
           cards: cards,
-          selectedCards: const [],
+          selectedCards: const [null, null, null],
           status: DraftStateStatus.deckLoaded,
           firstCardOpacity: 1,
         ),
@@ -142,7 +142,7 @@ void main() {
       ),
       seed: () => DraftState(
         cards: cards,
-        selectedCards: const [],
+        selectedCards: const [null, null, null],
         status: DraftStateStatus.deckLoaded,
         firstCardOpacity: 1,
       ),
@@ -155,7 +155,7 @@ void main() {
             cards.last,
             ...cards.getRange(0, cards.length - 1),
           ],
-          selectedCards: const [],
+          selectedCards: const [null, null, null],
           status: DraftStateStatus.deckLoaded,
           firstCardOpacity: 1,
         ),
@@ -170,7 +170,7 @@ void main() {
       ),
       seed: () => DraftState(
         cards: [commonCard, rareCard],
-        selectedCards: const [],
+        selectedCards: const [null, null, null],
         status: DraftStateStatus.deckLoaded,
         firstCardOpacity: 1,
       ),
@@ -190,7 +190,7 @@ void main() {
       ),
       seed: () => DraftState(
         cards: cards,
-        selectedCards: const [],
+        selectedCards: const [null, null, null],
         status: DraftStateStatus.deckLoaded,
         firstCardOpacity: 1,
       ),
@@ -203,7 +203,7 @@ void main() {
             ...cards.getRange(1, cards.length),
             cards.first,
           ],
-          selectedCards: const [],
+          selectedCards: const [null, null, null],
           status: DraftStateStatus.deckLoaded,
           firstCardOpacity: 1,
         ),
@@ -218,7 +218,7 @@ void main() {
       ),
       seed: () => DraftState(
         cards: [commonCard, rareCard],
-        selectedCards: const [],
+        selectedCards: const [null, null, null],
         status: DraftStateStatus.deckLoaded,
         firstCardOpacity: 1,
       ),
@@ -238,7 +238,7 @@ void main() {
       ),
       seed: () => DraftState(
         cards: cards,
-        selectedCards: const [],
+        selectedCards: const [null, null, null],
         status: DraftStateStatus.deckLoaded,
         firstCardOpacity: .2,
       ),
@@ -251,7 +251,7 @@ void main() {
             ...cards.getRange(1, cards.length),
             cards.first,
           ],
-          selectedCards: const [],
+          selectedCards: const [null, null, null],
           status: DraftStateStatus.deckLoaded,
           firstCardOpacity: 1,
         ),
@@ -265,7 +265,7 @@ void main() {
       ),
       seed: () => DraftState(
         cards: [commonCard, rareCard],
-        selectedCards: const [],
+        selectedCards: const [null, null, null],
         status: DraftStateStatus.deckLoaded,
         firstCardOpacity: 1,
       ),
@@ -285,7 +285,7 @@ void main() {
       ),
       seed: () => DraftState(
         cards: cards,
-        selectedCards: const [],
+        selectedCards: const [null, null, null],
         status: DraftStateStatus.deckLoaded,
         firstCardOpacity: 1,
       ),
@@ -295,7 +295,7 @@ void main() {
       expect: () => [
         DraftState(
           cards: cards,
-          selectedCards: const [],
+          selectedCards: const [null, null, null],
           status: DraftStateStatus.deckLoaded,
           firstCardOpacity: .9,
         ),
@@ -310,7 +310,7 @@ void main() {
       ),
       seed: () => DraftState(
         cards: cards,
-        selectedCards: const [],
+        selectedCards: const [null, null, null],
         status: DraftStateStatus.deckLoaded,
         firstCardOpacity: 1,
       ),
@@ -331,12 +331,12 @@ void main() {
       ),
       seed: () => DraftState(
         cards: cards,
-        selectedCards: const [],
+        selectedCards: const [null, null, null],
         status: DraftStateStatus.deckLoaded,
         firstCardOpacity: 1,
       ),
       act: (bloc) {
-        bloc.add(SelectCard());
+        bloc.add(SelectCard(0));
       },
       expect: () => [
         DraftState(
@@ -344,8 +344,43 @@ void main() {
             ...cards.getRange(1, cards.length),
             cards.first,
           ],
-          selectedCards: [cards.first],
+          selectedCards: [cards.first, null, null],
           status: DraftStateStatus.deckLoaded,
+          firstCardOpacity: 1,
+        ),
+      ],
+      verify: (_) {
+        final captured =
+            verify(() => audioController.playSfx(captureAny())).captured;
+        final sfx = captured.first;
+        expect(sfx, isA<String>());
+        expect(sfx as String, Assets.sfx.addToHand);
+      },
+    );
+
+    blocTest<DraftBloc, DraftState>(
+      'can still select a card when the deck is full',
+      build: () => DraftBloc(
+        gameResource: gameResource,
+        audioController: audioController,
+      ),
+      seed: () => DraftState(
+        cards: cards,
+        selectedCards: [cards[1], cards[2], cards[3]],
+        status: DraftStateStatus.deckSelected,
+        firstCardOpacity: 1,
+      ),
+      act: (bloc) {
+        bloc.add(SelectCard(2));
+      },
+      expect: () => [
+        DraftState(
+          cards: [
+            ...cards.getRange(1, cards.length),
+            cards.first,
+          ],
+          selectedCards: [cards[1], cards[2], cards.first],
+          status: DraftStateStatus.deckSelected,
           firstCardOpacity: 1,
         ),
       ],
@@ -366,17 +401,20 @@ void main() {
       ),
       seed: () => DraftState(
         cards: cards,
-        selectedCards: [cards[2], cards[3]],
+        selectedCards: [cards[2], null, cards[3]],
         status: DraftStateStatus.deckLoaded,
         firstCardOpacity: 1,
       ),
       act: (bloc) {
-        bloc.add(SelectCard());
+        bloc.add(SelectCard(1));
       },
       expect: () => [
         DraftState(
-          cards: cards,
-          selectedCards: [cards[2], cards[3], cards.first],
+          cards: [
+            ...cards.getRange(1, cards.length),
+            cards.first,
+          ],
+          selectedCards: [cards[2], cards.first, cards[3]],
           status: DraftStateStatus.deckSelected,
           firstCardOpacity: 1,
         ),
@@ -397,13 +435,13 @@ void main() {
       expect: () => [
         DraftState(
           cards: const [],
-          selectedCards: const [],
+          selectedCards: const [null, null, null],
           status: DraftStateStatus.deckLoading,
           firstCardOpacity: 1,
         ),
         DraftState(
           cards: const [],
-          selectedCards: const [],
+          selectedCards: const [null, null, null],
           status: DraftStateStatus.deckFailed,
           firstCardOpacity: 1,
         ),

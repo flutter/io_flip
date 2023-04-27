@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/audio/widgets/widgets.dart';
+import 'package:top_dash/info/info.dart';
 import 'package:top_dash/settings/settings.dart';
 import 'package:top_dash/share/views/views.dart';
 import 'package:top_dash/share/widgets/widgets.dart';
@@ -115,6 +116,20 @@ void main() {
     testWidgets('renders a music button', (tester) async {
       await tester.pumpSubject();
       expect(find.byType(AudioToggleButton), findsOneWidget);
+    });
+
+    testWidgets('renders a dialog on info button tapped', (tester) async {
+      final shareResource = _MockShareResource();
+      when(() => shareResource.facebookShareHandUrl(any())).thenReturn('');
+      when(() => shareResource.twitterShareHandUrl(any())).thenReturn('');
+
+      await tester.pumpSubject(
+        shareResource: shareResource,
+      );
+      await tester.tap(find.byKey(const Key('share_page_info_button')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(InfoView), findsOneWidget);
     });
   });
 }

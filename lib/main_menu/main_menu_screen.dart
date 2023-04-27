@@ -8,6 +8,7 @@ import 'package:top_dash/info/info.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/leaderboard/leaderboard.dart';
 import 'package:top_dash/terms_of_use/terms_of_use.dart';
+import 'package:top_dash/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class MainMenuScreen extends StatelessWidget {
@@ -57,7 +58,8 @@ class MainMenuScreen extends StatelessWidget {
                         } else {
                           TopDashDialog.show(
                             context,
-                            const TermsOfUseView(),
+                            child: const TermsOfUseView(),
+                            showCloseButton: false,
                           );
                         }
                       },
@@ -68,7 +70,7 @@ class MainMenuScreen extends StatelessWidget {
                   Icons.question_mark_rounded,
                   onPressed: () => TopDashDialog.show(
                     context,
-                    const HowToPlayDialog(),
+                    child: const HowToPlayDialog(),
                   ),
                 ),
               ),
