@@ -28,7 +28,7 @@ void main() {
         csv: csv,
         image: image,
         dest: dest,
-        totalDeckSize: 8,
+        variations: 8,
       );
     });
 
@@ -38,7 +38,7 @@ void main() {
           csv: _MockFile(),
           image: _MockFile(),
           dest: '',
-          totalDeckSize: 8,
+          variations: 8,
         ),
         isNotNull,
       );
@@ -47,7 +47,7 @@ void main() {
     test('load the images', () async {
       when(() => csv.readAsLines()).thenAnswer(
         (_) async => [
-          'Character,Class,Power,Power,Location,',
+          'Character,Class,Power,Location,',
           'Dash,Alien,Banjos,City,',
           'Android,Mage,Bass,Forest,',
         ],
@@ -56,22 +56,22 @@ void main() {
       await imageLoader.loadImages((_, __) {});
 
       final expectedFilePaths = [
-        'dash_alien_banjos_1.png',
-        'dash_alien_bass_2.png',
-        'dash_alien_banjos_1.png',
-        'dash_alien_bass_2.png',
-        'dash_mage_banjos_1.png',
-        'dash_mage_bass_2.png',
-        'dash_mage_banjos_1.png',
-        'dash_mage_bass_2.png',
-        'android_alien_banjos_1.png',
-        'android_alien_bass_2.png',
-        'android_alien_banjos_1.png',
-        'android_alien_bass_2.png',
-        'android_mage_banjos_1.png',
-        'android_mage_bass_2.png',
-        'android_mage_banjos_1.png',
-        'android_mage_bass_2.png',
+        'dash_alien_city_1.png',
+        'dash_alien_forest_2.png',
+        'dash_alien_city_1.png',
+        'dash_alien_forest_2.png',
+        'dash_mage_city_1.png',
+        'dash_mage_forest_2.png',
+        'dash_mage_city_1.png',
+        'dash_mage_forest_2.png',
+        'android_alien_city_1.png',
+        'android_alien_forest_2.png',
+        'android_alien_city_1.png',
+        'android_alien_forest_2.png',
+        'android_mage_city_1.png',
+        'android_mage_forest_2.png',
+        'android_mage_city_1.png',
+        'android_mage_forest_2.png',
       ];
 
       for (final filePath in expectedFilePaths) {
@@ -84,10 +84,7 @@ void main() {
           ),
         );
 
-        expect(
-          file.existsSync(),
-          isTrue,
-        );
+        expect(file.existsSync(), isTrue);
       }
     });
   });
