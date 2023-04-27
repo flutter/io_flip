@@ -18,12 +18,12 @@ abstract class ElementalDamage {
     this.height = 500,
     this.width = 500,
     this.onComplete,
-  })  : chargeBack = ChargeBack(chargeBackPath),
-        chargeFront = ChargeFront(chargeFrontPath),
-        damageReceive = DamageReceive(damageReceivePath),
-        damageSend = DamageSend(damageSendPath),
-        victoryChargeFront = VictoryChargeFront(victoryChargeBackPath),
-        victoryChargeBack = VictoryChargeBack(victoryChargeFrontPath);
+  })  : _chargeBackPath = chargeBackPath,
+        _chargeFrontPath = chargeFrontPath,
+        _damageReceivePath = damageReceivePath,
+        _damageSendPath = damageSendPath,
+        _victoryChargeFrontPath = victoryChargeBackPath,
+        _victoryChargeBackPath = victoryChargeFrontPath;
 
   /// The height of the widget.
   ///
@@ -39,20 +39,62 @@ abstract class ElementalDamage {
   final VoidCallback? onComplete;
 
   /// Widget containing the [ChargeBack] animation
-  final ChargeBack chargeBack;
+  final String _chargeBackPath;
 
   /// Widget containing the [ChargeFront] animation
-  final ChargeFront chargeFront;
+  final String _chargeFrontPath;
 
   /// Widget containing the [DamageReceive] animation
-  final DamageReceive damageReceive;
+  final String _damageReceivePath;
 
   /// Widget containing the [DamageSend] animation
-  final DamageSend damageSend;
+  final String _damageSendPath;
 
   /// Widget containing the [VictoryChargeBack] animation
-  final VictoryChargeBack victoryChargeBack;
+  final String _victoryChargeBackPath;
 
   /// Widget containing the [VictoryChargeFront] animation
-  final VictoryChargeFront victoryChargeFront;
+  final String _victoryChargeFrontPath;
+
+  /// Widget containing the [ChargeBack] animation
+  ChargeBack get chargeBack => ChargeBack(
+        _chargeBackPath,
+        width: width,
+        height: height,
+      );
+
+  /// Widget containing the [ChargeFront] animation
+  ChargeFront get chargeFront => ChargeFront(
+        _chargeFrontPath,
+        width: width,
+        height: height,
+      );
+
+  /// Widget containing the [DamageReceive] animation
+  DamageReceive get damageReceive => DamageReceive(
+        _damageReceivePath,
+        width: width,
+        height: height,
+      );
+
+  /// Widget containing the [DamageSend] animation
+  DamageSend get damageSend => DamageSend(
+        _damageSendPath,
+        width: width,
+        height: height,
+      );
+
+  /// Widget containing the [VictoryChargeBack] animation
+  VictoryChargeBack get victoryChargeBack => VictoryChargeBack(
+        _victoryChargeBackPath,
+        width: width,
+        height: height,
+      );
+
+  /// Widget containing the [VictoryChargeFront] animation
+  VictoryChargeFront get victoryChargeFront => VictoryChargeFront(
+        _victoryChargeFrontPath,
+        width: width,
+        height: height,
+      );
 }
