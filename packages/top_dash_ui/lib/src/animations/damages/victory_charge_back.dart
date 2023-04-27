@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 /// {@template victory_charge_back}
-/// A widget that renders a [SpriteAnimation] for the damages sent.
+/// A widget that renders a [SpriteAnimation] for the victory charge
+/// behind the card.
 /// {@endtemplate}
 class VictoryChargeBack extends StatelessWidget {
   /// {@macro victory_charge_back}
@@ -30,7 +31,7 @@ class VictoryChargeBack extends StatelessWidget {
   /// Optional callback to be called when the animation is complete.
   final VoidCallback? onComplete;
 
-  /// path of the asset containing the sprite sheet
+  /// Path of the asset containing the sprite sheet.
   final String path;
 
   @override

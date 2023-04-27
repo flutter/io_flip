@@ -30,7 +30,7 @@ class DamageReceive extends StatelessWidget {
   /// Optional callback to be called when the animation is complete.
   final VoidCallback? onComplete;
 
-  /// path of the asset containing the sprite sheet
+  /// Path of the asset containing the sprite sheet.
   final String path;
 
   @override

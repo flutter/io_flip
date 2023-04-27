@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 /// {@template charge_front}
-/// A widget that renders a [SpriteAnimation] for the damages sent.
+/// A widget that renders a [SpriteAnimation] for the charge effect in the back
+/// of the card.
 /// {@endtemplate}
 class ChargeFront extends StatelessWidget {
   /// {@macro charge_front}
@@ -30,7 +31,7 @@ class ChargeFront extends StatelessWidget {
   /// Optional callback to be called when the animation is complete.
   final VoidCallback? onComplete;
 
-  /// path of the asset containing the sprite sheet
+  /// Path of the asset containing the sprite sheet.
   final String path;
 
   @override
