@@ -9,10 +9,13 @@ fun rollCardRarity() -> bool {
 
 
 fun rollCardPower(isRare: bool) -> int {
+  const maxValue = 99;
+  const minValue = 10;
+  const gap = maxValue - minValue;
+  
   var base = rollDoubleValue();
-  var value = (base * 100).toInt();
-  value = if (value < 10) 10 else value;
-  value = if (isRare) value + 100 else value;
+  var value = (base * gap + minValue).toInt();
+  value = if (isRare) 100 else value;
 
   return value;
 }

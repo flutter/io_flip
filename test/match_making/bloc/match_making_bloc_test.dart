@@ -261,7 +261,7 @@ void main() {
           hostWaitTime: const Duration(milliseconds: 200),
         )..add(MatchRequested());
 
-        async.elapse(Duration(seconds: 30));
+        async.elapse(Duration(seconds: 8));
         expect(
           bloc.state,
           equals(

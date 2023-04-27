@@ -150,6 +150,10 @@ void main() {
 
           expect(result.size, equals(Size.lerp(a.size, b.size, t)));
           expect(
+            result.imageInset,
+            equals(RelativeRect.lerp(a.imageInset, b.imageInset, t)),
+          );
+          expect(
             result.badgeSize,
             equals(Size.lerp(a.badgeSize, b.badgeSize, t)),
           );
