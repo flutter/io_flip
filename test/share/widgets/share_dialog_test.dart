@@ -19,15 +19,9 @@ const card = Card(
 );
 
 void main() {
-  group('CardShareDialog', () {
+  group('ShareDialog', () {
     setUpAll(() {
       launchedUrl = null;
-    });
-
-    testWidgets('renders a Dialog', (tester) async {
-      await tester.pumpSubject();
-
-      expect(find.byType(Dialog), findsOneWidget);
     });
 
     testWidgets('renders the content', (tester) async {
@@ -76,24 +70,6 @@ void main() {
         );
       },
     );
-
-    testWidgets('renders landscape mode', (tester) async {
-      tester.setLandscapeDisplaySize();
-      await tester.pumpSubject();
-      expect(
-        find.byKey(const Key('large_dialog')),
-        findsOneWidget,
-      );
-    });
-
-    testWidgets('renders portrait mode', (tester) async {
-      tester.setPortraitDisplaySize();
-      await tester.pumpSubject();
-      expect(
-        find.byKey(const Key('small_dialog')),
-        findsOneWidget,
-      );
-    });
   });
 }
 
@@ -101,7 +77,7 @@ extension ShareCardDialogTest on WidgetTester {
   Future<void> pumpSubject({Widget? content}) async {
     await mockNetworkImages(() {
       return pumpApp(
-        CardShareDialog(
+        ShareDialog(
           content: content ?? Container(),
           twitterShareUrl: shareUrl,
           facebookShareUrl: shareUrl,

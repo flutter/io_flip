@@ -42,7 +42,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     on<TurnTimerTicked>(_onTurnTimerTicked);
     on<TurnAnimationsFinished>(_onTurnAnimationsFinished);
     on<ClashSceneStarted>(_onClashSceneStarted);
-    on<FightSceneCompleted>(_onFightSceneCompleted);
+    on<ClashSceneCompleted>(_onClashSceneCompleted);
     on<CardLandingStarted>(_onCardLandingStarted);
     on<CardLandingCompleted>(_onCardLandingCompleted);
   }
@@ -95,7 +95,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             playerScoreCard: scoreCard,
             turnTimeRemaining: _turnMaxTime,
             turnAnimationsFinished: true,
-            isFightScene: false,
+            isClashScene: false,
             showCardLanding: false,
           ),
         );
@@ -364,7 +364,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       emit(
         matchLoadedState.copyWith(
           turnAnimationsFinished: true,
-          isFightScene: false,
+          isClashScene: false,
         ),
       );
     }
@@ -386,20 +386,20 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         emit(
           matchLoadedState.copyWith(
             rounds: rounds,
-            isFightScene: true,
+            isClashScene: true,
           ),
         );
       }
     }
   }
 
-  void _onFightSceneCompleted(
-    FightSceneCompleted event,
+  void _onClashSceneCompleted(
+    ClashSceneCompleted event,
     Emitter<GameState> emit,
   ) {
     if (state is MatchLoadedState) {
       final matchLoadedState = state as MatchLoadedState;
-      emit(matchLoadedState.copyWith(isFightScene: false));
+      emit(matchLoadedState.copyWith(isClashScene: false));
     }
   }
 
