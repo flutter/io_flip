@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:top_dash/audio/audio.dart';
+import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/info/widgets/info_button.dart';
@@ -18,6 +19,18 @@ class GameSummaryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final result = context.select((GameBloc bloc) => bloc.gameResult());
+    final audio = context.read<AudioController>();
+    switch (result) {
+      case GameResult.win:
+        audio.playSfx(Assets.sfx.winMatch);
+        break;
+      case GameResult.lose:
+        audio.playSfx(Assets.sfx.lostMatch);
+        break;
+      case GameResult.draw:
+      case null:
+        audio.playSfx(Assets.sfx.drawMatch);
+    }
     final isPhoneWidth = MediaQuery.sizeOf(context).width < 400;
     final screenHeight = MediaQuery.sizeOf(context).height;
     return IoFlipScaffold(
