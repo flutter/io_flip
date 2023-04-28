@@ -43,7 +43,9 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
     urlParams: '?alt=media',
   );
 
-  const languageModelRepository = LanguageModelRepository();
+  final languageModelRepository = LanguageModelRepository(
+    dbClient: dbClient,
+  );
   jwtMiddleware = JwtMiddleware(
     projectId: _appId,
     isEmulator: _useEmulator,

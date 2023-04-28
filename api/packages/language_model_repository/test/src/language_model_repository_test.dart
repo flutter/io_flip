@@ -1,27 +1,121 @@
 // ignore_for_file: prefer_const_constructors
+import 'dart:math';
+
+import 'package:db_client/db_client.dart';
 import 'package:language_model_repository/language_model_repository.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
+
+class _MockDbClient extends Mock implements DbClient {}
+
+class _MockRandom extends Mock implements Random {}
 
 void main() {
   group('LanguageModelRepository', () {
+    late DbClient dbClient;
+    late Random rng;
+    late LanguageModelRepository languageModelRepository;
+
+    setUp(() {
+      dbClient = _MockDbClient();
+      rng = _MockRandom();
+      languageModelRepository = LanguageModelRepository(
+        dbClient: dbClient,
+        rng: rng,
+      );
+    });
+
     test('can be instantiated', () {
-      expect(LanguageModelRepository(), isNotNull);
-    });
-
-    test('generateCardName returns an unique name', () async {
-      final repository = LanguageModelRepository();
       expect(
-        await repository.generateCardName(),
-        isA<String>(),
+        LanguageModelRepository(dbClient: _MockDbClient()),
+        isNotNull,
       );
     });
 
-    test('generateFlavorText returns an unique text', () async {
-      final repository = LanguageModelRepository();
-      expect(
-        await repository.generateFlavorText(),
-        isA<String>(),
-      );
+    group('generateCardName', () {
+      test('generates with class', () async {
+        when(() => rng.nextInt(3)).thenReturn(0);
+        expect(
+          await languageModelRepository.generateCardName(
+            characterName: 'Dash',
+            characterClass: 'Mage',
+            characterPower: 'Baggles',
+            characterLocation: 'Beach',
+          ),
+          equals('Mage Dash'),
+        );
+      });
+      test('generates with power', () async {
+        when(() => rng.nextInt(3)).thenReturn(1);
+        expect(
+          await languageModelRepository.generateCardName(
+            characterName: 'Dash',
+            characterClass: 'Mage',
+            characterPower: 'Baggles',
+            characterLocation: 'Beach',
+          ),
+          equals('Baggles Dash'),
+        );
+      });
+      test('generates with location', () async {
+        when(() => rng.nextInt(3)).thenReturn(2);
+        expect(
+          await languageModelRepository.generateCardName(
+            characterName: 'Dash',
+            characterClass: 'Mage',
+            characterPower: 'Baggles',
+            characterLocation: 'Beach',
+          ),
+          equals('Beach Dash'),
+        );
+      });
+    });
+
+    group('generateFlavorText', () {
+      test('returns a random value of the query', () async {
+        when(() => rng.nextInt(2)).thenReturn(1);
+        when(
+          () => dbClient.find('card_description', {
+            'character': 'Dash',
+            'characterPower': 'Baggles',
+            'location': 'Beach',
+          }),
+        ).thenAnswer(
+          (_) async => [
+            DbEntityRecord(id: '', data: const {'description': 'A'}),
+            DbEntityRecord(id: '', data: const {'description': 'B'}),
+          ],
+        );
+        expect(
+          await languageModelRepository.generateFlavorText(
+            character: 'Dash',
+            characterPower: 'Baggles',
+            location: 'Beach',
+          ),
+          equals('B'),
+        );
+      });
+
+      test('returns empty is nothing is found', () async {
+        when(() => rng.nextInt(2)).thenReturn(1);
+        when(
+          () => dbClient.find('card_description', {
+            'character': 'Dash',
+            'characterPower': 'Baggles',
+            'location': 'Beach',
+          }),
+        ).thenAnswer(
+          (_) async => [],
+        );
+        expect(
+          await languageModelRepository.generateFlavorText(
+            character: 'Dash',
+            characterPower: 'Baggles',
+            location: 'Beach',
+          ),
+          isEmpty,
+        );
+      });
     });
   });
 }

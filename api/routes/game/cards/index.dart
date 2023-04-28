@@ -23,7 +23,15 @@ FutureOr<Response> onRequest(RequestContext context) async {
       return Response(statusCode: HttpStatus.badRequest);
     }
 
-    final cards = await cardsRepository.generateCards(characterClass);
+    final characterPower = prompt.power;
+    if (characterPower == null) {
+      return Response(statusCode: HttpStatus.badRequest);
+    }
+
+    final cards = await cardsRepository.generateCards(
+      characterClass: characterClass,
+      characterPower: characterPower,
+    );
     return Response.json(
       body: {'cards': cards.map((e) => e.toJson()).toList()},
     );

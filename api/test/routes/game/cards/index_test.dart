@@ -37,14 +37,21 @@ void main() {
       ),
     );
     const prompt = Prompt(
-      power: '',
+      power: 'baggles',
       secondaryPower: '',
       characterClass: 'mage',
     );
     setUp(() {
       promptRepository = _MockPromptRepository();
       cardsRepository = _MockCardsRepository();
-      when(() => cardsRepository.generateCards(any())).thenAnswer(
+      when(
+        () => cardsRepository.generateCards(
+          characterClass: any(named: 'characterClass'),
+          characterPower: any(
+            named: 'characterPower',
+          ),
+        ),
+      ).thenAnswer(
         (_) async => cards,
       );
 
@@ -68,15 +75,31 @@ void main() {
       expect(response.statusCode, equals(HttpStatus.ok));
     });
 
-    test('uses the character class from the prompt', () async {
+    test('uses the character class and power from the prompt', () async {
       await route.onRequest(context);
-      verify(() => cardsRepository.generateCards('mage')).called(1);
+      verify(
+        () => cardsRepository.generateCards(
+          characterClass: 'mage',
+          characterPower: 'baggles',
+        ),
+      ).called(1);
     });
 
     test('responds bad request when class is null', () async {
       when(request.json).thenAnswer(
         (_) async => const Prompt(
           power: '',
+          secondaryPower: '',
+        ).toJson(),
+      );
+      final response = await route.onRequest(context);
+      expect(response.statusCode, equals(HttpStatus.badRequest));
+    });
+
+    test('responds bad request when power is null', () async {
+      when(request.json).thenAnswer(
+        (_) async => const Prompt(
+          characterClass: '',
           secondaryPower: '',
         ).toJson(),
       );

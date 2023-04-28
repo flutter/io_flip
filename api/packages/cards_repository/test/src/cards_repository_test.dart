@@ -66,7 +66,7 @@ void main() {
       expect(
         CardsRepository(
           imageModelRepository: _MockImageModelRepository(),
-          languageModelRepository: const LanguageModelRepository(),
+          languageModelRepository: _MockLanguageModelRepository(),
           dbClient: dbClient,
           gameScriptMachine: gameScriptMachine,
         ),
@@ -84,22 +84,51 @@ void main() {
           ),
         ).thenAnswer(
           (_) async => [
-            'https://image1.png',
-            'https://image2.png',
-            'https://image3.png',
+            ImageResult(
+              character: 'dash',
+              characterClass: 'mage',
+              location: 'beach',
+              url: 'https://image1.png',
+            ),
+            ImageResult(
+              character: 'dash',
+              characterClass: 'mage',
+              location: 'beach',
+              url: 'https://image2.png',
+            ),
+            ImageResult(
+              character: 'dash',
+              characterClass: 'mage',
+              location: 'beach',
+              url: 'https://image3.png',
+            ),
           ],
         );
 
-        when(languageModelRepository.generateCardName)
-            .thenAnswer((_) async => 'Super Bird');
-        when(languageModelRepository.generateFlavorText)
-            .thenAnswer((_) async => 'Super Bird Is Ready!');
+        when(
+          () => languageModelRepository.generateCardName(
+            characterName: 'dash',
+            characterClass: 'mage',
+            characterPower: 'baggles',
+            characterLocation: 'beach',
+          ),
+        ).thenAnswer((_) async => 'Super Bird');
+        when(
+          () => languageModelRepository.generateFlavorText(
+            character: 'dash',
+            characterPower: 'baggles',
+            location: 'beach',
+          ),
+        ).thenAnswer((_) async => 'Super Bird Is Ready!');
 
         when(() => dbClient.add('cards', any())).thenAnswer((_) async => 'abc');
       });
 
       test('generates a common card', () async {
-        final cards = await cardsRepository.generateCards('');
+        final cards = await cardsRepository.generateCards(
+          characterClass: 'mage',
+          characterPower: 'baggles',
+        );
 
         expect(
           cards,
@@ -138,7 +167,10 @@ void main() {
       });
 
       test('saves the card in the db', () async {
-        await cardsRepository.generateCards('');
+        await cardsRepository.generateCards(
+          characterClass: 'mage',
+          characterPower: 'baggles',
+        );
 
         verify(
           () => dbClient.add('cards', {
@@ -174,7 +206,10 @@ void main() {
 
       test('generates a rare card', () async {
         when(gameScriptMachine.rollCardRarity).thenReturn(true);
-        final cards = await cardsRepository.generateCards('');
+        final cards = await cardsRepository.generateCards(
+          characterClass: 'mage',
+          characterPower: 'baggles',
+        );
 
         expect(
           cards,
@@ -197,7 +232,10 @@ void main() {
       for (var i = 0; i < Suit.values.length; i++) {
         test('generates a card from the ${Suit.values[i]} element', () async {
           when(() => rng.nextInt(Suit.values.length)).thenReturn(i);
-          final cards = await cardsRepository.generateCards('');
+          final cards = await cardsRepository.generateCards(
+            characterClass: 'mage',
+            characterPower: 'baggles',
+          );
 
           expect(
             cards,
