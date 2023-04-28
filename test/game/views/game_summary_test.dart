@@ -366,22 +366,50 @@ void main() {
           ).called(1);
         },
       );
+    });
+
+    group('GameSummaryFooter', () {
+      late __Router router;
+
+      setUpAll(() {
+        registerFallbackValue(_MockBuildContext());
+      });
+
+      setUp(() {
+        router = _MockRouter();
+        when(() => router.neglect(any(), any())).thenAnswer((_) {
+          final callback = _.positionalArguments[1] as VoidCallback;
+          callback();
+        });
+      });
 
       testWidgets(
-        'pops navigation when the next match button is tapped',
+        'navigates to matchmaking when the next match button is tapped',
         (tester) async {
           final goRouter = MockGoRouter();
-
+          when(() => bloc.playerCards).thenReturn([]);
           defaultMockState();
-          await tester.pumpSubject(
-            bloc,
-            goRouter: goRouter,
+
+          await tester.pumpApp(
+            BlocProvider<GameBloc>.value(
+              value: bloc,
+              child: GameSummaryFooter(
+                isPhoneWidth: false,
+                routerNeglectCall: router.neglect,
+              ),
+            ),
+            router: goRouter,
           );
 
           await tester.tap(find.text(tester.l10n.nextMatch));
           await tester.pumpAndSettle();
 
-          verify(goRouter.pop).called(1);
+          verify(
+            () => goRouter.goNamed(
+              'match_making',
+              extra: any(named: 'extra'),
+            ),
+          ).called(1);
         },
       );
 
@@ -407,22 +435,6 @@ void main() {
           verify(goRouter.pop).called(1);
         },
       );
-    });
-
-    group('GameSummaryFooter', () {
-      late __Router router;
-
-      setUpAll(() {
-        registerFallbackValue(_MockBuildContext());
-      });
-
-      setUp(() {
-        router = _MockRouter();
-        when(() => router.neglect(any(), any())).thenAnswer((_) {
-          final callback = _.positionalArguments[1] as VoidCallback;
-          callback();
-        });
-      });
 
       testWidgets(
         'pops navigation when the quit button is tapped and confirmed and '

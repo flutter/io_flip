@@ -6,6 +6,7 @@ import 'package:top_dash/game/game.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/info/widgets/info_button.dart';
 import 'package:top_dash/l10n/l10n.dart';
+import 'package:top_dash/match_making/match_making.dart';
 import 'package:top_dash/share/views/card_inspector.dart';
 import 'package:top_dash/share/views/share_hand_page.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
@@ -279,7 +280,13 @@ class GameSummaryFooter extends StatelessWidget {
       children: [
         RoundedButton.text(
           l10n.nextMatch,
-          onPressed: () => GoRouter.of(context).pop(),
+          onPressed: () => _routerNeglectCall(
+            context,
+            () => GoRouter.of(context).goNamed(
+              'match_making',
+              extra: MatchMakingPageData(cards: bloc.playerCards),
+            ),
+          ),
         ),
         _gap,
         RoundedButton.text(
