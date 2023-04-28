@@ -125,9 +125,11 @@ class MatchRepository {
     return null;
   }
 
-  /// Play a card on the given match.
+  /// Plays a card on the given match. If the match is against a CPU, it plays
+  /// the CPU card next.
   ///
-  /// throws [PlayCardFailure] if the match state isn't found.
+  /// throws [PlayCardFailure] if any of the match, deck or match state
+  /// are not found.
   Future<void> playCard({
     required String matchId,
     required String cardId,
@@ -146,6 +148,46 @@ class MatchRepository {
 
     if (matchState == null) throw PlayCardFailure();
 
+    final newMatchState = await _playCard(
+      match: match,
+      matchState: matchState,
+      cardId: cardId,
+      deckId: deckId,
+      userId: userId,
+    );
+
+    if (match.guestDeck.userId.contains(_cpuPrefix) &&
+        newMatchState.guestPlayedCards.length < 3 &&
+        newMatchState.guestPlayedCards.length <=
+            newMatchState.hostPlayedCards.length) {
+      unawaited(
+        Future.delayed(const Duration(seconds: 1), () {
+          _playCard(
+            match: match,
+            matchState: newMatchState,
+            cardId: match.guestDeck.cards
+                .firstWhere(
+                  (card) => !newMatchState.guestPlayedCards.contains(card.id),
+                )
+                .id,
+            deckId: match.guestDeck.id,
+            userId: match.guestDeck.userId,
+          );
+        }),
+      );
+    }
+  }
+
+  /// Plays a card on the given match.
+  ///
+  /// throws [PlayCardFailure] if the card cannot be played.
+  Future<MatchState> _playCard({
+    required Match match,
+    required MatchState matchState,
+    required String cardId,
+    required String deckId,
+    required String userId,
+  }) async {
     final isHost = userId == match.hostDeck.userId;
 
     if (!_matchSolver.canPlayCard(matchState, cardId, isHost: isHost)) {
@@ -168,7 +210,7 @@ class MatchRepository {
       DbEntityRecord(
         id: newMatchState.id,
         data: {
-          'matchId': matchId,
+          'matchId': match.id,
           if (isHost)
             'hostPlayedCards': newMatchState.hostPlayedCards
           else
@@ -178,26 +220,7 @@ class MatchRepository {
       ),
     );
 
-    if (match.guestDeck.userId.contains(_cpuPrefix) &&
-        newMatchState.guestPlayedCards.length < 3 &&
-        newMatchState.guestPlayedCards.length <=
-            newMatchState.hostPlayedCards.length) {
-      unawaited(
-        Future.delayed(const Duration(seconds: 1), () {
-          playCard(
-            matchId: matchId,
-            cardId: match.guestDeck.cards
-                .firstWhere(
-                  (element) =>
-                      !newMatchState.guestPlayedCards.contains(element.id),
-                )
-                .id,
-            deckId: match.guestDeck.id,
-            userId: match.guestDeck.userId,
-          );
-        }),
-      );
-    }
+    return newMatchState;
   }
 
   /// calculates and updates the result of a match
