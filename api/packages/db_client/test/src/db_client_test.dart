@@ -219,6 +219,81 @@ void main() {
       });
     });
 
+    group('find', () {
+      test('returns the found records', () async {
+        final firestore = _MockFirestore();
+        final collection = _MockCollectionReference();
+        when(() => firestore.collection('birds')).thenReturn(collection);
+
+        final queryReference = _MockQueryReference();
+
+        when(() => collection.where('type', isEqualTo: 'big'))
+            .thenReturn(queryReference);
+        when(() => collection.where('age', isEqualTo: 'old'))
+            .thenReturn(queryReference);
+
+        when(queryReference.get).thenAnswer((_) async {
+          final record1 = _MockDocument();
+          when(() => record1.id).thenReturn('1');
+          when(() => record1.map).thenReturn({
+            'name': 'dash',
+          });
+          final record2 = _MockDocument();
+          when(() => record2.id).thenReturn('2');
+          when(() => record2.map).thenReturn({
+            'name': 'furn',
+          });
+
+          return [
+            record1,
+            record2,
+          ];
+        });
+
+        final client = DbClient(firestore: firestore);
+
+        final result = await client.find(
+          'birds',
+          {
+            'type': 'big',
+            'age': 'old',
+          },
+        );
+
+        expect(result.first.id, equals('1'));
+        expect(result.first.data, equals({'name': 'dash'}));
+
+        expect(result.last.id, equals('2'));
+        expect(result.last.data, equals({'name': 'furn'}));
+      });
+
+      test('returns empty when no results are returned', () async {
+        final firestore = _MockFirestore();
+        final collection = _MockCollectionReference();
+        when(() => firestore.collection('birds')).thenReturn(collection);
+
+        final queryReference = _MockQueryReference();
+
+        when(() => collection.where('type', isEqualTo: 'big'))
+            .thenReturn(queryReference);
+        when(() => collection.where('age', isEqualTo: 'old'))
+            .thenReturn(queryReference);
+
+        when(queryReference.get).thenAnswer((_) async => []);
+
+        final client = DbClient(firestore: firestore);
+
+        final result = await client.find(
+          'birds',
+          {
+            'type': 'big',
+            'age': 'old',
+          },
+        );
+        expect(result, isEmpty);
+      });
+    });
+
     group('orderBy', () {
       test('returns the found records', () async {
         final firestore = _MockFirestore();

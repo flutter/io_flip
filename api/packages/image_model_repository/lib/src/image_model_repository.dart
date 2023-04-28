@@ -3,6 +3,31 @@ import 'dart:math';
 import 'package:game_domain/game_domain.dart';
 import 'package:prompt_repository/prompt_repository.dart';
 
+/// {@template image_result}
+/// Image result model.
+/// {@endtemplate}
+class ImageResult {
+  /// {@macro image_result}
+  const ImageResult({
+    required this.character,
+    required this.characterClass,
+    required this.location,
+    required this.url,
+  });
+
+  /// The character of the image.
+  final String character;
+
+  /// The character class of the image.
+  final String characterClass;
+
+  /// The location of the image.
+  final String location;
+
+  /// The url of the image.
+  final String url;
+}
+
 /// {@template image_model_repository}
 /// Repository providing access image model services.
 /// {@endtemplate}
@@ -25,18 +50,23 @@ class ImageModelRepository {
   late final Random _rng;
 
   /// Builds the url based on the provided parameters.
-  String assembleUrl({
+  ImageResult assembleUrl({
     required String character,
     required String characterClass,
     required String location,
     required int variation,
   }) {
-    return '$_imageHost${character}_$characterClass'
-        '_${location}_$variation.png${_urlParams ?? ''}';
+    return ImageResult(
+      character: character,
+      characterClass: characterClass,
+      location: location,
+      url: '$_imageHost${character}_$characterClass'
+          '_${location}_$variation.png${_urlParams ?? ''}',
+    );
   }
 
   /// Returns the path for an unique generated image.
-  Future<List<String>> generateImages({
+  Future<List<ImageResult>> generateImages({
     required String characterClass,
     required int variationsAvailable,
     required int deckSize,
@@ -50,7 +80,7 @@ class ImageModelRepository {
       )
     ]);
 
-    final urls = <String>[];
+    final urls = <ImageResult>[];
     final charactersPerDeck = deckSize ~/ characters.length;
 
     for (var i = 0; i < charactersPerDeck; i++) {

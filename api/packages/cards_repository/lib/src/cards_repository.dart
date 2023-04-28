@@ -30,7 +30,10 @@ class CardsRepository {
   final LanguageModelRepository _languageModelRepository;
 
   /// Generates a random card.
-  Future<List<Card>> generateCards(String characterClass) async {
+  Future<List<Card>> generateCards({
+    required String characterClass,
+    required String characterPower,
+  }) async {
     // TODO(erickzanardo): variety of cards should come from the config
     // repository.
     const variations = 8;
@@ -46,8 +49,17 @@ class CardsRepository {
       images.map((image) async {
         final isRare = _gameScriptMachine.rollCardRarity();
         final [name, description] = await Future.wait([
-          _languageModelRepository.generateCardName(),
-          _languageModelRepository.generateFlavorText(),
+          _languageModelRepository.generateCardName(
+            characterName: image.character,
+            characterClass: image.characterClass,
+            characterPower: characterPower,
+            characterLocation: image.location,
+          ),
+          _languageModelRepository.generateFlavorText(
+            character: image.character,
+            characterPower: characterPower,
+            location: image.location,
+          ),
         ]);
 
         final rarity = isRare;
@@ -57,7 +69,7 @@ class CardsRepository {
         final id = await _dbClient.add('cards', {
           'name': name,
           'description': description,
-          'image': image,
+          'image': image.url,
           'rarity': rarity,
           'power': power,
           'suit': suit.name,
@@ -67,7 +79,7 @@ class CardsRepository {
           id: id,
           name: name,
           description: description,
-          image: image,
+          image: image.url,
           rarity: isRare,
           power: power,
           suit: suit,
