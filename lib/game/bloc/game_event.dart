@@ -73,8 +73,8 @@ class TurnTimerTicked extends GameEvent {
   List<Object?> get props => [timer];
 }
 
-class FightSceneCompleted extends GameEvent {
-  const FightSceneCompleted();
+class ClashSceneCompleted extends GameEvent {
+  const ClashSceneCompleted();
 
   @override
   List<Object?> get props => [];
