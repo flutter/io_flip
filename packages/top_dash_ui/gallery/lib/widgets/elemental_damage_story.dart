@@ -20,7 +20,7 @@ class _ElementalDamageStoryState extends State<ElementalDamageStory> {
         title: 'Elemental Damage Story',
         body: Center(
           child: SizedBox(
-            width: 400,
+            width: 300,
             height: 500,
             child: Stack(
               clipBehavior: Clip.none,
@@ -52,13 +52,10 @@ class _ElementalDamageStoryState extends State<ElementalDamageStory> {
                   ),
                 ),
                 Positioned(
-                  bottom: -80,
-                  right: -60,
-                  left: -60,
-                  top: -80,
                   child: ElementalDamageAnimation(
                     Element.metal,
                     direction: DamageDirection.topToBottom,
+                    size: const GameCardSize.md(),
                     onComplete: () {},
                   ),
                 ),

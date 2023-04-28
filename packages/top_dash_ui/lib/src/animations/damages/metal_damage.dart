@@ -8,7 +8,7 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 /// {@endtemplate}
 class MetalDamage extends ElementalDamage {
   /// {@macro metal_damage}
-  MetalDamage()
+  MetalDamage({required super.size})
       : super(
           chargeBackPath: Assets.images.elements.metal.chargeBack.keyName,
           chargeFrontPath: Assets.images.elements.metal.chargeFront.keyName,

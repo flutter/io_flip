@@ -40,17 +40,20 @@ class DamageSend extends StatelessWidget {
     return SizedBox(
       height: height,
       width: width,
-      child: SpriteAnimationWidget.asset(
-        path: path,
-        images: images,
-        anchor: Anchor.center,
-        onComplete: onComplete,
-        data: SpriteAnimationData.sequenced(
-          amount: 30,
-          amountPerRow: 6,
-          textureSize: Vector2(568, 409.5),
-          stepTime: 0.04,
-          loop: false,
+      child: RotatedBox(
+        quarterTurns: 2,
+        child: SpriteAnimationWidget.asset(
+          path: path,
+          images: images,
+          anchor: Anchor.center,
+          onComplete: onComplete,
+          data: SpriteAnimationData.sequenced(
+            amount: 30,
+            amountPerRow: 6,
+            textureSize: Vector2(568, 683),
+            stepTime: 0.04,
+            loop: false,
+          ),
         ),
       ),
     );

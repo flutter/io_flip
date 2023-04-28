@@ -48,8 +48,7 @@ abstract class ElementalDamage {
   ChargeBack chargeBackBuilder(VoidCallback? onComplete) {
     return ChargeBack(
       _chargeBackPath,
-      width: size.width,
-      height: size.height,
+      size: size,
       onComplete: onComplete,
     );
   }
@@ -58,8 +57,7 @@ abstract class ElementalDamage {
   ChargeFront chargeFrontBuilder(VoidCallback? onComplete) {
     return ChargeFront(
       _chargeFrontPath,
-      width: size.width,
-      height: size.height,
+      size: size,
       onComplete: onComplete,
     );
   }

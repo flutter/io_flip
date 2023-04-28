@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:top_dash_ui/src/animations/animations.dart';
 import 'package:top_dash_ui/src/widgets/damages/dual_animation.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
 
 /// {@template elemental_damage_animation}
 // ignore: comment_references
@@ -12,6 +12,7 @@ class ElementalDamageAnimation extends StatefulWidget {
     this.element, {
     required this.direction,
     required this.onComplete,
+    required this.size,
     super.key,
   });
 
@@ -24,6 +25,9 @@ class ElementalDamageAnimation extends StatefulWidget {
 
   /// Direction of the damages
   final DamageDirection direction;
+
+  /// Size of the card
+  final GameCardSize size;
 
   @override
   State<ElementalDamageAnimation> createState() =>
@@ -38,7 +42,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
   void initState() {
     switch (widget.element) {
       case Element.metal:
-        elementalDamage = MetalDamage();
+        elementalDamage = MetalDamage(size: widget.size);
     }
     super.initState();
   }
@@ -75,13 +79,15 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
         return Stack(
           children: [
             if (widget.direction == DamageDirection.topToBottom)
-              Positioned(
-                bottom: 0,
-                left: 0,
-                child: elementalDamage.damageSendBuilder(
-                  () => setState(() {
-                    _animationState = _AnimationState.receiving;
-                  }),
+              Align(
+                alignment: const Alignment(-0.7, 0.3),
+                child: ColoredBox(
+                  color: Colors.transparent,
+                  child: elementalDamage.damageSendBuilder(
+                    () => setState(() {
+                      _animationState = _AnimationState.receiving;
+                    }),
+                  ),
                 ),
               )
             else
