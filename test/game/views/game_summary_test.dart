@@ -20,11 +20,7 @@ class _MockSettingsController extends Mock implements SettingsController {}
 
 class _MockGameBloc extends Mock implements GameBloc {}
 
-abstract class __Router {
-  void neglect(BuildContext context, VoidCallback callback);
-}
-
-class _MockRouter extends Mock implements __Router {}
+class _MockRouter extends Mock implements NeglectRouter {}
 
 class _MockBuildContext extends Mock implements BuildContext {}
 
@@ -369,7 +365,7 @@ void main() {
     });
 
     group('GameSummaryFooter', () {
-      late __Router router;
+      late NeglectRouter router;
 
       setUpAll(() {
         registerFallbackValue(_MockBuildContext());

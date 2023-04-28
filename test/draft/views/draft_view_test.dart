@@ -21,18 +21,14 @@ class _MockDraftBloc extends Mock implements DraftBloc {}
 
 class _MockSettingsController extends Mock implements SettingsController {}
 
-abstract class __Router {
-  void neglect(BuildContext context, VoidCallback callback);
-}
-
-class _MockRouter extends Mock implements __Router {}
+class _MockRouter extends Mock implements NeglectRouter {}
 
 class _MockBuildContext extends Mock implements BuildContext {}
 
 void main() {
   group('DraftView', () {
     late DraftBloc draftBloc;
-    late __Router router;
+    late NeglectRouter router;
 
     const card1 = Card(
       id: '1',

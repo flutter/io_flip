@@ -22,18 +22,14 @@ class _MockMatchMakingBloc extends Mock implements MatchMakingBloc {}
 
 class _MockSettingsController extends Mock implements SettingsController {}
 
-abstract class __Router {
-  void neglect(BuildContext context, VoidCallback callback);
-}
-
-class _MockRouter extends Mock implements __Router {}
+class _MockRouter extends Mock implements NeglectRouter {}
 
 class _MockBuildContext extends Mock implements BuildContext {}
 
 void main() {
   group('MatchMakingView', () {
     late MatchMakingBloc bloc;
-    late __Router router;
+    late NeglectRouter router;
 
     setUp(() {
       bloc = _MockMatchMakingBloc();

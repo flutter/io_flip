@@ -4,6 +4,10 @@ import 'package:mocktail/mocktail.dart';
 
 class MockGoRouter extends Mock implements GoRouter {}
 
+class NeglectRouter {
+  void neglect(BuildContext context, VoidCallback callback) {}
+}
+
 class MockGoRouterProvider extends StatelessWidget {
   const MockGoRouterProvider({
     required this.goRouter,
