@@ -5,7 +5,7 @@ import 'package:db_client/db_client.dart';
 import 'package:game_domain/game_domain.dart';
 
 /// {@template data_loader}
-/// Dart tool that feed descriptions into the Descriptionsbase
+/// Dart tool that feed descriptions into the Descriptions base
 /// {@endtemplate}
 class DescriptionsLoader {
   /// {@macro data_loader}
