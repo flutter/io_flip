@@ -7,9 +7,8 @@ import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/match_making/match_making.dart';
+import 'package:top_dash/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
-
-typedef RouterNeglectCall = void Function(BuildContext, VoidCallback);
 
 class DraftView extends StatelessWidget {
   const DraftView({

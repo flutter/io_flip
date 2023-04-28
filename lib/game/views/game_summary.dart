@@ -9,9 +9,8 @@ import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/match_making/match_making.dart';
 import 'package:top_dash/share/views/card_inspector.dart';
 import 'package:top_dash/share/views/share_hand_page.dart';
+import 'package:top_dash/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
-
-typedef RouterNeglectCall = void Function(BuildContext, VoidCallback);
 
 class GameSummaryView extends StatelessWidget {
   const GameSummaryView({super.key});

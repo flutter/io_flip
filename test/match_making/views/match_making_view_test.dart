@@ -13,6 +13,7 @@ import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash/match_making/match_making.dart';
 import 'package:top_dash/settings/settings.dart';
+import 'package:top_dash/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';

@@ -13,6 +13,7 @@ import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/match_making/views/match_making_page.dart';
 import 'package:top_dash/settings/settings.dart';
+import 'package:top_dash/utils/utils.dart';
 
 import '../../helpers/helpers.dart';
 
