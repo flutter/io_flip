@@ -46,7 +46,16 @@ class DraftView extends StatelessWidget {
     return IoFlipScaffold(
       body: Center(
         child: DeckPack(
-          child: const _DraftDeck(),
+          child: GameCard(
+            size: GameCardSize.xl(),
+            name: 'The Tester',
+            description: 'Tuna pizza? Where?',
+            power: 106,
+            isRare: true,
+            suitName: 'earth',
+            image:
+                'https://firebasestorage.googleapis.com/v0/b/top-dash-dev.appspot.com/o/public%2Fdash_1.png?alt=media',
+          ),
         ),
       ),
     );

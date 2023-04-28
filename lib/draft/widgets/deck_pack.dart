@@ -1,4 +1,5 @@
 import 'package:flame/cache.dart';
+import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart';
@@ -15,74 +16,15 @@ class DeckPack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final images = context.watch<Images>();
-    const cardWidthFactor = 0.24;
-    const cardHeightFactor = 0.25;
-    const topPaddingFactor = 0.03;
-    const cardHeight = 400;
-    const cardWidth = cardHeight * 2 * 0.73;
-    const textureHeight = cardHeight * 2;
-    return _AnimatedDeck(
-      child: Container(),
-    );
-
-    return Stack(
-      children: [
-        // Align(
-        //   alignment: Alignment.topCenter,
-        //   child: LayoutBuilder(
-        //     builder: (context, constraints) {
-        //       return Padding(
-        //         padding: EdgeInsets.only(
-        //           top: topPaddingFactor * textureHeight,
-        //         ),
-        //         child: ConstrainedBox(
-        //           constraints: BoxConstraints.loose(
-        //             Size(
-        //               cardWidthFactor * cardWidth,
-        //               cardHeightFactor * textureHeight,
-        //             ),
-        //           ),
-        //           child: ClipRect(
-        //             child: SizedBox.expand(
-        //               child: ColoredBox(
-        //                 color: Colors.red,
-        //               ),
-        //             ),
-        //           ),
-        //         ),
-        //       );
-        //     },
-        //   ),
-        // ),
-        // Positioned.fill(
-        //   child: OverflowBox(
-        //     maxHeight: 845,
-        //     maxWidth: 400,
-        //     child: SizedBox.expand(
-        //       child: SpriteAnimationWidget.asset(
-        //         path: Assets.images.frontPack.keyName,
-        //         images: images,
-        //         anchor: Anchor.center,
-        //         // onComplete: onComplete,
-        //         data: SpriteAnimationData.sequenced(
-        //           amount: 56,
-        //           amountPerRow: 7,
-        //           textureSize: Vector2(1050, 1219),
-        //           stepTime: 0.04,
-        //           loop: true,
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        // ),
-        Container(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return OverflowBox(
           alignment: Alignment.topCenter,
-          child: _AnimatedDeck(
-            child: Container(),
-          ),
-        )
-      ],
+          maxHeight: constraints.maxHeight * 2,
+          maxWidth: constraints.maxWidth * 2,
+          child: _AnimatedDeck(child: child),
+        );
+      },
     );
   }
 }
@@ -104,136 +46,262 @@ class _AnimatedDeckState extends State<_AnimatedDeck> {
   bool isAnimationPlaying = false;
   Widget? anim;
 
-  // @override
-  // void initState() {
-  //   _beginAnimation();
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    final data = SpriteAnimationData.sequenced(
+      amount: 56,
+      amountPerRow: 7,
+      textureSize: Vector2(1050, 1219),
+      stepTime: 0.04,
+      loop: false,
+    );
+
+    SpriteAnimation.load(
+      Assets.images.frontPack.keyName,
+      data,
+      images: context.read<Images>(),
+    ).then((spriteAnimation) {
+      spriteAnimation.loop = true;
+      setState(() {
+        final ticker = spriteAnimation.ticker();
+        anim = SpriteAnimationWidget(
+          animation: spriteAnimation,
+          animationTicker: ticker,
+        );
+        ticker
+          ..onComplete = () {
+            setState(() {
+              underlayVisible = false;
+            });
+          }
+          ..onFrame = (frame) {
+            if (frame == 29) {
+              setState(() {
+                underlayVisible = true;
+              });
+            }
+            if (ticker.isLastFrame) {
+              setState(() {
+                underlayVisible = false;
+              });
+            }
+          };
+      });
+      spriteAnimation.ticker();
+    });
+    super.initState();
+  }
 
   @override
   void didChangeDependencies() {
-    _beginAnimation();
+    final images = context.watch<Images>();
+    _beginAnimation(images);
     super.didChangeDependencies();
   }
 
-  void _beginAnimation() {
-    final images = context.read<Images>();
-    anim = SpriteAnimationWidget.asset(
-      onComplete: () {
-        _beginAnimation();
-      },
-      path: Assets.images.frontPack.keyName,
-      images: images,
-      anchor: Anchor.topCenter,
-      // onComplete: onComplete,
-      data: SpriteAnimationData.sequenced(
-        amount: 56,
-        amountPerRow: 7,
-        textureSize: Vector2(1050, 1219),
-        stepTime: 0.04,
-        loop: false,
-      ),
-    );
+  void _beginAnimation(Images images) {
+    // anim = SpriteAnimationWidget.asset(
+    //   onComplete: () {
+    //     _beginAnimation(images);
+    //   },
+    //   path: Assets.images.frontPack.keyName,
+    //   images: images,
+    //   anchor: Anchor.topCenter,
+    //   // onComplete: onComplete,
+    //   data: SpriteAnimationData.sequenced(
+    //     amount: 56,
+    //     amountPerRow: 7,
+    //     textureSize: Vector2(1050, 1219),
+    //     stepTime: 0.04,
+    //     loop: false,
+    //   ),
+    // );
     setState(() {
       isAnimationPlaying = true;
       underlayVisible = false;
     });
 
-    Future.delayed(Duration(milliseconds: 1150)).then((value) {
-      setState(() {
-        underlayVisible = true;
-      });
+    // Future<void>.delayed(const Duration(milliseconds: 1210)).then((value) {
+    //   if (mounted) {
+    //     setState(() {
+    //       underlayVisible = true;
+    //     });
+    //   }
+    // });
+
+    setState(() {
+      isAnimationPlaying = true;
+      underlayVisible = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final images = context.watch<Images>();
     const aspectRatio = 0.75;
     const height = 1200.0;
-    const cardHeight = 380;
-    const cardWidth = 268;
-    const left = 391;
-    const right = 659;
-    const top = 53;
-    const bottom = 428;
 
     const leftFactor = 0.38;
-    // const rightFactor = 0.627;
     const topFactor = .11;
     const bottomFactor = 0.38;
+
+    if (anim == null) return Container();
 
     return AspectRatio(
       aspectRatio: 1050 / 1219,
       child: Stack(
         children: [
-          if (underlayVisible)
-            Align(
-              alignment: const Alignment(-0.02, -0.6),
+          Offstage(
+            offstage: !underlayVisible,
+            child: Align(
+              alignment: const Alignment(-0.02, -0.65),
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   return ConstrainedBox(
                     constraints: BoxConstraints.loose(
                       Size(
-                        0.25 * constraints.maxWidth,
+                        0.29 * constraints.maxWidth,
                         0.32 * constraints.maxHeight,
                       ),
                     ),
-                    child: AspectRatio(
-                      aspectRatio: 1050 / 1312,
-                      child: ColoredBox(color: Colors.green),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.green,
+                        ),
+                      ),
+                      child: Center(
+                        child: _StretchAnimation(
+                          animating: underlayVisible,
+                          child: widget.child,
+                        ),
+                      ),
                     ),
                   );
                 },
               ),
             ),
-          AspectRatio(
-            aspectRatio: 1050 / 1219,
+          ),
+          Positioned.fill(
             child: DecoratedBox(
-              child: anim,
               decoration: BoxDecoration(
                 border: Border.all(
                   color: Colors.red,
                 ),
               ),
+              child: anim,
             ),
           ),
         ],
       ),
     );
 
-    return ClipRect(
-      clipBehavior: Clip.none,
-      child: SizedBox(
-        height: height * 0.41,
-        width: height * aspectRatio,
-        child: OverflowBox(
-          alignment: Alignment.topCenter,
-          maxHeight: height,
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return Stack(
-                children: [
-                  if (underlayVisible)
-                    Positioned(
-                      left: leftFactor * constraints.maxWidth,
-                      right: leftFactor * constraints.maxWidth,
-                      top: topFactor * constraints.maxHeight,
-                      bottom: constraints.maxHeight -
-                          (bottomFactor * constraints.maxHeight),
-                      child: SizedBox.expand(
-                        child: ColoredBox(
-                          color: Colors.red,
+    return AspectRatio(
+      aspectRatio: 1050 / 1219,
+      child: Stack(
+        children: [
+          Offstage(
+            offstage: !underlayVisible,
+            child: Align(
+              alignment: const Alignment(-0.02, -0.6),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return ConstrainedBox(
+                    constraints: BoxConstraints.loose(
+                      Size(
+                        0.29 * constraints.maxWidth,
+                        0.36 * constraints.maxHeight,
+                      ),
+                    ),
+                    child: AspectRatio(
+                      aspectRatio: 1050 / 1400,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.green,
+                          ),
+                        ),
+                        child: Center(
+                          child: _StretchAnimation(
+                            animating: underlayVisible,
+                            child: widget.child,
+                          ),
                         ),
                       ),
                     ),
-                  SizedBox.expand(child: anim),
-                ],
-              );
-            },
+                  );
+                },
+              ),
+            ),
           ),
-        ),
+          Positioned.fill(
+            child: AspectRatio(
+              aspectRatio: 1050 / 1219,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.red,
+                  ),
+                ),
+                child: anim,
+              ),
+            ),
+          ),
+        ],
       ),
+    );
+  }
+}
+
+class _StretchAnimation extends StatefulWidget {
+  _StretchAnimation({
+    required this.child,
+    this.animating = false,
+  });
+
+  final Widget child;
+  final bool animating;
+
+  @override
+  State<_StretchAnimation> createState() => _StretchAnimationState();
+}
+
+class _StretchAnimationState extends State<_StretchAnimation>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 800),
+    lowerBound: 0.35,
+  );
+  late final Animation<double> _animation =
+      CurvedAnimation(parent: _controller, curve: Curves.elasticOut);
+
+  @override
+  void initState() {
+    if (widget.animating) {
+      _controller.forward();
+    }
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant _StretchAnimation oldWidget) {
+    if (oldWidget.animating != widget.animating) {
+      if (widget.animating) {
+        _controller
+          ..reset()
+          ..forward();
+      } else {
+        _controller.stop();
+      }
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaleTransition(
+      scale: _animation,
+      child: widget.child,
     );
   }
 }
