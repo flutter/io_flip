@@ -59,9 +59,7 @@ class _DialogContent extends StatelessWidget {
           padding: const EdgeInsets.all(TopDashSpacing.lg),
           child: FittedBox(
             fit: BoxFit.scaleDown,
-            child: CardFan(
-              deck: cards,
-            ),
+            child: CardFan(cards: cards),
           ),
         ),
         const SizedBox(height: TopDashSpacing.lg),

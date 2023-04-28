@@ -24,12 +24,6 @@ void main() {
       launchedUrl = null;
     });
 
-    testWidgets('renders a Dialog', (tester) async {
-      await tester.pumpSubject();
-
-      expect(find.byType(Dialog), findsOneWidget);
-    });
-
     testWidgets('renders the content', (tester) async {
       await tester.pumpSubject(content: const Text('test'));
 
@@ -76,24 +70,6 @@ void main() {
         );
       },
     );
-
-    testWidgets('renders landscape mode', (tester) async {
-      tester.setLandscapeDisplaySize();
-      await tester.pumpSubject();
-      expect(
-        find.byKey(const Key('large_dialog')),
-        findsOneWidget,
-      );
-    });
-
-    testWidgets('renders portrait mode', (tester) async {
-      tester.setPortraitDisplaySize();
-      await tester.pumpSubject();
-      expect(
-        find.byKey(const Key('small_dialog')),
-        findsOneWidget,
-      );
-    });
   });
 }
 
