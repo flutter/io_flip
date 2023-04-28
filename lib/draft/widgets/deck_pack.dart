@@ -157,22 +157,23 @@ class _AnimatedDeckState extends State<_AnimatedDeck> {
           //   ),
           // ),
           AspectRatio(
-            aspectRatio: 1050 / 1219,
+            aspectRatio: 269 / 385,
+            // aspectRatio: 1050 / 1400,
             child: Container(
               color: Colors.green,
             ),
           ),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              return SizedBox.square(
-                dimension: 0,
-                child: OverflowBox(
-                  maxWidth: constraints.maxWidth / 0.29,
-                  maxHeight: constraints.maxHeight / 0.36,
-                  child: AspectRatio(
-                    aspectRatio: 1050 / 1219,
-                    child: Padding(
-                      padding: EdgeInsets.all(6),
+          Align(
+            alignment: const Alignment(0.02, 1.4),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return SizedBox.square(
+                  dimension: 0,
+                  child: OverflowBox(
+                    maxWidth: constraints.maxWidth / 0.22,
+                    maxHeight: constraints.maxHeight / 0.30,
+                    child: AspectRatio(
+                      aspectRatio: 1050 / 1219,
                       child: SizedBox.expand(
                         child: DecoratedBox(
                           decoration: BoxDecoration(
@@ -180,13 +181,14 @@ class _AnimatedDeckState extends State<_AnimatedDeck> {
                               color: Colors.red,
                             ),
                           ),
+                          child: anim,
                         ),
                       ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ],
       ),
