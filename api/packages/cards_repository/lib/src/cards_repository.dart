@@ -30,39 +30,48 @@ class CardsRepository {
   final LanguageModelRepository _languageModelRepository;
 
   /// Generates a random card.
-  Future<Card> generateCard() async {
-    final isRare = _gameScriptMachine.rollCardRarity();
+  Future<List<Card>> generateCards(String characterClass) async {
+    // TODO(erickzanardo): variety of cards should come from the config repository.
+    const variations = 8;
+    const deckSize = 12;
 
-    final values = await Future.wait([
-      _languageModelRepository.generateCardName(),
-      _languageModelRepository.generateFlavorText(),
-      _imageModelRepository.generateImage(),
-    ]);
+    final images = await _imageModelRepository.generateImages(
+      characterClass: characterClass,
+      variationsAvailable: variations,
+      deckSize: deckSize,
+    );
 
-    final name = values.first;
-    final description = values[1];
-    final image = values.last;
-    final rarity = isRare;
-    final power = _gameScriptMachine.rollCardPower(isRare: isRare);
-    final suit = Suit.values[_rng.nextInt(Suit.values.length)];
+    return Future.wait(
+      images.map((image) async {
+        final isRare = _gameScriptMachine.rollCardRarity();
+        final [name, description] = await Future.wait([
+          _languageModelRepository.generateCardName(),
+          _languageModelRepository.generateFlavorText(),
+        ]);
 
-    final id = await _dbClient.add('cards', {
-      'name': name,
-      'description': description,
-      'image': image,
-      'rarity': rarity,
-      'power': power,
-      'suit': suit.name,
-    });
+        final rarity = isRare;
+        final power = _gameScriptMachine.rollCardPower(isRare: isRare);
+        final suit = Suit.values[_rng.nextInt(Suit.values.length)];
 
-    return Card(
-      id: id,
-      name: name,
-      description: description,
-      image: image,
-      rarity: isRare,
-      power: power,
-      suit: suit,
+        final id = await _dbClient.add('cards', {
+          'name': name,
+          'description': description,
+          'image': image,
+          'rarity': rarity,
+          'power': power,
+          'suit': suit.name,
+        });
+
+        return Card(
+          id: id,
+          name: name,
+          description: description,
+          image: image,
+          rarity: isRare,
+          power: power,
+          suit: suit,
+        );
+      }).toList(),
     );
   }
 

@@ -31,15 +31,24 @@ late FirebaseCloudStorage firebaseCloudStorage;
 late ScriptsState scriptsState;
 
 Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
-  const imageModelRepository = ImageModelRepository();
+  final dbClient = DbClient.initialize(_appId, useEmulator: _useEmulator);
+
+  promptRepository = PromptRepository(
+    dbClient: dbClient,
+  );
+  final imageModelRepository = ImageModelRepository(
+    imageHost: 'https://firebasestorage.googleapis.com/v0/b/top-dash-dev.appspot.com/o/public%2Fillustrations%2F',
+
+    promptRepository: promptRepository,
+    urlParams: '?alt=media',
+  );
+
   const languageModelRepository = LanguageModelRepository();
   jwtMiddleware = JwtMiddleware(
     projectId: _appId,
     isEmulator: _useEmulator,
   );
   encryptionMiddleware = const EncryptionMiddleware();
-
-  final dbClient = DbClient.initialize(_appId, useEmulator: _useEmulator);
 
   Logger.root.onRecord.listen((record) {
     // ignore: avoid_print
@@ -143,10 +152,6 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   leaderboardRepository = LeaderboardRepository(
     dbClient: dbClient,
     blacklistDocumentId: _initialsBlacklistId,
-  );
-
-  promptRepository = PromptRepository(
-    dbClient: dbClient,
   );
 
   firebaseCloudStorage = FirebaseCloudStorage(

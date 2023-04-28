@@ -24,14 +24,17 @@ void main() {
     late Request request;
     late RequestContext context;
 
-    const card = Card(
-      id: '',
-      name: '',
-      description: '',
-      rarity: true,
-      image: '',
-      power: 1,
-      suit: Suit.air,
+    final cards = List.generate(
+      12,
+      (_) => const Card(
+        id: '',
+        name: '',
+        description: '',
+        rarity: true,
+        image: '',
+        power: 1,
+        suit: Suit.air,
+      ),
     );
     const prompt = Prompt(
       power: '',
@@ -41,7 +44,9 @@ void main() {
     setUp(() {
       promptRepository = _MockPromptRepository();
       cardsRepository = _MockCardsRepository();
-      when(cardsRepository.generateCard).thenAnswer((_) async => card);
+      when(() => cardsRepository.generateCards(any())).thenAnswer(
+        (_) async => cards,
+      );
 
       request = _MockRequest();
       when(() => request.method).thenReturn(HttpMethod.post);
@@ -71,7 +76,7 @@ void main() {
         json,
         equals({
           'cards': List.generate(
-            10,
+            12,
             (index) => {
               'id': '',
               'name': '',

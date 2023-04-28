@@ -17,12 +17,9 @@ FutureOr<Response> onRequest(RequestContext context) async {
     if (!await promptRepository.isValidPrompt(prompt)) {
       return Response(statusCode: HttpStatus.badRequest);
     }
-    final cards = await Future.wait(
-      List.generate(
-        10,
-        (_) => cardsRepository.generateCard(),
-      ),
-    );
+    // TODO(erickzanardo): receive the character class and power from the
+    // request.in a follow up.
+    final cards = await cardsRepository.generateCards('astronaut');
     return Response.json(
       body: {'cards': cards.map((e) => e.toJson()).toList()},
     );

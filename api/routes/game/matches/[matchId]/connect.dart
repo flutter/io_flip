@@ -19,15 +19,15 @@ FutureOr<Response> onRequest(RequestContext context, String matchId) async {
     if (playerConnected) {
       try {
         final cardsRepository = context.read<CardsRepository>();
-        final cards = await Future.wait(
-          List.generate(
-            3,
-            (_) => cardsRepository.generateCard(),
-          ),
+        final cards = await cardsRepository.generateCards(
+          /// TODO(erickzanardo): this could be a random class.
+          'astronaut',
         );
 
+        final hand = (cards..shuffle()).take(3).toList();
+
         final deckId = await cardsRepository.createDeck(
-          cardIds: cards.map((e) => e.id).toList(),
+          cardIds: hand.map((e) => e.id).toList(),
           userId: 'CPU_${user.id}',
         );
 
