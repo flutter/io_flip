@@ -8,7 +8,6 @@ import 'package:top_dash/info/info.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/leaderboard/leaderboard.dart';
 import 'package:top_dash/terms_of_use/terms_of_use.dart';
-import 'package:top_dash/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class MainMenuScreen extends StatelessWidget {
@@ -42,15 +41,7 @@ class MainMenuScreen extends StatelessWidget {
               left: 0,
               right: 0,
               child: IoFlipBottomBar(
-                leading: RoundedButton.svg(
-                  key: const Key('info_button'),
-                  Assets.icons.info,
-                  onPressed: () => TopDashDialog.show(
-                    context,
-                    child: const InfoView(),
-                    onClose: context.maybePop,
-                  ),
-                ),
+                leading: const InfoButton(),
                 middle: BlocConsumer<TermsOfUseCubit, bool>(
                   listener: (context, termsAccepted) {
                     if (termsAccepted) {
