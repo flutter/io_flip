@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
 /// {@template elemental_damage_animation}
+// ignore: comment_references
 /// A widget that renders two [SpriteAnimation] one over the other
 /// {@endtemplate}
 class DualAnimation extends StatefulWidget {
   /// {@macro elemental_damage_animation}
   const DualAnimation({
-    required this.animationA,
-    required this.animationB,
+    required this.back,
+    required this.front,
     required this.onComplete,
     super.key,
   });
@@ -15,22 +16,22 @@ class DualAnimation extends StatefulWidget {
   /// Optional callback to be called when all the animations are complete.
   final VoidCallback onComplete;
 
-  ///
-  final Widget Function(VoidCallback? onComplete) animationA;
+  /// Represents the widget containing the animation in the back
+  final Widget Function(VoidCallback? onComplete) back;
 
-  ///
-  final Widget Function(VoidCallback? onComplete) animationB;
+  /// Represents the widget containing the animation in the front
+  final Widget Function(VoidCallback? onComplete) front;
 
   @override
   State<DualAnimation> createState() => _DualAnimationState();
 }
 
 class _DualAnimationState extends State<DualAnimation> {
-  bool animationACompleted = false;
-  bool animationBCompleted = false;
+  bool frontAnimationCompleted = false;
+  bool backAnimationCompleted = false;
 
   void _checkCompletion() {
-    if (animationACompleted && animationBCompleted) {
+    if (frontAnimationCompleted && backAnimationCompleted) {
       widget.onComplete();
     }
   }
@@ -39,15 +40,15 @@ class _DualAnimationState extends State<DualAnimation> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        widget.animationA.call(
+        widget.back.call(
           () => setState(() {
-            animationACompleted = true;
+            frontAnimationCompleted = true;
             _checkCompletion();
           }),
         ),
-        widget.animationB.call(
+        widget.front.call(
           () => setState(() {
-            animationBCompleted = true;
+            backAnimationCompleted = true;
             _checkCompletion();
           }),
         ),

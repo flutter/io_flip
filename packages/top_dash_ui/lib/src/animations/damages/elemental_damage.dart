@@ -15,7 +15,7 @@ abstract class ElementalDamage {
     required String damageSendPath,
     required String victoryChargeBackPath,
     required String victoryChargeFrontPath,
-    this.size = const GameCardSize.lg(),
+    this.size = const GameCardSize.xl(),
   })  : _chargeBackPath = chargeBackPath,
         _chargeFrontPath = chargeFrontPath,
         _damageReceivePath = damageReceivePath,

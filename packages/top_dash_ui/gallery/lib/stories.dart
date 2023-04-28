@@ -59,6 +59,11 @@ void addStories(Dashbook dashbook) {
         (_) => const CardLandingPuffStory(),
       );
 
+  dashbook.storiesOf('Elemental Damage Story').add(
+        'Elemental Damage Story',
+        (context) => const ElementalDamageStory(),
+      );
+
   dashbook
       .storiesOf('Cards')
       .add(

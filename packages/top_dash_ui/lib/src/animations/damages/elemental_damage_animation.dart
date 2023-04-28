@@ -3,6 +3,7 @@ import 'package:top_dash_ui/src/animations/animations.dart';
 import 'package:top_dash_ui/src/widgets/damages/dual_animation.dart';
 
 /// {@template elemental_damage_animation}
+// ignore: comment_references
 /// A widget that renders a list of [SpriteAnimation] for a given element
 /// {@endtemplate}
 class ElementalDamageAnimation extends StatefulWidget {
@@ -16,7 +17,7 @@ class ElementalDamageAnimation extends StatefulWidget {
 
   /// Optional callback to be called when all the animations of the damage
   /// are complete.
-  final VoidCallback? onComplete;
+  final VoidCallback onComplete;
 
   /// Element defining which [ElementalDamage] to use
   final Element element;
@@ -51,8 +52,8 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
             if (widget.direction == DamageDirection.topToBottom)
               _TopAnimation(
                 child: DualAnimation(
-                  animationA: elementalDamage.chargeBackBuilder,
-                  animationB: elementalDamage.chargeFrontBuilder,
+                  back: elementalDamage.chargeBackBuilder,
+                  front: elementalDamage.chargeFrontBuilder,
                   onComplete: () => setState(() {
                     _animationState = _AnimationState.sending;
                   }),
@@ -61,8 +62,8 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
             else
               _BottomAnimation(
                 child: DualAnimation(
-                  animationA: elementalDamage.chargeBackBuilder,
-                  animationB: elementalDamage.chargeFrontBuilder,
+                  back: elementalDamage.chargeBackBuilder,
+                  front: elementalDamage.chargeFrontBuilder,
                   onComplete: () => setState(() {
                     _animationState = _AnimationState.sending;
                   }),
@@ -74,7 +75,9 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
         return Stack(
           children: [
             if (widget.direction == DamageDirection.topToBottom)
-              _TopAnimation(
+              Positioned(
+                bottom: 0,
+                left: 0,
                 child: elementalDamage.damageSendBuilder(
                   () => setState(() {
                     _animationState = _AnimationState.receiving;
@@ -98,7 +101,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
               _BottomAnimation(
                 child: elementalDamage.damageReceiveBuilder(
                   () => setState(() {
-                    _animationState = _AnimationState.receiving;
+                    _animationState = _AnimationState.charging;
                   }),
                 ),
               )
@@ -106,7 +109,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
               _TopAnimation(
                 child: elementalDamage.damageReceiveBuilder(
                   () => setState(() {
-                    _animationState = _AnimationState.receiving;
+                    _animationState = _AnimationState.victory;
                   }),
                 ),
               )
@@ -118,22 +121,30 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
             if (widget.direction == DamageDirection.topToBottom)
               _TopAnimation(
                 child: DualAnimation(
-                  animationA: elementalDamage.victoryChargeBackBuilder,
-                  animationB: elementalDamage.victoryChargeFrontBuilder,
-                  onComplete: () {},
+                  back: elementalDamage.victoryChargeBackBuilder,
+                  front: elementalDamage.victoryChargeFrontBuilder,
+                  onComplete: () => setState(() {
+                    _animationState = _AnimationState.ended;
+                  }),
                 ),
               )
             else
               _BottomAnimation(
                 child: DualAnimation(
-                  animationA: elementalDamage.victoryChargeBackBuilder,
-                  animationB: elementalDamage.victoryChargeFrontBuilder,
-                  onComplete: () {},
+                  back: elementalDamage.victoryChargeBackBuilder,
+                  front: elementalDamage.victoryChargeFrontBuilder,
+                  onComplete: () => setState(() {
+                    _animationState = _AnimationState.ended;
+                  }),
                 ),
               )
           ],
         );
       case _AnimationState.ended:
+        widget.onComplete();
+        setState(() {
+          _animationState = _AnimationState.charging;
+        });
         return const Placeholder();
     }
   }

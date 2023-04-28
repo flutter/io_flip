@@ -46,9 +46,9 @@ class DamageReceive extends StatelessWidget {
         anchor: Anchor.center,
         onComplete: onComplete,
         data: SpriteAnimationData.sequenced(
-          amount: 12,
+          amount: 16,
           amountPerRow: 4,
-          textureSize: Vector2(499.5, 505),
+          textureSize: Vector2(499.5, 509),
           stepTime: 0.04,
           loop: false,
         ),

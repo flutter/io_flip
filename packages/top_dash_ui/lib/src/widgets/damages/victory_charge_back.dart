@@ -47,9 +47,9 @@ class VictoryChargeBack extends StatelessWidget {
         anchor: Anchor.center,
         onComplete: onComplete,
         data: SpriteAnimationData.sequenced(
-          amount: 20,
-          amountPerRow: 5,
-          textureSize: Vector2(658, 860),
+          amount: 18,
+          amountPerRow: 6,
+          textureSize: Vector2(607, 695),
           stepTime: 0.04,
           loop: false,
         ),

@@ -46,9 +46,9 @@ class DamageSend extends StatelessWidget {
         anchor: Anchor.center,
         onComplete: onComplete,
         data: SpriteAnimationData.sequenced(
-          amount: 18,
+          amount: 30,
           amountPerRow: 6,
-          textureSize: Vector2(568, 683),
+          textureSize: Vector2(568, 409.5),
           stepTime: 0.04,
           loop: false,
         ),
