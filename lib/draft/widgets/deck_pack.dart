@@ -6,41 +6,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 
-class DeckPack extends StatelessWidget {
+class DeckPack extends StatefulWidget {
   const DeckPack({
     required this.child,
+    this.size = double.infinity,
     super.key,
   });
 
   final Widget child;
+  final double size;
 
   @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return FractionallySizedBox(
-          widthFactor: 0.3,
-          heightFactor: 0.3,
-          child: _AnimatedDeck(child: child),
-        );
-      },
-    );
-  }
+  State<DeckPack> createState() => _DeckPackState();
 }
 
-class _AnimatedDeck extends StatefulWidget {
-  const _AnimatedDeck({
-    required this.child,
-    super.key,
-  });
-
-  final Widget child;
-
-  @override
-  State<_AnimatedDeck> createState() => _AnimatedDeckState();
-}
-
-class _AnimatedDeckState extends State<_AnimatedDeck> {
+class _DeckPackState extends State<DeckPack> {
   bool underlayVisible = false;
   bool isAnimationPlaying = false;
   Widget? anim;
@@ -99,34 +79,10 @@ class _AnimatedDeckState extends State<_AnimatedDeck> {
   }
 
   void _beginAnimation(Images images) {
-    // anim = SpriteAnimationWidget.asset(
-    //   onComplete: () {
-    //     _beginAnimation(images);
-    //   },
-    //   path: Assets.images.frontPack.keyName,
-    //   images: images,
-    //   anchor: Anchor.topCenter,
-    //   // onComplete: onComplete,
-    //   data: SpriteAnimationData.sequenced(
-    //     amount: 56,
-    //     amountPerRow: 7,
-    //     textureSize: Vector2(1050, 1219),
-    //     stepTime: 0.04,
-    //     loop: false,
-    //   ),
-    // );
     setState(() {
       isAnimationPlaying = true;
       underlayVisible = false;
     });
-
-    // Future<void>.delayed(const Duration(milliseconds: 1210)).then((value) {
-    //   if (mounted) {
-    //     setState(() {
-    //       underlayVisible = true;
-    //     });
-    //   }
-    // });
 
     setState(() {
       isAnimationPlaying = true;
@@ -136,56 +92,41 @@ class _AnimatedDeckState extends State<_AnimatedDeck> {
 
   @override
   Widget build(BuildContext context) {
-    const aspectRatio = 0.75;
-    const height = 1200.0;
-
-    const leftFactor = 0.38;
-    const topFactor = .11;
-    const bottomFactor = 0.38;
-
     if (anim == null) return Container();
 
-    return Center(
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // FractionallySizedBox(
-          //   widthFactor: 0.29,
-          //   heightFactor: 0.36,
-          //   child: Container(
-          //     color: Colors.green,
-          //   ),
-          // ),
-          AspectRatio(
-            // Aspect ratio of card
-            aspectRatio: 260 / 395,
-            child: DecoratedBox(
-              child: widget.child,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.yellow),
+    return SizedBox.square(
+      dimension: widget.size,
+      child: Center(
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            AspectRatio(
+              // Aspect ratio of card
+              aspectRatio: 260 / 380,
+              child: Offstage(
+                offstage: !underlayVisible,
+                child: _StretchAnimation(
+                  animating: underlayVisible,
+                  child: Center(
+                    child: widget.child,
+                  ),
+                ),
               ),
             ),
-          ),
-          Align(
-            alignment: const Alignment(0, 1.33),
-            child: LayoutBuilder(
+            LayoutBuilder(
               builder: (context, constraints) {
                 return SizedBox.square(
                   dimension: 0,
                   child: OverflowBox(
-                    maxWidth: constraints.maxWidth / 0.24,
-                    maxHeight: constraints.maxHeight / 0.32,
-                    child: AspectRatio(
-                      // Aspect ratios of texture
-                      aspectRatio: 1050 / 1219,
-                      child: SizedBox.expand(
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.red,
-                            ),
-                          ),
-                          child: anim,
+                    maxWidth: constraints.maxWidth / 0.247,
+                    maxHeight: constraints.maxHeight / 0.311,
+                    child: Transform.translate(
+                      offset: Offset(0, constraints.maxHeight * 0.16),
+                      child: Center(
+                        child: AspectRatio(
+                          // Aspect ratio of texture
+                          aspectRatio: 1050 / 1219,
+                          child: SizedBox.expand(child: anim),
                         ),
                       ),
                     ),
@@ -193,63 +134,8 @@ class _AnimatedDeckState extends State<_AnimatedDeck> {
                 );
               },
             ),
-          ),
-        ],
-      ),
-    );
-
-    return AspectRatio(
-      aspectRatio: 1050 / 1219,
-      child: Stack(
-        children: [
-          Offstage(
-            offstage: !underlayVisible,
-            child: Align(
-              alignment: const Alignment(-0.02, -0.6),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return ConstrainedBox(
-                    constraints: BoxConstraints.loose(
-                      Size(
-                        0.29 * constraints.maxWidth,
-                        0.36 * constraints.maxHeight,
-                      ),
-                    ),
-                    child: AspectRatio(
-                      aspectRatio: 1050 / 1400,
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.green,
-                          ),
-                        ),
-                        child: Center(
-                          child: _StretchAnimation(
-                            animating: underlayVisible,
-                            child: widget.child,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-          Positioned.fill(
-            child: AspectRatio(
-              aspectRatio: 1050 / 1219,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.red,
-                  ),
-                ),
-                child: anim,
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

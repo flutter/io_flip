@@ -46,6 +46,7 @@ class DraftView extends StatelessWidget {
     return IoFlipScaffold(
       body: Center(
         child: DeckPack(
+          size: TopDashCardSizes.xl.shortestSide,
           child: GameCard(
             size: GameCardSize.xl(),
             name: 'The Tester',
