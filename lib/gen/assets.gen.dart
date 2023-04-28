@@ -69,6 +69,7 @@ class $AssetsImagesGen {
         facebook,
         lossSplash,
         main,
+        stadiumBackground,
         tempPreferencesCustom,
         twitter,
         winSplash
@@ -102,6 +103,12 @@ class $AssetsSfxGen {
   /// File path: assets/sfx/add_to_hand.mp3
   String get addToHand => 'assets/sfx/add_to_hand.mp3';
 
+  /// File path: assets/sfx/air.mp3
+  String get air => 'assets/sfx/air.mp3';
+
+  /// File path: assets/sfx/arena_ambiance.mp3
+  String get arenaAmbiance => 'assets/sfx/arena_ambiance.mp3';
+
   /// File path: assets/sfx/card_movement.mp3
   String get cardMovement => 'assets/sfx/card_movement.mp3';
 
@@ -120,8 +127,14 @@ class $AssetsSfxGen {
   /// File path: assets/sfx/draw_match.mp3
   String get drawMatch => 'assets/sfx/draw_match.mp3';
 
+  /// File path: assets/sfx/earth.mp3
+  String get earth => 'assets/sfx/earth.mp3';
+
   /// File path: assets/sfx/fire.mp3
   String get fire => 'assets/sfx/fire.mp3';
+
+  /// File path: assets/sfx/flip.mp3
+  String get flip => 'assets/sfx/flip.mp3';
 
   /// File path: assets/sfx/ground.mp3
   String get ground => 'assets/sfx/ground.mp3';
@@ -131,6 +144,9 @@ class $AssetsSfxGen {
 
   /// File path: assets/sfx/lost_match.mp3
   String get lostMatch => 'assets/sfx/lost_match.mp3';
+
+  /// File path: assets/sfx/match_seaching.mp3
+  String get matchSeaching => 'assets/sfx/match_seaching.mp3';
 
   /// File path: assets/sfx/metal.mp3
   String get metal => 'assets/sfx/metal.mp3';
@@ -162,16 +178,21 @@ class $AssetsSfxGen {
   /// List of all assets
   List<String> get values => [
         addToHand,
+        air,
+        arenaAmbiance,
         cardMovement,
         click,
         clockRunning,
         damage,
         deckOpen,
         drawMatch,
+        earth,
         fire,
+        flip,
         ground,
         holoReveal,
         lostMatch,
+        matchSeaching,
         metal,
         playCard,
         reveal,

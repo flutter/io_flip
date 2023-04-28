@@ -1,4 +1,5 @@
 export 'animated_card.dart';
+export 'card_landing_puff.dart';
 export 'card_overlay.dart';
 export 'damages/damages.dart';
 export 'fading_dot_loader.dart';

@@ -38,10 +38,11 @@ void main(List<String> args) async {
       print('Usage: dart data_loader.dart prompts <projectId> <csv>');
     }
   } else if (subcommand == 'images') {
-    if (args.length == 4) {
+    if (args.length == 5) {
       final dest = args[1];
       final csv = args[2];
-      final image = args.last;
+      final image = args[3];
+      final cardVariation = int.parse(args.last);
 
       final csvFile = File(csv);
       final imageFile = File(image);
@@ -50,6 +51,7 @@ void main(List<String> args) async {
         csv: csvFile,
         image: imageFile,
         dest: dest,
+        variations: cardVariation,
       );
 
       await imageLoader.loadImages((current, total) {
@@ -58,7 +60,7 @@ void main(List<String> args) async {
     } else {
       print(
         'Usage: dart data_loader.dart images <dest> <csv> '
-        '<images_folder>',
+        '<images_folder> <card_variation_number>',
       );
     }
   } else {
