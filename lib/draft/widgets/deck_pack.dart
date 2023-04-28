@@ -18,10 +18,9 @@ class DeckPack extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        return OverflowBox(
-          alignment: Alignment.topCenter,
-          maxHeight: constraints.maxHeight * 2,
-          maxWidth: constraints.maxWidth * 2,
+        return FractionallySizedBox(
+          widthFactor: 0.3,
+          heightFactor: 0.3,
           child: _AnimatedDeck(child: child),
         );
       },
@@ -146,50 +145,48 @@ class _AnimatedDeckState extends State<_AnimatedDeck> {
 
     if (anim == null) return Container();
 
-    return AspectRatio(
-      aspectRatio: 1050 / 1219,
+    return Center(
       child: Stack(
+        alignment: Alignment.center,
         children: [
-          Offstage(
-            offstage: !underlayVisible,
-            child: Align(
-              alignment: const Alignment(-0.02, -0.65),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return ConstrainedBox(
-                    constraints: BoxConstraints.loose(
-                      Size(
-                        0.29 * constraints.maxWidth,
-                        0.32 * constraints.maxHeight,
-                      ),
-                    ),
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.green,
-                        ),
-                      ),
-                      child: Center(
-                        child: _StretchAnimation(
-                          animating: underlayVisible,
-                          child: widget.child,
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
+          // FractionallySizedBox(
+          //   widthFactor: 0.29,
+          //   heightFactor: 0.36,
+          //   child: Container(
+          //     color: Colors.green,
+          //   ),
+          // ),
+          AspectRatio(
+            aspectRatio: 1050 / 1219,
+            child: Container(
+              color: Colors.green,
             ),
           ),
-          Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.red,
+          LayoutBuilder(
+            builder: (context, constraints) {
+              return SizedBox.square(
+                dimension: 0,
+                child: OverflowBox(
+                  maxWidth: constraints.maxWidth / 0.29,
+                  maxHeight: constraints.maxHeight / 0.36,
+                  child: AspectRatio(
+                    aspectRatio: 1050 / 1219,
+                    child: Padding(
+                      padding: EdgeInsets.all(6),
+                      child: SizedBox.expand(
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-              child: anim,
-            ),
+              );
+            },
           ),
         ],
       ),
