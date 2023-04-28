@@ -78,7 +78,7 @@ void main() {
       'renders power form correctly and completes flow',
       (tester) async {
         mockState(promptFormState);
-        await tester.pumpSubject(promptFormBloc);
+        await tester.pumpSubject(promptFormBloc, rng: randomGenerator);
         await tester.tap(find.text(tester.l10n.letsGetStarted.toUpperCase()));
         await tester.pumpAndSettle();
 
