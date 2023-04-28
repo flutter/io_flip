@@ -96,7 +96,6 @@ void main() {
       when(request.json).thenAnswer(
         (_) async => const Prompt(
           characterClass: '',
-          secondaryPower: '',
         ).toJson(),
       );
       final response = await route.onRequest(context);
