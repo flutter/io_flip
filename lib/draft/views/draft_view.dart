@@ -281,7 +281,7 @@ class _BottomBar extends StatelessWidget {
                 () => GoRouter.of(context).goNamed(
                   'match_making',
                   extra: MatchMakingPageData(
-                    deck: state.selectedCards.cast<Card>(),
+                    cards: state.selectedCards.cast<Card>(),
                   ),
                 ),
               ),
@@ -331,7 +331,7 @@ class _BottomBar extends StatelessWidget {
             queryParams: {
               'inviteCode': inviteCode,
             },
-            extra: MatchMakingPageData(deck: state.selectedCards.cast<Card>()),
+            extra: MatchMakingPageData(cards: state.selectedCards.cast<Card>()),
           ),
         );
       }
@@ -398,7 +398,7 @@ class _JoinPrivateMatchDialogState extends State<_JoinPrivateMatchDialog> {
                   queryParams: {
                     'createPrivateMatch': 'true',
                   },
-                  extra: MatchMakingPageData(deck: widget.selectedCards),
+                  extra: MatchMakingPageData(cards: widget.selectedCards),
                 ),
               ),
               child: const Text('Create private match'),

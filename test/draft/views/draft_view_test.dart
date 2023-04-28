@@ -254,7 +254,7 @@ void main() {
         verify(
           () => goRouter.goNamed(
             'match_making',
-            extra: MatchMakingPageData(deck: const [card1, card2, card3]),
+            extra: MatchMakingPageData(cards: const [card1, card2, card3]),
           ),
         ).called(1);
       },
@@ -291,7 +291,7 @@ void main() {
             queryParams: {
               'createPrivateMatch': 'true',
             },
-            extra: MatchMakingPageData(deck: const [card1, card2, card3]),
+            extra: MatchMakingPageData(cards: const [card1, card2, card3]),
           ),
         ).called(1);
       },
@@ -331,7 +331,7 @@ void main() {
             queryParams: {
               'inviteCode': 'invite-code',
             },
-            extra: MatchMakingPageData(deck: const [card1, card2, card3]),
+            extra: MatchMakingPageData(cards: const [card1, card2, card3]),
           ),
         ).called(1);
       },
