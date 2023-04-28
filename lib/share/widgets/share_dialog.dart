@@ -22,40 +22,44 @@ class ShareDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return Column(
-      children: [
-        content,
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            RoundedButton.image(
-              Image.asset(
-                Assets.images.twitter.path,
-                width: TopDashSpacing.xlg,
-                color: TopDashColors.seedWhite,
+    return Material(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          content,
+          const SizedBox(height: TopDashSpacing.xlg),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RoundedButton.image(
+                Image.asset(
+                  Assets.images.twitter.path,
+                  width: TopDashSpacing.xlg,
+                  color: TopDashColors.seedWhite,
+                ),
+                label: l10n.twitterButtonLabel,
+                onPressed: () => urlLauncher(twitterShareUrl),
+                backgroundColor: TopDashColors.seedBlack,
+                foregroundColor: TopDashColors.seedWhite,
+                borderColor: TopDashColors.seedPaletteNeutral40,
               ),
-              label: l10n.twitterButtonLabel,
-              onPressed: () => urlLauncher(twitterShareUrl),
-              backgroundColor: TopDashColors.seedBlack,
-              foregroundColor: TopDashColors.seedWhite,
-              borderColor: TopDashColors.seedPaletteNeutral40,
-            ),
-            const SizedBox(height: TopDashSpacing.sm),
-            RoundedButton.image(
-              Image.asset(
-                Assets.images.facebook.path,
-                color: TopDashColors.seedWhite,
-                width: TopDashSpacing.xlg,
+              const SizedBox(height: TopDashSpacing.sm),
+              RoundedButton.image(
+                Image.asset(
+                  Assets.images.facebook.path,
+                  color: TopDashColors.seedWhite,
+                  width: TopDashSpacing.xlg,
+                ),
+                label: l10n.facebookButtonLabel,
+                onPressed: () => urlLauncher(facebookShareUrl),
+                backgroundColor: TopDashColors.seedBlack,
+                foregroundColor: TopDashColors.seedWhite,
+                borderColor: TopDashColors.seedPaletteNeutral40,
               ),
-              label: l10n.facebookButtonLabel,
-              onPressed: () => urlLauncher(facebookShareUrl),
-              backgroundColor: TopDashColors.seedBlack,
-              foregroundColor: TopDashColors.seedWhite,
-              borderColor: TopDashColors.seedPaletteNeutral40,
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

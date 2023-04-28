@@ -90,7 +90,6 @@ class _DialogContent extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: TopDashSpacing.xlg),
       ],
     );
   }
