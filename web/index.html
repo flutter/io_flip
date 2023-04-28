@@ -251,7 +251,7 @@
       An AI-designed card game powered by Google ML built with Flutter and
       Firebase for Google I/O 2023
     </p>
-    <div id="progress-bar">
+    <div id="progress-bar" hidden>
       <div id="progress-indicator"></div>
     </div>
     <div id="cookie-bar">
@@ -353,6 +353,7 @@
               onEntrypointLoaded: function (engineInitializer) {
                 cookieBarButton.addEventListener("click", function () {
                   cookieBar.remove();
+                  progressBar.hidden = false;
 
                   engineInitializer
                     .initializeEngine()
