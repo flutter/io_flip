@@ -13,8 +13,8 @@ class ChargeFront extends StatelessWidget {
   /// {@macro charge_front}
   const ChargeFront(
     this.path, {
-    super.key,
     required this.size,
+    super.key,
     this.onComplete,
   });
 
@@ -30,21 +30,28 @@ class ChargeFront extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final images = context.read<Images>();
+    final height = 1.538 * size.height;
+    final width = 1.89 * size.width;
+    final x = 0.45 * size.width;
+    final y = 0.31 * size.height;
 
-    return SizedBox(
-      height: 1.517 * size.height,
-      width: 1.625 * size.width,
-      child: SpriteAnimationWidget.asset(
-        path: path,
-        images: images,
-        anchor: Anchor.center,
-        onComplete: onComplete,
-        data: SpriteAnimationData.sequenced(
-          amount: 20,
-          amountPerRow: 5,
-          textureSize: Vector2(658, 860),
-          stepTime: 0.04,
-          loop: false,
+    return Transform.translate(
+      offset: -Offset(x, y),
+      child: SizedBox(
+        height: height,
+        width: width,
+        child: SpriteAnimationWidget.asset(
+          path: path,
+          images: images,
+          anchor: Anchor.center,
+          onComplete: onComplete,
+          data: SpriteAnimationData.sequenced(
+            amount: 20,
+            amountPerRow: 5,
+            textureSize: Vector2(658, 860),
+            stepTime: 0.04,
+            loop: false,
+          ),
         ),
       ),
     );

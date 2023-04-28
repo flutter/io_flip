@@ -31,29 +31,26 @@ class ChargeBack extends StatelessWidget {
   Widget build(BuildContext context) {
     final images = context.read<Images>();
     final height = 1.538 * size.height;
-    final width = 1.72 * size.width;
-    final x = 0.21 * width;
-    final y = 0.2 * height;
+    final width = 1.89 * size.width;
+    final x = 0.45 * size.width;
+    final y = 0.31 * size.height;
 
     return Transform.translate(
       offset: -Offset(x, y),
       child: SizedBox(
         height: height,
         width: width,
-        child: ColoredBox(
-          color: Colors.red.withOpacity(0.3),
-          child: SpriteAnimationWidget.asset(
-            path: path,
-            images: images,
-            anchor: Anchor.center,
-            onComplete: onComplete,
-            data: SpriteAnimationData.sequenced(
-              amount: 20,
-              amountPerRow: 5,
-              textureSize: Vector2(658, 860),
-              stepTime: 0.04,
-              loop: false,
-            ),
+        child: SpriteAnimationWidget.asset(
+          path: path,
+          images: images,
+          anchor: Anchor.center,
+          onComplete: onComplete,
+          data: SpriteAnimationData.sequenced(
+            amount: 20,
+            amountPerRow: 5,
+            textureSize: Vector2(658, 860),
+            stepTime: 0.04,
+            loop: false,
           ),
         ),
       ),

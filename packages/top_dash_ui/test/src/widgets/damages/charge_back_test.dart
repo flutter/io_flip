@@ -22,7 +22,10 @@ void main() {
           textDirection: TextDirection.ltr,
           child: Provider.value(
             value: images,
-            child: const ChargeBack(''),
+            child: const ChargeBack(
+              '',
+              size: GameCardSize.md(),
+            ),
           ),
         ),
       );

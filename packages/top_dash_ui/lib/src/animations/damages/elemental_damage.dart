@@ -66,8 +66,7 @@ abstract class ElementalDamage {
   DamageReceive damageReceiveBuilder(VoidCallback? onComplete) {
     return DamageReceive(
       _damageReceivePath,
-      width: size.width,
-      height: size.height,
+      size: size,
       onComplete: onComplete,
     );
   }
@@ -96,8 +95,7 @@ abstract class ElementalDamage {
   VictoryChargeFront victoryChargeFrontBuilder(VoidCallback? onComplete) {
     return VictoryChargeFront(
       _victoryChargeFrontPath,
-      width: size.width,
-      height: size.height,
+      size: size,
       onComplete: onComplete,
     );
   }

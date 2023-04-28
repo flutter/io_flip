@@ -22,7 +22,10 @@ void main() {
           textDirection: TextDirection.ltr,
           child: Provider.value(
             value: images,
-            child: const ChargeFront(''),
+            child: const ChargeFront(
+              '',
+              size: GameCardSize.md(),
+            ),
           ),
         ),
       );
