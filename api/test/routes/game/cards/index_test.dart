@@ -39,7 +39,7 @@ void main() {
     const prompt = Prompt(
       power: '',
       secondaryPower: '',
-      characterClass: '',
+      characterClass: 'mage',
     );
     setUp(() {
       promptRepository = _MockPromptRepository();
@@ -66,6 +66,22 @@ void main() {
     test('responds with a 200', () async {
       final response = await route.onRequest(context);
       expect(response.statusCode, equals(HttpStatus.ok));
+    });
+
+    test('uses the character class from the prompt', () async {
+      await route.onRequest(context);
+      verify(() => cardsRepository.generateCards('mage')).called(1);
+    });
+
+    test('responds bad request when class is null', () async {
+      when(request.json).thenAnswer(
+        (_) async => const Prompt(
+          power: '',
+          secondaryPower: '',
+        ).toJson(),
+      );
+      final response = await route.onRequest(context);
+      expect(response.statusCode, equals(HttpStatus.badRequest));
     });
 
     test('responds with the generated card', () async {
