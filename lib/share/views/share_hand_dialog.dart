@@ -26,7 +26,7 @@ class ShareHandDialog extends StatelessWidget {
     final shareResource = context.watch<ShareResource>();
     final twitterLink = shareResource.twitterShareHandUrl(deckId);
     final facebookLink = shareResource.facebookShareHandUrl(deckId);
-    return CardShareDialog(
+    return ShareDialog(
       twitterShareUrl: twitterLink,
       facebookShareUrl: facebookLink,
       content: _DialogContent(

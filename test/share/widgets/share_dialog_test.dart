@@ -19,7 +19,7 @@ const card = Card(
 );
 
 void main() {
-  group('CardShareDialog', () {
+  group('ShareDialog', () {
     setUpAll(() {
       launchedUrl = null;
     });
@@ -77,7 +77,7 @@ extension ShareCardDialogTest on WidgetTester {
   Future<void> pumpSubject({Widget? content}) async {
     await mockNetworkImages(() {
       return pumpApp(
-        CardShareDialog(
+        ShareDialog(
           content: content ?? Container(),
           twitterShareUrl: shareUrl,
           facebookShareUrl: shareUrl,

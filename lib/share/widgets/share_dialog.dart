@@ -5,8 +5,8 @@ import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-class CardShareDialog extends StatelessWidget {
-  const CardShareDialog({
+class ShareDialog extends StatelessWidget {
+  const ShareDialog({
     required this.twitterShareUrl,
     required this.facebookShareUrl,
     required this.content,

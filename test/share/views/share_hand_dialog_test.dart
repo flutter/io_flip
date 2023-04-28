@@ -32,12 +32,12 @@ void main() {
   group('ShareHandDialog', () {
     testWidgets('renders', (tester) async {
       await tester.pumpSubject(shareResource);
-      expect(find.byType(CardShareDialog), findsOneWidget);
+      expect(find.byType(ShareDialog), findsOneWidget);
     });
 
     testWidgets('renders a CardShareDialog widget', (tester) async {
       await tester.pumpSubject(shareResource);
-      expect(find.byType(CardShareDialog), findsOneWidget);
+      expect(find.byType(ShareDialog), findsOneWidget);
     });
 
     testWidgets('renders a CardFan widget', (tester) async {
