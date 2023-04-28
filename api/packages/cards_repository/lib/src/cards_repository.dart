@@ -31,7 +31,8 @@ class CardsRepository {
 
   /// Generates a random card.
   Future<List<Card>> generateCards(String characterClass) async {
-    // TODO(erickzanardo): variety of cards should come from the config repository.
+    // TODO(erickzanardo): variety of cards should come from the config
+    // repository.
     const variations = 8;
     const deckSize = 12;
 
