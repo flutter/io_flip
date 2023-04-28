@@ -157,22 +157,26 @@ class _AnimatedDeckState extends State<_AnimatedDeck> {
           //   ),
           // ),
           AspectRatio(
-            aspectRatio: 269 / 385,
-            // aspectRatio: 1050 / 1400,
-            child: Container(
-              color: Colors.green,
+            // Aspect ratio of card
+            aspectRatio: 260 / 395,
+            child: DecoratedBox(
+              child: widget.child,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.yellow),
+              ),
             ),
           ),
           Align(
-            alignment: const Alignment(0.02, 1.4),
+            alignment: const Alignment(0, 1.33),
             child: LayoutBuilder(
               builder: (context, constraints) {
                 return SizedBox.square(
                   dimension: 0,
                   child: OverflowBox(
-                    maxWidth: constraints.maxWidth / 0.22,
-                    maxHeight: constraints.maxHeight / 0.30,
+                    maxWidth: constraints.maxWidth / 0.24,
+                    maxHeight: constraints.maxHeight / 0.32,
                     child: AspectRatio(
+                      // Aspect ratios of texture
                       aspectRatio: 1050 / 1219,
                       child: SizedBox.expand(
                         child: DecoratedBox(
