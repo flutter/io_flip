@@ -38,7 +38,7 @@ extension ShareCardDialogTest on WidgetTester {
       return pumpApp(
         const Scaffold(
           body: CardFan(
-            deck: [card, card, card],
+            cards: [card, card, card],
           ),
         ),
       );
