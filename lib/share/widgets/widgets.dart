@@ -1,2 +1,2 @@
 export 'card_fan.dart';
-export 'card_share_dialog.dart';
+export 'share_dialog.dart';

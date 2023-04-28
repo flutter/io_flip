@@ -53,7 +53,7 @@ class ShareHandPage extends StatelessWidget {
           Align(
             alignment: Alignment.topCenter,
             child: CardFan(
-              deck: deck,
+              cards: deck,
             ),
           ),
           Text(
@@ -83,7 +83,15 @@ class ShareHandPage extends StatelessWidget {
               children: [
                 RoundedButton.text(
                   l10n.shareButtonLabel,
-                  onPressed: () => _shareDialog(context, deck),
+                  onPressed: () => TopDashDialog.show(
+                    context,
+                    child: ShareHandDialog(
+                      cards: deck,
+                      deckId: deckId,
+                      initials: initials,
+                      wins: wins,
+                    ),
+                  ),
                 ),
                 const SizedBox(width: TopDashSpacing.sm),
                 RoundedButton.text(
@@ -132,18 +140,6 @@ class ShareHandPage extends StatelessWidget {
           ),
           const SizedBox(height: TopDashSpacing.xlg),
         ],
-      ),
-    );
-  }
-
-  Future<void> _shareDialog(BuildContext context, List<Card> cards) {
-    return showDialog(
-      context: context,
-      builder: (context) => ShareHandDialog(
-        cards: cards,
-        deckId: deckId,
-        initials: initials,
-        wins: wins,
       ),
     );
   }

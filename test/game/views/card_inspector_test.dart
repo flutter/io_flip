@@ -5,7 +5,7 @@ import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
-import 'package:top_dash/share/views/card_inspector.dart';
+import 'package:top_dash/share/share.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
@@ -108,7 +108,7 @@ void main() {
       await tester.pumpSubject(buildSubject(), shareResource: shareResource);
       await tester.tap(find.byIcon(Icons.share_outlined));
       await tester.pumpAndSettle();
-      expect(find.byType(Dialog), findsOneWidget);
+      expect(find.byType(ShareDialog), findsOneWidget);
     });
 
     group('landscape mode', () {

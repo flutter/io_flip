@@ -26,7 +26,7 @@ class ShareHandDialog extends StatelessWidget {
     final shareResource = context.watch<ShareResource>();
     final twitterLink = shareResource.twitterShareHandUrl(deckId);
     final facebookLink = shareResource.facebookShareHandUrl(deckId);
-    return CardShareDialog(
+    return ShareDialog(
       twitterShareUrl: twitterLink,
       facebookShareUrl: facebookLink,
       content: _DialogContent(
@@ -59,9 +59,7 @@ class _DialogContent extends StatelessWidget {
           padding: const EdgeInsets.all(TopDashSpacing.lg),
           child: FittedBox(
             fit: BoxFit.scaleDown,
-            child: CardFan(
-              deck: cards,
-            ),
+            child: CardFan(cards: cards),
           ),
         ),
         const SizedBox(height: TopDashSpacing.lg),
@@ -92,7 +90,6 @@ class _DialogContent extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: TopDashSpacing.xlg),
       ],
     );
   }
