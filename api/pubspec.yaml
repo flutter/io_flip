@@ -12,6 +12,8 @@ dependencies:
   cards_repository:
     path: packages/cards_repository
   collection: ^1.17.1
+  config_repository:
+    path: packages/config_repository
   dart_frog: ^0.3.0
   dart_frog_web_socket: ^0.1.0-dev.3
   db_client:
