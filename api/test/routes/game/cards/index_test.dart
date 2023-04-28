@@ -38,7 +38,6 @@ void main() {
     );
     const prompt = Prompt(
       power: '',
-      secondaryPower: '',
       characterClass: 'mage',
     );
     setUp(() {
@@ -75,10 +74,7 @@ void main() {
 
     test('responds bad request when class is null', () async {
       when(request.json).thenAnswer(
-        (_) async => const Prompt(
-          power: '',
-          secondaryPower: '',
-        ).toJson(),
+        (_) async => const Prompt(power: '').toJson(),
       );
       final response = await route.onRequest(context);
       expect(response.statusCode, equals(HttpStatus.badRequest));
