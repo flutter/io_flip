@@ -25,7 +25,6 @@ void main() {
           const Prompt(
             characterClass: 'characterClass',
             power: 'power',
-            secondaryPower: 'secondaryPower',
           ),
         ),
       );
@@ -36,12 +35,10 @@ void main() {
         Prompt(
           characterClass: 'characterClass',
           power: 'power',
-          secondaryPower: 'secondaryPower',
         ).toJson(),
         equals({
           'characterClass': 'characterClass',
           'power': 'power',
-          'secondaryPower': 'secondaryPower',
         }),
       );
     });
@@ -51,13 +48,11 @@ void main() {
         Prompt.fromJson(const {
           'characterClass': 'characterClass',
           'power': 'power',
-          'secondaryPower': 'secondaryPower',
         }),
         equals(
           Prompt(
             characterClass: 'characterClass',
             power: 'power',
-            secondaryPower: 'secondaryPower',
           ),
         ),
       );
@@ -68,13 +63,11 @@ void main() {
         Prompt(
           characterClass: 'characterClass',
           power: '',
-          secondaryPower: '',
         ),
         equals(
           Prompt(
             characterClass: 'characterClass',
             power: '',
-            secondaryPower: '',
           ),
         ),
       );
@@ -83,28 +76,11 @@ void main() {
         Prompt(
           characterClass: '',
           power: 'power',
-          secondaryPower: '',
         ),
         equals(
           Prompt(
             characterClass: '',
             power: 'power',
-            secondaryPower: '',
-          ),
-        ),
-      );
-
-      expect(
-        Prompt(
-          characterClass: '',
-          power: '',
-          secondaryPower: 'secondaryPower',
-        ),
-        equals(
-          Prompt(
-            characterClass: '',
-            power: '',
-            secondaryPower: 'secondaryPower',
           ),
         ),
       );

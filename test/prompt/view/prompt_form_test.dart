@@ -74,46 +74,19 @@ void main() {
       );
     });
 
-    testWidgets('renders power form correctly', (tester) async {
-      mockState(promptFormState);
-      await tester.pumpSubject(promptFormBloc);
-      await tester.tap(find.text(tester.l10n.letsGetStarted.toUpperCase()));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text(tester.l10n.select.toUpperCase()));
-      await tester.pumpAndSettle();
-
-      expect(find.text(tester.l10n.powerPromptPageTitle), findsOneWidget);
-      expect(find.byType(ListWheelScrollView), findsOneWidget);
-      expect(
-        find.text(tester.l10n.select.toUpperCase()),
-        findsOneWidget,
-      );
-    });
-
     testWidgets(
-      'renders secondary power form correctly and completes flow',
+      'renders power form correctly and completes flow',
       (tester) async {
         mockState(promptFormState);
-        await tester.pumpSubject(promptFormBloc, rng: randomGenerator);
+        await tester.pumpSubject(promptFormBloc);
         await tester.tap(find.text(tester.l10n.letsGetStarted.toUpperCase()));
         await tester.pumpAndSettle();
 
         await tester.tap(find.text(tester.l10n.select.toUpperCase()));
         await tester.pumpAndSettle();
 
-        await tester.tap(find.text(tester.l10n.select.toUpperCase()));
-        await tester.pumpAndSettle();
-
-        expect(
-          find.text(tester.l10n.secondaryPowerPromptPageTitle),
-          findsOneWidget,
-        );
+        expect(find.text(tester.l10n.powerPromptPageTitle), findsOneWidget);
         expect(find.byType(ListWheelScrollView), findsOneWidget);
-        expect(
-          find.text(tester.l10n.select.toUpperCase()),
-          findsOneWidget,
-        );
 
         await tester.tap(find.text(tester.l10n.select.toUpperCase()));
         await tester.pumpAndSettle();
@@ -125,7 +98,6 @@ void main() {
                 isIntroSeen: true,
                 characterClass: 'Archer',
                 power: 'Speed',
-                secondaryPower: 'Lazy',
               ),
             ),
           ),
