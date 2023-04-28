@@ -8,6 +8,7 @@ import 'package:prompt_repository/prompt_repository.dart';
 import 'package:test/test.dart';
 
 class _MockPromptRepository extends Mock implements PromptRepository {}
+
 class _MockRandom extends Mock implements Random {}
 
 void main() {
@@ -19,8 +20,7 @@ void main() {
     setUp(() {
       promptRepository = _MockPromptRepository();
       random = _MockRandom();
-      when(() => random.nextInt(any()))
-        .thenReturn(0);
+      when(() => random.nextInt(any())).thenReturn(0);
       repository = ImageModelRepository(
         promptRepository: promptRepository,
         imageHost: 'https://my_host.com/',

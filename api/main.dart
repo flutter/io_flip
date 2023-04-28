@@ -37,8 +37,8 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
     dbClient: dbClient,
   );
   final imageModelRepository = ImageModelRepository(
-    imageHost: 'https://firebasestorage.googleapis.com/v0/b/top-dash-dev.appspot.com/o/public%2Fillustrations%2F',
-
+    imageHost:
+        'https://firebasestorage.googleapis.com/v0/b/top-dash-dev.appspot.com/o/public%2Fillustrations%2F',
     promptRepository: promptRepository,
     urlParams: '?alt=media',
   );

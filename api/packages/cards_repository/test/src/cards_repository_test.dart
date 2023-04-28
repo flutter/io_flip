@@ -76,11 +76,13 @@ void main() {
 
     group('generateCard', () {
       setUp(() {
-        when(() => imageModelRepository.generateImages(
-              characterClass: any(named: 'characterClass'),
-              variationsAvailable: any(named: 'variationsAvailable'),
-              deckSize: any(named: 'deckSize'),
-            ),).thenAnswer(
+        when(
+          () => imageModelRepository.generateImages(
+            characterClass: any(named: 'characterClass'),
+            variationsAvailable: any(named: 'variationsAvailable'),
+            deckSize: any(named: 'deckSize'),
+          ),
+        ).thenAnswer(
           (_) async => [
             'https://image1.png',
             'https://image2.png',
@@ -199,15 +201,17 @@ void main() {
 
           expect(
             cards,
-            contains(Card(
-              id: 'abc',
-              name: 'Super Bird',
-              description: 'Super Bird Is Ready!',
-              image: 'https://image1.png',
-              rarity: false,
-              power: 10,
-              suit: Suit.values[i],
-            ),),
+            contains(
+              Card(
+                id: 'abc',
+                name: 'Super Bird',
+                description: 'Super Bird Is Ready!',
+                image: 'https://image1.png',
+                rarity: false,
+                power: 10,
+                suit: Suit.values[i],
+              ),
+            ),
           );
         });
       }
