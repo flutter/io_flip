@@ -35,14 +35,17 @@ void main() {
 
   const matchId = 'matchId';
   const userId = 'userId';
-  const card = Card(
-    id: '',
-    name: '',
-    description: '',
-    rarity: true,
-    image: '',
-    power: 1,
-    suit: Suit.air,
+  final cards = List.generate(
+    12,
+    (_) => const Card(
+      id: '',
+      name: '',
+      description: '',
+      rarity: true,
+      image: '',
+      power: 1,
+      suit: Suit.air,
+    ),
   );
 
   setUp(() {
@@ -53,7 +56,8 @@ void main() {
         userId: any(named: 'userId'),
       ),
     ).thenAnswer((_) async => 'deckId');
-    when(cardsRepository.generateCard).thenAnswer((_) async => card);
+    when(() => cardsRepository.generateCards(any()))
+        .thenAnswer((_) async => cards);
 
     matchRepository = _MockMatchRepository();
     when(
