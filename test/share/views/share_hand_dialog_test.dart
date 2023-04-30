@@ -5,6 +5,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/share/views/views.dart';
 import 'package:top_dash/share/widgets/widgets.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -69,11 +70,13 @@ extension ShareCardDialogTest on WidgetTester {
   Future<void> pumpSubject(ShareResource shareResource) async {
     await mockNetworkImages(() {
       return pumpApp(
-        const ShareHandDialog(
-          cards: [card, card, card],
-          wins: 5,
-          initials: 'AAA',
-          deckId: 'test',
+        const TopDashDialog(
+          child: ShareHandDialog(
+            cards: [card, card, card],
+            wins: 5,
+            initials: 'AAA',
+            deckId: 'test',
+          ),
         ),
         shareResource: shareResource,
       );

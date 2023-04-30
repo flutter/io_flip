@@ -60,22 +60,24 @@ class TopDashDialog extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(TopDashSpacing.lg),
         child: SingleChildScrollView(
-          child: Container(
-            width: 327,
-            padding: const EdgeInsets.all(TopDashSpacing.lg),
-            child: Column(
-              children: [
-                if (showCloseButton)
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: CloseButton(
-                      onPressed: onClose,
-                      color: TopDashColors.seedWhite,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 400),
+            child: Padding(
+              padding: const EdgeInsets.all(TopDashSpacing.lg),
+              child: Column(
+                children: [
+                  if (showCloseButton)
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: CloseButton(
+                        onPressed: onClose,
+                        color: TopDashColors.seedWhite,
+                      ),
                     ),
-                  ),
-                const SizedBox(height: TopDashSpacing.lg),
-                child,
-              ],
+                  const SizedBox(height: TopDashSpacing.lg),
+                  child,
+                ],
+              ),
             ),
           ),
         ),

@@ -6,7 +6,7 @@ import 'package:top_dash/game/game.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/info/widgets/info_button.dart';
 import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/share/views/card_inspector.dart';
+import 'package:top_dash/share/views/card_inspector_dialog.dart';
 import 'package:top_dash/share/views/share_hand_page.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -185,13 +185,11 @@ class _CardsView extends StatelessWidget {
         (index) => _RoundSummary(
           playerCard: playerCards[index],
           opponentCard: opponentCards[index],
-          onTap: (card) => GoRouter.of(context).pushNamed(
-            'card_inspector',
-            extra: CardInspectorData(
-              deck: cards,
-              playerCardIds: playerCardIds,
-              startingIndex: index + card,
-            ),
+          onTap: (card) => CardInspectorDialog.show(
+            context,
+            playerCardIds: playerCardIds,
+            deck: cards,
+            startingIndex: index + card,
           ),
         ),
       ),
