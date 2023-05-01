@@ -26,5 +26,9 @@ void main() {
       await tester.pumpWidget(buildSubject(animating: true));
       await tester.pumpWidget(buildSubject(animating: false));
     });
+    testWidgets('can start animation', (tester) async {
+      await tester.pumpWidget(buildSubject(animating: false));
+      await tester.pumpWidget(buildSubject(animating: true));
+    });
   });
 }
