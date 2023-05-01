@@ -33,11 +33,6 @@ GoRouter createRouter({required bool isScriptsEnabled}) {
             builder: GamePage.routeBuilder,
           ),
           GoRoute(
-            name: 'card_inspector',
-            path: 'card_inspector',
-            builder: CardInspector.routeBuilder,
-          ),
-          GoRoute(
             name: 'share_hand',
             path: 'share_hand',
             builder: ShareHandPage.routeBuilder,

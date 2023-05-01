@@ -57,14 +57,14 @@ class RoundedButton extends StatefulWidget {
   /// Basic [RoundedButton] with black shadow.
   /// Contains a [image] and a [label] as children
   RoundedButton.image(
-    Image image, {
+    Widget image, {
     String? label,
     this.onPressed,
     this.onLongPress,
     super.key,
-    this.backgroundColor = TopDashColors.seedWhite,
-    Color? foregroundColor = TopDashColors.seedBlack,
-    this.borderColor = TopDashColors.seedBlack,
+    this.backgroundColor = TopDashColors.seedBlack,
+    Color? foregroundColor = TopDashColors.seedWhite,
+    this.borderColor = TopDashColors.seedPaletteNeutral40,
   }) : child = Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: TopDashSpacing.sm,

@@ -380,6 +380,22 @@
   "@termsOfUseDeclineLabel": {
     "description": "Text shown on the decline button on the terms of use page"
   },
+  "saveButtonLabel": "SAVE",
+  "@saveButtonLabel": {
+    "description": "Label shown on the save button on share dialog"
+  },
+  "downloadingButtonLabel": "DOWNLOADING",
+  "@downloadingButtonLabel": {
+    "description": "Label shown on the downloading button on share dialog"
+  },
+  "downloadCompleteLabel": "Download complete",
+  "@downloadCompleteLabel": {
+    "description": "Text shown on the download notification on success"
+  },
+  "downloadFailedLabel": "Something went wrong, try again",
+  "@downloadFailedLabel": {
+    "description": "Text shown on the download notification on failure"
+  },
   "blacklistedErrorMessage": "Let’s keep it PG, use different initials",
   "@blacklistedErrorMessage": {
     "description": "Text shown on the initials form on blacklisted state"

@@ -6,8 +6,7 @@ import 'package:top_dash/game/game.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/info/widgets/info_button.dart';
 import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/share/views/card_inspector.dart';
-import 'package:top_dash/share/views/share_hand_page.dart';
+import 'package:top_dash/share/share.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 typedef RouterNeglectCall = void Function(BuildContext, VoidCallback);
@@ -185,11 +184,12 @@ class _CardsView extends StatelessWidget {
         (index) => _RoundSummary(
           playerCard: playerCards[index],
           opponentCard: opponentCards[index],
-          onTap: (card) => GoRouter.of(context).pushNamed(
-            'card_inspector',
-            extra: CardInspectorData(
-              deck: cards,
+          onTap: (card) => TopDashDialog.show(
+            context,
+            isTransparent: true,
+            child: CardInspectorDialog(
               playerCardIds: playerCardIds,
+              deck: cards,
               startingIndex: index + card,
             ),
           ),

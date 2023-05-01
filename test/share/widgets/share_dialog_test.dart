@@ -70,14 +70,43 @@ void main() {
         );
       },
     );
+
+    testWidgets('renders a save button', (tester) async {
+      await tester.pumpSubject();
+      expect(find.text(tester.l10n.saveButtonLabel), findsOneWidget);
+    });
+
+    testWidgets('renders a downloading button while the downloading',
+        (tester) async {
+      await tester.pumpSubject(loading: true);
+      expect(find.text(tester.l10n.downloadingButtonLabel), findsOneWidget);
+    });
+
+    testWidgets('renders a success message while on download complete',
+        (tester) async {
+      await tester.pumpSubject(success: true);
+      expect(find.text(tester.l10n.downloadCompleteLabel), findsOneWidget);
+    });
+
+    testWidgets('renders a fail message while on download failure',
+        (tester) async {
+      await tester.pumpSubject(success: false);
+      expect(find.text(tester.l10n.downloadFailedLabel), findsOneWidget);
+    });
   });
 }
 
 extension ShareCardDialogTest on WidgetTester {
-  Future<void> pumpSubject({Widget? content}) async {
+  Future<void> pumpSubject({
+    Widget? content,
+    bool? loading,
+    bool? success,
+  }) async {
     await mockNetworkImages(() {
       return pumpApp(
         ShareDialog(
+          loading: loading ?? false,
+          success: success ?? false,
           content: content ?? Container(),
           twitterShareUrl: shareUrl,
           facebookShareUrl: shareUrl,
