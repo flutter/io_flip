@@ -1,4 +1,5 @@
 export 'card.dart';
+export 'card_description.dart';
 export 'deck.dart';
 export 'match.dart';
 export 'match_state.dart';
