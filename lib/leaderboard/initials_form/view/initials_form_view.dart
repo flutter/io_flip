@@ -69,7 +69,7 @@ class InitialsFormView extends StatelessWidget {
             const SizedBox(height: TopDashSpacing.sm),
             if (state.status == InitialsFormStatus.blacklisted)
               Text(
-                l10n.blacklistedInitialsError,
+                l10n.blacklistedErrorMessage,
                 style: TopDashTextStyles.bodyLG.copyWith(
                   color: TopDashColors.seedRed,
                 ),
@@ -122,7 +122,9 @@ class _InitialFormFieldState extends State<_InitialFormField> {
   void initState() {
     super.initState();
     widget.focusNode.addListener(() {
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 

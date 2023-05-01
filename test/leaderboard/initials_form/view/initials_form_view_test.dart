@@ -165,6 +165,41 @@ void main() {
         expect(find.text(l10n.enterInitialsError), findsOneWidget);
       });
 
+      testWidgets('shows blacklist error text on blacklist initials',
+          (tester) async {
+        when(() => initialsFormBloc.state).thenReturn(
+          const InitialsFormState(
+            initials: ['A', 'A', 'A'],
+            status: InitialsFormStatus.blacklisted,
+          ),
+        );
+        await tester.pumpSubject(initialsFormBloc);
+
+        final l10n = tester.element(find.byType(InitialsFormView)).l10n;
+
+        expect(find.text(l10n.blacklistedErrorMessage), findsOneWidget);
+      });
+
+      testWidgets('shows blacklist error styling on blacklist initials',
+          (tester) async {
+        when(() => initialsFormBloc.state).thenReturn(
+          const InitialsFormState(
+            initials: ['A', 'A', 'A'],
+            status: InitialsFormStatus.blacklisted,
+          ),
+        );
+        await tester.pumpSubject(initialsFormBloc);
+        final blacklistDecoration = find.byWidgetPredicate(
+          (widget) =>
+              widget is Container &&
+              widget.decoration is BoxDecoration &&
+              ((widget.decoration! as BoxDecoration).border ==
+                  Border.all(color: TopDashColors.seedRed, width: 2)),
+        );
+
+        expect(blacklistDecoration, findsNWidgets(3));
+      });
+
       testWidgets('capitalizes lowercase letters', (tester) async {
         when(() => initialsFormBloc.state)
             .thenReturn(const InitialsFormState());
