@@ -18,6 +18,8 @@ import 'package:match_repository/match_repository.dart';
 import 'package:prompt_repository/prompt_repository.dart';
 import 'package:scripts_repository/scripts_repository.dart';
 
+import 'prompts.dart';
+
 late CardsRepository cardsRepository;
 late MatchRepository matchRepository;
 late ScriptsRepository scriptsRepository;
@@ -88,46 +90,6 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
         },
       ),
     );
-
-    const characters = [
-      'Dash',
-      'Sparky',
-      'Android',
-      'Dino',
-    ];
-
-    const classes = [
-      'Astronaut',
-      'Captain',
-      'Chef',
-      'Cowboy',
-      'Fairy',
-      'Firefighter',
-      'Ghost',
-      'King',
-      'Mage',
-      'Mermaid',
-    ];
-
-    const powers = [
-      'Apples',
-      'Bagels',
-      'Banjos',
-      'Basketballs',
-      'Books',
-      'Candles',
-      'Cape',
-      'Carrots',
-      'Cookies',
-      'Crayons',
-    ];
-
-    const locations = [
-      'Forrest',
-      'Beach',
-      'Field',
-      'City',
-    ];
 
     const prompts = {
       PromptTermType.character: characters,
