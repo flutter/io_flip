@@ -11,6 +11,7 @@ import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash/game/views/game_summary.dart';
 import 'package:top_dash/settings/settings.dart';
+import 'package:top_dash/share/views/card_inspector_dialog.dart';
 import 'package:top_dash/share/views/share_hand_page.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -358,12 +359,7 @@ void main() {
           await tester.tap(find.byType(GameCard).first);
           await tester.pumpAndSettle();
 
-          verify(
-            () => goRouter.pushNamed(
-              'card_inspector',
-              extra: any(named: 'extra'),
-            ),
-          ).called(1);
+          expect(find.byType(CardInspectorDialog), findsOneWidget);
         },
       );
 
