@@ -6,7 +6,13 @@ publish_to: none
 environment:
   sdk: ">=3.0.0-134.0.dev <4.0.0"
 
+dependencies:
+  db_client:
+    path: ../db_client
+  game_domain:
+    path: ../game_domain
+
 dev_dependencies:
   mocktail: ^0.3.0
-  test: ^1.19.2
+  test: ^1.24.2
   very_good_analysis: ^4.0.0
