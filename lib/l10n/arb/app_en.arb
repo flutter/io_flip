@@ -48,13 +48,9 @@
   "@characterClassPromptPageTitle": {
     "description": "Title of the prompt page for character class"
   },
-  "powerPromptPageTitle": "Next, what's their first power?",
+  "powerPromptPageTitle": "What special powers do they have?",
   "@powerPromptPageTitle": {
     "description": "Title of the prompt page for power"
-  },
-  "secondaryPowerPromptPageTitle": "Last, what's one more power they use?",
-  "@secondaryPowerPromptPageTitle": {
-    "description": "Title of the prompt page for the secondary power"
   },
   "leaderboardLongestStreak": "HIGHEST WIN STREAK",
   "@leaderboardLongestStreak": {

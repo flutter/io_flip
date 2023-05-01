@@ -1,78 +1,57 @@
 import 'dart:math';
 
-const _names = [
-  'The coder',
-  'The Designer',
-  'The Tester',
-  'A bright bird',
-  'Free bird',
-  'Humming Coder',
-  'Bird and code',
-  'Dash the Great',
-  'Dash the debugger',
-  'Dash no code',
-  'Double dash',
-  'Nameless',
-  'Call me bird',
-];
-
-final _expressions = [
-  'Hey',
-  'How are you?',
-  'Cool beans',
-  'Tally ho!',
-  'I love android',
-  'Flame is awesome',
-  'The new android is great',
-  'I want some cheese',
-  'Firebase is on fire!',
-  'What is real?',
-  'Is this reality?',
-  'Tuna pizza? Where?',
-  'I am running out of creativity',
-  'Two slices please',
-  'Water please',
-  'Keep the change',
-  'Table for two',
-  'Mars, but also Jupiter',
-  'I wish there were two',
-  'Nah, I prefer potato chips',
-  'Rock!',
-  'What about the green hat?',
-  'Two dogs and a cat',
-  'Ducks!',
-  'Where?',
-  'I found a lost letter',
-  'My garage',
-  'The laptop',
-  'Super cold',
-  'Yes!',
-  'No!',
-  'Why!',
-  'Nice!',
-  'In the background!',
-  'This is so random',
-  'I got nothing',
-  'Icecream chocolate cake',
-  'Unicorns are real',
-];
+import 'package:db_client/db_client.dart';
 
 /// {@template language_model_repository}
 /// Repository providing access language model services
 /// {@endtemplate}
 class LanguageModelRepository {
   /// {@macro language_model_repository}
-  const LanguageModelRepository();
+  LanguageModelRepository({
+    required DbClient dbClient,
+    Random? rng,
+  }) : _dbClient = dbClient {
+    _rng = rng ?? Random();
+  }
+
+  late final Random _rng;
+  final DbClient _dbClient;
 
   /// Returns an unique card name.
-  Future<String> generateCardName() async {
-    final rng = Random();
-    return _names[rng.nextInt(_names.length)];
+  Future<String> generateCardName({
+    required String characterName,
+    required String characterClass,
+    required String characterPower,
+    required String characterLocation,
+  }) async {
+    final option = _rng.nextInt(3);
+    switch (option) {
+      case 0:
+        return '$characterClass $characterName';
+      case 1:
+        return '$characterPower $characterName';
+      default:
+        return '$characterLocation $characterName';
+    }
   }
 
   /// Returns an unique card flavor text.
-  Future<String> generateFlavorText() async {
-    final rng = Random();
-    return _expressions[rng.nextInt(_expressions.length)];
+  Future<String> generateFlavorText({
+    required String character,
+    required String characterPower,
+    required String location,
+  }) async {
+    final descriptions = await _dbClient.find('card_description', {
+      'character': character,
+      'characterPower': characterPower,
+      'location': location,
+    });
+
+    if (descriptions.isEmpty) {
+      return '';
+    }
+
+    final index = _rng.nextInt(descriptions.length);
+    return descriptions[index].data['description'] as String;
   }
 }

@@ -20,8 +20,9 @@ FutureOr<Response> onRequest(RequestContext context, String matchId) async {
       try {
         final cardsRepository = context.read<CardsRepository>();
         final cards = await cardsRepository.generateCards(
-          // TODO(erickzanardo): this could be a random class.
-          'astronaut',
+          // TODO(erickzanardo): this could be a random class.and power.
+          characterClass: 'astronaut',
+          characterPower: 'Energy Blast',
         );
 
         final hand = (cards..shuffle()).take(3).toList();

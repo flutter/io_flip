@@ -41,16 +41,12 @@ class PromptRepository {
   /// Check if the attributes in a [Prompt] are valid
   Future<bool> isValidPrompt(Prompt prompt) async {
     final power = await _dbClient.findBy('prompt_terms', 'term', prompt.power);
-    final secondaryPower =
-        await _dbClient.findBy('prompt_terms', 'term', prompt.secondaryPower);
     final characterClass =
         await _dbClient.findBy('prompt_terms', 'term', prompt.characterClass);
     final powerValid = power.isNotEmpty && power.first.data['type'] == 'power';
-    final secondaryPowerValid = secondaryPower.isNotEmpty &&
-        secondaryPower.first.data['type'] == 'power';
     final characterClassValid = characterClass.isNotEmpty &&
         characterClass.first.data['type'] == 'characterClass';
 
-    return powerValid && secondaryPowerValid && characterClassValid;
+    return powerValid && characterClassValid;
   }
 }

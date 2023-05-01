@@ -76,7 +76,7 @@ void main() {
       );
 
       expect(
-        paths,
+        paths.map((e) => e.url),
         unorderedEquals([
           'https://my_host.com/dash_mage_volcano_0.png',
           'https://my_host.com/dash_mage_volcano_0.png',
@@ -86,6 +86,45 @@ void main() {
           'https://my_host.com/sparky_mage_volcano_0.png',
           'https://my_host.com/sparky_mage_volcano_0.png',
           'https://my_host.com/sparky_mage_volcano_0.png',
+        ]),
+      );
+      expect(
+        paths.map((e) => e.character),
+        unorderedEquals([
+          'dash',
+          'dash',
+          'dash',
+          'dash',
+          'sparky',
+          'sparky',
+          'sparky',
+          'sparky',
+        ]),
+      );
+      expect(
+        paths.map((e) => e.characterClass),
+        unorderedEquals([
+          'mage',
+          'mage',
+          'mage',
+          'mage',
+          'mage',
+          'mage',
+          'mage',
+          'mage',
+        ]),
+      );
+      expect(
+        paths.map((e) => e.location),
+        unorderedEquals([
+          'volcano',
+          'volcano',
+          'volcano',
+          'volcano',
+          'volcano',
+          'volcano',
+          'volcano',
+          'volcano',
         ]),
       );
     });

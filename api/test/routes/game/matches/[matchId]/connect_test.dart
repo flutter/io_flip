@@ -56,8 +56,12 @@ void main() {
         userId: any(named: 'userId'),
       ),
     ).thenAnswer((_) async => 'deckId');
-    when(() => cardsRepository.generateCards(any()))
-        .thenAnswer((_) async => cards);
+    when(
+      () => cardsRepository.generateCards(
+        characterClass: any(named: 'characterClass'),
+        characterPower: any(named: 'characterPower'),
+      ),
+    ).thenAnswer((_) async => cards);
 
     matchRepository = _MockMatchRepository();
     when(
