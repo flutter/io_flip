@@ -83,6 +83,41 @@ void main(List<String> args) async {
         '<images_folder> <card_variation_number>',
       );
     }
+  } else if (subcommand == 'validate_images') {
+    if (args.length == 5) {
+      final imagesFolder = args[1];
+      final csv = args[2];
+      final variations = args[3];
+      final character = args[4];
+
+      final csvFile = File(csv);
+      final imagesFolderDirectory = Directory(imagesFolder);
+
+      final descriptionsLoader = CharacterFolderValidator(
+        csv: csvFile,
+        imagesFolder: imagesFolderDirectory,
+        variations: int.parse(variations),
+        character: character,
+      );
+
+      final missingFiles = await descriptionsLoader.validate((current, total) {
+        print('Progress: ($current of $total)');
+      });
+
+      print('========== ');
+      print('= Result = ');
+      print('========== ');
+      print('');
+      print('Missing files: ${missingFiles.length}');
+      for (final missingFile in missingFiles) {
+        print(missingFile);
+      }
+    } else {
+      print(
+        'Usage: dart bin/data_loader.dart validate_images <images_folder> <csv_file_location.csv> '
+        '<card_variation_number> <character>',
+      );
+    }
   } else {
     print('Unknown command: $subcommand');
   }

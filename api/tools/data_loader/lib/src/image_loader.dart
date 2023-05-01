@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:data_loader/src/prompt_mapper.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:path/path.dart' as path;
 
@@ -32,21 +33,7 @@ class ImageLoader {
   Future<void> loadImages(void Function(int, int) onProgress) async {
     final lines = await _csv.readAsLines();
 
-    final map = {
-      for (final term in PromptTermType.values) term: <String>[],
-    };
-
-    for (final line in lines.skip(1)) {
-      final parts = line.split(',');
-
-      for (var j = 0; j < 4; j++) {
-        final value = parts[j].trim();
-        if (value.isNotEmpty) {
-          final type = PromptTermType.values[j];
-          map[type]!.add(value);
-        }
-      }
-    }
+    final map = mapCsvToPrompts(lines);
 
     final fileNames = <String>[];
     var progress = 0;
