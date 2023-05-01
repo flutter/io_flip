@@ -128,5 +128,49 @@ void main() {
         ]),
       );
     });
+
+    group('assembleImageUrl', () {
+      test('replaces spaces in character with underscores', () {
+        final result = repository.assembleUrl(
+          character: 'character with spaces',
+          characterClass: 'characterClass',
+          location: 'location',
+          variation: 1,
+        );
+        expect(
+          result.url,
+          'https://my_host.com/'
+          'character_with_spaces_characterClass_location_1.png',
+        );
+      });
+
+      test('replaces spaces in characterClass with underscores', () {
+        final result = repository.assembleUrl(
+          character: 'character',
+          characterClass: 'character class with spaces',
+          location: 'location',
+          variation: 1,
+        );
+        expect(
+          result.url,
+          'https://my_host.com/'
+          'character_character_class_with_spaces_location_1.png',
+        );
+      });
+
+      test('replaces spaces in location with underscores', () {
+        final result = repository.assembleUrl(
+          character: 'character',
+          characterClass: 'characterClass',
+          location: 'location with spaces',
+          variation: 1,
+        );
+        expect(
+          result.url,
+          'https://my_host.com/'
+          'character_characterClass_location_with_spaces_1.png',
+        );
+      });
+    });
   });
 }
