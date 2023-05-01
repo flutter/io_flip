@@ -20,15 +20,21 @@ void main() {
 
     testWidgets('can play animation', (tester) async {
       await tester.pumpWidget(buildSubject(animating: true));
+      await tester.pump();
+      expect(tester.binding.hasScheduledFrame, true);
     });
 
     testWidgets('can stop animation', (tester) async {
       await tester.pumpWidget(buildSubject(animating: true));
       await tester.pumpWidget(buildSubject(animating: false));
+      await tester.pump();
+      expect(tester.binding.hasScheduledFrame, false);
     });
     testWidgets('can start animation', (tester) async {
       await tester.pumpWidget(buildSubject(animating: false));
       await tester.pumpWidget(buildSubject(animating: true));
+      await tester.pump();
+      expect(tester.binding.hasScheduledFrame, true);
     });
   });
 }
