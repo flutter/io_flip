@@ -38,7 +38,7 @@ extension ShareCardDialogTest on WidgetTester {
       when(() => shareResource.twitterShareCardUrl(any())).thenReturn('');
       when(() => shareResource.facebookShareCardUrl(any())).thenReturn('');
       return pumpApp(
-        ShareCardDialog(
+        const ShareCardDialog(
           card: card,
         ),
         shareResource: shareResource,
