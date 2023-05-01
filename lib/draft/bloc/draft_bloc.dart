@@ -35,45 +35,7 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     try {
       emit(state.copyWith(status: DraftStateStatus.deckLoading));
 
-      // final cards = await _gameResource.generateCards(event.prompts);
-      final cards = [
-        Card(
-          id: '1',
-          name: 'Card 1',
-          description: 'This card is super powerful',
-          image: 'image',
-          power: 2,
-          rarity: true,
-          suit: Suit.air,
-        ),
-        Card(
-          id: '2',
-          name: 'Card 2',
-          description: 'This card is super powerful',
-          image: 'image',
-          power: 2,
-          rarity: true,
-          suit: Suit.fire,
-        ),
-        Card(
-          id: '3',
-          name: 'Card 3',
-          description: 'This card is super powerful',
-          image: 'image',
-          power: 2,
-          rarity: false,
-          suit: Suit.fire,
-        ),
-        Card(
-          id: '4',
-          name: 'Card 4',
-          description: 'This card is super powerful',
-          image: 'image',
-          power: 2,
-          rarity: false,
-          suit: Suit.fire,
-        ),
-      ];
+      final cards = await _gameResource.generateCards(event.prompts);
 
       emit(
         state.copyWith(

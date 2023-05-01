@@ -12,7 +12,7 @@ GoRouter createRouter({required bool isScriptsEnabled}) {
     routes: [
       GoRoute(
         path: '/',
-        builder: DraftPage.routeBuilder,
+        builder: MainMenuScreen.routeBuilder,
         routes: [
           GoRoute(
             path: 'draft',
