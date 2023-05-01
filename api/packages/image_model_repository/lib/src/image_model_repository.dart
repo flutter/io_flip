@@ -49,6 +49,10 @@ class ImageModelRepository {
   final PromptRepository _promptRepository;
   late final Random _rng;
 
+  String _normalizeTerm(String value) {
+    return value.toLowerCase().replaceAll(' ', '_');
+  }
+
   /// Builds the url based on the provided parameters.
   ImageResult assembleUrl({
     required String character,
@@ -56,12 +60,16 @@ class ImageModelRepository {
     required String location,
     required int variation,
   }) {
+    final characterUrl = _normalizeTerm(character);
+    final characterClassUrl = _normalizeTerm(characterClass);
+    final locationUrl = _normalizeTerm(location);
+
     return ImageResult(
       character: character,
       characterClass: characterClass,
       location: location,
-      url: '$_imageHost${character}_$characterClass'
-          '_${location}_$variation.png${_urlParams ?? ''}',
+      url: '$_imageHost${characterUrl}_$characterClassUrl'
+          '_${locationUrl}_$variation.png${_urlParams ?? ''}',
     );
   }
 
@@ -90,9 +98,9 @@ class ImageModelRepository {
 
         urls.add(
           assembleUrl(
-            character: character.term.toLowerCase(),
-            characterClass: characterClass.toLowerCase(),
-            location: location.term.toLowerCase(),
+            character: character.term,
+            characterClass: characterClass,
+            location: location.term,
             variation: variation,
           ),
         );
