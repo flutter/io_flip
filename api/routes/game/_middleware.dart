@@ -1,4 +1,5 @@
 import 'package:cards_repository/cards_repository.dart';
+import 'package:config_repository/config_repository.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:game_script_machine/game_script_machine.dart';
 import 'package:gcp/gcp.dart';
@@ -22,6 +23,7 @@ Handler middleware(Handler handler) {
       .use(provider<MatchRepository>((_) => matchRepository))
       .use(provider<ScriptsRepository>((_) => scriptsRepository))
       .use(provider<LeaderboardRepository>((_) => leaderboardRepository))
+      .use(provider<ConfigRepository>((_) => configRepository))
       .use(provider<GameScriptMachine>((_) => gameScriptMachine))
       .use(provider<ScriptsState>((_) => scriptsState))
       .use(jwtMiddleware.middleware)

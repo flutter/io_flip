@@ -77,6 +77,7 @@ class ShareHandPage extends StatelessWidget {
           ),
           const Spacer(),
           IoFlipBottomBar(
+            height: 64,
             leading: const AudioToggleButton(),
             middle: Row(
               mainAxisSize: MainAxisSize.min,
