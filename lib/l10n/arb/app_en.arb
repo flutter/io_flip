@@ -379,5 +379,9 @@
   "termsOfUseDeclineLabel": "DECLINE",
   "@termsOfUseDeclineLabel": {
     "description": "Text shown on the decline button on the terms of use page"
+  },
+  "blacklistedErrorMessage": "Let’s keep it PG, use different initials",
+  "@blacklistedErrorMessage": {
+    "description": "Text shown on the initials form on blacklisted state"
   }
 }

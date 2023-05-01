@@ -30,7 +30,7 @@ class LeaderboardEntryView extends StatelessWidget {
               Text(
                 l10n.enterYourInitials,
                 textAlign: TextAlign.center,
-                style: TopDashTextStyles.mobileH4,
+                style: TopDashTextStyles.mobileH4Light,
               ),
               const SizedBox(height: TopDashSpacing.xlg),
               InitialsForm(
