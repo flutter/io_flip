@@ -5,6 +5,7 @@ import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:top_dash/gen/assets.gen.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
 
 typedef DeckPackChildBuilder = Widget Function({
   required bool isAnimating,
@@ -32,6 +33,11 @@ class DeckPackState extends State<DeckPack> {
 
   @override
   void initState() {
+    setupAnimation();
+    super.initState();
+  }
+
+  Future<void> setupAnimation() {
     final data = SpriteAnimationData.sequenced(
       amount: 56,
       amountPerRow: 7,
@@ -39,31 +45,30 @@ class DeckPackState extends State<DeckPack> {
       stepTime: 0.04,
       loop: false,
     );
-    SpriteAnimation.load(
+    return SpriteAnimation.load(
       Assets.images.frontPack.keyName,
       data,
       images: context.read<Images>(),
     ).then((animation) {
+      if (!mounted) return;
+      final ticker = animation.ticker()
+        ..onFrame = onFrame
+        ..completed.then((_) => onComplete());
       setState(() {
-        final ticker = animation.ticker();
         anim = SpriteAnimationWidget(
           animation: animation,
           animationTicker: ticker,
         );
-        ticker.onFrame = (frame) {
-          if (frame == 29) {
-            setState(() {
-              _underlayVisible = true;
-            });
-          }
-
-          if (frame == animation.frames.length - 1) {
-            onComplete();
-          }
-        };
       });
     });
-    super.initState();
+  }
+
+  void onFrame(int currentFrame) {
+    if (currentFrame == 29) {
+      setState(() {
+        _underlayVisible = true;
+      });
+    }
   }
 
   void onComplete() {
@@ -89,7 +94,7 @@ class DeckPackState extends State<DeckPack> {
                 aspectRatio: 260 / 380,
                 child: Offstage(
                   offstage: !_underlayVisible,
-                  child: _StretchAnimation(
+                  child: StretchAnimation(
                     animating: _underlayVisible,
                     child: Center(child: child),
                   ),
@@ -121,60 +126,6 @@ class DeckPackState extends State<DeckPack> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _StretchAnimation extends StatefulWidget {
-  const _StretchAnimation({
-    required this.child,
-    this.animating = false,
-  });
-
-  final Widget child;
-  final bool animating;
-
-  @override
-  State<_StretchAnimation> createState() => _StretchAnimationState();
-}
-
-class _StretchAnimationState extends State<_StretchAnimation>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 800),
-    lowerBound: 0.35,
-  );
-  late final Animation<double> _animation =
-      CurvedAnimation(parent: _controller, curve: Curves.elasticOut);
-
-  @override
-  void initState() {
-    if (widget.animating) {
-      _controller.forward();
-    }
-    super.initState();
-  }
-
-  @override
-  void didUpdateWidget(covariant _StretchAnimation oldWidget) {
-    if (oldWidget.animating != widget.animating) {
-      if (widget.animating) {
-        _controller
-          ..reset()
-          ..forward();
-      } else {
-        _controller.stop();
-      }
-    }
-    super.didUpdateWidget(oldWidget);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ScaleTransition(
-      scale: _animation,
-      child: widget.child,
     );
   }
 }

@@ -2,6 +2,7 @@
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flame/cache.dart';
+import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,6 +12,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/draft/widgets/widgets.dart';
+import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/match_making/views/match_making_page.dart';
@@ -21,6 +23,8 @@ import '../../helpers/helpers.dart';
 class _MockDraftBloc extends Mock implements DraftBloc {}
 
 class _MockSettingsController extends Mock implements SettingsController {}
+
+class _MockSpriteAnimation extends Mock implements SpriteAnimation {}
 
 abstract class __Router {
   void neglect(BuildContext context, VoidCallback callback);
@@ -400,6 +404,32 @@ void main() {
         expect(find.byType(HowToPlayDialog), findsOneWidget);
       },
     );
+
+    testWidgets(
+      'can setup animation',
+      (tester) async {
+        mockState(
+          [
+            DraftState(
+              cards: const [card1, card2],
+              selectedCards: const [],
+              status: DraftStateStatus.deckLoaded,
+              firstCardOpacity: 1,
+            )
+          ],
+        );
+        await tester.pumpSubject(draftBloc: draftBloc);
+        final deckPackState = tester.state<DeckPackState>(
+          find.byType(DeckPack),
+        );
+        await tester.runAsync(() async {
+          await deckPackState.setupAnimation();
+        });
+        await tester.pump(Duration(seconds: 2));
+        deckPackState.onFrame(29);
+        expect(deckPackState.anim, isNotNull);
+      },
+    );
   });
 }
 
@@ -427,10 +457,12 @@ extension DraftViewTest on WidgetTester {
 
       final deckPackStates = stateList<DeckPackState>(find.byType(DeckPack));
       if (deckPackStates.isNotEmpty) {
-        deckPackStates.first
-          ..anim = Container()
-          ..onComplete();
+        final deckPackState = deckPackStates.first..anim = Container();
+
+        // Complete animation
         await pumpAndSettle();
+        deckPackState.onComplete();
+        await pump();
       }
     });
   }
