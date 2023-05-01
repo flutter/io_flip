@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:data_loader/data_loader.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:test/test.dart';
 import 'package:path/path.dart' as path;
+import 'package:test/test.dart';
 
 class _MockFile extends Mock implements File {}
 
