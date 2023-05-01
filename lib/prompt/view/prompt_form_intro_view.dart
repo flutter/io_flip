@@ -56,10 +56,12 @@ class PromptFormIntroView extends StatelessWidget {
               ),
             ),
           ),
-          RoundedButton.text(
-            l10n.letsGetStarted.toUpperCase(),
-            onPressed: () =>
-                context.flow<Prompt>().update((data) => data.setIntroSeen()),
+          IoFlipBottomBar(
+            middle: RoundedButton.text(
+              l10n.letsGetStarted.toUpperCase(),
+              onPressed: () =>
+                  context.flow<Prompt>().update((data) => data.setIntroSeen()),
+            ),
           ),
         ],
       ),
