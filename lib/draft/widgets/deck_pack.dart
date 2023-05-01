@@ -50,19 +50,17 @@ class DeckPackState extends State<DeckPack> {
           animation: animation,
           animationTicker: ticker,
         );
-        ticker
-          ..onComplete = () {
+        ticker.onFrame = (frame) {
+          if (frame == 29) {
             setState(() {
-              _underlayVisible = false;
+              _underlayVisible = true;
             });
           }
-          ..onFrame = (frame) {
-            if (frame == 29) {
-              setState(() {
-                _underlayVisible = true;
-              });
-            }
-          };
+
+          if (frame == animation.frames.length - 1) {
+            onComplete();
+          }
+        };
       });
     });
     super.initState();
