@@ -140,7 +140,7 @@ void main() {
         expect(
           result.url,
           'https://my_host.com/'
-          'character_with_spaces_characterClass_location_1.png',
+          'character_with_spaces_characterclass_location_1.png',
         );
       });
 
@@ -168,7 +168,7 @@ void main() {
         expect(
           result.url,
           'https://my_host.com/'
-          'character_characterClass_location_with_spaces_1.png',
+          'character_characterclass_location_with_spaces_1.png',
         );
       });
     });
