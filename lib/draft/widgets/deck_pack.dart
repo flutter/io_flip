@@ -6,14 +6,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 
+typedef DeckPackChildBuilder = Widget Function({
+  required bool isAnimating,
+});
+
 class DeckPack extends StatefulWidget {
   const DeckPack({
-    required this.child,
+    required this.builder,
     this.size = double.infinity,
     super.key,
   });
 
-  final Widget child;
+  final DeckPackChildBuilder builder;
   final double size;
 
   @override
@@ -22,7 +26,7 @@ class DeckPack extends StatefulWidget {
 
 class _DeckPackState extends State<DeckPack> {
   bool underlayVisible = false;
-  bool isAnimationPlaying = false;
+  bool isAnimationComplete = false;
   Widget? anim;
 
   @override
@@ -34,17 +38,15 @@ class _DeckPackState extends State<DeckPack> {
       stepTime: 0.04,
       loop: false,
     );
-
     SpriteAnimation.load(
       Assets.images.frontPack.keyName,
       data,
       images: context.read<Images>(),
-    ).then((spriteAnimation) {
-      spriteAnimation.loop = true;
+    ).then((animation) {
       setState(() {
-        final ticker = spriteAnimation.ticker();
+        final ticker = animation.ticker();
         anim = SpriteAnimationWidget(
-          animation: spriteAnimation,
+          animation: animation,
           animationTicker: ticker,
         );
         ticker
@@ -59,67 +61,50 @@ class _DeckPackState extends State<DeckPack> {
                 underlayVisible = true;
               });
             }
-            if (ticker.isLastFrame) {
+
+            if (frame == animation.frames.length - 1) {
               setState(() {
-                underlayVisible = false;
+                isAnimationComplete = true;
               });
             }
           };
       });
-      spriteAnimation.ticker();
     });
     super.initState();
   }
 
   @override
-  void didChangeDependencies() {
-    final images = context.watch<Images>();
-    _beginAnimation(images);
-    super.didChangeDependencies();
-  }
-
-  void _beginAnimation(Images images) {
-    setState(() {
-      isAnimationPlaying = true;
-      underlayVisible = false;
-    });
-
-    setState(() {
-      isAnimationPlaying = true;
-      underlayVisible = false;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if (anim == null) return Container();
-
+    if (anim == null) return SizedBox.square(dimension: widget.size);
+    final child = widget.builder(isAnimating: !isAnimationComplete);
     return SizedBox.square(
       dimension: widget.size,
       child: Center(
         child: Stack(
           alignment: Alignment.bottomCenter,
           children: [
-            AspectRatio(
-              // Aspect ratio of card
-              aspectRatio: 260 / 380,
-              child: Offstage(
-                offstage: !underlayVisible,
-                child: _StretchAnimation(
-                  animating: underlayVisible,
-                  child: Center(
-                    child: widget.child,
+            if (isAnimationComplete) child,
+            if (!isAnimationComplete)
+              AspectRatio(
+                // Aspect ratio of card
+                aspectRatio: 260 / 380,
+                child: Offstage(
+                  offstage: !underlayVisible,
+                  child: _StretchAnimation(
+                    animating: underlayVisible,
+                    child: Center(child: child),
                   ),
                 ),
               ),
-            ),
             LayoutBuilder(
               builder: (context, constraints) {
-                return SizedBox.square(
-                  dimension: 0,
+                // The shrink is here to "hide" the size of the deck pack
+                // animation as we want the DeckPack to size to the card and
+                // not the animation size.
+                return SizedBox.shrink(
                   child: OverflowBox(
-                    maxWidth: constraints.maxWidth / 0.247,
-                    maxHeight: constraints.maxHeight / 0.311,
+                    maxWidth: constraints.maxWidth / 0.272,
+                    maxHeight: constraints.maxHeight / 0.344,
                     child: Transform.translate(
                       offset: Offset(0, constraints.maxHeight * 0.16),
                       child: Center(
@@ -142,7 +127,7 @@ class _DeckPackState extends State<DeckPack> {
 }
 
 class _StretchAnimation extends StatefulWidget {
-  _StretchAnimation({
+  const _StretchAnimation({
     required this.child,
     this.animating = false,
   });

@@ -25,6 +25,10 @@ class $AssetsIconsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/back_pack.png
+  AssetGenImage get backPack =>
+      const AssetGenImage('assets/images/back_pack.png');
+
   /// File path: assets/images/card_master.png
   AssetGenImage get cardMaster =>
       const AssetGenImage('assets/images/card_master.png');
@@ -68,6 +72,7 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [
+        backPack,
         cardMaster,
         drawSplash,
         facebook,

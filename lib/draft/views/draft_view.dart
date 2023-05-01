@@ -45,31 +45,19 @@ class DraftView extends StatelessWidget {
 
     return IoFlipScaffold(
       body: Center(
-        child: DeckPack(
-          size: TopDashCardSizes.xl.shortestSide,
-          child: GameCard(
-            size: GameCardSize.xl(),
-            name: 'The Tester',
-            description: 'Tuna pizza? Where?',
-            power: 106,
-            isRare: true,
-            suitName: 'earth',
-            image:
-                'https://firebasestorage.googleapis.com/v0/b/top-dash-dev.appspot.com/o/public%2Fdash_1.png?alt=media',
-          ),
-        ),
-      ),
-    );
-
-    return IoFlipScaffold(
-      body: Center(
         child: Column(
           children: [
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const _DraftDeck(),
+                  DeckPack(
+                    size: 350,
+                    builder: ({required bool isAnimating}) => _DraftDeck(
+                      arrowsEnabled: !isAnimating,
+                    ),
+                    // child: _DraftDeck(),
+                  ),
                   Flexible(
                     child: Container(
                       constraints: const BoxConstraints(
@@ -90,7 +78,11 @@ class DraftView extends StatelessWidget {
 }
 
 class _DraftDeck extends StatelessWidget {
-  const _DraftDeck();
+  const _DraftDeck({
+    this.arrowsEnabled = true,
+  });
+
+  final bool arrowsEnabled;
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +104,7 @@ class _DraftDeck extends StatelessWidget {
     final bottomPadding = translateTween.transform(1).dy -
         ((cardSize.height * (1 - scaleTween.transform(1))) / 2);
 
-    final showArrows = MediaQuery.of(context).size.width > 500;
+    final showArrows = MediaQuery.of(context).size.width > 500 && arrowsEnabled;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
