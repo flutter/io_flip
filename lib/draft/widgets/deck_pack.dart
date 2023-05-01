@@ -21,12 +21,13 @@ class DeckPack extends StatefulWidget {
   final double size;
 
   @override
-  State<DeckPack> createState() => _DeckPackState();
+  State<DeckPack> createState() => DeckPackState();
 }
 
-class _DeckPackState extends State<DeckPack> {
-  bool underlayVisible = false;
-  bool isAnimationComplete = false;
+@visibleForTesting
+class DeckPackState extends State<DeckPack> {
+  bool _underlayVisible = false;
+  bool _isAnimationComplete = false;
   Widget? anim;
 
   @override
@@ -52,19 +53,13 @@ class _DeckPackState extends State<DeckPack> {
         ticker
           ..onComplete = () {
             setState(() {
-              underlayVisible = false;
+              _underlayVisible = false;
             });
           }
           ..onFrame = (frame) {
             if (frame == 29) {
               setState(() {
-                underlayVisible = true;
-              });
-            }
-
-            if (frame == animation.frames.length - 1) {
-              setState(() {
-                isAnimationComplete = true;
+                _underlayVisible = true;
               });
             }
           };
@@ -73,25 +68,31 @@ class _DeckPackState extends State<DeckPack> {
     super.initState();
   }
 
+  void onComplete() {
+    setState(() {
+      _isAnimationComplete = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (anim == null) return SizedBox.square(dimension: widget.size);
-    final child = widget.builder(isAnimating: !isAnimationComplete);
+    final child = widget.builder(isAnimating: !_isAnimationComplete);
     return SizedBox.square(
       dimension: widget.size,
       child: Center(
         child: Stack(
           alignment: Alignment.bottomCenter,
           children: [
-            if (isAnimationComplete) child,
-            if (!isAnimationComplete)
+            if (_isAnimationComplete) child,
+            if (!_isAnimationComplete)
               AspectRatio(
                 // Aspect ratio of card
                 aspectRatio: 260 / 380,
                 child: Offstage(
-                  offstage: !underlayVisible,
+                  offstage: !_underlayVisible,
                   child: _StretchAnimation(
-                    animating: underlayVisible,
+                    animating: _underlayVisible,
                     child: Center(child: child),
                   ),
                 ),

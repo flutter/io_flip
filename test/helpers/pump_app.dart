@@ -118,7 +118,7 @@ extension PumpApp on WidgetTester {
             value: user ?? _MockUser(),
           ),
           Provider.value(
-            value: images ?? _MockImages(),
+            value: images ?? Images(prefix: ''),
           )
         ],
         child: MockGoRouterProvider(

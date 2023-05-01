@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/draft/draft.dart';
+import 'package:top_dash/draft/widgets/widgets.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/match_making/views/match_making_page.dart';
@@ -410,8 +411,8 @@ extension DraftViewTest on WidgetTester {
     final SettingsController settingsController = _MockSettingsController();
     when(() => settingsController.muted).thenReturn(ValueNotifier(true));
 
-    await mockNetworkImages(() {
-      return pumpApp(
+    await mockNetworkImages(() async {
+      await pumpApp(
         BlocProvider.value(
           value: draftBloc,
           child: DraftView(
@@ -421,6 +422,14 @@ extension DraftViewTest on WidgetTester {
         router: goRouter,
         settingsController: settingsController,
       );
+
+      final deckPackStates = stateList<DeckPackState>(find.byType(DeckPack));
+      if (deckPackStates.isNotEmpty) {
+        deckPackStates.first
+          ..anim = Container()
+          ..onComplete();
+        await pumpAndSettle();
+      }
     });
   }
 }

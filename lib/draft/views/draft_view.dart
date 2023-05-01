@@ -56,7 +56,6 @@ class DraftView extends StatelessWidget {
                     builder: ({required bool isAnimating}) => _DraftDeck(
                       arrowsEnabled: !isAnimating,
                     ),
-                    // child: _DraftDeck(),
                   ),
                   Flexible(
                     child: Container(
