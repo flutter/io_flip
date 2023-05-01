@@ -8,7 +8,7 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class ShareCardDialog extends StatelessWidget {
-  ShareCardDialog({
+  const ShareCardDialog({
     required this.card,
     this.urlLauncher = launchUrlString,
     super.key,
@@ -16,8 +16,6 @@ class ShareCardDialog extends StatelessWidget {
 
   final AsyncValueSetter<String> urlLauncher;
   final Card card;
-
-  final globalKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
