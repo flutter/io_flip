@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' hide Card;
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
-import 'package:top_dash/share/views/share_card_dialog.dart';
+import 'package:top_dash/share/share.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 typedef ShowShareDialog = Future<void> Function(Card card);
@@ -26,7 +26,7 @@ class CardInspectorDialog extends StatefulWidget {
   }) =>
       showDialog<Widget>(
         context: context,
-        builder: (context) => CardInspectorDialog(
+        builder: (_) => CardInspectorDialog(
           deck: deck,
           playerCardIds: playerCardIds,
           startingIndex: startingIndex,
@@ -39,14 +39,17 @@ class CardInspectorDialog extends StatefulWidget {
 
 class _CardInspectorDialogState extends State<CardInspectorDialog> {
   late final start = widget.deck.length * 300 + widget.startingIndex;
-  late final PageController controller = PageController(initialPage: start);
+  late final controller = PageController(initialPage: start);
 
   @override
   Widget build(BuildContext context) {
     const transitionDuration = Duration(milliseconds: 200);
+    const phoneHeight = 600;
+    const smallestPhoneHeight = 500;
     final height = MediaQuery.sizeOf(context).height;
-    final cardSize =
-        height > 600 ? const GameCardSize.xxl() : const GameCardSize.xl();
+    final cardSize = height > phoneHeight
+        ? const GameCardSize.xxl()
+        : const GameCardSize.xl();
     return Dialog(
       insetPadding: const EdgeInsets.all(TopDashSpacing.sm),
       backgroundColor: Colors.transparent,
@@ -63,7 +66,7 @@ class _CardInspectorDialogState extends State<CardInspectorDialog> {
             size: cardSize,
             playerCardIds: widget.playerCardIds,
           ),
-          if (height > 500)
+          if (height > smallestPhoneHeight)
             Padding(
               padding: const EdgeInsets.all(TopDashSpacing.lg),
               child: Row(
