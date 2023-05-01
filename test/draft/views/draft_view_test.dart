@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, one_member_abstracts
 
 import 'package:bloc_test/bloc_test.dart';
+import 'package:flame/cache.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -419,6 +420,7 @@ extension DraftViewTest on WidgetTester {
             routerNeglectCall: routerNeglectCall,
           ),
         ),
+        images: Images(prefix: ''),
         router: goRouter,
         settingsController: settingsController,
       );
