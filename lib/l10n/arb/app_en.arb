@@ -372,6 +372,18 @@
   "@termsOfUseDescriptionSuffix": {
     "description": "Description suffix text shown on the terms of use page"
   },
+  "termsOfUseAcceptLabel": "ACCEPT",
+  "@termsOfUseAcceptLabel": {
+    "description": "Text shown on the accept button on the terms of use page"
+  },
+  "termsOfUseDeclineLabel": "DECLINE",
+  "@termsOfUseDeclineLabel": {
+    "description": "Text shown on the decline button on the terms of use page"
+  },
+  "blacklistedErrorMessage": "Let’s keep it PG, use different initials",
+  "@blacklistedErrorMessage": {
+    "description": "Text shown on the initials form on blacklisted state"
+  },
   "termsOfUseContinueLabel": "CONTINUE",
   "@termsOfUseContinueLabel": {
     "description": "Text shown on the continue button on the terms of use page"
