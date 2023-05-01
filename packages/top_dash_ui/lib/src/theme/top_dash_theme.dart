@@ -18,6 +18,7 @@ class TopDashTheme {
       ),
       tabBarTheme: _tabBarTheme,
       dialogTheme: _dialogTheme,
+      bottomNavigationBarTheme: _bottomNavigationBarTheme,
     );
   }
 
@@ -58,6 +59,12 @@ class TopDashTheme {
     return const DialogTheme(
       backgroundColor: black,
       surfaceTintColor: Colors.transparent,
+    );
+  }
+
+  static BottomNavigationBarThemeData get _bottomNavigationBarTheme {
+    return const BottomNavigationBarThemeData(
+      backgroundColor: Colors.transparent,
     );
   }
 }
