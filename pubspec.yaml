@@ -79,6 +79,8 @@ flutter:
   assets:
     - assets/icons/
     - assets/images/
+    - assets/images/desktop/
+    - assets/images/mobile/
     - assets/images/leaderboard/
     - assets/music/
     - assets/sfx/
