@@ -396,6 +396,10 @@
   "@downloadFailedLabel": {
     "description": "Text shown on the download notification on failure"
   },
+  "blacklistedErrorMessage": "Let’s keep it PG, use different initials",
+  "@blacklistedErrorMessage": {
+    "description": "Text shown on the initials form on blacklisted state"
+  },
   "termsOfUseContinueLabel": "CONTINUE",
   "@termsOfUseContinueLabel": {
     "description": "Text shown on the continue button on the terms of use page"
