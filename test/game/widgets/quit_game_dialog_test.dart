@@ -15,10 +15,9 @@ void main() {
           onCancel: onCancel ?? () {},
         );
 
-    testWidgets('renders a Dialog with correct text', (tester) async {
+    testWidgets('renders correct texts', (tester) async {
       await tester.pumpApp(buildSubject());
 
-      expect(find.byType(Dialog), findsOneWidget);
       expect(find.text(tester.l10n.quitGameDialogTitle), findsOneWidget);
       expect(find.text(tester.l10n.quitGameDialogDescription), findsOneWidget);
     });
@@ -56,48 +55,5 @@ void main() {
         expect(onCancelCalled, isTrue);
       },
     );
-
-    testWidgets(
-      'calls onCancel when the close icon button is tapped',
-      (tester) async {
-        var onCancelCalled = false;
-
-        await tester.pumpApp(
-          buildSubject(
-            onCancel: () => onCancelCalled = true,
-          ),
-        );
-
-        await tester.tap(find.byIcon(Icons.close));
-
-        expect(onCancelCalled, isTrue);
-      },
-    );
-
-    group('show', () {
-      testWidgets('shows the QuitGameDialog', (tester) async {
-        await tester.pumpApp(
-          Builder(
-            builder: (context) {
-              return TextButton(
-                onPressed: () => QuitGameDialog.show(
-                  context,
-                  onCancel: () {},
-                  onConfirm: () {},
-                ),
-                child: const Text('show'),
-              );
-            },
-          ),
-        );
-
-        expect(find.byType(QuitGameDialog), findsNothing);
-
-        await tester.tap(find.text('show'));
-        await tester.pumpAndSettle();
-
-        expect(find.byType(QuitGameDialog), findsOneWidget);
-      });
-    });
   });
 }

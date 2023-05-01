@@ -15,20 +15,13 @@ class HowToPlayState extends Equatable {
   final int position;
   final List<Suit> wheelSuits;
 
-  static const initialSteps = <Widget>[
+  static const steps = <Widget>[
     HowToPlayIntro(),
     HowToPlayHandBuilding(),
     HowToPlaySuitsIntro(),
   ];
 
-  static const finalSteps = <Widget>[
-    HowToPlaySummary(),
-  ];
-
-  int get totalSteps =>
-      HowToPlayState.initialSteps.length +
-      wheelSuits.length +
-      HowToPlayState.finalSteps.length;
+  int get totalSteps => steps.length + wheelSuits.length;
 
   List<int> get affectedIndicatorIndexes {
     return wheelSuits.first.suitsAffected

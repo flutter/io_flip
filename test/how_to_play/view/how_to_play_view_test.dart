@@ -36,12 +36,6 @@ void main() {
         expect(find.byType(HowToPlayStepView), findsOneWidget);
       });
 
-      testWidgets('close button', (tester) async {
-        mockStates([HowToPlayState()]);
-        await tester.pumpSubject(bloc);
-        expect(find.byType(CloseButton), findsOneWidget);
-      });
-
       testWidgets('page indicator', (tester) async {
         mockStates([HowToPlayState()]);
         await tester.pumpSubject(bloc);
@@ -60,22 +54,6 @@ void main() {
         await tester.pumpSubject(bloc);
         expect(find.byType(HowToPlayIntro), findsOneWidget);
       });
-    });
-
-    testWidgets('close button closes dialog', (tester) async {
-      final goRouter = MockGoRouter();
-      when(goRouter.canPop).thenReturn(true);
-      mockStates([HowToPlayState()]);
-
-      await tester.pumpSubject(
-        bloc,
-        goRouter: goRouter,
-      );
-
-      await tester.tap(find.byType(CloseButton));
-      await tester.pumpAndSettle();
-
-      verify(goRouter.pop).called(1);
     });
 
     testWidgets('can navigate the entire tutorial', (tester) async {
@@ -117,10 +95,6 @@ void main() {
       await tester.tap(nextButton);
       await tester.pumpAndSettle();
       expect(find.byType(SuitsWheel), findsOneWidget);
-
-      await tester.tap(nextButton);
-      await tester.pumpAndSettle();
-      expect(find.byType(HowToPlaySummary), findsOneWidget);
 
       await tester.tap(nextButton);
       await tester.pumpAndSettle();

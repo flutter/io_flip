@@ -27,13 +27,21 @@ dart pub get
 
 This tool is used to insert data in firebase,
 
-It have two commands, one to load the prompt terms in the firestore database of the project, and one to load placeholder images in firestore cloud storage for those prompts.
+It have a couple of commands, one to load the prompt terms in the firestore database of the project, another one quite similar, but that loads card descriptions, and one to load placeholder images in firestore cloud storage for those prompts.
 
 Download the prompts CSV which must have the following format:
 
 ```
 'Character,Class,Power,Location,'
 'Dash,Alien,Banjos,City,'
+...
+```
+
+Download the description CSV which must have the following format:
+
+```
+'Character,Class,Power,Location,Description 1,Description X...'
+'Dash,Alien,Banjos,City,Desc 1, Desc X...'
 ...
 ```
 
@@ -48,6 +56,17 @@ dart bin/data_loader.dart prompts projectId csv_file_location.csv
 It uses the gcloud default admin app for auth, so you must have it properly configured
 in your machine before running it.
 
+### Loading descriptions
+
+Run:
+
+```
+dart bin/data_loader.dart descriptions projectId csv_file_location.csv
+```
+
+It uses the gcloud default admin app for auth, so you must have it properly configured
+in your machine before running it.
+
 ### Loading images placeholder
 
 The images placeholder command will create the expected file structure in a `destination_folder`
@@ -56,10 +75,10 @@ which should then be uploaded to firebase cloud storage.
 In order to do so, run:
 
 ```
-dart bin/data_loader.dart images destination_folder csv_file_location.csv placeholder_images_folder
+dart bin/data_loader.dart images destination_folder csv_file_location.csv placeholder_image_path <card_variation_number>
 ```
 
-Then, inside the `destination_folder`, run: 
+Then, inside the `destination_folder`, run:
 
 ```
 gcloud storage cp --gzip-local-all --recursive . gs://<bucket-id>

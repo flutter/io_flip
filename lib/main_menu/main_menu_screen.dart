@@ -41,14 +41,7 @@ class MainMenuScreen extends StatelessWidget {
               left: 0,
               right: 0,
               child: IoFlipBottomBar(
-                leading: RoundedButton.svg(
-                  key: const Key('info_button'),
-                  Assets.icons.info,
-                  onPressed: () => TopDashDialog.show(
-                    context,
-                    const InfoView(),
-                  ),
-                ),
+                leading: const InfoButton(),
                 middle: BlocConsumer<TermsOfUseCubit, bool>(
                   listener: (context, termsAccepted) {
                     if (termsAccepted) {
@@ -64,7 +57,8 @@ class MainMenuScreen extends StatelessWidget {
                         } else {
                           TopDashDialog.show(
                             context,
-                            const TermsOfUseView(),
+                            child: const TermsOfUseView(),
+                            showCloseButton: false,
                           );
                         }
                       },
@@ -75,7 +69,7 @@ class MainMenuScreen extends StatelessWidget {
                   Icons.question_mark_rounded,
                   onPressed: () => TopDashDialog.show(
                     context,
-                    const HowToPlayDialog(),
+                    child: const HowToPlayDialog(),
                   ),
                 ),
               ),

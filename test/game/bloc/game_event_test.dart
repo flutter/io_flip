@@ -158,28 +158,28 @@ void main() {
       });
     });
 
-    group('FightSceneCompleted', () {
+    group('ClashSceneCompleted', () {
       test('can be instantiated', () {
-        expect(FightSceneCompleted(), isNotNull);
+        expect(ClashSceneCompleted(), isNotNull);
       });
 
       test('supports equality', () {
         expect(
-          FightSceneCompleted(),
-          equals(FightSceneCompleted()),
+          ClashSceneCompleted(),
+          equals(ClashSceneCompleted()),
         );
       });
     });
 
-    group('CardOverlayRevealed', () {
+    group('ClashSceneStarted', () {
       test('can be instantiated', () {
-        expect(CardOverlayRevealed(), isNotNull);
+        expect(ClashSceneStarted(), isNotNull);
       });
 
       test('supports equality', () {
         expect(
-          CardOverlayRevealed(),
-          equals(CardOverlayRevealed()),
+          ClashSceneStarted(),
+          equals(ClashSceneStarted()),
         );
       });
     });
@@ -193,6 +193,32 @@ void main() {
         expect(
           TurnAnimationsFinished(),
           equals(TurnAnimationsFinished()),
+        );
+      });
+    });
+
+    group('CardLandingStarted', () {
+      test('can be instantiated', () {
+        expect(CardLandingStarted(), isNotNull);
+      });
+
+      test('supports equality', () {
+        expect(
+          CardLandingStarted(),
+          equals(CardLandingStarted()),
+        );
+      });
+    });
+
+    group('CardLandingCompleted', () {
+      test('can be instantiated', () {
+        expect(CardLandingCompleted(), isNotNull);
+      });
+
+      test('supports equality', () {
+        expect(
+          CardLandingCompleted(),
+          equals(CardLandingCompleted()),
         );
       });
     });

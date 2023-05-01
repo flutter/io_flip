@@ -4,9 +4,11 @@ import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/audio/audio.dart';
 import 'package:top_dash/gen/assets.gen.dart';
+import 'package:top_dash/info/info.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/share/views/views.dart';
 import 'package:top_dash/share/widgets/widgets.dart';
+import 'package:top_dash/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class ShareHandPage extends StatelessWidget {
@@ -51,7 +53,7 @@ class ShareHandPage extends StatelessWidget {
           Align(
             alignment: Alignment.topCenter,
             child: CardFan(
-              deck: deck,
+              cards: deck,
             ),
           ),
           Text(
@@ -81,7 +83,15 @@ class ShareHandPage extends StatelessWidget {
               children: [
                 RoundedButton.text(
                   l10n.shareButtonLabel,
-                  onPressed: () => _shareDialog(context, deck),
+                  onPressed: () => TopDashDialog.show(
+                    context,
+                    child: ShareHandDialog(
+                      cards: deck,
+                      deckId: deckId,
+                      initials: initials,
+                      wins: wins,
+                    ),
+                  ),
                 ),
                 const SizedBox(width: TopDashSpacing.sm),
                 RoundedButton.text(
@@ -93,9 +103,14 @@ class ShareHandPage extends StatelessWidget {
                 ),
               ],
             ),
-            trailing: RoundedButton.icon(
-              Icons.info,
-              // TODO(Samobrien): Route to FAQ Page
+            trailing: RoundedButton.svg(
+              key: const Key('share_page_info_button'),
+              Assets.icons.info,
+              onPressed: () => TopDashDialog.show(
+                context,
+                child: const InfoView(),
+                onClose: context.maybePop,
+              ),
             ),
           ),
           const SizedBox(height: TopDashSpacing.md),
@@ -125,18 +140,6 @@ class ShareHandPage extends StatelessWidget {
           ),
           const SizedBox(height: TopDashSpacing.xlg),
         ],
-      ),
-    );
-  }
-
-  Future<void> _shareDialog(BuildContext context, List<Card> cards) {
-    return showDialog(
-      context: context,
-      builder: (context) => ShareHandDialog(
-        cards: cards,
-        deckId: deckId,
-        initials: initials,
-        wins: wins,
       ),
     );
   }

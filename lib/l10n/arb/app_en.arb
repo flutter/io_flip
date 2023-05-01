@@ -48,13 +48,9 @@
   "@characterClassPromptPageTitle": {
     "description": "Title of the prompt page for character class"
   },
-  "powerPromptPageTitle": "Next, what's their first power?",
+  "powerPromptPageTitle": "What special powers do they have?",
   "@powerPromptPageTitle": {
     "description": "Title of the prompt page for power"
-  },
-  "secondaryPowerPromptPageTitle": "Last, what's one more power they use?",
-  "@secondaryPowerPromptPageTitle": {
-    "description": "Title of the prompt page for the secondary power"
   },
   "leaderboardLongestStreak": "HIGHEST WIN STREAK",
   "@leaderboardLongestStreak": {
@@ -76,42 +72,6 @@
   "leaderboardFailedToLoad": "Failed to load leaderboard",
   "@leaderboardFailedToLoad": {
     "description": "Label shown on the leaderboard when it fails to load"
-  },
-  "howToPlayHeader": "is a Flutter-powered, worldwide, card competition game.",
-  "@howToPlayHeader": {
-    "description": "Header shown on the how to play page"
-  },
-  "howToPlayTitle": "How to Play",
-  "@howToPlayTitle": {
-    "description": "Title text shown on the how to play page"
-  },
-  "howToPlayStepOneTitle": "Draw a random deck",
-  "@howToPlayStepOneTitle": {
-    "description": "Title text shown on the how to play page for step one"
-  },
-  "howToPlayStepTwoTitle": "Pick your three best cards",
-  "@howToPlayStepTwoTitle": {
-    "description": "Title text shown on the how to play page for step two"
-  },
-  "howToPlayStepThreeTitle": "Find an opponent and compete",
-  "@howToPlayStepThreeTitle": {
-    "description": "Title text shown on the how to play page for step three"
-  },
-  "howToPlayStepFourTitle": "Best two out of three wins!",
-  "@howToPlayStepFourTitle": {
-    "description": "Title text shown on the how to play page for step four"
-  },
-  "howToPlayTip": "Most wins and longest streaks make it to the leaderboard.",
-  "@howToPlayTip": {
-    "description": "Tip text shown on the how to play page"
-  },
-  "howToPlayTipEncouragement": "Good luck!",
-  "@howToPlayTipEncouragement": {
-    "description": "Encouragement tip text shown on the how to play page"
-  },
-  "howToPlayButtonText": "LET'S GO",
-  "@howToPlayButtonText": {
-    "description": "Button text shown on the how to play page"
   },
   "cardGenerationError": "Error generating cards, please try again in a few moments",
   "@cardGenerationError": {
@@ -197,12 +157,6 @@
   "settingsPageTitle": "Settings",
   "@settingsPageTitle": {
     "description": "Title shown on the settings page",
-    "type": "text",
-    "placeholders": {}
-  },
-  "settingsHowToPlayItem": "How to play",
-  "@settingsHowToPlayItem": {
-    "description": "Title of the how to play item in settings",
     "type": "text",
     "placeholders": {}
   },
@@ -302,41 +256,37 @@
   "@facebookButtonLabel": {
     "description": "Label for the share to facebook button"
   },
-  "howToPlayIntroTitle": "<bold>Harness the power of generative AI to build unique decks of playing cards.</bold>",
+  "howToPlayIntroTitle": "Grab a pack and create your team from more than 100k unique AI-designed cards.",
   "@howToPlayIntroTitle": {
     "description": "Text shown in the first page of the how to play flow"
   },
-  "howToPlayDeckTitle": "<bold>Build your best hand</bold> and keep your streak alive against opponents from across the globe.",
+  "howToPlayDeckTitle": "Keep your winning streak alive on the leaderboard against opponents around the world.",
   "@howToPlayDeckTitle": {
     "description": "Text shown in the deck page of the how to play flow"
   },
-  "howToPlayElementsTitle": "<bold>Flip your way to victory</bold> by <bold>harnessing the elements</bold> to apply an extra 10% damage.",
+  "howToPlayElementsTitle": "Flip your way to victory! Elemental powers apply extra damage in a match.",
   "@howToPlayElementsTitle": {
     "description": "Text shown in the elements page of the how to play flow"
   },
-  "howToPlayElementsFireTitle": "<yellow>Fire</yellow> scorches </bold>air</bold> and\nmelts <bold>metal</bold>.",
+  "howToPlayElementsFireTitle": "<yellow>Fire</yellow> scorches <lightblue>air</lightblue> and\nmelts <green>metal</green>.",
   "@howToPlayElementsFireTitle": {
     "description": "Text shown in the fire element page of the how to play flow"
   },
-  "howToPlayElementsAirTitle": "<lightblue>Air</lightblue> blasts <bold>water</bold> and\nblows away <bold>earth</bold>.",
+  "howToPlayElementsAirTitle": "<lightblue>Air</lightblue> blasts <blue>water</blue> and\nblows away <red>earth</red>.",
   "@howToPlayElementsAirTitle": {
     "description": "Text shown in the air element page of the how to play flow"
   },
-  "howToPlayElementsMetalTitle": "<green>Metal</green> traps <bold>air</bold> and\ndiverts <bold>water</bold>.",
+  "howToPlayElementsMetalTitle": "<green>Metal</green> traps <lightblue>air</lightblue> and\ndiverts <blue>water</blue>.",
   "@howToPlayElementsMetalTitle": {
     "description": "Text shown in the metal element page of the how to play flow"
   },
-  "howToPlayElementsEarthTitle": "<red>Earth</red> crushes <bold>metal</bold> and\nsnuffs out <bold>fire</bold>.",
+  "howToPlayElementsEarthTitle": "<red>Earth</red> crushes <green>metal</green> and\nsnuffs out <yellow>fire</yellow>.",
   "@howToPlayElementsEarthTitle": {
     "description": "Text shown in the earth element page of the how to play flow"
   },
-  "howToPlayElementsWaterTitle": "<blue>Water</blue> puts out <bold>fire</bold> and\nerodes <bold>earth</bold>.",
+  "howToPlayElementsWaterTitle": "<blue>Water</blue> puts out <yellow>fire</yellow> and\nerodes <red>earth</red>.",
   "@howToPlayElementsWaterTitle": {
     "description": "Text shown in the water element page of the how to play flow"
-  },
-  "howToPlaySummaryTitle": "<bold>IO Flip</bold> was built using <bold>Flutter, Firebase and AI.</bold>",
-  "@howToPlaySummaryTitle": {
-    "description": "Text shown in the last page of the how to play flow"
   },
   "shareTeamTitle": "Share your team!",
   "@shareTeamTitle": {
@@ -402,7 +352,7 @@
   "@shareTeamDialogDescription": {
     "description": "Text shown on the share team dialog"
   },
-  "termsOfUseTitle": "I/O Flip Terms of Use",
+  "termsOfUseTitle": "I/O FLIP Terms of Use",
   "@termsOfUseTitle": {
     "description": "Title shown on the terms of use page"
   },

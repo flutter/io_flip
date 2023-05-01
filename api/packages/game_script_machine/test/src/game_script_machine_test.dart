@@ -128,12 +128,12 @@ void main() {
         machine = GameScriptMachine.initialize(defaultGameLogic, rng: rng);
       });
 
-      test('returns true if the double value is bigger than .8', () {
-        when(() => rng.nextDouble()).thenReturn(.9);
+      test('returns true if the double value is bigger than .9', () {
+        when(() => rng.nextDouble()).thenReturn(.92);
         expect(machine.rollCardRarity(), isTrue);
       });
 
-      test('returns false if the double value is lessen than .8', () {
+      test('returns false if the double value is lessen than .9', () {
         when(() => rng.nextDouble()).thenReturn(.4);
         expect(machine.rollCardRarity(), isFalse);
       });
@@ -148,19 +148,35 @@ void main() {
         machine = GameScriptMachine.initialize(defaultGameLogic, rng: rng);
       });
 
+      test(
+        'returns a valid number if card is not rare and random is the lowest',
+        () {
+          when(() => rng.nextDouble()).thenReturn(0);
+          expect(machine.rollCardPower(isRare: false), equals(10));
+        },
+      );
+
+      test(
+        'returns a valid number if card is not rare and random is the highest',
+        () {
+          when(() => rng.nextDouble()).thenReturn(1);
+          expect(machine.rollCardPower(isRare: false), equals(99));
+        },
+      );
+
       test('returns a valid number if card is not rare', () {
         when(() => rng.nextDouble()).thenReturn(.8);
-        expect(machine.rollCardPower(isRare: false), equals(80));
+        expect(machine.rollCardPower(isRare: false), equals(81));
       });
 
       test('returns a valid number if card is not rare and too weak', () {
         when(() => rng.nextDouble()).thenReturn(.05);
-        expect(machine.rollCardPower(isRare: false), equals(10));
+        expect(machine.rollCardPower(isRare: false), equals(14));
       });
 
       test('returns a valid number if card is rare', () {
         when(() => rng.nextDouble()).thenReturn(.8);
-        expect(machine.rollCardPower(isRare: true), equals(180));
+        expect(machine.rollCardPower(isRare: true), equals(100));
       });
     });
   });

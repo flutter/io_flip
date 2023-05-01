@@ -65,8 +65,8 @@ void main() {
     test('can be instantiated', () {
       expect(
         CardsRepository(
-          imageModelRepository: const ImageModelRepository(),
-          languageModelRepository: const LanguageModelRepository(),
+          imageModelRepository: _MockImageModelRepository(),
+          languageModelRepository: _MockLanguageModelRepository(),
           dbClient: dbClient,
           gameScriptMachine: gameScriptMachine,
         ),
@@ -76,42 +76,127 @@ void main() {
 
     group('generateCard', () {
       setUp(() {
-        when(imageModelRepository.generateImage)
-            .thenAnswer((_) async => 'https://image.png');
+        when(
+          () => imageModelRepository.generateImages(
+            characterClass: any(named: 'characterClass'),
+            variationsAvailable: any(named: 'variationsAvailable'),
+            deckSize: any(named: 'deckSize'),
+          ),
+        ).thenAnswer(
+          (_) async => [
+            ImageResult(
+              character: 'dash',
+              characterClass: 'mage',
+              location: 'beach',
+              url: 'https://image1.png',
+            ),
+            ImageResult(
+              character: 'dash',
+              characterClass: 'mage',
+              location: 'beach',
+              url: 'https://image2.png',
+            ),
+            ImageResult(
+              character: 'dash',
+              characterClass: 'mage',
+              location: 'beach',
+              url: 'https://image3.png',
+            ),
+          ],
+        );
 
-        when(languageModelRepository.generateCardName)
-            .thenAnswer((_) async => 'Super Bird');
-        when(languageModelRepository.generateFlavorText)
-            .thenAnswer((_) async => 'Super Bird Is Ready!');
+        when(
+          () => languageModelRepository.generateCardName(
+            characterName: 'dash',
+            characterClass: 'mage',
+            characterPower: 'baggles',
+            characterLocation: 'beach',
+          ),
+        ).thenAnswer((_) async => 'Super Bird');
+        when(
+          () => languageModelRepository.generateFlavorText(
+            character: 'dash',
+            characterPower: 'baggles',
+            location: 'beach',
+          ),
+        ).thenAnswer((_) async => 'Super Bird Is Ready!');
 
         when(() => dbClient.add('cards', any())).thenAnswer((_) async => 'abc');
       });
 
       test('generates a common card', () async {
-        final card = await cardsRepository.generateCard();
+        final cards = await cardsRepository.generateCards(
+          characterClass: 'mage',
+          characterPower: 'baggles',
+        );
 
         expect(
-          card,
-          Card(
-            id: 'abc',
-            name: 'Super Bird',
-            description: 'Super Bird Is Ready!',
-            image: 'https://image.png',
-            rarity: false,
-            power: 10,
-            suit: Suit.fire,
+          cards,
+          equals(
+            [
+              Card(
+                id: 'abc',
+                name: 'Super Bird',
+                description: 'Super Bird Is Ready!',
+                image: 'https://image1.png',
+                rarity: false,
+                power: 10,
+                suit: Suit.fire,
+              ),
+              Card(
+                id: 'abc',
+                name: 'Super Bird',
+                description: 'Super Bird Is Ready!',
+                image: 'https://image2.png',
+                rarity: false,
+                power: 10,
+                suit: Suit.fire,
+              ),
+              Card(
+                id: 'abc',
+                name: 'Super Bird',
+                description: 'Super Bird Is Ready!',
+                image: 'https://image3.png',
+                rarity: false,
+                power: 10,
+                suit: Suit.fire,
+              ),
+            ],
           ),
         );
       });
 
       test('saves the card in the db', () async {
-        await cardsRepository.generateCard();
+        await cardsRepository.generateCards(
+          characterClass: 'mage',
+          characterPower: 'baggles',
+        );
 
         verify(
           () => dbClient.add('cards', {
             'name': 'Super Bird',
             'description': 'Super Bird Is Ready!',
-            'image': 'https://image.png',
+            'image': 'https://image1.png',
+            'rarity': false,
+            'power': 10,
+            'suit': 'fire',
+          }),
+        ).called(1);
+        verify(
+          () => dbClient.add('cards', {
+            'name': 'Super Bird',
+            'description': 'Super Bird Is Ready!',
+            'image': 'https://image2.png',
+            'rarity': false,
+            'power': 10,
+            'suit': 'fire',
+          }),
+        ).called(1);
+        verify(
+          () => dbClient.add('cards', {
+            'name': 'Super Bird',
+            'description': 'Super Bird Is Ready!',
+            'image': 'https://image3.png',
             'rarity': false,
             'power': 10,
             'suit': 'fire',
@@ -121,39 +206,49 @@ void main() {
 
       test('generates a rare card', () async {
         when(gameScriptMachine.rollCardRarity).thenReturn(true);
-        final card = await cardsRepository.generateCard();
+        final cards = await cardsRepository.generateCards(
+          characterClass: 'mage',
+          characterPower: 'baggles',
+        );
 
         expect(
-          card,
-          Card(
-            id: 'abc',
-            name: 'Super Bird',
-            description: 'Super Bird Is Ready!',
-            image: 'https://image.png',
-            rarity: true,
-            power: 10,
-            suit: Suit.fire,
+          cards,
+          contains(
+            Card(
+              id: 'abc',
+              name: 'Super Bird',
+              description: 'Super Bird Is Ready!',
+              image: 'https://image1.png',
+              rarity: true,
+              power: 10,
+              suit: Suit.fire,
+            ),
           ),
         );
 
-        verify(() => gameScriptMachine.rollCardPower(isRare: true)).called(1);
+        verify(() => gameScriptMachine.rollCardPower(isRare: true)).called(3);
       });
 
       for (var i = 0; i < Suit.values.length; i++) {
         test('generates a card from the ${Suit.values[i]} element', () async {
           when(() => rng.nextInt(Suit.values.length)).thenReturn(i);
-          final card = await cardsRepository.generateCard();
+          final cards = await cardsRepository.generateCards(
+            characterClass: 'mage',
+            characterPower: 'baggles',
+          );
 
           expect(
-            card,
-            Card(
-              id: 'abc',
-              name: 'Super Bird',
-              description: 'Super Bird Is Ready!',
-              image: 'https://image.png',
-              rarity: false,
-              power: 10,
-              suit: Suit.values[i],
+            cards,
+            contains(
+              Card(
+                id: 'abc',
+                name: 'Super Bird',
+                description: 'Super Bird Is Ready!',
+                image: 'https://image1.png',
+                rarity: false,
+                power: 10,
+                suit: Suit.values[i],
+              ),
             ),
           );
         });

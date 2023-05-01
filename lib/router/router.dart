@@ -38,11 +38,6 @@ GoRouter createRouter({required bool isScriptsEnabled}) {
             builder: CardInspector.routeBuilder,
           ),
           GoRoute(
-            name: 'share',
-            path: 'share',
-            builder: SharePage.routeBuilder,
-          ),
-          GoRoute(
             name: 'share_hand',
             path: 'share_hand',
             builder: ShareHandPage.routeBuilder,

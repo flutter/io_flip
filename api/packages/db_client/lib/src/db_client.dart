@@ -101,16 +101,7 @@ class DbClient {
     );
   }
 
-  /// Search for records where the [field] match the [value].
-  Future<List<DbEntityRecord>> findBy(
-    String entity,
-    String field,
-    dynamic value,
-  ) async {
-    final collection = _firestore.collection(entity);
-
-    final results = await collection.where(field, isEqualTo: value).get();
-
+  List<DbEntityRecord> _mapResult(List<Document> results) {
     if (results.isNotEmpty) {
       return results.map((document) {
         return DbEntityRecord(
@@ -121,6 +112,43 @@ class DbClient {
     }
 
     return [];
+  }
+
+  /// Search for records where the [field] match the [value].
+  Future<List<DbEntityRecord>> findBy(
+    String entity,
+    String field,
+    dynamic value,
+  ) async {
+    final collection = _firestore.collection(entity);
+
+    final results = await collection.where(field, isEqualTo: value).get();
+    return _mapResult(results);
+  }
+
+  /// Search for records where the [where] clause is true.
+  ///
+  /// The [where] map should contain the field name as key and the value
+  /// to compare to.
+  Future<List<DbEntityRecord>> find(
+    String entity,
+    Map<String, dynamic> where,
+  ) async {
+    final collection = _firestore.collection(entity);
+
+    var query = collection.where(
+      where.keys.first,
+      isEqualTo: where.values.first,
+    );
+    for (var i = 1; i < where.length; i++) {
+      query = collection.where(
+        where.keys.elementAt(i),
+        isEqualTo: where.values.elementAt(i),
+      );
+    }
+
+    final results = await query.get();
+    return _mapResult(results);
   }
 
   /// Gets the [limit] records sorted by the specified [field].

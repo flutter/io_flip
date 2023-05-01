@@ -122,7 +122,8 @@ void main() {
         rounds: const [],
         turnTimeRemaining: 10,
         turnAnimationsFinished: true,
-        isFightScene: false,
+        isClashScene: false,
+        showCardLanding: false,
       );
 
       setUp(() {
@@ -238,6 +239,72 @@ void main() {
           await tester.tap(find.byKey(const Key('player_card_player_card_2')));
 
           verifyNever(() => bloc.add(PlayerPlayed('player_card_2')));
+        },
+      );
+
+      testWidgets(
+        'plays a player card when dragged',
+        (tester) async {
+          mockState(baseState);
+          await tester.pumpSubject(bloc);
+
+          final start = tester
+              .getCenter(find.byKey(const Key('player_card_player_card')));
+          final end = tester.getCenter(find.byKey(const Key('clash_card_1')));
+
+          await tester.dragFrom(start, end - start);
+          await tester.pumpAndSettle();
+
+          verify(() => bloc.add(PlayerPlayed('player_card'))).called(1);
+        },
+      );
+
+      testWidgets(
+        'dragging a player card not to the correct spot does not play it',
+        (tester) async {
+          mockState(baseState);
+          await tester.pumpSubject(bloc);
+
+          final start = tester
+              .getCenter(find.byKey(const Key('player_card_player_card')));
+          final end = tester.getCenter(find.byKey(const Key('clash_card_0')));
+
+          await tester.dragFrom(start, end - start);
+          await tester.pumpAndSettle();
+
+          verifyNever(() => bloc.add(PlayerPlayed('player_card')));
+        },
+      );
+
+      testWidgets(
+        'dragging a player card moves it with the pointer',
+        (tester) async {
+          mockState(baseState);
+          await tester.pumpSubject(bloc);
+
+          Rect getClashRect() =>
+              tester.getRect(find.byKey(const Key('clash_card_1')));
+          Offset getPlayerCenter() => tester.getCenter(
+                find.byKey(const Key('player_card_player_card')),
+              );
+
+          final startClashRect = getClashRect();
+          final start = getPlayerCenter();
+          final end = getClashRect().center;
+          final offset = end - start;
+          final gesture = await tester.startGesture(start);
+          await gesture.moveBy(Offset(kDragSlopDefault, -kDragSlopDefault));
+          await gesture.moveBy(
+            Offset(
+              offset.dx - kDragSlopDefault,
+              offset.dy + kDragSlopDefault,
+            ),
+          );
+
+          await tester.pumpAndSettle();
+
+          expect(getClashRect().contains(getPlayerCenter()), isTrue);
+          expect(getClashRect(), equals(startClashRect.inflate(8)));
         },
       );
 
@@ -373,12 +440,15 @@ void main() {
         rounds: const [],
         turnTimeRemaining: 10,
         turnAnimationsFinished: true,
-        isFightScene: false,
+        isClashScene: false,
+        showCardLanding: false,
       );
 
       setUp(() {
         when(() => bloc.playerCards).thenReturn(playerCards);
         when(() => bloc.opponentCards).thenReturn(opponentCards);
+        when(() => bloc.lastPlayedPlayerCard).thenReturn(playerCards.first);
+        when(() => bloc.lastPlayedOpponentCard).thenReturn(opponentCards.first);
       });
 
       testWidgets('starts when player plays a card', (tester) async {
@@ -448,32 +518,40 @@ void main() {
       });
 
       testWidgets('completes when both players play a card', (tester) async {
+        final controller = StreamController<GameState>();
+        final playedState = baseState.copyWith(
+          lastPlayedCardId: playerCards.first.id,
+          rounds: [
+            MatchRound(
+              playerCardId: playerCards.first.id,
+              opponentCardId: opponentCards.first.id,
+            )
+          ],
+        );
         whenListen(
           bloc,
-          Stream.fromIterable([
-            baseState,
-            baseState.copyWith(
-              lastPlayedCardId: playerCards.first.id,
-              rounds: [
-                MatchRound(
-                  playerCardId: playerCards.first.id,
-                  opponentCardId: opponentCards.first.id,
-                )
-              ],
-            )
-          ]),
+          controller.stream,
           initialState: baseState,
         );
+        when(() => bloc.add(CardLandingStarted())).thenAnswer((_) {
+          controller.add(playedState.copyWith(showCardLanding: true));
+        });
 
         await tester.pumpSubject(bloc);
+        controller
+          ..add(baseState)
+          ..add(playedState);
+
+        await tester.pumpAndSettle();
+        controller.add(playedState.copyWith(showCardLanding: false));
         await tester.pumpAndSettle();
 
-        verify(() => bloc.add(CardOverlayRevealed())).called(1);
+        verify(() => bloc.add(ClashSceneStarted())).called(1);
       });
 
       testWidgets(
         'completes and goes back when both players play a card and '
-        'fight scene finishes',
+        'clash scene finishes',
         (tester) async {
           final controller = StreamController<GameState>.broadcast();
 
@@ -510,7 +588,7 @@ void main() {
           // zone
           await tester.pumpAndSettle();
           final playerClashOffset = tester.getCenter(playerCardFinder);
-          expect(playerInitialOffset, isNot(equals(playerClashOffset)));
+          expect(playerClashOffset, isNot(equals(playerInitialOffset)));
 
           controller.add(
             baseState.copyWith(
@@ -524,20 +602,22 @@ void main() {
             ),
           );
 
-          await tester.pumpAndSettle();
+          await tester.pump();
+          await tester.pump();
+          await tester.pump(Duration(milliseconds: 400));
 
           final opponentClashOffset = tester.getCenter(opponentCardFinder);
-          expect(opponentInitialOffset, isNot(equals(opponentClashOffset)));
+          expect(opponentClashOffset, isNot(equals(opponentInitialOffset)));
 
-          controller.add(baseState.copyWith(isFightScene: true));
+          controller.add(baseState.copyWith(isClashScene: true));
 
           await tester.pumpAndSettle();
 
-          final fightScene = find.byType(FightScene);
-          expect(fightScene, findsOneWidget);
-          tester.widget<FightScene>(fightScene).onFinished();
+          final clashScene = find.byType(ClashScene);
+          expect(clashScene, findsOneWidget);
+          tester.widget<ClashScene>(clashScene).onFinished();
 
-          controller.add(baseState.copyWith(isFightScene: false));
+          controller.add(baseState.copyWith(isClashScene: false));
 
           // Get card offset once clash is over and both cards are back in the
           // original position
@@ -546,13 +626,51 @@ void main() {
           final playerFinalOffset = tester.getCenter(playerCardFinder);
           final opponentFinalOffset = tester.getCenter(opponentCardFinder);
 
-          expect(playerInitialOffset, equals(playerFinalOffset));
-          expect(opponentInitialOffset, equals(opponentFinalOffset));
+          expect(playerFinalOffset, equals(playerInitialOffset));
+          expect(opponentFinalOffset, equals(opponentInitialOffset));
 
-          verify(() => bloc.add(CardOverlayRevealed())).called(1);
-          verify(() => bloc.add(FightSceneCompleted())).called(1);
-          verify(() => bloc.add(TurnAnimationsFinished())).called(2);
-          verify(() => bloc.add(TurnTimerStarted())).called(2);
+          verify(() => bloc.add(ClashSceneStarted())).called(1);
+          verify(() => bloc.add(ClashSceneCompleted())).called(1);
+          verify(() => bloc.add(TurnAnimationsFinished())).called(1);
+          verify(() => bloc.add(TurnTimerStarted())).called(1);
+        },
+      );
+
+      testWidgets(
+        'completes and shows card landing puff effect when player plays a card',
+        (tester) async {
+          whenListen(
+            bloc,
+            Stream.fromIterable([
+              baseState,
+              baseState.copyWith(
+                lastPlayedCardId: playerCards.first.id,
+                rounds: [
+                  MatchRound(
+                    playerCardId: playerCards.first.id,
+                    opponentCardId: null,
+                  ),
+                ],
+                showCardLanding: true,
+              ),
+            ]),
+            initialState: baseState,
+          );
+
+          await tester.pumpSubject(bloc);
+          await tester.pump(bigFlipAnimation.duration);
+
+          final cardLandingPuff = find.byType(CardLandingPuff);
+          expect(cardLandingPuff, findsOneWidget);
+
+          await tester.pumpAndSettle(
+            bigFlipAnimation.duration + CardLandingPuff.duration,
+          );
+
+          tester.widget<CardLandingPuff>(cardLandingPuff).onComplete?.call();
+
+          verify(() => bloc.add(CardLandingStarted())).called(1);
+          verify(() => bloc.add(CardLandingCompleted())).called(1);
         },
       );
     });

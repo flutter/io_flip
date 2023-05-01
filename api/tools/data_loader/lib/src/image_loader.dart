@@ -12,15 +12,19 @@ class ImageLoader {
     required File csv,
     required File image,
     required String dest,
+    required int variations,
   })  : _csv = csv,
         _image = image,
-        _dest = dest;
+        _dest = dest,
+        _variations = variations;
 
   final File _csv;
 
   final File _image;
 
   final String _dest;
+
+  final int _variations;
 
   /// Creates placeholder images for prompts stored in csv file.
   /// [onProgress] is called everytime there is progress,
@@ -49,20 +53,21 @@ class ImageLoader {
 
     for (final character in map[PromptTermType.character]!) {
       for (final characterClass in map[PromptTermType.characterClass]!) {
-        for (final power1 in map[PromptTermType.power]!) {
-          for (final location in map[PromptTermType.location]!) {
+        for (final location in map[PromptTermType.location]!) {
+          for (var i = 0; i < _variations; i++) {
             fileNames.add(
               path
                   .join(
                     _dest,
                     'public',
                     'illustrations',
-                    character,
-                    characterClass,
-                    power1,
-                    '$location.png',
+                    [
+                      character,
+                      characterClass,
+                      location,
+                      '$i.png',
+                    ].join('_').replaceAll(' ', '_'),
                   )
-                  .replaceAll(' ', '_')
                   .toLowerCase(),
             );
           }

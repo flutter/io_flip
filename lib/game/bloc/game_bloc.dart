@@ -41,8 +41,10 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     on<TurnTimerStarted>(_onTurnTimerStarted);
     on<TurnTimerTicked>(_onTurnTimerTicked);
     on<TurnAnimationsFinished>(_onTurnAnimationsFinished);
-    on<CardOverlayRevealed>(_onCardOverlayRevealed);
-    on<FightSceneCompleted>(_onFightSceneCompleted);
+    on<ClashSceneStarted>(_onClashSceneStarted);
+    on<ClashSceneCompleted>(_onClashSceneCompleted);
+    on<CardLandingStarted>(_onCardLandingStarted);
+    on<CardLandingCompleted>(_onCardLandingCompleted);
   }
 
   final GameResource _gameResource;
@@ -93,7 +95,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             playerScoreCard: scoreCard,
             turnTimeRemaining: _turnMaxTime,
             turnAnimationsFinished: true,
-            isFightScene: false,
+            isClashScene: false,
+            showCardLanding: false,
           ),
         );
 
@@ -361,14 +364,14 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       emit(
         matchLoadedState.copyWith(
           turnAnimationsFinished: true,
-          isFightScene: false,
+          isClashScene: false,
         ),
       );
     }
   }
 
-  void _onCardOverlayRevealed(
-    CardOverlayRevealed event,
+  void _onClashSceneStarted(
+    ClashSceneStarted event,
     Emitter<GameState> emit,
   ) {
     if (state is MatchLoadedState) {
@@ -383,20 +386,40 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         emit(
           matchLoadedState.copyWith(
             rounds: rounds,
-            isFightScene: true,
+            isClashScene: true,
           ),
         );
       }
     }
   }
 
-  void _onFightSceneCompleted(
-    FightSceneCompleted event,
+  void _onClashSceneCompleted(
+    ClashSceneCompleted event,
     Emitter<GameState> emit,
   ) {
     if (state is MatchLoadedState) {
       final matchLoadedState = state as MatchLoadedState;
-      emit(matchLoadedState.copyWith(isFightScene: false));
+      emit(matchLoadedState.copyWith(isClashScene: false));
+    }
+  }
+
+  void _onCardLandingStarted(
+    CardLandingStarted event,
+    Emitter<GameState> emit,
+  ) {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+      emit(matchLoadedState.copyWith(showCardLanding: true));
+    }
+  }
+
+  void _onCardLandingCompleted(
+    CardLandingCompleted event,
+    Emitter<GameState> emit,
+  ) {
+    if (state is MatchLoadedState) {
+      final matchLoadedState = state as MatchLoadedState;
+      emit(matchLoadedState.copyWith(showCardLanding: false));
     }
   }
 
@@ -491,6 +514,18 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           : matchLoadedState.match.guestDeck.cards;
     }
     return [];
+  }
+
+  Card get lastPlayedPlayerCard {
+    final matchLoadedState = state as MatchLoadedState;
+    final cardId = matchLoadedState.rounds.last.playerCardId;
+    return playerCards.firstWhere((card) => card.id == cardId);
+  }
+
+  Card get lastPlayedOpponentCard {
+    final matchLoadedState = state as MatchLoadedState;
+    final cardId = matchLoadedState.rounds.last.opponentCardId;
+    return opponentCards.firstWhere((card) => card.id == cardId);
   }
 
   List<Card> get opponentCards {
