@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:api/game_url.dart';
 import 'package:cards_repository/cards_repository.dart';
+import 'package:config_repository/config_repository.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:db_client/db_client.dart';
 import 'package:encryption_middleware/encryption_middleware.dart';
@@ -17,6 +18,8 @@ import 'package:match_repository/match_repository.dart';
 import 'package:prompt_repository/prompt_repository.dart';
 import 'package:scripts_repository/scripts_repository.dart';
 
+import 'prompts.dart';
+
 late CardsRepository cardsRepository;
 late MatchRepository matchRepository;
 late ScriptsRepository scriptsRepository;
@@ -29,6 +32,7 @@ late GameUrl gameUrl;
 late PromptRepository promptRepository;
 late FirebaseCloudStorage firebaseCloudStorage;
 late ScriptsState scriptsState;
+late ConfigRepository configRepository;
 
 Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   final dbClient = DbClient.initialize(_appId, useEmulator: _useEmulator);
@@ -87,46 +91,6 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
       ),
     );
 
-    const characters = [
-      'Dash',
-      'Sparky',
-      'Android',
-      'Dino',
-    ];
-
-    const classes = [
-      'Astronaut',
-      'Captain',
-      'Chef',
-      'Cowboy',
-      'Fairy',
-      'Firefighter',
-      'Ghost',
-      'King',
-      'Mage',
-      'Mermaid',
-    ];
-
-    const powers = [
-      'Apples',
-      'Bagels',
-      'Banjos',
-      'Basketballs',
-      'Books',
-      'Candles',
-      'Cape',
-      'Carrots',
-      'Cookies',
-      'Crayons',
-    ];
-
-    const locations = [
-      'Forrest',
-      'Beach',
-      'Field',
-      'City',
-    ];
-
     const prompts = {
       PromptTermType.character: characters,
       PromptTermType.characterClass: classes,
@@ -163,6 +127,10 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   gameUrl = GameUrl(_gameUrl);
 
   scriptsState = _scriptsState;
+
+  configRepository = ConfigRepository(
+    dbClient: dbClient,
+  );
 
   return serve(
     handler,

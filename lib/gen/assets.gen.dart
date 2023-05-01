@@ -52,8 +52,8 @@ class $AssetsImagesGen {
   AssetGenImage get lossSplash =>
       const AssetGenImage('assets/images/loss_splash.png');
 
-  /// File path: assets/images/main.png
-  AssetGenImage get main => const AssetGenImage('assets/images/main.png');
+  /// File path: assets/images/main.jpg
+  AssetGenImage get main => const AssetGenImage('assets/images/main.jpg');
 
   /// File path: assets/images/stadium_background.png
   AssetGenImage get stadiumBackground =>
