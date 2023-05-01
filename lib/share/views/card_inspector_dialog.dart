@@ -18,21 +18,6 @@ class CardInspectorDialog extends StatefulWidget {
   final List<Card> deck;
   final int startingIndex;
 
-  static void show(
-    BuildContext context, {
-    required List<String> playerCardIds,
-    required List<Card> deck,
-    required int startingIndex,
-  }) =>
-      showDialog<Widget>(
-        context: context,
-        builder: (_) => CardInspectorDialog(
-          deck: deck,
-          playerCardIds: playerCardIds,
-          startingIndex: startingIndex,
-        ),
-      );
-
   @override
   State<CardInspectorDialog> createState() => _CardInspectorDialogState();
 }
