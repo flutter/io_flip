@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:api/game_url.dart';
 import 'package:cards_repository/cards_repository.dart';
+import 'package:config_repository/config_repository.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:db_client/db_client.dart';
 import 'package:encryption_middleware/encryption_middleware.dart';
@@ -29,6 +30,7 @@ late GameUrl gameUrl;
 late PromptRepository promptRepository;
 late FirebaseCloudStorage firebaseCloudStorage;
 late ScriptsState scriptsState;
+late ConfigRepository configRepository;
 
 Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   final dbClient = DbClient.initialize(_appId, useEmulator: _useEmulator);
@@ -163,6 +165,10 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   gameUrl = GameUrl(_gameUrl);
 
   scriptsState = _scriptsState;
+
+  configRepository = ConfigRepository(
+    dbClient: dbClient,
+  );
 
   return serve(
     handler,
