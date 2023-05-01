@@ -17,12 +17,23 @@ class ConfigRepository {
   /// in the db.
   static int defaultCardVariations = 8;
 
+  /// The default waiting time limit for private matches.
+  static int defaultPrivateTimeLimit = 120;
+
+  Future<String?> _getValue(String type) async {
+    final result = await _dbClient.findBy('config', 'type', type);
+    if (result.isNotEmpty) {
+      return result.first.data['value'] as String;
+    }
+    return null;
+  }
+
   /// Return how many variations of the same characters there are per deck.
   Future<int> getCardVariations() async {
     try {
-      final result = await _dbClient.findBy('config', 'type', 'variations');
-      if (result.isNotEmpty) {
-        return int.parse(result.first.data['value'] as String);
+      final value = await _getValue('variations');
+      if (value != null) {
+        return int.parse(value);
       }
     } catch (error, stackStrace) {
       log(
@@ -33,5 +44,24 @@ class ConfigRepository {
     }
 
     return defaultCardVariations;
+  }
+
+  /// Return how many variations of the same characters there are per deck.
+  Future<int> getPrivateMatchTimeLimit() async {
+    try {
+      final value = await _getValue('private_match_time_limit');
+      if (value != null) {
+        return int.parse(value);
+      }
+    } catch (error, stackStrace) {
+      log(
+        'Error fetching private match time limit from db, return the default '
+        'value',
+        error: error,
+        stackTrace: stackStrace,
+      );
+    }
+
+    return defaultPrivateTimeLimit;
   }
 }
