@@ -364,20 +364,16 @@
   "@termsOfUseDescriptionInfixOne": {
     "description": "First description infix text shown on the terms of use page"
   },
-  "termsOfUseDescriptionInfixTwo": "and acknowledge that information Google collects about me in connection with I/O Flip will be processed in accordance with the",
+  "termsOfUseDescriptionInfixTwo": "and acknowledge that information Google collects about me in connection with I/O FLIP will be processed in accordance with the Google",
   "@termsOfUseDescriptionInfixTwo": {
     "description": "Second description infix text shown on the terms of use page"
   },
-  "termsOfUseDescriptionSuffix": "Google Privacy Policy.",
+  "termsOfUseDescriptionSuffix": "Privacy Policy.",
   "@termsOfUseDescriptionSuffix": {
     "description": "Description suffix text shown on the terms of use page"
   },
-  "termsOfUseAcceptLabel": "ACCEPT",
-  "@termsOfUseAcceptLabel": {
-    "description": "Text shown on the accept button on the terms of use page"
-  },
-  "termsOfUseDeclineLabel": "DECLINE",
-  "@termsOfUseDeclineLabel": {
-    "description": "Text shown on the decline button on the terms of use page"
+  "termsOfUseContinueLabel": "CONTINUE",
+  "@termsOfUseContinueLabel": {
+    "description": "Text shown on the continue button on the terms of use page"
   }
 }

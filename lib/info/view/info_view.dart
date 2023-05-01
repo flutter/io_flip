@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:top_dash/l10n/l10n.dart';
+import 'package:top_dash/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
-
-// TODO(willhlas): add links.
 
 class InfoView extends StatelessWidget {
   const InfoView({super.key});
@@ -12,10 +11,10 @@ class InfoView extends StatelessWidget {
     final l10n = context.l10n;
 
     final links = {
-      l10n.ioLinkLabel: () {},
-      l10n.privacyPolicyLinkLabel: () {},
-      l10n.termsOfServiceLinkLabel: () {},
-      l10n.faqLinkLabel: () {},
+      l10n.ioLinkLabel: ExternalLinks.googleIO,
+      l10n.privacyPolicyLinkLabel: ExternalLinks.privacyPolicy,
+      l10n.termsOfServiceLinkLabel: ExternalLinks.termsOfService,
+      l10n.faqLinkLabel: ExternalLinks.faq,
     };
 
     final descriptionStyle = TopDashTextStyles.bodyLG.copyWith(
