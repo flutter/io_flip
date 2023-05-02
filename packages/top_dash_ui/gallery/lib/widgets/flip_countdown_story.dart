@@ -12,6 +12,8 @@ class FlipCountdownStory extends StatefulWidget {
 }
 
 class _FlipCountdownStoryState extends State<FlipCountdownStory> {
+  int _replayCounter = 0;
+
   @override
   Widget build(BuildContext context) {
     return Provider(
@@ -21,11 +23,14 @@ class _FlipCountdownStoryState extends State<FlipCountdownStory> {
         body: Center(
           child: Column(
             children: [
-              // ignore: prefer_const_constructors
-              FlipCountdown(),
+              FlipCountdown(
+                key: ValueKey(_replayCounter),
+              ),
               const SizedBox(height: TopDashSpacing.lg),
               ElevatedButton(
-                onPressed: () => setState(() {}),
+                onPressed: () => setState(() {
+                  _replayCounter++;
+                }),
                 child: const Text('Replay'),
               ),
             ],
