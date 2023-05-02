@@ -36,11 +36,13 @@ const pageData =
 
 void main() {
   late GoRouterState goRouterState;
+
   setUp(() {
     goRouterState = _MockGoRouterState();
     when(() => goRouterState.extra).thenReturn(pageData);
     when(() => goRouterState.queryParams).thenReturn({});
   });
+
   group('ShareHandPage', () {
     test('routeBuilder returns a ShareHandPage', () {
       expect(
@@ -52,6 +54,7 @@ void main() {
             .having((page) => page.initials, 'initials', pageData.initials),
       );
     });
+
     testWidgets('renders', (tester) async {
       await tester.pumpSubject();
       expect(find.byType(ShareHandPage), findsOneWidget);
