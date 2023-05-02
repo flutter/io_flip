@@ -37,6 +37,10 @@ late ConfigRepository configRepository;
 Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   final dbClient = DbClient.initialize(_appId, useEmulator: _useEmulator);
 
+  configRepository = ConfigRepository(
+    dbClient: dbClient,
+  );
+
   promptRepository = PromptRepository(
     dbClient: dbClient,
   );
@@ -69,6 +73,7 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   cardsRepository = CardsRepository(
     imageModelRepository: imageModelRepository,
     languageModelRepository: languageModelRepository,
+    configRepository: configRepository,
     dbClient: dbClient,
     gameScriptMachine: gameScriptMachine,
   );
@@ -127,10 +132,6 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   gameUrl = GameUrl(_gameUrl);
 
   scriptsState = _scriptsState;
-
-  configRepository = ConfigRepository(
-    dbClient: dbClient,
-  );
 
   return serve(
     handler,

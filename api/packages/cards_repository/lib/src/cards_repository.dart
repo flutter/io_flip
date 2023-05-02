@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:config_repository/config_repository.dart';
 import 'package:db_client/db_client.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:game_script_machine/game_script_machine.dart';
@@ -14,12 +15,14 @@ class CardsRepository {
   CardsRepository({
     required ImageModelRepository imageModelRepository,
     required LanguageModelRepository languageModelRepository,
+    required ConfigRepository configRepository,
     required DbClient dbClient,
     required GameScriptMachine gameScriptMachine,
     Random? rng,
   })  : _dbClient = dbClient,
         _imageModelRepository = imageModelRepository,
         _languageModelRepository = languageModelRepository,
+        _configRepository = configRepository,
         _gameScriptMachine = gameScriptMachine,
         _rng = rng ?? Random();
 
@@ -28,15 +31,14 @@ class CardsRepository {
   final GameScriptMachine _gameScriptMachine;
   final ImageModelRepository _imageModelRepository;
   final LanguageModelRepository _languageModelRepository;
+  final ConfigRepository _configRepository;
 
   /// Generates a random card.
   Future<List<Card>> generateCards({
     required String characterClass,
     required String characterPower,
   }) async {
-    // TODO(erickzanardo): variety of cards should come from the config
-    // repository.
-    const variations = 8;
+    final variations = await _configRepository.getCardVariations();
     const deckSize = 12;
 
     final images = await _imageModelRepository.generateImages(
