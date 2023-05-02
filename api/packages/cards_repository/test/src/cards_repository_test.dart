@@ -2,6 +2,7 @@
 import 'dart:math';
 
 import 'package:cards_repository/cards_repository.dart';
+import 'package:config_repository/config_repository.dart';
 import 'package:db_client/db_client.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:game_script_machine/game_script_machine.dart';
@@ -15,6 +16,8 @@ class _MockImageModelRepository extends Mock implements ImageModelRepository {}
 class _MockLanguageModelRepository extends Mock
     implements LanguageModelRepository {}
 
+class _MockConfigRepository extends Mock implements ConfigRepository {}
+
 class _MockRandom extends Mock implements Random {}
 
 class _MockDbClient extends Mock implements DbClient {}
@@ -26,6 +29,7 @@ void main() {
     late ImageModelRepository imageModelRepository;
     late LanguageModelRepository languageModelRepository;
     late CardsRepository cardsRepository;
+    late ConfigRepository configRepository;
     late DbClient dbClient;
     late GameScriptMachine gameScriptMachine;
     late Random rng;
@@ -53,9 +57,13 @@ void main() {
       imageModelRepository = _MockImageModelRepository();
       languageModelRepository = _MockLanguageModelRepository();
 
+      configRepository = _MockConfigRepository();
+      when(configRepository.getCardVariations).thenAnswer((_) async => 8);
+
       cardsRepository = CardsRepository(
         imageModelRepository: imageModelRepository,
         languageModelRepository: languageModelRepository,
+        configRepository: configRepository,
         dbClient: dbClient,
         gameScriptMachine: gameScriptMachine,
         rng: rng,
@@ -67,6 +75,7 @@ void main() {
         CardsRepository(
           imageModelRepository: _MockImageModelRepository(),
           languageModelRepository: _MockLanguageModelRepository(),
+          configRepository: _MockConfigRepository(),
           dbClient: dbClient,
           gameScriptMachine: gameScriptMachine,
         ),
@@ -122,6 +131,15 @@ void main() {
         ).thenAnswer((_) async => 'Super Bird Is Ready!');
 
         when(() => dbClient.add('cards', any())).thenAnswer((_) async => 'abc');
+      });
+
+      test('uses the configuration for card variations', () async {
+        await cardsRepository.generateCards(
+          characterClass: 'mage',
+          characterPower: 'baggles',
+        );
+
+        verify(configRepository.getCardVariations).called(1);
       });
 
       test('generates a common card', () async {
