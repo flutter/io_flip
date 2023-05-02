@@ -10,13 +10,13 @@ class AirDamage extends ElementalDamage {
   /// {@macro air_damage}
   AirDamage({required super.size})
       : super(
-          chargeBackPath: Assets.images.elements.metal.chargeBack.keyName,
-          chargeFrontPath: Assets.images.elements.metal.chargeFront.keyName,
-          damageReceivePath: Assets.images.elements.metal.damageReceive.keyName,
-          damageSendPath: Assets.images.elements.metal.damageSend.keyName,
+          chargeBackPath: Assets.images.elements.air.chargeBack.keyName,
+          chargeFrontPath: Assets.images.elements.air.chargeFront.keyName,
+          damageReceivePath: Assets.images.elements.air.damageReceive.keyName,
+          damageSendPath: Assets.images.elements.air.damageSend.keyName,
           victoryChargeBackPath:
-              Assets.images.elements.metal.victoryChargeBack.keyName,
+              Assets.images.elements.air.victoryChargeBack.keyName,
           victoryChargeFrontPath:
-              Assets.images.elements.metal.victoryChargeFront.keyName,
+              Assets.images.elements.air.victoryChargeFront.keyName,
         );
 }

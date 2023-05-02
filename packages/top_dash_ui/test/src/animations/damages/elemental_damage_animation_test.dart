@@ -18,25 +18,119 @@ void main() {
       images = _MockImages();
     });
 
-    testWidgets('renders SpriteAnimationWidget for metal element',
-        (tester) async {
-      await tester.pumpWidget(
-        Provider.value(
-          value: images,
-          child: Directionality(
-            textDirection: TextDirection.ltr,
-            child: ElementalDamageAnimation(
-              Element.metal,
-              direction: DamageDirection.topToBottom,
-              onComplete: () {},
-              size: const GameCardSize.md(),
+    group('MetalDamage', () {
+      testWidgets('renders SpriteAnimationWidget for metal element',
+          (tester) async {
+        await tester.pumpWidget(
+          Provider.value(
+            value: images,
+            child: Directionality(
+              textDirection: TextDirection.ltr,
+              child: ElementalDamageAnimation(
+                Element.metal,
+                direction: DamageDirection.topToBottom,
+                onComplete: () {},
+                size: const GameCardSize.md(),
+              ),
             ),
           ),
-        ),
-      );
+        );
 
-      expect(find.byType(DualAnimation), findsOneWidget);
-      expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+        expect(find.byType(DualAnimation), findsOneWidget);
+        expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+      });
+    });
+
+    group('AirDamage', () {
+      testWidgets('renders SpriteAnimationWidget for metal element',
+          (tester) async {
+        await tester.pumpWidget(
+          Provider.value(
+            value: images,
+            child: Directionality(
+              textDirection: TextDirection.ltr,
+              child: ElementalDamageAnimation(
+                Element.air,
+                direction: DamageDirection.topToBottom,
+                onComplete: () {},
+                size: const GameCardSize.md(),
+              ),
+            ),
+          ),
+        );
+
+        expect(find.byType(DualAnimation), findsOneWidget);
+        expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+      });
+    });
+
+    group('FireDamage', () {
+      testWidgets('renders SpriteAnimationWidget for metal element',
+          (tester) async {
+        await tester.pumpWidget(
+          Provider.value(
+            value: images,
+            child: Directionality(
+              textDirection: TextDirection.ltr,
+              child: ElementalDamageAnimation(
+                Element.fire,
+                direction: DamageDirection.topToBottom,
+                onComplete: () {},
+                size: const GameCardSize.md(),
+              ),
+            ),
+          ),
+        );
+
+        expect(find.byType(DualAnimation), findsOneWidget);
+        expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+      });
+    });
+
+    group('EarthDamage', () {
+      testWidgets('renders SpriteAnimationWidget for metal element',
+          (tester) async {
+        await tester.pumpWidget(
+          Provider.value(
+            value: images,
+            child: Directionality(
+              textDirection: TextDirection.ltr,
+              child: ElementalDamageAnimation(
+                Element.earth,
+                direction: DamageDirection.topToBottom,
+                onComplete: () {},
+                size: const GameCardSize.md(),
+              ),
+            ),
+          ),
+        );
+
+        expect(find.byType(DualAnimation), findsOneWidget);
+        expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+      });
+    });
+
+    group('WaterDamage', () {
+      testWidgets('renders SpriteAnimationWidget for metal element',
+          (tester) async {
+        await tester.pumpWidget(
+          Provider.value(
+            value: images,
+            child: Directionality(
+              textDirection: TextDirection.ltr,
+              child: ElementalDamageAnimation(
+                Element.water,
+                direction: DamageDirection.topToBottom,
+                onComplete: () {},
+                size: const GameCardSize.md(),
+              ),
+            ),
+          ),
+        );
+
+        expect(find.byType(DualAnimation), findsOneWidget);
+        expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+      });
     });
   });
 }

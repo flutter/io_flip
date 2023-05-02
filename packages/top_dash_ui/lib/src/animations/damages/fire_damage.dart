@@ -10,13 +10,13 @@ class FireDamage extends ElementalDamage {
   /// {@macro fire_damage}
   FireDamage({required super.size})
       : super(
-          chargeBackPath: Assets.images.elements.metal.chargeBack.keyName,
-          chargeFrontPath: Assets.images.elements.metal.chargeFront.keyName,
-          damageReceivePath: Assets.images.elements.metal.damageReceive.keyName,
-          damageSendPath: Assets.images.elements.metal.damageSend.keyName,
+          chargeBackPath: Assets.images.elements.fire.chargeBack.keyName,
+          chargeFrontPath: Assets.images.elements.fire.chargeFront.keyName,
+          damageReceivePath: Assets.images.elements.fire.damageReceive.keyName,
+          damageSendPath: Assets.images.elements.fire.damageSend.keyName,
           victoryChargeBackPath:
-              Assets.images.elements.metal.victoryChargeBack.keyName,
+              Assets.images.elements.fire.victoryChargeBack.keyName,
           victoryChargeFrontPath:
-              Assets.images.elements.metal.victoryChargeFront.keyName,
+              Assets.images.elements.fire.victoryChargeFront.keyName,
         );
 }

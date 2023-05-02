@@ -10,13 +10,13 @@ class EarthDamage extends ElementalDamage {
   /// {@macro earth_damage}
   EarthDamage({required super.size})
       : super(
-          chargeBackPath: Assets.images.elements.metal.chargeBack.keyName,
-          chargeFrontPath: Assets.images.elements.metal.chargeFront.keyName,
-          damageReceivePath: Assets.images.elements.metal.damageReceive.keyName,
-          damageSendPath: Assets.images.elements.metal.damageSend.keyName,
+          chargeBackPath: Assets.images.elements.earth.chargeBack.keyName,
+          chargeFrontPath: Assets.images.elements.earth.chargeFront.keyName,
+          damageReceivePath: Assets.images.elements.earth.damageReceive.keyName,
+          damageSendPath: Assets.images.elements.earth.damageSend.keyName,
           victoryChargeBackPath:
-              Assets.images.elements.metal.victoryChargeBack.keyName,
+              Assets.images.elements.earth.victoryChargeBack.keyName,
           victoryChargeFrontPath:
-              Assets.images.elements.metal.victoryChargeFront.keyName,
+              Assets.images.elements.earth.victoryChargeFront.keyName,
         );
 }
