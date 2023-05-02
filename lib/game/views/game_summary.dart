@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:top_dash/audio/audio.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/info/widgets/info_button.dart';
+import 'package:top_dash/info/info.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/share/share.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
@@ -269,55 +270,56 @@ class GameSummaryFooter extends StatelessWidget {
     final l10n = context.l10n;
     final bloc = context.watch<GameBloc>();
     final state = bloc.state as MatchLoadedState;
-    final playerScoreCard = state.playerScoreCard;
     final playerDeck =
         bloc.isHost ? state.match.hostDeck : state.match.guestDeck;
+    final result = state.matchState.result;
+    final isWinner = result == MatchResult.host && bloc.isHost ||
+        result == MatchResult.guest && !bloc.isHost;
 
     return Flex(
       direction: isPhoneWidth ? Axis.vertical : Axis.horizontal,
       mainAxisSize: MainAxisSize.min,
       children: [
-        RoundedButton.text(
-          l10n.nextMatch,
-          onPressed: () => GoRouter.of(context).pop(),
-        ),
+        if (isWinner)
+          RoundedButton.text(
+            l10n.nextMatch,
+            onPressed: () => GoRouter.of(context).pop(),
+          ),
         _gap,
         RoundedButton.text(
-          l10n.quit,
+          l10n.submitScore,
           backgroundColor: TopDashColors.seedBlack,
           foregroundColor: TopDashColors.seedWhite,
           borderColor: TopDashColors.seedPaletteNeutral40,
-          onPressed: () => TopDashDialog.show(
-            context,
-            child: QuitGameDialog(
-              onConfirm: () => _routerNeglectCall(context, () {
-                if (playerScoreCard.initials != null) {
-                  GoRouter.of(context).goNamed(
-                    'share_hand',
-                    extra: ShareHandPageData(
-                      initials: playerScoreCard.initials!,
-                      wins: state.playerScoreCard.currentStreak,
-                      deckId: playerDeck.id,
-                      deck: bloc.playerCards,
-                    ),
-                  );
-                } else {
-                  GoRouter.of(context).pop();
-                  bloc.add(
-                    LeaderboardEntryRequested(
-                      shareHandPageData: ShareHandPageData(
-                        initials: '',
-                        wins: state.playerScoreCard.currentStreak,
-                        deckId: playerDeck.id,
-                        deck: bloc.playerCards,
-                      ),
-                    ),
-                  );
-                }
-              }),
-              onCancel: GoRouter.of(context).pop,
-            ),
-          ),
+          onPressed: () {
+            final router = GoRouter.of(context);
+            final event = LeaderboardEntryRequested(
+              shareHandPageData: ShareHandPageData(
+                initials: '',
+                wins: state.playerScoreCard.currentStreak,
+                deckId: playerDeck.id,
+                deck: bloc.playerCards,
+              ),
+            );
+
+            if (isWinner) {
+              TopDashDialog.show(
+                context,
+                child: QuitGameDialog(
+                  onConfirm: () => _routerNeglectCall(
+                    context,
+                    () {
+                      router.pop();
+                      bloc.add(event);
+                    },
+                  ),
+                  onCancel: router.pop,
+                ),
+              );
+            } else {
+              bloc.add(event);
+            }
+          },
         ),
       ],
     );

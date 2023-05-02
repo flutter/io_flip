@@ -23,7 +23,7 @@ void main() {
     });
 
     testWidgets(
-      'calls onConfirm when the quit button is tapped',
+      'calls onConfirm when the continue button is tapped',
       (tester) async {
         var onConfirmCalled = false;
 
@@ -33,7 +33,7 @@ void main() {
           ),
         );
 
-        await tester.tap(find.text(tester.l10n.quit));
+        await tester.tap(find.text(tester.l10n.continueLabel));
 
         expect(onConfirmCalled, isTrue);
       },
