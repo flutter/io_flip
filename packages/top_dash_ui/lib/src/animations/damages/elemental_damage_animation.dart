@@ -15,14 +15,15 @@ class ElementalDamageAnimation extends StatefulWidget {
   const ElementalDamageAnimation(
     this.element, {
     required this.direction,
-    required this.onComplete,
     required this.size,
+    this.onComplete,
+    this.loop = false,
     super.key,
   });
 
   /// Optional callback to be called when all the animations of the damage
   /// are complete.
-  final VoidCallback onComplete;
+  final VoidCallback? onComplete;
 
   /// Element defining which [ElementalDamage] to use
   final Element element;
@@ -32,6 +33,9 @@ class ElementalDamageAnimation extends StatefulWidget {
 
   /// Size of the card
   final GameCardSize size;
+
+  /// boolean that indicates if the aniamtion should repeat
+  final bool loop;
 
   @override
   State<ElementalDamageAnimation> createState() =>
@@ -137,16 +141,17 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
           ],
         );
       case _AnimationState.ended:
-        widget.onComplete();
-        setState(() {
-          _animationState = _AnimationState.charging;
-        });
-        return const Placeholder();
+        widget.onComplete?.call();
+        if (widget.loop) {
+          setState(() {
+            _animationState = _AnimationState.charging;
+          });
+        }
+        return Container();
     }
   }
 
   void _onStepCompleted() {
-    print('hello');
     switch (_animationState) {
       case _AnimationState.charging:
         setState(() {

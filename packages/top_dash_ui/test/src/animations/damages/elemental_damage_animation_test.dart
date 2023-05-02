@@ -24,13 +24,12 @@ void main() {
         await tester.pumpWidget(
           Provider.value(
             value: images,
-            child: Directionality(
+            child: const Directionality(
               textDirection: TextDirection.ltr,
               child: ElementalDamageAnimation(
                 Element.metal,
                 direction: DamageDirection.topToBottom,
-                onComplete: () {},
-                size: const GameCardSize.md(),
+                size: GameCardSize.md(),
               ),
             ),
           ),
@@ -47,13 +46,12 @@ void main() {
         await tester.pumpWidget(
           Provider.value(
             value: images,
-            child: Directionality(
+            child: const Directionality(
               textDirection: TextDirection.ltr,
               child: ElementalDamageAnimation(
                 Element.air,
                 direction: DamageDirection.topToBottom,
-                onComplete: () {},
-                size: const GameCardSize.md(),
+                size: GameCardSize.md(),
               ),
             ),
           ),
@@ -70,13 +68,12 @@ void main() {
         await tester.pumpWidget(
           Provider.value(
             value: images,
-            child: Directionality(
+            child: const Directionality(
               textDirection: TextDirection.ltr,
               child: ElementalDamageAnimation(
                 Element.fire,
                 direction: DamageDirection.topToBottom,
-                onComplete: () {},
-                size: const GameCardSize.md(),
+                size: GameCardSize.md(),
               ),
             ),
           ),
@@ -93,13 +90,12 @@ void main() {
         await tester.pumpWidget(
           Provider.value(
             value: images,
-            child: Directionality(
+            child: const Directionality(
               textDirection: TextDirection.ltr,
               child: ElementalDamageAnimation(
                 Element.earth,
                 direction: DamageDirection.topToBottom,
-                onComplete: () {},
-                size: const GameCardSize.md(),
+                size: GameCardSize.md(),
               ),
             ),
           ),
@@ -116,13 +112,12 @@ void main() {
         await tester.pumpWidget(
           Provider.value(
             value: images,
-            child: Directionality(
+            child: const Directionality(
               textDirection: TextDirection.ltr,
               child: ElementalDamageAnimation(
                 Element.water,
                 direction: DamageDirection.topToBottom,
-                onComplete: () {},
-                size: const GameCardSize.md(),
+                size: GameCardSize.md(),
               ),
             ),
           ),
