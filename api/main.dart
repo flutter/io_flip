@@ -42,7 +42,7 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   );
   final imageModelRepository = ImageModelRepository(
     imageHost:
-        'https://firebasestorage.googleapis.com/v0/b/top-dash-dev.appspot.com/o/public%2Fillustrations%2F',
+        'https://firebasestorage.googleapis.com/v0/b/$_appId.appspot.com/o/public%2Fillustrations%2F',
     promptRepository: promptRepository,
     urlParams: '?alt=media',
   );
@@ -138,8 +138,6 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
     port,
   );
 }
-
-// https://a16e0900d-fe2c-3609-b43c-87093e447b78.web.app/
 
 String get _appId {
   final value = Platform.environment['FB_APP_ID'];
