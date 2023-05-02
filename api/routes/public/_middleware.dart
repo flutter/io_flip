@@ -41,5 +41,5 @@ Handler middleware(Handler handler) {
           ),
         ),
       )
-      .use(middlewares.corsHeaders());
+      .use(middlewares.allowHeaders());
 }

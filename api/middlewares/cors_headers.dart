@@ -2,7 +2,7 @@ import 'package:dart_frog/dart_frog.dart';
 import 'package:jwt_middleware/jwt_middleware.dart';
 import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 
-Middleware corsHeaders() {
+Middleware allowHeaders() {
   return (handler) {
     return (context) async {
       final response = await handler(context);
