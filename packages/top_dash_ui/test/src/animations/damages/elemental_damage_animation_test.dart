@@ -2,47 +2,53 @@ import 'package:flame/cache.dart';
 import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart' hide Element;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
 import 'package:top_dash_ui/src/animations/animations.dart';
+import 'package:top_dash_ui/src/widgets/damages/charge_back.dart';
+import 'package:top_dash_ui/src/widgets/damages/charge_front.dart';
 import 'package:top_dash_ui/src/widgets/damages/dual_animation.dart';
 import 'package:top_dash_ui/src/widgets/game_card.dart';
-
-class _MockImages extends Mock implements Images {}
 
 void main() {
   group('ElementalDamageAnimation', () {
     late Images images;
 
     setUp(() {
-      images = _MockImages();
+      images = Images(prefix: '');
     });
 
     group('MetalDamage', () {
-      testWidgets('renders SpriteAnimationWidget for metal element',
-          (tester) async {
-        await tester.pumpWidget(
-          Provider.value(
-            value: images,
-            child: const Directionality(
-              textDirection: TextDirection.ltr,
-              child: ElementalDamageAnimation(
-                Element.metal,
-                direction: DamageDirection.topToBottom,
-                size: GameCardSize.md(),
+      testWidgets('renders SpriteAnimationWidget', (tester) async {
+        await tester.runAsync(() async {
+          await tester.pumpWidget(
+            Provider.value(
+              value: images,
+              child: const Directionality(
+                textDirection: TextDirection.ltr,
+                child: ElementalDamageAnimation(
+                  Element.metal,
+                  direction: DamageDirection.topToBottom,
+                  size: GameCardSize.md(),
+                ),
               ),
             ),
-          ),
-        );
+          );
 
-        expect(find.byType(DualAnimation), findsOneWidget);
-        expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+          for (var i = 0; i < 24; i++) {
+            await tester.pump();
+//            await tester.pumpAndSettle();
+          }
+
+          expect(find.byType(DualAnimation), findsOneWidget);
+          expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+          expect(find.byType(ChargeBack), findsOneWidget);
+          expect(find.byType(ChargeFront), findsOneWidget);
+        });
       });
     });
 
     group('AirDamage', () {
-      testWidgets('renders SpriteAnimationWidget for metal element',
-          (tester) async {
+      testWidgets('renders SpriteAnimationWidget', (tester) async {
         await tester.pumpWidget(
           Provider.value(
             value: images,
@@ -63,8 +69,7 @@ void main() {
     });
 
     group('FireDamage', () {
-      testWidgets('renders SpriteAnimationWidget for metal element',
-          (tester) async {
+      testWidgets('renders SpriteAnimationWidget', (tester) async {
         await tester.pumpWidget(
           Provider.value(
             value: images,
@@ -85,8 +90,7 @@ void main() {
     });
 
     group('EarthDamage', () {
-      testWidgets('renders SpriteAnimationWidget for metal element',
-          (tester) async {
+      testWidgets('renders SpriteAnimationWidget', (tester) async {
         await tester.pumpWidget(
           Provider.value(
             value: images,
@@ -107,8 +111,7 @@ void main() {
     });
 
     group('WaterDamage', () {
-      testWidgets('renders SpriteAnimationWidget for metal element',
-          (tester) async {
+      testWidgets('renders SpriteAnimationWidget', (tester) async {
         await tester.pumpWidget(
           Provider.value(
             value: images,
