@@ -139,8 +139,10 @@ void main() {
         );
         expect(
           result.url,
-          'https://my_host.com/'
-          'character_with_spaces_characterclass_location_1.png',
+          equals(
+            'https://my_host.com/'
+            'character_with_spaces_characterclass_location_1.png',
+          ),
         );
       });
 
@@ -153,8 +155,10 @@ void main() {
         );
         expect(
           result.url,
-          'https://my_host.com/'
-          'character_character_class_with_spaces_location_1.png',
+          equals(
+            'https://my_host.com/'
+            'character_character_class_with_spaces_location_1.png',
+          ),
         );
       });
 
@@ -167,8 +171,10 @@ void main() {
         );
         expect(
           result.url,
-          'https://my_host.com/'
-          'character_characterclass_location_with_spaces_1.png',
+          equals(
+            'https://my_host.com/'
+            'character_characterclass_location_with_spaces_1.png',
+          ),
         );
       });
     });
