@@ -23,20 +23,22 @@ class StretchAnimation extends StatefulWidget {
 
 class _StretchAnimationState extends State<StretchAnimation>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
+  late final _controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 800),
     lowerBound: 0.35,
   );
-  late final Animation<double> _animation =
-      CurvedAnimation(parent: _controller, curve: Curves.elasticOut);
+  late final _animation = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.elasticOut,
+  );
 
   @override
   void initState() {
+    super.initState();
     if (widget.animating) {
       _controller.forward();
     }
-    super.initState();
   }
 
   @override
@@ -47,6 +49,7 @@ class _StretchAnimationState extends State<StretchAnimation>
 
   @override
   void didUpdateWidget(covariant StretchAnimation oldWidget) {
+    super.didUpdateWidget(oldWidget);
     if (oldWidget.animating != widget.animating) {
       if (widget.animating) {
         _controller
@@ -56,7 +59,6 @@ class _StretchAnimationState extends State<StretchAnimation>
         _controller.stop();
       }
     }
-    super.didUpdateWidget(oldWidget);
   }
 
   @override

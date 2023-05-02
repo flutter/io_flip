@@ -33,11 +33,11 @@ class DeckPackState extends State<DeckPack> {
 
   @override
   void initState() {
-    setupAnimation();
     super.initState();
+    setupAnimation();
   }
 
-  Future<void> setupAnimation() {
+  Future<void> setupAnimation() async {
     final data = SpriteAnimationData.sequenced(
       amount: 56,
       amountPerRow: 7,
@@ -45,7 +45,7 @@ class DeckPackState extends State<DeckPack> {
       stepTime: 0.04,
       loop: false,
     );
-    return SpriteAnimation.load(
+    await SpriteAnimation.load(
       Assets.images.frontPack.keyName,
       data,
       images: context.read<Images>(),
