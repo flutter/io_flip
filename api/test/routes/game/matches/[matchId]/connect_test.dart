@@ -9,6 +9,7 @@ import 'package:jwt_middleware/jwt_middleware.dart';
 import 'package:logging/logging.dart';
 import 'package:match_repository/match_repository.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:prompt_repository/prompt_repository.dart';
 import 'package:test/test.dart';
 
 import '../../../../../routes/game/matches/[matchId]/connect.dart' as route;
@@ -16,6 +17,8 @@ import '../../../../../routes/game/matches/[matchId]/connect.dart' as route;
 class _MockMatchRepository extends Mock implements MatchRepository {}
 
 class _MockCardsRepository extends Mock implements CardsRepository {}
+
+class _MockPromptRepository extends Mock implements PromptRepository {}
 
 class _MockAuthenticatedUser extends Mock implements AuthenticatedUser {}
 
@@ -28,6 +31,7 @@ class _MockRequest extends Mock implements Request {}
 void main() {
   late CardsRepository cardsRepository;
   late MatchRepository matchRepository;
+  late PromptRepository promptRepository;
   late AuthenticatedUser user;
   late Request request;
   late RequestContext context;
@@ -76,6 +80,31 @@ void main() {
       () => matchRepository.getPlayerConnectivity(userId: userId),
     ).thenAnswer((_) => Future.value(true));
 
+    promptRepository = _MockPromptRepository();
+    when(
+      () =>
+          promptRepository.getPromptTermsByType(PromptTermType.characterClass),
+    ).thenAnswer(
+      (_) async => const [
+        PromptTerm(
+          id: 'id',
+          term: 'Mage',
+          type: PromptTermType.characterClass,
+        ),
+      ],
+    );
+    when(
+      () => promptRepository.getPromptTermsByType(PromptTermType.power),
+    ).thenAnswer(
+      (_) async => const [
+        PromptTerm(
+          id: 'id',
+          term: 'Super Smell',
+          type: PromptTermType.power,
+        ),
+      ],
+    );
+
     user = _MockAuthenticatedUser();
     when(() => user.id).thenReturn(userId);
 
@@ -94,6 +123,7 @@ void main() {
     when(() => context.read<CardsRepository>()).thenReturn(cardsRepository);
     when(() => context.read<AuthenticatedUser>()).thenReturn(user);
     when(() => context.read<MatchRepository>()).thenReturn(matchRepository);
+    when(() => context.read<PromptRepository>()).thenReturn(promptRepository);
 
     logger = _MockLogger();
     when(() => context.read<Logger>()).thenReturn(logger);
