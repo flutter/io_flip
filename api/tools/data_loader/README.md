@@ -86,3 +86,13 @@ gcloud storage cp --gzip-local-all --recursive . gs://<bucket-id>
 
 Similar to the prompts command, you need to have the gcloud cli properly configured
 and authenticated.
+
+### Validating images
+
+This commands takes a CSV with the prompts, a number of variations and check if a certain folder
+has an image for all of the prompt combinations. This commands assumes that which character has its
+own folder, so it should be executed once per character.
+
+```
+dart bin/data_loader.dart validate_images <images_folder> <csv_file_location.csv> <card_variation_number> <character>
+```

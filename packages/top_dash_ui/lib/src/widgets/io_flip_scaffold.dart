@@ -9,10 +9,14 @@ class IoFlipScaffold extends StatelessWidget {
   const IoFlipScaffold({
     super.key,
     this.body,
+    this.bottomBar,
   });
 
   /// The primary content of the scaffold.
   final Widget? body;
+
+  /// The bottom bar of the scaffold.
+  final Widget? bottomBar;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +31,12 @@ class IoFlipScaffold extends StatelessWidget {
             ),
           ),
         ),
-        child: body,
+        child: Column(
+          children: [
+            if (body != null) Expanded(child: body!),
+            if (bottomBar != null) bottomBar!,
+          ],
+        ),
       ),
     );
   }

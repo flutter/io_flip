@@ -15,7 +15,7 @@ void main() {
     test('applies rainbow on top of image', () async {
       final command = Command()
         ..createImage(width: 500, height: 500)
-        ..fill(color: ColorRgb8(255, 255, 255))
+        ..fill(color: ColorRgb8(128, 128, 128))
         ..filter(rainbowFilter)
         ..encodePng();
       await command.execute();

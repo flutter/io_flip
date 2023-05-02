@@ -3,18 +3,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:top_dash/terms_of_use/terms_of_use.dart';
+import 'package:top_dash/utils/external_links.dart';
+import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 
 import '../../helpers/helpers.dart';
 
 class _MockTermsOfUseCubit extends MockCubit<bool> implements TermsOfUseCubit {}
 
+class _MockUrlLauncher extends Mock
+    with MockPlatformInterfaceMixin
+    implements UrlLauncherPlatform {}
+
+class _FakeLaunchOptions extends Fake implements LaunchOptions {}
+
 void main() {
   late TermsOfUseCubit cubit;
+  late UrlLauncherPlatform urlLauncher;
 
   setUp(() {
     cubit = _MockTermsOfUseCubit();
     when(cubit.acceptTermsOfUse).thenAnswer((_) => true);
+
+    urlLauncher = _MockUrlLauncher();
+    UrlLauncherPlatform.instance = urlLauncher;
+  });
+
+  setUpAll(() {
+    registerFallbackValue(_FakeLaunchOptions());
   });
 
   group('TermsOfUseView', () {
@@ -33,8 +50,7 @@ void main() {
       final expectedTexts = [
         l10n.termsOfUseTitle,
         descriptionText,
-        l10n.termsOfUseAcceptLabel,
-        l10n.termsOfUseDeclineLabel,
+        l10n.termsOfUseContinueLabel,
       ];
 
       for (final text in expectedTexts) {
@@ -42,25 +58,70 @@ void main() {
       }
     });
 
-    testWidgets('tapping decline button pops go router', (tester) async {
-      final goRouter = MockGoRouter();
-      when(goRouter.canPop).thenReturn(true);
+    testWidgets(
+      'tapping on Terms of Service opens the link',
+      (tester) async {
+        const link = ExternalLinks.termsOfService;
 
-      await tester.pumpApp(
-        buildSubject(),
-        router: goRouter,
-      );
+        when(
+          () => urlLauncher.canLaunch(link),
+        ).thenAnswer((_) async => true);
 
-      final l10n = tester.l10n;
+        when(
+          () => urlLauncher.launchUrl(link, any()),
+        ).thenAnswer((_) async => true);
 
-      await tester.tap(find.text(l10n.termsOfUseDeclineLabel));
-      await tester.pumpAndSettle();
+        await tester.pumpApp(buildSubject());
 
-      verify(goRouter.pop).called(1);
-    });
+        final l10n = tester.l10n;
+
+        final textFinder = find.byWidgetPredicate(
+          (widget) =>
+              widget is RichText &&
+              tapTextSpan(widget, l10n.termsOfUseDescriptionInfixOne),
+        );
+        await tester.tap(textFinder);
+        await tester.pumpAndSettle();
+
+        verify(
+          () => urlLauncher.launchUrl(link, any()),
+        ).called(1);
+      },
+    );
 
     testWidgets(
-      'tapping accept button calls acceptTermsOfUse and pops go router',
+      'tapping on Privacy Policy opens the link',
+      (tester) async {
+        const link = ExternalLinks.privacyPolicy;
+
+        when(
+          () => urlLauncher.canLaunch(link),
+        ).thenAnswer((_) async => true);
+
+        when(
+          () => urlLauncher.launchUrl(link, any()),
+        ).thenAnswer((_) async => true);
+
+        await tester.pumpApp(buildSubject());
+
+        final l10n = tester.l10n;
+
+        final textFinder = find.byWidgetPredicate(
+          (widget) =>
+              widget is RichText &&
+              tapTextSpan(widget, l10n.termsOfUseDescriptionSuffix),
+        );
+        await tester.tap(textFinder);
+        await tester.pumpAndSettle();
+
+        verify(
+          () => urlLauncher.launchUrl(link, any()),
+        ).called(1);
+      },
+    );
+
+    testWidgets(
+      'tapping continue button calls acceptTermsOfUse and pops go router',
       (tester) async {
         final goRouter = MockGoRouter();
         when(goRouter.canPop).thenReturn(true);
@@ -75,7 +136,7 @@ void main() {
 
         final l10n = tester.l10n;
 
-        await tester.tap(find.text(l10n.termsOfUseAcceptLabel));
+        await tester.tap(find.text(l10n.termsOfUseContinueLabel));
         await tester.pumpAndSettle();
 
         verify(cubit.acceptTermsOfUse).called(1);

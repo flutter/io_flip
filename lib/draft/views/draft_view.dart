@@ -43,6 +43,7 @@ class DraftView extends StatelessWidget {
     }
 
     return IoFlipScaffold(
+      bottomBar: _BottomBar(routerNeglectCall: _routerNeglectCall),
       body: Center(
         child: Column(
           children: [
@@ -62,7 +63,6 @@ class DraftView extends StatelessWidget {
                 ],
               ),
             ),
-            _BottomBar(routerNeglectCall: _routerNeglectCall),
           ],
         ),
       ),
