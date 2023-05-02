@@ -25,6 +25,10 @@ class $AssetsIconsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/back_pack.png
+  AssetGenImage get backPack =>
+      const AssetGenImage('assets/images/back_pack.png');
+
   /// File path: assets/images/card_master.png
   AssetGenImage get cardMaster =>
       const AssetGenImage('assets/images/card_master.png');
@@ -35,13 +39,13 @@ class $AssetsImagesGen {
   AssetGenImage get download =>
       const AssetGenImage('assets/images/download.png');
 
-  /// File path: assets/images/draw_splash.png
-  AssetGenImage get drawSplash =>
-      const AssetGenImage('assets/images/draw_splash.png');
-
   /// File path: assets/images/facebook.png
   AssetGenImage get facebook =>
       const AssetGenImage('assets/images/facebook.png');
+
+  /// File path: assets/images/front_pack.png
+  AssetGenImage get frontPack =>
+      const AssetGenImage('assets/images/front_pack.png');
 
   $AssetsImagesLeaderboardGen get leaderboard =>
       const $AssetsImagesLeaderboardGen();
@@ -64,10 +68,11 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [
+        backPack,
         cardMaster,
         download,
-        drawSplash,
         facebook,
+        frontPack,
         main,
         stadiumBackground,
         tempPreferencesCustom,
