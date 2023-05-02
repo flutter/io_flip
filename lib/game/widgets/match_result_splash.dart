@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash/gen/assets.gen.dart';
+import 'package:top_dash/utils/utils.dart';
 
 class MatchResultSplash extends StatefulWidget {
   const MatchResultSplash({
@@ -34,16 +35,29 @@ class MatchResultSplashState extends State<MatchResultSplash> {
   Widget build(BuildContext context) {
     final images = context.watch<Images>();
     final String resultImageKey;
+    final textureSize = platformAwareAsset(
+      desktop: Vector2(1150, 750),
+      mobile: Vector2(575, 375),
+    );
 
     switch (widget.result) {
       case GameResult.win:
-        resultImageKey = Assets.images.winSplash.keyName;
+        resultImageKey = platformAwareAsset(
+          desktop: Assets.images.desktop.winSplash.keyName,
+          mobile: Assets.images.mobile.winSplash.keyName,
+        );
         break;
       case GameResult.lose:
-        resultImageKey = Assets.images.lossSplash.keyName;
+        resultImageKey = platformAwareAsset(
+          desktop: Assets.images.desktop.lossSplash.keyName,
+          mobile: Assets.images.mobile.lossSplash.keyName,
+        );
         break;
       case GameResult.draw:
-        resultImageKey = Assets.images.drawSplash.keyName;
+        resultImageKey = platformAwareAsset(
+          desktop: Assets.images.desktop.drawSplash.keyName,
+          mobile: Assets.images.mobile.drawSplash.keyName,
+        );
         break;
     }
 
@@ -58,7 +72,7 @@ class MatchResultSplashState extends State<MatchResultSplash> {
               data: SpriteAnimationData.sequenced(
                 amount: 28,
                 amountPerRow: 4,
-                textureSize: Vector2(1150, 750),
+                textureSize: textureSize,
                 stepTime: 0.04,
                 loop: false,
               ),

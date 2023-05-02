@@ -7,14 +7,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
+import '../../helpers/mock_failed_network_image.dart';
+
 void main() {
   group('GameCard', () {
     for (final suitName in ['fire', 'air', 'earth', 'water', 'metal']) {
       group('when is a $suitName card', () {
         testWidgets('renders correctly', (tester) async {
-          await mockNetworkImages(() async {
-            await tester.pumpWidget(
-              Directionality(
+          await tester.pumpWidget(
+            mockNetworkImages(
+              () => Directionality(
                 textDirection: TextDirection.ltr,
                 child: GameCard(
                   image: 'image',
@@ -24,40 +26,63 @@ void main() {
                   power: 1,
                 ),
               ),
-            );
+            ),
+          );
 
-            expect(
-              find.text('name'),
-              findsOneWidget,
-            );
+          expect(
+            find.text('name'),
+            findsOneWidget,
+          );
 
-            expect(
-              find.byWidgetPredicate(
-                (widget) {
-                  if (widget is Image && widget.image is AssetImage) {
-                    final assetImage = widget.image as AssetImage;
-                    return assetImage.assetName ==
-                        'packages/top_dash_ui/assets/images/card_frames/card_$suitName.png';
-                  }
-                  return false;
-                },
-              ),
-              findsOneWidget,
-            );
+          expect(
+            find.byWidgetPredicate(
+              (widget) {
+                if (widget is Image && widget.image is AssetImage) {
+                  final assetImage = widget.image as AssetImage;
+                  return assetImage.assetName ==
+                      'packages/top_dash_ui/assets/images/card_frames/card_$suitName.png';
+                }
+                return false;
+              },
+            ),
+            findsOneWidget,
+          );
 
-            expect(
-              find.text('1'),
-              findsNWidgets(2), // Two texts are stacked to draw the border.
-            );
-          });
+          expect(
+            find.text('1'),
+            findsNWidgets(2), // Two texts are stacked to draw the border.
+          );
         });
       });
     }
 
-    testWidgets('breaks when rendering an unknown suit', (tester) async {
-      await mockNetworkImages(() async {
+    testWidgets(
+      'renders IO flip game as a placeholder when loading fails',
+      (tester) async {
         await tester.pumpWidget(
-          const Directionality(
+          mockFailedNetworkImages(
+            () => Directionality(
+              textDirection: TextDirection.ltr,
+              child: GameCard(
+                image: 'image',
+                name: 'name',
+                description: 'description',
+                suitName: 'air',
+                power: 1,
+              ),
+            ),
+          ),
+        );
+        await tester.pump();
+
+        expect(find.byType(IoFlipLogo), findsOneWidget);
+      },
+    );
+
+    testWidgets('breaks when rendering an unknown suit', (tester) async {
+      await tester.pumpWidget(
+        mockNetworkImages(
+          () => const Directionality(
             textDirection: TextDirection.ltr,
             child: GameCard(
               image: 'image',
@@ -67,16 +92,16 @@ void main() {
               power: 1,
             ),
           ),
-        );
+        ),
+      );
 
-        expect(tester.takeException(), isArgumentError);
-      });
+      expect(tester.takeException(), isArgumentError);
     });
 
     testWidgets('renders an overlay', (tester) async {
-      await mockNetworkImages(() async {
-        await tester.pumpWidget(
-          const Directionality(
+      await tester.pumpWidget(
+        mockNetworkImages(
+          () => const Directionality(
             textDirection: TextDirection.ltr,
             child: GameCard(
               image: 'image',
@@ -87,16 +112,16 @@ void main() {
               overlay: CardOverlayType.win,
             ),
           ),
-        );
+        ),
+      );
 
-        expect(find.byType(CardOverlay), findsOneWidget);
-      });
+      expect(find.byType(CardOverlay), findsOneWidget);
     });
 
     testWidgets('renders FoilShader when card is rare', (tester) async {
-      await mockNetworkImages(() async {
-        await tester.pumpWidget(
-          const Directionality(
+      await tester.pumpWidget(
+        mockNetworkImages(
+          () => const Directionality(
             textDirection: TextDirection.ltr,
             child: GameCard(
               package: null,
@@ -108,10 +133,10 @@ void main() {
               isRare: true,
             ),
           ),
-        );
+        ),
+      );
 
-        expect(find.byType(FoilShader), findsOneWidget);
-      });
+      expect(find.byType(FoilShader), findsOneWidget);
     });
   });
 

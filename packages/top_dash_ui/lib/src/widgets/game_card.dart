@@ -291,7 +291,21 @@ class GameCard extends StatelessWidget {
       children: [
         Positioned.fromRelativeRect(
           rect: size.imageInset,
-          child: Image.network(image),
+          child: Image.network(
+            image,
+            errorBuilder: (_, __, ___) {
+              return Container(
+                foregroundDecoration: const BoxDecoration(
+                  color: TopDashColors.seedGrey50,
+                  backgroundBlendMode: BlendMode.saturation,
+                ),
+                decoration: const BoxDecoration(
+                  color: TopDashColors.seedBlack,
+                ),
+                child: IoFlipLogo(),
+              );
+            },
+          ),
         ),
         Positioned.fill(
           child: Image.asset(cardFrame),

@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, one_member_abstracts
 
 import 'package:bloc_test/bloc_test.dart';
+import 'package:flame/cache.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/draft/draft.dart';
+import 'package:top_dash/draft/widgets/widgets.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/match_making/views/match_making_page.dart';
@@ -338,6 +340,35 @@ void main() {
     );
 
     testWidgets(
+      'does not navigates to the private match lobby when clicking on create '
+      'private match and private matches are disabled.',
+      (tester) async {
+        final goRouter = MockGoRouter();
+        mockState(
+          [
+            DraftState(
+              cards: const [card1, card2, card3],
+              selectedCards: const [card1, card2, card3],
+              status: DraftStateStatus.deckSelected,
+              firstCardOpacity: 1,
+            )
+          ],
+        );
+        await tester.pumpSubject(
+          draftBloc: draftBloc,
+          goRouter: goRouter,
+          routerNeglectCall: router.neglect,
+          allowPrivateMatch: 'false',
+        );
+
+        await tester.longPress(find.text(tester.l10n.joinMatch.toUpperCase()));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Create private match'), findsNothing);
+      },
+    );
+
+    testWidgets(
       'stay in the page when cancelling the input of the invite code',
       (tester) async {
         final goRouter = MockGoRouter();
@@ -398,6 +429,32 @@ void main() {
         expect(find.byType(HowToPlayDialog), findsOneWidget);
       },
     );
+
+    testWidgets(
+      'can setup animation',
+      (tester) async {
+        mockState(
+          [
+            DraftState(
+              cards: const [card1, card2],
+              selectedCards: const [],
+              status: DraftStateStatus.deckLoaded,
+              firstCardOpacity: 1,
+            )
+          ],
+        );
+        await tester.pumpSubject(draftBloc: draftBloc);
+        final deckPackState = tester.state<DeckPackState>(
+          find.byType(DeckPack),
+        );
+        await tester.runAsync(() async {
+          await deckPackState.setupAnimation();
+        });
+        await tester.pump(Duration(seconds: 2));
+        deckPackState.onFrame(29);
+        expect(deckPackState.anim, isNotNull);
+      },
+    );
   });
 }
 
@@ -406,21 +463,34 @@ extension DraftViewTest on WidgetTester {
     required DraftBloc draftBloc,
     GoRouter? goRouter,
     RouterNeglectCall routerNeglectCall = Router.neglect,
+    String allowPrivateMatch = 'true',
   }) async {
     final SettingsController settingsController = _MockSettingsController();
     when(() => settingsController.muted).thenReturn(ValueNotifier(true));
 
-    await mockNetworkImages(() {
-      return pumpApp(
+    await mockNetworkImages(() async {
+      await pumpApp(
         BlocProvider.value(
           value: draftBloc,
           child: DraftView(
             routerNeglectCall: routerNeglectCall,
+            allowPrivateMatch: allowPrivateMatch,
           ),
         ),
+        images: Images(prefix: ''),
         router: goRouter,
         settingsController: settingsController,
       );
+
+      final deckPackStates = stateList<DeckPackState>(find.byType(DeckPack));
+      if (deckPackStates.isNotEmpty) {
+        final deckPackState = deckPackStates.first..anim = Container();
+
+        // Complete animation
+        await pumpAndSettle();
+        deckPackState.onComplete();
+        await pump();
+      }
     });
   }
 }
