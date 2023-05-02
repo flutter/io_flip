@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:top_dash_ui/src/animations/damages/air_damage.dart';
+import 'package:top_dash_ui/src/animations/damages/earth_damage.dart';
+import 'package:top_dash_ui/src/animations/damages/fire_damage.dart';
+import 'package:top_dash_ui/src/animations/damages/water_damage.dart';
 import 'package:top_dash_ui/src/widgets/damages/dual_animation.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -43,6 +47,19 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
     switch (widget.element) {
       case Element.metal:
         elementalDamage = MetalDamage(size: widget.size);
+        break;
+      case Element.air:
+        elementalDamage = AirDamage(size: widget.size);
+        break;
+      case Element.fire:
+        elementalDamage = FireDamage(size: widget.size);
+        break;
+      case Element.earth:
+        elementalDamage = EarthDamage(size: widget.size);
+        break;
+      case Element.water:
+        elementalDamage = WaterDamage(size: widget.size);
+        break;
     }
     super.initState();
   }
@@ -129,6 +146,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
   }
 
   void _onStepCompleted() {
+    print('hello');
     switch (_animationState) {
       case _AnimationState.charging:
         setState(() {
@@ -200,4 +218,16 @@ enum DamageDirection {
 enum Element {
   /// Represents the element of metal.
   metal,
+
+  /// Represents the element of water.
+  water,
+
+  /// Represents the element of air.
+  air,
+
+  /// Represents the element of fire.
+  fire,
+
+  /// Represents the element of earth.
+  earth,
 }
