@@ -9,8 +9,8 @@ import 'package:match_repository/match_repository.dart';
 import 'package:prompt_repository/prompt_repository.dart';
 import 'package:scripts_repository/scripts_repository.dart';
 
+import '../../headers/headers.dart';
 import '../../main.dart';
-import '../../middlewares/middlewares.dart';
 
 Handler middleware(Handler handler) {
   return handler
