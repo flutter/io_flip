@@ -16,9 +16,13 @@ class DraftView extends StatelessWidget {
   const DraftView({
     super.key,
     RouterNeglectCall routerNeglectCall = Router.neglect,
-  }) : _routerNeglectCall = routerNeglectCall;
+    String allowPrivateMatch =
+        const String.fromEnvironment('ALLOW_PRIVATE_MATCHES'),
+  })  : _routerNeglectCall = routerNeglectCall,
+        _allowPrivateMatch = allowPrivateMatch;
 
   final RouterNeglectCall _routerNeglectCall;
+  final String _allowPrivateMatch;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +48,10 @@ class DraftView extends StatelessWidget {
     }
 
     return IoFlipScaffold(
+      bottomBar: _BottomBar(
+        routerNeglectCall: _routerNeglectCall,
+        allowPrivateMatch: _allowPrivateMatch == 'true',
+      ),
       body: Center(
         child: Column(
           children: [
@@ -68,7 +76,6 @@ class DraftView extends StatelessWidget {
                 ],
               ),
             ),
-            _BottomBar(routerNeglectCall: _routerNeglectCall),
           ],
         ),
       ),
@@ -271,9 +278,11 @@ class SelectedCard extends StatelessWidget {
 class _BottomBar extends StatelessWidget {
   const _BottomBar({
     required this.routerNeglectCall,
+    required this.allowPrivateMatch,
   });
 
   final RouterNeglectCall routerNeglectCall;
+  final bool allowPrivateMatch;
 
   @override
   Widget build(BuildContext context) {
@@ -295,7 +304,9 @@ class _BottomBar extends StatelessWidget {
                   ),
                 ),
               ),
-              onLongPress: () => showPrivateMatchDialog(context),
+              onLongPress: allowPrivateMatch
+                  ? () => showPrivateMatchDialog(context)
+                  : null,
             )
           : Column(
               mainAxisAlignment: MainAxisAlignment.center,

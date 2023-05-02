@@ -66,18 +66,23 @@ class InitialsFormView extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: TopDashSpacing.xxlg),
-            if (state.status.isInvalid)
-              Text(l10n.enterInitialsError)
-            else
-              RoundedButton.text(
-                l10n.enter,
-                onPressed: () {
-                  context
-                      .read<InitialsFormBloc>()
-                      .add(const InitialsSubmitted());
-                },
+            const SizedBox(height: TopDashSpacing.sm),
+            if (state.status == InitialsFormStatus.blacklisted)
+              Text(
+                l10n.blacklistedErrorMessage,
+                style: TopDashTextStyles.bodyLG.copyWith(
+                  color: TopDashColors.seedRed,
+                ),
               )
+            else if (state.status.isInvalid)
+              Text(l10n.enterInitialsError),
+            const SizedBox(height: TopDashSpacing.xxlg),
+            RoundedButton.text(
+              l10n.enter,
+              onPressed: () {
+                context.read<InitialsFormBloc>().add(const InitialsSubmitted());
+              },
+            )
           ],
         );
       },
@@ -97,7 +102,7 @@ class InitialsFormView extends StatelessWidget {
   }
 }
 
-class _InitialFormField extends StatelessWidget {
+class _InitialFormField extends StatefulWidget {
   const _InitialFormField(
     this.index, {
     required this.onChanged,
@@ -109,28 +114,63 @@ class _InitialFormField extends StatelessWidget {
   final FocusNode focusNode;
 
   @override
+  State<_InitialFormField> createState() => _InitialFormFieldState();
+}
+
+class _InitialFormFieldState extends State<_InitialFormField> {
+  @override
+  void initState() {
+    super.initState();
+    widget.focusNode.addListener(() {
+      if (mounted) {
+        setState(() {});
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final bloc = context.watch<InitialsFormBloc>();
+    final blacklisted = bloc.state.status == InitialsFormStatus.blacklisted;
+    final decoration = BoxDecoration(
+      color: widget.focusNode.hasPrimaryFocus
+          ? TopDashColors.seedPaletteNeutral20
+          : TopDashColors.seedBlack,
+      border: Border.all(
+        color: blacklisted
+            ? TopDashColors.seedRed
+            : widget.focusNode.hasPrimaryFocus
+                ? TopDashColors.seedYellow
+                : TopDashColors.seedPaletteNeutral40,
+        width: 2,
+      ),
+    );
+
     return Container(
       width: 64,
-      height: 76,
-      color: Colors.white,
+      height: 72,
+      decoration: decoration,
       child: TextFormField(
-        key: Key('initial_form_field_$index'),
-        focusNode: focusNode,
+        key: Key('initial_form_field_${widget.index}'),
+        autofocus: widget.index == 0,
+        focusNode: widget.focusNode,
+        showCursor: false,
         textInputAction: TextInputAction.next,
         inputFormatters: [
           FilteringTextInputFormatter.allow(RegExp('[a-zA-Z]')),
           UpperCaseTextFormatter(),
           LengthLimitingTextInputFormatter(1)
         ],
-        style: TopDashTextStyles.headlineH1.copyWith(
-          color: TopDashColors.seedBlue,
+        style: TopDashTextStyles.mobileH1.copyWith(
+          color: blacklisted ? TopDashColors.seedRed : TopDashColors.seedYellow,
         ),
         textCapitalization: TextCapitalization.characters,
-        decoration: const InputDecoration(hintText: 'A'),
+        decoration: const InputDecoration(
+          border: InputBorder.none,
+        ),
         textAlign: TextAlign.center,
         onChanged: (value) {
-          onChanged(index, value);
+          widget.onChanged(widget.index, value);
         },
       ),
     );

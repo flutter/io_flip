@@ -340,6 +340,35 @@ void main() {
     );
 
     testWidgets(
+      'does not navigates to the private match lobby when clicking on create '
+      'private match and private matches are disabled.',
+      (tester) async {
+        final goRouter = MockGoRouter();
+        mockState(
+          [
+            DraftState(
+              cards: const [card1, card2, card3],
+              selectedCards: const [card1, card2, card3],
+              status: DraftStateStatus.deckSelected,
+              firstCardOpacity: 1,
+            )
+          ],
+        );
+        await tester.pumpSubject(
+          draftBloc: draftBloc,
+          goRouter: goRouter,
+          routerNeglectCall: router.neglect,
+          allowPrivateMatch: 'false',
+        );
+
+        await tester.longPress(find.text(tester.l10n.joinMatch.toUpperCase()));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Create private match'), findsNothing);
+      },
+    );
+
+    testWidgets(
       'stay in the page when cancelling the input of the invite code',
       (tester) async {
         final goRouter = MockGoRouter();
@@ -434,6 +463,7 @@ extension DraftViewTest on WidgetTester {
     required DraftBloc draftBloc,
     GoRouter? goRouter,
     RouterNeglectCall routerNeglectCall = Router.neglect,
+    String allowPrivateMatch = 'true',
   }) async {
     final SettingsController settingsController = _MockSettingsController();
     when(() => settingsController.muted).thenReturn(ValueNotifier(true));
@@ -444,6 +474,7 @@ extension DraftViewTest on WidgetTester {
           value: draftBloc,
           child: DraftView(
             routerNeglectCall: routerNeglectCall,
+            allowPrivateMatch: allowPrivateMatch,
           ),
         ),
         images: Images(prefix: ''),

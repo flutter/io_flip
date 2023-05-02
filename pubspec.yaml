@@ -19,6 +19,7 @@ dependencies:
   collection: ^1.17.0
   connection_repository:
     path: packages/connection_repository
+  cross_file: ^0.3.3+4
   equatable: ^2.0.5
   firebase_app_check: ^0.1.2
   firebase_auth: ^4.4.0
@@ -79,6 +80,8 @@ flutter:
   assets:
     - assets/icons/
     - assets/images/
+    - assets/images/desktop/
+    - assets/images/mobile/
     - assets/images/leaderboard/
     - assets/music/
     - assets/sfx/
