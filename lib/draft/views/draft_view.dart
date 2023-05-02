@@ -4,6 +4,7 @@ import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/audio/audio.dart';
 import 'package:top_dash/draft/draft.dart';
+import 'package:top_dash/draft/widgets/deck_pack.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/match_making/match_making.dart';
@@ -15,9 +16,13 @@ class DraftView extends StatelessWidget {
   const DraftView({
     super.key,
     RouterNeglectCall routerNeglectCall = Router.neglect,
-  }) : _routerNeglectCall = routerNeglectCall;
+    String allowPrivateMatch =
+        const String.fromEnvironment('ALLOW_PRIVATE_MATCHES'),
+  })  : _routerNeglectCall = routerNeglectCall,
+        _allowPrivateMatch = allowPrivateMatch;
 
   final RouterNeglectCall _routerNeglectCall;
+  final String _allowPrivateMatch;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +48,10 @@ class DraftView extends StatelessWidget {
     }
 
     return IoFlipScaffold(
-      bottomBar: _BottomBar(routerNeglectCall: _routerNeglectCall),
+      bottomBar: _BottomBar(
+        routerNeglectCall: _routerNeglectCall,
+        allowPrivateMatch: _allowPrivateMatch == 'true',
+      ),
       body: Center(
         child: Column(
           children: [
@@ -51,7 +59,12 @@ class DraftView extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const _DraftDeck(),
+                  DeckPack(
+                    size: 350,
+                    builder: ({required bool isAnimating}) => _DraftDeck(
+                      arrowsEnabled: !isAnimating,
+                    ),
+                  ),
                   Flexible(
                     child: Container(
                       constraints: const BoxConstraints(
@@ -71,7 +84,11 @@ class DraftView extends StatelessWidget {
 }
 
 class _DraftDeck extends StatelessWidget {
-  const _DraftDeck();
+  const _DraftDeck({
+    this.arrowsEnabled = true,
+  });
+
+  final bool arrowsEnabled;
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +110,7 @@ class _DraftDeck extends StatelessWidget {
     final bottomPadding = translateTween.transform(1).dy -
         ((cardSize.height * (1 - scaleTween.transform(1))) / 2);
 
-    final showArrows = MediaQuery.of(context).size.width > 500;
+    final showArrows = MediaQuery.of(context).size.width > 500 && arrowsEnabled;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -261,9 +278,11 @@ class SelectedCard extends StatelessWidget {
 class _BottomBar extends StatelessWidget {
   const _BottomBar({
     required this.routerNeglectCall,
+    required this.allowPrivateMatch,
   });
 
   final RouterNeglectCall routerNeglectCall;
+  final bool allowPrivateMatch;
 
   @override
   Widget build(BuildContext context) {
@@ -285,7 +304,9 @@ class _BottomBar extends StatelessWidget {
                   ),
                 ),
               ),
-              onLongPress: () => showPrivateMatchDialog(context),
+              onLongPress: allowPrivateMatch
+                  ? () => showPrivateMatchDialog(context)
+                  : null,
             )
           : Column(
               mainAxisAlignment: MainAxisAlignment.center,

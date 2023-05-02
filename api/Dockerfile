@@ -7,6 +7,7 @@ WORKDIR /app
 # Copy Dependencies
 COPY packages/card_renderer ./packages/card_renderer
 COPY packages/cards_repository ./packages/cards_repository
+COPY packages/config_repository ./packages/config_repository
 COPY packages/db_client ./packages/db_client
 COPY packages/encryption_middleware ./packages/encryption_middleware
 COPY packages/firebase_cloud_storage ./packages/firebase_cloud_storage
