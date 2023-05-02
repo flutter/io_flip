@@ -19,6 +19,7 @@ class DualAnimationController {
   bool _backAnimationCompleted = false;
 
   void _checkCompletion() {
+    print('checkCompletion');
     if (_frontAnimationCompleted && _backAnimationCompleted) {
       onComplete?.call();
       // Reset the completion status to avoid calling onComplete multiple times.

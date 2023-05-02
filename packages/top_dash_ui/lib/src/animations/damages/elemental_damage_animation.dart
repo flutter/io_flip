@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:top_dash_ui/src/animations/damages/air_damage.dart';
 import 'package:top_dash_ui/src/animations/damages/earth_damage.dart';
@@ -5,6 +7,18 @@ import 'package:top_dash_ui/src/animations/damages/fire_damage.dart';
 import 'package:top_dash_ui/src/animations/damages/water_damage.dart';
 import 'package:top_dash_ui/src/widgets/damages/dual_animation.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
+
+class ElementalDamageStepController {
+  final _charged = Completer<void>();
+  final _sent = Completer<void>();
+  final _received = Completer<void>();
+  final _victory = Completer<void>();
+
+  Future<void> get charged => _charged.future;
+  Future<void> get sent => _sent.future;
+  Future<void> get received => _received.future;
+  Future<void> get victory => _victory.future;
+}
 
 /// {@template elemental_damage_animation}
 // ignore: comment_references
@@ -18,6 +32,7 @@ class ElementalDamageAnimation extends StatefulWidget {
     required this.size,
     this.onComplete,
     this.loop = false,
+    this.stepController,
     super.key,
   });
 
@@ -36,6 +51,8 @@ class ElementalDamageAnimation extends StatefulWidget {
 
   /// boolean that indicates if the aniamtion should repeat
   final bool loop;
+
+  final ElementalDamageStepController? stepController;
 
   @override
   State<ElementalDamageAnimation> createState() =>
@@ -72,6 +89,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
   Widget build(BuildContext context) {
     switch (_animationState) {
       case _AnimationState.charging:
+        print('charging');
         return Stack(
           children: [
             if (widget.direction == DamageDirection.topToBottom)
@@ -93,6 +111,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
           ],
         );
       case _AnimationState.sending:
+        print('sending');
         return Stack(
           children: [
             if (widget.direction == DamageDirection.topToBottom)
@@ -107,6 +126,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
           ],
         );
       case _AnimationState.receiving:
+        print('receing');
         return Stack(
           children: [
             if (widget.direction == DamageDirection.topToBottom)
@@ -120,6 +140,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
           ],
         );
       case _AnimationState.victory:
+        print('victory');
         return Stack(
           children: [
             if (widget.direction == DamageDirection.topToBottom)
@@ -141,6 +162,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
           ],
         );
       case _AnimationState.ended:
+        print('ended');
         widget.onComplete?.call();
         if (widget.loop) {
           setState(() {
@@ -152,23 +174,28 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
   }
 
   void _onStepCompleted() {
+    print('step completed');
     switch (_animationState) {
       case _AnimationState.charging:
+        widget.stepController?._charged.complete();
         setState(() {
           _animationState = _AnimationState.sending;
         });
         break;
       case _AnimationState.sending:
+        widget.stepController?._sent.complete();
         setState(() {
           _animationState = _AnimationState.receiving;
         });
         break;
       case _AnimationState.receiving:
+        widget.stepController?._received.complete();
         setState(() {
           _animationState = _AnimationState.victory;
         });
         break;
       case _AnimationState.victory:
+        widget.stepController?._victory.complete();
         setState(() {
           _animationState = _AnimationState.ended;
         });
