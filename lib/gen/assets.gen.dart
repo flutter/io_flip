@@ -59,6 +59,10 @@ class $AssetsImagesGen {
   AssetGenImage get stadiumBackground =>
       const AssetGenImage('assets/images/stadium_background.png');
 
+  /// File path: assets/images/stadium_background_close_up.png
+  AssetGenImage get stadiumBackgroundCloseUp =>
+      const AssetGenImage('assets/images/stadium_background_close_up.png');
+
   /// File path: assets/images/temp_preferences_custom.png
   AssetGenImage get tempPreferencesCustom =>
       const AssetGenImage('assets/images/temp_preferences_custom.png');
@@ -75,6 +79,7 @@ class $AssetsImagesGen {
         frontPack,
         main,
         stadiumBackground,
+        stadiumBackgroundCloseUp,
         tempPreferencesCustom,
         twitter
       ];
@@ -333,16 +338,7 @@ class AssetGenImage {
     );
   }
 
-  ImageProvider provider({
-    AssetBundle? bundle,
-    String? package,
-  }) {
-    return AssetImage(
-      _assetName,
-      bundle: bundle,
-      package: package,
-    );
-  }
+  ImageProvider provider() => AssetImage(_assetName);
 
   String get path => _assetName;
 
