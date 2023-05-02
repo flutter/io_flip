@@ -109,28 +109,25 @@ class ClashSceneState extends State<ClashScene>
         );
       },
     );
-    return ColoredBox(
-      color: TopDashColors.seedBlack,
-      child: Center(
-        child: Stack(
-          children: [
-            if (widget.playerCard.power > widget.opponentCard.power) ...[
-              playerCard,
-              opponentCard
-            ] else ...[
-              opponentCard,
-              playerCard
-            ],
-            Positioned.fill(
-              child: Visibility(
-                visible: !_flipCards,
-                child: FlipCountdown(
-                  onComplete: onFlipCards,
-                ),
-              ),
-            )
+    return Center(
+      child: Stack(
+        children: [
+          if (widget.playerCard.power > widget.opponentCard.power) ...[
+            playerCard,
+            opponentCard
+          ] else ...[
+            opponentCard,
+            playerCard
           ],
-        ),
+          Positioned.fill(
+            child: Visibility(
+              visible: !_flipCards,
+              child: FlipCountdown(
+                onComplete: onFlipCards,
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
