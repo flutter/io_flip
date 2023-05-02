@@ -58,9 +58,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
                 child: DualAnimation(
                   back: elementalDamage.chargeBackBuilder,
                   front: elementalDamage.chargeFrontBuilder,
-                  onComplete: () => setState(() {
-                    _animationState = _AnimationState.sending;
-                  }),
+                  onComplete: _onStepCompleted,
                 ),
               )
             else
@@ -68,9 +66,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
                 child: DualAnimation(
                   back: elementalDamage.chargeBackBuilder,
                   front: elementalDamage.chargeFrontBuilder,
-                  onComplete: () => setState(() {
-                    _animationState = _AnimationState.sending;
-                  }),
+                  onComplete: _onStepCompleted,
                 ),
               )
           ],
@@ -81,22 +77,11 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
             if (widget.direction == DamageDirection.topToBottom)
               Align(
                 alignment: const Alignment(-0.7, 0.3),
-                child: ColoredBox(
-                  color: Colors.transparent,
-                  child: elementalDamage.damageSendBuilder(
-                    () => setState(() {
-                      _animationState = _AnimationState.receiving;
-                    }),
-                  ),
-                ),
+                child: elementalDamage.damageSendBuilder(_onStepCompleted),
               )
             else
               _BottomAnimation(
-                child: elementalDamage.damageSendBuilder(
-                  () => setState(() {
-                    _animationState = _AnimationState.receiving;
-                  }),
-                ),
+                child: elementalDamage.damageSendBuilder(_onStepCompleted),
               )
           ],
         );
@@ -105,19 +90,11 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
           children: [
             if (widget.direction == DamageDirection.topToBottom)
               _BottomAnimation(
-                child: elementalDamage.damageReceiveBuilder(
-                  () => setState(() {
-                    _animationState = _AnimationState.charging;
-                  }),
-                ),
+                child: elementalDamage.damageReceiveBuilder(_onStepCompleted),
               )
             else
               _TopAnimation(
-                child: elementalDamage.damageReceiveBuilder(
-                  () => setState(() {
-                    _animationState = _AnimationState.victory;
-                  }),
-                ),
+                child: elementalDamage.damageReceiveBuilder(_onStepCompleted),
               )
           ],
         );
@@ -129,9 +106,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
                 child: DualAnimation(
                   back: elementalDamage.victoryChargeBackBuilder,
                   front: elementalDamage.victoryChargeFrontBuilder,
-                  onComplete: () => setState(() {
-                    _animationState = _AnimationState.ended;
-                  }),
+                  onComplete: _onStepCompleted,
                 ),
               )
             else
@@ -139,9 +114,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
                 child: DualAnimation(
                   back: elementalDamage.victoryChargeBackBuilder,
                   front: elementalDamage.victoryChargeFrontBuilder,
-                  onComplete: () => setState(() {
-                    _animationState = _AnimationState.ended;
-                  }),
+                  onComplete: _onStepCompleted,
                 ),
               )
           ],
@@ -152,6 +125,32 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
           _animationState = _AnimationState.charging;
         });
         return const Placeholder();
+    }
+  }
+
+  void _onStepCompleted() {
+    switch (_animationState) {
+      case _AnimationState.charging:
+        setState(() {
+          _animationState = _AnimationState.sending;
+        });
+        break;
+      case _AnimationState.sending:
+        setState(() {
+          _animationState = _AnimationState.receiving;
+        });
+        break;
+      case _AnimationState.receiving:
+        setState(() {
+          _animationState = _AnimationState.victory;
+        });
+        break;
+      case _AnimationState.victory:
+        setState(() {
+          _animationState = _AnimationState.ended;
+        });
+        break;
+      case _AnimationState.ended:
     }
   }
 }

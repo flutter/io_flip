@@ -45,7 +45,7 @@ class VictoryChargeFront extends StatelessWidget {
           amount: 18,
           amountPerRow: 6,
           textureSize: Vector2(607, 695),
-          stepTime: 2,
+          stepTime: 0.04,
           loop: false,
         ),
       ),

@@ -22,7 +22,10 @@ void main() {
           textDirection: TextDirection.ltr,
           child: Provider.value(
             value: images,
-            child: const DamageReceive(''),
+            child: const DamageReceive(
+              '',
+              size: GameCardSize.md(),
+            ),
           ),
         ),
       );
