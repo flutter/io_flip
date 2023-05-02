@@ -11,7 +11,7 @@ import 'package:scripts_repository/scripts_repository.dart';
 import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 
 import '../../main.dart';
-import '../../utils/utils.dart';
+import '../../middlewares/middlewares.dart' as middlewares;
 
 Handler middleware(Handler handler) {
   return handler
@@ -37,5 +37,5 @@ Handler middleware(Handler handler) {
           ),
         ),
       )
-      .use(allowHeader());
+      .use(middlewares.corsHeaders());
 }
