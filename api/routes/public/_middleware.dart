@@ -11,10 +11,9 @@ import 'package:logging/logging.dart';
 import 'package:match_repository/match_repository.dart';
 import 'package:prompt_repository/prompt_repository.dart';
 import 'package:scripts_repository/scripts_repository.dart';
-import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 
 import '../../main.dart';
-import '../../middlewares/middlewares.dart' as middlewares;
+import '../../middlewares/middlewares.dart';
 import 'connect.dart';
 
 Handler middleware(Handler handler) {
@@ -32,14 +31,6 @@ Handler middleware(Handler handler) {
       .use(provider<CardRenderer>((_) => CardRenderer()))
       .use(provider<FirebaseCloudStorage>((_) => firebaseCloudStorage))
       .use(provider<WebSocketHandlerFactory>((_) => ws.webSocketHandler))
-      .use(
-        fromShelfMiddleware(
-          corsHeaders(
-            headers: {
-              ACCESS_CONTROL_ALLOW_ORIGIN: gameUrl.url,
-            },
-          ),
-        ),
-      )
-      .use(middlewares.allowHeaders());
+      .use(corsHeaders())
+      .use(allowHeaders());
 }

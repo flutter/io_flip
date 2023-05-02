@@ -1,1 +1,1 @@
-export 'cors_headers.dart';
+export 'headers.dart';
