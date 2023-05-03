@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
 import 'package:top_dash_ui/src/animations/damages/air_damage.dart';
 import 'package:top_dash_ui/src/animations/damages/earth_damage.dart';
@@ -33,7 +34,6 @@ class ElementalDamageStepNotifier {
 }
 
 /// {@template elemental_damage_animation}
-// ignore: comment_references
 /// A widget that renders a list of [SpriteAnimation] for a given element
 /// {@endtemplate}
 class ElementalDamageAnimation extends StatefulWidget {
@@ -101,12 +101,10 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
         return Stack(
           children: [
             if (widget.direction == DamageDirection.topToBottom)
-              _TopAnimation(
-                child: DualAnimation(
-                  back: elementalDamage.chargeBackBuilder,
-                  front: elementalDamage.chargeFrontBuilder,
-                  onComplete: _onStepCompleted,
-                ),
+              DualAnimation(
+                back: elementalDamage.chargeBackBuilder,
+                front: elementalDamage.chargeFrontBuilder,
+                onComplete: _onStepCompleted,
               )
             else
               _BottomAnimation(
@@ -140,21 +138,17 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
                 child: elementalDamage.damageReceiveBuilder(_onStepCompleted),
               )
             else
-              _TopAnimation(
-                child: elementalDamage.damageReceiveBuilder(_onStepCompleted),
-              )
+              elementalDamage.damageReceiveBuilder(_onStepCompleted)
           ],
         );
       case _AnimationState.victory:
         return Stack(
           children: [
             if (widget.direction == DamageDirection.topToBottom)
-              _TopAnimation(
-                child: DualAnimation(
-                  back: elementalDamage.victoryChargeBackBuilder,
-                  front: elementalDamage.victoryChargeFrontBuilder,
-                  onComplete: _onStepCompleted,
-                ),
+              DualAnimation(
+                back: elementalDamage.victoryChargeBackBuilder,
+                front: elementalDamage.victoryChargeFrontBuilder,
+                onComplete: _onStepCompleted,
               )
             else
               _BottomAnimation(
@@ -171,7 +165,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
         setState(() {
           _animationState = _AnimationState.charging;
         });
-        return Container();
+        return const SizedBox.shrink();
     }
   }
 
@@ -197,21 +191,6 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
         _animationState = _AnimationState.ended;
       });
     }
-  }
-}
-
-class _TopAnimation extends StatelessWidget {
-  const _TopAnimation({required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      top: 0,
-      left: 0,
-      child: child,
-    );
   }
 }
 

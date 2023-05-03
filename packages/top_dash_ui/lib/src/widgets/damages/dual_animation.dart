@@ -11,7 +11,7 @@ class DualAnimationController {
   /// {@macro dual_animation_controller}
   DualAnimationController(this.onComplete);
 
-  ///
+  /// Called when both animations are completed
   final VoidCallback? onComplete;
 
   bool _frontAnimationCompleted = false;
@@ -65,7 +65,7 @@ class DualAnimation extends StatefulWidget {
   /// Represents the widget containing the animation in the front
   final Widget Function(VoidCallback? onComplete) front;
 
-  ///
+  /// Controller that check the completion of the animations
   final DualAnimationController controller;
 
   @override
