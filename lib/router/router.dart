@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/game/game.dart';
@@ -13,38 +14,51 @@ GoRouter createRouter({required bool isScriptsEnabled}) {
       GoRoute(
         path: '/',
         builder: MainMenuScreen.routeBuilder,
-        routes: [
-          GoRoute(
-            path: 'draft',
-            builder: DraftPage.routeBuilder,
-          ),
-          GoRoute(
-            path: 'prompt',
-            builder: PromptPage.routeBuilder,
-          ),
-          GoRoute(
-            name: 'match_making',
-            path: 'match_making',
-            builder: MatchMakingPage.routeBuilder,
-          ),
-          GoRoute(
-            name: 'game',
-            path: 'game',
-            builder: GamePage.routeBuilder,
-          ),
-          GoRoute(
-            name: 'share_hand',
-            path: 'share_hand',
-            builder: ShareHandPage.routeBuilder,
-          ),
-          if (isScriptsEnabled)
-            GoRoute(
-              name: '_super_secret_scripts_page',
-              path: '_super_secret_scripts_page',
-              builder: ScriptsPage.routeBuilder,
-            ),
-        ],
       ),
+      GoRoute(
+        path: '/draft',
+        builder: DraftPage.routeBuilder,
+      ),
+      GoRoute(
+        path: '/prompt',
+        builder: PromptPage.routeBuilder,
+      ),
+      GoRoute(
+        name: 'match_making',
+        path: '/match_making',
+        builder: MatchMakingPage.routeBuilder,
+      ),
+      GoRoute(
+        name: 'game',
+        path: '/game',
+        builder: GamePage.routeBuilder,
+      ),
+      GoRoute(
+        name: 'share_hand',
+        path: '/share_hand',
+        builder: ShareHandPage.routeBuilder,
+      ),
+      if (isScriptsEnabled)
+        GoRoute(
+          name: '_super_secret_scripts_page',
+          path: '/_super_secret_scripts_page',
+          builder: ScriptsPage.routeBuilder,
+        ),
     ],
+    observers: [RedirectToHomeObserver()],
   );
+}
+
+class RedirectToHomeObserver extends NavigatorObserver {
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    super.didPush(route, previousRoute);
+
+    if (previousRoute == null && route.settings.name != '/') {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final context = route.navigator!.context;
+        GoRouter.of(context).go('/');
+      });
+    }
+  }
 }
