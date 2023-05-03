@@ -2,6 +2,7 @@
 library data_loader;
 
 export 'src/character_folder_validator.dart';
+export 'src/create_image_lookup.dart';
 export 'src/data_loader.dart';
 export 'src/descriptions_loader.dart';
 export 'src/image_loader.dart';
