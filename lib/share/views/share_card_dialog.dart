@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:game_domain/game_domain.dart';
 import 'package:provider/provider.dart';
+import 'package:top_dash/share/bloc/download_bloc.dart';
 import 'package:top_dash/share/share.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -43,6 +44,7 @@ class ShareCardDialog extends StatelessWidget {
           const SizedBox(height: TopDashSpacing.lg),
         ],
       ),
+      downloadRequest: DownloadRequested(card: card),
     );
   }
 }

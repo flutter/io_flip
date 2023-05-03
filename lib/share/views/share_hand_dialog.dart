@@ -4,6 +4,7 @@ import 'package:game_domain/game_domain.dart';
 import 'package:provider/provider.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/l10n/l10n.dart';
+import 'package:top_dash/share/bloc/download_bloc.dart';
 import 'package:top_dash/share/widgets/widgets.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -29,6 +30,8 @@ class ShareHandDialog extends StatelessWidget {
     return ShareDialog(
       twitterShareUrl: twitterLink,
       facebookShareUrl: facebookLink,
+      // TODO(Samobrien): add widgets to be downloaded
+      downloadRequest: DownloadRequested(card: cards.first),
       content: _DialogContent(
         cards: cards,
         wins: wins,
