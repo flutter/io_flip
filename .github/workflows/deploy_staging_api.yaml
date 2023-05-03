@@ -57,7 +57,6 @@ jobs:
             ENCRYPTION_IV=${{ secrets.ENCRYPTION_IV }}
             FB_STORAGE_BUCKET=${{ env.FB_STORAGE_BUCKET }}
             RECAPTCHA_KEY=${{ secrets.RECAPTCHA_KEY }}
-            DISABLE_TAB_CHECK=true
             SCRIPTS_ENABLED=true
 
       - name: Show Output
