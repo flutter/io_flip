@@ -134,7 +134,7 @@ void main() {
           while (!victoryComplete) {
             await tester.pump(const Duration(milliseconds: 17));
           }
-          expect(find.byType(Container), findsOneWidget);
+          expect(find.byType(SizedBox), findsOneWidget);
         });
       });
     });
@@ -221,7 +221,7 @@ void main() {
           while (!victoryComplete) {
             await tester.pump(const Duration(milliseconds: 17));
           }
-          expect(find.byType(Container), findsOneWidget);
+          expect(find.byType(SizedBox), findsOneWidget);
         });
       });
     });
@@ -308,7 +308,7 @@ void main() {
           while (!victoryComplete) {
             await tester.pump(const Duration(milliseconds: 17));
           }
-          expect(find.byType(Container), findsOneWidget);
+          expect(find.byType(SizedBox), findsOneWidget);
         });
       });
     });
@@ -395,7 +395,7 @@ void main() {
           while (!victoryComplete) {
             await tester.pump(const Duration(milliseconds: 17));
           }
-          expect(find.byType(Container), findsOneWidget);
+          expect(find.byType(SizedBox), findsOneWidget);
         });
       });
     });
@@ -482,7 +482,7 @@ void main() {
           while (!victoryComplete) {
             await tester.pump(const Duration(milliseconds: 17));
           }
-          expect(find.byType(Container), findsOneWidget);
+          expect(find.byType(SizedBox), findsOneWidget);
         });
       });
     });
