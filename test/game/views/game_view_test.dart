@@ -25,6 +25,8 @@ class _MockLeaderboardResource extends Mock implements LeaderboardResource {}
 
 class _MockAudioController extends Mock implements AudioController {}
 
+class _FakeGameState extends Fake implements GameState {}
+
 void main() {
   group('GameView', () {
     late GameBloc bloc;
@@ -74,6 +76,7 @@ void main() {
           suit: Suit.air,
         ),
       );
+      registerFallbackValue(_FakeGameState());
     });
 
     setUp(() {
@@ -83,6 +86,7 @@ void main() {
           .thenReturn(null);
       when(() => bloc.canPlayerPlay(any())).thenReturn(true);
       when(() => bloc.isPlayerAllowedToPlay).thenReturn(true);
+      when(() => bloc.matchCompleted(any())).thenReturn(false);
 
       leaderboardResource = _MockLeaderboardResource();
       when(() => leaderboardResource.getInitialsBlacklist())

@@ -224,6 +224,24 @@ class ApiClient {
     });
   }
 
+  /// Sends a GET request to the specified public [path].
+  Future<http.Response> getPublic(
+    String path, {
+    Map<String, String>? queryParameters,
+  }) async {
+    return _handleUnauthorized(() async {
+      final response = await _get(
+        _base.replace(
+          path: path,
+          queryParameters: queryParameters,
+        ),
+        headers: _headers,
+      );
+
+      return response;
+    });
+  }
+
   /// Returns a WebSocket for the specified [path].
   Future<WebSocket> connect(String path) async {
     final uri = _base.replace(

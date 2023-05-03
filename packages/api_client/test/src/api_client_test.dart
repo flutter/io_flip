@@ -267,6 +267,92 @@ void main() {
       });
     });
 
+    group('getPublic', () {
+      setUp(() {
+        when(
+          () => httpClient.get(
+            any(),
+            headers: any(named: 'headers'),
+          ),
+        ).thenAnswer((_) async => expectedResponse);
+      });
+      test('returns the response', () async {
+        final response = await subject.getPublic('/');
+
+        expect(response.statusCode, equals(expectedResponse.statusCode));
+        expect(response.body, equals(expectedResponse.body));
+      });
+
+      test('sends the request correctly', () async {
+        await subject.getPublic(
+          '/path/to/endpoint',
+          queryParameters: {
+            'param1': 'value1',
+            'param2': 'value2',
+          },
+        );
+
+        verify(
+          () => httpClient.get(
+            Uri.parse('$baseUrl/path/to/endpoint?param1=value1&param2=value2'),
+            headers: {},
+          ),
+        ).called(1);
+      });
+
+      test('sends the authentication and app check token', () async {
+        idTokenStreamController.add(mockIdToken);
+        appCheckTokenStreamController.add(mockAppCheckToken);
+        await Future.microtask(() {});
+        await subject.getPublic('/path/to/endpoint');
+
+        verify(
+          () => httpClient.get(
+            Uri.parse('$baseUrl/path/to/endpoint'),
+            headers: {
+              'Authorization': 'Bearer $mockIdToken',
+              'X-Firebase-AppCheck': mockAppCheckToken
+            },
+          ),
+        ).called(1);
+      });
+
+      test('refreshes the authentication token when needed', () async {
+        when(
+          () => httpClient.get(
+            any(),
+            headers: any(named: 'headers'),
+          ),
+        ).thenAnswer((_) async => http.Response('', 401));
+
+        refreshIdToken = () async => mockNewIdToken;
+
+        idTokenStreamController.add(mockIdToken);
+        appCheckTokenStreamController.add(mockAppCheckToken);
+        await Future.microtask(() {});
+        await subject.getPublic('/path/to/endpoint');
+
+        verify(
+          () => httpClient.get(
+            Uri.parse('$baseUrl/path/to/endpoint'),
+            headers: {
+              'Authorization': 'Bearer $mockIdToken',
+              'X-Firebase-AppCheck': mockAppCheckToken,
+            },
+          ),
+        ).called(1);
+        verify(
+          () => httpClient.get(
+            Uri.parse('$baseUrl/path/to/endpoint'),
+            headers: {
+              'Authorization': 'Bearer $mockNewIdToken',
+              'X-Firebase-AppCheck': mockAppCheckToken,
+            },
+          ),
+        ).called(1);
+      });
+    });
+
     group('post', () {
       test('returns the response', () async {
         final response = await subject.post('/');

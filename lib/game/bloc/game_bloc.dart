@@ -528,13 +528,22 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     return [];
   }
 
+  void sendMatchLeft() {
+    _connectionRepository.send(const WebSocketMessage.matchLeft());
+  }
+
+  bool matchCompleted(GameState state) =>
+      (state is MatchLoadedState) &&
+      (state.matchState.result != null) &&
+      state.turnAnimationsFinished;
+
   @override
   Future<void> close() {
     _stateSubscription?.cancel();
     _opponentDisconnectSubscription?.cancel();
     _scoreSubscription?.cancel();
-    _connectionRepository.send(const WebSocketMessage.matchLeft());
     _turnTimer?.cancel();
+    if (!matchCompleted(state)) sendMatchLeft();
     return super.close();
   }
 }

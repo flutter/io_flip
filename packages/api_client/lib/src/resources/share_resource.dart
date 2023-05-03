@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:api_client/api_client.dart';
 
 /// {@template share_resource}
@@ -59,5 +62,21 @@ class ShareResource {
   /// Returns the game url.
   String shareGameUrl() {
     return _apiClient.shareGameUrl();
+  }
+
+  /// Get public/cards/:cardId
+  ///
+  /// Returns a [Uint8List] image, if any to be found.
+  Future<Uint8List> getShareImage(String cardId) async {
+    final response = await _apiClient.getPublic('/public/cards/$cardId');
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw ApiClientError(
+        'GET public/cards/$cardId returned status ${response.statusCode} with the following response: "${response.body}"',
+        StackTrace.current,
+      );
+    }
+
+    return response.bodyBytes;
   }
 }
