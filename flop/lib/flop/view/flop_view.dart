@@ -22,6 +22,17 @@ class FlopView extends StatelessWidget {
     }
   }
 
+  String _flopStatusImage(FlopStatus status) {
+    switch (status) {
+      case FlopStatus.running:
+        return 'assets/flop_working.gif';
+      case FlopStatus.success:
+        return 'assets/flop_success.gif';
+      case FlopStatus.error:
+        return 'assets/flop_error.gif';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<FlopBloc, FlopState>(
@@ -32,44 +43,55 @@ class FlopView extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           body: Center(
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                border: Border.all(),
-              ),
-              width: 500,
-              height: 400,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      children: [
-                        for (final step in FlopStep.values)
-                          Row(
-                            children: [
-                              Text(
-                                state.steps.contains(step) ? '✅' : '⏱',
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  _flopStatusImage(state.status),
+                  width: 50,
+                  height: 50,
+                ),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    border: Border.all(),
+                  ),
+                  width: 500,
+                  height: 400,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          children: [
+                            for (final step in FlopStep.values)
+                              Row(
+                                children: [
+                                  Text(
+                                    state.steps.contains(step) ? '✅' : '⏱',
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Text(_stepText(step)),
+                                ],
                               ),
-                              const SizedBox(width: 16),
-                              Text(_stepText(step)),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              for (final message in state.messages)
+                                Text(message),
                             ],
                           ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          for (final message in state.messages) Text(message),
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         );

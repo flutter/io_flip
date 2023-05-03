@@ -1,4 +1,8 @@
+// ignore_for_file: avoid_web_libraries_in_flutter, avoid_print
+import 'dart:js' as js;
+
 import 'package:flop/flop/flop.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class App extends StatelessWidget {
@@ -13,7 +17,13 @@ class App extends StatelessWidget {
           accentColor: const Color(0xFF13B9FF),
         ),
       ),
-      home: const FlopPage(),
+      home: FlopPage(
+        setAppCheckDebugToken: (appCheckDebugToken) {
+          if (kDebugMode) {
+            js.context['FIREBASE_APPCHECK_DEBUG_TOKEN'] = appCheckDebugToken;
+          }
+        },
+      ),
     );
   }
 }

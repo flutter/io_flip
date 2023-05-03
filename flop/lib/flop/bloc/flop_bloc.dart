@@ -1,7 +1,6 @@
-// ignore_for_file: avoid_web_libraries_in_flutter
+// ignore_for_file: avoid_web_libraries_in_flutter, avoid_print
 
 import 'dart:async';
-import 'dart:js' as js;
 
 import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
@@ -13,7 +12,6 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flop/firebase_options_development.dart';
-import 'package:flutter/foundation.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 
@@ -21,9 +19,13 @@ part 'flop_event.dart';
 part 'flop_state.dart';
 
 class FlopBloc extends Bloc<FlopEvent, FlopState> {
-  FlopBloc() : super(const FlopState.initial()) {
+  FlopBloc({
+    required this.setAppCheckDebugToken,
+  }) : super(const FlopState.initial()) {
     on<NextStepRequested>(_onNextStepRequested);
   }
+
+  final void Function(String) setAppCheckDebugToken;
 
   late AuthenticationRepository authenticationRepository;
   late ConnectionRepository connectionRepository;
@@ -41,9 +43,7 @@ class FlopBloc extends Bloc<FlopEvent, FlopState> {
     const recaptchaKey = String.fromEnvironment('RECAPTCHA_KEY');
     const appCheckDebugToken = String.fromEnvironment('APPCHECK_DEBUG_TOKEN');
 
-    if (kDebugMode) {
-      js.context['FIREBASE_APPCHECK_DEBUG_TOKEN'] = appCheckDebugToken;
-    }
+    setAppCheckDebugToken(appCheckDebugToken);
 
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -274,10 +274,20 @@ class FlopBloc extends Bloc<FlopEvent, FlopState> {
             await playGame(emit);
             break;
           case FlopStep.playing:
+            emit(
+              state.copyWith(
+                status: FlopStatus.success,
+              ),
+            );
             break;
         }
       }
     } catch (e, s) {
+      emit(
+        state.copyWith(
+          status: FlopStatus.success,
+        ),
+      );
       print(e);
       print(s);
       addError(e, s);
