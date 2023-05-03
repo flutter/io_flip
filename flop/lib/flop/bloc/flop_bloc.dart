@@ -161,7 +161,10 @@ class FlopBloc extends Bloc<FlopEvent, FlopState> {
 
     if (isHost) {
       final newState = state.copyWith(
-        messages: ['👀 No match found, created one and waiting for a guest', ...state.messages],
+        messages: [
+          '👀 No match found, created one and waiting for a guest',
+          ...state.messages,
+        ],
         steps: [...state.steps, FlopStep.matchmaking],
       );
       emit(newState);
@@ -291,7 +294,6 @@ class FlopBloc extends Bloc<FlopEvent, FlopState> {
       print(e);
       print(s);
       addError(e, s);
-      // Do something.
     }
   }
 }

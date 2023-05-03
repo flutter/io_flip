@@ -5,7 +5,12 @@ import 'package:flop/flop/flop.dart';
 import 'package:flutter/material.dart';
 
 class App extends StatelessWidget {
-  const App({super.key});
+  const App({
+    super.key,
+    required this.setAppCheckDebugToken,
+  });
+
+  final void Function(String) setAppCheckDebugToken;
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +22,7 @@ class App extends StatelessWidget {
         ),
       ),
       home: FlopPage(
-        setAppCheckDebugToken: (appCheckDebugToken) {
-          js.context['FIREBASE_APPCHECK_DEBUG_TOKEN'] = appCheckDebugToken;
-        },
+        setAppCheckDebugToken: setAppCheckDebugToken,
       ),
     );
   }
