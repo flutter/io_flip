@@ -2,7 +2,6 @@
 import 'dart:js' as js;
 
 import 'package:flop/flop/flop.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class App extends StatelessWidget {
@@ -19,9 +18,7 @@ class App extends StatelessWidget {
       ),
       home: FlopPage(
         setAppCheckDebugToken: (appCheckDebugToken) {
-          if (kDebugMode) {
-            js.context['FIREBASE_APPCHECK_DEBUG_TOKEN'] = appCheckDebugToken;
-          }
+          js.context['FIREBASE_APPCHECK_DEBUG_TOKEN'] = appCheckDebugToken;
         },
       ),
     );
