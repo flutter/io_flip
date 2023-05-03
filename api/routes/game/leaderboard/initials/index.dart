@@ -15,6 +15,12 @@ FutureOr<Response> onRequest(RequestContext context) async {
     }
 
     final leaderboardRepository = context.read<LeaderboardRepository>();
+    final blacklist = await leaderboardRepository.getInitialsBlacklist();
+
+    if (blacklist.contains(initials.toUpperCase())) {
+      return Response(statusCode: HttpStatus.badRequest);
+    }
+
     await leaderboardRepository.addInitialsToScoreCard(
       scoreCardId: scoreCardId,
       initials: initials,
