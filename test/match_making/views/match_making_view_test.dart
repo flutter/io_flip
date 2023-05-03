@@ -10,7 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
-import 'package:top_dash/game/game.dart';
+import 'package:top_dash/game/game.dart' hide RouterNeglectCall;
 import 'package:top_dash/match_making/match_making.dart';
 import 'package:top_dash/settings/settings.dart';
 import 'package:top_dash/utils/utils.dart';

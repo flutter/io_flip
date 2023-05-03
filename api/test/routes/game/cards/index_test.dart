@@ -24,24 +24,35 @@ void main() {
     late Request request;
     late RequestContext context;
 
-    const card = Card(
-      id: '',
-      name: '',
-      description: '',
-      rarity: true,
-      image: '',
-      power: 1,
-      suit: Suit.air,
+    final cards = List.generate(
+      12,
+      (_) => const Card(
+        id: '',
+        name: '',
+        description: '',
+        rarity: true,
+        image: '',
+        power: 1,
+        suit: Suit.air,
+      ),
     );
     const prompt = Prompt(
-      power: '',
-      secondaryPower: '',
-      characterClass: '',
+      power: 'baggles',
+      characterClass: 'mage',
     );
     setUp(() {
       promptRepository = _MockPromptRepository();
       cardsRepository = _MockCardsRepository();
-      when(cardsRepository.generateCard).thenAnswer((_) async => card);
+      when(
+        () => cardsRepository.generateCards(
+          characterClass: any(named: 'characterClass'),
+          characterPower: any(
+            named: 'characterPower',
+          ),
+        ),
+      ).thenAnswer(
+        (_) async => cards,
+      );
 
       request = _MockRequest();
       when(() => request.method).thenReturn(HttpMethod.post);
@@ -63,6 +74,34 @@ void main() {
       expect(response.statusCode, equals(HttpStatus.ok));
     });
 
+    test('uses the character class and power from the prompt', () async {
+      await route.onRequest(context);
+      verify(
+        () => cardsRepository.generateCards(
+          characterClass: 'mage',
+          characterPower: 'baggles',
+        ),
+      ).called(1);
+    });
+
+    test('responds bad request when class is null', () async {
+      when(request.json).thenAnswer(
+        (_) async => const Prompt(power: '').toJson(),
+      );
+      final response = await route.onRequest(context);
+      expect(response.statusCode, equals(HttpStatus.badRequest));
+    });
+
+    test('responds bad request when power is null', () async {
+      when(request.json).thenAnswer(
+        (_) async => const Prompt(
+          characterClass: '',
+        ).toJson(),
+      );
+      final response = await route.onRequest(context);
+      expect(response.statusCode, equals(HttpStatus.badRequest));
+    });
+
     test('responds with the generated card', () async {
       final response = await route.onRequest(context);
 
@@ -71,7 +110,7 @@ void main() {
         json,
         equals({
           'cards': List.generate(
-            10,
+            12,
             (index) => {
               'id': '',
               'name': '',

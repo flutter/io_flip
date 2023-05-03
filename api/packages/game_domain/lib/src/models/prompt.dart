@@ -13,7 +13,6 @@ class Prompt extends Equatable {
     this.isIntroSeen,
     this.characterClass,
     this.power,
-    this.secondaryPower,
   });
 
   /// {@macro prompt}
@@ -30,29 +29,23 @@ class Prompt extends Equatable {
   @JsonKey()
   final String? power;
 
-  /// Secondary power.
-  @JsonKey()
-  final String? secondaryPower;
-
   /// Returns a copy of the instance setting the [isIntroSeen] to true.
   Prompt setIntroSeen() {
     return Prompt(
       isIntroSeen: true,
       characterClass: characterClass,
       power: power,
-      secondaryPower: secondaryPower,
     );
   }
 
   /// Returns a copy of the instance and
   /// sets the new [attribute] to the first null in this order:
-  /// [characterClass], [power], [secondaryPower]
+  /// [characterClass], [power]
   Prompt copyWithNewAttribute(String attribute) {
     return Prompt(
       isIntroSeen: isIntroSeen,
       characterClass: characterClass ?? attribute,
       power: characterClass != null ? power ?? attribute : null,
-      secondaryPower: power != null ? secondaryPower ?? attribute : null,
     );
   }
 
@@ -64,6 +57,5 @@ class Prompt extends Equatable {
         isIntroSeen,
         characterClass,
         power,
-        secondaryPower,
       ];
 }

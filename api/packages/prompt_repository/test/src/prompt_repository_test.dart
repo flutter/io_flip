@@ -94,7 +94,6 @@ void main() {
     group('isValidPrompt', () {
       const prompt = Prompt(
         power: 'AAA',
-        secondaryPower: 'BBB',
         characterClass: 'CCC',
       );
       setUp(() {
@@ -111,23 +110,6 @@ void main() {
               data: const {
                 'type': 'power',
                 'term': 'AAA',
-              },
-            ),
-          ],
-        );
-        when(
-          () => dbClient.findBy(
-            'prompt_terms',
-            'term',
-            prompt.secondaryPower,
-          ),
-        ).thenAnswer(
-          (_) async => [
-            DbEntityRecord(
-              id: 'id2',
-              data: const {
-                'type': 'power',
-                'term': 'BBB',
               },
             ),
           ],
@@ -172,21 +154,6 @@ void main() {
         expect(isValid, isFalse);
       });
 
-      test('isValidPrompt returns false when secondaryPower is invalid',
-          () async {
-        when(
-          () => dbClient.findBy(
-            'prompt_terms',
-            'term',
-            prompt.secondaryPower,
-          ),
-        ).thenAnswer(
-          (_) async => [],
-        );
-        final isValid = await promptRepository.isValidPrompt(prompt);
-        expect(isValid, isFalse);
-      });
-
       test('isValidPrompt returns false when characterClass is invalid',
           () async {
         when(
@@ -208,29 +175,6 @@ void main() {
             'prompt_terms',
             'term',
             prompt.power,
-          ),
-        ).thenAnswer(
-          (_) async => [
-            DbEntityRecord(
-              id: 'id2',
-              data: const {
-                'type': 'characterClass',
-                'term': 'BBB',
-              },
-            ),
-          ],
-        );
-        final isValid = await promptRepository.isValidPrompt(prompt);
-        expect(isValid, isFalse);
-      });
-
-      test('isValidPrompt returns false when secondaryPower is of wrong type',
-          () async {
-        when(
-          () => dbClient.findBy(
-            'prompt_terms',
-            'term',
-            prompt.secondaryPower,
           ),
         ).thenAnswer(
           (_) async => [

@@ -27,7 +27,7 @@ dart pub get
 
 This tool is used to insert data in firebase,
 
-It have two commands, one to load the prompt terms in the firestore database of the project, and one to load placeholder images in firestore cloud storage for those prompts.
+It have a couple of commands, one to load the prompt terms in the firestore database of the project, another one quite similar, but that loads card descriptions, and one to load placeholder images in firestore cloud storage for those prompts.
 
 Download the prompts CSV which must have the following format:
 
@@ -37,12 +37,31 @@ Download the prompts CSV which must have the following format:
 ...
 ```
 
+Download the description CSV which must have the following format:
+
+```
+'Character,Class,Power,Location,Description 1,Description X...'
+'Dash,Alien,Banjos,City,Desc 1, Desc X...'
+...
+```
+
 ### Loading prompts
 
 Run:
 
 ```
 dart bin/data_loader.dart prompts projectId csv_file_location.csv
+```
+
+It uses the gcloud default admin app for auth, so you must have it properly configured
+in your machine before running it.
+
+### Loading descriptions
+
+Run:
+
+```
+dart bin/data_loader.dart descriptions projectId csv_file_location.csv
 ```
 
 It uses the gcloud default admin app for auth, so you must have it properly configured
@@ -67,3 +86,13 @@ gcloud storage cp --gzip-local-all --recursive . gs://<bucket-id>
 
 Similar to the prompts command, you need to have the gcloud cli properly configured
 and authenticated.
+
+### Validating images
+
+This commands takes a CSV with the prompts, a number of variations and check if a certain folder
+has an image for all of the prompt combinations. This commands assumes that which character has its
+own folder, so it should be executed once per character.
+
+```
+dart bin/data_loader.dart validate_images <images_folder> <csv_file_location.csv> <card_variation_number> <character>
+```

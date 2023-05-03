@@ -17,11 +17,20 @@ FutureOr<Response> onRequest(RequestContext context) async {
     if (!await promptRepository.isValidPrompt(prompt)) {
       return Response(statusCode: HttpStatus.badRequest);
     }
-    final cards = await Future.wait(
-      List.generate(
-        10,
-        (_) => cardsRepository.generateCard(),
-      ),
+
+    final characterClass = prompt.characterClass;
+    if (characterClass == null) {
+      return Response(statusCode: HttpStatus.badRequest);
+    }
+
+    final characterPower = prompt.power;
+    if (characterPower == null) {
+      return Response(statusCode: HttpStatus.badRequest);
+    }
+
+    final cards = await cardsRepository.generateCards(
+      characterClass: characterClass,
+      characterPower: characterPower,
     );
     return Response.json(
       body: {'cards': cards.map((e) => e.toJson()).toList()},

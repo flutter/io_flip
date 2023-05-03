@@ -165,38 +165,13 @@ class _WaitingForMatchView extends StatelessWidget {
                         for (final card in deck)
                           Padding(
                             padding: const EdgeInsets.all(TopDashSpacing.xs),
-                            child: Stack(
-                              children: [
-                                GameCard(
-                                  size: const GameCardSize.xs(),
-                                  image: card.image,
-                                  name: card.name,
-                                  description: card.description,
-                                  suitName: card.suit.name,
-                                  power: card.power,
-                                ),
-                                Positioned(
-                                  bottom: TopDashSpacing.xs + 2,
-                                  right: TopDashSpacing.xs,
-                                  child: DecoratedBox(
-                                    decoration: BoxDecoration(
-                                      color: TopDashColors.seedWhite,
-                                      borderRadius: BorderRadius.circular(4),
-                                      border: Border.all(
-                                        width: 2,
-                                        color: TopDashColors.seedBlack,
-                                      ),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          offset: Offset(-2, 2),
-                                          spreadRadius: 1,
-                                        ),
-                                      ],
-                                    ),
-                                    child: const Icon(Icons.add, size: 32),
-                                  ),
-                                ),
-                              ],
+                            child: GameCard(
+                              size: const GameCardSize.xs(),
+                              image: card.image,
+                              name: card.name,
+                              description: card.description,
+                              suitName: card.suit.name,
+                              power: card.power,
                             ),
                           ),
                       ],

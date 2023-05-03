@@ -1,11 +1,10 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/terms_of_use/terms_of_use.dart';
 import 'package:top_dash/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
-
-// TODO(willhlas): add policy links.
 
 class TermsOfUseView extends StatelessWidget {
   const TermsOfUseView({super.key});
@@ -36,6 +35,8 @@ class TermsOfUseView extends StatelessWidget {
               const TextSpan(text: ' '),
               TextSpan(
                 text: l10n.termsOfUseDescriptionInfixOne,
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () => openLink(ExternalLinks.termsOfService),
                 style: linkStyle,
               ),
               const TextSpan(text: ' '),
@@ -43,6 +44,8 @@ class TermsOfUseView extends StatelessWidget {
               const TextSpan(text: ' '),
               TextSpan(
                 text: l10n.termsOfUseDescriptionSuffix,
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () => openLink(ExternalLinks.privacyPolicy),
                 style: linkStyle,
               ),
             ],
@@ -50,19 +53,11 @@ class TermsOfUseView extends StatelessWidget {
         ),
         const SizedBox(height: TopDashSpacing.xxlg),
         RoundedButton.text(
-          l10n.termsOfUseAcceptLabel,
+          l10n.termsOfUseContinueLabel,
           onPressed: () {
             context.read<TermsOfUseCubit>().acceptTermsOfUse();
             context.maybePop();
           },
-        ),
-        const SizedBox(height: TopDashSpacing.sm),
-        RoundedButton.text(
-          l10n.termsOfUseDeclineLabel,
-          backgroundColor: TopDashColors.seedBlack,
-          foregroundColor: TopDashColors.seedWhite,
-          borderColor: TopDashColors.seedPaletteNeutral40,
-          onPressed: context.maybePop,
         ),
       ],
     );
