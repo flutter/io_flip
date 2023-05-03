@@ -164,18 +164,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           ),
       ];
 
-      if (event.updatedState.result != null) {
-        switch (_gameResult(event.updatedState)) {
-          case GameResult.win:
-            _audioController.playSfx(Assets.sfx.winMatch);
-            break;
-          case GameResult.lose:
-            _audioController.playSfx(Assets.sfx.lostMatch);
-            break;
-          case GameResult.draw:
-            _audioController.playSfx(Assets.sfx.drawMatch);
-        }
-      } else if (event.updatedState.hostPlayedCards.length == 3 &&
+      if (event.updatedState.result == null &&
+          event.updatedState.hostPlayedCards.length == 3 &&
           event.updatedState.hostPlayedCards.length ==
               event.updatedState.guestPlayedCards.length) {
         await _gameResource.calculateResult(
