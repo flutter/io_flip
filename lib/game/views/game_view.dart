@@ -22,7 +22,12 @@ class GameView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GameBloc, GameState>(
+    return BlocConsumer<GameBloc, GameState>(
+      listenWhen: (previous, current) =>
+          context.read<GameBloc>().matchCompleted(current),
+      listener: (context, state) {
+        context.read<GameBloc>().sendMatchLeft();
+      },
       builder: (context, state) {
         final Widget child;
 

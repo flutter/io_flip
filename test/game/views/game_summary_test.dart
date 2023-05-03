@@ -24,6 +24,8 @@ class _MockRouter extends Mock implements NeglectRouter {}
 
 class _MockBuildContext extends Mock implements BuildContext {}
 
+class _FakeGameState extends Fake implements GameState {}
+
 void main() {
   group('GameSummaryView', () {
     late GameBloc bloc;
@@ -41,6 +43,7 @@ void main() {
         ),
       );
       registerFallbackValue(LeaderboardEntryRequested());
+      registerFallbackValue(_FakeGameState());
     });
 
     setUp(() {
@@ -50,6 +53,7 @@ void main() {
           .thenReturn(null);
       when(() => bloc.canPlayerPlay(any())).thenReturn(true);
       when(() => bloc.isPlayerAllowedToPlay).thenReturn(true);
+      when(() => bloc.matchCompleted(any())).thenReturn(true);
     });
 
     void mockState(GameState state) {
@@ -396,6 +400,7 @@ void main() {
           await tester.tap(find.text(tester.l10n.nextMatch));
           await tester.pumpAndSettle();
 
+          verifyNever(() => bloc.sendMatchLeft());
           verify(
             () => goRouter.goNamed(
               'match_making',
