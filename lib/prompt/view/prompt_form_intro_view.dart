@@ -1,5 +1,9 @@
+import 'package:flame/cache.dart';
+import 'package:flame/extensions.dart';
+import 'package:flame/widgets.dart';
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/l10n/l10n.dart';
@@ -9,10 +13,13 @@ class PromptFormIntroView extends StatelessWidget {
   const PromptFormIntroView({super.key});
 
   static const _gap = SizedBox(height: TopDashSpacing.xlg);
+  static const _cardMasterHeight = 312.0;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final images = context.read<Images>();
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.xlg),
       child: Column(
@@ -26,31 +33,43 @@ class PromptFormIntroView extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _gap,
-                    Image.asset(
-                      Assets.images.cardMaster.path,
-                      height: 156,
-                      width: 156,
+                    Stack(
+                      alignment: Alignment.topCenter,
+                      children: [
+                        SizedBox.square(
+                          dimension: _cardMasterHeight,
+                          child: SpriteAnimationWidget.asset(
+                            path: Assets.images.cardMaster.keyName,
+                            images: images,
+                            data: SpriteAnimationData.sequenced(
+                              amount: 57,
+                              amountPerRow: 19,
+                              textureSize: Vector2(812, 812),
+                              stepTime: 0.04,
+                            ),
+                          ),
+                        ),
+                        Column(
+                          children: [
+                            SizedBox(
+                              height: _cardMasterHeight - (_gap.height! * 2),
+                            ),
+                            Text(
+                              l10n.niceToMeetYou,
+                              style: TopDashTextStyles.headlineH4Light,
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: TopDashSpacing.sm),
+                            Text(
+                              l10n.introTextPromptPage,
+                              style: TopDashTextStyles.headlineH6Light,
+                              textAlign: TextAlign.center,
+                            ),
+                            _gap,
+                          ],
+                        )
+                      ],
                     ),
-                    _gap,
-                    Text(
-                      l10n.cardMaster,
-                      style: TopDashTextStyles.headlineH4Light,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: TopDashSpacing.sm),
-                    Text(
-                      l10n.niceToMeetYou,
-                      style: TopDashTextStyles.headlineH6Light,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: TopDashSpacing.sm),
-                    Text(
-                      l10n.introTextPromptPage,
-                      style: TopDashTextStyles.headlineH6Light,
-                      textAlign: TextAlign.center,
-                    ),
-                    _gap,
                   ],
                 ),
               ),
@@ -58,9 +77,10 @@ class PromptFormIntroView extends StatelessWidget {
           ),
           IoFlipBottomBar(
             middle: RoundedButton.text(
-              l10n.letsGetStarted.toUpperCase(),
-              onPressed: () =>
-                  context.flow<Prompt>().update((data) => data.setIntroSeen()),
+              l10n.letsGetStarted,
+              onPressed: () => context.flow<Prompt>().update(
+                    (data) => data.setIntroSeen(),
+                  ),
             ),
           ),
         ],
