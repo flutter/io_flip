@@ -9,12 +9,15 @@ import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
+import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/draft/draft.dart';
 import 'package:top_dash/draft/widgets/widgets.dart';
+import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/match_making/views/match_making_page.dart';
 import 'package:top_dash/settings/settings.dart';
+import 'package:top_dash/utils/utils.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -22,18 +25,16 @@ class _MockDraftBloc extends Mock implements DraftBloc {}
 
 class _MockSettingsController extends Mock implements SettingsController {}
 
-abstract class __Router {
-  void neglect(BuildContext context, VoidCallback callback);
-}
-
-class _MockRouter extends Mock implements __Router {}
+class _MockRouter extends Mock implements NeglectRouter {}
 
 class _MockBuildContext extends Mock implements BuildContext {}
+
+class _MockAudioController extends Mock implements AudioController {}
 
 void main() {
   group('DraftView', () {
     late DraftBloc draftBloc;
-    late __Router router;
+    late NeglectRouter router;
 
     const card1 = Card(
       id: '1',
@@ -256,7 +257,7 @@ void main() {
         verify(
           () => goRouter.goNamed(
             'match_making',
-            extra: MatchMakingPageData(deck: const [card1, card2, card3]),
+            extra: MatchMakingPageData(cards: const [card1, card2, card3]),
           ),
         ).called(1);
       },
@@ -293,7 +294,7 @@ void main() {
             queryParams: {
               'createPrivateMatch': 'true',
             },
-            extra: MatchMakingPageData(deck: const [card1, card2, card3]),
+            extra: MatchMakingPageData(cards: const [card1, card2, card3]),
           ),
         ).called(1);
       },
@@ -333,7 +334,7 @@ void main() {
             queryParams: {
               'inviteCode': 'invite-code',
             },
-            extra: MatchMakingPageData(deck: const [card1, card2, card3]),
+            extra: MatchMakingPageData(cards: const [card1, card2, card3]),
           ),
         ).called(1);
       },
@@ -443,7 +444,11 @@ void main() {
             )
           ],
         );
-        await tester.pumpSubject(draftBloc: draftBloc);
+        final audioController = _MockAudioController();
+        await tester.pumpSubject(
+          draftBloc: draftBloc,
+          audioController: audioController,
+        );
         final deckPackState = tester.state<DeckPackState>(
           find.byType(DeckPack),
         );
@@ -452,6 +457,8 @@ void main() {
         });
         await tester.pump(Duration(seconds: 2));
         deckPackState.onFrame(29);
+        verify(() => audioController.playSfx(Assets.sfx.deckOpen)).called(1);
+
         expect(deckPackState.anim, isNotNull);
       },
     );
@@ -464,6 +471,7 @@ extension DraftViewTest on WidgetTester {
     GoRouter? goRouter,
     RouterNeglectCall routerNeglectCall = Router.neglect,
     String allowPrivateMatch = 'true',
+    AudioController? audioController,
   }) async {
     final SettingsController settingsController = _MockSettingsController();
     when(() => settingsController.muted).thenReturn(ValueNotifier(true));
@@ -480,6 +488,7 @@ extension DraftViewTest on WidgetTester {
         images: Images(prefix: ''),
         router: goRouter,
         settingsController: settingsController,
+        audioController: audioController,
       );
 
       final deckPackStates = stateList<DeckPackState>(find.byType(DeckPack));

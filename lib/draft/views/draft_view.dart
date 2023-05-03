@@ -8,9 +8,8 @@ import 'package:top_dash/draft/widgets/deck_pack.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/match_making/match_making.dart';
+import 'package:top_dash/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
-
-typedef RouterNeglectCall = void Function(BuildContext, VoidCallback);
 
 class DraftView extends StatelessWidget {
   const DraftView({
@@ -300,7 +299,7 @@ class _BottomBar extends StatelessWidget {
                 () => GoRouter.of(context).goNamed(
                   'match_making',
                   extra: MatchMakingPageData(
-                    deck: state.selectedCards.cast<Card>(),
+                    cards: state.selectedCards.cast<Card>(),
                   ),
                 ),
               ),
@@ -352,7 +351,7 @@ class _BottomBar extends StatelessWidget {
             queryParams: {
               'inviteCode': inviteCode,
             },
-            extra: MatchMakingPageData(deck: state.selectedCards.cast<Card>()),
+            extra: MatchMakingPageData(cards: state.selectedCards.cast<Card>()),
           ),
         );
       }
@@ -419,7 +418,7 @@ class _JoinPrivateMatchDialogState extends State<_JoinPrivateMatchDialog> {
                   queryParams: {
                     'createPrivateMatch': 'true',
                   },
-                  extra: MatchMakingPageData(deck: widget.selectedCards),
+                  extra: MatchMakingPageData(cards: widget.selectedCards),
                 ),
               ),
               child: const Text('Create private match'),
