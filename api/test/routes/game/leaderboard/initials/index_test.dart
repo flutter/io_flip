@@ -22,9 +22,13 @@ void main() {
 
     const initials = 'AAA';
     const scoreCardId = 'mock-scoreCardId';
+    const blacklist = ['CCC'];
 
     setUp(() {
       leaderboardRepository = _MockLeaderboardRepository();
+
+      when(() => leaderboardRepository.getInitialsBlacklist())
+          .thenAnswer((_) async => blacklist);
       when(
         () => leaderboardRepository.addInitialsToScoreCard(
           scoreCardId: any(named: 'scoreCardId'),
@@ -53,6 +57,29 @@ void main() {
 
     test('responds with a 400 when request is invalid', () async {
       when(request.json).thenAnswer((_) async => {'test': 'test'});
+      final response = await route.onRequest(context);
+      expect(response.statusCode, equals(HttpStatus.badRequest));
+    });
+
+    test('responds with a 400 when initials are blacklisted', () async {
+      when(request.json).thenAnswer(
+        (_) async => {
+          'initials': 'CCC',
+          'scoreCardId': scoreCardId,
+        },
+      );
+      final response = await route.onRequest(context);
+      expect(response.statusCode, equals(HttpStatus.badRequest));
+    });
+
+    test('responds with a 400 when lowercase initials are blacklisted',
+        () async {
+      when(request.json).thenAnswer(
+        (_) async => {
+          'initials': 'ccc',
+          'scoreCardId': scoreCardId,
+        },
+      );
       final response = await route.onRequest(context);
       expect(response.statusCode, equals(HttpStatus.badRequest));
     });
