@@ -31,26 +31,21 @@ class DamageReceive extends StatelessWidget {
     final images = context.read<Images>();
     final height = 1.6 * size.height;
     final width = 1.6 * size.width;
-    final x = 0.3 * size.width;
-    final y = 0.3 * size.height;
 
-    return Transform.translate(
-      offset: Offset(x, y),
-      child: SizedBox(
-        height: height,
-        width: width,
-        child: SpriteAnimationWidget.asset(
-          path: path,
-          images: images,
-          anchor: Anchor.center,
-          onComplete: onComplete,
-          data: SpriteAnimationData.sequenced(
-            amount: 16,
-            amountPerRow: 4,
-            textureSize: Vector2(499.5, 509),
-            stepTime: 0.04,
-            loop: false,
-          ),
+    return SizedBox(
+      height: height,
+      width: width,
+      child: SpriteAnimationWidget.asset(
+        path: path,
+        images: images,
+        anchor: Anchor.center,
+        onComplete: onComplete,
+        data: SpriteAnimationData.sequenced(
+          amount: 16,
+          amountPerRow: 4,
+          textureSize: Vector2(499.5, 509),
+          stepTime: 0.04,
+          loop: false,
         ),
       ),
     );

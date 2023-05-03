@@ -30,28 +30,23 @@ class ChargeFront extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final images = context.read<Images>();
-    final height = 1.538 * size.height;
+    final height = 1.532 * size.height;
     final width = 1.89 * size.width;
-    final x = 0.45 * size.width;
-    final y = 0.31 * size.height;
 
-    return Transform.translate(
-      offset: -Offset(x, y),
-      child: SizedBox(
-        height: height,
-        width: width,
-        child: SpriteAnimationWidget.asset(
-          path: path,
-          images: images,
-          anchor: Anchor.center,
-          onComplete: onComplete,
-          data: SpriteAnimationData.sequenced(
-            amount: 20,
-            amountPerRow: 5,
-            textureSize: Vector2(658, 860),
-            stepTime: 0.04,
-            loop: false,
-          ),
+    return SizedBox(
+      height: height,
+      width: width,
+      child: SpriteAnimationWidget.asset(
+        path: path,
+        images: images,
+        anchor: Anchor.center,
+        onComplete: onComplete,
+        data: SpriteAnimationData.sequenced(
+          amount: 20,
+          amountPerRow: 5,
+          textureSize: Vector2(658, 860),
+          stepTime: 0.04,
+          loop: false,
         ),
       ),
     );

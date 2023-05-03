@@ -30,28 +30,23 @@ class VictoryChargeBack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final images = context.read<Images>();
-    final height = 1.28 * size.height;
+    final height = 1.22 * size.height;
     final width = 1.59 * size.width;
-    final x = 0.30 * size.width;
-    final y = 0.15 * size.height;
 
-    return Transform.translate(
-      offset: -Offset(x, y),
-      child: SizedBox(
-        height: height,
-        width: width,
-        child: SpriteAnimationWidget.asset(
-          path: path,
-          images: images,
-          anchor: Anchor.center,
-          onComplete: onComplete,
-          data: SpriteAnimationData.sequenced(
-            amount: 18,
-            amountPerRow: 6,
-            textureSize: Vector2(607, 695),
-            stepTime: 0.04,
-            loop: false,
-          ),
+    return SizedBox(
+      height: height,
+      width: width,
+      child: SpriteAnimationWidget.asset(
+        path: path,
+        images: images,
+        anchor: Anchor.center,
+        onComplete: onComplete,
+        data: SpriteAnimationData.sequenced(
+          amount: 18,
+          amountPerRow: 6,
+          textureSize: Vector2(607, 695),
+          stepTime: 0.04,
+          loop: false,
         ),
       ),
     );

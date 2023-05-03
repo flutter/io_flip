@@ -101,10 +101,16 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
         return Stack(
           children: [
             if (widget.direction == DamageDirection.topToBottom)
-              DualAnimation(
-                back: elementalDamage.chargeBackBuilder,
-                front: elementalDamage.chargeFrontBuilder,
-                onComplete: _onStepCompleted,
+              Transform.translate(
+                offset: -Offset(
+                  0.35 * widget.size.width,
+                  0.31 * widget.size.height,
+                ),
+                child: DualAnimation(
+                  back: elementalDamage.chargeBackBuilder,
+                  front: elementalDamage.chargeFrontBuilder,
+                  onComplete: _onStepCompleted,
+                ),
               )
             else
               _BottomAnimation(
@@ -135,7 +141,13 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
           children: [
             if (widget.direction == DamageDirection.topToBottom)
               _BottomAnimation(
-                child: elementalDamage.damageReceiveBuilder(_onStepCompleted),
+                child: Transform.translate(
+                  offset: Offset(
+                    0.3 * widget.size.width,
+                    0.3 * widget.size.height,
+                  ),
+                  child: elementalDamage.damageReceiveBuilder(_onStepCompleted),
+                ),
               )
             else
               elementalDamage.damageReceiveBuilder(_onStepCompleted)
@@ -145,10 +157,16 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
         return Stack(
           children: [
             if (widget.direction == DamageDirection.topToBottom)
-              DualAnimation(
-                back: elementalDamage.victoryChargeBackBuilder,
-                front: elementalDamage.victoryChargeFrontBuilder,
-                onComplete: _onStepCompleted,
+              Transform.translate(
+                offset: -Offset(
+                  0.3 * widget.size.width,
+                  0.1 * widget.size.height,
+                ),
+                child: DualAnimation(
+                  back: elementalDamage.victoryChargeBackBuilder,
+                  front: elementalDamage.victoryChargeFrontBuilder,
+                  onComplete: _onStepCompleted,
+                ),
               )
             else
               _BottomAnimation(
@@ -162,9 +180,6 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
         );
       case _AnimationState.ended:
         widget.onComplete?.call();
-        setState(() {
-          _animationState = _AnimationState.charging;
-        });
         return const SizedBox.shrink();
     }
   }
@@ -188,7 +203,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
     } else if (_animationState == _AnimationState.victory) {
       widget.stepNotifier?._victory.complete();
       setState(() {
-        _animationState = _AnimationState.ended;
+        _animationState = _AnimationState.charging;
       });
     }
   }

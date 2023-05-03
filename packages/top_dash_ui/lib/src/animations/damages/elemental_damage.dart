@@ -75,8 +75,7 @@ abstract class ElementalDamage {
   DamageSend damageSendBuilder(VoidCallback? onComplete) {
     return DamageSend(
       _damageSendPath,
-      width: size.width,
-      height: size.height,
+      size: size,
       onComplete: onComplete,
     );
   }

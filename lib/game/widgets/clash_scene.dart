@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' hide Card;
+import 'package:flutter/material.dart' hide Card, Element;
 import 'package:game_domain/game_domain.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -37,7 +37,6 @@ class ClashSceneState extends State<ClashScene>
   var _flipCards = false;
 
   void onFlipCards() {
-    setState(() => _flipCards = true);
     motionController.stop();
     Future.delayed(
       const Duration(milliseconds: 100),
@@ -45,8 +44,10 @@ class ClashSceneState extends State<ClashScene>
     );
 
     playerController.run(smallFlipAnimation);
-
-    Future.delayed(const Duration(seconds: 2), () => widget.onFinished());
+    Future.delayed(
+      const Duration(milliseconds: 500),
+      () => setState(() => _flipCards = true),
+    );
   }
 
   @override
@@ -109,6 +110,10 @@ class ClashSceneState extends State<ClashScene>
         );
       },
     );
+    final playerWins = widget.playerCard.power > widget.opponentCard.power;
+    final winningElement = _getElement(
+      playerWins ? widget.playerCard.suit : widget.opponentCard.suit,
+    );
     return Center(
       child: Stack(
         children: [
@@ -126,9 +131,33 @@ class ClashSceneState extends State<ClashScene>
                 onComplete: onFlipCards,
               ),
             ),
-          )
+          ),
+          if (_flipCards)
+            ElementalDamageAnimation(
+              winningElement,
+              direction: playerWins
+                  ? DamageDirection.bottomToTop
+                  : DamageDirection.topToBottom,
+              size: const GameCardSize.lg(),
+              onComplete: widget.onFinished,
+            )
         ],
       ),
     );
+  }
+
+  Element _getElement(Suit suit) {
+    switch (suit) {
+      case Suit.air:
+        return Element.air;
+      case Suit.metal:
+        return Element.metal;
+      case Suit.fire:
+        return Element.fire;
+      case Suit.earth:
+        return Element.earth;
+      case Suit.water:
+        return Element.water;
+    }
   }
 }
