@@ -8,7 +8,9 @@ import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
+import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/game/game.dart';
+import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/settings/settings.dart';
 import 'package:top_dash/share/views/card_inspector_dialog.dart';
 import 'package:top_dash/share/views/share_hand_page.dart';
@@ -23,6 +25,8 @@ class _MockGameBloc extends Mock implements GameBloc {}
 class _MockRouter extends Mock implements NeglectRouter {}
 
 class _MockBuildContext extends Mock implements BuildContext {}
+
+class _MockAudioController extends Mock implements AudioController {}
 
 class _FakeGameState extends Fake implements GameState {}
 
@@ -177,6 +181,34 @@ void main() {
     }
 
     group('Gameplay', () {
+      testWidgets('Play lostMatch sound when the player loses the game',
+          (tester) async {
+        final audioController = _MockAudioController();
+        defaultMockState();
+        when(bloc.gameResult).thenReturn(GameResult.lose);
+        await tester.pumpSubject(bloc, audioController: audioController);
+
+        verify(() => audioController.playSfx(Assets.sfx.lostMatch)).called(1);
+      });
+
+      testWidgets('Play winMatch sound when the player wins the game',
+          (tester) async {
+        final audioController = _MockAudioController();
+        defaultMockState();
+        when(bloc.gameResult).thenReturn(GameResult.win);
+        await tester.pumpSubject(bloc, audioController: audioController);
+
+        verify(() => audioController.playSfx(Assets.sfx.winMatch)).called(1);
+      });
+
+      testWidgets('Play drawMatch sound when there is a draw', (tester) async {
+        final audioController = _MockAudioController();
+        defaultMockState();
+        when(bloc.gameResult).thenReturn(GameResult.draw);
+        await tester.pumpSubject(bloc, audioController: audioController);
+
+        verify(() => audioController.playSfx(Assets.sfx.drawMatch)).called(1);
+      });
       testWidgets(
         'renders in small phone layout',
         (tester) async {
@@ -523,6 +555,7 @@ extension GameSummaryViewTest on WidgetTester {
   Future<void> pumpSubject(
     GameBloc bloc, {
     GoRouter? goRouter,
+    AudioController? audioController,
   }) {
     final SettingsController settingsController = _MockSettingsController();
     when(() => settingsController.muted).thenReturn(ValueNotifier(true));
@@ -534,6 +567,7 @@ extension GameSummaryViewTest on WidgetTester {
         ),
         router: goRouter,
         settingsController: settingsController,
+        audioController: audioController,
       );
       state<MatchResultSplashState>(
         find.byType(MatchResultSplash),

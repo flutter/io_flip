@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart' as game;
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
+import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/leaderboard/leaderboard.dart';
@@ -383,6 +384,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
       final state = bloc.state as MatchLoadedState;
       if (bloc.canPlayerPlay(card.id) && state.turnAnimationsFinished) {
         context.read<GameBloc>().add(PlayerPlayed(card.id));
+        context.read<AudioController>().playSfx(Assets.sfx.cardMovement);
         didPlayerPlay = true;
         return true;
       }

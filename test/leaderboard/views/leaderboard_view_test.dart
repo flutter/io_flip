@@ -81,7 +81,7 @@ void main() {
       },
     );
 
-    testWidgets('renders correct tab labels', (tester) async {
+    testWidgets('renders correct label', (tester) async {
       when(() => leaderboardBloc.state).thenReturn(
         const LeaderboardState(
           status: LeaderboardStateStatus.loaded,
@@ -93,29 +93,6 @@ void main() {
       final l10n = tester.l10n;
 
       expect(find.text(l10n.leaderboardLongestStreak), findsOneWidget);
-      expect(find.text(l10n.leaderboardMostWins), findsOneWidget);
-    });
-
-    testWidgets('updates index correctly', (tester) async {
-      when(() => leaderboardBloc.state).thenReturn(
-        const LeaderboardState(
-          status: LeaderboardStateStatus.loaded,
-          leaderboard: leaderboardResults,
-        ),
-      );
-      await tester.pumpSubject(leaderboardBloc: leaderboardBloc);
-
-      final finder = find.byType(LeaderboardView);
-
-      final index = tester.state<LeaderboardViewState>(finder).index;
-      expect(index, 0);
-
-      final l10n = tester.l10n;
-      await tester.tap(find.text(l10n.leaderboardMostWins));
-      await tester.pumpAndSettle();
-
-      final newIndex = tester.state<LeaderboardViewState>(finder).index;
-      expect(newIndex, 1);
     });
 
     testWidgets(
@@ -132,27 +109,6 @@ void main() {
         expect(find.byType(LeaderboardPlayers), findsOneWidget);
         expect(find.text(cardOne.initials!), findsOneWidget);
         expect(find.text(cardOne.longestStreak.toString()), findsOneWidget);
-      },
-    );
-
-    testWidgets(
-      'renders LeaderboardPlayers for most wins',
-      (tester) async {
-        when(() => leaderboardBloc.state).thenReturn(
-          const LeaderboardState(
-            status: LeaderboardStateStatus.loaded,
-            leaderboard: leaderboardResults,
-          ),
-        );
-        await tester.pumpSubject(leaderboardBloc: leaderboardBloc);
-
-        final l10n = tester.l10n;
-        await tester.tap(find.text(l10n.leaderboardMostWins));
-        await tester.pumpAndSettle();
-
-        expect(find.byType(LeaderboardPlayers), findsOneWidget);
-        expect(find.text(cardTwo.initials!), findsOneWidget);
-        expect(find.text(cardTwo.wins.toString()), findsOneWidget);
       },
     );
   });

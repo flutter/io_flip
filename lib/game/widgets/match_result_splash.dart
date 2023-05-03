@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/utils/utils.dart';
+import 'package:top_dash_ui/top_dash_ui.dart';
 
 class MatchResultSplash extends StatefulWidget {
   const MatchResultSplash({
@@ -33,6 +34,10 @@ class MatchResultSplashState extends State<MatchResultSplash> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile =
+        MediaQuery.sizeOf(context).width < TopDashBreakpoints.small;
+    final width = isMobile ? 314.0 : 471.0;
+
     final images = context.watch<Images>();
     final String resultImageKey;
     final textureSize = platformAwareAsset(
@@ -63,18 +68,23 @@ class MatchResultSplashState extends State<MatchResultSplash> {
 
     return isSplashFinished
         ? widget.child
-        : SizedBox.expand(
-            child: SpriteAnimationWidget.asset(
-              path: resultImageKey,
-              images: images,
-              anchor: Anchor.center,
-              onComplete: onComplete,
-              data: SpriteAnimationData.sequenced(
-                amount: 28,
-                amountPerRow: 4,
-                textureSize: textureSize,
-                stepTime: 0.04,
-                loop: false,
+        : Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: width),
+              child: SizedBox.expand(
+                child: SpriteAnimationWidget.asset(
+                  path: resultImageKey,
+                  images: images,
+                  anchor: Anchor.center,
+                  onComplete: onComplete,
+                  data: SpriteAnimationData.sequenced(
+                    amount: 28,
+                    amountPerRow: 4,
+                    textureSize: textureSize,
+                    stepTime: 0.04,
+                    loop: false,
+                  ),
+                ),
               ),
             ),
           );
