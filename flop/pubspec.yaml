@@ -1,0 +1,35 @@
+name: flop
+description: The testing bot for the Flip I/O game.
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ">=2.18.0 <3.0.0"
+
+dependencies:
+  api_client:
+    path: ../packages/api_client
+  authentication_repository:
+    path: ../packages/authentication_repository
+  bloc: ^8.1.1
+  cloud_firestore: ^4.5.0
+  connection_repository:
+    path: ../packages/connection_repository
+  equatable: ^2.0.5
+  firebase_app_check: ^0.1.2
+  firebase_auth: ^4.4.0
+  firebase_core: ^2.5.0
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^8.1.2
+  game_domain:
+    path: ../api/packages/game_domain
+  match_maker_repository:
+    path: ../packages/match_maker_repository
+
+dev_dependencies:
+  very_good_analysis: ^3.1.0
+
+flutter:
+  uses-material-design: true
+  generate: true
