@@ -168,6 +168,9 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
         );
       case _AnimationState.ended:
         widget.onComplete?.call();
+        setState(() {
+          _animationState = _AnimationState.charging;
+        });
         return Container();
     }
   }

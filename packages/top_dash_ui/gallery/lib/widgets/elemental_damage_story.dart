@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class ElementalDamageStory extends StatefulWidget {
-  const ElementalDamageStory({super.key});
+  const ElementalDamageStory(this.element, {super.key});
+
+  final Element element;
 
   @override
   State<ElementalDamageStory> createState() => _ElementalDamageStoryState();
@@ -53,7 +55,7 @@ class _ElementalDamageStoryState extends State<ElementalDamageStory> {
                 ),
                 Positioned(
                   child: ElementalDamageAnimation(
-                    Element.metal,
+                    widget.element,
                     direction: DamageDirection.topToBottom,
                     size: const GameCardSize.md(),
                     onComplete: () {},

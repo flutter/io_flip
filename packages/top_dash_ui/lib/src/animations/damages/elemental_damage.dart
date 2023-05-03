@@ -85,8 +85,7 @@ abstract class ElementalDamage {
   VictoryChargeBack victoryChargeBackBuilder(VoidCallback? onComplete) {
     return VictoryChargeBack(
       _victoryChargeBackPath,
-      width: size.width,
-      height: size.height,
+      size: size,
       onComplete: onComplete,
     );
   }
