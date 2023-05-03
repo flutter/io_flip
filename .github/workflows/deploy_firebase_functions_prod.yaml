@@ -1,11 +1,6 @@
 name: deploy_firebase_functions_prod
 
-on:
-  push:
-    paths:
-      - "functions/**"
-    branches:
-      - main
+on: workflow_dispatch
 
 defaults:
   run:

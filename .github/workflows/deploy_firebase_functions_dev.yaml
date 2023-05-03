@@ -3,6 +3,7 @@ name: deploy_firebase_functions_dev
 on:
   push:
     paths:
+      - ".github/workflows/deploy_firebase_functions_dev.yaml"
       - "functions/**"
     branches:
       - main
