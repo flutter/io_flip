@@ -4,24 +4,63 @@ import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/audio/audio.dart';
 import 'package:top_dash/draft/draft.dart';
-import 'package:top_dash/draft/widgets/deck_pack.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/match_making/match_making.dart';
 import 'package:top_dash/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
-class DraftView extends StatelessWidget {
+const _handSize = GameCardSize.xs();
+const _stackSize = GameCardSize.lg();
+
+typedef CacheImageFunction = Future<void> Function(
+  ImageProvider<Object> provider,
+  BuildContext context,
+);
+
+class DraftView extends StatefulWidget {
   const DraftView({
     super.key,
     RouterNeglectCall routerNeglectCall = Router.neglect,
     String allowPrivateMatch =
         const String.fromEnvironment('ALLOW_PRIVATE_MATCHES'),
+    CacheImageFunction cacheImage = precacheImage,
   })  : _routerNeglectCall = routerNeglectCall,
-        _allowPrivateMatch = allowPrivateMatch;
+        _allowPrivateMatch = allowPrivateMatch,
+        _cacheImage = cacheImage;
 
   final RouterNeglectCall _routerNeglectCall;
   final String _allowPrivateMatch;
+  final CacheImageFunction _cacheImage;
+
+  @override
+  State<DraftView> createState() => _DraftViewState();
+}
+
+class _DraftViewState extends State<DraftView> {
+  bool imagesLoaded = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!imagesLoaded) {
+      final bloc = context.read<DraftBloc>();
+      if (bloc.state.status == DraftStateStatus.deckLoaded ||
+          bloc.state.status == DraftStateStatus.deckSelected) {
+        Future.wait([
+          for (final card in bloc.state.cards)
+            widget._cacheImage(NetworkImage(card.image), context),
+        ]).then((_) {
+          if (mounted) {
+            setState(() {
+              imagesLoaded = true;
+            });
+          }
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +77,8 @@ class DraftView extends StatelessWidget {
     }
 
     if (state.status == DraftStateStatus.deckLoading ||
-        state.status == DraftStateStatus.initial) {
+        state.status == DraftStateStatus.initial ||
+        !imagesLoaded) {
       return const IoFlipScaffold(
         body: Center(
           child: CircularProgressIndicator(),
@@ -46,54 +86,200 @@ class DraftView extends StatelessWidget {
       );
     }
 
+    return DraftLoadedView(
+      routerNeglectCall: widget._routerNeglectCall,
+      allowPrivateMatch: widget._allowPrivateMatch,
+    );
+  }
+}
+
+class DraftLoadedView extends StatefulWidget {
+  const DraftLoadedView({
+    required RouterNeglectCall routerNeglectCall,
+    required String allowPrivateMatch,
+    super.key,
+  })  : _routerNeglectCall = routerNeglectCall,
+        _allowPrivateMatch = allowPrivateMatch;
+
+  final RouterNeglectCall _routerNeglectCall;
+  final String _allowPrivateMatch;
+
+  @override
+  State<DraftLoadedView> createState() => _DraftLoadedViewState();
+}
+
+class _DraftLoadedViewState extends State<DraftLoadedView> {
+  static const _fadeInDuration = Duration(milliseconds: 450);
+  static const _fadeInCurve = Curves.easeInOut;
+  double get _uiOffset => uiVisible ? 0 : 48;
+  bool uiVisible = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final stackHeight = 80 - (_stackSize.height * 0.1);
+    final totalStackHeight = _stackSize.height + stackHeight;
+    final uiHeight = totalStackHeight + _handSize.height;
+    final screenSize = MediaQuery.sizeOf(context);
+    final showArrows = screenSize.width > 500 && uiVisible;
+    final center = screenSize.center(Offset.zero);
+
     return IoFlipScaffold(
-      bottomBar: _BottomBar(
-        routerNeglectCall: _routerNeglectCall,
-        allowPrivateMatch: _allowPrivateMatch == 'true',
+      bottomBar: AnimatedSlide(
+        duration: _fadeInDuration,
+        curve: _fadeInCurve,
+        offset: Offset(0, uiVisible ? 0 : 0.25),
+        child: AnimatedOpacity(
+          curve: _fadeInCurve,
+          duration: _fadeInDuration,
+          opacity: uiVisible ? 1 : 0,
+          child: _BottomBar(
+            routerNeglectCall: widget._routerNeglectCall,
+            allowPrivateMatch: widget._allowPrivateMatch == 'true',
+          ),
+        ),
       ),
       body: Center(
-        child: Column(
-          children: [
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  DeckPack(
-                    size: 350,
-                    builder: ({required bool isAnimating}) => _DraftDeck(
-                      arrowsEnabled: !isAnimating,
-                    ),
-                  ),
-                  Flexible(
-                    child: Container(
-                      constraints: const BoxConstraints(
-                        maxHeight: TopDashSpacing.xxxlg,
-                      ),
-                    ),
-                  ),
-                  const _SelectedDeck(),
-                ],
-              ),
+        child: SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: uiHeight + TopDashSpacing.xxxlg,
+              minHeight: uiHeight + TopDashSpacing.lg,
             ),
-          ],
+            child: Stack(
+              children: [
+                AnimatedPositioned(
+                  duration: _fadeInDuration,
+                  curve: _fadeInCurve,
+                  right: center.dx + _stackSize.width / 2 + TopDashSpacing.xs,
+                  top: _stackSize.height / 2 + _uiOffset,
+                  child: AnimatedOpacity(
+                    curve: _fadeInCurve,
+                    duration: _fadeInDuration,
+                    opacity: showArrows ? 1 : 0,
+                    child: IconButton(
+                      onPressed: () {
+                        context.read<DraftBloc>().add(const PreviousCard());
+                      },
+                      icon: const Icon(
+                        Icons.arrow_back_ios_new,
+                        color: TopDashColors.seedWhite,
+                      ),
+                      iconSize: 20,
+                    ),
+                  ),
+                ),
+                AnimatedPositioned(
+                  duration: _fadeInDuration,
+                  curve: _fadeInCurve,
+                  left: center.dx + _stackSize.width / 2 + TopDashSpacing.xs,
+                  top: _stackSize.height / 2 + _uiOffset,
+                  child: AnimatedOpacity(
+                    curve: _fadeInCurve,
+                    duration: _fadeInDuration,
+                    opacity: showArrows ? 1 : 0,
+                    child: IconButton(
+                      onPressed: () {
+                        context.read<DraftBloc>().add(const NextCard());
+                      },
+                      icon: const Icon(
+                        Icons.arrow_forward_ios,
+                        color: TopDashColors.seedWhite,
+                      ),
+                      iconSize: 20,
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: AnimatedSlide(
+                    duration: _fadeInDuration,
+                    curve: _fadeInCurve,
+                    offset: Offset(0, uiVisible ? 0 : 0.25),
+                    child: AnimatedOpacity(
+                      curve: _fadeInCurve,
+                      duration: _fadeInDuration,
+                      opacity: uiVisible ? 1 : 0,
+                      child: const _SelectedDeck(),
+                    ),
+                  ),
+                ),
+                AnimatedAlign(
+                  curve: _fadeInCurve,
+                  duration: _fadeInDuration,
+                  alignment: uiVisible ? Alignment.topCenter : Alignment.center,
+                  child: AnimatedOpacity(
+                    duration: _fadeInDuration,
+                    opacity: uiVisible ? 1 : 0,
+                    child: BlocBuilder<DraftBloc, DraftState>(
+                      builder: (context, state) {
+                        final cards = state.cards;
+                        return _BackgroundCards(cards);
+                      },
+                    ),
+                  ),
+                ),
+                AnimatedAlign(
+                  curve: _fadeInCurve,
+                  duration: _fadeInDuration,
+                  alignment: uiVisible ? Alignment.topCenter : Alignment.center,
+                  child: DeckPack(
+                    onComplete: () {
+                      setState(() {
+                        uiVisible = true;
+                      });
+                    },
+                    size: _stackSize.size,
+                    child: const _TopCard(),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 }
 
-class _DraftDeck extends StatelessWidget {
-  const _DraftDeck({
-    this.arrowsEnabled = true,
-  });
-
-  final bool arrowsEnabled;
+class _TopCard extends StatelessWidget {
+  const _TopCard();
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.watch<DraftBloc>();
-    final state = bloc.state;
+    final card =
+        context.select<DraftBloc, Card>((bloc) => bloc.state.cards.first);
+    final opacity = context
+        .select<DraftBloc, double>((bloc) => bloc.state.firstCardOpacity);
+    return Dismissible(
+      key: ValueKey(card.id),
+      onDismissed: (direction) {
+        context.read<DraftBloc>().add(const CardSwiped());
+      },
+      onUpdate: (details) {
+        context.read<DraftBloc>().add(CardSwipeStarted(details.progress));
+      },
+      child: Opacity(
+        opacity: opacity,
+        child: GameCard(
+          image: card.image,
+          name: card.name,
+          description: card.description,
+          power: card.power,
+          suitName: card.suit.name,
+          isRare: card.rarity,
+        ),
+      ),
+    );
+  }
+}
 
+class _BackgroundCards extends StatelessWidget {
+  const _BackgroundCards(this.cards);
+
+  final List<Card> cards;
+
+  @override
+  Widget build(BuildContext context) {
     final translateTween = Tween<Offset>(
       begin: Offset.zero,
       end: const Offset(0, 80),
@@ -104,86 +290,37 @@ class _DraftDeck extends StatelessWidget {
       end: .8,
     );
 
-    const cardSize = GameCardSize.lg();
-
     final bottomPadding = translateTween.transform(1).dy -
-        ((cardSize.height * (1 - scaleTween.transform(1))) / 2);
+        ((_stackSize.height * (1 - scaleTween.transform(1))) / 2);
 
-    final showArrows = MediaQuery.of(context).size.width > 500 && arrowsEnabled;
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        if (showArrows) ...[
-          IconButton(
-            onPressed: () {
-              bloc.add(const PreviousCard());
-            },
-            icon: const Icon(
-              Icons.arrow_back_ios_new,
-              color: TopDashColors.seedWhite,
-            ),
-            iconSize: 20,
-          ),
-          const SizedBox(width: TopDashSpacing.xs),
-        ],
-        Padding(
-          // Padding required to avoid widgets overlapping due to Stack child's
-          // translations
-          padding: EdgeInsets.only(bottom: bottomPadding),
-          child: Stack(
-            children: [
-              for (var i = state.cards.length - 1; i >= 0; i--)
-                Transform.translate(
-                  offset: translateTween.transform(
-                    (i + 1) / state.cards.length,
-                  ),
-                  child: Transform.scale(
-                    scale: scaleTween.transform(
-                      (i + 1) / state.cards.length,
-                    ),
-                    child: Dismissible(
-                      direction: i == 0
-                          ? DismissDirection.horizontal
-                          : DismissDirection.none,
-                      key: ValueKey(state.cards[i].id),
-                      onDismissed: (direction) {
-                        bloc.add(const CardSwiped());
-                      },
-                      onUpdate: (details) {
-                        bloc.add(CardSwipeStarted(details.progress));
-                      },
-                      child: Opacity(
-                        opacity: i == 0 ? state.firstCardOpacity : 1,
-                        child: GameCard(
-                          image: state.cards[i].image,
-                          name: state.cards[i].name,
-                          description: state.cards[i].description,
-                          power: state.cards[i].power,
-                          suitName: state.cards[i].suit.name,
-                          isRare: state.cards[i].rarity,
-                        ),
-                      ),
-                    ),
-                  ),
+    return Padding(
+      // Padding required to avoid widgets overlapping due to Stack child's
+      // translations
+      padding: EdgeInsets.only(bottom: bottomPadding),
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          for (var i = cards.length - 1; i > 0; i--)
+            Transform.translate(
+              offset: translateTween.transform(
+                i / cards.length,
+              ),
+              child: Transform.scale(
+                scale: scaleTween.transform(
+                  i / cards.length,
                 ),
-            ],
-          ),
-        ),
-        if (showArrows) ...[
-          const SizedBox(width: TopDashSpacing.xs),
-          IconButton(
-            onPressed: () {
-              bloc.add(const NextCard());
-            },
-            icon: const Icon(
-              Icons.arrow_forward_ios,
-              color: TopDashColors.seedWhite,
+                child: GameCard(
+                  image: cards[i].image,
+                  name: cards[i].name,
+                  description: cards[i].description,
+                  power: cards[i].power,
+                  suitName: cards[i].suit.name,
+                  isRare: cards[i].rarity,
+                ),
+              ),
             ),
-            iconSize: 20,
-          ),
         ],
-      ],
+      ),
     );
   }
 }
@@ -199,7 +336,10 @@ class _SelectedDeck extends StatelessWidget {
         for (var i = 0; i < 3; i++) ...[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.xs),
-            child: SelectedCard(i, key: ValueKey('SelectedCard$i')),
+            child: SelectedCard(
+              i,
+              key: ValueKey('SelectedCard$i'),
+            ),
           ),
         ]
       ],
@@ -224,8 +364,8 @@ class SelectedCard extends StatelessWidget {
           bloc.add(SelectCard(index));
         },
         child: Container(
-          height: 145,
-          width: 103,
+          width: _handSize.width,
+          height: _handSize.height,
           decoration: card == null
               ? BoxDecoration(
                   borderRadius: BorderRadius.circular(TopDashSpacing.sm),
@@ -234,7 +374,7 @@ class SelectedCard extends StatelessWidget {
               : null,
           child: Stack(
             children: [
-              if (card != null) ...[
+              if (card != null)
                 GameCard(
                   image: card.image,
                   name: card.name,
@@ -243,29 +383,29 @@ class SelectedCard extends StatelessWidget {
                   power: card.power,
                   isRare: card.rarity,
                   size: const GameCardSize.xs(),
-                ),
-              ],
-              Positioned(
-                bottom: TopDashSpacing.xs,
-                right: TopDashSpacing.xs,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: TopDashColors.seedWhite,
-                    borderRadius: BorderRadius.circular(4),
-                    border: Border.all(
-                      width: 2,
-                      color: TopDashColors.seedBlack,
-                    ),
-                    boxShadow: const [
-                      BoxShadow(
-                        offset: Offset(-2, 2),
-                        spreadRadius: 1,
+                )
+              else
+                Positioned(
+                  bottom: TopDashSpacing.xs,
+                  right: TopDashSpacing.xs,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: TopDashColors.seedWhite,
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(
+                        width: 2,
+                        color: TopDashColors.seedBlack,
                       ),
-                    ],
+                      boxShadow: const [
+                        BoxShadow(
+                          offset: Offset(-2, 2),
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                    child: const Icon(Icons.add, size: 32),
                   ),
-                  child: const Icon(Icons.add, size: 32),
                 ),
-              ),
             ],
           ),
         ),

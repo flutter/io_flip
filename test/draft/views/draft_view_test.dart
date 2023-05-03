@@ -11,7 +11,6 @@ import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/draft/draft.dart';
-import 'package:top_dash/draft/widgets/widgets.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/l10n/l10n.dart';
@@ -113,6 +112,31 @@ void main() {
       expect(find.text('card2'), findsOneWidget);
     });
 
+    testWidgets('precaches all images', (tester) async {
+      final images = <ImageProvider<Object>>[];
+      mockState(
+        [
+          DraftState(
+            cards: const [card1, card2],
+            selectedCards: const [],
+            status: DraftStateStatus.deckLoaded,
+            firstCardOpacity: 1,
+          )
+        ],
+      );
+      await tester.pumpSubject(
+        draftBloc: draftBloc,
+        cacheImage: (provider, __) async {
+          images.add(provider);
+        },
+      );
+
+      expect(
+        images,
+        containsAll([NetworkImage(card1.image), NetworkImage(card2.image)]),
+      );
+    });
+
     testWidgets('selects the top card', (tester) async {
       mockState(
         [
@@ -125,6 +149,7 @@ void main() {
         ],
       );
       await tester.pumpSubject(draftBloc: draftBloc);
+      await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(ValueKey('SelectedCard0')));
       await tester.pumpAndSettle();
@@ -472,6 +497,7 @@ extension DraftViewTest on WidgetTester {
     RouterNeglectCall routerNeglectCall = Router.neglect,
     String allowPrivateMatch = 'true',
     AudioController? audioController,
+    CacheImageFunction? cacheImage,
   }) async {
     final SettingsController settingsController = _MockSettingsController();
     when(() => settingsController.muted).thenReturn(ValueNotifier(true));
@@ -483,6 +509,7 @@ extension DraftViewTest on WidgetTester {
           child: DraftView(
             routerNeglectCall: routerNeglectCall,
             allowPrivateMatch: allowPrivateMatch,
+            cacheImage: cacheImage ?? (_, __) async {},
           ),
         ),
         images: Images(prefix: ''),
@@ -490,6 +517,7 @@ extension DraftViewTest on WidgetTester {
         settingsController: settingsController,
         audioController: audioController,
       );
+      await pump();
 
       final deckPackStates = stateList<DeckPackState>(find.byType(DeckPack));
       if (deckPackStates.isNotEmpty) {

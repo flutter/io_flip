@@ -100,13 +100,17 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     if (state.selectedCards.contains(topCard)) return;
     _audioController.playSfx(Assets.sfx.addToHand);
 
+    final oldSelectedCard = state.selectedCards[event.index];
     final selectedCards = List.of(state.selectedCards);
     selectedCards[event.index] = topCard;
 
     final selectionCompleted =
         selectedCards.length == 3 && !selectedCards.contains(null);
 
-    final cards = _dismissTopCard();
+    final cards = [
+      ...state.cards.skip(1),
+      if (oldSelectedCard != null) oldSelectedCard,
+    ];
     _playHoloReveal(cards);
 
     emit(

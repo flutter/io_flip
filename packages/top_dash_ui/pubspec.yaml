@@ -35,6 +35,11 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/elements/air/
+    - assets/images/elements/earth/
+    - assets/images/elements/fire/
+    - assets/images/elements/metal/
+    - assets/images/elements/water/
     - assets/images/suits/onboarding/
     - assets/images/suits/card/
     - assets/images/card_frames/
