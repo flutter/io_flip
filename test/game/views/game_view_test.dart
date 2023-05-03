@@ -11,7 +11,9 @@ import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
+import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/game/game.dart';
+import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/leaderboard/leaderboard.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -20,6 +22,8 @@ import '../../helpers/helpers.dart';
 class _MockGameBloc extends Mock implements GameBloc {}
 
 class _MockLeaderboardResource extends Mock implements LeaderboardResource {}
+
+class _MockAudioController extends Mock implements AudioController {}
 
 void main() {
   group('GameView', () {
@@ -198,10 +202,14 @@ void main() {
       testWidgets(
         'plays a player card on tap',
         (tester) async {
+          final audioController = _MockAudioController();
           mockState(baseState);
-          await tester.pumpSubject(bloc);
+          await tester.pumpSubject(bloc, audioController: audioController);
 
           await tester.tap(find.byKey(const Key('player_card_player_card')));
+
+          verify(() => audioController.playSfx(Assets.sfx.cardMovement))
+              .called(1);
 
           verify(() => bloc.add(PlayerPlayed('player_card'))).called(1);
         },
@@ -245,8 +253,9 @@ void main() {
       testWidgets(
         'plays a player card when dragged',
         (tester) async {
+          final audioController = _MockAudioController();
           mockState(baseState);
-          await tester.pumpSubject(bloc);
+          await tester.pumpSubject(bloc, audioController: audioController);
 
           final start = tester
               .getCenter(find.byKey(const Key('player_card_player_card')));
@@ -254,6 +263,9 @@ void main() {
 
           await tester.dragFrom(start, end - start);
           await tester.pumpAndSettle();
+
+          verify(() => audioController.playSfx(Assets.sfx.cardMovement))
+              .called(1);
 
           verify(() => bloc.add(PlayerPlayed('player_card'))).called(1);
         },
@@ -689,6 +701,7 @@ extension GameViewTest on WidgetTester {
     GameBloc bloc, {
     GoRouter? goRouter,
     LeaderboardResource? leaderboardResource,
+    AudioController? audioController,
   }) {
     return mockNetworkImages(() {
       return pumpApp(
@@ -698,6 +711,7 @@ extension GameViewTest on WidgetTester {
         ),
         router: goRouter,
         leaderboardResource: leaderboardResource,
+        audioController: audioController,
       );
     });
   }
