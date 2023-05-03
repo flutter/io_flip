@@ -10,9 +10,10 @@ import 'package:go_router/go_router.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
-import 'package:top_dash/game/game.dart' hide RouterNeglectCall;
+import 'package:top_dash/game/game.dart';
 import 'package:top_dash/match_making/match_making.dart';
 import 'package:top_dash/settings/settings.dart';
+import 'package:top_dash/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
@@ -21,18 +22,14 @@ class _MockMatchMakingBloc extends Mock implements MatchMakingBloc {}
 
 class _MockSettingsController extends Mock implements SettingsController {}
 
-abstract class __Router {
-  void neglect(BuildContext context, VoidCallback callback);
-}
-
-class _MockRouter extends Mock implements __Router {}
+class _MockRouter extends Mock implements NeglectRouter {}
 
 class _MockBuildContext extends Mock implements BuildContext {}
 
 void main() {
   group('MatchMakingView', () {
     late MatchMakingBloc bloc;
-    late __Router router;
+    late NeglectRouter router;
 
     setUp(() {
       bloc = _MockMatchMakingBloc();

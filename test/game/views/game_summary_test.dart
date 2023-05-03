@@ -22,15 +22,13 @@ class _MockSettingsController extends Mock implements SettingsController {}
 
 class _MockGameBloc extends Mock implements GameBloc {}
 
-abstract class __Router {
-  void neglect(BuildContext context, VoidCallback callback);
-}
-
-class _MockRouter extends Mock implements __Router {}
+class _MockRouter extends Mock implements NeglectRouter {}
 
 class _MockBuildContext extends Mock implements BuildContext {}
 
 class _MockAudioController extends Mock implements AudioController {}
+
+class _FakeGameState extends Fake implements GameState {}
 
 void main() {
   group('GameSummaryView', () {
@@ -49,6 +47,7 @@ void main() {
         ),
       );
       registerFallbackValue(LeaderboardEntryRequested());
+      registerFallbackValue(_FakeGameState());
     });
 
     setUp(() {
@@ -58,6 +57,7 @@ void main() {
           .thenReturn(null);
       when(() => bloc.canPlayerPlay(any())).thenReturn(true);
       when(() => bloc.isPlayerAllowedToPlay).thenReturn(true);
+      when(() => bloc.matchCompleted(any())).thenReturn(true);
     });
 
     void mockState(GameState state) {
@@ -393,23 +393,52 @@ void main() {
           expect(find.byType(CardInspectorDialog), findsOneWidget);
         },
       );
+    });
+
+    group('GameSummaryFooter', () {
+      late NeglectRouter router;
+
+      setUpAll(() {
+        registerFallbackValue(_MockBuildContext());
+      });
+
+      setUp(() {
+        router = _MockRouter();
+        when(() => router.neglect(any(), any())).thenAnswer((_) {
+          final callback = _.positionalArguments[1] as VoidCallback;
+          callback();
+        });
+      });
 
       testWidgets(
-        'pops navigation when the next match button is tapped',
+        'navigates to matchmaking when the next match button is tapped',
         (tester) async {
           final goRouter = MockGoRouter();
-
+          when(() => bloc.playerCards).thenReturn([]);
           when(() => bloc.isHost).thenReturn(false);
           defaultMockState();
-          await tester.pumpSubject(
-            bloc,
-            goRouter: goRouter,
+
+          await tester.pumpApp(
+            BlocProvider<GameBloc>.value(
+              value: bloc,
+              child: GameSummaryFooter(
+                isPhoneWidth: false,
+                routerNeglectCall: router.neglect,
+              ),
+            ),
+            router: goRouter,
           );
 
           await tester.tap(find.text(tester.l10n.nextMatch));
           await tester.pumpAndSettle();
 
-          verify(goRouter.pop).called(1);
+          verifyNever(() => bloc.sendMatchLeft());
+          verify(
+            () => goRouter.goNamed(
+              'match_making',
+              extra: any(named: 'extra'),
+            ),
+          ).called(1);
         },
       );
 
@@ -437,22 +466,6 @@ void main() {
           verify(goRouter.pop).called(1);
         },
       );
-    });
-
-    group('GameSummaryFooter', () {
-      late __Router router;
-
-      setUpAll(() {
-        registerFallbackValue(_MockBuildContext());
-      });
-
-      setUp(() {
-        router = _MockRouter();
-        when(() => router.neglect(any(), any())).thenAnswer((_) {
-          final callback = _.positionalArguments[1] as VoidCallback;
-          callback();
-        });
-      });
 
       testWidgets(
         'pops navigation when the submit score button is tapped by winner '

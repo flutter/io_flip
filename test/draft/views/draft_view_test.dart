@@ -17,6 +17,7 @@ import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/match_making/views/match_making_page.dart';
 import 'package:top_dash/settings/settings.dart';
+import 'package:top_dash/utils/utils.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -24,11 +25,7 @@ class _MockDraftBloc extends Mock implements DraftBloc {}
 
 class _MockSettingsController extends Mock implements SettingsController {}
 
-abstract class __Router {
-  void neglect(BuildContext context, VoidCallback callback);
-}
-
-class _MockRouter extends Mock implements __Router {}
+class _MockRouter extends Mock implements NeglectRouter {}
 
 class _MockBuildContext extends Mock implements BuildContext {}
 
@@ -37,7 +34,7 @@ class _MockAudioController extends Mock implements AudioController {}
 void main() {
   group('DraftView', () {
     late DraftBloc draftBloc;
-    late __Router router;
+    late NeglectRouter router;
 
     const card1 = Card(
       id: '1',
@@ -260,7 +257,7 @@ void main() {
         verify(
           () => goRouter.goNamed(
             'match_making',
-            extra: MatchMakingPageData(deck: const [card1, card2, card3]),
+            extra: MatchMakingPageData(cards: const [card1, card2, card3]),
           ),
         ).called(1);
       },
@@ -297,7 +294,7 @@ void main() {
             queryParams: {
               'createPrivateMatch': 'true',
             },
-            extra: MatchMakingPageData(deck: const [card1, card2, card3]),
+            extra: MatchMakingPageData(cards: const [card1, card2, card3]),
           ),
         ).called(1);
       },
@@ -337,7 +334,7 @@ void main() {
             queryParams: {
               'inviteCode': 'invite-code',
             },
-            extra: MatchMakingPageData(deck: const [card1, card2, card3]),
+            extra: MatchMakingPageData(cards: const [card1, card2, card3]),
           ),
         ).called(1);
       },

@@ -8,10 +8,10 @@ import 'package:top_dash/game/game.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/info/info.dart';
 import 'package:top_dash/l10n/l10n.dart';
+import 'package:top_dash/match_making/match_making.dart';
 import 'package:top_dash/share/share.dart';
+import 'package:top_dash/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
-
-typedef RouterNeglectCall = void Function(BuildContext, VoidCallback);
 
 class GameSummaryView extends StatelessWidget {
   const GameSummaryView({super.key});
@@ -296,7 +296,13 @@ class GameSummaryFooter extends StatelessWidget {
         if (isWinner)
           RoundedButton.text(
             l10n.nextMatch,
-            onPressed: () => GoRouter.of(context).pop(),
+            onPressed: () => _routerNeglectCall(
+              context,
+              () => GoRouter.of(context).goNamed(
+                'match_making',
+                extra: MatchMakingPageData(cards: bloc.playerCards),
+              ),
+            ),
           ),
         _gap,
         RoundedButton.text(
