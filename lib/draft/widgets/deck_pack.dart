@@ -4,6 +4,7 @@ import 'package:flame/extensions.dart';
 import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -68,6 +69,7 @@ class DeckPackState extends State<DeckPack> {
       setState(() {
         _underlayVisible = true;
       });
+      context.read<AudioController>().playSfx(Assets.sfx.deckOpen);
     }
   }
 
