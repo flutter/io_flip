@@ -24,7 +24,7 @@
   "@gameResultError": {
     "description": "Displayed when error while getting game result"
   },
-  "letsGetStarted": "Let's get started",
+  "letsGetStarted": "LET'S GET STARTED",
   "@letsGetStarted": {
     "description": "label let's get started"
   },
@@ -32,15 +32,11 @@
   "@select": {
     "description": "label select"
   },
-  "cardMaster": "I'm the card master!",
-  "@cardMaster": {
-    "description": "card master name title"
-  },
   "niceToMeetYou": "Nice to meet you!",
   "@niceToMeetYou": {
     "description": "label nice to meet you"
   },
-  "introTextPromptPage": "With just a few prompts, I can build us an AI-designed pack of cards featuring our favorite Google characters: Dash, Sparky, Android, and Dino imbued with special powers.",
+  "introTextPromptPage": "With just a few prompts, I can build us an AI-designed pack of cards featuring some of our favorite Google characters: Dash, Sparky, Android, and Dino, imbued with special powers.",
   "@introTextPromptPage": {
     "description": "Text for the intro when selecting the prompt to build the deck"
   },
