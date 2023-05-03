@@ -139,9 +139,23 @@ void main() {
       when(
         () => matchRepository.getPlayerConnectivity(userId: userId),
       ).thenAnswer((_) => Future.value(false));
+      when(() => matchRepository.trackPlayerPresence).thenReturn(true);
       final response = await route.onRequest(context, matchId);
       expect(response.statusCode, equals(HttpStatus.forbidden));
     });
+
+    test(
+      'responds with a 200 if user not connected to match '
+      'but presence also is not tracked',
+      () async {
+        when(
+          () => matchRepository.getPlayerConnectivity(userId: userId),
+        ).thenAnswer((_) => Future.value(false));
+        when(() => matchRepository.trackPlayerPresence).thenReturn(false);
+        final response = await route.onRequest(context, matchId);
+        expect(response.statusCode, equals(HttpStatus.noContent));
+      },
+    );
 
     test("responds with a 405 if method isn't POST", () async {
       when(() => request.method).thenReturn(HttpMethod.put);

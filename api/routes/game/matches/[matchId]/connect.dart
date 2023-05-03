@@ -18,7 +18,7 @@ FutureOr<Response> onRequest(RequestContext context, String matchId) async {
       userId: user.id,
     );
 
-    if (playerConnected) {
+    if (playerConnected || !matchRepository.trackPlayerPresence) {
       try {
         final cardsRepository = context.read<CardsRepository>();
         final promptRepository = context.read<PromptRepository>();
