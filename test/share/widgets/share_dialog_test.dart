@@ -162,7 +162,7 @@ extension ShareCardDialogTest on WidgetTester {
             urlLauncher: (url) async {
               launchedUrl = url;
             },
-            downloadRequest: const DownloadRequested(card: card),
+            downloadContent: card,
           ),
         ),
       );
