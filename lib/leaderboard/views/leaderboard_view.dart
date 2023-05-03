@@ -4,18 +4,13 @@ import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/leaderboard/leaderboard.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
-class LeaderboardView extends StatefulWidget {
+class LeaderboardView extends StatelessWidget {
   const LeaderboardView({super.key});
 
   @override
-  State<LeaderboardView> createState() => LeaderboardViewState();
-}
-
-class LeaderboardViewState extends State<LeaderboardView> {
-  int index = 0;
-
-  @override
   Widget build(BuildContext context) {
+    const highlightColor = TopDashColors.seedYellow;
+
     final bloc = context.watch<LeaderboardBloc>();
     final state = bloc.state;
     final l10n = context.l10n;
@@ -31,47 +26,32 @@ class LeaderboardViewState extends State<LeaderboardView> {
     }
 
     final longestStreak = leaderboard.scoreCardsWithLongestStreak;
-    final mostWins = leaderboard.scoreCardsWithMostWins;
-
-    final tabs = {
-      l10n.leaderboardLongestStreak: LeaderboardPlayers(
-        players: longestStreak.map((e) {
-          return LeaderboardPlayer(
-            index: longestStreak.indexOf(e),
-            initials: e.initials ?? '',
-            value: e.longestStreak,
-          );
-        }).toList(),
-      ),
-      l10n.leaderboardMostWins: LeaderboardPlayers(
-        players: mostWins.map((e) {
-          return LeaderboardPlayer(
-            index: mostWins.indexOf(e),
-            initials: e.initials ?? '',
-            value: e.wins,
-          );
-        }).toList(),
-      ),
-    };
 
     return Padding(
-      padding: const EdgeInsets.all(TopDashSpacing.md),
-      child: DefaultTabController(
-        length: tabs.length,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 340),
-          child: Column(
-            children: [
-              TabBar(
-                labelStyle: TopDashTextStyles.buttonSM,
-                labelPadding: EdgeInsets.zero,
-                tabs: [for (final tab in tabs.keys) Tab(text: tab)],
-                onTap: (i) => setState(() => index = i),
-              ),
-              const SizedBox(height: TopDashSpacing.xs),
-              tabs.values.elementAt(index),
-            ],
-          ),
+      padding: const EdgeInsets.all(TopDashSpacing.xlg),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 340),
+        child: Column(
+          children: [
+            Text(
+              l10n.leaderboardLongestStreak,
+              style: TopDashTextStyles.buttonSM.copyWith(color: highlightColor),
+            ),
+            const SizedBox(height: TopDashSpacing.sm),
+            const Divider(thickness: 2, color: highlightColor),
+            const SizedBox(height: TopDashSpacing.xs),
+            LeaderboardPlayers(
+              players: longestStreak
+                  .map(
+                    (e) => LeaderboardPlayer(
+                      index: longestStreak.indexOf(e),
+                      initials: e.initials ?? '',
+                      value: e.longestStreak,
+                    ),
+                  )
+                  .toList(),
+            )
+          ],
         ),
       ),
     );
