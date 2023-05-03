@@ -20,7 +20,6 @@ void main() {
     isIntroSeen: true,
     characterClass: 'class',
     power: 'power',
-    secondaryPower: 'secPower',
   );
 
   const characterClasses = ['Archer', 'Magician'];

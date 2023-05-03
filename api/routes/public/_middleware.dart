@@ -12,6 +12,7 @@ import 'package:match_repository/match_repository.dart';
 import 'package:prompt_repository/prompt_repository.dart';
 import 'package:scripts_repository/scripts_repository.dart';
 
+import '../../headers/headers.dart';
 import '../../main.dart';
 import 'connect.dart';
 
@@ -29,5 +30,7 @@ Handler middleware(Handler handler) {
       .use(provider<GameUrl>((_) => gameUrl))
       .use(provider<CardRenderer>((_) => CardRenderer()))
       .use(provider<FirebaseCloudStorage>((_) => firebaseCloudStorage))
-      .use(provider<WebSocketHandlerFactory>((_) => ws.webSocketHandler));
+      .use(provider<WebSocketHandlerFactory>((_) => ws.webSocketHandler))
+      .use(corsHeaders())
+      .use(allowHeaders());
 }

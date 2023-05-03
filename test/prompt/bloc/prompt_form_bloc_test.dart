@@ -19,7 +19,6 @@ void main() {
     const data = Prompt(
       characterClass: 'character',
       power: 'power',
-      secondaryPower: 'environment',
     );
     setUp(() {
       promptResource = _MockPromptResource();

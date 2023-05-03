@@ -22,9 +22,6 @@ class IoFlipBottomBar extends StatelessWidget {
     this.height,
   });
 
-  /// The default height for the bar.
-  static const double kDefaultHeight = 64;
-
   /// Widget to place at the start of the horizontal toolbar.
   final Widget? leading;
 
@@ -38,11 +35,22 @@ class IoFlipBottomBar extends StatelessWidget {
   /// Bottom bar height.
   final double? height;
 
+  static const EdgeInsets _defaultPadding = EdgeInsets.symmetric(
+    horizontal: TopDashSpacing.xlg,
+    vertical: TopDashSpacing.sm,
+  );
+
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final isSmall = width < TopDashBreakpoints.small;
+    final defaultHeight = isSmall ? 64.0 : 96.0;
+
     return Container(
-      padding: const EdgeInsets.all(TopDashSpacing.sm),
-      height: height ?? kDefaultHeight,
+      padding: isSmall
+          ? _defaultPadding
+          : _defaultPadding.copyWith(bottom: TopDashSpacing.xxlg),
+      height: height ?? defaultHeight,
       child: CustomMultiChildLayout(
         delegate: ToolbarLayout(),
         children: <Widget>[

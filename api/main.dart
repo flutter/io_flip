@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:api/game_url.dart';
 import 'package:cards_repository/cards_repository.dart';
+import 'package:config_repository/config_repository.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:db_client/db_client.dart';
 import 'package:encryption_middleware/encryption_middleware.dart';
@@ -17,6 +18,8 @@ import 'package:match_repository/match_repository.dart';
 import 'package:prompt_repository/prompt_repository.dart';
 import 'package:scripts_repository/scripts_repository.dart';
 
+import 'prompts.dart';
+
 late CardsRepository cardsRepository;
 late MatchRepository matchRepository;
 late ScriptsRepository scriptsRepository;
@@ -29,17 +32,33 @@ late GameUrl gameUrl;
 late PromptRepository promptRepository;
 late FirebaseCloudStorage firebaseCloudStorage;
 late ScriptsState scriptsState;
+late ConfigRepository configRepository;
 
 Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
-  const imageModelRepository = ImageModelRepository();
-  const languageModelRepository = LanguageModelRepository();
+  final dbClient = DbClient.initialize(_appId, useEmulator: _useEmulator);
+
+  configRepository = ConfigRepository(
+    dbClient: dbClient,
+  );
+
+  promptRepository = PromptRepository(
+    dbClient: dbClient,
+  );
+  final imageModelRepository = ImageModelRepository(
+    imageHost:
+        'https://firebasestorage.googleapis.com/v0/b/$_appId.appspot.com/o/public%2Fillustrations%2F',
+    promptRepository: promptRepository,
+    urlParams: '?alt=media',
+  );
+
+  final languageModelRepository = LanguageModelRepository(
+    dbClient: dbClient,
+  );
   jwtMiddleware = JwtMiddleware(
     projectId: _appId,
     isEmulator: _useEmulator,
   );
   encryptionMiddleware = const EncryptionMiddleware();
-
-  final dbClient = DbClient.initialize(_appId, useEmulator: _useEmulator);
 
   Logger.root.onRecord.listen((record) {
     // ignore: avoid_print
@@ -54,6 +73,7 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   cardsRepository = CardsRepository(
     imageModelRepository: imageModelRepository,
     languageModelRepository: languageModelRepository,
+    configRepository: configRepository,
     dbClient: dbClient,
     gameScriptMachine: gameScriptMachine,
   );
@@ -75,46 +95,6 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
         },
       ),
     );
-
-    const characters = [
-      'Dash',
-      'Sparky',
-      'Android',
-      'Dino',
-    ];
-
-    const classes = [
-      'Astronaut',
-      'Captain',
-      'Chef',
-      'Cowboy',
-      'Fairy',
-      'Firefighter',
-      'Ghost',
-      'King',
-      'Mage',
-      'Mermaid',
-    ];
-
-    const powers = [
-      'Apples',
-      'Bagels',
-      'Banjos',
-      'Basketballs',
-      'Books',
-      'Candles',
-      'Cape',
-      'Carrots',
-      'Cookies',
-      'Crayons',
-    ];
-
-    const locations = [
-      'Forrest',
-      'Beach',
-      'Field',
-      'City',
-    ];
 
     const prompts = {
       PromptTermType.character: characters,
@@ -145,10 +125,6 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
     blacklistDocumentId: _initialsBlacklistId,
   );
 
-  promptRepository = PromptRepository(
-    dbClient: dbClient,
-  );
-
   firebaseCloudStorage = FirebaseCloudStorage(
     bucketName: _firebaseStorageBucket,
   );
@@ -163,8 +139,6 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
     port,
   );
 }
-
-// https://a16e0900d-fe2c-3609-b43c-87093e447b78.web.app/
 
 String get _appId {
   final value = Platform.environment['FB_APP_ID'];

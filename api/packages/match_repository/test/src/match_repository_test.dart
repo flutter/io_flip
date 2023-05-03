@@ -421,50 +421,87 @@ void main() {
         ).called(1);
       });
 
-      test('correctly updates the match state when is against cpu', () async {
-        final cpuDeck = Deck(
-          id: 'guestDeckId',
-          userId: 'CPU_UserId',
-          cards: [cards[3], cards[4], cards[5]],
-        );
-        when(() => cardsRepository.getDeck(guestDeck.id))
-            .thenAnswer((_) async => cpuDeck);
+      test(
+        'correctly updates the match state when is against cpu '
+        'and plays only one cpu card',
+        () async {
+          final cpuDeck = Deck(
+            id: 'guestDeckId',
+            userId: 'CPU_UserId',
+            cards: [cards[3], cards[4], cards[5]],
+          );
+          when(() => cardsRepository.getDeck(guestDeck.id))
+              .thenAnswer((_) async => cpuDeck);
 
-        await matchRepository.playCard(
-          matchId: matchId,
-          cardId: 'A',
-          deckId: hostDeck.id,
-          userId: hostDeck.userId,
-        );
+          when(() => dbClient.findBy('match_states', 'matchId', matchId))
+              .thenAnswer(
+            (_) async => [
+              DbEntityRecord(
+                id: matchStateId,
+                data: const {
+                  'matchId': matchId,
+                  'hostPlayedCards': <String>[],
+                  'guestPlayedCards': <String>[],
+                  'result': null,
+                },
+              )
+            ],
+          );
 
-        await Future<void>.delayed(const Duration(seconds: 2));
-        verify(
-          () => dbClient.update(
-            'match_states',
-            DbEntityRecord(
-              id: matchStateId,
-              data: const {
-                'matchId': matchId,
-                'hostPlayedCards': <String>['A'],
-                'result': null,
-              },
+          await matchRepository.playCard(
+            matchId: matchId,
+            cardId: 'A',
+            deckId: hostDeck.id,
+            userId: hostDeck.userId,
+          );
+
+          verify(
+            () => dbClient.update(
+              'match_states',
+              DbEntityRecord(
+                id: matchStateId,
+                data: const {
+                  'matchId': matchId,
+                  'hostPlayedCards': <String>['A'],
+                  'result': null,
+                },
+              ),
             ),
-          ),
-        ).called(1);
-        verify(
-          () => dbClient.update(
-            'match_states',
-            DbEntityRecord(
-              id: matchStateId,
-              data: const {
-                'matchId': matchId,
-                'guestPlayedCards': <String>['card_3'],
-                'result': null,
-              },
+          ).called(1);
+
+          when(() => dbClient.findBy('match_states', 'matchId', matchId))
+              .thenAnswer(
+            (_) async => [
+              DbEntityRecord(
+                id: matchStateId,
+                data: const {
+                  'matchId': matchId,
+                  'hostPlayedCards': <String>['A'],
+                  'guestPlayedCards': <String>[],
+                  'result': null,
+                },
+              )
+            ],
+          );
+
+          await Future<void>.delayed(const Duration(seconds: 4));
+          verify(
+            () => dbClient.update(
+              'match_states',
+              DbEntityRecord(
+                id: matchStateId,
+                data: const {
+                  'matchId': matchId,
+                  'guestPlayedCards': <String>['card_3'],
+                  'result': null,
+                },
+              ),
             ),
-          ),
-        ).called(1);
-      });
+          ).called(1);
+
+          verifyNever(() => dbClient.update('match_states', any()));
+        },
+      );
 
       test('when the match is over, updates the result', () async {
         when(() => dbClient.findBy('match_states', 'matchId', matchId))

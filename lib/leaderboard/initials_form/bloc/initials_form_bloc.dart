@@ -32,7 +32,10 @@ class InitialsFormBloc extends Bloc<InitialsFormEvent, InitialsFormState> {
   ) {
     final initials = [...state.initials];
     initials[event.index] = event.initial;
-    emit(state.copyWith(initials: initials));
+    final status = (state.status == InitialsFormStatus.blacklisted)
+        ? InitialsFormStatus.initial
+        : state.status;
+    emit(state.copyWith(initials: initials, status: status));
   }
 
   Future<void> _onInitialsSubmitted(

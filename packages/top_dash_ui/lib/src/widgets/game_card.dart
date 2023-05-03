@@ -287,82 +287,28 @@ class GameCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (cardFrame, suitSvg) = _mapSuitNameToAssets();
-    final cardBody = Stack(
+    final shaderChild = Stack(
       children: [
         Positioned.fromRelativeRect(
           rect: size.imageInset,
-          child: Image.network(image),
+          child: Image.network(
+            image,
+            errorBuilder: (_, __, ___) {
+              return Container(
+                foregroundDecoration: const BoxDecoration(
+                  color: TopDashColors.seedGrey50,
+                  backgroundBlendMode: BlendMode.saturation,
+                ),
+                decoration: const BoxDecoration(
+                  color: TopDashColors.seedBlack,
+                ),
+                child: IoFlipLogo(),
+              );
+            },
+          ),
         ),
         Positioned.fill(
           child: Image.asset(cardFrame),
-        ),
-        Align(
-          alignment: Alignment.topRight,
-          child: SizedBox(
-            width: size.badgeSize.width,
-            height: size.badgeSize.height,
-            child: Stack(
-              children: [
-                Positioned.fill(child: suitSvg),
-                Align(
-                  alignment: const Alignment(.15, .4),
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Text(
-                        power.toString(),
-                        style: size.powerTextStyle.copyWith(
-                          shadows: [
-                            Shadow(
-                              offset: Offset(
-                                size.size.width * 0.014,
-                                size.size.height * 0.013,
-                              ),
-                              color: TopDashColors.seedBlack,
-                            ),
-                          ],
-                          foreground: Paint()
-                            ..style = PaintingStyle.stroke
-                            ..strokeWidth = size.powerTextStrokeWidth
-                            ..color = TopDashColors.seedBlack,
-                        ),
-                      ),
-                      Text(
-                        power.toString(),
-                        style: size.powerTextStyle,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        Align(
-          alignment: const Alignment(0, .5),
-          child: Text(
-            name,
-            style: size.titleTextStyle.copyWith(
-              color: TopDashColors.seedBlack,
-            ),
-          ),
-        ),
-        Align(
-          alignment: const Alignment(0, .95),
-          child: SizedBox(
-            width: size.width * 0.8,
-            height: size.height * 0.2,
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: Text(
-                description,
-                textAlign: TextAlign.center,
-                style: size.descriptionTextStyle.copyWith(
-                  color: TopDashColors.seedBlack,
-                ),
-              ),
-            ),
-          ),
         ),
       ],
     );
@@ -378,17 +324,90 @@ class GameCard extends StatelessWidget {
               rotateY: -tilt.dx * math.pi / 8,
               rotateX: tilt.dy * math.pi / 8,
             ),
-            child: isRare
-                ? ClipRRect(
+            child: Stack(
+              children: [
+                if (isRare)
+                  ClipRRect(
                     borderRadius: BorderRadius.circular(size.width * 0.075),
                     child: FoilShader(
                       package: package,
                       dx: tilt.dx,
                       dy: tilt.dy,
-                      child: cardBody,
+                      child: shaderChild,
                     ),
                   )
-                : cardBody,
+                else
+                  shaderChild,
+                Align(
+                  alignment: Alignment.topRight,
+                  child: SizedBox(
+                    width: size.badgeSize.width,
+                    height: size.badgeSize.height,
+                    child: Stack(
+                      children: [
+                        Positioned.fill(child: suitSvg),
+                        Align(
+                          alignment: const Alignment(.15, .4),
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              Text(
+                                power.toString(),
+                                style: size.powerTextStyle.copyWith(
+                                  shadows: [
+                                    Shadow(
+                                      offset: Offset(
+                                        size.size.width * 0.014,
+                                        size.size.height * 0.013,
+                                      ),
+                                      color: TopDashColors.seedBlack,
+                                    ),
+                                  ],
+                                  foreground: Paint()
+                                    ..style = PaintingStyle.stroke
+                                    ..strokeWidth = size.powerTextStrokeWidth
+                                    ..color = TopDashColors.seedBlack,
+                                ),
+                              ),
+                              Text(
+                                power.toString(),
+                                style: size.powerTextStyle,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: const Alignment(0, .5),
+                  child: Text(
+                    name,
+                    style: size.titleTextStyle.copyWith(
+                      color: TopDashColors.seedBlack,
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: const Alignment(0, .95),
+                  child: SizedBox(
+                    width: size.width * 0.8,
+                    height: size.height * 0.2,
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Text(
+                        description,
+                        textAlign: TextAlign.center,
+                        style: size.descriptionTextStyle.copyWith(
+                          color: TopDashColors.seedBlack,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         if (overlay != null)

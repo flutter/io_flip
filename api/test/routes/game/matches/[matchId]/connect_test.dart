@@ -9,6 +9,7 @@ import 'package:jwt_middleware/jwt_middleware.dart';
 import 'package:logging/logging.dart';
 import 'package:match_repository/match_repository.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:prompt_repository/prompt_repository.dart';
 import 'package:test/test.dart';
 
 import '../../../../../routes/game/matches/[matchId]/connect.dart' as route;
@@ -16,6 +17,8 @@ import '../../../../../routes/game/matches/[matchId]/connect.dart' as route;
 class _MockMatchRepository extends Mock implements MatchRepository {}
 
 class _MockCardsRepository extends Mock implements CardsRepository {}
+
+class _MockPromptRepository extends Mock implements PromptRepository {}
 
 class _MockAuthenticatedUser extends Mock implements AuthenticatedUser {}
 
@@ -28,6 +31,7 @@ class _MockRequest extends Mock implements Request {}
 void main() {
   late CardsRepository cardsRepository;
   late MatchRepository matchRepository;
+  late PromptRepository promptRepository;
   late AuthenticatedUser user;
   late Request request;
   late RequestContext context;
@@ -35,14 +39,17 @@ void main() {
 
   const matchId = 'matchId';
   const userId = 'userId';
-  const card = Card(
-    id: '',
-    name: '',
-    description: '',
-    rarity: true,
-    image: '',
-    power: 1,
-    suit: Suit.air,
+  final cards = List.generate(
+    12,
+    (_) => const Card(
+      id: '',
+      name: '',
+      description: '',
+      rarity: true,
+      image: '',
+      power: 1,
+      suit: Suit.air,
+    ),
   );
 
   setUp(() {
@@ -53,7 +60,12 @@ void main() {
         userId: any(named: 'userId'),
       ),
     ).thenAnswer((_) async => 'deckId');
-    when(cardsRepository.generateCard).thenAnswer((_) async => card);
+    when(
+      () => cardsRepository.generateCards(
+        characterClass: any(named: 'characterClass'),
+        characterPower: any(named: 'characterPower'),
+      ),
+    ).thenAnswer((_) async => cards);
 
     matchRepository = _MockMatchRepository();
     when(
@@ -67,6 +79,31 @@ void main() {
     when(
       () => matchRepository.getPlayerConnectivity(userId: userId),
     ).thenAnswer((_) => Future.value(true));
+
+    promptRepository = _MockPromptRepository();
+    when(
+      () =>
+          promptRepository.getPromptTermsByType(PromptTermType.characterClass),
+    ).thenAnswer(
+      (_) async => const [
+        PromptTerm(
+          id: 'id',
+          term: 'Mage',
+          type: PromptTermType.characterClass,
+        ),
+      ],
+    );
+    when(
+      () => promptRepository.getPromptTermsByType(PromptTermType.power),
+    ).thenAnswer(
+      (_) async => const [
+        PromptTerm(
+          id: 'id',
+          term: 'Super Smell',
+          type: PromptTermType.power,
+        ),
+      ],
+    );
 
     user = _MockAuthenticatedUser();
     when(() => user.id).thenReturn(userId);
@@ -86,6 +123,7 @@ void main() {
     when(() => context.read<CardsRepository>()).thenReturn(cardsRepository);
     when(() => context.read<AuthenticatedUser>()).thenReturn(user);
     when(() => context.read<MatchRepository>()).thenReturn(matchRepository);
+    when(() => context.read<PromptRepository>()).thenReturn(promptRepository);
 
     logger = _MockLogger();
     when(() => context.read<Logger>()).thenReturn(logger);

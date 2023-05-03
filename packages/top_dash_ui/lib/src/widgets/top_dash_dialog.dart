@@ -11,6 +11,7 @@ class TopDashDialog extends StatelessWidget {
     this.showCloseButton = true,
     this.onClose,
     super.key,
+    this.isTransparent = false,
   });
 
   /// Shows the dialog.
@@ -19,10 +20,12 @@ class TopDashDialog extends StatelessWidget {
     required Widget child,
     bool showCloseButton = true,
     VoidCallback? onClose,
+    bool isTransparent = false,
   }) async {
     return showGeneralDialog<void>(
       context: context,
       pageBuilder: (context, _, __) => TopDashDialog(
+        isTransparent: isTransparent,
         showCloseButton: showCloseButton,
         onClose: onClose,
         child: child,
@@ -53,29 +56,36 @@ class TopDashDialog extends StatelessWidget {
   /// The callback to call when the close button is pressed.
   final VoidCallback? onClose;
 
+  /// Sets the background of the dialog to be transparent.
+  /// Defaults to `false`.
+  final bool isTransparent;
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      backgroundColor: isTransparent ? Colors.transparent : null,
       insetPadding: const EdgeInsets.all(TopDashSpacing.sm),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(TopDashSpacing.lg),
         child: SingleChildScrollView(
-          child: Container(
-            width: 327,
-            padding: const EdgeInsets.all(TopDashSpacing.lg),
-            child: Column(
-              children: [
-                if (showCloseButton)
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: CloseButton(
-                      onPressed: onClose,
-                      color: TopDashColors.seedWhite,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 400),
+            child: Padding(
+              padding: const EdgeInsets.all(TopDashSpacing.lg),
+              child: Column(
+                children: [
+                  if (showCloseButton)
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: CloseButton(
+                        onPressed: onClose,
+                        color: TopDashColors.seedWhite,
+                      ),
                     ),
-                  ),
-                const SizedBox(height: TopDashSpacing.lg),
-                child,
-              ],
+                  const SizedBox(height: TopDashSpacing.lg),
+                  child,
+                ],
+              ),
             ),
           ),
         ),

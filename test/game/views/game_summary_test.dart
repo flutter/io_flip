@@ -9,8 +9,8 @@ import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/game/game.dart';
-import 'package:top_dash/game/views/game_summary.dart';
 import 'package:top_dash/settings/settings.dart';
+import 'package:top_dash/share/views/card_inspector_dialog.dart';
 import 'package:top_dash/share/views/share_hand_page.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -358,12 +358,7 @@ void main() {
           await tester.tap(find.byType(GameCard).first);
           await tester.pumpAndSettle();
 
-          verify(
-            () => goRouter.pushNamed(
-              'card_inspector',
-              extra: any(named: 'extra'),
-            ),
-          ).called(1);
+          expect(find.byType(CardInspectorDialog), findsOneWidget);
         },
       );
 
@@ -372,6 +367,7 @@ void main() {
         (tester) async {
           final goRouter = MockGoRouter();
 
+          when(() => bloc.isHost).thenReturn(false);
           defaultMockState();
           await tester.pumpSubject(
             bloc,
@@ -386,17 +382,19 @@ void main() {
       );
 
       testWidgets(
-        'pops navigation when the quit button is tapped and canceled',
+        'pops navigation when the submit score button is tapped and canceled',
         (tester) async {
           final goRouter = MockGoRouter();
 
+          when(() => bloc.isHost).thenReturn(false);
+          when(() => bloc.playerCards).thenReturn([]);
           defaultMockState();
           await tester.pumpSubject(
             bloc,
             goRouter: goRouter,
           );
 
-          await tester.tap(find.text(tester.l10n.quit));
+          await tester.tap(find.text(tester.l10n.submitScore));
           await tester.pumpAndSettle();
 
           expect(find.byType(QuitGameDialog), findsOneWidget);
@@ -425,11 +423,11 @@ void main() {
       });
 
       testWidgets(
-        'pops navigation when the quit button is tapped and confirmed and '
-        'adds LeaderboardEntryRequested event to bloc if player score card '
-        'initials is null',
+        'pops navigation when the submit score button is tapped by winner '
+        'and confirmed and adds LeaderboardEntryRequested event to bloc',
         (tester) async {
           final goRouter = MockGoRouter();
+          when(() => bloc.isHost).thenReturn(false);
           when(() => bloc.playerCards).thenReturn([]);
           defaultMockState();
 
@@ -444,12 +442,12 @@ void main() {
             router: goRouter,
           );
 
-          await tester.tap(find.text(tester.l10n.quit));
+          await tester.tap(find.text(tester.l10n.submitScore));
           await tester.pumpAndSettle();
 
           expect(find.byType(QuitGameDialog), findsOneWidget);
 
-          await tester.tap(find.text(tester.l10n.quit).last);
+          await tester.tap(find.text(tester.l10n.continueLabel));
           await tester.pumpAndSettle();
 
           verify(goRouter.pop).called(1);
@@ -469,16 +467,12 @@ void main() {
       );
 
       testWidgets(
-        'routes to share hand page when the quit button is tapped '
-        'and confirmed and player score card has initials',
+        'adds LeaderboardEntryRequested event to bloc when submit score button '
+        'is tapped by loser',
         (tester) async {
           final goRouter = MockGoRouter();
-
           when(() => bloc.playerCards).thenReturn([]);
-
-          defaultMockState(
-            scoreCard: ScoreCard(id: 'id', initials: 'AAA'),
-          );
+          defaultMockState();
 
           await tester.pumpApp(
             BlocProvider<GameBloc>.value(
@@ -491,22 +485,18 @@ void main() {
             router: goRouter,
           );
 
-          await tester.tap(find.text(tester.l10n.quit));
-          await tester.pumpAndSettle();
-
-          expect(find.byType(QuitGameDialog), findsOneWidget);
-
-          await tester.tap(find.text(tester.l10n.quit).last);
+          await tester.tap(find.text(tester.l10n.submitScore));
           await tester.pumpAndSettle();
 
           verify(
-            () => goRouter.goNamed(
-              'share_hand',
-              extra: ShareHandPageData(
-                initials: 'AAA',
-                wins: 0,
-                deckId: '',
-                deck: const [],
+            () => bloc.add(
+              LeaderboardEntryRequested(
+                shareHandPageData: ShareHandPageData(
+                  initials: '',
+                  deck: const [],
+                  deckId: '',
+                  wins: 0,
+                ),
               ),
             ),
           ).called(1);

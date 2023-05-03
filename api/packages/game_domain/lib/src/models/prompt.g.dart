@@ -9,11 +9,9 @@ part of 'prompt.dart';
 Prompt _$PromptFromJson(Map<String, dynamic> json) => Prompt(
       characterClass: json['characterClass'] as String?,
       power: json['power'] as String?,
-      secondaryPower: json['secondaryPower'] as String?,
     );
 
 Map<String, dynamic> _$PromptToJson(Prompt instance) => <String, dynamic>{
       'characterClass': instance.characterClass,
       'power': instance.power,
-      'secondaryPower': instance.secondaryPower,
     };

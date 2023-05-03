@@ -8,7 +8,7 @@ import 'package:top_dash_ui/gen/assets.gen.dart';
 /// {@template flip_countdown}
 /// A widget that renders a [SpriteAnimation] for the card flip countdown.
 /// {@endtemplate}
-class FlipCountdown extends StatelessWidget {
+class FlipCountdown extends StatefulWidget {
   /// {@macro flip_countdown}
   const FlipCountdown({
     super.key,
@@ -31,17 +31,26 @@ class FlipCountdown extends StatelessWidget {
   final VoidCallback? onComplete;
 
   @override
-  Widget build(BuildContext context) {
-    final images = context.read<Images>();
+  State<StatefulWidget> createState() => _FlipCountdownState();
+}
 
-    return SizedBox(
-      height: height,
-      width: width,
-      child: SpriteAnimationWidget.asset(
+class _FlipCountdownState extends State<FlipCountdown> {
+  late final ValueNotifier<SpriteAnimationWidget> _animationNotifier;
+
+  @override
+  void initState() {
+    super.initState();
+    _createAnimationWidget();
+  }
+
+  void _createAnimationWidget() {
+    final images = context.read<Images>();
+    _animationNotifier = ValueNotifier<SpriteAnimationWidget>(
+      SpriteAnimationWidget.asset(
         path: Assets.images.flipCountdown.keyName,
         images: images,
         anchor: Anchor.center,
-        onComplete: onComplete,
+        onComplete: widget.onComplete,
         data: SpriteAnimationData.sequenced(
           amount: 60,
           amountPerRow: 6,
@@ -49,6 +58,18 @@ class FlipCountdown extends StatelessWidget {
           stepTime: 0.04,
           loop: false,
         ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: widget.height,
+      width: widget.width,
+      child: ValueListenableBuilder<SpriteAnimationWidget>(
+        valueListenable: _animationNotifier,
+        builder: (_, animation, __) => animation,
       ),
     );
   }
