@@ -1,13 +1,10 @@
 import 'mocha';
 import * as functionsTest from 'firebase-functions-test';
-import {CloudFunction} from 'firebase-functions';
 import * as sinon from 'sinon';
 import * as admin from 'firebase-admin';
 import {expect} from 'chai';
-import {UserRecord} from 'firebase-admin/auth';
 
 describe('deleteUserData', () => {
-  let deleteUserData: CloudFunction<UserRecord>;
   let adminInitStub: sinon.SinonStub;
   let firestoreStub: sinon.SinonStub;
   let collectionStub: sinon.SinonStub;
@@ -22,7 +19,6 @@ describe('deleteUserData', () => {
   const uid = 'UID-1234';
 
   before(async () => {
-    deleteUserData = (await import('../src/index')).deleteUserData;
     oldFirestore = admin.firestore;
     oldStorage = admin.storage;
 
@@ -109,7 +105,7 @@ describe('deleteUserData', () => {
       bucketStub.returns({file: fileStub});
 
       const userRecord = sinon.stub().returns({uid});
-      const wrapped = tester.wrap(deleteUserData);
+      const wrapped = tester.wrap((await import('../src/deleteUserData')).deleteUserData);
       await wrapped(userRecord());
 
       expect(collectionStub.calledWith('cards')).to.be.true;
@@ -131,8 +127,10 @@ describe('deleteUserData', () => {
       for (let i = 0; i < cardIds.length; i++) {
         expect(fileStub.calledWith(`share/${cardIds[i]}.png`)).to.be.true;
       }
+      expect(fileStub.calledWith('share/deck1.png')).to.be.true;
+      expect(fileStub.calledWith('share/cpuDeck1.png')).to.be.true;
       expect(deleteStub.callCount).to.equal(16);
-      expect(deleteFileStub.callCount).to.equal(cardIds.length);
+      expect(deleteFileStub.callCount).to.equal(cardIds.length + 2);
     }
   );
 });
