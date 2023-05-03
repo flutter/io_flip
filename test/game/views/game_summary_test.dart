@@ -8,7 +8,9 @@ import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
+import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/game/game.dart';
+import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/settings/settings.dart';
 import 'package:top_dash/share/views/card_inspector_dialog.dart';
 import 'package:top_dash/share/views/share_hand_page.dart';
@@ -20,13 +22,13 @@ class _MockSettingsController extends Mock implements SettingsController {}
 
 class _MockGameBloc extends Mock implements GameBloc {}
 
-abstract class __Router {
-  void neglect(BuildContext context, VoidCallback callback);
-}
-
-class _MockRouter extends Mock implements __Router {}
+class _MockRouter extends Mock implements NeglectRouter {}
 
 class _MockBuildContext extends Mock implements BuildContext {}
+
+class _MockAudioController extends Mock implements AudioController {}
+
+class _FakeGameState extends Fake implements GameState {}
 
 void main() {
   group('GameSummaryView', () {
@@ -45,6 +47,7 @@ void main() {
         ),
       );
       registerFallbackValue(LeaderboardEntryRequested());
+      registerFallbackValue(_FakeGameState());
     });
 
     setUp(() {
@@ -54,6 +57,7 @@ void main() {
           .thenReturn(null);
       when(() => bloc.canPlayerPlay(any())).thenReturn(true);
       when(() => bloc.isPlayerAllowedToPlay).thenReturn(true);
+      when(() => bloc.matchCompleted(any())).thenReturn(true);
     });
 
     void mockState(GameState state) {
@@ -177,6 +181,34 @@ void main() {
     }
 
     group('Gameplay', () {
+      testWidgets('Play lostMatch sound when the player loses the game',
+          (tester) async {
+        final audioController = _MockAudioController();
+        defaultMockState();
+        when(bloc.gameResult).thenReturn(GameResult.lose);
+        await tester.pumpSubject(bloc, audioController: audioController);
+
+        verify(() => audioController.playSfx(Assets.sfx.lostMatch)).called(1);
+      });
+
+      testWidgets('Play winMatch sound when the player wins the game',
+          (tester) async {
+        final audioController = _MockAudioController();
+        defaultMockState();
+        when(bloc.gameResult).thenReturn(GameResult.win);
+        await tester.pumpSubject(bloc, audioController: audioController);
+
+        verify(() => audioController.playSfx(Assets.sfx.winMatch)).called(1);
+      });
+
+      testWidgets('Play drawMatch sound when there is a draw', (tester) async {
+        final audioController = _MockAudioController();
+        defaultMockState();
+        when(bloc.gameResult).thenReturn(GameResult.draw);
+        await tester.pumpSubject(bloc, audioController: audioController);
+
+        verify(() => audioController.playSfx(Assets.sfx.drawMatch)).called(1);
+      });
       testWidgets(
         'renders in small phone layout',
         (tester) async {
@@ -361,23 +393,52 @@ void main() {
           expect(find.byType(CardInspectorDialog), findsOneWidget);
         },
       );
+    });
+
+    group('GameSummaryFooter', () {
+      late NeglectRouter router;
+
+      setUpAll(() {
+        registerFallbackValue(_MockBuildContext());
+      });
+
+      setUp(() {
+        router = _MockRouter();
+        when(() => router.neglect(any(), any())).thenAnswer((_) {
+          final callback = _.positionalArguments[1] as VoidCallback;
+          callback();
+        });
+      });
 
       testWidgets(
-        'pops navigation when the next match button is tapped',
+        'navigates to matchmaking when the next match button is tapped',
         (tester) async {
           final goRouter = MockGoRouter();
-
+          when(() => bloc.playerCards).thenReturn([]);
           when(() => bloc.isHost).thenReturn(false);
           defaultMockState();
-          await tester.pumpSubject(
-            bloc,
-            goRouter: goRouter,
+
+          await tester.pumpApp(
+            BlocProvider<GameBloc>.value(
+              value: bloc,
+              child: GameSummaryFooter(
+                isPhoneWidth: false,
+                routerNeglectCall: router.neglect,
+              ),
+            ),
+            router: goRouter,
           );
 
           await tester.tap(find.text(tester.l10n.nextMatch));
           await tester.pumpAndSettle();
 
-          verify(goRouter.pop).called(1);
+          verifyNever(() => bloc.sendMatchLeft());
+          verify(
+            () => goRouter.goNamed(
+              'match_making',
+              extra: any(named: 'extra'),
+            ),
+          ).called(1);
         },
       );
 
@@ -405,22 +466,6 @@ void main() {
           verify(goRouter.pop).called(1);
         },
       );
-    });
-
-    group('GameSummaryFooter', () {
-      late __Router router;
-
-      setUpAll(() {
-        registerFallbackValue(_MockBuildContext());
-      });
-
-      setUp(() {
-        router = _MockRouter();
-        when(() => router.neglect(any(), any())).thenAnswer((_) {
-          final callback = _.positionalArguments[1] as VoidCallback;
-          callback();
-        });
-      });
 
       testWidgets(
         'pops navigation when the submit score button is tapped by winner '
@@ -510,6 +555,7 @@ extension GameSummaryViewTest on WidgetTester {
   Future<void> pumpSubject(
     GameBloc bloc, {
     GoRouter? goRouter,
+    AudioController? audioController,
   }) {
     final SettingsController settingsController = _MockSettingsController();
     when(() => settingsController.muted).thenReturn(ValueNotifier(true));
@@ -521,6 +567,7 @@ extension GameSummaryViewTest on WidgetTester {
         ),
         router: goRouter,
         settingsController: settingsController,
+        audioController: audioController,
       );
       state<MatchResultSplashState>(
         find.byType(MatchResultSplash),

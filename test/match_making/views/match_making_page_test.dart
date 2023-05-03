@@ -44,7 +44,7 @@ const deck = [
     suit: Suit.air,
   ),
 ];
-final pageData = MatchMakingPageData(deck: deck);
+final pageData = MatchMakingPageData(cards: deck);
 void main() {
   group('MatchMakingPage', () {
     late GoRouterState goRouterState;
