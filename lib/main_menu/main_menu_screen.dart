@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/how_to_play/view/how_to_play_dialog.dart';
+import 'package:top_dash/how_to_play/how_to_play.dart';
 import 'package:top_dash/info/info.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/leaderboard/leaderboard.dart';
 import 'package:top_dash/terms_of_use/terms_of_use.dart';
-import 'package:top_dash/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class MainMenuScreen extends StatelessWidget {
@@ -31,59 +30,41 @@ class MainMenuScreen extends StatelessWidget {
         )..add(const LeaderboardRequested());
       },
       child: IoFlipScaffold(
-        body: Stack(
-          children: [
-            const Align(
-              alignment: Alignment.topCenter,
-              child: _MainMenuScreenView(key: Key('main menu view')),
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: IoFlipBottomBar(
-                leading: RoundedButton.svg(
-                  key: const Key('info_button'),
-                  Assets.icons.info,
-                  onPressed: () => TopDashDialog.show(
-                    context,
-                    child: const InfoView(),
-                    onClose: context.maybePop,
-                  ),
-                ),
-                middle: BlocConsumer<TermsOfUseCubit, bool>(
-                  listener: (context, termsAccepted) {
-                    if (termsAccepted) {
-                      GoRouter.of(context).go('/prompt');
-                    }
-                  },
-                  builder: (context, termsAccepted) {
-                    return RoundedButton.text(
-                      l10n.play,
-                      onPressed: () {
-                        if (termsAccepted) {
-                          GoRouter.of(context).go('/prompt');
-                        } else {
-                          TopDashDialog.show(
-                            context,
-                            child: const TermsOfUseView(),
-                            showCloseButton: false,
-                          );
-                        }
-                      },
+        body: const Align(
+          child: _MainMenuScreenView(key: Key('main menu view')),
+        ),
+        bottomBar: IoFlipBottomBar(
+          leading: const InfoButton(),
+          middle: BlocConsumer<TermsOfUseCubit, bool>(
+            listener: (context, termsAccepted) {
+              if (termsAccepted) {
+                GoRouter.of(context).go('/prompt');
+              }
+            },
+            builder: (context, termsAccepted) {
+              return RoundedButton.text(
+                l10n.play,
+                onPressed: () {
+                  if (termsAccepted) {
+                    GoRouter.of(context).go('/prompt');
+                  } else {
+                    TopDashDialog.show(
+                      context,
+                      child: const TermsOfUseView(),
+                      showCloseButton: false,
                     );
-                  },
-                ),
-                trailing: RoundedButton.icon(
-                  Icons.question_mark_rounded,
-                  onPressed: () => TopDashDialog.show(
-                    context,
-                    child: const HowToPlayDialog(),
-                  ),
-                ),
-              ),
+                  }
+                },
+              );
+            },
+          ),
+          trailing: RoundedButton.icon(
+            Icons.question_mark_rounded,
+            onPressed: () => TopDashDialog.show(
+              context,
+              child: const HowToPlayDialog(),
             ),
-          ],
+          ),
         ),
       ),
     );

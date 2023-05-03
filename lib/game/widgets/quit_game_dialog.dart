@@ -31,7 +31,7 @@ class QuitGameDialog extends StatelessWidget {
         ),
         const SizedBox(height: TopDashSpacing.xlg),
         RoundedButton.text(
-          l10n.quit,
+          l10n.continueLabel,
           onPressed: onConfirm,
         ),
         const SizedBox(height: TopDashSpacing.sm),

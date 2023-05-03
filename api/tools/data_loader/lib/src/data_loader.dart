@@ -46,6 +46,9 @@ class DataLoader {
     for (final prompt in prompts) {
       await _promptRepository.createPromptTerm(prompt);
       progress++;
+
+      /// So we don't hit rate limits.
+      await Future<void>.delayed(const Duration(milliseconds: 50));
       onProgress(progress, prompts.length);
     }
   }

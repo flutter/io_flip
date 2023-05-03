@@ -5,7 +5,6 @@ import 'package:game_domain/game_domain.dart' as game;
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_dash/game/game.dart';
-import 'package:top_dash/game/views/game_summary.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/leaderboard/leaderboard.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
@@ -387,8 +386,8 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     return false;
   }
 
-  Future<void> fightSceneCompleted() async {
-    final bloc = context.read<GameBloc>()..add(const FightSceneCompleted());
+  Future<void> clashSceneCompleted() async {
+    final bloc = context.read<GameBloc>()..add(const ClashSceneCompleted());
     for (final controller in clashControllers) {
       controller.value = 1;
     }
@@ -558,13 +557,14 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
                         ),
                       ),
                     _BoardCounter(counterOffset),
-                    _ClashScene(
-                      onFinished: fightSceneCompleted,
-                    ),
                   ],
                 ),
               ),
             ),
+            _ClashScene(
+              onFinished: clashSceneCompleted,
+              boardSize: boardSize,
+            )
           ],
         ),
       ),
@@ -854,14 +854,16 @@ class _CardLandingPuffEffect extends StatelessWidget {
 class _ClashScene extends StatelessWidget {
   const _ClashScene({
     required this.onFinished,
+    required this.boardSize,
   });
 
   final VoidCallback onFinished;
+  final Size boardSize;
 
   @override
   Widget build(BuildContext context) {
     final isClashScene = context.select<GameBloc, bool>(
-      (bloc) => (bloc.state as MatchLoadedState).isFightScene,
+      (bloc) => (bloc.state as MatchLoadedState).isClashScene,
     );
 
     if (isClashScene) {
@@ -872,10 +874,27 @@ class _ClashScene extends StatelessWidget {
         (bloc) => bloc.lastPlayedPlayerCard,
       );
       return Positioned.fill(
-        child: FightScene(
-          onFinished: onFinished,
-          opponentCard: opponentCard,
-          playerCard: playerCard,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Transform.scale(
+              scale: 1.4,
+              child: Center(
+                child: Image.asset(
+                  Assets.images.stadiumBackgroundCloseUp.keyName,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            SizedBox.fromSize(
+              size: boardSize,
+              child: ClashScene(
+                onFinished: onFinished,
+                opponentCard: opponentCard,
+                playerCard: playerCard,
+              ),
+            )
+          ],
         ),
       );
     }

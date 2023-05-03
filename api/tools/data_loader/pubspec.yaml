@@ -10,6 +10,7 @@ executables:
   data_loader:
 
 dependencies:
+  csv: ^5.0.2
   db_client:
     path: ../../packages/db_client
   game_domain:

@@ -25,31 +25,43 @@ class $AssetsIconsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/back_pack.png
+  AssetGenImage get backPack =>
+      const AssetGenImage('assets/images/back_pack.png');
+
   /// File path: assets/images/card_master.png
   AssetGenImage get cardMaster =>
       const AssetGenImage('assets/images/card_master.png');
 
-  /// File path: assets/images/draw_splash.png
-  AssetGenImage get drawSplash =>
-      const AssetGenImage('assets/images/draw_splash.png');
+  $AssetsImagesDesktopGen get desktop => const $AssetsImagesDesktopGen();
+
+  /// File path: assets/images/download.png
+  AssetGenImage get download =>
+      const AssetGenImage('assets/images/download.png');
 
   /// File path: assets/images/facebook.png
   AssetGenImage get facebook =>
       const AssetGenImage('assets/images/facebook.png');
 
+  /// File path: assets/images/front_pack.png
+  AssetGenImage get frontPack =>
+      const AssetGenImage('assets/images/front_pack.png');
+
   $AssetsImagesLeaderboardGen get leaderboard =>
       const $AssetsImagesLeaderboardGen();
 
-  /// File path: assets/images/loss_splash.png
-  AssetGenImage get lossSplash =>
-      const AssetGenImage('assets/images/loss_splash.png');
+  /// File path: assets/images/main.jpg
+  AssetGenImage get main => const AssetGenImage('assets/images/main.jpg');
 
-  /// File path: assets/images/main.png
-  AssetGenImage get main => const AssetGenImage('assets/images/main.png');
+  $AssetsImagesMobileGen get mobile => const $AssetsImagesMobileGen();
 
   /// File path: assets/images/stadium_background.png
   AssetGenImage get stadiumBackground =>
       const AssetGenImage('assets/images/stadium_background.png');
+
+  /// File path: assets/images/stadium_background_close_up.png
+  AssetGenImage get stadiumBackgroundCloseUp =>
+      const AssetGenImage('assets/images/stadium_background_close_up.png');
 
   /// File path: assets/images/temp_preferences_custom.png
   AssetGenImage get tempPreferencesCustom =>
@@ -58,21 +70,18 @@ class $AssetsImagesGen {
   /// File path: assets/images/twitter.png
   AssetGenImage get twitter => const AssetGenImage('assets/images/twitter.png');
 
-  /// File path: assets/images/win_splash.png
-  AssetGenImage get winSplash =>
-      const AssetGenImage('assets/images/win_splash.png');
-
   /// List of all assets
   List<AssetGenImage> get values => [
+        backPack,
         cardMaster,
-        drawSplash,
+        download,
         facebook,
-        lossSplash,
+        frontPack,
         main,
         stadiumBackground,
+        stadiumBackgroundCloseUp,
         tempPreferencesCustom,
-        twitter,
-        winSplash
+        twitter
       ];
 }
 
@@ -205,6 +214,25 @@ class $AssetsSfxGen {
       ];
 }
 
+class $AssetsImagesDesktopGen {
+  const $AssetsImagesDesktopGen();
+
+  /// File path: assets/images/desktop/draw_splash.png
+  AssetGenImage get drawSplash =>
+      const AssetGenImage('assets/images/desktop/draw_splash.png');
+
+  /// File path: assets/images/desktop/loss_splash.png
+  AssetGenImage get lossSplash =>
+      const AssetGenImage('assets/images/desktop/loss_splash.png');
+
+  /// File path: assets/images/desktop/win_splash.png
+  AssetGenImage get winSplash =>
+      const AssetGenImage('assets/images/desktop/win_splash.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [drawSplash, lossSplash, winSplash];
+}
+
 class $AssetsImagesLeaderboardGen {
   const $AssetsImagesLeaderboardGen();
 
@@ -222,6 +250,25 @@ class $AssetsImagesLeaderboardGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [num1, num2, num3];
+}
+
+class $AssetsImagesMobileGen {
+  const $AssetsImagesMobileGen();
+
+  /// File path: assets/images/mobile/draw_splash.png
+  AssetGenImage get drawSplash =>
+      const AssetGenImage('assets/images/mobile/draw_splash.png');
+
+  /// File path: assets/images/mobile/loss_splash.png
+  AssetGenImage get lossSplash =>
+      const AssetGenImage('assets/images/mobile/loss_splash.png');
+
+  /// File path: assets/images/mobile/win_splash.png
+  AssetGenImage get winSplash =>
+      const AssetGenImage('assets/images/mobile/win_splash.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [drawSplash, lossSplash, winSplash];
 }
 
 class Assets {
@@ -291,16 +338,7 @@ class AssetGenImage {
     );
   }
 
-  ImageProvider provider({
-    AssetBundle? bundle,
-    String? package,
-  }) {
-    return AssetImage(
-      _assetName,
-      bundle: bundle,
-      package: package,
-    );
-  }
+  ImageProvider provider() => AssetImage(_assetName);
 
   String get path => _assetName;
 

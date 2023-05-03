@@ -6,8 +6,7 @@ import 'package:top_dash/audio/audio.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/info/info.dart';
 import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/share/views/views.dart';
-import 'package:top_dash/share/widgets/widgets.dart';
+import 'package:top_dash/share/share.dart';
 import 'package:top_dash/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
@@ -39,6 +38,8 @@ class ShareHandPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final isPhoneWidth = MediaQuery.sizeOf(context).width < 400;
+
     return IoFlipScaffold(
       body: Column(
         children: [
@@ -52,9 +53,7 @@ class ShareHandPage extends StatelessWidget {
           const SizedBox(height: TopDashSpacing.xxlg),
           Align(
             alignment: Alignment.topCenter,
-            child: CardFan(
-              deck: deck,
-            ),
+            child: CardFan(cards: deck),
           ),
           Text(
             initials,
@@ -76,33 +75,55 @@ class ShareHandPage extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          IoFlipBottomBar(
-            leading: const AudioToggleButton(),
-            middle: Row(
-              mainAxisSize: MainAxisSize.min,
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: TopDashSpacing.xlg,
+              vertical: TopDashSpacing.sm,
+            ),
+            child: Row(
               children: [
-                RoundedButton.text(
-                  l10n.shareButtonLabel,
-                  onPressed: () => _shareDialog(context, deck),
+                const AudioToggleButton(),
+                const Spacer(),
+                Flex(
+                  direction: isPhoneWidth ? Axis.vertical : Axis.horizontal,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    RoundedButton.text(
+                      l10n.shareButtonLabel,
+                      onPressed: () => TopDashDialog.show(
+                        context,
+                        child: ShareHandDialog(
+                          cards: deck,
+                          deckId: deckId,
+                          initials: initials,
+                          wins: wins,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: TopDashSpacing.md,
+                      height: TopDashSpacing.md,
+                    ),
+                    RoundedButton.text(
+                      l10n.mainMenuButtonLabel,
+                      backgroundColor: TopDashColors.seedBlack,
+                      foregroundColor: TopDashColors.seedWhite,
+                      borderColor: TopDashColors.seedPaletteNeutral40,
+                      onPressed: () => GoRouter.of(context).go('/'),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: TopDashSpacing.sm),
-                RoundedButton.text(
-                  l10n.mainMenuButtonLabel,
-                  backgroundColor: TopDashColors.seedBlack,
-                  foregroundColor: TopDashColors.seedWhite,
-                  borderColor: TopDashColors.seedPaletteNeutral40,
-                  onPressed: () => GoRouter.of(context).go('/'),
+                const Spacer(),
+                RoundedButton.svg(
+                  key: const Key('share_page_info_button'),
+                  Assets.icons.info,
+                  onPressed: () => TopDashDialog.show(
+                    context,
+                    child: const InfoView(),
+                    onClose: context.maybePop,
+                  ),
                 ),
               ],
-            ),
-            trailing: RoundedButton.svg(
-              key: const Key('share_page_info_button'),
-              Assets.icons.info,
-              onPressed: () => TopDashDialog.show(
-                context,
-                child: const InfoView(),
-                onClose: context.maybePop,
-              ),
             ),
           ),
           const SizedBox(height: TopDashSpacing.md),
@@ -132,18 +153,6 @@ class ShareHandPage extends StatelessWidget {
           ),
           const SizedBox(height: TopDashSpacing.xlg),
         ],
-      ),
-    );
-  }
-
-  Future<void> _shareDialog(BuildContext context, List<Card> cards) {
-    return showDialog(
-      context: context,
-      builder: (context) => ShareHandDialog(
-        cards: cards,
-        deckId: deckId,
-        initials: initials,
-        wins: wins,
       ),
     );
   }

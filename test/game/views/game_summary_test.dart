@@ -9,11 +9,14 @@ import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:top_dash/game/game.dart';
-import 'package:top_dash/game/views/game_summary.dart';
+import 'package:top_dash/settings/settings.dart';
+import 'package:top_dash/share/views/card_inspector_dialog.dart';
 import 'package:top_dash/share/views/share_hand_page.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
+
+class _MockSettingsController extends Mock implements SettingsController {}
 
 class _MockGameBloc extends Mock implements GameBloc {}
 
@@ -61,6 +64,36 @@ void main() {
       );
     }
 
+    const cards = [
+      Card(
+        id: 'player_card',
+        name: 'host_card',
+        description: '',
+        image: '',
+        rarity: true,
+        power: 2,
+        suit: Suit.air,
+      ),
+      Card(
+        id: 'player_card_2',
+        name: 'host_card_2',
+        description: '',
+        image: '',
+        rarity: true,
+        power: 2,
+        suit: Suit.earth,
+      ),
+      Card(
+        id: 'player_card_3',
+        name: 'host_card_3',
+        description: '',
+        image: '',
+        rarity: true,
+        power: 4,
+        suit: Suit.metal,
+      ),
+    ];
+
     final baseState = MatchLoadedState(
       playerScoreCard: ScoreCard(id: 'scoreCardId'),
       match: Match(
@@ -68,35 +101,7 @@ void main() {
         hostDeck: Deck(
           id: '',
           userId: '',
-          cards: const [
-            Card(
-              id: 'player_card',
-              name: 'host_card',
-              description: '',
-              image: '',
-              rarity: true,
-              power: 2,
-              suit: Suit.air,
-            ),
-            Card(
-              id: 'player_card_2',
-              name: 'host_card_2',
-              description: '',
-              image: '',
-              rarity: true,
-              power: 2,
-              suit: Suit.earth,
-            ),
-            Card(
-              id: 'player_card_3',
-              name: 'host_card_3',
-              description: '',
-              image: '',
-              rarity: true,
-              power: 4,
-              suit: Suit.metal,
-            ),
-          ],
+          cards: cards,
         ),
         guestDeck: Deck(
           id: '',
@@ -141,7 +146,7 @@ void main() {
       rounds: const [],
       turnTimeRemaining: 10,
       turnAnimationsFinished: false,
-      isFightScene: false,
+      isClashScene: false,
       showCardLanding: false,
     );
 
@@ -154,8 +159,16 @@ void main() {
           matchState: MatchState(
             id: '',
             matchId: '',
-            guestPlayedCards: const [],
-            hostPlayedCards: const [],
+            guestPlayedCards: const [
+              'opponent_card_2',
+              'opponent_card_3',
+              'opponent_card'
+            ],
+            hostPlayedCards: const [
+              'player_card_2',
+              'player_card',
+              'player_card_3',
+            ],
             result: MatchResult.guest,
           ),
           turnAnimationsFinished: true,
@@ -165,25 +178,65 @@ void main() {
 
     group('Gameplay', () {
       testWidgets(
+        'renders in small phone layout',
+        (tester) async {
+          tester.setSmallestPhoneDisplaySize();
+          defaultMockState();
+          when(bloc.gameResult).thenReturn(GameResult.draw);
+          await tester.pumpSubject(bloc);
+
+          expect(
+            find.byType(GameSummaryView),
+            findsOneWidget,
+          );
+        },
+      );
+
+      testWidgets(
+        'renders in large phone layout',
+        (tester) async {
+          tester.setLargePhoneDisplaySize();
+          defaultMockState();
+          when(bloc.gameResult).thenReturn(GameResult.draw);
+          await tester.pumpSubject(bloc);
+
+          expect(
+            find.byType(GameSummaryView),
+            findsOneWidget,
+          );
+        },
+      );
+      testWidgets(
         'renders the draw message when the players make a draw',
         (tester) async {
-          mockState(
-            baseState.copyWith(
-              matchState: MatchState(
-                id: '',
-                matchId: '',
-                guestPlayedCards: const [],
-                hostPlayedCards: const [],
-                result: MatchResult.draw,
-              ),
-              turnAnimationsFinished: true,
-            ),
-          );
+          defaultMockState();
           when(bloc.gameResult).thenReturn(GameResult.draw);
           await tester.pumpSubject(bloc);
 
           expect(
             find.text(tester.l10n.gameTiedTitle),
+            findsOneWidget,
+          );
+        },
+      );
+
+      testWidgets(
+        'renders the logo message only when the screen is big enough',
+        (tester) async {
+          defaultMockState();
+          when(bloc.gameResult).thenReturn(GameResult.lose);
+
+          await tester.pumpSubject(bloc);
+
+          expect(
+            find.byType(IoFlipLogo),
+            findsNothing,
+          );
+
+          tester.setLandscapeDisplaySize();
+          await tester.pumpAndSettle();
+          expect(
+            find.byType(IoFlipLogo),
             findsOneWidget,
           );
         },
@@ -197,8 +250,16 @@ void main() {
               matchState: MatchState(
                 id: '',
                 matchId: '',
-                guestPlayedCards: const [],
-                hostPlayedCards: const [],
+                guestPlayedCards: const [
+                  'opponent_card_2',
+                  'opponent_card_3',
+                  'opponent_card'
+                ],
+                hostPlayedCards: const [
+                  'player_card_2',
+                  'player_card',
+                  'player_card_3',
+                ],
                 result: MatchResult.host,
               ),
               turnAnimationsFinished: true,
@@ -236,26 +297,7 @@ void main() {
             () => bloc.isWinningCard(any(), isPlayer: any(named: 'isPlayer')),
           ).thenReturn(CardOverlayType.win);
           when(() => bloc.isHost).thenReturn(false);
-          mockState(
-            baseState.copyWith(
-              matchState: MatchState(
-                id: '',
-                matchId: '',
-                guestPlayedCards: const [
-                  'opponent_card_2',
-                  'opponent_card_3',
-                  'opponent_card'
-                ],
-                hostPlayedCards: const [
-                  'player_card_2',
-                  'player_card',
-                  'player_card_3',
-                ],
-                result: MatchResult.guest,
-              ),
-              turnAnimationsFinished: true,
-            ),
-          );
+          defaultMockState();
           await tester.pumpSubject(bloc);
 
           expect(
@@ -269,6 +311,32 @@ void main() {
           );
         },
       );
+
+      testWidgets(
+        'Renders correct score messages',
+        (tester) async {
+          when(
+            () =>
+                bloc.isWinningCard(cards[0], isPlayer: any(named: 'isPlayer')),
+          ).thenReturn(CardOverlayType.win);
+          when(
+            () =>
+                bloc.isWinningCard(cards[1], isPlayer: any(named: 'isPlayer')),
+          ).thenReturn(CardOverlayType.lose);
+          when(
+            () =>
+                bloc.isWinningCard(cards[2], isPlayer: any(named: 'isPlayer')),
+          ).thenReturn(CardOverlayType.draw);
+          when(() => bloc.isHost).thenReturn(true);
+          defaultMockState();
+          await tester.pumpSubject(bloc);
+
+          expect(find.textContaining('W'), findsOneWidget);
+          expect(find.textContaining('D'), findsOneWidget);
+          expect(find.textContaining('L'), findsOneWidget);
+        },
+      );
+
       testWidgets(
         'navigates to inspector page when card is tapped',
         (tester) async {
@@ -285,64 +353,21 @@ void main() {
             () => bloc.isWinningCard(any(), isPlayer: any(named: 'isPlayer')),
           ).thenReturn(CardOverlayType.win);
           when(() => bloc.isHost).thenReturn(false);
-          mockState(
-            baseState.copyWith(
-              matchState: MatchState(
-                id: '',
-                matchId: '',
-                guestPlayedCards: const [
-                  'opponent_card_2',
-                  'opponent_card_3',
-                  'opponent_card'
-                ],
-                hostPlayedCards: const [
-                  'player_card_2',
-                  'player_card',
-                  'player_card_3',
-                ],
-                result: MatchResult.guest,
-              ),
-              turnAnimationsFinished: true,
-            ),
-          );
+          defaultMockState();
           await tester.pumpSubject(bloc, goRouter: goRouter);
           await tester.tap(find.byType(GameCard).first);
           await tester.pumpAndSettle();
 
-          verify(
-            () => goRouter.pushNamed(
-              'card_inspector',
-              extra: any(named: 'extra'),
-            ),
-          ).called(1);
+          expect(find.byType(CardInspectorDialog), findsOneWidget);
         },
       );
-
-      testWidgets('renders the game summary in landscape', (tester) async {
-        tester.setLandscapeDisplaySize();
-        defaultMockState();
-
-        await tester.pumpSubject(bloc);
-
-        expect(find.byType(GameSummaryView), findsOneWidget);
-        expect(find.byType(LandscapeSummaryView), findsOneWidget);
-      });
-
-      testWidgets('renders the game summary in portrait', (tester) async {
-        tester.setPortraitDisplaySize();
-        defaultMockState();
-
-        await tester.pumpSubject(bloc);
-
-        expect(find.byType(GameSummaryView), findsOneWidget);
-        expect(find.byType(PortraitSummaryView), findsOneWidget);
-      });
 
       testWidgets(
         'pops navigation when the next match button is tapped',
         (tester) async {
           final goRouter = MockGoRouter();
 
+          when(() => bloc.isHost).thenReturn(false);
           defaultMockState();
           await tester.pumpSubject(
             bloc,
@@ -357,46 +382,24 @@ void main() {
       );
 
       testWidgets(
-        'pops navigation when the quit button is tapped and canceled',
+        'pops navigation when the submit score button is tapped and canceled',
         (tester) async {
           final goRouter = MockGoRouter();
 
+          when(() => bloc.isHost).thenReturn(false);
+          when(() => bloc.playerCards).thenReturn([]);
           defaultMockState();
           await tester.pumpSubject(
             bloc,
             goRouter: goRouter,
           );
 
-          await tester.tap(find.text(tester.l10n.quit));
+          await tester.tap(find.text(tester.l10n.submitScore));
           await tester.pumpAndSettle();
 
           expect(find.byType(QuitGameDialog), findsOneWidget);
 
           await tester.tap(find.text(tester.l10n.cancel));
-          await tester.pumpAndSettle();
-
-          verify(goRouter.pop).called(1);
-        },
-      );
-
-      testWidgets(
-        'pops navigation when the quit button is tapped and canceled '
-        'by close icon',
-        (tester) async {
-          final goRouter = MockGoRouter();
-
-          defaultMockState();
-          await tester.pumpSubject(
-            bloc,
-            goRouter: goRouter,
-          );
-
-          await tester.tap(find.text(tester.l10n.quit));
-          await tester.pumpAndSettle();
-
-          expect(find.byType(QuitGameDialog), findsOneWidget);
-
-          await tester.tap(find.byIcon(Icons.close));
           await tester.pumpAndSettle();
 
           verify(goRouter.pop).called(1);
@@ -420,11 +423,11 @@ void main() {
       });
 
       testWidgets(
-        'pops navigation when the quit button is tapped and confirmed and '
-        'adds LeaderboardEntryRequested event to bloc if player score card '
-        'initials is null',
+        'pops navigation when the submit score button is tapped by winner '
+        'and confirmed and adds LeaderboardEntryRequested event to bloc',
         (tester) async {
           final goRouter = MockGoRouter();
+          when(() => bloc.isHost).thenReturn(false);
           when(() => bloc.playerCards).thenReturn([]);
           defaultMockState();
 
@@ -432,18 +435,19 @@ void main() {
             BlocProvider<GameBloc>.value(
               value: bloc,
               child: GameSummaryFooter(
+                isPhoneWidth: false,
                 routerNeglectCall: router.neglect,
               ),
             ),
             router: goRouter,
           );
 
-          await tester.tap(find.text(tester.l10n.quit));
+          await tester.tap(find.text(tester.l10n.submitScore));
           await tester.pumpAndSettle();
 
           expect(find.byType(QuitGameDialog), findsOneWidget);
 
-          await tester.tap(find.text(tester.l10n.quit).last);
+          await tester.tap(find.text(tester.l10n.continueLabel));
           await tester.pumpAndSettle();
 
           verify(goRouter.pop).called(1);
@@ -463,43 +467,36 @@ void main() {
       );
 
       testWidgets(
-        'routes to share hand page when the quit button is tapped '
-        'and confirmed and player score card has initials',
+        'adds LeaderboardEntryRequested event to bloc when submit score button '
+        'is tapped by loser',
         (tester) async {
           final goRouter = MockGoRouter();
-
           when(() => bloc.playerCards).thenReturn([]);
-
-          defaultMockState(
-            scoreCard: ScoreCard(id: 'id', initials: 'AAA'),
-          );
+          defaultMockState();
 
           await tester.pumpApp(
             BlocProvider<GameBloc>.value(
               value: bloc,
               child: GameSummaryFooter(
+                isPhoneWidth: false,
                 routerNeglectCall: router.neglect,
               ),
             ),
             router: goRouter,
           );
 
-          await tester.tap(find.text(tester.l10n.quit));
-          await tester.pumpAndSettle();
-
-          expect(find.byType(QuitGameDialog), findsOneWidget);
-
-          await tester.tap(find.text(tester.l10n.quit).last);
+          await tester.tap(find.text(tester.l10n.submitScore));
           await tester.pumpAndSettle();
 
           verify(
-            () => goRouter.goNamed(
-              'share_hand',
-              extra: ShareHandPageData(
-                initials: 'AAA',
-                wins: 0,
-                deckId: '',
-                deck: const [],
+            () => bloc.add(
+              LeaderboardEntryRequested(
+                shareHandPageData: ShareHandPageData(
+                  initials: '',
+                  deck: const [],
+                  deckId: '',
+                  wins: 0,
+                ),
               ),
             ),
           ).called(1);
@@ -514,6 +511,8 @@ extension GameSummaryViewTest on WidgetTester {
     GameBloc bloc, {
     GoRouter? goRouter,
   }) {
+    final SettingsController settingsController = _MockSettingsController();
+    when(() => settingsController.muted).thenReturn(ValueNotifier(true));
     return mockNetworkImages(() async {
       await pumpApp(
         BlocProvider<GameBloc>.value(
@@ -521,6 +520,7 @@ extension GameSummaryViewTest on WidgetTester {
           child: GameView(),
         ),
         router: goRouter,
+        settingsController: settingsController,
       );
       state<MatchResultSplashState>(
         find.byType(MatchResultSplash),

@@ -22,4 +22,12 @@ extension TopDashWidgetTester on WidgetTester {
   void setPortraitDisplaySize() {
     setDisplaySize(const Size(400, 800));
   }
+
+  void setSmallestPhoneDisplaySize() {
+    setDisplaySize(const Size(375, 600));
+  }
+
+  void setLargePhoneDisplaySize() {
+    setDisplaySize(const Size(377, 812));
+  }
 }

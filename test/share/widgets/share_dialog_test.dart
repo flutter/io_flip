@@ -19,15 +19,9 @@ const card = Card(
 );
 
 void main() {
-  group('CardShareDialog', () {
+  group('ShareDialog', () {
     setUpAll(() {
       launchedUrl = null;
-    });
-
-    testWidgets('renders a Dialog', (tester) async {
-      await tester.pumpSubject();
-
-      expect(find.byType(Dialog), findsOneWidget);
     });
 
     testWidgets('renders the content', (tester) async {
@@ -77,31 +71,42 @@ void main() {
       },
     );
 
-    testWidgets('renders landscape mode', (tester) async {
-      tester.setLandscapeDisplaySize();
+    testWidgets('renders a save button', (tester) async {
       await tester.pumpSubject();
-      expect(
-        find.byKey(const Key('large_dialog')),
-        findsOneWidget,
-      );
+      expect(find.text(tester.l10n.saveButtonLabel), findsOneWidget);
     });
 
-    testWidgets('renders portrait mode', (tester) async {
-      tester.setPortraitDisplaySize();
-      await tester.pumpSubject();
-      expect(
-        find.byKey(const Key('small_dialog')),
-        findsOneWidget,
-      );
+    testWidgets('renders a downloading button while the downloading',
+        (tester) async {
+      await tester.pumpSubject(loading: true);
+      expect(find.text(tester.l10n.downloadingButtonLabel), findsOneWidget);
+    });
+
+    testWidgets('renders a success message while on download complete',
+        (tester) async {
+      await tester.pumpSubject(success: true);
+      expect(find.text(tester.l10n.downloadCompleteLabel), findsOneWidget);
+    });
+
+    testWidgets('renders a fail message while on download failure',
+        (tester) async {
+      await tester.pumpSubject(success: false);
+      expect(find.text(tester.l10n.downloadFailedLabel), findsOneWidget);
     });
   });
 }
 
 extension ShareCardDialogTest on WidgetTester {
-  Future<void> pumpSubject({Widget? content}) async {
+  Future<void> pumpSubject({
+    Widget? content,
+    bool? loading,
+    bool? success,
+  }) async {
     await mockNetworkImages(() {
       return pumpApp(
-        CardShareDialog(
+        ShareDialog(
+          loading: loading ?? false,
+          success: success ?? false,
           content: content ?? Container(),
           twitterShareUrl: shareUrl,
           facebookShareUrl: shareUrl,

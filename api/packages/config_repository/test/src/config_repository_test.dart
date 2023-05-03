@@ -64,5 +64,67 @@ void main() {
         },
       );
     });
+
+    group('getPrivateMatchTimeLimit', () {
+      test('return the value in the db', () async {
+        when(
+          () => dbClient.findBy(
+            'config',
+            'type',
+            'private_match_time_limit',
+          ),
+        ).thenAnswer(
+          (_) async => [
+            DbEntityRecord(
+              id: '1',
+              data: const {
+                'type': 'private_match_time_limit',
+                'value': '10',
+              },
+            ),
+          ],
+        );
+
+        expect(await configRepository.getPrivateMatchTimeLimit(), equals(10));
+      });
+
+      test(
+        'return the default value when there is no nothing in the db',
+        () async {
+          when(
+            () => dbClient.findBy(
+              'config',
+              'type',
+              'private_match_time_limit',
+            ),
+          ).thenAnswer(
+            (_) async => [],
+          );
+
+          expect(
+            await configRepository.getPrivateMatchTimeLimit(),
+            equals(120),
+          );
+        },
+      );
+
+      test(
+        'return default value when there is an error',
+        () async {
+          when(
+            () => dbClient.findBy(
+              'config',
+              'type',
+              'private_match_time_limit',
+            ),
+          ).thenThrow(Exception('error'));
+
+          expect(
+            await configRepository.getPrivateMatchTimeLimit(),
+            equals(120),
+          );
+        },
+      );
+    });
   });
 }

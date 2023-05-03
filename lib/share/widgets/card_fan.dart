@@ -6,11 +6,11 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 
 class CardFan extends StatelessWidget {
   const CardFan({
-    required this.deck,
+    required this.cards,
     super.key,
   });
 
-  final List<Card> deck;
+  final List<Card> cards;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class CardFan extends StatelessWidget {
     const size = GameCardSize.sm();
     final offset = size.width / 1.4;
     final center = (container - size.width) / 2;
-    final gameCards = deck
+    final gameCards = cards
         .map(
           (card) => GameCard(
             size: size,
