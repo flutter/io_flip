@@ -37,7 +37,8 @@ class DownloadBloc extends Bloc<DownloadEvent, DownloadState> {
       await file.saveTo('${event.card.name}.png');
 
       emit(state.copyWith(status: DownloadStatus.completed));
-    } catch (e) {
+    } catch (e, s) {
+      addError(e, s);
       emit(state.copyWith(status: DownloadStatus.failure));
     }
   }

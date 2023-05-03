@@ -2,6 +2,7 @@ import 'package:api_client/api_client.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/l10n/l10n.dart';
 import 'package:top_dash/share/bloc/download_bloc.dart';
@@ -13,7 +14,7 @@ class ShareDialog extends StatelessWidget {
     required this.twitterShareUrl,
     required this.facebookShareUrl,
     required this.content,
-    required this.downloadRequest,
+    required this.downloadContent,
     this.urlLauncher,
     super.key,
   });
@@ -22,7 +23,7 @@ class ShareDialog extends StatelessWidget {
   final String facebookShareUrl;
   final AsyncValueSetter<String>? urlLauncher;
   final Widget content;
-  final DownloadRequested downloadRequest;
+  final Card downloadContent;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,7 @@ class ShareDialog extends StatelessWidget {
         facebookShareUrl: facebookShareUrl,
         content: content,
         urlLauncher: urlLauncher,
-        downloadRequest: downloadRequest,
+        downloadContent: downloadContent,
         key: key,
       ),
     );
@@ -45,7 +46,7 @@ class ShareDialogView extends StatelessWidget {
     required this.twitterShareUrl,
     required this.facebookShareUrl,
     required this.content,
-    required this.downloadRequest,
+    required this.downloadContent,
     AsyncValueSetter<String>? urlLauncher,
     super.key,
   }) : _urlLauncher = urlLauncher ?? launchUrlString;
@@ -54,7 +55,7 @@ class ShareDialogView extends StatelessWidget {
   final String facebookShareUrl;
   final AsyncValueSetter<String> _urlLauncher;
   final Widget content;
-  final DownloadRequested downloadRequest;
+  final Card downloadContent;
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +92,8 @@ class ShareDialogView extends StatelessWidget {
               const SizedBox(height: TopDashSpacing.sm),
               _SaveButton(
                 status: bloc.state.status,
-                onSave: () => bloc.add(downloadRequest),
+                onSave: () =>
+                    bloc.add(DownloadRequested(card: downloadContent)),
               ),
               const SizedBox(height: TopDashSpacing.sm),
               if (bloc.state.status != DownloadStatus.idle &&
@@ -135,7 +137,7 @@ class _SaveButton extends StatelessWidget {
               color: TopDashColors.seedWhite,
               width: TopDashSpacing.xlg,
             ),
-            label: 'SAVE',
+            label: l10n.saveButtonLabel,
             onPressed: onSave,
           );
   }
