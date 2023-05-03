@@ -1,0 +1,30 @@
+name: deploy_firebase_functions_dev
+
+on:
+  push:
+    paths:
+      - "functions/**"
+    branches:
+      - main
+
+jobs:
+  deploy-dev:
+    runs-on: ubuntu-latest
+    name: Deploy Dev Firebase Functions
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@main
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: npm run lint
+      - run: npm build
+      - run: npm test
+      - name: GitHub Action for Firebase
+        uses: w9jds/firebase-action@v11.24.1
+        with:
+          args: deploy --only functions
+        env:
+          GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DEV }}
+          PROJECT_ID: top-dash-dev

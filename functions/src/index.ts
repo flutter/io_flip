@@ -1,0 +1,1 @@
+export {deleteUserData} from './deleteUserData';
