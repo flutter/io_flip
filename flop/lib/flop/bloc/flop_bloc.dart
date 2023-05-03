@@ -32,6 +32,7 @@ class FlopBloc extends Bloc<FlopEvent, FlopState> {
   late ConnectionRepository connectionRepository;
   late MatchMakerRepository matchMakerRepository;
   late ApiClient apiClient;
+  late FirebaseAuth authInstance;
   late bool isHost;
   late List<Card> cards;
   late String matchId;
@@ -50,7 +51,8 @@ class FlopBloc extends Bloc<FlopEvent, FlopState> {
       options: DefaultFirebaseOptions.currentPlatform,
     );
     // Ensure we always have a new user.
-    await FirebaseAuth.instance.signOut();
+    authInstance = FirebaseAuth.instance;
+    await authInstance.setPersistence(Persistence.NONE);
     emit(state.withNewMessage('🔥 Firebase initialized'));
 
     final appCheck = FirebaseAppCheck.instance;
@@ -63,7 +65,7 @@ class FlopBloc extends Bloc<FlopEvent, FlopState> {
 
   Future<void> authenticate(Emitter<FlopState> emit) async {
     authenticationRepository = AuthenticationRepository(
-      firebaseAuth: FirebaseAuth.instance,
+      firebaseAuth: authInstance,
     );
 
     final appCheck = FirebaseAppCheck.instance;
@@ -77,13 +79,13 @@ class FlopBloc extends Bloc<FlopEvent, FlopState> {
 
     await authenticationRepository.signInAnonymously();
     await authenticationRepository.idToken.first;
-    await authenticationRepository.user.first;
+    final user = await authenticationRepository.user.first;
 
     connectionRepository = ConnectionRepository(
       apiClient: apiClient,
     );
 
-    emit(state.withNewMessage('🎭 Authenticated anonymously'));
+    emit(state.withNewMessage('🎭 Authenticated anonymously: ${user.id}'));
   }
 
   Future<void> generateCards(Emitter<FlopState> emit) async {
@@ -149,7 +151,7 @@ class FlopBloc extends Bloc<FlopEvent, FlopState> {
 
     final cardIds = cards.map((card) => card.id).toList();
     deckId = await apiClient.gameResource.createDeck(cardIds);
-    emit(state.withNewMessage('👋 User hand is: deckId'));
+    emit(state.withNewMessage('👋 User hand is: $deckId'));
 
     matchMakerRepository = MatchMakerRepository(
       db: FirebaseFirestore.instance,
@@ -174,20 +176,29 @@ class FlopBloc extends Bloc<FlopEvent, FlopState> {
 
       final stream = matchMakerRepository.watchMatch(match.id);
 
-      final newMatch = await stream.firstWhere((match) => match.guest != null);
+      late StreamSubscription<DraftMatch> subscription;
+      final completer = Completer<void>();
+      subscription = stream.listen((newMatch) {
+        print(newMatch);
+        if (newMatch.guest != null) {
+          matchId = newMatch.id;
+          emit(
+            newState.copyWith(
+              messages: ['🎉 Match joined', ...newState.messages],
+              steps: [...newState.steps, FlopStep.joinedMatch],
+            ),
+          );
+          subscription.cancel();
+          completer.complete();
+        }
+      });
 
-      matchId = newMatch.id;
-      emit(
-        newState.copyWith(
-          messages: ['🎉 Match joined', ...newState.messages],
-          steps: [...newState.steps, FlopStep.joinedMatch],
-        ),
-      );
+      return completer.future;
     } else {
       matchId = match.id;
       emit(
         state.copyWith(
-          messages: ['🎉 Match joined', ...state.messages],
+          messages: ['🎉 Match joined: ${match.id}', ...state.messages],
           steps: [
             ...state.steps,
             FlopStep.matchmaking,
@@ -244,8 +255,12 @@ class FlopBloc extends Bloc<FlopEvent, FlopState> {
           }).onError(
             (error, _) {
               if (retries > 0) {
-                retries--;
-                return playCard(myPlayedCards.length, emit);
+                return Future<void>.delayed(
+                  Duration(milliseconds: rng.nextInt(1000) + 500),
+                ).then((_) {
+                  retries--;
+                  return playCard(myPlayedCards.length, emit);
+                });
               } else {
                 emit(state.withNewMessage('😭 Error playing cards: $error'));
               }
@@ -291,12 +306,12 @@ class FlopBloc extends Bloc<FlopEvent, FlopState> {
             );
             break;
           case FlopStep.deckDraft:
-            await matchMaking(emit).timeout(const Duration(seconds: 15));
+            await matchMaking(emit).timeout(const Duration(seconds: 120));
             break;
           case FlopStep.matchmaking:
             break;
           case FlopStep.joinedMatch:
-            await playGame(emit).timeout(const Duration(seconds: 10));
+            await playGame(emit).timeout(const Duration(seconds: 30));
             break;
           case FlopStep.playing:
             emit(
@@ -312,7 +327,7 @@ class FlopBloc extends Bloc<FlopEvent, FlopState> {
         state.copyWith(
           status: FlopStatus.error,
           messages: [
-            '🚨 Error: $e',
+            '🚨 Error: $e $s',
             ...state.messages,
           ],
         ),
