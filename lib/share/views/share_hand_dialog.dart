@@ -29,6 +29,8 @@ class ShareHandDialog extends StatelessWidget {
     return ShareDialog(
       twitterShareUrl: twitterLink,
       facebookShareUrl: facebookLink,
+      // TODO(Samobrien): add cards to be downloaded
+      downloadContent: cards.first,
       content: _DialogContent(
         cards: cards,
         wins: wins,
