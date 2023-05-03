@@ -7,6 +7,10 @@ on:
     branches:
       - main
 
+defaults:
+  run:
+    working-directory: functions
+
 jobs:
   deploy-dev:
     runs-on: ubuntu-latest
@@ -18,9 +22,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
+      - run: npm install
       - run: npm run lint
-      - run: npm build
       - run: npm test
+      - run: npm run build
       - name: GitHub Action for Firebase
         uses: w9jds/firebase-action@v11.24.1
         with:
