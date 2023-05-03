@@ -74,6 +74,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
 
   @override
   void initState() {
+    super.initState();
     switch (widget.element) {
       case Element.metal:
         elementalDamage = MetalDamage(size: widget.size);
@@ -91,7 +92,6 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
         elementalDamage = WaterDamage(size: widget.size);
         break;
     }
-    super.initState();
   }
 
   @override
