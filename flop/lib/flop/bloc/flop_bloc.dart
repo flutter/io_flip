@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_web_libraries_in_flutter, avoid_print
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
@@ -118,10 +119,12 @@ class FlopBloc extends Bloc<FlopEvent, FlopState> {
         if (message.messageType == MessageType.connected) {
           completer.complete();
           subscription.cancel();
+        } else if (message.messageType == MessageType.error) {
+          completer.completeError('Already connected');
         }
       },
     );
-    return completer.future;
+    return completer.future.timeout(const Duration(seconds: 4));
   }
 
   Future<void> connectToMatch({
@@ -209,6 +212,7 @@ class FlopBloc extends Bloc<FlopEvent, FlopState> {
   }
 
   Future<void> playGame(Emitter<FlopState> emit) async {
+    final rng = Random();
     final completer = Completer<void>();
     final matchState = await apiClient.gameResource.getMatchState(matchId);
     matchStateId = matchState!.id;
@@ -233,10 +237,28 @@ class FlopBloc extends Bloc<FlopEvent, FlopState> {
 
         if (myPlayedCards.length == opponentPlayedCards.length ||
             myPlayedCards.length < opponentPlayedCards.length) {
-          playCard(myPlayedCards.length, emit);
+          var retries = 3;
+          Future<void>.delayed(Duration(milliseconds: rng.nextInt(1000) + 500),
+              () async {
+            await playCard(myPlayedCards.length, emit);
+          }).onError(
+            (error, _) {
+              if (retries > 0) {
+                retries--;
+                return playCard(myPlayedCards.length, emit);
+              } else {
+                emit(state.withNewMessage('😭 Error playing cards: $error'));
+              }
+            },
+          );
+
+          Future<void>.delayed(const Duration(seconds: 3)).then((_) {
+            playCard(myPlayedCards.length, emit);
+          });
         }
       }
     });
+
     await playCard(0, emit);
     await completer.future;
   }
@@ -269,12 +291,12 @@ class FlopBloc extends Bloc<FlopEvent, FlopState> {
             );
             break;
           case FlopStep.deckDraft:
-            await matchMaking(emit);
+            await matchMaking(emit).timeout(const Duration(seconds: 15));
             break;
           case FlopStep.matchmaking:
             break;
           case FlopStep.joinedMatch:
-            await playGame(emit);
+            await playGame(emit).timeout(const Duration(seconds: 10));
             break;
           case FlopStep.playing:
             emit(
@@ -288,7 +310,11 @@ class FlopBloc extends Bloc<FlopEvent, FlopState> {
     } catch (e, s) {
       emit(
         state.copyWith(
-          status: FlopStatus.success,
+          status: FlopStatus.error,
+          messages: [
+            '🚨 Error: $e',
+            ...state.messages,
+          ],
         ),
       );
       print(e);

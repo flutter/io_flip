@@ -1,6 +1,3 @@
-// ignore_for_file: avoid_web_libraries_in_flutter, avoid_print
-import 'dart:js' as js;
-
 import 'package:flop/flop/flop.dart';
 import 'package:flutter/material.dart';
 
