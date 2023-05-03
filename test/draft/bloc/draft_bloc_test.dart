@@ -342,7 +342,6 @@ void main() {
         DraftState(
           cards: [
             ...cards.getRange(1, cards.length),
-            cards.first,
           ],
           selectedCards: [cards.first, null, null],
           status: DraftStateStatus.deckLoaded,
@@ -377,7 +376,7 @@ void main() {
         DraftState(
           cards: [
             ...cards.getRange(1, cards.length),
-            cards.first,
+            cards[3],
           ],
           selectedCards: [cards[1], cards[2], cards.first],
           status: DraftStateStatus.deckSelected,
@@ -412,7 +411,6 @@ void main() {
         DraftState(
           cards: [
             ...cards.getRange(1, cards.length),
-            cards.first,
           ],
           selectedCards: [cards[2], cards.first, cards[3]],
           status: DraftStateStatus.deckSelected,

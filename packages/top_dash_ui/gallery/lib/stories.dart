@@ -60,6 +60,29 @@ void addStories(Dashbook dashbook) {
       );
 
   dashbook
+      .storiesOf('Elemental Damage Story')
+      .add(
+        'Metal Damage Story',
+        (context) => const ElementalDamageStory(Element.metal),
+      )
+      .add(
+        'Earth Damage Story',
+        (context) => const ElementalDamageStory(Element.earth),
+      )
+      .add(
+        'Air Damage Story',
+        (context) => const ElementalDamageStory(Element.air),
+      )
+      .add(
+        'Fire Damage Story',
+        (context) => const ElementalDamageStory(Element.fire),
+      )
+      .add(
+        'Water Damage Story',
+        (context) => const ElementalDamageStory(Element.water),
+      );
+
+  dashbook
       .storiesOf('Cards')
       .add(
         'Game Card Suits',
