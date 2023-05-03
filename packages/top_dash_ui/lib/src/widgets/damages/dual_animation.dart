@@ -32,7 +32,6 @@ class DualAnimationController {
   ///
   /// If both animations are finished, the [onComplete] callback will be called.
   void frontAnimationCompleted() {
-    print('hello');
     _frontAnimationCompleted = true;
     _checkCompletion();
   }
@@ -42,7 +41,6 @@ class DualAnimationController {
   ///
   /// If both animations are finished, the [onComplete] callback will be called
   void backAnimationCompleted() {
-    print('hello');
     _backAnimationCompleted = true;
     _checkCompletion();
   }

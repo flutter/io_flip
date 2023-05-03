@@ -57,7 +57,6 @@ class _ElementalDamageStoryState extends State<ElementalDamageStory> {
                     direction: DamageDirection.topToBottom,
                     size: const GameCardSize.md(),
                     onComplete: () {},
-                    loop: true,
                   ),
                 ),
               ],

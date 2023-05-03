@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:top_dash_ui/src/animations/damages/air_damage.dart';
 import 'package:top_dash_ui/src/animations/damages/earth_damage.dart';
@@ -5,6 +7,30 @@ import 'package:top_dash_ui/src/animations/damages/fire_damage.dart';
 import 'package:top_dash_ui/src/animations/damages/water_damage.dart';
 import 'package:top_dash_ui/src/widgets/damages/dual_animation.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
+
+/// {@template elemental_damage_step_notifier}
+/// A notifier that allows an external test to know when an [_AnimationState]
+/// is complete
+/// {@endtemplate}
+@visibleForTesting
+class ElementalDamageStepNotifier {
+  final _charged = Completer<void>();
+  final _sent = Completer<void>();
+  final _received = Completer<void>();
+  final _victory = Completer<void>();
+
+  /// Future notifying when [_AnimationState.charging] is complete
+  Future<void> get charged => _charged.future;
+
+  /// Future notifying when [_AnimationState.sending] is complete
+  Future<void> get sent => _sent.future;
+
+  /// Future notifying when [_AnimationState.receiving] is complete
+  Future<void> get received => _received.future;
+
+  /// Future notifying when [_AnimationState.victory] is complete
+  Future<void> get victory => _victory.future;
+}
 
 /// {@template elemental_damage_animation}
 // ignore: comment_references
@@ -17,7 +43,7 @@ class ElementalDamageAnimation extends StatefulWidget {
     required this.direction,
     required this.size,
     this.onComplete,
-    this.loop = false,
+    this.stepNotifier,
     super.key,
   });
 
@@ -34,8 +60,8 @@ class ElementalDamageAnimation extends StatefulWidget {
   /// Size of the card
   final GameCardSize size;
 
-  /// boolean that indicates if the aniamtion should repeat
-  final bool loop;
+  /// Notifies when an [_AnimationState] is complete
+  final ElementalDamageStepNotifier? stepNotifier;
 
   @override
   State<ElementalDamageAnimation> createState() =>
@@ -142,38 +168,31 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
         );
       case _AnimationState.ended:
         widget.onComplete?.call();
-        if (widget.loop) {
-          setState(() {
-            _animationState = _AnimationState.charging;
-          });
-        }
         return Container();
     }
   }
 
   void _onStepCompleted() {
-    switch (_animationState) {
-      case _AnimationState.charging:
-        setState(() {
-          _animationState = _AnimationState.sending;
-        });
-        break;
-      case _AnimationState.sending:
-        setState(() {
-          _animationState = _AnimationState.receiving;
-        });
-        break;
-      case _AnimationState.receiving:
-        setState(() {
-          _animationState = _AnimationState.victory;
-        });
-        break;
-      case _AnimationState.victory:
-        setState(() {
-          _animationState = _AnimationState.ended;
-        });
-        break;
-      case _AnimationState.ended:
+    if (_animationState == _AnimationState.charging) {
+      widget.stepNotifier?._charged.complete();
+      setState(() {
+        _animationState = _AnimationState.sending;
+      });
+    } else if (_animationState == _AnimationState.sending) {
+      widget.stepNotifier?._sent.complete();
+      setState(() {
+        _animationState = _AnimationState.receiving;
+      });
+    } else if (_animationState == _AnimationState.receiving) {
+      widget.stepNotifier?._received.complete();
+      setState(() {
+        _animationState = _AnimationState.victory;
+      });
+    } else if (_animationState == _AnimationState.victory) {
+      widget.stepNotifier?._victory.complete();
+      setState(() {
+        _animationState = _AnimationState.ended;
+      });
     }
   }
 }
