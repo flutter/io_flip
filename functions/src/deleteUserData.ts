@@ -53,6 +53,7 @@ export const deleteUserData = functions.auth.user().onDelete(async (event) => {
   );
 
   const connectionDoc = firestore.collection('connection_states').doc(uid);
+  const leaderboardDoc = firestore.collection('leaderboard').doc(uid);
   const scoreCardDoc = firestore.collection('score_cards').doc(uid);
   const cpuScoreCardDoc = firestore.collection('score_cards').doc(`CPU_${uid}`);
 
@@ -66,6 +67,7 @@ export const deleteUserData = functions.auth.user().onDelete(async (event) => {
   await Promise.all(guestMatches.map((doc) => doc.ref.delete()));
   await Promise.all(matchStates.map((doc) => doc.ref.delete()));
   await connectionDoc.delete();
+  await leaderboardDoc.delete();
   await scoreCardDoc.delete();
   await cpuScoreCardDoc.delete();
 
