@@ -43,6 +43,7 @@ class ShareCardDialog extends StatelessWidget {
           const SizedBox(height: TopDashSpacing.lg),
         ],
       ),
+      downloadContent: card,
     );
   }
 }

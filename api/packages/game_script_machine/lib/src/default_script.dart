@@ -23,11 +23,11 @@ fun rollCardPower(isRare: bool) -> int {
 fun compareCards(valueA: int, valueB: int, suitA: str, suitB: str) -> int {
   var evaluation = compareSuits(suitA, suitB);
 
-  var aModifier = if (evaluation == -1) 0.9 else 1;
-  var bModifier = if (evaluation == 1) 0.9 else 1;
+  var aModifier = if (evaluation == -1) 10 else 0;
+  var bModifier = if (evaluation == 1) 10 else 0;
 
-  var a = valueA * aModifier;
-  var b = valueB * bModifier;
+  var a = valueA - aModifier;
+  var b = valueB - bModifier;
 
   if (a > b) {
     return 1;
