@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' hide Card, Element;
 import 'package:game_domain/game_domain.dart';
+import 'package:top_dash/utils/platform_aware_asset.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class ClashScene extends StatefulWidget {
@@ -138,6 +139,10 @@ class ClashSceneState extends State<ClashScene>
                   ? DamageDirection.bottomToTop
                   : DamageDirection.topToBottom,
               size: const GameCardSize.lg(),
+              assetSize: platformAwareAsset<AssetSize>(
+                desktop: AssetSize.large,
+                mobile: AssetSize.small,
+              ),
               onComplete: widget.onFinished,
             )
         ],
