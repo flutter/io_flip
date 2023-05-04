@@ -8,7 +8,7 @@ import 'package:io_flip/audio/audio_controller.dart';
 import 'package:io_flip/game/game.dart';
 import 'package:io_flip/gen/assets.gen.dart';
 import 'package:io_flip/leaderboard/leaderboard.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip_ui/top_dash_ui.dart';
 
 extension on List<TickerFuture> {
   Future<void> get allDone => Future.wait(

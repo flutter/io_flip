@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:io_flip_ui/gen/assets.gen.dart';
+import 'package:io_flip_ui/top_dash_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:top_dash_ui/gen/assets.gen.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 
 void main() {
   group('RoundedButton', () {

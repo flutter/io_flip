@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip_ui/top_dash_ui.dart';
 
 /// {@template top_dash_dialog}
 /// Top Dash themed dialog.

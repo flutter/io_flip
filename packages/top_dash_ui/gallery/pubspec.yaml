@@ -17,9 +17,9 @@ dependencies:
   flutter:
     sdk: flutter
   intl: ^0.17.0
-  provider: ^6.0.5
-  top_dash_ui:
+  io_flip_ui:
     path: ../
+  provider: ^6.0.5
 
 dev_dependencies:
   flutter_test:

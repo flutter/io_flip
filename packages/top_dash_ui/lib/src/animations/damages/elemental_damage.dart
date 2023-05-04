@@ -1,6 +1,6 @@
 import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip_ui/top_dash_ui.dart';
 
 /// {@template elemental_damage}
 /// A widget that renders several [SpriteAnimation]s for the damages

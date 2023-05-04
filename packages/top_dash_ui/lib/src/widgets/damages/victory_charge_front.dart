@@ -2,8 +2,8 @@ import 'package:flame/cache.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:io_flip_ui/top_dash_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 
 /// {@template victory_charge_front}
 /// A widget that renders a [SpriteAnimation] for the victory charge in front

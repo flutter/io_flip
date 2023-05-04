@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:top_dash_ui/src/widgets/top_dash_dialog.dart';
+import 'package:io_flip_ui/src/widgets/top_dash_dialog.dart';
 
 void main() {
   group('TopDashDialog', () {

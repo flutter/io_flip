@@ -2,8 +2,8 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:io_flip/game/game.dart';
+import 'package:io_flip_ui/top_dash_ui.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
 

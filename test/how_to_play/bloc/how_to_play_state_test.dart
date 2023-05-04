@@ -3,7 +3,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:io_flip/how_to_play/how_to_play.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip_ui/top_dash_ui.dart';
 
 void main() {
   group('HowToPlayState', () {

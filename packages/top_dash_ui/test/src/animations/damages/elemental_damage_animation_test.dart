@@ -4,12 +4,12 @@ import 'package:flame/cache.dart';
 import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart' hide Element;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:io_flip_ui/gen/assets.gen.dart';
+import 'package:io_flip_ui/src/animations/animations.dart';
+import 'package:io_flip_ui/src/widgets/damages/damages.dart';
+import 'package:io_flip_ui/src/widgets/damages/dual_animation.dart';
+import 'package:io_flip_ui/src/widgets/game_card.dart';
 import 'package:provider/provider.dart';
-import 'package:top_dash_ui/gen/assets.gen.dart';
-import 'package:top_dash_ui/src/animations/animations.dart';
-import 'package:top_dash_ui/src/widgets/damages/damages.dart';
-import 'package:top_dash_ui/src/widgets/damages/dual_animation.dart';
-import 'package:top_dash_ui/src/widgets/game_card.dart';
 
 void main() {
   group('ElementalDamageAnimation', () {

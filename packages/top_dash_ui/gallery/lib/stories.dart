@@ -4,7 +4,7 @@ import 'package:gallery/spacing/app_spacing_story.dart';
 import 'package:gallery/typography/typography_story.dart';
 import 'package:gallery/widgets/bottom_bar_story.dart';
 import 'package:gallery/widgets/widgets.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip_ui/top_dash_ui.dart';
 
 final _controller = AnimatedCardController();
 

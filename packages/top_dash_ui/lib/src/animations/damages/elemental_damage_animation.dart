@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
-import 'package:top_dash_ui/src/animations/damages/air_damage.dart';
-import 'package:top_dash_ui/src/animations/damages/earth_damage.dart';
-import 'package:top_dash_ui/src/animations/damages/fire_damage.dart';
-import 'package:top_dash_ui/src/animations/damages/water_damage.dart';
-import 'package:top_dash_ui/src/widgets/damages/dual_animation.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip_ui/src/animations/damages/air_damage.dart';
+import 'package:io_flip_ui/src/animations/damages/earth_damage.dart';
+import 'package:io_flip_ui/src/animations/damages/fire_damage.dart';
+import 'package:io_flip_ui/src/animations/damages/water_damage.dart';
+import 'package:io_flip_ui/src/widgets/damages/dual_animation.dart';
+import 'package:io_flip_ui/top_dash_ui.dart';
 
 /// {@template elemental_damage_step_notifier}
 /// A notifier that allows an external test to know when an [_AnimationState]

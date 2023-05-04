@@ -10,8 +10,8 @@ import 'package:game_domain/game_domain.dart';
 import 'package:io_flip/audio/audio_controller.dart';
 import 'package:io_flip/gen/assets.gen.dart';
 import 'package:io_flip/share/share.dart';
+import 'package:io_flip_ui/top_dash_ui.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 
 part 'game_event.dart';
 part 'game_state.dart';

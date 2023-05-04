@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:top_dash_ui/gen/assets.gen.dart';
+import 'package:io_flip_ui/gen/assets.gen.dart';
 
 /// {@template suit_icon}
 /// IO Flip suit icon.

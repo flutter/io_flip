@@ -8,7 +8,7 @@ import 'package:io_flip/game/game.dart';
 import 'package:io_flip/l10n/l10n.dart';
 import 'package:io_flip/match_making/match_making.dart';
 import 'package:io_flip/utils/utils.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip_ui/top_dash_ui.dart';
 
 class MatchMakingView extends StatelessWidget {
   const MatchMakingView({

@@ -13,10 +13,10 @@ import 'package:io_flip/audio/audio_controller.dart';
 import 'package:io_flip/l10n/l10n.dart';
 import 'package:io_flip/settings/settings.dart';
 import 'package:io_flip/style/snack_bar.dart';
+import 'package:io_flip_ui/top_dash_ui.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 
 import 'helpers.dart';
 

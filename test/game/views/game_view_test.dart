@@ -13,9 +13,9 @@ import 'package:io_flip/audio/audio_controller.dart';
 import 'package:io_flip/game/game.dart';
 import 'package:io_flip/gen/assets.gen.dart';
 import 'package:io_flip/leaderboard/leaderboard.dart';
+import 'package:io_flip_ui/top_dash_ui.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
 

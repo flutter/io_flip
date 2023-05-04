@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:io_flip/connection/connection.dart';
+import 'package:io_flip_ui/top_dash_ui.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
 

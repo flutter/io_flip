@@ -4,8 +4,8 @@ import 'dart:ui';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:top_dash_ui/gen/assets.gen.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip_ui/gen/assets.gen.dart';
+import 'package:io_flip_ui/top_dash_ui.dart';
 
 /// {@template game_card_size}
 /// A class that holds information about card dimensions.

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:top_dash_ui/gen/assets.gen.dart';
+import 'package:io_flip_ui/gen/assets.gen.dart';
 
 /// {@template io_flip_scaffold}
 /// IO Flip scaffold that adds the background pattern.

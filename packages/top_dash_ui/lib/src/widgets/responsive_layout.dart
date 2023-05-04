@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/widgets.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip_ui/top_dash_ui.dart';
 
 /// Signature for the individual builders (`small`, `large`).
 typedef ResponsiveLayoutWidgetBuilder = Widget Function(BuildContext, Widget?);

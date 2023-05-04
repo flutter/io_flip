@@ -10,8 +10,8 @@ import 'package:io_flip/l10n/l10n.dart';
 import 'package:io_flip/match_making/match_making.dart';
 import 'package:io_flip/share/share.dart';
 import 'package:io_flip/utils/utils.dart';
+import 'package:io_flip_ui/top_dash_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 
 class GameSummaryView extends StatelessWidget {
   const GameSummaryView({super.key});

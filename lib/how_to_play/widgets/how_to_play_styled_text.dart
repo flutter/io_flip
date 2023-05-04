@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:io_flip_ui/top_dash_ui.dart';
 import 'package:styled_text/styled_text.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 
 class HowToPlayStyledText extends StatelessWidget {
   const HowToPlayStyledText(this.text, {super.key});

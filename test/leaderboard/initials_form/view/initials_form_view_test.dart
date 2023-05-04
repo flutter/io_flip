@@ -6,8 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:io_flip/l10n/l10n.dart';
 import 'package:io_flip/leaderboard/initials_form/initials_form.dart';
 import 'package:io_flip/share/share.dart';
+import 'package:io_flip_ui/top_dash_ui.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../../helpers/helpers.dart';
 

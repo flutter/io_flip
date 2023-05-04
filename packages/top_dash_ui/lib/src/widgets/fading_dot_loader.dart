@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip_ui/top_dash_ui.dart';
 
 /// {@template fading_dot_indicator}
 /// A loading indicator with 3 fading dots.
