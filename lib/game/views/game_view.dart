@@ -8,6 +8,7 @@ import 'package:io_flip/audio/audio_controller.dart';
 import 'package:io_flip/game/game.dart';
 import 'package:io_flip/gen/assets.gen.dart';
 import 'package:io_flip/leaderboard/leaderboard.dart';
+import 'package:io_flip/utils/utils.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 
 extension on List<TickerFuture> {
@@ -505,7 +506,10 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
               scale: 1.4,
               child: Center(
                 child: Image.asset(
-                  Assets.images.stadiumBackground.keyName,
+                  platformAwareAsset(
+                    desktop: Assets.images.stadiumBackground.keyName,
+                    mobile: Assets.images.mobile.stadiumBackground.keyName,
+                  ),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -888,7 +892,11 @@ class _ClashScene extends StatelessWidget {
               scale: 1.4,
               child: Center(
                 child: Image.asset(
-                  Assets.images.stadiumBackgroundCloseUp.keyName,
+                  platformAwareAsset(
+                    desktop: Assets.images.stadiumBackgroundCloseUp.keyName,
+                    mobile:
+                        Assets.images.mobile.stadiumBackgroundCloseUp.keyName,
+                  ),
                   fit: BoxFit.cover,
                 ),
               ),

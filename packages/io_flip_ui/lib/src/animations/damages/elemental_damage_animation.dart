@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +43,7 @@ class ElementalDamageAnimation extends StatefulWidget {
     this.element, {
     required this.direction,
     required this.size,
+    this.assetSize = AssetSize.large,
     this.onComplete,
     this.stepNotifier,
     super.key,
@@ -63,6 +65,9 @@ class ElementalDamageAnimation extends StatefulWidget {
   /// Notifies when an [_AnimationState] is complete
   final ElementalDamageStepNotifier? stepNotifier;
 
+  /// Size of the assets to use, large or small
+  final AssetSize assetSize;
+
   @override
   State<ElementalDamageAnimation> createState() =>
       _ElementalDamageAnimationState();
@@ -77,19 +82,29 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
     super.initState();
     switch (widget.element) {
       case Element.metal:
-        elementalDamage = MetalDamage(size: widget.size);
+        elementalDamage = widget.assetSize == AssetSize.large
+            ? MetalDamage.large(size: widget.size)
+            : MetalDamage.small(size: widget.size);
         break;
       case Element.air:
-        elementalDamage = AirDamage(size: widget.size);
+        elementalDamage = widget.assetSize == AssetSize.large
+            ? AirDamage.large(size: widget.size)
+            : AirDamage.small(size: widget.size);
         break;
       case Element.fire:
-        elementalDamage = FireDamage(size: widget.size);
+        elementalDamage = widget.assetSize == AssetSize.large
+            ? FireDamage.large(size: widget.size)
+            : FireDamage.small(size: widget.size);
         break;
       case Element.earth:
-        elementalDamage = EarthDamage(size: widget.size);
+        elementalDamage = widget.assetSize == AssetSize.large
+            ? EarthDamage.large(size: widget.size)
+            : EarthDamage.small(size: widget.size);
         break;
       case Element.water:
-        elementalDamage = WaterDamage(size: widget.size);
+        elementalDamage = widget.assetSize == AssetSize.large
+            ? WaterDamage.large(size: widget.size)
+            : WaterDamage.small(size: widget.size);
         break;
     }
   }
@@ -101,17 +116,31 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
         return Stack(
           children: [
             if (widget.direction == DamageDirection.topToBottom)
-              DualAnimation(
-                back: elementalDamage.chargeBackBuilder,
-                front: elementalDamage.chargeFrontBuilder,
-                onComplete: _onStepCompleted,
-              )
-            else
-              _BottomAnimation(
+              Transform.translate(
+                offset: -Offset(
+                  0.35 * widget.size.width,
+                  0.31 * widget.size.height,
+                ),
                 child: DualAnimation(
                   back: elementalDamage.chargeBackBuilder,
                   front: elementalDamage.chargeFrontBuilder,
+                  assetSize: widget.assetSize,
                   onComplete: _onStepCompleted,
+                ),
+              )
+            else
+              _BottomAnimation(
+                child: Transform.translate(
+                  offset: Offset(
+                    0.45 * widget.size.width,
+                    0.21 * widget.size.height,
+                  ),
+                  child: DualAnimation(
+                    back: elementalDamage.chargeBackBuilder,
+                    front: elementalDamage.chargeFrontBuilder,
+                    assetSize: widget.assetSize,
+                    onComplete: _onStepCompleted,
+                  ),
                 ),
               )
           ],
@@ -122,11 +151,21 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
             if (widget.direction == DamageDirection.topToBottom)
               Align(
                 alignment: const Alignment(-0.7, 0.3),
-                child: elementalDamage.damageSendBuilder(_onStepCompleted),
+                child: elementalDamage.damageSendBuilder(
+                  _onStepCompleted,
+                  widget.assetSize,
+                ),
               )
             else
-              _BottomAnimation(
-                child: elementalDamage.damageSendBuilder(_onStepCompleted),
+              Align(
+                alignment: const Alignment(0.7, 0),
+                child: Transform.rotate(
+                  angle: pi,
+                  child: elementalDamage.damageSendBuilder(
+                    _onStepCompleted,
+                    widget.assetSize,
+                  ),
+                ),
               )
           ],
         );
@@ -135,36 +174,65 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
           children: [
             if (widget.direction == DamageDirection.topToBottom)
               _BottomAnimation(
-                child: elementalDamage.damageReceiveBuilder(_onStepCompleted),
+                child: Transform.translate(
+                  offset: Offset(
+                    0.3 * widget.size.width,
+                    0.3 * widget.size.height,
+                  ),
+                  child: elementalDamage.damageReceiveBuilder(
+                    _onStepCompleted,
+                    widget.assetSize,
+                  ),
+                ),
               )
             else
-              elementalDamage.damageReceiveBuilder(_onStepCompleted)
+              Transform.translate(
+                offset: -Offset(
+                  0.3 * widget.size.width,
+                  0.3 * widget.size.height,
+                ),
+                child: elementalDamage.damageReceiveBuilder(
+                  _onStepCompleted,
+                  widget.assetSize,
+                ),
+              )
           ],
         );
       case _AnimationState.victory:
         return Stack(
           children: [
             if (widget.direction == DamageDirection.topToBottom)
-              DualAnimation(
-                back: elementalDamage.victoryChargeBackBuilder,
-                front: elementalDamage.victoryChargeFrontBuilder,
-                onComplete: _onStepCompleted,
-              )
-            else
-              _BottomAnimation(
+              Transform.translate(
+                offset: -Offset(
+                  0.3 * widget.size.width,
+                  0.1 * widget.size.height,
+                ),
                 child: DualAnimation(
                   back: elementalDamage.victoryChargeBackBuilder,
                   front: elementalDamage.victoryChargeFrontBuilder,
+                  assetSize: widget.assetSize,
                   onComplete: _onStepCompleted,
+                ),
+              )
+            else
+              _BottomAnimation(
+                child: Transform.translate(
+                  offset: Offset(
+                    0.28 * widget.size.width,
+                    0.11 * widget.size.height,
+                  ),
+                  child: DualAnimation(
+                    back: elementalDamage.victoryChargeBackBuilder,
+                    front: elementalDamage.victoryChargeFrontBuilder,
+                    assetSize: widget.assetSize,
+                    onComplete: _onStepCompleted,
+                  ),
                 ),
               )
           ],
         );
       case _AnimationState.ended:
         widget.onComplete?.call();
-        setState(() {
-          _animationState = _AnimationState.charging;
-        });
         return const SizedBox.shrink();
     }
   }
@@ -210,6 +278,15 @@ class _BottomAnimation extends StatelessWidget {
 }
 
 enum _AnimationState { charging, sending, receiving, victory, ended }
+
+/// Represents the size that should be used for the assets
+enum AssetSize {
+  /// Represents small assets
+  small,
+
+  /// Represents large assets
+  large
+}
 
 /// Represents the direction of the damages
 enum DamageDirection {

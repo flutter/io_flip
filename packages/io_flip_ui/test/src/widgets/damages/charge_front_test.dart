@@ -25,6 +25,7 @@ void main() {
             child: const ChargeFront(
               '',
               size: GameCardSize.md(),
+              assetSize: AssetSize.large,
             ),
           ),
         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 
 /// {@template dual_animation_controller}
 /// Controls the completion state of the front and back animations in a
@@ -56,17 +57,21 @@ class DualAnimation extends StatefulWidget {
     required this.back,
     required this.front,
     required VoidCallback onComplete,
+    required this.assetSize,
     super.key,
   }) : controller = DualAnimationController(onComplete);
 
   /// Represents the widget containing the animation in the back
-  final Widget Function(VoidCallback? onComplete) back;
+  final Widget Function(VoidCallback? onComplete, AssetSize assetSize) back;
 
   /// Represents the widget containing the animation in the front
-  final Widget Function(VoidCallback? onComplete) front;
+  final Widget Function(VoidCallback? onComplete, AssetSize assetSize) front;
 
   /// Controller that check the completion of the animations
   final DualAnimationController controller;
+
+  /// Size of the assets to use, large or small
+  final AssetSize assetSize;
 
   @override
   State<DualAnimation> createState() => _DualAnimationState();
@@ -77,8 +82,14 @@ class _DualAnimationState extends State<DualAnimation> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        widget.back.call(widget.controller.backAnimationCompleted),
-        widget.front.call(widget.controller.frontAnimationCompleted),
+        widget.back.call(
+          widget.controller.backAnimationCompleted,
+          widget.assetSize,
+        ),
+        widget.front.call(
+          widget.controller.frontAnimationCompleted,
+          widget.assetSize,
+        ),
       ],
     );
   }

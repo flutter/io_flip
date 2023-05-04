@@ -2,6 +2,7 @@ import 'package:flame/cache.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:provider/provider.dart';
 
 /// {@template damage_send}
@@ -11,21 +12,14 @@ class DamageSend extends StatelessWidget {
   /// {@macro damage_send}
   const DamageSend(
     this.path, {
+    required this.size,
+    required this.assetSize,
     super.key,
-    this.height = 500,
-    this.width = 500,
     this.onComplete,
   });
 
-  /// The height of the widget.
-  ///
-  /// Defaults to `500`.
-  final double height;
-
-  /// The width of the widget.
-  ///
-  /// Defaults to `500`.
-  final double width;
+  /// The size of the card.
+  final GameCardSize size;
 
   /// Optional callback to be called when the animation is complete.
   final VoidCallback? onComplete;
@@ -33,9 +27,14 @@ class DamageSend extends StatelessWidget {
   /// path of the asset containing the sprite sheet
   final String path;
 
+  /// Size of the assets to use, large or small
+  final AssetSize assetSize;
+
   @override
   Widget build(BuildContext context) {
     final images = context.read<Images>();
+    final height = size.height;
+    final width = size.width;
 
     return SizedBox(
       height: height,
@@ -48,9 +47,11 @@ class DamageSend extends StatelessWidget {
           anchor: Anchor.center,
           onComplete: onComplete,
           data: SpriteAnimationData.sequenced(
-            amount: 30,
+            amount: 18,
             amountPerRow: 6,
-            textureSize: Vector2(568, 683),
+            textureSize: assetSize == AssetSize.large
+                ? Vector2(568, 683)
+                : Vector2(341, 410),
             stepTime: 0.04,
             loop: false,
           ),

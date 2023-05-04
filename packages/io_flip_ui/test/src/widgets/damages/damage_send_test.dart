@@ -22,7 +22,11 @@ void main() {
           textDirection: TextDirection.ltr,
           child: Provider.value(
             value: images,
-            child: const DamageSend(''),
+            child: const DamageSend(
+              '',
+              assetSize: AssetSize.large,
+              size: GameCardSize.md(),
+            ),
           ),
         ),
       );

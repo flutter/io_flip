@@ -156,6 +156,7 @@ void main() {
 
     void defaultMockState({
       ScoreCard? scoreCard,
+      MatchResult matchResult = MatchResult.guest,
     }) {
       mockState(
         baseState.copyWith(
@@ -173,7 +174,7 @@ void main() {
               'player_card',
               'player_card_3',
             ],
-            result: MatchResult.guest,
+            result: matchResult,
           ),
           turnAnimationsFinished: true,
         ),
@@ -419,6 +420,38 @@ void main() {
               .thenReturn(Deck(id: 'id', userId: 'userId', cards: cards));
           when(() => bloc.isHost).thenReturn(false);
           defaultMockState();
+
+          await tester.pumpApp(
+            BlocProvider<GameBloc>.value(
+              value: bloc,
+              child: GameSummaryFooter(
+                isPhoneWidth: false,
+                routerNeglectCall: router.neglect,
+              ),
+            ),
+            router: goRouter,
+          );
+
+          await tester.tap(find.text(tester.l10n.nextMatch));
+          await tester.pumpAndSettle();
+
+          verifyNever(() => bloc.sendMatchLeft());
+          verify(
+            () => goRouter.goNamed(
+              'match_making',
+              extra: any(named: 'extra'),
+            ),
+          ).called(1);
+        },
+      );
+
+      testWidgets(
+        'navigates to matchmaking when the next match button is tapped '
+        'if there is a draw',
+        (tester) async {
+          final goRouter = MockGoRouter();
+          when(() => bloc.playerCards).thenReturn([]);
+          defaultMockState(matchResult: MatchResult.draw);
 
           await tester.pumpApp(
             BlocProvider<GameBloc>.value(
