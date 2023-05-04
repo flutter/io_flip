@@ -127,5 +127,8 @@ void addStories(Dashbook dashbook) {
 
       return AnimatedCardStory(controller: _controller);
     },
+  ).add(
+    'Simple flow',
+    (_) => const SimpleFlowStory(),
   );
 }

@@ -31,7 +31,6 @@ dependencies:
       url: https://github.com/willhlas/flame
       path: packages/flame
       ref: main
-  flow_builder: ^0.0.9
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.2

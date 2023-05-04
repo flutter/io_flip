@@ -527,14 +527,6 @@ packages:
       url: "https://github.com/willhlas/flame"
     source: git
     version: "1.7.3"
-  flow_builder:
-    dependency: "direct main"
-    description:
-      name: flow_builder
-      sha256: "212a5c6575e87bec2003fa3f31dd7d80f0d89f6152db54f43fb0b6f45943e955"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.9"
   flutter:
     dependency: "direct main"
     description: flutter

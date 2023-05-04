@@ -1,4 +1,3 @@
-import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:game_domain/game_domain.dart';
@@ -148,11 +147,11 @@ class _PromptFormViewState extends State<PromptFormView> {
 
   void _onSubmit(String field) {
     widget.isLastOfFlow
-        ? context
-            .flow<Prompt>()
-            .complete((data) => data.copyWithNewAttribute(selectedText))
-        : context
-            .flow<Prompt>()
-            .update((data) => data.copyWithNewAttribute(selectedText));
+        ? context.completeFlow<Prompt>(
+            (data) => data.copyWithNewAttribute(selectedText),
+          )
+        : context.updateFlow<Prompt>(
+            (data) => data.copyWithNewAttribute(selectedText),
+          );
   }
 }
