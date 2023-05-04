@@ -35,6 +35,9 @@ class LanguageModelRepository {
     }
   }
 
+  String _normalizePrompt(String value) =>
+      value.replaceAll(' ', '_').toLowerCase();
+
   /// Returns an unique card flavor text.
   Future<String> generateFlavorText({
     required String character,
@@ -43,10 +46,10 @@ class LanguageModelRepository {
     required String location,
   }) async {
     final descriptions = await _dbClient.find('card_descriptions', {
-      'character': character,
-      'characterClass': characterClass,
-      'power': characterPower,
-      'location': location,
+      'character': _normalizePrompt(character),
+      'characterClass': _normalizePrompt(characterClass),
+      'power': _normalizePrompt(characterPower),
+      'location': _normalizePrompt(location),
     });
 
     if (descriptions.isEmpty) {
