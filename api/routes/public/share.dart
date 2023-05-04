@@ -31,19 +31,20 @@ Future<Response> onRequest(RequestContext context) async {
     content = buildShareCardContent(card: card);
     metaImagePath = '/public/cards/$cardId';
   } else if (deckId != null) {
+    final deck = await context.read<CardsRepository>().getDeck(deckId);
+    if (deck == null) {
+      return redirectResponse;
+    }
     final scoreCard = await context
         .read<LeaderboardRepository>()
         .findScoreCardByLongestStreakDeck(
           deckId,
         );
-    if (scoreCard == null) {
-      return redirectResponse;
-    }
     header = 'Check out my hand from I/O FLIP!';
     content = buildHandContent(
       handImage: '/public/decks/$deckId',
-      initials: scoreCard.initials ?? '',
-      streak: scoreCard.longestStreak.toString(),
+      initials: scoreCard?.initials,
+      streak: scoreCard?.longestStreak.toString(),
     );
     metaImagePath = '/public/decks/$deckId';
   } else {
