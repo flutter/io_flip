@@ -77,7 +77,7 @@ class PromptFormIntroView extends StatelessWidget {
           IoFlipBottomBar(
             middle: RoundedButton.text(
               l10n.letsGetStarted,
-              onPressed: () => SimpleFlow.of<Prompt>(context).update(
+              onPressed: () => context.updateFlow<Prompt>(
                 (data) => data.setIntroSeen(),
               ),
             ),

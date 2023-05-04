@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:io_flip_ui/src/widgets/simple_flow.dart';
 
 class _TestFlowData extends Equatable {
-  _TestFlowData(
+  const _TestFlowData(
     this.value1,
     this.value2,
     this.value3,
@@ -41,7 +41,7 @@ void main() {
           Directionality(
             textDirection: TextDirection.ltr,
             child: SimpleFlow(
-              initialData: () => _TestFlowData(null, null, null),
+              initialData: () => const _TestFlowData(null, null, null),
               onComplete: (data) {
                 completedData = data;
               },
@@ -49,7 +49,8 @@ void main() {
                 return Column(
                   children: [
                     Text(
-                        'v1:${data.value1};v2:${data.value2};v3:${data.value3}'),
+                      'v1:${data.value1};v2:${data.value2};v3:${data.value3}',
+                    ),
                     ElevatedButton(
                       onPressed: () {
                         if (data.value1 == null) {
@@ -94,7 +95,7 @@ void main() {
 
         expect(find.text('v1:1;v2:2;v3:3'), findsOneWidget);
 
-        expect(completedData, _TestFlowData(1, 2, 3));
+        expect(completedData, const _TestFlowData(1, 2, 3));
       });
 
       testWidgets('forwards child widget', (widgetTester) async {
@@ -102,7 +103,7 @@ void main() {
           Directionality(
             textDirection: TextDirection.ltr,
             child: SimpleFlow(
-              initialData: () => _TestFlowData(null, null, null),
+              initialData: () => const _TestFlowData(null, null, null),
               onComplete: (_) {},
               stepBuilder: (_, __, child) => child!,
               child: const Text('Child'),

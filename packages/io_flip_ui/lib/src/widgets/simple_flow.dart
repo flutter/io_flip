@@ -42,7 +42,7 @@ class SimpleFlow<T> extends StatefulWidget {
   State<SimpleFlow<T>> createState() => _SimpleFlowState<T>();
 }
 
-/// Public interface to manipulate the prompt flow widget.
+/// Public interface to manipulate the simple flow widget state.
 abstract class SimpleFlowState<T> {
   /// Update the current data.
   void update(ValueUpdater<T> updater);
@@ -104,6 +104,7 @@ class _SimpleFlowInherited<T> extends InheritedWidget {
   }
 }
 
+/// Adds utility methods to [BuildContext] to manipulate the simple flow widget.
 extension SimpleFlowContext on BuildContext {
   /// Update the current data.
   void updateFlow<T>(ValueUpdater<T> updater) {

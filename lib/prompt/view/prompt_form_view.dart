@@ -96,8 +96,7 @@ class _PromptFormViewState extends State<PromptFormView> {
                     controller: FixedExtentScrollController(
                       initialItem: widget.initialItem,
                     ),
-                    diameterRatio: 500,
-                    // flat list in practice
+                    diameterRatio: 500, // flat list in practice
                     scrollBehavior: ScrollConfiguration.of(context).copyWith(
                       dragDevices: {
                         PointerDeviceKind.touch,
@@ -147,9 +146,12 @@ class _PromptFormViewState extends State<PromptFormView> {
   String get selectedText => widget.itemsList[selectedIndex];
 
   void _onSubmit(String field) {
-    final promptFlow = SimpleFlow.of<Prompt>(context);
     widget.isLastOfFlow
-        ? promptFlow.complete((data) => data.copyWithNewAttribute(selectedText))
-        : promptFlow.update((data) => data.copyWithNewAttribute(selectedText));
+        ? context.completeFlow<Prompt>(
+            (data) => data.copyWithNewAttribute(selectedText),
+          )
+        : context.updateFlow<Prompt>(
+            (data) => data.copyWithNewAttribute(selectedText),
+          );
   }
 }
