@@ -8,9 +8,12 @@ import 'package:io_flip/info/info.dart';
 import 'package:io_flip/settings/settings.dart';
 import 'package:io_flip/share/views/views.dart';
 import 'package:io_flip/share/widgets/widgets.dart';
+import 'package:io_flip/utils/utils.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -21,6 +24,12 @@ class _MockSettingsController extends Mock implements SettingsController {}
 class _MockGoRouter extends Mock implements GoRouter {}
 
 class _MockShareResource extends Mock implements ShareResource {}
+
+class _MockUrlLauncher extends Mock
+    with MockPlatformInterfaceMixin
+    implements UrlLauncherPlatform {}
+
+class _FakeLaunchOptions extends Fake implements LaunchOptions {}
 
 const card = Card(
   id: '',
@@ -36,11 +45,26 @@ const pageData =
 
 void main() {
   late GoRouterState goRouterState;
+  late UrlLauncherPlatform urlLauncher;
 
   setUp(() {
     goRouterState = _MockGoRouterState();
     when(() => goRouterState.extra).thenReturn(pageData);
     when(() => goRouterState.queryParams).thenReturn({});
+
+    urlLauncher = _MockUrlLauncher();
+    when(
+      () => urlLauncher.canLaunch(any()),
+    ).thenAnswer((_) async => true);
+
+    when(
+      () => urlLauncher.launchUrl(any(), any()),
+    ).thenAnswer((_) async => true);
+    UrlLauncherPlatform.instance = urlLauncher;
+  });
+
+  setUpAll(() {
+    registerFallbackValue(_FakeLaunchOptions());
   });
 
   group('ShareHandPage', () {
@@ -133,6 +157,24 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(InfoView), findsOneWidget);
+    });
+
+    testWidgets('tapping io link opens io', (tester) async {
+      await tester.pumpSubject();
+      await tester.tap(find.text(tester.l10n.ioLinkLabel));
+
+      verify(
+        () => urlLauncher.launchUrl(ExternalLinks.googleIO, any()),
+      ).called(1);
+    });
+
+    testWidgets('tapping how its made link opens how its made', (tester) async {
+      await tester.pumpSubject();
+      await tester.tap(find.text(tester.l10n.howItsMadeLinkLabel));
+
+      verify(
+        () => urlLauncher.launchUrl(ExternalLinks.howItsMade, any()),
+      ).called(1);
     });
   });
 }
