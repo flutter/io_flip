@@ -43,7 +43,7 @@ class ElementalDamageAnimation extends StatefulWidget {
     this.element, {
     required this.direction,
     required this.size,
-    this.assetSize = AssetSize.small,
+    this.assetSize = AssetSize.large,
     this.onComplete,
     this.stepNotifier,
     super.key,
