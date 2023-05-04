@@ -210,8 +210,8 @@ class GameCard extends StatelessWidget {
     required this.suitName,
     required this.power,
     required this.description,
+    required this.isRare,
     this.size = const GameCardSize.lg(),
-    this.isRare = false,
     this.overlay,
     this.tilt = Offset.zero,
     @visibleForTesting this.package = 'io_flip_ui',
@@ -328,7 +328,7 @@ class GameCard extends StatelessWidget {
               children: [
                 if (isRare)
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(size.width * 0.075),
+                    borderRadius: BorderRadius.circular(size.width * 0.08),
                     child: FoilShader(
                       package: package,
                       dx: tilt.dx,
@@ -384,6 +384,7 @@ class GameCard extends StatelessWidget {
                   alignment: const Alignment(0, .5),
                   child: Text(
                     name,
+                    textAlign: TextAlign.center,
                     style: size.titleTextStyle.copyWith(
                       color: IoFlipColors.seedBlack,
                     ),

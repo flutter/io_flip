@@ -317,7 +317,8 @@ void main() {
             ),
           );
 
-          await tester.pumpAndSettle();
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 200));
 
           expect(getClashRect().contains(getPlayerCenter()), isTrue);
           expect(getClashRect(), equals(startClashRect.inflate(8)));

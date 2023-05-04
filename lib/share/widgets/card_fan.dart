@@ -27,6 +27,7 @@ class CardFan extends StatelessWidget {
             name: card.name,
             suitName: card.suit.name,
             power: card.power,
+            isRare: card.rarity,
           ),
         )
         .toList();

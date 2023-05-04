@@ -148,38 +148,42 @@ class _CardViewer extends StatelessWidget {
         height: size.height,
         width: MediaQuery.sizeOf(context).width * .9,
         child: PageView.builder(
+          clipBehavior: Clip.none,
           controller: controller,
           itemBuilder: (context, i) {
             final index = i % deck.length;
             final card = deck[index];
             return Center(
-              child: Stack(
-                children: [
-                  GestureDetector(
-                    onTap: () {},
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: GameCard(
+              child: GestureDetector(
+                // Used to ignore taps.
+                onTap: () {},
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    TiltBuilder(
+                      builder: (context, tilt) => GameCard(
                         key: ValueKey('GameCard$index'),
+                        tilt: tilt / 2,
                         size: size,
                         image: card.image,
                         name: card.name,
                         description: card.description,
                         suitName: card.suit.name,
                         power: card.power,
+                        isRare: card.rarity,
                       ),
                     ),
-                  ),
-                  if (playerCardIds.contains(card.id))
-                    Positioned(
-                      top: IoFlipSpacing.lg,
-                      left: IoFlipSpacing.lg,
-                      child: RoundedButton.icon(
-                        Icons.share_outlined,
-                        onPressed: () => share(card),
+                    if (playerCardIds.contains(card.id))
+                      Positioned(
+                        top: IoFlipSpacing.lg,
+                        left: IoFlipSpacing.lg,
+                        child: RoundedButton.icon(
+                          Icons.share_outlined,
+                          onPressed: () => share(card),
+                        ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             );
           },
