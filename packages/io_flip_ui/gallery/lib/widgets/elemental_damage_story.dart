@@ -38,6 +38,7 @@ class _ElementalDamageStoryState extends State<ElementalDamageStory> {
                     suitName: 'earth',
                     power: 57,
                     size: GameCardSize.md(),
+                    isRare: false,
                   ),
                 ),
                 const Positioned(
@@ -51,6 +52,7 @@ class _ElementalDamageStoryState extends State<ElementalDamageStory> {
                     suitName: 'earth',
                     power: 57,
                     size: GameCardSize.md(),
+                    isRare: false,
                   ),
                 ),
                 Positioned(

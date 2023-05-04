@@ -172,6 +172,7 @@ class _WaitingForMatchView extends StatelessWidget {
                               description: card.description,
                               suitName: card.suit.name,
                               power: card.power,
+                              isRare: card.rarity,
                             ),
                           ),
                       ],

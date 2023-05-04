@@ -23,6 +23,7 @@ class AnimatedCardStory extends StatelessWidget {
             suitName: 'earth',
             power: 57,
             size: GameCardSize.md(),
+            isRare: false,
           ),
           back: const FlippedGameCard(),
         ),

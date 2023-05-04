@@ -41,6 +41,7 @@ class _CardLandingPuffStoryState extends State<CardLandingPuffStory> {
                       suitName: 'earth',
                       power: 57,
                       size: GameCardSize.md(),
+                      isRare: false,
                     ),
                     back: const FlippedGameCard(
                       size: GameCardSize.md(),

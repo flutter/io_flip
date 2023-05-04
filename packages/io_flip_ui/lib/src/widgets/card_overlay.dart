@@ -22,8 +22,8 @@ class CardOverlay extends StatelessWidget {
   /// {@macro card_overlay}
   factory CardOverlay.ofType(
     CardOverlayType type,
-    double? width,
-    double? height,
+    double width,
+    double height,
   ) {
     switch (type) {
       case CardOverlayType.draw:
@@ -87,17 +87,17 @@ class CardOverlay extends StatelessWidget {
   final Widget child;
 
   /// Width
-  final double? width;
+  final double width;
 
   /// Height
-  final double? height;
+  final double height;
 
   /// Whether the card has a dimming effect
   final bool isDimmed;
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = BorderRadius.circular(10);
+    final borderRadius = BorderRadius.circular(width * 0.08);
     return ClipRRect(
       borderRadius: borderRadius,
       child: Container(
