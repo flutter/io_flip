@@ -50,17 +50,9 @@ void main() {
       test('load descriptions correctly', () async {
         when(() => csv.readAsString()).thenAnswer(
           (_) async => ListToCsvConverter().convert([
-            [
-              'Character',
-              'Class',
-              'Power',
-              'Power(Shorter)',
-              'Location',
-              'Desc 1',
-              'Desc 2'
-            ],
-            ['Dash', 'Alien', 'Banjos', 'B', 'City', 'Desc 1', 'Desc 2'],
-            ['Sparky', 'Alien', 'Banjos', 'B', 'City', 'Desc 1', 'Desc 2'],
+            ['Character', 'Class', 'Power', 'Location', 'Desc 1', 'Desc 2'],
+            ['Dash', 'Alien', 'Banjos', 'City', 'Desc 1', 'Desc 2'],
+            ['Sparky', 'Alien', 'Banjos', 'City', 'Desc 1', 'Desc 2'],
           ]),
         );
 
@@ -73,7 +65,6 @@ void main() {
               'character': 'dash',
               'characterClass': 'alien',
               'power': 'banjos',
-              'powerShortened': 'b',
               'location': 'city',
               'description': 'Desc 1',
             },
@@ -86,7 +77,6 @@ void main() {
               'character': 'dash',
               'characterClass': 'alien',
               'power': 'banjos',
-              'powerShortened': 'b',
               'location': 'city',
               'description': 'Desc 2',
             },
@@ -99,7 +89,6 @@ void main() {
               'character': 'sparky',
               'characterClass': 'alien',
               'power': 'banjos',
-              'powerShortened': 'b',
               'location': 'city',
               'description': 'Desc 1',
             },
@@ -112,7 +101,6 @@ void main() {
               'character': 'sparky',
               'characterClass': 'alien',
               'power': 'banjos',
-              'powerShortened': 'b',
               'location': 'city',
               'description': 'Desc 2',
             },
@@ -123,17 +111,9 @@ void main() {
       test('progress is called correctly', () async {
         when(() => csv.readAsString()).thenAnswer(
           (_) async => ListToCsvConverter().convert([
-            [
-              'Character',
-              'Class',
-              'Power',
-              'Power(Shortened)',
-              'Location',
-              'Desc 1',
-              'Desc 2'
-            ],
-            ['Dash', 'Alien', 'Banjos', 'B', 'City', 'Desc 1', 'Desc 2'],
-            ['Sparky', 'Alien', 'Banjos', 'B', 'City', 'Desc 1', 'Desc 2'],
+            ['Character', 'Class', 'Power', 'Location', 'Desc 1', 'Desc 2'],
+            ['Dash', 'Alien', 'Banjos', 'City', 'Desc 1', 'Desc 2'],
+            ['Sparky', 'Alien', 'Banjos', 'City', 'Desc 1', 'Desc 2'],
           ]),
         );
 
@@ -146,13 +126,11 @@ void main() {
           progress,
           equals(
             [
-              [0, 6],
-              [1, 6],
-              [2, 6],
-              [3, 6],
-              [4, 6],
-              [5, 6],
-              [6, 6],
+              [0, 4],
+              [1, 4],
+              [2, 4],
+              [3, 4],
+              [4, 4],
             ],
           ),
         );

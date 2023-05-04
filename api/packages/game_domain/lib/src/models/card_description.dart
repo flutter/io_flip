@@ -13,7 +13,6 @@ class CardDescription extends Equatable {
     required this.character,
     required this.characterClass,
     required this.power,
-    required this.powerShortened,
     required this.location,
     required this.description,
   });
@@ -34,10 +33,6 @@ class CardDescription extends Equatable {
   @JsonKey()
   final String power;
 
-  /// Power Shortened.
-  @JsonKey()
-  final String powerShortened;
-
   /// Location.
   @JsonKey()
   final String location;
@@ -54,7 +49,6 @@ class CardDescription extends Equatable {
         character,
         characterClass,
         power,
-        powerShortened,
         location,
         description,
       ];
