@@ -4,11 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart' as game;
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
-import 'package:top_dash/audio/audio_controller.dart';
-import 'package:top_dash/game/game.dart';
-import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/leaderboard/leaderboard.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip/audio/audio_controller.dart';
+import 'package:io_flip/game/game.dart';
+import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/leaderboard/leaderboard.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 
 extension on List<TickerFuture> {
   Future<void> get allDone => Future.wait(
@@ -80,8 +80,8 @@ const playerHandCardSize = GameCardSize.xs();
 const opponentHandCardSize = GameCardSize.xxs();
 const counterSize = Size(56, 56);
 
-const cardSpacingX = TopDashSpacing.sm;
-const cardSpacingY = TopDashSpacing.xlg;
+const cardSpacingX = IoFlipSpacing.sm;
+const cardSpacingY = IoFlipSpacing.xlg;
 const cardsAtHand = 3;
 
 const movingCardDuration = Duration(milliseconds: 400);
@@ -608,10 +608,10 @@ class _PlaceholderCard extends StatelessWidget {
       child: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: TopDashColors.seedWhite.withOpacity(0.15),
+          color: IoFlipColors.seedWhite.withOpacity(0.15),
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: TopDashColors.seedPaletteNeutral95,
+            color: IoFlipColors.seedPaletteNeutral95,
           ),
         ),
         child: Opacity(
@@ -745,10 +745,10 @@ class _ClashCard extends StatelessWidget {
       child: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: TopDashColors.seedWhite.withOpacity(0.15),
+          color: IoFlipColors.seedWhite.withOpacity(0.15),
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: TopDashColors.seedPaletteNeutral95,
+            color: IoFlipColors.seedPaletteNeutral95,
           ),
         ),
         child: showPlus
@@ -769,7 +769,7 @@ class CrossPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = TopDashColors.seedWhite
+      ..color = IoFlipColors.seedWhite
       ..style = PaintingStyle.stroke;
 
     canvas
@@ -809,7 +809,7 @@ class _BoardCounter extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(
-            color: TopDashColors.seedWhite.withOpacity(.25),
+            color: IoFlipColors.seedWhite.withOpacity(.25),
             width: 8,
             strokeAlign: BorderSide.strokeAlignOutside,
           ),
@@ -819,14 +819,14 @@ class _BoardCounter extends StatelessWidget {
           width: counterSize.width,
           height: counterSize.height,
           decoration: BoxDecoration(
-            color: TopDashColors.seedWhite,
+            color: IoFlipColors.seedWhite,
             shape: BoxShape.circle,
-            border: Border.all(color: TopDashColors.seedBlack, width: 2),
+            border: Border.all(color: IoFlipColors.seedBlack, width: 2),
           ),
           child: Text(
             '$turnTimeRemaining',
-            style: TopDashTextStyles.cardNumberLG
-                .copyWith(color: TopDashColors.seedBlack),
+            style: IoFlipTextStyles.cardNumberLG
+                .copyWith(color: IoFlipColors.seedBlack),
           ),
         ),
       ),

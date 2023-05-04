@@ -2,10 +2,10 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/how_to_play/how_to_play.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/how_to_play/how_to_play.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 
 const transitionDuration = Duration(milliseconds: 400);
 const suitsWheelSize = 300.0;
@@ -45,7 +45,7 @@ class SuitsWheel extends StatelessWidget {
             key: ValueKey(text),
           ),
         ),
-        const SizedBox(height: TopDashSpacing.lg),
+        const SizedBox(height: IoFlipSpacing.lg),
         SizedBox(
           height: suitsWheelSize,
           width: suitsWheelSize,
@@ -106,7 +106,7 @@ class SuitItem extends StatelessWidget {
           end: isAffected || isReference ? 0 : 1,
         ),
         builder: (_, number, __) {
-          final color = TopDashColors.seedGrey30.withOpacity(number);
+          final color = IoFlipColors.seedGrey30.withOpacity(number);
           return ColorFiltered(
             colorFilter: ColorFilter.mode(color, BlendMode.srcATop),
             child: child,
@@ -218,10 +218,10 @@ class _AffectedIndicator extends StatelessWidget {
           strokeAlign: BorderSide.strokeAlignCenter,
           color: backgroundColor,
         ),
-        color: TopDashColors.seedRed,
+        color: IoFlipColors.seedRed,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(TopDashSpacing.sm),
+        padding: const EdgeInsets.all(IoFlipSpacing.sm),
         child: SvgPicture.asset(
           Assets.icons.cancel,
           height: 20,

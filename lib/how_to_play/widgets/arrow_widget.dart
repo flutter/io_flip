@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 
 class ArrowWidget extends StatelessWidget {
   const ArrowWidget(
@@ -34,7 +34,7 @@ class ArrowPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = TopDashColors.seedGrey30
+      ..color = IoFlipColors.seedGrey30
       ..strokeWidth = 4
       ..strokeJoin = StrokeJoin.round
       ..style = PaintingStyle.stroke;

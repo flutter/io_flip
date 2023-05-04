@@ -65,7 +65,7 @@
       "name": "Launch UI gallery",
       "request": "launch",
       "type": "dart",
-      "program": "packages/top_dash_ui/gallery/lib/main.dart"
+      "program": "packages/io_flip_ui/gallery/lib/main.dart"
     }
   ]
 }

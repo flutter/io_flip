@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
+import 'package:io_flip/audio/audio_controller.dart';
+import 'package:io_flip/game/game.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
-import 'package:top_dash/audio/audio_controller.dart';
-import 'package:top_dash/game/game.dart';
 
 class GamePage extends StatelessWidget {
   const GamePage({

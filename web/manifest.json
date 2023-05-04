@@ -1,11 +1,11 @@
 {
-    "name": "Top Dash",
-    "short_name": "Top Dash",
+    "name": "I/O FLIP",
+    "short_name": "I/O FLIP",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "Google I/Os Top Dash game",
+    "description": "Google I/O FLIP game",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

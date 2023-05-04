@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:top_dash/settings/persistence/persistence.dart';
+import 'package:io_flip/settings/persistence/persistence.dart';
 
 void main() {
   group('MemoryOnlySettingsPersistence', () {

@@ -4,10 +4,10 @@ import 'package:api_client/api_client.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:io_flip/audio/audio_controller.dart';
+import 'package:io_flip/draft/draft.dart';
+import 'package:io_flip/gen/assets.gen.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:top_dash/audio/audio_controller.dart';
-import 'package:top_dash/draft/draft.dart';
-import 'package:top_dash/gen/assets.gen.dart';
 
 class _MockGameResource extends Mock implements GameResource {}
 

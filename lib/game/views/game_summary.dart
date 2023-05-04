@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
+import 'package:io_flip/audio/audio.dart';
+import 'package:io_flip/audio/audio_controller.dart';
+import 'package:io_flip/game/game.dart';
+import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/info/info.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/match_making/match_making.dart';
+import 'package:io_flip/share/share.dart';
+import 'package:io_flip/utils/utils.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:top_dash/audio/audio.dart';
-import 'package:top_dash/audio/audio_controller.dart';
-import 'package:top_dash/game/game.dart';
-import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/info/info.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/match_making/match_making.dart';
-import 'package:top_dash/share/share.dart';
-import 'package:top_dash/utils/utils.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 
 class GameSummaryView extends StatelessWidget {
   const GameSummaryView({super.key});
@@ -41,7 +41,7 @@ class GameSummaryView extends StatelessWidget {
           children: [
             if (!isPhoneWidth && screenHeight > 610)
               Padding(
-                padding: const EdgeInsets.only(top: TopDashSpacing.lg),
+                padding: const EdgeInsets.only(top: IoFlipSpacing.lg),
                 child: IoFlipLogo(
                   height: 97,
                   width: 64,
@@ -49,14 +49,14 @@ class GameSummaryView extends StatelessWidget {
               )
             else if (screenHeight > 660)
               Padding(
-                padding: const EdgeInsets.only(top: TopDashSpacing.md),
+                padding: const EdgeInsets.only(top: IoFlipSpacing.md),
                 child: IoFlipLogo(
                   height: 88,
                   width: 133,
                 ),
               ),
             const Spacer(),
-            const SizedBox(height: TopDashSpacing.sm),
+            const SizedBox(height: IoFlipSpacing.sm),
             const _ResultView(),
             const FittedBox(
               fit: BoxFit.scaleDown,
@@ -64,7 +64,7 @@ class GameSummaryView extends StatelessWidget {
             ),
             const Spacer(),
             Padding(
-              padding: const EdgeInsets.all(TopDashSpacing.sm),
+              padding: const EdgeInsets.all(IoFlipSpacing.sm),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -111,21 +111,21 @@ class _ResultView extends StatelessWidget {
       children: [
         Text(
           title,
-          style: TopDashTextStyles.mobileH1,
+          style: IoFlipTextStyles.mobileH1,
         ),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset(
               Assets.images.tempPreferencesCustom.path,
-              color: TopDashColors.seedYellow,
+              color: IoFlipColors.seedYellow,
             ),
-            const SizedBox(width: TopDashSpacing.sm),
+            const SizedBox(width: IoFlipSpacing.sm),
             Text(
               context.l10n
                   .gameSummaryStreak(state.playerScoreCard.currentStreak),
-              style: TopDashTextStyles.mobileH6
-                  .copyWith(color: TopDashColors.seedYellow),
+              style: IoFlipTextStyles.mobileH6
+                  .copyWith(color: IoFlipColors.seedYellow),
             ),
           ],
         ),
@@ -198,7 +198,7 @@ class _CardsView extends StatelessWidget {
         (index) => _RoundSummary(
           playerCard: playerCards[index],
           opponentCard: opponentCards[index],
-          onTap: (card) => TopDashDialog.show(
+          onTap: (card) => IoFlipDialog.show(
             context,
             isTransparent: true,
             child: CardInspectorDialog(
@@ -243,20 +243,20 @@ class _RoundSummary extends StatelessWidget {
     }
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: TopDashSpacing.sm,
-        vertical: TopDashSpacing.md,
+        horizontal: IoFlipSpacing.sm,
+        vertical: IoFlipSpacing.md,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           GestureDetector(onTap: () => onTap(0), child: playerCard),
-          const SizedBox(height: TopDashSpacing.md),
+          const SizedBox(height: IoFlipSpacing.md),
           GestureDetector(onTap: () => onTap(3), child: opponentCard),
-          const SizedBox(height: TopDashSpacing.md),
+          const SizedBox(height: IoFlipSpacing.md),
           Text(
             result,
-            style: TopDashTextStyles.bodyLG.copyWith(
-              color: TopDashColors.seedWhite,
+            style: IoFlipTextStyles.bodyLG.copyWith(
+              color: IoFlipColors.seedWhite,
             ),
           )
         ],
@@ -276,7 +276,7 @@ class GameSummaryFooter extends StatelessWidget {
   final bool isPhoneWidth;
 
   static const Widget _gap =
-      SizedBox(width: TopDashSpacing.md, height: TopDashSpacing.md);
+      SizedBox(width: IoFlipSpacing.md, height: IoFlipSpacing.md);
 
   @override
   Widget build(BuildContext context) {
@@ -307,9 +307,9 @@ class GameSummaryFooter extends StatelessWidget {
         _gap,
         RoundedButton.text(
           l10n.submitScore,
-          backgroundColor: TopDashColors.seedBlack,
-          foregroundColor: TopDashColors.seedWhite,
-          borderColor: TopDashColors.seedPaletteNeutral40,
+          backgroundColor: IoFlipColors.seedBlack,
+          foregroundColor: IoFlipColors.seedWhite,
+          borderColor: IoFlipColors.seedPaletteNeutral40,
           onPressed: () {
             final router = GoRouter.of(context);
             final event = LeaderboardEntryRequested(
@@ -322,7 +322,7 @@ class GameSummaryFooter extends StatelessWidget {
             );
 
             if (isWinner) {
-              TopDashDialog.show(
+              IoFlipDialog.show(
                 context,
                 child: QuitGameDialog(
                   onConfirm: () => _routerNeglectCall(

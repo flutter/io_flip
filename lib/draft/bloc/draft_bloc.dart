@@ -2,8 +2,8 @@ import 'package:api_client/api_client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:top_dash/audio/audio_controller.dart';
-import 'package:top_dash/gen/assets.gen.dart';
+import 'package:io_flip/audio/audio_controller.dart';
+import 'package:io_flip/gen/assets.gen.dart';
 
 part 'draft_event.dart';
 part 'draft_state.dart';

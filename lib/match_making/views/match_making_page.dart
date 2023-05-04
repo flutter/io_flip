@@ -5,8 +5,8 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
+import 'package:io_flip/match_making/match_making.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
-import 'package:top_dash/match_making/match_making.dart';
 
 class MatchMakingPage extends StatelessWidget {
   const MatchMakingPage({

@@ -3,7 +3,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:top_dash/how_to_play/how_to_play.dart';
+import 'package:io_flip/how_to_play/how_to_play.dart';
 
 void main() {
   group('HowToPlayBloc', () {

@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:top_dash/share/bloc/download_bloc.dart';
+import 'package:io_flip/share/bloc/download_bloc.dart';
 
 void main() {
   group('DownloadState', () {

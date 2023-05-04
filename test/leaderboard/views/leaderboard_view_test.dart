@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:io_flip/leaderboard/leaderboard.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:top_dash/leaderboard/leaderboard.dart';
 
 import '../../helpers/helpers.dart';
 

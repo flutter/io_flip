@@ -1,9 +1,9 @@
 import 'package:api_client/api_client.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:io_flip/prompt/prompt.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
-import 'package:top_dash/prompt/prompt.dart';
 
 import '../../helpers/helpers.dart';
 

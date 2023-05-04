@@ -1,11 +1,11 @@
 import 'package:api_client/api_client.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:io_flip/share/views/views.dart';
+import 'package:io_flip/share/widgets/widgets.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
-import 'package:top_dash/share/views/views.dart';
-import 'package:top_dash/share/widgets/widgets.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -70,7 +70,7 @@ extension ShareCardDialogTest on WidgetTester {
   Future<void> pumpSubject(ShareResource shareResource) async {
     await mockNetworkImages(() {
       return pumpApp(
-        const TopDashDialog(
+        const IoFlipDialog(
           child: ShareHandDialog(
             cards: [card, card, card],
             wins: 5,

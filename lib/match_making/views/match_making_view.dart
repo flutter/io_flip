@@ -3,12 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
-import 'package:top_dash/audio/audio.dart';
-import 'package:top_dash/game/game.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/match_making/match_making.dart';
-import 'package:top_dash/utils/utils.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip/audio/audio.dart';
+import 'package:io_flip/game/game.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/match_making/match_making.dart';
+import 'package:io_flip/utils/utils.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 
 class MatchMakingView extends StatelessWidget {
   const MatchMakingView({
@@ -51,16 +51,16 @@ class MatchMakingView extends StatelessWidget {
               deck: deck,
               setClipboardData: _setClipboardData,
               inviteCode: state.match?.inviteCode,
-              title: TopDashTextStyles.mobileH4Light,
-              subtitle: TopDashTextStyles.mobileH6Light,
+              title: IoFlipTextStyles.mobileH4Light,
+              subtitle: IoFlipTextStyles.mobileH6Light,
               key: const Key('small_waiting_for_match_view'),
             ),
             large: (_, __) => _WaitingForMatchView(
               deck: deck,
               setClipboardData: _setClipboardData,
               inviteCode: state.match?.inviteCode,
-              title: TopDashTextStyles.headlineH4Light,
-              subtitle: TopDashTextStyles.headlineH6Light,
+              title: IoFlipTextStyles.headlineH4Light,
+              subtitle: IoFlipTextStyles.headlineH6Light,
               key: const Key('large_waiting_for_match_view'),
             ),
           );
@@ -90,14 +90,14 @@ class MatchMakingView extends StatelessWidget {
               children: [
                 Text(
                   l10n.getReadyToFlip,
-                  style: TopDashTextStyles.mobileH1,
+                  style: IoFlipTextStyles.mobileH1,
                 ),
-                const SizedBox(height: TopDashSpacing.xlg),
+                const SizedBox(height: IoFlipSpacing.xlg),
                 ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 320),
                   child: Text(
                     l10n.aiGameByGoogle,
-                    style: TopDashTextStyles.mobileH4Light,
+                    style: IoFlipTextStyles.mobileH4Light,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -156,7 +156,7 @@ class _WaitingForMatchView extends StatelessWidget {
                         },
                         child: Text(context.l10n.copyInviteCode),
                       ),
-                    const SizedBox(height: TopDashSpacing.xxlg),
+                    const SizedBox(height: IoFlipSpacing.xxlg),
                     const FadingDotLoader(),
                     const Spacer(),
                     Row(
@@ -164,7 +164,7 @@ class _WaitingForMatchView extends StatelessWidget {
                       children: [
                         for (final card in deck)
                           Padding(
-                            padding: const EdgeInsets.all(TopDashSpacing.xs),
+                            padding: const EdgeInsets.all(IoFlipSpacing.xs),
                             child: GameCard(
                               size: const GameCardSize.xs(),
                               image: card.image,
@@ -185,8 +185,8 @@ class _WaitingForMatchView extends StatelessWidget {
             leading: const AudioToggleButton(),
             middle: RoundedButton.text(
               context.l10n.matchmaking,
-              backgroundColor: TopDashColors.seedGrey50,
-              foregroundColor: TopDashColors.seedGrey70,
+              backgroundColor: IoFlipColors.seedGrey50,
+              foregroundColor: IoFlipColors.seedGrey70,
             ),
           ),
         ],

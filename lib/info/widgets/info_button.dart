@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
-import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/info/view/info_view.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/info/view/info_view.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 
 class InfoButton extends StatelessWidget {
   const InfoButton({super.key});
@@ -11,7 +11,7 @@ class InfoButton extends StatelessWidget {
     return RoundedButton.svg(
       key: const Key('info_button'),
       Assets.icons.info,
-      onPressed: () => TopDashDialog.show(
+      onPressed: () => IoFlipDialog.show(
         context,
         child: const InfoView(),
       ),

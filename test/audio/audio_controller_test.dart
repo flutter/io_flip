@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:io_flip/audio/audio_controller.dart';
+import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/settings/settings.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:top_dash/audio/audio_controller.dart';
-import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/settings/settings.dart';
 
 class _MockSettingsController extends Mock implements SettingsController {}
 
