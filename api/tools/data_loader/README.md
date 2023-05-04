@@ -96,3 +96,17 @@ own folder, so it should be executed once per character.
 ```
 dart bin/data_loader.dart validate_images <images_folder> <csv_file_location.csv> <card_variation_number> <character>
 ```
+
+### Generating lookup table
+
+This commands takes a CSV with the prompts, a number of variations and check if a certain folder
+has an image for all of the prompt combinations.
+
+When it find prompts combinations that does not have all the variations, it will insert a lookup record in the db, so the game have a way of knowing which are the available images that it can use as a fall back.
+
+This commands assumes that which character has its
+own folder, so it should be executed once per character.
+
+```
+dart bin/data_loader.dart generate_tables <projectId> <images_folder> <csv_file_location.csv> <card_variation_number> <character>
+```
