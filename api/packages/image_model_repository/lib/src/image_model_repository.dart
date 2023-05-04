@@ -54,22 +54,29 @@ class ImageModelRepository {
   }
 
   /// Builds the url based on the provided parameters.
-  ImageResult assembleUrl({
+  Future<ImageResult> assembleUrl({
     required String character,
     required String characterClass,
     required String location,
     required int variation,
-  }) {
+  }) async {
     final characterUrl = _normalizeTerm(character);
     final characterClassUrl = _normalizeTerm(characterClass);
     final locationUrl = _normalizeTerm(location);
+
+    final promptBase = '${characterUrl}_${characterClassUrl}_$locationUrl';
+    final baseImageUrl = '${promptBase}_$variation.png';
+
+    final imageUrl = await _promptRepository.ensurePromptImage(
+      promptCombination: promptBase,
+      imageUrl: baseImageUrl,
+    );
 
     return ImageResult(
       character: character,
       characterClass: characterClass,
       location: location,
-      url: '$_imageHost${characterUrl}_$characterClassUrl'
-          '_${locationUrl}_$variation.png${_urlParams ?? ''}',
+      url: '$_imageHost$imageUrl${_urlParams ?? ''}',
     );
   }
 
@@ -97,7 +104,7 @@ class ImageModelRepository {
         final variation = _rng.nextInt(variationsAvailable);
 
         urls.add(
-          assembleUrl(
+          await assembleUrl(
             character: character.term,
             characterClass: characterClass,
             location: location.term,
