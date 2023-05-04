@@ -12,6 +12,7 @@ import 'package:io_flip/draft/draft.dart';
 import 'package:io_flip/gen/assets.gen.dart';
 import 'package:io_flip/how_to_play/how_to_play.dart';
 import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/match_making/match_making.dart';
 import 'package:io_flip/settings/settings.dart';
 import 'package:io_flip/utils/utils.dart';
 import 'package:mocktail/mocktail.dart';
@@ -326,6 +327,99 @@ void main() {
               [card1.id, card2.id, card3.id],
               createPrivateMatch: true,
             ),
+          ),
+        ).called(1);
+      },
+    );
+
+    testWidgets(
+      'navigates to matchmaking when player deck is created',
+      (tester) async {
+        final goRouter = MockGoRouter();
+        final deck = Deck(
+          id: 'deckId',
+          userId: 'userId',
+          cards: const [card1, card2, card3],
+        );
+        final baseState = DraftState(
+          cards: const [card1, card2, card3],
+          selectedCards: const [card1, card2, card3],
+          status: DraftStateStatus.deckSelected,
+          firstCardOpacity: 1,
+        );
+
+        whenListen(
+          draftBloc,
+          Stream.fromIterable([
+            baseState,
+            baseState.copyWith(
+              status: DraftStateStatus.playerDeckCreated,
+              deck: deck,
+            ),
+          ]),
+          initialState: baseState,
+        );
+
+        await tester.pumpSubject(
+          draftBloc: draftBloc,
+          goRouter: goRouter,
+          routerNeglectCall: router.neglect,
+        );
+
+        verify(
+          () => goRouter.goNamed(
+            'match_making',
+            extra: MatchMakingPageData(deck: deck),
+          ),
+        ).called(1);
+      },
+    );
+
+    testWidgets(
+      'navigates to private matchmaking when player deck is created with '
+      'private match options',
+      (tester) async {
+        final goRouter = MockGoRouter();
+        final deck = Deck(
+          id: 'deckId',
+          userId: 'userId',
+          cards: const [card1, card2, card3],
+        );
+        final baseState = DraftState(
+          cards: const [card1, card2, card3],
+          selectedCards: const [card1, card2, card3],
+          status: DraftStateStatus.deckSelected,
+          firstCardOpacity: 1,
+        );
+
+        whenListen(
+          draftBloc,
+          Stream.fromIterable([
+            baseState,
+            baseState.copyWith(
+              status: DraftStateStatus.playerDeckCreated,
+              createPrivateMatch: true,
+              privateMatchInviteCode: 'code',
+              deck: deck,
+            ),
+          ]),
+          initialState: baseState,
+        );
+
+        await tester.pumpSubject(
+          draftBloc: draftBloc,
+          goRouter: goRouter,
+          routerNeglectCall: router.neglect,
+        );
+
+        verify(
+          () => goRouter.goNamed(
+            'match_making',
+            queryParams: {
+              'inviteCode': 'code',
+              'createPrivateMatch': 'true',
+            },
+            extra: MatchMakingPageData(deck: deck),
           ),
         ).called(1);
       },

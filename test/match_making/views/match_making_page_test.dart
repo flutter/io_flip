@@ -105,6 +105,25 @@ void main() {
       expect(find.byType(MatchMakingView), findsOneWidget);
     });
   });
+
+  group('MatchMakingPageData', () {
+    test('supports equality', () {
+      expect(
+        MatchMakingPageData(deck: deck),
+        equals(MatchMakingPageData(deck: deck)),
+      );
+      expect(
+        MatchMakingPageData(deck: deck),
+        isNot(
+          equals(
+            MatchMakingPageData(
+              deck: Deck(id: 'id', userId: 'userId', cards: const []),
+            ),
+          ),
+        ),
+      );
+    });
+  });
 }
 
 extension GameSummaryViewTest on WidgetTester {

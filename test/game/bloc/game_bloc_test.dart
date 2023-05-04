@@ -153,20 +153,24 @@ void main() {
       ),
     ];
 
+    const hostDeck = Deck(
+      id: 'hostDeck',
+      userId: 'hostUserId',
+      cards: hostCards,
+    );
+
+    const guestDeck = Deck(
+      id: 'guestDeck',
+      userId: 'guestUserId',
+      cards: guestCards,
+    );
+
     const baseState = MatchLoadedState(
       playerScoreCard: ScoreCard(id: 'scoreCardId'),
       match: Match(
         id: 'matchId',
-        hostDeck: Deck(
-          id: 'hostDeck',
-          userId: 'hostUserId',
-          cards: hostCards,
-        ),
-        guestDeck: Deck(
-          id: 'guestDeck',
-          userId: 'guestUserId',
-          cards: guestCards,
-        ),
+        hostDeck: hostDeck,
+        guestDeck: guestDeck,
       ),
       matchState: MatchState(
         id: 'matchStateId',
@@ -1299,6 +1303,40 @@ void main() {
         });
       });
     });
+
+    blocTest<GameBloc, GameState>(
+      'playerDeck returns host deck if is host',
+      build: () => GameBloc(
+        connectionRepository: connectionRepository,
+        gameResource: gameResource,
+        audioController: audioController,
+        matchMakerRepository: matchMakerRepository,
+        matchSolver: matchSolver,
+        isHost: true,
+        user: user,
+      ),
+      seed: () => baseState,
+      verify: (bloc) {
+        expect(bloc.playerDeck, equals(hostDeck));
+      },
+    );
+
+    blocTest<GameBloc, GameState>(
+      'playerDeck returns guest deck if is guest',
+      build: () => GameBloc(
+        connectionRepository: connectionRepository,
+        gameResource: gameResource,
+        audioController: audioController,
+        matchMakerRepository: matchMakerRepository,
+        matchSolver: matchSolver,
+        isHost: false,
+        user: user,
+      ),
+      seed: () => baseState,
+      verify: (bloc) {
+        expect(bloc.playerDeck, equals(guestDeck));
+      },
+    );
 
     blocTest<GameBloc, GameState>(
       'playerCards returns host cards if is host',
