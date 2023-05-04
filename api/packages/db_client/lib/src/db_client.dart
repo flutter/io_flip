@@ -141,7 +141,7 @@ class DbClient {
       isEqualTo: where.values.first,
     );
     for (var i = 1; i < where.length; i++) {
-      query = collection.where(
+      query = query.where(
         where.keys.elementAt(i),
         isEqualTo: where.values.elementAt(i),
       );
