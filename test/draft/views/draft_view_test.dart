@@ -12,7 +12,6 @@ import 'package:io_flip/draft/draft.dart';
 import 'package:io_flip/gen/assets.gen.dart';
 import 'package:io_flip/how_to_play/how_to_play.dart';
 import 'package:io_flip/l10n/l10n.dart';
-import 'package:io_flip/match_making/views/match_making_page.dart';
 import 'package:io_flip/settings/settings.dart';
 import 'package:io_flip/utils/utils.dart';
 import 'package:mocktail/mocktail.dart';
@@ -63,12 +62,6 @@ void main() {
       image: '',
       power: 1,
       suit: Suit.air,
-    );
-
-    const deck = Deck(
-      id: 'deckId',
-      userId: 'userId',
-      cards: [card1, card2, card3],
     );
 
     void mockState(List<DraftState> states) {
@@ -273,7 +266,7 @@ void main() {
     );
 
     testWidgets(
-      'navigates to the game lobby when clicking on play',
+      'requests player deck creation when clicking on play',
       (tester) async {
         final goRouter = MockGoRouter();
         mockState(
@@ -296,17 +289,15 @@ void main() {
 
         await tester.tap(find.text(l10n.joinMatch.toUpperCase()));
         verify(
-          () => goRouter.goNamed(
-            'match_making',
-            extra: MatchMakingPageData(deck: deck),
+          () => draftBloc.add(
+            PlayerDeckRequested([card1.id, card2.id, card3.id]),
           ),
         ).called(1);
       },
     );
 
     testWidgets(
-      'navigates to the private match lobby when clicking on create private '
-      'match',
+      'requests player deck creation when clicking on create private match',
       (tester) async {
         final goRouter = MockGoRouter();
         mockState(
@@ -330,19 +321,18 @@ void main() {
 
         await tester.tap(find.text('Create private match'));
         verify(
-          () => goRouter.goNamed(
-            'match_making',
-            queryParams: {
-              'createPrivateMatch': 'true',
-            },
-            extra: MatchMakingPageData(deck: deck),
+          () => draftBloc.add(
+            PlayerDeckRequested(
+              [card1.id, card2.id, card3.id],
+              createPrivateMatch: true,
+            ),
           ),
         ).called(1);
       },
     );
 
     testWidgets(
-      'navigates to the private guest match lobby when clicking on '
+      'requests player deck creation with an invite code when clicking on '
       'join private match and has input an invite code',
       (tester) async {
         final goRouter = MockGoRouter();
@@ -370,12 +360,11 @@ void main() {
         await tester.pumpAndSettle();
 
         verify(
-          () => goRouter.goNamed(
-            'match_making',
-            queryParams: {
-              'inviteCode': 'invite-code',
-            },
-            extra: MatchMakingPageData(deck: deck),
+          () => draftBloc.add(
+            PlayerDeckRequested(
+              [card1.id, card2.id, card3.id],
+              privateMatchInviteCode: 'invite-code',
+            ),
           ),
         ).called(1);
       },
