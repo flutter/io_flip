@@ -223,6 +223,7 @@ void main() {
             {
               'type': 'location',
               'term': 'AAA',
+              'shortenedTerm': null,
             },
           ),
         ).thenAnswer((_) async => 'id');
@@ -240,6 +241,7 @@ void main() {
             {
               'type': 'location',
               'term': 'AAA',
+              'shortenedTerm': null,
             },
           ),
         ).called(1);
