@@ -335,7 +335,7 @@ void main() {
           hostWaitTime: const Duration(milliseconds: 200),
         )..add(PrivateMatchRequested());
 
-        async.elapse(Duration(seconds: 30));
+        async.elapse(Duration(seconds: 120));
         expect(
           bloc.state,
           equals(
