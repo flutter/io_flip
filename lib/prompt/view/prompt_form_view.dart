@@ -1,4 +1,3 @@
-import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:game_domain/game_domain.dart';
@@ -97,7 +96,8 @@ class _PromptFormViewState extends State<PromptFormView> {
                     controller: FixedExtentScrollController(
                       initialItem: widget.initialItem,
                     ),
-                    diameterRatio: 500, // flat list in practice
+                    diameterRatio: 500,
+                    // flat list in practice
                     scrollBehavior: ScrollConfiguration.of(context).copyWith(
                       dragDevices: {
                         PointerDeviceKind.touch,
@@ -147,12 +147,9 @@ class _PromptFormViewState extends State<PromptFormView> {
   String get selectedText => widget.itemsList[selectedIndex];
 
   void _onSubmit(String field) {
+    final promptFlow = SimpleFlow.of<Prompt>(context);
     widget.isLastOfFlow
-        ? context
-            .flow<Prompt>()
-            .complete((data) => data.copyWithNewAttribute(selectedText))
-        : context
-            .flow<Prompt>()
-            .update((data) => data.copyWithNewAttribute(selectedText));
+        ? promptFlow.complete((data) => data.copyWithNewAttribute(selectedText))
+        : promptFlow.update((data) => data.copyWithNewAttribute(selectedText));
   }
 }
