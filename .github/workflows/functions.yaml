@@ -11,7 +11,6 @@ on:
       - ".github/workflows/functions.yaml"
     branches:
       - main
-      - fix/functions
 
 defaults:
     run:
