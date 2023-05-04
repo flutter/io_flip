@@ -43,8 +43,8 @@ Future<Response> onRequest(RequestContext context) async {
     header = 'Check out my hand from I/O FLIP!';
     content = buildHandContent(
       handImage: '/public/decks/$deckId',
-      initials: scoreCard?.initials ?? '',
-      streak: scoreCard?.longestStreak.toString() ?? '0',
+      initials: scoreCard?.initials,
+      streak: scoreCard?.longestStreak.toString(),
     );
     metaImagePath = '/public/decks/$deckId';
   } else {
