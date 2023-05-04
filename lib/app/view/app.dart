@@ -129,7 +129,7 @@ class _AppState extends State<App> {
                 );
               },
               child: MaterialApp.router(
-                title: 'Top Dash',
+                title: context.l10n.ioFlip,
                 theme: TopDashTheme.themeData,
                 routerConfig: router,
                 scaffoldMessengerKey: scaffoldMessengerKey,
