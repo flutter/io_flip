@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/gen/assets.gen.dart';
+import 'package:top_dash/utils/platform_aware_asset.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class DeckPack extends StatefulWidget {
@@ -45,7 +46,10 @@ class DeckPackState extends State<DeckPack> {
       loop: false,
     );
     await SpriteAnimation.load(
-      Assets.images.frontPack.keyName,
+      platformAwareAsset(
+        desktop: Assets.images.frontPack.keyName,
+        mobile: Assets.images.mobile.frontPack.keyName,
+      ),
       data,
       images: context.read<Images>(),
     ).then((animation) {

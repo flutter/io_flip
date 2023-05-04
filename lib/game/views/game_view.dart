@@ -8,6 +8,7 @@ import 'package:top_dash/audio/audio_controller.dart';
 import 'package:top_dash/game/game.dart';
 import 'package:top_dash/gen/assets.gen.dart';
 import 'package:top_dash/leaderboard/leaderboard.dart';
+import 'package:top_dash/utils/platform_aware_asset.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 extension on List<TickerFuture> {
@@ -505,7 +506,10 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
               scale: 1.4,
               child: Center(
                 child: Image.asset(
-                  Assets.images.stadiumBackground.keyName,
+                  platformAwareAsset(
+                    desktop: Assets.images.stadiumBackground.keyName,
+                    mobile: Assets.images.mobile.stadiumBackground.keyName,
+                  ),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -888,7 +892,11 @@ class _ClashScene extends StatelessWidget {
               scale: 1.4,
               child: Center(
                 child: Image.asset(
-                  Assets.images.stadiumBackgroundCloseUp.keyName,
+                  platformAwareAsset(
+                    desktop: Assets.images.stadiumBackgroundCloseUp.keyName,
+                    mobile:
+                        Assets.images.mobile.stadiumBackgroundCloseUp.keyName,
+                  ),
                   fit: BoxFit.cover,
                 ),
               ),
