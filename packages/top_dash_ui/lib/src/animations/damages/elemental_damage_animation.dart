@@ -43,6 +43,7 @@ class ElementalDamageAnimation extends StatefulWidget {
     this.element, {
     required this.direction,
     required this.size,
+    this.assetSize = AssetSize.large,
     this.onComplete,
     this.stepNotifier,
     super.key,
@@ -64,6 +65,9 @@ class ElementalDamageAnimation extends StatefulWidget {
   /// Notifies when an [_AnimationState] is complete
   final ElementalDamageStepNotifier? stepNotifier;
 
+  /// Size of the assets to use, large or small
+  final AssetSize assetSize;
+
   @override
   State<ElementalDamageAnimation> createState() =>
       _ElementalDamageAnimationState();
@@ -78,19 +82,29 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
     super.initState();
     switch (widget.element) {
       case Element.metal:
-        elementalDamage = MetalDamage(size: widget.size);
+        elementalDamage = widget.assetSize == AssetSize.large
+            ? MetalDamage.large(size: widget.size)
+            : MetalDamage.small(size: widget.size);
         break;
       case Element.air:
-        elementalDamage = AirDamage(size: widget.size);
+        elementalDamage = widget.assetSize == AssetSize.large
+            ? AirDamage.large(size: widget.size)
+            : AirDamage.small(size: widget.size);
         break;
       case Element.fire:
-        elementalDamage = FireDamage(size: widget.size);
+        elementalDamage = widget.assetSize == AssetSize.large
+            ? FireDamage.large(size: widget.size)
+            : FireDamage.small(size: widget.size);
         break;
       case Element.earth:
-        elementalDamage = EarthDamage(size: widget.size);
+        elementalDamage = widget.assetSize == AssetSize.large
+            ? EarthDamage.large(size: widget.size)
+            : EarthDamage.small(size: widget.size);
         break;
       case Element.water:
-        elementalDamage = WaterDamage(size: widget.size);
+        elementalDamage = widget.assetSize == AssetSize.large
+            ? WaterDamage.large(size: widget.size)
+            : WaterDamage.small(size: widget.size);
         break;
     }
   }
@@ -248,6 +262,15 @@ class _BottomAnimation extends StatelessWidget {
 }
 
 enum _AnimationState { charging, sending, receiving, victory, ended }
+
+/// Represents the size that should be used for the assets
+enum AssetSize {
+  /// Represents small assets
+  small,
+
+  /// Represents large assets
+  large
+}
 
 /// Represents the direction of the damages
 enum DamageDirection {

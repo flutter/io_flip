@@ -7,16 +7,31 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 /// of a card on another.
 /// {@endtemplate}
 class AirDamage extends ElementalDamage {
-  /// {@macro air_damage}
-  AirDamage({required super.size})
+  /// {@macro air_damage_small}
+  AirDamage.small({required super.size})
       : super(
-          chargeBackPath: Assets.images.elements.air.chargeBack.keyName,
-          chargeFrontPath: Assets.images.elements.air.chargeFront.keyName,
-          damageReceivePath: Assets.images.elements.air.damageReceive.keyName,
-          damageSendPath: Assets.images.elements.air.damageSend.keyName,
+          chargeBackPath: Assets.images.elements.small.air.chargeBack.keyName,
+          chargeFrontPath: Assets.images.elements.small.air.chargeFront.keyName,
+          damageReceivePath:
+              Assets.images.elements.small.air.damageReceive.keyName,
+          damageSendPath: Assets.images.elements.small.air.damageSend.keyName,
           victoryChargeBackPath:
-              Assets.images.elements.air.victoryChargeBack.keyName,
+              Assets.images.elements.small.air.victoryChargeBack.keyName,
           victoryChargeFrontPath:
-              Assets.images.elements.air.victoryChargeFront.keyName,
+              Assets.images.elements.small.air.victoryChargeFront.keyName,
+        );
+
+  /// {@macro air_damage_large}
+  AirDamage.large({required super.size})
+      : super(
+          chargeBackPath: Assets.images.elements.large.air.chargeBack.keyName,
+          chargeFrontPath: Assets.images.elements.large.air.chargeFront.keyName,
+          damageReceivePath:
+              Assets.images.elements.large.air.damageReceive.keyName,
+          damageSendPath: Assets.images.elements.large.air.damageSend.keyName,
+          victoryChargeBackPath:
+              Assets.images.elements.large.air.victoryChargeBack.keyName,
+          victoryChargeFrontPath:
+              Assets.images.elements.large.air.victoryChargeFront.keyName,
         );
 }

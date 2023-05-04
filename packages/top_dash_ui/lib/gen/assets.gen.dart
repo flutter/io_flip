@@ -81,14 +81,10 @@ class $AssetsImagesCardFramesGen {
 class $AssetsImagesElementsGen {
   const $AssetsImagesElementsGen();
 
-  $AssetsImagesElementsAirGen get air => const $AssetsImagesElementsAirGen();
-  $AssetsImagesElementsEarthGen get earth =>
-      const $AssetsImagesElementsEarthGen();
-  $AssetsImagesElementsFireGen get fire => const $AssetsImagesElementsFireGen();
-  $AssetsImagesElementsMetalGen get metal =>
-      const $AssetsImagesElementsMetalGen();
-  $AssetsImagesElementsWaterGen get water =>
-      const $AssetsImagesElementsWaterGen();
+  $AssetsImagesElementsLargeGen get large =>
+      const $AssetsImagesElementsLargeGen();
+  $AssetsImagesElementsSmallGen get small =>
+      const $AssetsImagesElementsSmallGen();
 }
 
 class $AssetsImagesSuitsGen {
@@ -99,194 +95,34 @@ class $AssetsImagesSuitsGen {
       const $AssetsImagesSuitsOnboardingGen();
 }
 
-class $AssetsImagesElementsAirGen {
-  const $AssetsImagesElementsAirGen();
+class $AssetsImagesElementsLargeGen {
+  const $AssetsImagesElementsLargeGen();
 
-  /// File path: assets/images/elements/air/charge_back.png
-  AssetGenImage get chargeBack =>
-      const AssetGenImage('assets/images/elements/air/charge_back.png');
-
-  /// File path: assets/images/elements/air/charge_front.png
-  AssetGenImage get chargeFront =>
-      const AssetGenImage('assets/images/elements/air/charge_front.png');
-
-  /// File path: assets/images/elements/air/damage_receive.png
-  AssetGenImage get damageReceive =>
-      const AssetGenImage('assets/images/elements/air/damage_receive.png');
-
-  /// File path: assets/images/elements/air/damage_send.png
-  AssetGenImage get damageSend =>
-      const AssetGenImage('assets/images/elements/air/damage_send.png');
-
-  /// File path: assets/images/elements/air/victory_charge_back.png
-  AssetGenImage get victoryChargeBack =>
-      const AssetGenImage('assets/images/elements/air/victory_charge_back.png');
-
-  /// File path: assets/images/elements/air/victory_charge_front.png
-  AssetGenImage get victoryChargeFront => const AssetGenImage(
-      'assets/images/elements/air/victory_charge_front.png');
-
-  /// List of all assets
-  List<AssetGenImage> get values => [
-        chargeBack,
-        chargeFront,
-        damageReceive,
-        damageSend,
-        victoryChargeBack,
-        victoryChargeFront
-      ];
+  $AssetsImagesElementsLargeAirGen get air =>
+      const $AssetsImagesElementsLargeAirGen();
+  $AssetsImagesElementsLargeEarthGen get earth =>
+      const $AssetsImagesElementsLargeEarthGen();
+  $AssetsImagesElementsLargeFireGen get fire =>
+      const $AssetsImagesElementsLargeFireGen();
+  $AssetsImagesElementsLargeMetalGen get metal =>
+      const $AssetsImagesElementsLargeMetalGen();
+  $AssetsImagesElementsLargeWaterGen get water =>
+      const $AssetsImagesElementsLargeWaterGen();
 }
 
-class $AssetsImagesElementsEarthGen {
-  const $AssetsImagesElementsEarthGen();
+class $AssetsImagesElementsSmallGen {
+  const $AssetsImagesElementsSmallGen();
 
-  /// File path: assets/images/elements/earth/charge_back.png
-  AssetGenImage get chargeBack =>
-      const AssetGenImage('assets/images/elements/earth/charge_back.png');
-
-  /// File path: assets/images/elements/earth/charge_front.png
-  AssetGenImage get chargeFront =>
-      const AssetGenImage('assets/images/elements/earth/charge_front.png');
-
-  /// File path: assets/images/elements/earth/damage_receive.png
-  AssetGenImage get damageReceive =>
-      const AssetGenImage('assets/images/elements/earth/damage_receive.png');
-
-  /// File path: assets/images/elements/earth/damage_send.png
-  AssetGenImage get damageSend =>
-      const AssetGenImage('assets/images/elements/earth/damage_send.png');
-
-  /// File path: assets/images/elements/earth/victory_charge_back.png
-  AssetGenImage get victoryChargeBack => const AssetGenImage(
-      'assets/images/elements/earth/victory_charge_back.png');
-
-  /// File path: assets/images/elements/earth/victory_charge_front.png
-  AssetGenImage get victoryChargeFront => const AssetGenImage(
-      'assets/images/elements/earth/victory_charge_front.png');
-
-  /// List of all assets
-  List<AssetGenImage> get values => [
-        chargeBack,
-        chargeFront,
-        damageReceive,
-        damageSend,
-        victoryChargeBack,
-        victoryChargeFront
-      ];
-}
-
-class $AssetsImagesElementsFireGen {
-  const $AssetsImagesElementsFireGen();
-
-  /// File path: assets/images/elements/fire/charge_back.png
-  AssetGenImage get chargeBack =>
-      const AssetGenImage('assets/images/elements/fire/charge_back.png');
-
-  /// File path: assets/images/elements/fire/charge_front.png
-  AssetGenImage get chargeFront =>
-      const AssetGenImage('assets/images/elements/fire/charge_front.png');
-
-  /// File path: assets/images/elements/fire/damage_receive.png
-  AssetGenImage get damageReceive =>
-      const AssetGenImage('assets/images/elements/fire/damage_receive.png');
-
-  /// File path: assets/images/elements/fire/damage_send.png
-  AssetGenImage get damageSend =>
-      const AssetGenImage('assets/images/elements/fire/damage_send.png');
-
-  /// File path: assets/images/elements/fire/victory_charge_back.png
-  AssetGenImage get victoryChargeBack => const AssetGenImage(
-      'assets/images/elements/fire/victory_charge_back.png');
-
-  /// File path: assets/images/elements/fire/victory_charge_front.png
-  AssetGenImage get victoryChargeFront => const AssetGenImage(
-      'assets/images/elements/fire/victory_charge_front.png');
-
-  /// List of all assets
-  List<AssetGenImage> get values => [
-        chargeBack,
-        chargeFront,
-        damageReceive,
-        damageSend,
-        victoryChargeBack,
-        victoryChargeFront
-      ];
-}
-
-class $AssetsImagesElementsMetalGen {
-  const $AssetsImagesElementsMetalGen();
-
-  /// File path: assets/images/elements/metal/charge_back.png
-  AssetGenImage get chargeBack =>
-      const AssetGenImage('assets/images/elements/metal/charge_back.png');
-
-  /// File path: assets/images/elements/metal/charge_front.png
-  AssetGenImage get chargeFront =>
-      const AssetGenImage('assets/images/elements/metal/charge_front.png');
-
-  /// File path: assets/images/elements/metal/damage_receive.png
-  AssetGenImage get damageReceive =>
-      const AssetGenImage('assets/images/elements/metal/damage_receive.png');
-
-  /// File path: assets/images/elements/metal/damage_send.png
-  AssetGenImage get damageSend =>
-      const AssetGenImage('assets/images/elements/metal/damage_send.png');
-
-  /// File path: assets/images/elements/metal/victory_charge_back.png
-  AssetGenImage get victoryChargeBack => const AssetGenImage(
-      'assets/images/elements/metal/victory_charge_back.png');
-
-  /// File path: assets/images/elements/metal/victory_charge_front.png
-  AssetGenImage get victoryChargeFront => const AssetGenImage(
-      'assets/images/elements/metal/victory_charge_front.png');
-
-  /// List of all assets
-  List<AssetGenImage> get values => [
-        chargeBack,
-        chargeFront,
-        damageReceive,
-        damageSend,
-        victoryChargeBack,
-        victoryChargeFront
-      ];
-}
-
-class $AssetsImagesElementsWaterGen {
-  const $AssetsImagesElementsWaterGen();
-
-  /// File path: assets/images/elements/water/charge_back.png
-  AssetGenImage get chargeBack =>
-      const AssetGenImage('assets/images/elements/water/charge_back.png');
-
-  /// File path: assets/images/elements/water/charge_front.png
-  AssetGenImage get chargeFront =>
-      const AssetGenImage('assets/images/elements/water/charge_front.png');
-
-  /// File path: assets/images/elements/water/damage_receive.png
-  AssetGenImage get damageReceive =>
-      const AssetGenImage('assets/images/elements/water/damage_receive.png');
-
-  /// File path: assets/images/elements/water/damage_send.png
-  AssetGenImage get damageSend =>
-      const AssetGenImage('assets/images/elements/water/damage_send.png');
-
-  /// File path: assets/images/elements/water/victory_charge_back.png
-  AssetGenImage get victoryChargeBack => const AssetGenImage(
-      'assets/images/elements/water/victory_charge_back.png');
-
-  /// File path: assets/images/elements/water/victory_charge_front.png
-  AssetGenImage get victoryChargeFront => const AssetGenImage(
-      'assets/images/elements/water/victory_charge_front.png');
-
-  /// List of all assets
-  List<AssetGenImage> get values => [
-        chargeBack,
-        chargeFront,
-        damageReceive,
-        damageSend,
-        victoryChargeBack,
-        victoryChargeFront
-      ];
+  $AssetsImagesElementsSmallAirGen get air =>
+      const $AssetsImagesElementsSmallAirGen();
+  $AssetsImagesElementsSmallEarthGen get earth =>
+      const $AssetsImagesElementsSmallEarthGen();
+  $AssetsImagesElementsSmallFireGen get fire =>
+      const $AssetsImagesElementsSmallFireGen();
+  $AssetsImagesElementsSmallMetalGen get metal =>
+      const $AssetsImagesElementsSmallMetalGen();
+  $AssetsImagesElementsSmallWaterGen get water =>
+      const $AssetsImagesElementsSmallWaterGen();
 }
 
 class $AssetsImagesSuitsCardGen {
@@ -340,6 +176,386 @@ class $AssetsImagesSuitsOnboardingGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [air, earth, fire, metal, water];
+}
+
+class $AssetsImagesElementsLargeAirGen {
+  const $AssetsImagesElementsLargeAirGen();
+
+  /// File path: assets/images/elements/large/air/charge_back.png
+  AssetGenImage get chargeBack =>
+      const AssetGenImage('assets/images/elements/large/air/charge_back.png');
+
+  /// File path: assets/images/elements/large/air/charge_front.png
+  AssetGenImage get chargeFront =>
+      const AssetGenImage('assets/images/elements/large/air/charge_front.png');
+
+  /// File path: assets/images/elements/large/air/damage_receive.png
+  AssetGenImage get damageReceive => const AssetGenImage(
+      'assets/images/elements/large/air/damage_receive.png');
+
+  /// File path: assets/images/elements/large/air/damage_send.png
+  AssetGenImage get damageSend =>
+      const AssetGenImage('assets/images/elements/large/air/damage_send.png');
+
+  /// File path: assets/images/elements/large/air/victory_charge_back.png
+  AssetGenImage get victoryChargeBack => const AssetGenImage(
+      'assets/images/elements/large/air/victory_charge_back.png');
+
+  /// File path: assets/images/elements/large/air/victory_charge_front.png
+  AssetGenImage get victoryChargeFront => const AssetGenImage(
+      'assets/images/elements/large/air/victory_charge_front.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+        chargeBack,
+        chargeFront,
+        damageReceive,
+        damageSend,
+        victoryChargeBack,
+        victoryChargeFront
+      ];
+}
+
+class $AssetsImagesElementsLargeEarthGen {
+  const $AssetsImagesElementsLargeEarthGen();
+
+  /// File path: assets/images/elements/large/earth/charge_back.png
+  AssetGenImage get chargeBack =>
+      const AssetGenImage('assets/images/elements/large/earth/charge_back.png');
+
+  /// File path: assets/images/elements/large/earth/charge_front.png
+  AssetGenImage get chargeFront => const AssetGenImage(
+      'assets/images/elements/large/earth/charge_front.png');
+
+  /// File path: assets/images/elements/large/earth/damage_receive.png
+  AssetGenImage get damageReceive => const AssetGenImage(
+      'assets/images/elements/large/earth/damage_receive.png');
+
+  /// File path: assets/images/elements/large/earth/damage_send.png
+  AssetGenImage get damageSend =>
+      const AssetGenImage('assets/images/elements/large/earth/damage_send.png');
+
+  /// File path: assets/images/elements/large/earth/victory_charge_back.png
+  AssetGenImage get victoryChargeBack => const AssetGenImage(
+      'assets/images/elements/large/earth/victory_charge_back.png');
+
+  /// File path: assets/images/elements/large/earth/victory_charge_front.png
+  AssetGenImage get victoryChargeFront => const AssetGenImage(
+      'assets/images/elements/large/earth/victory_charge_front.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+        chargeBack,
+        chargeFront,
+        damageReceive,
+        damageSend,
+        victoryChargeBack,
+        victoryChargeFront
+      ];
+}
+
+class $AssetsImagesElementsLargeFireGen {
+  const $AssetsImagesElementsLargeFireGen();
+
+  /// File path: assets/images/elements/large/fire/charge_back.png
+  AssetGenImage get chargeBack =>
+      const AssetGenImage('assets/images/elements/large/fire/charge_back.png');
+
+  /// File path: assets/images/elements/large/fire/charge_front.png
+  AssetGenImage get chargeFront =>
+      const AssetGenImage('assets/images/elements/large/fire/charge_front.png');
+
+  /// File path: assets/images/elements/large/fire/damage_receive.png
+  AssetGenImage get damageReceive => const AssetGenImage(
+      'assets/images/elements/large/fire/damage_receive.png');
+
+  /// File path: assets/images/elements/large/fire/damage_send.png
+  AssetGenImage get damageSend =>
+      const AssetGenImage('assets/images/elements/large/fire/damage_send.png');
+
+  /// File path: assets/images/elements/large/fire/victory_charge_back.png
+  AssetGenImage get victoryChargeBack => const AssetGenImage(
+      'assets/images/elements/large/fire/victory_charge_back.png');
+
+  /// File path: assets/images/elements/large/fire/victory_charge_front.png
+  AssetGenImage get victoryChargeFront => const AssetGenImage(
+      'assets/images/elements/large/fire/victory_charge_front.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+        chargeBack,
+        chargeFront,
+        damageReceive,
+        damageSend,
+        victoryChargeBack,
+        victoryChargeFront
+      ];
+}
+
+class $AssetsImagesElementsLargeMetalGen {
+  const $AssetsImagesElementsLargeMetalGen();
+
+  /// File path: assets/images/elements/large/metal/charge_back.png
+  AssetGenImage get chargeBack =>
+      const AssetGenImage('assets/images/elements/large/metal/charge_back.png');
+
+  /// File path: assets/images/elements/large/metal/charge_front.png
+  AssetGenImage get chargeFront => const AssetGenImage(
+      'assets/images/elements/large/metal/charge_front.png');
+
+  /// File path: assets/images/elements/large/metal/damage_receive.png
+  AssetGenImage get damageReceive => const AssetGenImage(
+      'assets/images/elements/large/metal/damage_receive.png');
+
+  /// File path: assets/images/elements/large/metal/damage_send.png
+  AssetGenImage get damageSend =>
+      const AssetGenImage('assets/images/elements/large/metal/damage_send.png');
+
+  /// File path: assets/images/elements/large/metal/victory_charge_back.png
+  AssetGenImage get victoryChargeBack => const AssetGenImage(
+      'assets/images/elements/large/metal/victory_charge_back.png');
+
+  /// File path: assets/images/elements/large/metal/victory_charge_front.png
+  AssetGenImage get victoryChargeFront => const AssetGenImage(
+      'assets/images/elements/large/metal/victory_charge_front.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+        chargeBack,
+        chargeFront,
+        damageReceive,
+        damageSend,
+        victoryChargeBack,
+        victoryChargeFront
+      ];
+}
+
+class $AssetsImagesElementsLargeWaterGen {
+  const $AssetsImagesElementsLargeWaterGen();
+
+  /// File path: assets/images/elements/large/water/charge_back.png
+  AssetGenImage get chargeBack =>
+      const AssetGenImage('assets/images/elements/large/water/charge_back.png');
+
+  /// File path: assets/images/elements/large/water/charge_front.png
+  AssetGenImage get chargeFront => const AssetGenImage(
+      'assets/images/elements/large/water/charge_front.png');
+
+  /// File path: assets/images/elements/large/water/damage_receive.png
+  AssetGenImage get damageReceive => const AssetGenImage(
+      'assets/images/elements/large/water/damage_receive.png');
+
+  /// File path: assets/images/elements/large/water/damage_send.png
+  AssetGenImage get damageSend =>
+      const AssetGenImage('assets/images/elements/large/water/damage_send.png');
+
+  /// File path: assets/images/elements/large/water/victory_charge_back.png
+  AssetGenImage get victoryChargeBack => const AssetGenImage(
+      'assets/images/elements/large/water/victory_charge_back.png');
+
+  /// File path: assets/images/elements/large/water/victory_charge_front.png
+  AssetGenImage get victoryChargeFront => const AssetGenImage(
+      'assets/images/elements/large/water/victory_charge_front.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+        chargeBack,
+        chargeFront,
+        damageReceive,
+        damageSend,
+        victoryChargeBack,
+        victoryChargeFront
+      ];
+}
+
+class $AssetsImagesElementsSmallAirGen {
+  const $AssetsImagesElementsSmallAirGen();
+
+  /// File path: assets/images/elements/small/air/charge_back.png
+  AssetGenImage get chargeBack =>
+      const AssetGenImage('assets/images/elements/small/air/charge_back.png');
+
+  /// File path: assets/images/elements/small/air/charge_front.png
+  AssetGenImage get chargeFront =>
+      const AssetGenImage('assets/images/elements/small/air/charge_front.png');
+
+  /// File path: assets/images/elements/small/air/damage_receive.png
+  AssetGenImage get damageReceive => const AssetGenImage(
+      'assets/images/elements/small/air/damage_receive.png');
+
+  /// File path: assets/images/elements/small/air/damage_send.png
+  AssetGenImage get damageSend =>
+      const AssetGenImage('assets/images/elements/small/air/damage_send.png');
+
+  /// File path: assets/images/elements/small/air/victory_charge_back.png
+  AssetGenImage get victoryChargeBack => const AssetGenImage(
+      'assets/images/elements/small/air/victory_charge_back.png');
+
+  /// File path: assets/images/elements/small/air/victory_charge_front.png
+  AssetGenImage get victoryChargeFront => const AssetGenImage(
+      'assets/images/elements/small/air/victory_charge_front.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+        chargeBack,
+        chargeFront,
+        damageReceive,
+        damageSend,
+        victoryChargeBack,
+        victoryChargeFront
+      ];
+}
+
+class $AssetsImagesElementsSmallEarthGen {
+  const $AssetsImagesElementsSmallEarthGen();
+
+  /// File path: assets/images/elements/small/earth/charge_back.png
+  AssetGenImage get chargeBack =>
+      const AssetGenImage('assets/images/elements/small/earth/charge_back.png');
+
+  /// File path: assets/images/elements/small/earth/charge_front.png
+  AssetGenImage get chargeFront => const AssetGenImage(
+      'assets/images/elements/small/earth/charge_front.png');
+
+  /// File path: assets/images/elements/small/earth/damage_receive.png
+  AssetGenImage get damageReceive => const AssetGenImage(
+      'assets/images/elements/small/earth/damage_receive.png');
+
+  /// File path: assets/images/elements/small/earth/damage_send.png
+  AssetGenImage get damageSend =>
+      const AssetGenImage('assets/images/elements/small/earth/damage_send.png');
+
+  /// File path: assets/images/elements/small/earth/victory_charge_back.png
+  AssetGenImage get victoryChargeBack => const AssetGenImage(
+      'assets/images/elements/small/earth/victory_charge_back.png');
+
+  /// File path: assets/images/elements/small/earth/victory_charge_front.png
+  AssetGenImage get victoryChargeFront => const AssetGenImage(
+      'assets/images/elements/small/earth/victory_charge_front.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+        chargeBack,
+        chargeFront,
+        damageReceive,
+        damageSend,
+        victoryChargeBack,
+        victoryChargeFront
+      ];
+}
+
+class $AssetsImagesElementsSmallFireGen {
+  const $AssetsImagesElementsSmallFireGen();
+
+  /// File path: assets/images/elements/small/fire/charge_back.png
+  AssetGenImage get chargeBack =>
+      const AssetGenImage('assets/images/elements/small/fire/charge_back.png');
+
+  /// File path: assets/images/elements/small/fire/charge_front.png
+  AssetGenImage get chargeFront =>
+      const AssetGenImage('assets/images/elements/small/fire/charge_front.png');
+
+  /// File path: assets/images/elements/small/fire/damage_receive.png
+  AssetGenImage get damageReceive => const AssetGenImage(
+      'assets/images/elements/small/fire/damage_receive.png');
+
+  /// File path: assets/images/elements/small/fire/damage_send.png
+  AssetGenImage get damageSend =>
+      const AssetGenImage('assets/images/elements/small/fire/damage_send.png');
+
+  /// File path: assets/images/elements/small/fire/victory_charge_back.png
+  AssetGenImage get victoryChargeBack => const AssetGenImage(
+      'assets/images/elements/small/fire/victory_charge_back.png');
+
+  /// File path: assets/images/elements/small/fire/victory_charge_front.png
+  AssetGenImage get victoryChargeFront => const AssetGenImage(
+      'assets/images/elements/small/fire/victory_charge_front.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+        chargeBack,
+        chargeFront,
+        damageReceive,
+        damageSend,
+        victoryChargeBack,
+        victoryChargeFront
+      ];
+}
+
+class $AssetsImagesElementsSmallMetalGen {
+  const $AssetsImagesElementsSmallMetalGen();
+
+  /// File path: assets/images/elements/small/metal/charge_back.png
+  AssetGenImage get chargeBack =>
+      const AssetGenImage('assets/images/elements/small/metal/charge_back.png');
+
+  /// File path: assets/images/elements/small/metal/charge_front.png
+  AssetGenImage get chargeFront => const AssetGenImage(
+      'assets/images/elements/small/metal/charge_front.png');
+
+  /// File path: assets/images/elements/small/metal/damage_receive.png
+  AssetGenImage get damageReceive => const AssetGenImage(
+      'assets/images/elements/small/metal/damage_receive.png');
+
+  /// File path: assets/images/elements/small/metal/damage_send.png
+  AssetGenImage get damageSend =>
+      const AssetGenImage('assets/images/elements/small/metal/damage_send.png');
+
+  /// File path: assets/images/elements/small/metal/victory_charge_back.png
+  AssetGenImage get victoryChargeBack => const AssetGenImage(
+      'assets/images/elements/small/metal/victory_charge_back.png');
+
+  /// File path: assets/images/elements/small/metal/victory_charge_front.png
+  AssetGenImage get victoryChargeFront => const AssetGenImage(
+      'assets/images/elements/small/metal/victory_charge_front.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+        chargeBack,
+        chargeFront,
+        damageReceive,
+        damageSend,
+        victoryChargeBack,
+        victoryChargeFront
+      ];
+}
+
+class $AssetsImagesElementsSmallWaterGen {
+  const $AssetsImagesElementsSmallWaterGen();
+
+  /// File path: assets/images/elements/small/water/charge_back.png
+  AssetGenImage get chargeBack =>
+      const AssetGenImage('assets/images/elements/small/water/charge_back.png');
+
+  /// File path: assets/images/elements/small/water/charge_front.png
+  AssetGenImage get chargeFront => const AssetGenImage(
+      'assets/images/elements/small/water/charge_front.png');
+
+  /// File path: assets/images/elements/small/water/damage_receive.png
+  AssetGenImage get damageReceive => const AssetGenImage(
+      'assets/images/elements/small/water/damage_receive.png');
+
+  /// File path: assets/images/elements/small/water/damage_send.png
+  AssetGenImage get damageSend =>
+      const AssetGenImage('assets/images/elements/small/water/damage_send.png');
+
+  /// File path: assets/images/elements/small/water/victory_charge_back.png
+  AssetGenImage get victoryChargeBack => const AssetGenImage(
+      'assets/images/elements/small/water/victory_charge_back.png');
+
+  /// File path: assets/images/elements/small/water/victory_charge_front.png
+  AssetGenImage get victoryChargeFront => const AssetGenImage(
+      'assets/images/elements/small/water/victory_charge_front.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+        chargeBack,
+        chargeFront,
+        damageReceive,
+        damageSend,
+        victoryChargeBack,
+        victoryChargeFront
+      ];
 }
 
 class Assets {

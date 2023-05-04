@@ -7,16 +7,33 @@ import 'package:top_dash_ui/top_dash_ui.dart';
 /// of a card on another.
 /// {@endtemplate}
 class EarthDamage extends ElementalDamage {
-  /// {@macro earth_damage}
-  EarthDamage({required super.size})
+  /// {@macro earth_damage_small}
+  EarthDamage.small({required super.size})
       : super(
-          chargeBackPath: Assets.images.elements.earth.chargeBack.keyName,
-          chargeFrontPath: Assets.images.elements.earth.chargeFront.keyName,
-          damageReceivePath: Assets.images.elements.earth.damageReceive.keyName,
-          damageSendPath: Assets.images.elements.earth.damageSend.keyName,
+          chargeBackPath: Assets.images.elements.small.earth.chargeBack.keyName,
+          chargeFrontPath:
+              Assets.images.elements.small.earth.chargeFront.keyName,
+          damageReceivePath:
+              Assets.images.elements.small.earth.damageReceive.keyName,
+          damageSendPath: Assets.images.elements.small.earth.damageSend.keyName,
           victoryChargeBackPath:
-              Assets.images.elements.earth.victoryChargeBack.keyName,
+              Assets.images.elements.small.earth.victoryChargeBack.keyName,
           victoryChargeFrontPath:
-              Assets.images.elements.earth.victoryChargeFront.keyName,
+              Assets.images.elements.small.earth.victoryChargeFront.keyName,
+        );
+
+  /// {@macro earth_damage_large}
+  EarthDamage.large({required super.size})
+      : super(
+          chargeBackPath: Assets.images.elements.large.earth.chargeBack.keyName,
+          chargeFrontPath:
+              Assets.images.elements.large.earth.chargeFront.keyName,
+          damageReceivePath:
+              Assets.images.elements.large.earth.damageReceive.keyName,
+          damageSendPath: Assets.images.elements.large.earth.damageSend.keyName,
+          victoryChargeBackPath:
+              Assets.images.elements.large.earth.victoryChargeBack.keyName,
+          victoryChargeFrontPath:
+              Assets.images.elements.large.earth.victoryChargeFront.keyName,
         );
 }
