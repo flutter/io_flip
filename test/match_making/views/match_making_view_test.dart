@@ -246,7 +246,7 @@ extension MatchMakingViewTest on WidgetTester {
           child: MatchMakingView(
             setClipboardData: setClipboardData ?? Clipboard.setData,
             routerNeglectCall: routerNeglectCall,
-            deck: const [
+            cards: const [
               Card(
                 id: 'a',
                 name: '',

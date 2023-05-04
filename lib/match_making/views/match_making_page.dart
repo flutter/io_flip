@@ -21,15 +21,15 @@ class MatchMakingPage extends StatelessWidget {
 
     return MatchMakingPage(
       key: const Key('match_making'),
-      createPrivateMatch: state.queryParams['createPrivateMatch'] == 'true',
-      inviteCode: state.queryParams['inviteCode'],
-      deck: data?.cards ?? [],
+      createPrivateMatch: data?.createPrivateMatch ?? false,
+      inviteCode: data?.inviteCode,
+      deck: data!.deck,
     );
   }
 
   final bool createPrivateMatch;
   final String? inviteCode;
-  final List<Card> deck;
+  final Deck deck;
 
   MatchMakingEvent mapEvent() {
     return inviteCode != null
@@ -50,18 +50,25 @@ class MatchMakingPage extends StatelessWidget {
           matchMakerRepository: matchMakerRepository,
           connectionRepository: connectionRepository,
           gameResource: gameResource,
-          cardIds: deck.map((card) => card.id).toList(),
+          deckId: deck.id,
         )..add(mapEvent());
       },
-      child: MatchMakingView(deck: deck),
+      child: MatchMakingView(cards: deck.cards),
     );
   }
 }
 
 class MatchMakingPageData extends Equatable {
-  const MatchMakingPageData({required this.cards});
-  final List<Card> cards;
+  const MatchMakingPageData({
+    required this.deck,
+    this.createPrivateMatch,
+    this.inviteCode,
+  });
+
+  final Deck deck;
+  final bool? createPrivateMatch;
+  final String? inviteCode;
 
   @override
-  List<Object?> get props => [cards];
+  List<Object?> get props => [deck, createPrivateMatch, inviteCode];
 }
