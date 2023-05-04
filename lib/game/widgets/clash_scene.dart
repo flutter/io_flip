@@ -116,12 +116,12 @@ class ClashSceneState extends State<ClashScene>
     return Center(
       child: Stack(
         children: [
-          if (widget.playerCard.power > widget.opponentCard.power) ...[
-            playerCard,
-            opponentCard
-          ] else ...[
+          if (playerWins) ...[
             opponentCard,
             playerCard
+          ] else ...[
+            playerCard,
+            opponentCard
           ],
           Positioned.fill(
             child: Visibility(

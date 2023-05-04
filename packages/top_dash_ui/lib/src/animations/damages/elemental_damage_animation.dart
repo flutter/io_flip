@@ -226,7 +226,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
     } else if (_animationState == _AnimationState.victory) {
       widget.stepNotifier?._victory.complete();
       setState(() {
-        _animationState = _AnimationState.charging;
+        _animationState = _AnimationState.ended;
       });
     }
   }
