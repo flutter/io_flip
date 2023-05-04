@@ -54,7 +54,6 @@ void main() {
           const {
             'character': 'character',
             'characterClass': 'characterClass',
-            'powerShortened': 'powerShortened',
             'power': 'power',
             'location': 'location',
             'description': 'description',
@@ -140,27 +139,6 @@ void main() {
             character: 'character',
             characterClass: 'characterClass',
             power: 'power1',
-            location: 'location',
-            description: 'description',
-          ),
-        ),
-      ),
-    );
-
-    expect(
-      CardDescription(
-        character: 'character',
-        characterClass: 'characterClass',
-        power: 'power',
-        location: 'location',
-        description: 'description',
-      ),
-      isNot(
-        equals(
-          CardDescription(
-            character: 'character',
-            characterClass: 'characterClass',
-            power: 'power',
             location: 'location',
             description: 'description',
           ),
