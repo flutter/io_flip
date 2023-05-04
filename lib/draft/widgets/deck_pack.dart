@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:io_flip/audio/audio_controller.dart';
 import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/utils/utils.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 
 class DeckPack extends StatefulWidget {
@@ -45,7 +46,10 @@ class DeckPackState extends State<DeckPack> {
       loop: false,
     );
     await SpriteAnimation.load(
-      Assets.images.frontPack.keyName,
+      platformAwareAsset(
+        desktop: Assets.images.frontPack.keyName,
+        mobile: Assets.images.mobile.frontPack.keyName,
+      ),
       data,
       images: context.read<Images>(),
     ).then((animation) {

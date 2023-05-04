@@ -152,7 +152,10 @@ class HowToPlayHandBuilding extends StatelessWidget {
       children: [
         // TODO(willhlas): replace with card fan.
         Image.asset(
-          Assets.images.main.path,
+          platformAwareAsset(
+            desktop: Assets.images.main.path,
+            mobile: Assets.images.mobile.main.path,
+          ),
           height: _imageHeight,
         ),
         const SizedBox(height: IoFlipSpacing.xxlg),

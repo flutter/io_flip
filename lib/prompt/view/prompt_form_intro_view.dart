@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:io_flip/gen/assets.gen.dart';
 import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/utils/platform_aware_asset.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:provider/provider.dart';
 
@@ -39,7 +40,10 @@ class PromptFormIntroView extends StatelessWidget {
                         SizedBox.square(
                           dimension: _cardMasterHeight,
                           child: SpriteAnimationWidget.asset(
-                            path: Assets.images.cardMaster.keyName,
+                            path: platformAwareAsset(
+                              desktop: Assets.images.cardMaster.keyName,
+                              mobile: Assets.images.mobile.cardMaster.keyName,
+                            ),
                             images: images,
                             data: SpriteAnimationData.sequenced(
                               amount: 57,

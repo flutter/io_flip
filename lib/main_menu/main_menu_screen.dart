@@ -8,6 +8,7 @@ import 'package:io_flip/info/info.dart';
 import 'package:io_flip/l10n/l10n.dart';
 import 'package:io_flip/leaderboard/leaderboard.dart';
 import 'package:io_flip/terms_of_use/terms_of_use.dart';
+import 'package:io_flip/utils/utils.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 
 class MainMenuScreen extends StatelessWidget {
@@ -80,7 +81,10 @@ class _MainMenuScreenView extends StatelessWidget {
       child: Column(
         children: [
           Image.asset(
-            Assets.images.main.path,
+            platformAwareAsset(
+              desktop: Assets.images.main.path,
+              mobile: Assets.images.mobile.main.path,
+            ),
             height: 312,
             fit: BoxFit.fitHeight,
           ),
