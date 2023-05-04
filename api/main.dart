@@ -53,6 +53,7 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
 
   final languageModelRepository = LanguageModelRepository(
     dbClient: dbClient,
+    promptRepository: promptRepository,
   );
   jwtMiddleware = JwtMiddleware(
     projectId: _appId,
@@ -112,6 +113,8 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
             id: 'id_${prompt}_${id++}',
             data: {
               'term': prompt,
+              if (entry.key == PromptTermType.power)
+                'shortenedTerm': prompt.replaceAll('ing', ''),
               'type': entry.key.name,
             },
           ),

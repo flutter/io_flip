@@ -119,7 +119,6 @@ void main() {
             characterName: 'dash',
             characterClass: 'mage',
             characterPower: 'baggles',
-            characterLocation: 'beach',
           ),
         ).thenAnswer((_) async => 'Super Bird');
         when(

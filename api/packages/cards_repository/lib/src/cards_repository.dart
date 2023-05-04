@@ -55,7 +55,6 @@ class CardsRepository {
             characterName: image.character,
             characterClass: image.characterClass,
             characterPower: characterPower,
-            characterLocation: image.location,
           ),
           _languageModelRepository.generateFlavorText(
             character: image.character,
