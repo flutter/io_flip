@@ -3,10 +3,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/share/bloc/download_bloc.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/share/bloc/download_bloc.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class ShareDialog extends StatelessWidget {
@@ -66,36 +66,36 @@ class ShareDialogView extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           content,
-          const SizedBox(height: TopDashSpacing.xlg),
+          const SizedBox(height: IoFlipSpacing.xlg),
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               RoundedButton.image(
                 Image.asset(
                   Assets.images.twitter.path,
-                  width: TopDashSpacing.xlg,
-                  color: TopDashColors.seedWhite,
+                  width: IoFlipSpacing.xlg,
+                  color: IoFlipColors.seedWhite,
                 ),
                 label: l10n.twitterButtonLabel,
                 onPressed: () => _urlLauncher(twitterShareUrl),
               ),
-              const SizedBox(height: TopDashSpacing.sm),
+              const SizedBox(height: IoFlipSpacing.sm),
               RoundedButton.image(
                 Image.asset(
                   Assets.images.facebook.path,
-                  color: TopDashColors.seedWhite,
-                  width: TopDashSpacing.xlg,
+                  color: IoFlipColors.seedWhite,
+                  width: IoFlipSpacing.xlg,
                 ),
                 label: l10n.facebookButtonLabel,
                 onPressed: () => _urlLauncher(facebookShareUrl),
               ),
-              const SizedBox(height: TopDashSpacing.sm),
+              const SizedBox(height: IoFlipSpacing.sm),
               _SaveButton(
                 status: bloc.state.status,
                 onSave: () =>
                     bloc.add(DownloadRequested(card: downloadContent)),
               ),
-              const SizedBox(height: TopDashSpacing.sm),
+              const SizedBox(height: IoFlipSpacing.sm),
               if (bloc.state.status != DownloadStatus.idle &&
                   bloc.state.status != DownloadStatus.loading)
                 _DownloadStatusBar(status: bloc.state.status),
@@ -119,23 +119,23 @@ class _SaveButton extends StatelessWidget {
     return status == DownloadStatus.loading
         ? RoundedButton.image(
             const SizedBox(
-              width: TopDashSpacing.xlg,
-              height: TopDashSpacing.xlg,
+              width: IoFlipSpacing.xlg,
+              height: IoFlipSpacing.xlg,
               child: CircularProgressIndicator(
-                color: TopDashColors.seedGrey70,
+                color: IoFlipColors.seedGrey70,
                 strokeWidth: 2,
               ),
             ),
             label: l10n.downloadingButtonLabel,
-            borderColor: TopDashColors.seedGrey50,
-            foregroundColor: TopDashColors.seedGrey70,
-            backgroundColor: TopDashColors.seedGrey30,
+            borderColor: IoFlipColors.seedGrey50,
+            foregroundColor: IoFlipColors.seedGrey70,
+            backgroundColor: IoFlipColors.seedGrey30,
           )
         : RoundedButton.image(
             Image.asset(
               Assets.images.download.path,
-              color: TopDashColors.seedWhite,
-              width: TopDashSpacing.xlg,
+              color: IoFlipColors.seedWhite,
+              width: IoFlipSpacing.xlg,
             ),
             label: l10n.saveButtonLabel,
             onPressed: onSave,
@@ -155,16 +155,16 @@ class _DownloadStatusBar extends StatelessWidget {
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 327),
       child: Container(
-        height: TopDashSpacing.xxlg,
+        height: IoFlipSpacing.xxlg,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(5)),
-          color: success ? TopDashColors.seedGreen : TopDashColors.seedRed,
+          color: success ? IoFlipColors.seedGreen : IoFlipColors.seedRed,
         ),
         child: Center(
           child: Text(
             success ? l10n.downloadCompleteLabel : l10n.downloadFailedLabel,
-            style: TopDashTextStyles.bodyMD
-                .copyWith(color: TopDashColors.seedBlack),
+            style:
+                IoFlipTextStyles.bodyMD.copyWith(color: IoFlipColors.seedBlack),
           ),
         ),
       ),

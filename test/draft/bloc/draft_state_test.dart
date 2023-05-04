@@ -2,7 +2,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:top_dash/draft/draft.dart';
+import 'package:io_flip/draft/draft.dart';
 
 void main() {
   const card1 = Card(

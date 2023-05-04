@@ -1,11 +1,11 @@
 import 'package:api_client/api_client.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:game_domain/game_domain.dart';
+import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/share/widgets/widgets.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/share/widgets/widgets.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 
 class ShareHandDialog extends StatelessWidget {
   const ShareHandDialog({
@@ -58,22 +58,22 @@ class _DialogContent extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-          padding: const EdgeInsets.all(TopDashSpacing.lg),
+          padding: const EdgeInsets.all(IoFlipSpacing.lg),
           child: FittedBox(
             fit: BoxFit.scaleDown,
             child: CardFan(cards: cards),
           ),
         ),
-        const SizedBox(height: TopDashSpacing.lg),
+        const SizedBox(height: IoFlipSpacing.lg),
         Text(
           l10n.shareTeamDialogDescription,
-          style: TopDashTextStyles.mobileH4,
+          style: IoFlipTextStyles.mobileH4,
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: TopDashSpacing.lg),
+        const SizedBox(height: IoFlipSpacing.lg),
         Text(
           initials,
-          style: TopDashTextStyles.mobileH1,
+          style: IoFlipTextStyles.mobileH1,
           textAlign: TextAlign.center,
         ),
         Row(
@@ -82,13 +82,13 @@ class _DialogContent extends StatelessWidget {
           children: [
             Image.asset(
               Assets.images.tempPreferencesCustom.path,
-              color: TopDashColors.seedGreen,
+              color: IoFlipColors.seedGreen,
             ),
-            const SizedBox(width: TopDashSpacing.sm),
+            const SizedBox(width: IoFlipSpacing.sm),
             Text(
               '$wins ${l10n.winStreakLabel}',
-              style: TopDashTextStyles.mobileH6
-                  .copyWith(color: TopDashColors.seedGreen),
+              style: IoFlipTextStyles.mobileH6
+                  .copyWith(color: IoFlipColors.seedGreen),
             ),
           ],
         ),

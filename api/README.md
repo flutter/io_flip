@@ -4,7 +4,7 @@
 [![License: MIT][license_badge]][license_link]
 [![Powered by Dart Frog](https://img.shields.io/endpoint?url=https://tinyurl.com/dartfrog-badge)](https://dartfrog.vgv.dev)
 
-API used on the Top Dash card game for Google I/O.
+API used on the I/O FLIP card game for Google I/O.
 
 Used env variables:
   - FB_APP_ID

@@ -3,10 +3,10 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:io_flip/share/bloc/download_bloc.dart';
+import 'package:io_flip/share/widgets/widgets.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
-import 'package:top_dash/share/bloc/download_bloc.dart';
-import 'package:top_dash/share/widgets/widgets.dart';
 
 import '../../helpers/helpers.dart';
 

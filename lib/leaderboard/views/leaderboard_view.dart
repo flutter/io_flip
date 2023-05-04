@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/leaderboard/leaderboard.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/leaderboard/leaderboard.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 
 class LeaderboardView extends StatelessWidget {
   const LeaderboardView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    const highlightColor = TopDashColors.seedYellow;
+    const highlightColor = IoFlipColors.seedYellow;
 
     final bloc = context.watch<LeaderboardBloc>();
     final state = bloc.state;
@@ -28,18 +28,18 @@ class LeaderboardView extends StatelessWidget {
     final longestStreak = leaderboard.scoreCardsWithLongestStreak;
 
     return Padding(
-      padding: const EdgeInsets.all(TopDashSpacing.xlg),
+      padding: const EdgeInsets.all(IoFlipSpacing.xlg),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 340),
         child: Column(
           children: [
             Text(
               l10n.leaderboardLongestStreak,
-              style: TopDashTextStyles.buttonSM.copyWith(color: highlightColor),
+              style: IoFlipTextStyles.buttonSM.copyWith(color: highlightColor),
             ),
-            const SizedBox(height: TopDashSpacing.sm),
+            const SizedBox(height: IoFlipSpacing.sm),
             const Divider(thickness: 2, color: highlightColor),
-            const SizedBox(height: TopDashSpacing.xs),
+            const SizedBox(height: IoFlipSpacing.xs),
             LeaderboardPlayers(
               players: longestStreak
                   .map(

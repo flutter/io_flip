@@ -1,5 +1,5 @@
-name: top_dash
-description: Google I/Os Top Dash game
+name: io_flip
+description: Google I/O FLIP game
 version: 1.0.0+1
 publish_to: none
 
@@ -46,6 +46,8 @@ dependencies:
   go_router: ^6.5.8
   highlight: ^0.7.0
   intl: ^0.18.0
+  io_flip_ui:
+    path: packages/io_flip_ui
   logging: ^1.1.1
   match_maker_repository:
     path: packages/match_maker_repository
@@ -53,8 +55,6 @@ dependencies:
   share_plus: ^6.3.1
   shared_preferences: ^2.1.0
   styled_text: ^7.0.0
-  top_dash_ui:
-    path: packages/top_dash_ui
   url_launcher: ^6.1.10
 
 dev_dependencies:

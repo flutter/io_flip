@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' hide Card, Element;
 import 'package:game_domain/game_domain.dart';
-import 'package:top_dash/utils/platform_aware_asset.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip/utils/utils.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 
 class ClashScene extends StatefulWidget {
   const ClashScene({

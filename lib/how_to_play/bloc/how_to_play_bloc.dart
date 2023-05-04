@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:top_dash/how_to_play/how_to_play.dart';
+import 'package:io_flip/how_to_play/how_to_play.dart';
 
 part 'how_to_play_event.dart';
 part 'how_to_play_state.dart';

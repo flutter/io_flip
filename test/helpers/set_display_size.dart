@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
 
-extension TopDashWidgetTester on WidgetTester {
+extension IoFlipWidgetTester on WidgetTester {
   void setDisplaySize(Size size) {
     view
       ..physicalSize = size

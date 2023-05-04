@@ -88,22 +88,15 @@ class $AssetsImagesGen {
 class $AssetsMusicGen {
   const $AssetsMusicGen();
 
-  /// File path: assets/music/Mr_Smith-Azul.mp3
-  String get mrSmithAzul => 'assets/music/Mr_Smith-Azul.mp3';
-
-  /// File path: assets/music/Mr_Smith-Sonorus.mp3
-  String get mrSmithSonorus => 'assets/music/Mr_Smith-Sonorus.mp3';
-
-  /// File path: assets/music/Mr_Smith-Sunday_Solitude.mp3
-  String get mrSmithSundaySolitude =>
-      'assets/music/Mr_Smith-Sunday_Solitude.mp3';
+  /// File path: assets/music/GoogleIO-GameMusic-JN-TimeToRumble-JN.mp3
+  String get googleIOGameMusicJNTimeToRumbleJN =>
+      'assets/music/GoogleIO-GameMusic-JN-TimeToRumble-JN.mp3';
 
   /// File path: assets/music/README.md
   String get readme => 'assets/music/README.md';
 
   /// List of all assets
-  List<String> get values =>
-      [mrSmithAzul, mrSmithSonorus, mrSmithSundaySolitude, readme];
+  List<String> get values => [googleIOGameMusicJNTimeToRumbleJN, readme];
 }
 
 class $AssetsSfxGen {
@@ -338,7 +331,16 @@ class AssetGenImage {
     );
   }
 
-  ImageProvider provider() => AssetImage(_assetName);
+  ImageProvider provider({
+    AssetBundle? bundle,
+    String? package,
+  }) {
+    return AssetImage(
+      _assetName,
+      bundle: bundle,
+      package: package,
+    );
+  }
 
   String get path => _assetName;
 

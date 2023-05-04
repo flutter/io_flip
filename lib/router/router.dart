@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:top_dash/draft/draft.dart';
-import 'package:top_dash/game/game.dart';
-import 'package:top_dash/main_menu/main_menu_screen.dart';
-import 'package:top_dash/match_making/match_making.dart';
-import 'package:top_dash/prompt/prompt.dart';
-import 'package:top_dash/scripts/scripts.dart';
-import 'package:top_dash/share/share.dart';
+import 'package:io_flip/draft/draft.dart';
+import 'package:io_flip/game/game.dart';
+import 'package:io_flip/main_menu/main_menu_screen.dart';
+import 'package:io_flip/match_making/match_making.dart';
+import 'package:io_flip/prompt/prompt.dart';
+import 'package:io_flip/scripts/scripts.dart';
+import 'package:io_flip/share/share.dart';
 
 GoRouter createRouter({required bool isScriptsEnabled}) {
   return GoRouter(

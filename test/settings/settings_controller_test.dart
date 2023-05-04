@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:io_flip/settings/persistence/persistence.dart';
+import 'package:io_flip/settings/settings.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:top_dash/settings/persistence/persistence.dart';
-import 'package:top_dash/settings/settings.dart';
 
 class _MockSettingsPersistence extends Mock implements SettingsPersistence {}
 
