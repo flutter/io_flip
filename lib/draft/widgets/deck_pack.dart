@@ -40,8 +40,11 @@ class DeckPackState extends State<DeckPack> {
   Future<void> setupAnimation() async {
     final data = SpriteAnimationData.sequenced(
       amount: 56,
-      amountPerRow: 7,
-      textureSize: Vector2(1050, 1219),
+      amountPerRow: platformAwareAsset(desktop: 7, mobile: 8),
+      textureSize: platformAwareAsset(
+        desktop: Vector2(1050, 1219),
+        mobile: Vector2(750, 871),
+      ),
       stepTime: 0.04,
       loop: false,
     );

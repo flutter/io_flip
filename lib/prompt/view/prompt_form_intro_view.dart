@@ -1,7 +1,6 @@
 import 'package:flame/cache.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/widgets.dart';
-import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:io_flip/gen/assets.gen.dart';
@@ -48,7 +47,10 @@ class PromptFormIntroView extends StatelessWidget {
                             data: SpriteAnimationData.sequenced(
                               amount: 57,
                               amountPerRow: 19,
-                              textureSize: Vector2(812, 812),
+                              textureSize: platformAwareAsset(
+                                desktop: Vector2(812, 812),
+                                mobile: Vector2(406, 406),
+                              ),
                               stepTime: 0.04,
                             ),
                           ),
@@ -82,9 +84,9 @@ class PromptFormIntroView extends StatelessWidget {
           IoFlipBottomBar(
             middle: RoundedButton.text(
               l10n.letsGetStarted,
-              onPressed: () => context.flow<Prompt>().update(
-                    (data) => data.setIntroSeen(),
-                  ),
+              onPressed: () => context.updateFlow<Prompt>(
+                (data) => data.setIntroSeen(),
+              ),
             ),
           ),
         ],

@@ -45,56 +45,79 @@ abstract class ElementalDamage {
   final String _victoryChargeFrontPath;
 
   /// Widget builder returning the [ChargeBack] animation.
-  ChargeBack chargeBackBuilder(VoidCallback? onComplete) {
+  ChargeBack chargeBackBuilder(
+    VoidCallback? onComplete,
+    AssetSize assetSize,
+  ) {
     return ChargeBack(
       _chargeBackPath,
       size: size,
+      assetSize: assetSize,
       onComplete: onComplete,
     );
   }
 
   /// Widget builder returning the [ChargeFront] animation.
-  ChargeFront chargeFrontBuilder(VoidCallback? onComplete) {
+  ChargeFront chargeFrontBuilder(
+    VoidCallback? onComplete,
+    AssetSize assetSize,
+  ) {
     return ChargeFront(
       _chargeFrontPath,
       size: size,
+      assetSize: assetSize,
       onComplete: onComplete,
     );
   }
 
   /// Widget builder returning the [DamageReceive] animation.
-  DamageReceive damageReceiveBuilder(VoidCallback? onComplete) {
+  DamageReceive damageReceiveBuilder(
+    VoidCallback? onComplete,
+    AssetSize assetSize,
+  ) {
     return DamageReceive(
       _damageReceivePath,
       size: size,
+      assetSize: assetSize,
       onComplete: onComplete,
     );
   }
 
   /// Widget builder returning the [DamageSend] animation.
-  DamageSend damageSendBuilder(VoidCallback? onComplete) {
+  DamageSend damageSendBuilder(
+    VoidCallback? onComplete,
+    AssetSize assetSize,
+  ) {
     return DamageSend(
       _damageSendPath,
-      width: size.width,
-      height: size.height,
+      size: size,
+      assetSize: assetSize,
       onComplete: onComplete,
     );
   }
 
   /// Widget builder returning the [VictoryChargeBack] animation.
-  VictoryChargeBack victoryChargeBackBuilder(VoidCallback? onComplete) {
+  VictoryChargeBack victoryChargeBackBuilder(
+    VoidCallback? onComplete,
+    AssetSize assetSize,
+  ) {
     return VictoryChargeBack(
       _victoryChargeBackPath,
       size: size,
+      assetSize: assetSize,
       onComplete: onComplete,
     );
   }
 
   /// Widget builder returning the [VictoryChargeFront] animation.
-  VictoryChargeFront victoryChargeFrontBuilder(VoidCallback? onComplete) {
+  VictoryChargeFront victoryChargeFrontBuilder(
+    VoidCallback? onComplete,
+    AssetSize assetSize,
+  ) {
     return VictoryChargeFront(
       _victoryChargeFrontPath,
       size: size,
+      assetSize: assetSize,
       onComplete: onComplete,
     );
   }

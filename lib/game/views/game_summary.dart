@@ -286,14 +286,15 @@ class GameSummaryFooter extends StatelessWidget {
     final playerDeck =
         bloc.isHost ? state.match.hostDeck : state.match.guestDeck;
     final result = state.matchState.result;
-    final isWinner = result == MatchResult.host && bloc.isHost ||
-        result == MatchResult.guest && !bloc.isHost;
+    final showNextMatch = (result == MatchResult.host && bloc.isHost) ||
+        (result == MatchResult.guest && !bloc.isHost) ||
+        result == MatchResult.draw;
 
     return Flex(
       direction: isPhoneWidth ? Axis.vertical : Axis.horizontal,
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (isWinner)
+        if (showNextMatch)
           RoundedButton.text(
             l10n.nextMatch,
             onPressed: () => _routerNeglectCall(
@@ -321,7 +322,7 @@ class GameSummaryFooter extends StatelessWidget {
               ),
             );
 
-            if (isWinner) {
+            if (showNextMatch) {
               IoFlipDialog.show(
                 context,
                 child: QuitGameDialog(
