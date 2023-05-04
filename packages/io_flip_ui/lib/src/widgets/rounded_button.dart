@@ -4,7 +4,7 @@ import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:provider/provider.dart';
 
 /// {@template rounded_button}
-/// Top Dash Rounded Button.
+/// I/O FLIP Rounded Button.
 /// {@endtemplate}
 class RoundedButton extends StatefulWidget {
   /// Basic [RoundedButton] with black shadow.
@@ -105,7 +105,7 @@ class RoundedButton extends StatefulWidget {
   State<RoundedButton> createState() => RoundedButtonState();
 }
 
-/// Top Dash Rounded Button state.
+/// I/O FLIP Rounded Button state.
 class RoundedButtonState extends State<RoundedButton> {
   /// Whether the button is pressed or not.
   bool isPressed = false;

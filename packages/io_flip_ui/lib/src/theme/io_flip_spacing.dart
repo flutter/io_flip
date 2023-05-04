@@ -1,4 +1,4 @@
-/// Spacing used in the Top Dash UI.
+/// Spacing used in the I/O FLIP UI.
 abstract class TopDashSpacing {
   /// The default unit of spacing
   static const double spaceUnit = 16;

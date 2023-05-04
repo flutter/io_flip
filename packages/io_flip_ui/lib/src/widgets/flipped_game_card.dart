@@ -3,7 +3,7 @@ import 'package:io_flip_ui/gen/assets.gen.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 
 /// {@template flipped_game_card}
-/// Top Dash Flipped Game Card.
+/// I/O FLIP Flipped Game Card.
 /// {@endtemplate}
 class FlippedGameCard extends StatelessWidget {
   /// {@macro flipped_game_card}

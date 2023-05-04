@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 
 /// {@template game_card_overlay_type}
-/// Top Dash Game Card Overlay Type.
+/// I/O FLIP Game Card Overlay Type.
 /// {@endtemplate}
 enum CardOverlayType {
   /// Win
@@ -16,7 +16,7 @@ enum CardOverlayType {
 }
 
 /// {@template card_overlay}
-/// Top Dash Card Overlay.
+/// I/O FLIP Card Overlay.
 /// {@endtemplate}
 class CardOverlay extends StatelessWidget {
   /// {@macro card_overlay}
@@ -123,7 +123,7 @@ class CardOverlay extends StatelessWidget {
 }
 
 /// {@template card_overlay_triangle}
-/// Top Dash Card Overlay Triangle.
+/// I/O FLIP Card Overlay Triangle.
 /// {@endtemplate}
 @visibleForTesting
 class OverlayTriangle extends CustomPainter {

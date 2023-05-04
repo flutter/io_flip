@@ -200,7 +200,7 @@ class GameCardSize extends Equatable {
 }
 
 /// {@template game_card}
-/// Top Dash Game Card.
+/// I/O FLIP Game Card.
 /// {@endtemplate}
 class GameCard extends StatelessWidget {
   /// {@macro game_card}

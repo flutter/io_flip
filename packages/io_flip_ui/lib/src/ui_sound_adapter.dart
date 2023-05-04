@@ -2,7 +2,7 @@
 typedef PlayButtonSound = void Function();
 
 /// {@template ui_sound_adapter}
-/// An adapter used by the top dash ui package to play sounds.
+/// An adapter used by the io_flip_ui package to play sounds.
 ///
 /// This adapter should be provided on top of the application tree
 /// in order for its widgets to have access to it.

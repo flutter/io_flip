@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-/// Colors used in the Top Dash UI.
+/// Colors used in the I/O FLIP UI.
 abstract class TopDashColors {
   /// Gold
   static const Color seedGold = Color(0xffffbb00);
