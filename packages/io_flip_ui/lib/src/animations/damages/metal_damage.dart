@@ -10,30 +10,34 @@ class MetalDamage extends ElementalDamage {
   /// {@macro metal_damage_small}
   MetalDamage.small({required super.size})
       : super(
-          chargeBackPath: Assets.images.elements.small.metal.chargeBack.keyName,
+          chargeBackPath:
+              Assets.images.elements.mobile.metal.chargeBack.keyName,
           chargeFrontPath:
-              Assets.images.elements.small.metal.chargeFront.keyName,
+              Assets.images.elements.mobile.metal.chargeFront.keyName,
           damageReceivePath:
-              Assets.images.elements.small.metal.damageReceive.keyName,
-          damageSendPath: Assets.images.elements.small.metal.damageSend.keyName,
+              Assets.images.elements.mobile.metal.damageReceive.keyName,
+          damageSendPath:
+              Assets.images.elements.mobile.metal.damageSend.keyName,
           victoryChargeBackPath:
-              Assets.images.elements.small.metal.victoryChargeBack.keyName,
+              Assets.images.elements.mobile.metal.victoryChargeBack.keyName,
           victoryChargeFrontPath:
-              Assets.images.elements.small.metal.victoryChargeFront.keyName,
+              Assets.images.elements.mobile.metal.victoryChargeFront.keyName,
         );
 
   /// {@macro metal_damage_large}
   MetalDamage.large({required super.size})
       : super(
-          chargeBackPath: Assets.images.elements.large.metal.chargeBack.keyName,
+          chargeBackPath:
+              Assets.images.elements.desktop.metal.chargeBack.keyName,
           chargeFrontPath:
-              Assets.images.elements.large.metal.chargeFront.keyName,
+              Assets.images.elements.desktop.metal.chargeFront.keyName,
           damageReceivePath:
-              Assets.images.elements.large.metal.damageReceive.keyName,
-          damageSendPath: Assets.images.elements.large.metal.damageSend.keyName,
+              Assets.images.elements.desktop.metal.damageReceive.keyName,
+          damageSendPath:
+              Assets.images.elements.desktop.metal.damageSend.keyName,
           victoryChargeBackPath:
-              Assets.images.elements.large.metal.victoryChargeBack.keyName,
+              Assets.images.elements.desktop.metal.victoryChargeBack.keyName,
           victoryChargeFrontPath:
-              Assets.images.elements.large.metal.victoryChargeFront.keyName,
+              Assets.images.elements.desktop.metal.victoryChargeFront.keyName,
         );
 }

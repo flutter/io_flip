@@ -10,30 +10,34 @@ class WaterDamage extends ElementalDamage {
   /// {@macro water_damage_small}
   WaterDamage.small({required super.size})
       : super(
-          chargeBackPath: Assets.images.elements.small.water.chargeBack.keyName,
+          chargeBackPath:
+              Assets.images.elements.mobile.water.chargeBack.keyName,
           chargeFrontPath:
-              Assets.images.elements.small.water.chargeFront.keyName,
+              Assets.images.elements.mobile.water.chargeFront.keyName,
           damageReceivePath:
-              Assets.images.elements.small.water.damageReceive.keyName,
-          damageSendPath: Assets.images.elements.small.water.damageSend.keyName,
+              Assets.images.elements.mobile.water.damageReceive.keyName,
+          damageSendPath:
+              Assets.images.elements.mobile.water.damageSend.keyName,
           victoryChargeBackPath:
-              Assets.images.elements.small.water.victoryChargeBack.keyName,
+              Assets.images.elements.mobile.water.victoryChargeBack.keyName,
           victoryChargeFrontPath:
-              Assets.images.elements.small.water.victoryChargeFront.keyName,
+              Assets.images.elements.mobile.water.victoryChargeFront.keyName,
         );
 
   /// {@macro water_damage_large}
   WaterDamage.large({required super.size})
       : super(
-          chargeBackPath: Assets.images.elements.large.water.chargeBack.keyName,
+          chargeBackPath:
+              Assets.images.elements.desktop.water.chargeBack.keyName,
           chargeFrontPath:
-              Assets.images.elements.large.water.chargeFront.keyName,
+              Assets.images.elements.desktop.water.chargeFront.keyName,
           damageReceivePath:
-              Assets.images.elements.large.water.damageReceive.keyName,
-          damageSendPath: Assets.images.elements.large.water.damageSend.keyName,
+              Assets.images.elements.desktop.water.damageReceive.keyName,
+          damageSendPath:
+              Assets.images.elements.desktop.water.damageSend.keyName,
           victoryChargeBackPath:
-              Assets.images.elements.large.water.victoryChargeBack.keyName,
+              Assets.images.elements.desktop.water.victoryChargeBack.keyName,
           victoryChargeFrontPath:
-              Assets.images.elements.large.water.victoryChargeFront.keyName,
+              Assets.images.elements.desktop.water.victoryChargeFront.keyName,
         );
 }

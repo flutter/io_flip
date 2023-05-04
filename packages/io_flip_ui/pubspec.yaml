@@ -35,16 +35,16 @@ flutter:
 
   assets:
     - assets/images/
-    - assets/images/elements/large/air/
-    - assets/images/elements/large/earth/
-    - assets/images/elements/large/fire/
-    - assets/images/elements/large/metal/
-    - assets/images/elements/large/water/
-    - assets/images/elements/small/air/
-    - assets/images/elements/small/earth/
-    - assets/images/elements/small/fire/
-    - assets/images/elements/small/metal/
-    - assets/images/elements/small/water/
+    - assets/images/elements/desktop/air/
+    - assets/images/elements/desktop/earth/
+    - assets/images/elements/desktop/fire/
+    - assets/images/elements/desktop/metal/
+    - assets/images/elements/desktop/water/
+    - assets/images/elements/mobile/air/
+    - assets/images/elements/mobile/earth/
+    - assets/images/elements/mobile/fire/
+    - assets/images/elements/mobile/metal/
+    - assets/images/elements/mobile/water/
     - assets/images/suits/onboarding/
     - assets/images/suits/card/
     - assets/images/card_frames/

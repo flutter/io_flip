@@ -10,30 +10,32 @@ class FireDamage extends ElementalDamage {
   /// {@macro fire_damage_small}
   FireDamage.small({required super.size})
       : super(
-          chargeBackPath: Assets.images.elements.small.fire.chargeBack.keyName,
+          chargeBackPath: Assets.images.elements.mobile.fire.chargeBack.keyName,
           chargeFrontPath:
-              Assets.images.elements.small.fire.chargeFront.keyName,
+              Assets.images.elements.mobile.fire.chargeFront.keyName,
           damageReceivePath:
-              Assets.images.elements.small.fire.damageReceive.keyName,
-          damageSendPath: Assets.images.elements.small.fire.damageSend.keyName,
+              Assets.images.elements.mobile.fire.damageReceive.keyName,
+          damageSendPath: Assets.images.elements.mobile.fire.damageSend.keyName,
           victoryChargeBackPath:
-              Assets.images.elements.small.fire.victoryChargeBack.keyName,
+              Assets.images.elements.mobile.fire.victoryChargeBack.keyName,
           victoryChargeFrontPath:
-              Assets.images.elements.small.fire.victoryChargeFront.keyName,
+              Assets.images.elements.mobile.fire.victoryChargeFront.keyName,
         );
 
   /// {@macro fire_damage_large}
   FireDamage.large({required super.size})
       : super(
-          chargeBackPath: Assets.images.elements.large.fire.chargeBack.keyName,
+          chargeBackPath:
+              Assets.images.elements.desktop.fire.chargeBack.keyName,
           chargeFrontPath:
-              Assets.images.elements.large.fire.chargeFront.keyName,
+              Assets.images.elements.desktop.fire.chargeFront.keyName,
           damageReceivePath:
-              Assets.images.elements.large.fire.damageReceive.keyName,
-          damageSendPath: Assets.images.elements.large.fire.damageSend.keyName,
+              Assets.images.elements.desktop.fire.damageReceive.keyName,
+          damageSendPath:
+              Assets.images.elements.desktop.fire.damageSend.keyName,
           victoryChargeBackPath:
-              Assets.images.elements.large.fire.victoryChargeBack.keyName,
+              Assets.images.elements.desktop.fire.victoryChargeBack.keyName,
           victoryChargeFrontPath:
-              Assets.images.elements.large.fire.victoryChargeFront.keyName,
+              Assets.images.elements.desktop.fire.victoryChargeFront.keyName,
         );
 }
