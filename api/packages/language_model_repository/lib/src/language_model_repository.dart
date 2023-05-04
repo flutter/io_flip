@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:db_client/db_client.dart';
+import 'package:prompt_repository/prompt_repository.dart';
 
 /// {@template language_model_repository}
 /// Repository providing access language model services
@@ -9,12 +10,15 @@ class LanguageModelRepository {
   /// {@macro language_model_repository}
   LanguageModelRepository({
     required DbClient dbClient,
+    required PromptRepository promptRepository,
     Random? rng,
-  }) : _dbClient = dbClient {
+  })  : _dbClient = dbClient,
+        _promptRepository = promptRepository {
     _rng = rng ?? Random();
   }
 
   late final Random _rng;
+  final PromptRepository _promptRepository;
   final DbClient _dbClient;
 
   /// Returns an unique card name.
@@ -22,16 +26,15 @@ class LanguageModelRepository {
     required String characterName,
     required String characterClass,
     required String characterPower,
-    required String characterLocation,
   }) async {
-    final option = _rng.nextInt(3);
+    final option = _rng.nextInt(2);
     switch (option) {
       case 0:
         return '$characterClass $characterName';
-      case 1:
-        return '$characterPower $characterName';
       default:
-        return '$characterLocation $characterName';
+        final shortenedTerm = await _promptRepository.getByTerm(characterPower);
+        final cardPower = shortenedTerm?.shortenedTerm ?? characterPower;
+        return '$cardPower $characterName';
     }
   }
 

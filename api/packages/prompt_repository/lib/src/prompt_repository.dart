@@ -30,6 +30,24 @@ class PromptRepository {
         .toList();
   }
 
+  /// Retrieves a prompt term for the given [term].
+  Future<PromptTerm?> getByTerm(String term) async {
+    final terms = await _dbClient.findBy(
+      'prompt_terms',
+      'term',
+      term,
+    );
+
+    if (terms.isNotEmpty) {
+      return PromptTerm.fromJson({
+        'id': terms.first.id,
+        ...terms.first.data,
+      });
+    }
+
+    return null;
+  }
+
   /// Creates a new prompt term.
   Future<void> createPromptTerm(PromptTerm promptTerm) async {
     await _dbClient.add(
