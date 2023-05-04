@@ -39,11 +39,13 @@ class LanguageModelRepository {
   Future<String> generateFlavorText({
     required String character,
     required String characterPower,
+    required String characterClass,
     required String location,
   }) async {
-    final descriptions = await _dbClient.find('card_description', {
+    final descriptions = await _dbClient.find('card_descriptions', {
       'character': character,
-      'characterPower': characterPower,
+      'characterClass': characterClass,
+      'power': characterPower,
       'location': location,
     });
 

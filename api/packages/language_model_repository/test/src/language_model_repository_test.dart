@@ -75,9 +75,10 @@ void main() {
       test('returns a random value of the query', () async {
         when(() => rng.nextInt(2)).thenReturn(1);
         when(
-          () => dbClient.find('card_description', {
+          () => dbClient.find('card_descriptions', {
             'character': 'Dash',
-            'characterPower': 'Baggles',
+            'characterClass': 'Wizard',
+            'power': 'Baggles',
             'location': 'Beach',
           }),
         ).thenAnswer(
@@ -89,6 +90,7 @@ void main() {
         expect(
           await languageModelRepository.generateFlavorText(
             character: 'Dash',
+            characterClass: 'Wizard',
             characterPower: 'Baggles',
             location: 'Beach',
           ),
@@ -99,9 +101,10 @@ void main() {
       test('returns empty is nothing is found', () async {
         when(() => rng.nextInt(2)).thenReturn(1);
         when(
-          () => dbClient.find('card_description', {
+          () => dbClient.find('card_descriptions', {
             'character': 'Dash',
-            'characterPower': 'Baggles',
+            'characterClass': 'Wizard',
+            'power': 'Baggles',
             'location': 'Beach',
           }),
         ).thenAnswer(
@@ -111,6 +114,7 @@ void main() {
           await languageModelRepository.generateFlavorText(
             character: 'Dash',
             characterPower: 'Baggles',
+            characterClass: 'Wizard',
             location: 'Beach',
           ),
           isEmpty,

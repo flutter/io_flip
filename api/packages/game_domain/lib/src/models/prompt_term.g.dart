@@ -9,6 +9,7 @@ part of 'prompt_term.dart';
 PromptTerm _$PromptTermFromJson(Map<String, dynamic> json) => PromptTerm(
       term: json['term'] as String,
       type: $enumDecode(_$PromptTermTypeEnumMap, json['type']),
+      shortenedTerm: json['shortenedTerm'] as String?,
       id: json['id'] as String?,
     );
 
@@ -16,6 +17,7 @@ Map<String, dynamic> _$PromptTermToJson(PromptTerm instance) =>
     <String, dynamic>{
       'id': instance.id,
       'term': instance.term,
+      'shortenedTerm': instance.shortenedTerm,
       'type': _$PromptTermTypeEnumMap[instance.type]!,
     };
 

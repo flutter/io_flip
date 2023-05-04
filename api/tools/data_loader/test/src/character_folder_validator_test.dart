@@ -67,9 +67,9 @@ void main() {
       test('return the missing files', () async {
         when(() => csv.readAsLines()).thenAnswer(
           (_) async => [
-            'Character,Class,Power,Location,',
-            'Dash,Alien,Banjos,City,',
-            'Android,Mage,Bass,Forest,',
+            'Character,Class,Power,Power(Shorter),Location,',
+            'Dash,Alien,Banjos,Banj,City,',
+            'Android,Mage,Bass,B,Forest,',
           ],
         );
 
@@ -95,8 +95,9 @@ void main() {
       test('progress is called correctly', () async {
         when(() => csv.readAsLines()).thenAnswer(
           (_) async => [
-            'Character,Class,Power,Location,',
-            'Dash,Alien,Banjos,City,',
+            'Character,Class,Power,Power(Shorter),Location,',
+            'Dash,Alien,Banjos,Banj,City,',
+            'Android,Mage,Bass,B,Forest,',
           ],
         );
         final validator = CharacterFolderValidator(
@@ -115,9 +116,15 @@ void main() {
           progress,
           equals(
             [
-              [0, 2],
-              [1, 2],
-              [2, 2],
+              [0, 8],
+              [1, 8],
+              [2, 8],
+              [3, 8],
+              [4, 8],
+              [5, 8],
+              [6, 8],
+              [7, 8],
+              [8, 8],
             ],
           ),
         );
