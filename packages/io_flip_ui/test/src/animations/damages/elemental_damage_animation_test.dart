@@ -19,16 +19,16 @@ void main() {
       images = Images(prefix: '');
 
       await images.loadAll([
-        ...Assets.images.elements.large.air.values.map((e) => e.keyName),
-        ...Assets.images.elements.large.earth.values.map((e) => e.keyName),
-        ...Assets.images.elements.large.fire.values.map((e) => e.keyName),
-        ...Assets.images.elements.large.metal.values.map((e) => e.keyName),
-        ...Assets.images.elements.large.water.values.map((e) => e.keyName),
-        ...Assets.images.elements.small.air.values.map((e) => e.keyName),
-        ...Assets.images.elements.small.earth.values.map((e) => e.keyName),
-        ...Assets.images.elements.small.fire.values.map((e) => e.keyName),
-        ...Assets.images.elements.small.metal.values.map((e) => e.keyName),
-        ...Assets.images.elements.small.water.values.map((e) => e.keyName),
+        ...Assets.images.elements.desktop.air.values.map((e) => e.keyName),
+        ...Assets.images.elements.desktop.earth.values.map((e) => e.keyName),
+        ...Assets.images.elements.desktop.fire.values.map((e) => e.keyName),
+        ...Assets.images.elements.desktop.metal.values.map((e) => e.keyName),
+        ...Assets.images.elements.desktop.water.values.map((e) => e.keyName),
+        ...Assets.images.elements.mobile.air.values.map((e) => e.keyName),
+        ...Assets.images.elements.mobile.earth.values.map((e) => e.keyName),
+        ...Assets.images.elements.mobile.fire.values.map((e) => e.keyName),
+        ...Assets.images.elements.mobile.metal.values.map((e) => e.keyName),
+        ...Assets.images.elements.mobile.water.values.map((e) => e.keyName),
       ]);
     });
 
