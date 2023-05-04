@@ -129,7 +129,7 @@ class _AppState extends State<App> {
                 );
               },
               child: MaterialApp.router(
-                title: context.l10n.ioFlip,
+                title: 'I/O FLIP',
                 theme: IoFlipTheme.themeData,
                 routerConfig: router,
                 scaffoldMessengerKey: scaffoldMessengerKey,
