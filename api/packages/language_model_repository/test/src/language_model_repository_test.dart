@@ -76,10 +76,10 @@ void main() {
         when(() => rng.nextInt(2)).thenReturn(1);
         when(
           () => dbClient.find('card_descriptions', {
-            'character': 'Dash',
-            'characterClass': 'Wizard',
-            'power': 'Baggles',
-            'location': 'Beach',
+            'character': 'dash',
+            'characterClass': 'wizard',
+            'power': 'baggles',
+            'location': 'beach',
           }),
         ).thenAnswer(
           (_) async => [
@@ -98,14 +98,40 @@ void main() {
         );
       });
 
+      test('makes the correct query', () async {
+        when(() => rng.nextInt(2)).thenReturn(1);
+        when(
+          () => dbClient.find('card_descriptions', {
+            'character': 'super_dash',
+            'characterClass': 'ice_wizard',
+            'power': 'super_baggles',
+            'location': 'active_volcano',
+          }),
+        ).thenAnswer(
+          (_) async => [
+            DbEntityRecord(id: '', data: const {'description': 'A'}),
+            DbEntityRecord(id: '', data: const {'description': 'B'}),
+          ],
+        );
+        expect(
+          await languageModelRepository.generateFlavorText(
+            character: 'Super Dash',
+            characterClass: 'Ice Wizard',
+            characterPower: 'Super Baggles',
+            location: 'Active Volcano',
+          ),
+          equals('B'),
+        );
+      });
+
       test('returns empty is nothing is found', () async {
         when(() => rng.nextInt(2)).thenReturn(1);
         when(
           () => dbClient.find('card_descriptions', {
-            'character': 'Dash',
-            'characterClass': 'Wizard',
-            'power': 'Baggles',
-            'location': 'Beach',
+            'character': 'dash',
+            'characterClass': 'wizard',
+            'power': 'baggles',
+            'location': 'beach',
           }),
         ).thenAnswer(
           (_) async => [],
