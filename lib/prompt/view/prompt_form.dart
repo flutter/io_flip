@@ -4,9 +4,9 @@ import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/prompt/prompt.dart';
 import 'package:provider/provider.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/prompt/prompt.dart';
 
 class PromptForm extends StatelessWidget {
   PromptForm({

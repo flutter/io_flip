@@ -2,9 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:io_flip/settings/persistence/persistence.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:top_dash/settings/persistence/persistence.dart';
 
 /// An implementation of [SettingsPersistence] that uses
 /// `package:shared_preferences`.

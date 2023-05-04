@@ -4,9 +4,9 @@
   "@play": {
     "description": "Label play"
   },
-  "ioBash": "I/O Bash",
-  "@ioBash": {
-    "description": "I/O Bash - Name of the game"
+  "ioFlip": "I/O FLIP",
+  "@ioFlip": {
+    "description": "I/O FLIP - Name of the game"
   },
   "generatingCards": "Generating {count} of {total}",
   "@generatingCards": {

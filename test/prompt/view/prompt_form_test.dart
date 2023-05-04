@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:io_flip/prompt/prompt.dart';
+import 'package:io_flip/settings/settings.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:top_dash/prompt/prompt.dart';
-import 'package:top_dash/settings/settings.dart';
 
 import '../../helpers/helpers.dart';
 

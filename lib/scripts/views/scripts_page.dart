@@ -2,7 +2,7 @@ import 'package:api_client/api_client.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_script_machine/game_script_machine.dart';
-import 'package:top_dash/scripts/scripts.dart';
+import 'package:io_flip/scripts/scripts.dart';
 
 class ScriptsPage extends StatelessWidget {
   const ScriptsPage({super.key});

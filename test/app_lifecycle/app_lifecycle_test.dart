@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:top_dash/app_lifecycle/app_lifecycle.dart';
+import 'package:io_flip/app_lifecycle/app_lifecycle.dart';
 
 void main() {
   group('AppLifecycleObserver', () {

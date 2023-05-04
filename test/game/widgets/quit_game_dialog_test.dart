@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:top_dash/game/game.dart';
+import 'package:io_flip/game/game.dart';
 
 import '../../helpers/helpers.dart';
 

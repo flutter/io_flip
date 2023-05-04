@@ -9,14 +9,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:game_script_machine/game_script_machine.dart';
 import 'package:go_router/go_router.dart';
+import 'package:io_flip/audio/audio_controller.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/settings/settings.dart';
+import 'package:io_flip/style/snack_bar.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
-import 'package:top_dash/audio/audio_controller.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/settings/settings.dart';
-import 'package:top_dash/style/snack_bar.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 
 import 'helpers.dart';
 

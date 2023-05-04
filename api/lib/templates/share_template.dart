@@ -157,7 +157,7 @@ const _template = '''
       {{{content}}}
       <h3>{{header}}</h3>
       <p>
-        Play I/O Bash and use AI to create cards and compete against players
+        Play I/O FLIP and use AI to create cards and compete against players
         from around the globe.
       </p>
       <a class="btn" href="{{{meta.gameUrl}}}"> PLAY NOW </a>

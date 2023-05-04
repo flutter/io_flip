@@ -4,10 +4,10 @@ import 'package:flame/extensions.dart';
 import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:top_dash/audio/audio_controller.dart';
-import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/utils/platform_aware_asset.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip/audio/audio_controller.dart';
+import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/utils/utils.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 
 class DeckPack extends StatefulWidget {
   const DeckPack({

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/how_to_play/how_to_play.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/utils/utils.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/how_to_play/how_to_play.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/utils/utils.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 
 const _imageHeight = 184.0;
 
@@ -29,8 +29,8 @@ class HowToPlayView extends StatelessWidget {
         ),
         Container(
           padding: const EdgeInsets.only(
-            top: TopDashSpacing.lg * 2,
-            bottom: TopDashSpacing.lg,
+            top: IoFlipSpacing.lg * 2,
+            bottom: IoFlipSpacing.lg,
           ),
           constraints: const BoxConstraints(maxWidth: 224),
           child: Row(
@@ -44,15 +44,15 @@ class HowToPlayView extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: selectedPageIndex == index
-                      ? TopDashColors.seedYellow
-                      : TopDashColors.seedGrey70,
+                      ? IoFlipColors.seedYellow
+                      : IoFlipColors.seedGrey70,
                 ),
               ),
             ),
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: TopDashSpacing.lg),
+          padding: const EdgeInsets.symmetric(vertical: IoFlipSpacing.lg),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -67,7 +67,7 @@ class HowToPlayView extends StatelessWidget {
                   }
                 },
               ),
-              const SizedBox(width: TopDashSpacing.md),
+              const SizedBox(width: IoFlipSpacing.md),
               RoundedButton.icon(
                 Icons.arrow_forward,
                 onPressed: () {
@@ -132,7 +132,7 @@ class HowToPlayIntro extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         IoFlipLogo(height: _imageHeight),
-        const SizedBox(height: TopDashSpacing.xxlg),
+        const SizedBox(height: IoFlipSpacing.xxlg),
         Flexible(
           child: HowToPlayStyledText(l10n.howToPlayIntroTitle),
         ),
@@ -158,9 +158,9 @@ class HowToPlayHandBuilding extends StatelessWidget {
           ),
           height: _imageHeight,
         ),
-        const SizedBox(height: TopDashSpacing.xxlg),
+        const SizedBox(height: IoFlipSpacing.xxlg),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.md),
+          padding: const EdgeInsets.symmetric(horizontal: IoFlipSpacing.md),
           child: HowToPlayStyledText(l10n.howToPlayDeckTitle),
         ),
       ],
@@ -206,9 +206,9 @@ class HowToPlaySuitsIntro extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: TopDashSpacing.xxlg),
+        const SizedBox(height: IoFlipSpacing.xxlg),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.md),
+          padding: const EdgeInsets.symmetric(horizontal: IoFlipSpacing.md),
           child: HowToPlayStyledText(l10n.howToPlayElementsTitle),
         ),
       ],

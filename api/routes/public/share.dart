@@ -20,7 +20,7 @@ Future<Response> onRequest(RequestContext context) async {
     if (card == null) {
       return Response(statusCode: HttpStatus.notFound);
     }
-    header = 'Check out my card from I/O Bash!';
+    header = 'Check out my card from I/O FLIP!';
     content = buildShareCardContent(card: card);
     metaImage = card.image;
   } else if (deckId != null) {
@@ -29,7 +29,7 @@ Future<Response> onRequest(RequestContext context) async {
         .findScoreCardByLongestStreakDeck(
           deckId,
         );
-    header = 'Check out my hand from I/O Bash!';
+    header = 'Check out my hand from I/O FLIP!';
     content = buildHandContent(
       // TODO(erickzanardo): add image when the share image task is done.
       handImage: '',

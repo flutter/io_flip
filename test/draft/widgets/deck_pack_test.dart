@@ -1,7 +1,7 @@
 import 'package:flame/cache.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:top_dash/draft/draft.dart';
+import 'package:io_flip/draft/draft.dart';
 
 import '../../helpers/helpers.dart';
 

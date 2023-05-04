@@ -3,7 +3,7 @@
 import 'package:api_client/api_client.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:top_dash/leaderboard/leaderboard.dart';
+import 'package:io_flip/leaderboard/leaderboard.dart';
 
 void main() {
   const card = ScoreCard(id: 'id');

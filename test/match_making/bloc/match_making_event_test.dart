@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:top_dash/match_making/match_making.dart';
+import 'package:io_flip/match_making/match_making.dart';
 
 void main() {
   group('MatchRequested', () {

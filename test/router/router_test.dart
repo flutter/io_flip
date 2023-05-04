@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:top_dash/router/router.dart';
+import 'package:io_flip/router/router.dart';
 
 void main() {
   group('createRouter', () {
