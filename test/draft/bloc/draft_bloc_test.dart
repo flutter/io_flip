@@ -48,6 +48,12 @@ void main() {
       ),
     );
 
+    final deck = Deck(
+      id: 'deckId',
+      userId: 'userId',
+      cards: cards.sublist(0, 3),
+    );
+
     late GameResource gameResource;
     late AudioController audioController;
 
@@ -441,6 +447,77 @@ void main() {
           cards: const [],
           selectedCards: const [null, null, null],
           status: DraftStateStatus.deckFailed,
+          firstCardOpacity: 1,
+        ),
+      ],
+    );
+
+    blocTest<DraftBloc, DraftState>(
+      'emits player deck created when requested',
+      setUp: () {
+        when(() => gameResource.createDeck(any()))
+            .thenAnswer((_) async => 'deckId');
+        when(() => gameResource.getDeck(any())).thenAnswer((_) async => deck);
+      },
+      seed: () => DraftState(
+        cards: cards,
+        selectedCards: [cards[0], cards[1], cards[2]],
+        status: DraftStateStatus.deckSelected,
+        firstCardOpacity: 1,
+      ),
+      build: () => DraftBloc(
+        gameResource: gameResource,
+        audioController: audioController,
+      ),
+      act: (bloc) => bloc.add(
+        PlayerDeckRequested([cards[0].id, cards[1].id, cards[2].id]),
+      ),
+      expect: () => [
+        DraftState(
+          cards: cards,
+          selectedCards: [cards[0], cards[1], cards[2]],
+          status: DraftStateStatus.deckLoading,
+          firstCardOpacity: 1,
+        ),
+        DraftState(
+          cards: cards,
+          selectedCards: [cards[0], cards[1], cards[2]],
+          status: DraftStateStatus.playerDeckCreated,
+          firstCardOpacity: 1,
+          deck: deck,
+        ),
+      ],
+    );
+
+    blocTest<DraftBloc, DraftState>(
+      'emits player deck failed when request fails',
+      setUp: () {
+        when(() => gameResource.createDeck(any())).thenThrow(Exception());
+      },
+      seed: () => DraftState(
+        cards: cards,
+        selectedCards: [cards[0], cards[1], cards[2]],
+        status: DraftStateStatus.deckSelected,
+        firstCardOpacity: 1,
+      ),
+      build: () => DraftBloc(
+        gameResource: gameResource,
+        audioController: audioController,
+      ),
+      act: (bloc) => bloc.add(
+        PlayerDeckRequested([cards[0].id, cards[1].id, cards[2].id]),
+      ),
+      expect: () => [
+        DraftState(
+          cards: cards,
+          selectedCards: [cards[0], cards[1], cards[2]],
+          status: DraftStateStatus.deckLoading,
+          firstCardOpacity: 1,
+        ),
+        DraftState(
+          cards: cards,
+          selectedCards: [cards[0], cards[1], cards[2]],
+          status: DraftStateStatus.playerDeckFailed,
           firstCardOpacity: 1,
         ),
       ],

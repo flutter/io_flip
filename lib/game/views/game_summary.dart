@@ -301,7 +301,7 @@ class GameSummaryFooter extends StatelessWidget {
               context,
               () => GoRouter.of(context).goNamed(
                 'match_making',
-                extra: MatchMakingPageData(cards: bloc.playerCards),
+                extra: MatchMakingPageData(deck: bloc.playerDeck),
               ),
             ),
           ),
