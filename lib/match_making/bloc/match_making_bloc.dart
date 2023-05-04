@@ -170,7 +170,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
 
       return Future.value(false);
     }).timeout(
-      Duration(seconds: isPrivate ? 30 : 8),
+      Duration(seconds: isPrivate ? 120 : 8),
       onTimeout: () async {
         await subscription.cancel();
         try {
