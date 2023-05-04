@@ -67,4 +67,36 @@ class PromptRepository {
 
     return powerValid && characterClassValid;
   }
+
+  /// Takes a prompt combination and checks in the lookup tables
+  /// if the given [imageUrl] exists.
+  ///
+  /// If it does, the [imageUrl] will be returned.
+  ///
+  /// If it doesn't exists, one of the variations present
+  /// in the table will be returned instead.
+  Future<String> ensurePromptImage({
+    required String promptCombination,
+    required String imageUrl,
+  }) async {
+    final results = await _dbClient.findBy(
+      'image_lookup_table',
+      'prompt',
+      promptCombination,
+    );
+
+    // We assume that if a lookup table does not exists for the prompt
+    // combination, that that combination has all the possible variations.
+    if (results.isEmpty) {
+      return imageUrl;
+    } else {
+      final images = results.first.data['available_images'] as List<String>;
+
+      if (images.contains(imageUrl)) {
+        return imageUrl;
+      } else {
+        return ([...images]..shuffle()).first;
+      }
+    }
+  }
 }
