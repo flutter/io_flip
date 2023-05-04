@@ -451,6 +451,8 @@ void main() {
         (tester) async {
           final goRouter = MockGoRouter();
           when(() => bloc.playerCards).thenReturn([]);
+          when(() => bloc.playerDeck)
+              .thenReturn(Deck(id: 'id', userId: 'userId', cards: cards));
           defaultMockState(matchResult: MatchResult.draw);
 
           await tester.pumpApp(
