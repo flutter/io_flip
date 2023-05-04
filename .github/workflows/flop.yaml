@@ -1,6 +1,12 @@
 name: flop
 
-on: [pull_request, push]
+on:
+  pull_request:
+    paths:
+      - "flop/**"
+      - ".github/workflows/flop.yaml"
+    branches:
+      - main
 
 jobs:
   semantic-pull-request:
