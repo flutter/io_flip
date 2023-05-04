@@ -1,4 +1,4 @@
-name: top_dash_ui
+name: io_flip_ui
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -7,8 +7,8 @@ concurrency:
 on:
   pull_request:
     paths:
-      - "packages/top_dash_ui/**"
-      - ".github/workflows/top_dash_ui.yaml"
+      - "packages/io_flip_ui/**"
+      - ".github/workflows/io_flip_ui.yaml"
     branches:
       - main
 
@@ -18,4 +18,4 @@ jobs:
     with:
       flutter_channel: beta
       flutter_version: 3.10.0-1.4.pre
-      working_directory: packages/top_dash_ui
+      working_directory: packages/io_flip_ui
