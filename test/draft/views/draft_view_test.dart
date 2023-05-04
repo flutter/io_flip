@@ -65,6 +65,12 @@ void main() {
       suit: Suit.air,
     );
 
+    const deck = Deck(
+      id: 'deckId',
+      userId: 'userId',
+      cards: [card1, card2, card3],
+    );
+
     void mockState(List<DraftState> states) {
       whenListen(
         draftBloc,
@@ -90,6 +96,16 @@ void main() {
     });
 
     testWidgets('renders correctly', (tester) async {
+      mockState(
+        [
+          DraftState(
+            cards: const [card1, card2],
+            selectedCards: const [],
+            status: DraftStateStatus.deckLoaded,
+            firstCardOpacity: 1,
+          )
+        ],
+      );
       await tester.pumpSubject(draftBloc: draftBloc);
 
       expect(find.byType(DraftView), findsOneWidget);
@@ -282,7 +298,7 @@ void main() {
         verify(
           () => goRouter.goNamed(
             'match_making',
-            extra: MatchMakingPageData(cards: const [card1, card2, card3]),
+            extra: MatchMakingPageData(deck: deck),
           ),
         ).called(1);
       },
@@ -319,7 +335,7 @@ void main() {
             queryParams: {
               'createPrivateMatch': 'true',
             },
-            extra: MatchMakingPageData(cards: const [card1, card2, card3]),
+            extra: MatchMakingPageData(deck: deck),
           ),
         ).called(1);
       },
@@ -359,7 +375,7 @@ void main() {
             queryParams: {
               'inviteCode': 'invite-code',
             },
-            extra: MatchMakingPageData(cards: const [card1, card2, card3]),
+            extra: MatchMakingPageData(deck: deck),
           ),
         ).called(1);
       },

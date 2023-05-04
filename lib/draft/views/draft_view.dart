@@ -67,28 +67,49 @@ class _DraftViewState extends State<DraftView> {
     final bloc = context.watch<DraftBloc>();
     final state = bloc.state;
     final l10n = context.l10n;
+    Widget child;
 
     if (state.status == DraftStateStatus.deckFailed) {
-      return IoFlipScaffold(
+      child = IoFlipScaffold(
         body: Center(
           child: Text(l10n.cardGenerationError),
         ),
       );
-    }
-
-    if (state.status == DraftStateStatus.deckLoading ||
+    } else if (state.status == DraftStateStatus.deckLoading ||
         state.status == DraftStateStatus.initial ||
         !imagesLoaded) {
-      return const IoFlipScaffold(
+      child = const IoFlipScaffold(
         body: Center(
           child: CircularProgressIndicator(),
         ),
       );
+    } else {
+      child = DraftLoadedView(
+        routerNeglectCall: widget._routerNeglectCall,
+        allowPrivateMatch: widget._allowPrivateMatch,
+      );
     }
 
-    return DraftLoadedView(
-      routerNeglectCall: widget._routerNeglectCall,
-      allowPrivateMatch: widget._allowPrivateMatch,
+    return BlocListener<DraftBloc, DraftState>(
+      listenWhen: (previous, current) =>
+          (previous.status != current.status) &&
+          (current.status == DraftStateStatus.playerDeckCreated),
+      listener: (context, state) {
+        widget._routerNeglectCall(
+          context,
+          () => GoRouter.of(context).goNamed(
+            'match_making',
+            queryParams: {
+              if (state.privateMatchInviteCode != null)
+                'inviteCode': state.privateMatchInviteCode,
+              if (state.createPrivateMatch != null)
+                'createPrivateMatch': 'true',
+            },
+            extra: MatchMakingPageData(deck: state.deck!),
+          ),
+        );
+      },
+      child: child,
     );
   }
 }
@@ -436,12 +457,13 @@ class _BottomBar extends StatelessWidget {
               l10n.joinMatch.toUpperCase(),
               onPressed: () => routerNeglectCall(
                 context,
-                () => GoRouter.of(context).goNamed(
-                  'match_making',
-                  extra: MatchMakingPageData(
-                    cards: state.selectedCards.cast<Card>(),
-                  ),
-                ),
+                () {
+                  final cardIds = state.selectedCards
+                      .cast<Card>()
+                      .map((e) => e.id)
+                      .toList();
+                  context.read<DraftBloc>().add(PlayerDeckRequested(cardIds));
+                },
               ),
               onLongPress: allowPrivateMatch
                   ? () => showPrivateMatchDialog(context)
@@ -474,11 +496,11 @@ class _BottomBar extends StatelessWidget {
   void showPrivateMatchDialog(BuildContext context) {
     final bloc = context.read<DraftBloc>();
     final state = bloc.state;
-    final goRouter = GoRouter.of(context);
 
     showDialog<String?>(
       context: context,
       builder: (_) => _JoinPrivateMatchDialog(
+        draftBloc: bloc,
         selectedCards: state.selectedCards.cast<Card>(),
         routerNeglectCall: routerNeglectCall,
       ),
@@ -486,12 +508,11 @@ class _BottomBar extends StatelessWidget {
       if (inviteCode != null) {
         routerNeglectCall(
           context,
-          () => goRouter.goNamed(
-            'match_making',
-            queryParams: {
-              'inviteCode': inviteCode,
-            },
-            extra: MatchMakingPageData(cards: state.selectedCards.cast<Card>()),
+          () => bloc.add(
+            PlayerDeckRequested(
+              state.selectedCards.cast<Card>().map((e) => e.id).toList(),
+              privateMatchInviteCode: inviteCode,
+            ),
           ),
         );
       }
@@ -502,10 +523,12 @@ class _BottomBar extends StatelessWidget {
 
 class _JoinPrivateMatchDialog extends StatefulWidget {
   const _JoinPrivateMatchDialog({
+    required this.draftBloc,
     required this.selectedCards,
     required this.routerNeglectCall,
   });
 
+  final DraftBloc draftBloc;
   final List<Card> selectedCards;
   final RouterNeglectCall routerNeglectCall;
 
@@ -553,12 +576,11 @@ class _JoinPrivateMatchDialogState extends State<_JoinPrivateMatchDialog> {
             ElevatedButton(
               onPressed: () => widget.routerNeglectCall(
                 context,
-                () => GoRouter.of(context).goNamed(
-                  'match_making',
-                  queryParams: {
-                    'createPrivateMatch': 'true',
-                  },
-                  extra: MatchMakingPageData(cards: widget.selectedCards),
+                () => widget.draftBloc.add(
+                  PlayerDeckRequested(
+                    widget.selectedCards.map((e) => e.id).toList(),
+                    createPrivateMatch: true,
+                  ),
                 ),
               ),
               child: const Text('Create private match'),
