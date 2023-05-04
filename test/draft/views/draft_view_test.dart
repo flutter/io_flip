@@ -415,11 +415,11 @@ void main() {
         verify(
           () => goRouter.goNamed(
             'match_making',
-            queryParams: {
-              'inviteCode': 'code',
-              'createPrivateMatch': 'true',
-            },
-            extra: MatchMakingPageData(deck: deck),
+            extra: MatchMakingPageData(
+              deck: deck,
+              createPrivateMatch: true,
+              inviteCode: 'code',
+            ),
           ),
         ).called(1);
       },

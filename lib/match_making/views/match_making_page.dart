@@ -21,8 +21,8 @@ class MatchMakingPage extends StatelessWidget {
 
     return MatchMakingPage(
       key: const Key('match_making'),
-      createPrivateMatch: state.queryParams['createPrivateMatch'] == 'true',
-      inviteCode: state.queryParams['inviteCode'],
+      createPrivateMatch: data?.createPrivateMatch ?? false,
+      inviteCode: data?.inviteCode,
       deck: data!.deck,
     );
   }
@@ -59,9 +59,16 @@ class MatchMakingPage extends StatelessWidget {
 }
 
 class MatchMakingPageData extends Equatable {
-  const MatchMakingPageData({required this.deck});
+  const MatchMakingPageData({
+    required this.deck,
+    this.createPrivateMatch,
+    this.inviteCode,
+  });
+
   final Deck deck;
+  final bool? createPrivateMatch;
+  final String? inviteCode;
 
   @override
-  List<Object?> get props => [deck];
+  List<Object?> get props => [deck, createPrivateMatch, inviteCode];
 }

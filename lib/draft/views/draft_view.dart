@@ -99,13 +99,11 @@ class _DraftViewState extends State<DraftView> {
           context,
           () => GoRouter.of(context).goNamed(
             'match_making',
-            queryParams: {
-              if (state.privateMatchInviteCode != null)
-                'inviteCode': state.privateMatchInviteCode,
-              if (state.createPrivateMatch != null)
-                'createPrivateMatch': 'true',
-            },
-            extra: MatchMakingPageData(deck: state.deck!),
+            extra: MatchMakingPageData(
+              deck: state.deck!,
+              createPrivateMatch: state.createPrivateMatch,
+              inviteCode: state.privateMatchInviteCode,
+            ),
           ),
         );
       },
