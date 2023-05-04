@@ -5,16 +5,16 @@ import 'package:io_flip_ui/io_flip_ui.dart';
 /// {@template io_flip_theme}
 /// IO FLIP theme.
 /// {@endtemplate}
-class TopDashTheme {
+class IoFlipTheme {
   /// [ThemeData] for IO FLIP.
   static ThemeData get themeData {
     return ThemeData(
       useMaterial3: true,
       colorScheme: _colorScheme,
       textTheme: _textTheme.apply(
-        bodyColor: TopDashColors.seedWhite,
-        displayColor: TopDashColors.seedWhite,
-        decorationColor: TopDashColors.seedWhite,
+        bodyColor: IoFlipColors.seedWhite,
+        displayColor: IoFlipColors.seedWhite,
+        decorationColor: IoFlipColors.seedWhite,
       ),
       tabBarTheme: _tabBarTheme,
       dialogTheme: _dialogTheme,
@@ -24,8 +24,8 @@ class TopDashTheme {
 
   static ColorScheme get _colorScheme {
     return ColorScheme.fromSeed(
-      seedColor: TopDashColors.seedBlue,
-      background: TopDashColors.seedBlack,
+      seedColor: IoFlipColors.seedBlue,
+      background: IoFlipColors.seedBlack,
     );
   }
 
@@ -34,13 +34,13 @@ class TopDashTheme {
         defaultTargetPlatform == TargetPlatform.iOS;
 
     return isMobile
-        ? TopDashTextStyles.mobile.textTheme
-        : TopDashTextStyles.desktop.textTheme;
+        ? IoFlipTextStyles.mobile.textTheme
+        : IoFlipTextStyles.desktop.textTheme;
   }
 
   static TabBarTheme get _tabBarTheme {
-    const yellow = TopDashColors.seedYellow;
-    const grey = TopDashColors.seedGrey50;
+    const yellow = IoFlipColors.seedYellow;
+    const grey = IoFlipColors.seedGrey50;
 
     return const TabBarTheme(
       labelColor: yellow,
@@ -54,7 +54,7 @@ class TopDashTheme {
   }
 
   static DialogTheme get _dialogTheme {
-    const black = TopDashColors.seedBlack;
+    const black = IoFlipColors.seedBlack;
 
     return const DialogTheme(
       backgroundColor: black,

@@ -130,7 +130,7 @@ class _AppState extends State<App> {
               },
               child: MaterialApp.router(
                 title: context.l10n.ioFlip,
-                theme: TopDashTheme.themeData,
+                theme: IoFlipTheme.themeData,
                 routerConfig: router,
                 scaffoldMessengerKey: scaffoldMessengerKey,
                 localizationsDelegates: AppLocalizations.localizationsDelegates,

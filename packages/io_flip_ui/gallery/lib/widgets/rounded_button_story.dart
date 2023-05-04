@@ -10,11 +10,11 @@ class RoundedButtonStory extends StatelessWidget {
     return StoryScaffold(
       title: 'Rounded Button',
       body: Padding(
-        padding: const EdgeInsets.all(TopDashSpacing.lg),
+        padding: const EdgeInsets.all(IoFlipSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: TopDashSpacing.lg),
+            const SizedBox(height: IoFlipSpacing.lg),
             Wrap(
               children: [
                 Column(
@@ -27,7 +27,7 @@ class RoundedButtonStory extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(width: TopDashSpacing.lg),
+                const SizedBox(width: IoFlipSpacing.lg),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -52,7 +52,7 @@ class RoundedButtonStory extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(width: TopDashSpacing.lg),
+                const SizedBox(width: IoFlipSpacing.lg),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

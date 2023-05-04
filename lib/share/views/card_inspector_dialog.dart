@@ -36,7 +36,7 @@ class _CardInspectorDialogState extends State<CardInspectorDialog> {
         ? const GameCardSize.xxl()
         : const GameCardSize.xl();
     return Dialog(
-      insetPadding: const EdgeInsets.all(TopDashSpacing.sm),
+      insetPadding: const EdgeInsets.all(IoFlipSpacing.sm),
       backgroundColor: Colors.transparent,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -44,7 +44,7 @@ class _CardInspectorDialogState extends State<CardInspectorDialog> {
           _CardViewer(
             controller: controller,
             deck: widget.deck,
-            share: (card) => TopDashDialog.show(
+            share: (card) => IoFlipDialog.show(
               context,
               child: ShareCardDialog(card: card),
             ),
@@ -53,7 +53,7 @@ class _CardInspectorDialogState extends State<CardInspectorDialog> {
           ),
           if (height > smallestPhoneHeight)
             Padding(
-              padding: const EdgeInsets.all(TopDashSpacing.lg),
+              padding: const EdgeInsets.all(IoFlipSpacing.lg),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -61,7 +61,7 @@ class _CardInspectorDialogState extends State<CardInspectorDialog> {
                     controller: controller,
                     transitionDuration: transitionDuration,
                   ),
-                  const SizedBox(width: TopDashSpacing.lg),
+                  const SizedBox(width: IoFlipSpacing.lg),
                   _ForwardButton(
                     controller: controller,
                     transitionDuration: transitionDuration,
@@ -172,8 +172,8 @@ class _CardViewer extends StatelessWidget {
                   ),
                   if (playerCardIds.contains(card.id))
                     Positioned(
-                      top: TopDashSpacing.lg,
-                      left: TopDashSpacing.lg,
+                      top: IoFlipSpacing.lg,
+                      left: IoFlipSpacing.lg,
                       child: RoundedButton.icon(
                         Icons.share_outlined,
                         onPressed: () => share(card),

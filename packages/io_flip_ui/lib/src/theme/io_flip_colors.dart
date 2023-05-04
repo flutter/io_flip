@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 /// Colors used in the I/O FLIP UI.
-abstract class TopDashColors {
+abstract class IoFlipColors {
   /// Gold
   static const Color seedGold = Color(0xffffbb00);
 

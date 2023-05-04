@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 class PromptFormIntroView extends StatelessWidget {
   const PromptFormIntroView({super.key});
 
-  static const _gap = SizedBox(height: TopDashSpacing.xlg);
+  static const _gap = SizedBox(height: IoFlipSpacing.xlg);
   static const _cardMasterHeight = 312.0;
 
   @override
@@ -21,7 +21,7 @@ class PromptFormIntroView extends StatelessWidget {
     final images = context.read<Images>();
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.xlg),
+      padding: const EdgeInsets.symmetric(horizontal: IoFlipSpacing.xlg),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -56,13 +56,13 @@ class PromptFormIntroView extends StatelessWidget {
                             ),
                             Text(
                               l10n.niceToMeetYou,
-                              style: TopDashTextStyles.headlineH4Light,
+                              style: IoFlipTextStyles.headlineH4Light,
                               textAlign: TextAlign.center,
                             ),
-                            const SizedBox(height: TopDashSpacing.sm),
+                            const SizedBox(height: IoFlipSpacing.sm),
                             Text(
                               l10n.introTextPromptPage,
-                              style: TopDashTextStyles.headlineH6Light,
+                              style: IoFlipTextStyles.headlineH6Light,
                               textAlign: TextAlign.center,
                             ),
                             _gap,

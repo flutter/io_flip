@@ -34,7 +34,7 @@ class ArrowPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = TopDashColors.seedGrey30
+      ..color = IoFlipColors.seedGrey30
       ..strokeWidth = 4
       ..strokeJoin = StrokeJoin.round
       ..style = PaintingStyle.stroke;

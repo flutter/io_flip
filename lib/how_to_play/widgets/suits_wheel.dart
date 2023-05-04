@@ -45,7 +45,7 @@ class SuitsWheel extends StatelessWidget {
             key: ValueKey(text),
           ),
         ),
-        const SizedBox(height: TopDashSpacing.lg),
+        const SizedBox(height: IoFlipSpacing.lg),
         SizedBox(
           height: suitsWheelSize,
           width: suitsWheelSize,
@@ -106,7 +106,7 @@ class SuitItem extends StatelessWidget {
           end: isAffected || isReference ? 0 : 1,
         ),
         builder: (_, number, __) {
-          final color = TopDashColors.seedGrey30.withOpacity(number);
+          final color = IoFlipColors.seedGrey30.withOpacity(number);
           return ColorFiltered(
             colorFilter: ColorFilter.mode(color, BlendMode.srcATop),
             child: child,
@@ -218,10 +218,10 @@ class _AffectedIndicator extends StatelessWidget {
           strokeAlign: BorderSide.strokeAlignCenter,
           color: backgroundColor,
         ),
-        color: TopDashColors.seedRed,
+        color: IoFlipColors.seedRed,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(TopDashSpacing.sm),
+        padding: const EdgeInsets.all(IoFlipSpacing.sm),
         child: SvgPicture.asset(
           Assets.icons.cancel,
           height: 20,

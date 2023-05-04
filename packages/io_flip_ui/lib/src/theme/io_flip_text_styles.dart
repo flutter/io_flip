@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 /// Text styles used in the IO FLIP UI.
-abstract class TopDashTextStyles {
-  const TopDashTextStyles._();
+abstract class IoFlipTextStyles {
+  const IoFlipTextStyles._();
 
   /// Package name
   static const package = 'io_flip_ui';
@@ -633,100 +633,100 @@ abstract class TopDashTextStyles {
   );
 }
 
-class _TextStylesDesktop extends TopDashTextStyles {
+class _TextStylesDesktop extends IoFlipTextStyles {
   const _TextStylesDesktop._() : super._();
 
   @override
-  TextStyle get displayLarge => TopDashTextStyles.headlineH1;
+  TextStyle get displayLarge => IoFlipTextStyles.headlineH1;
 
   @override
-  TextStyle get displayMedium => TopDashTextStyles.headlineH2;
+  TextStyle get displayMedium => IoFlipTextStyles.headlineH2;
 
   @override
-  TextStyle get displaySmall => TopDashTextStyles.headlineH3;
+  TextStyle get displaySmall => IoFlipTextStyles.headlineH3;
 
   @override
-  TextStyle get headlineLarge => TopDashTextStyles.headlineH4;
+  TextStyle get headlineLarge => IoFlipTextStyles.headlineH4;
 
   @override
-  TextStyle get headlineMedium => TopDashTextStyles.headlineH4Light;
+  TextStyle get headlineMedium => IoFlipTextStyles.headlineH4Light;
 
   @override
-  TextStyle get headlineSmall => TopDashTextStyles.headlineH5;
+  TextStyle get headlineSmall => IoFlipTextStyles.headlineH5;
 
   @override
-  TextStyle get titleLarge => TopDashTextStyles.cardTitleXL;
+  TextStyle get titleLarge => IoFlipTextStyles.cardTitleXL;
 
   @override
-  TextStyle get titleMedium => TopDashTextStyles.cardTitleLG;
+  TextStyle get titleMedium => IoFlipTextStyles.cardTitleLG;
 
   @override
-  TextStyle get titleSmall => TopDashTextStyles.cardTitleMD;
+  TextStyle get titleSmall => IoFlipTextStyles.cardTitleMD;
 
   @override
-  TextStyle get bodyLarge => TopDashTextStyles.bodyLG;
+  TextStyle get bodyLarge => IoFlipTextStyles.bodyLG;
 
   @override
-  TextStyle get bodyMedium => TopDashTextStyles.bodyMD;
+  TextStyle get bodyMedium => IoFlipTextStyles.bodyMD;
 
   @override
-  TextStyle get bodySmall => TopDashTextStyles.bodySM;
+  TextStyle get bodySmall => IoFlipTextStyles.bodySM;
 
   @override
-  TextStyle get labelLarge => TopDashTextStyles.bodyLG;
+  TextStyle get labelLarge => IoFlipTextStyles.bodyLG;
 
   @override
-  TextStyle get labelMedium => TopDashTextStyles.bodySM;
+  TextStyle get labelMedium => IoFlipTextStyles.bodySM;
 
   @override
-  TextStyle get labelSmall => TopDashTextStyles.bodyXS;
+  TextStyle get labelSmall => IoFlipTextStyles.bodyXS;
 }
 
-class _TextStylesMobile extends TopDashTextStyles {
+class _TextStylesMobile extends IoFlipTextStyles {
   const _TextStylesMobile._() : super._();
 
   @override
-  TextStyle get displayLarge => TopDashTextStyles.mobileH1;
+  TextStyle get displayLarge => IoFlipTextStyles.mobileH1;
 
   @override
-  TextStyle get displayMedium => TopDashTextStyles.mobileH2;
+  TextStyle get displayMedium => IoFlipTextStyles.mobileH2;
 
   @override
-  TextStyle get displaySmall => TopDashTextStyles.mobileH3;
+  TextStyle get displaySmall => IoFlipTextStyles.mobileH3;
 
   @override
-  TextStyle get headlineLarge => TopDashTextStyles.mobileH4;
+  TextStyle get headlineLarge => IoFlipTextStyles.mobileH4;
 
   @override
-  TextStyle get headlineMedium => TopDashTextStyles.mobileH4Light;
+  TextStyle get headlineMedium => IoFlipTextStyles.mobileH4Light;
 
   @override
-  TextStyle get headlineSmall => TopDashTextStyles.mobileH5;
+  TextStyle get headlineSmall => IoFlipTextStyles.mobileH5;
 
   @override
-  TextStyle get titleLarge => TopDashTextStyles.cardTitleXL;
+  TextStyle get titleLarge => IoFlipTextStyles.cardTitleXL;
 
   @override
-  TextStyle get titleMedium => TopDashTextStyles.cardTitleLG;
+  TextStyle get titleMedium => IoFlipTextStyles.cardTitleLG;
 
   @override
-  TextStyle get titleSmall => TopDashTextStyles.cardTitleMD;
+  TextStyle get titleSmall => IoFlipTextStyles.cardTitleMD;
 
   @override
-  TextStyle get bodyLarge => TopDashTextStyles.bodyLG;
+  TextStyle get bodyLarge => IoFlipTextStyles.bodyLG;
 
   @override
-  TextStyle get bodyMedium => TopDashTextStyles.bodyMD;
+  TextStyle get bodyMedium => IoFlipTextStyles.bodyMD;
 
   @override
-  TextStyle get bodySmall => TopDashTextStyles.bodySM;
+  TextStyle get bodySmall => IoFlipTextStyles.bodySM;
 
   @override
-  TextStyle get labelLarge => TopDashTextStyles.bodyLG;
+  TextStyle get labelLarge => IoFlipTextStyles.bodyLG;
 
   @override
-  TextStyle get labelMedium => TopDashTextStyles.bodySM;
+  TextStyle get labelMedium => IoFlipTextStyles.bodySM;
 
   @override
-  TextStyle get labelSmall => TopDashTextStyles.bodyXS;
+  TextStyle get labelSmall => IoFlipTextStyles.bodyXS;
 }

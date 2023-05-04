@@ -3,24 +3,24 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 
 void main() {
-  group('TopDashTheme', () {
+  group('IoFlipTheme', () {
     group('themeData', () {
       test('uses material 3', () {
-        expect(TopDashTheme.themeData.useMaterial3, isTrue);
+        expect(IoFlipTheme.themeData.useMaterial3, isTrue);
       });
 
-      test('background color is TopDashColors.seedBlack', () {
+      test('background color is IoFlipColors.seedBlack', () {
         expect(
-          TopDashTheme.themeData.colorScheme.background,
-          TopDashColors.seedBlack,
+          IoFlipTheme.themeData.colorScheme.background,
+          IoFlipColors.seedBlack,
         );
       });
 
       test('uses mobile text theme on android', () {
         debugDefaultTargetPlatformOverride = TargetPlatform.android;
         expect(
-          TopDashTheme.themeData.textTheme.displayLarge?.fontSize,
-          equals(TopDashTextStyles.mobile.textTheme.displayLarge?.fontSize),
+          IoFlipTheme.themeData.textTheme.displayLarge?.fontSize,
+          equals(IoFlipTextStyles.mobile.textTheme.displayLarge?.fontSize),
         );
         debugDefaultTargetPlatformOverride = null;
       });
@@ -28,8 +28,8 @@ void main() {
       test('uses mobile text theme on ios', () {
         debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
         expect(
-          TopDashTheme.themeData.textTheme.displayLarge?.fontSize,
-          equals(TopDashTextStyles.mobile.textTheme.displayLarge?.fontSize),
+          IoFlipTheme.themeData.textTheme.displayLarge?.fontSize,
+          equals(IoFlipTextStyles.mobile.textTheme.displayLarge?.fontSize),
         );
         debugDefaultTargetPlatformOverride = null;
       });
@@ -37,8 +37,8 @@ void main() {
       test('uses desktop text theme on macOS', () {
         debugDefaultTargetPlatformOverride = TargetPlatform.macOS;
         expect(
-          TopDashTheme.themeData.textTheme.displayLarge?.fontSize,
-          equals(TopDashTextStyles.desktop.textTheme.displayLarge?.fontSize),
+          IoFlipTheme.themeData.textTheme.displayLarge?.fontSize,
+          equals(IoFlipTextStyles.desktop.textTheme.displayLarge?.fontSize),
         );
         debugDefaultTargetPlatformOverride = null;
       });
@@ -46,8 +46,8 @@ void main() {
       test('uses desktop text theme on windows', () {
         debugDefaultTargetPlatformOverride = TargetPlatform.windows;
         expect(
-          TopDashTheme.themeData.textTheme.displayLarge?.fontSize,
-          equals(TopDashTextStyles.desktop.textTheme.displayLarge?.fontSize),
+          IoFlipTheme.themeData.textTheme.displayLarge?.fontSize,
+          equals(IoFlipTextStyles.desktop.textTheme.displayLarge?.fontSize),
         );
         debugDefaultTargetPlatformOverride = null;
       });
@@ -55,8 +55,8 @@ void main() {
       test('uses desktop text theme on linux', () {
         debugDefaultTargetPlatformOverride = TargetPlatform.linux;
         expect(
-          TopDashTheme.themeData.textTheme.displayLarge?.fontSize,
-          equals(TopDashTextStyles.desktop.textTheme.displayLarge?.fontSize),
+          IoFlipTheme.themeData.textTheme.displayLarge?.fontSize,
+          equals(IoFlipTextStyles.desktop.textTheme.displayLarge?.fontSize),
         );
         debugDefaultTargetPlatformOverride = null;
       });

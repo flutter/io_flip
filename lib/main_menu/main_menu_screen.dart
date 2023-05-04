@@ -48,7 +48,7 @@ class MainMenuScreen extends StatelessWidget {
                   if (termsAccepted) {
                     GoRouter.of(context).go('/prompt');
                   } else {
-                    TopDashDialog.show(
+                    IoFlipDialog.show(
                       context,
                       child: const TermsOfUseView(),
                       showCloseButton: false,
@@ -60,7 +60,7 @@ class MainMenuScreen extends StatelessWidget {
           ),
           trailing: RoundedButton.icon(
             Icons.question_mark_rounded,
-            onPressed: () => TopDashDialog.show(
+            onPressed: () => IoFlipDialog.show(
               context,
               child: const HowToPlayDialog(),
             ),
@@ -85,7 +85,7 @@ class _MainMenuScreenView extends StatelessWidget {
             fit: BoxFit.fitHeight,
           ),
           const LeaderboardView(),
-          const SizedBox(height: TopDashSpacing.xxlg),
+          const SizedBox(height: IoFlipSpacing.xxlg),
         ],
       ),
     );

@@ -19,7 +19,7 @@ class StoryScaffold extends StatelessWidget {
       backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text(title),
-        titleTextStyle: TopDashTextStyles.mobile.titleSmall,
+        titleTextStyle: IoFlipTextStyles.mobile.titleSmall,
       ),
       body: body,
     );

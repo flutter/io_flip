@@ -30,7 +30,7 @@ class PromptFormView extends StatefulWidget {
 class _PromptFormViewState extends State<PromptFormView> {
   late int selectedIndex;
 
-  static const _gap = SizedBox(height: TopDashSpacing.xxxlg);
+  static const _gap = SizedBox(height: IoFlipSpacing.xxxlg);
 
   @override
   void initState() {
@@ -46,12 +46,12 @@ class _PromptFormViewState extends State<PromptFormView> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const SizedBox(height: TopDashSpacing.xxlg),
+        const SizedBox(height: IoFlipSpacing.xxlg),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.lg),
+          padding: const EdgeInsets.symmetric(horizontal: IoFlipSpacing.lg),
           child: Text(
             widget.title,
-            style: TopDashTextStyles.headlineH4Light,
+            style: IoFlipTextStyles.headlineH4Light,
             textAlign: TextAlign.center,
           ),
         ),
@@ -64,7 +64,7 @@ class _PromptFormViewState extends State<PromptFormView> {
                   decoration: BoxDecoration(
                     borderRadius:
                         BorderRadius.circular(PromptFormView.itemExtent),
-                    color: TopDashColors.seedYellow,
+                    color: IoFlipColors.seedYellow,
                   ),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,
@@ -72,7 +72,7 @@ class _PromptFormViewState extends State<PromptFormView> {
                   ),
                   child: Text(
                     selectedText,
-                    style: TopDashTextStyles.mobileH3.copyWith(
+                    style: IoFlipTextStyles.mobileH3.copyWith(
                       color: Colors.transparent,
                     ),
                   ),
@@ -116,10 +116,10 @@ class _PromptFormViewState extends State<PromptFormView> {
                         return Center(
                           child: Text(
                             widget.itemsList[index],
-                            style: TopDashTextStyles.mobileH3.copyWith(
+                            style: IoFlipTextStyles.mobileH3.copyWith(
                               color: index == selectedIndex
-                                  ? TopDashColors.seedBlack
-                                  : TopDashColors.seedGrey70,
+                                  ? IoFlipColors.seedBlack
+                                  : IoFlipColors.seedGrey70,
                             ),
                           ),
                         );

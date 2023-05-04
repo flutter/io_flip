@@ -70,7 +70,7 @@ extension ShareCardDialogTest on WidgetTester {
   Future<void> pumpSubject(ShareResource shareResource) async {
     await mockNetworkImages(() {
       return pumpApp(
-        const TopDashDialog(
+        const IoFlipDialog(
           child: ShareHandDialog(
             cards: [card, card, card],
             wins: 5,

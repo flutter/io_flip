@@ -21,23 +21,23 @@ class QuitGameDialog extends StatelessWidget {
       children: [
         Text(
           l10n.quitGameDialogTitle,
-          style: TopDashTextStyles.headlineH4,
+          style: IoFlipTextStyles.headlineH4,
         ),
-        const SizedBox(height: TopDashSpacing.sm),
+        const SizedBox(height: IoFlipSpacing.sm),
         Text(
           l10n.quitGameDialogDescription,
           textAlign: TextAlign.center,
-          style: TopDashTextStyles.bodyLG,
+          style: IoFlipTextStyles.bodyLG,
         ),
-        const SizedBox(height: TopDashSpacing.xlg),
+        const SizedBox(height: IoFlipSpacing.xlg),
         RoundedButton.text(
           l10n.continueLabel,
           onPressed: onConfirm,
         ),
-        const SizedBox(height: TopDashSpacing.sm),
+        const SizedBox(height: IoFlipSpacing.sm),
         RoundedButton.text(
           l10n.cancel,
-          backgroundColor: TopDashColors.seedWhite,
+          backgroundColor: IoFlipColors.seedWhite,
           onPressed: onCancel,
         ),
       ],

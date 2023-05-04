@@ -34,8 +34,7 @@ class MatchResultSplashState extends State<MatchResultSplash> {
 
   @override
   Widget build(BuildContext context) {
-    final isMobile =
-        MediaQuery.sizeOf(context).width < TopDashBreakpoints.small;
+    final isMobile = MediaQuery.sizeOf(context).width < IoFlipBreakpoints.small;
     final width = isMobile ? 314.0 : 471.0;
 
     final images = context.watch<Images>();

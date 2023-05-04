@@ -43,42 +43,42 @@ class ShareHandPage extends StatelessWidget {
     return IoFlipScaffold(
       body: Column(
         children: [
-          const SizedBox(height: TopDashSpacing.xlg),
+          const SizedBox(height: IoFlipSpacing.xlg),
           IoFlipLogo(width: 96.96, height: 64),
           const Spacer(),
           Text(
             l10n.shareTeamTitle,
-            style: TopDashTextStyles.mobileH1,
+            style: IoFlipTextStyles.mobileH1,
           ),
-          const SizedBox(height: TopDashSpacing.xxlg),
+          const SizedBox(height: IoFlipSpacing.xxlg),
           Align(
             alignment: Alignment.topCenter,
             child: CardFan(cards: deck),
           ),
           Text(
             initials,
-            style: TopDashTextStyles.mobileH1,
+            style: IoFlipTextStyles.mobileH1,
           ),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Image.asset(
                 Assets.images.tempPreferencesCustom.path,
-                color: TopDashColors.seedGreen,
+                color: IoFlipColors.seedGreen,
               ),
-              const SizedBox(width: TopDashSpacing.sm),
+              const SizedBox(width: IoFlipSpacing.sm),
               Text(
                 '$wins ${l10n.winStreakLabel}',
-                style: TopDashTextStyles.mobileH6
-                    .copyWith(color: TopDashColors.seedGreen),
+                style: IoFlipTextStyles.mobileH6
+                    .copyWith(color: IoFlipColors.seedGreen),
               ),
             ],
           ),
           const Spacer(),
           Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: TopDashSpacing.xlg,
-              vertical: TopDashSpacing.sm,
+              horizontal: IoFlipSpacing.xlg,
+              vertical: IoFlipSpacing.sm,
             ),
             child: Row(
               children: [
@@ -90,7 +90,7 @@ class ShareHandPage extends StatelessWidget {
                   children: [
                     RoundedButton.text(
                       l10n.shareButtonLabel,
-                      onPressed: () => TopDashDialog.show(
+                      onPressed: () => IoFlipDialog.show(
                         context,
                         child: ShareHandDialog(
                           cards: deck,
@@ -101,14 +101,14 @@ class ShareHandPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(
-                      width: TopDashSpacing.md,
-                      height: TopDashSpacing.md,
+                      width: IoFlipSpacing.md,
+                      height: IoFlipSpacing.md,
                     ),
                     RoundedButton.text(
                       l10n.mainMenuButtonLabel,
-                      backgroundColor: TopDashColors.seedBlack,
-                      foregroundColor: TopDashColors.seedWhite,
-                      borderColor: TopDashColors.seedPaletteNeutral40,
+                      backgroundColor: IoFlipColors.seedBlack,
+                      foregroundColor: IoFlipColors.seedWhite,
+                      borderColor: IoFlipColors.seedPaletteNeutral40,
                       onPressed: () => GoRouter.of(context).go('/'),
                     ),
                   ],
@@ -117,7 +117,7 @@ class ShareHandPage extends StatelessWidget {
                 RoundedButton.svg(
                   key: const Key('share_page_info_button'),
                   Assets.icons.info,
-                  onPressed: () => TopDashDialog.show(
+                  onPressed: () => IoFlipDialog.show(
                     context,
                     child: const InfoView(),
                     onClose: context.maybePop,
@@ -126,32 +126,32 @@ class ShareHandPage extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: TopDashSpacing.md),
+          const SizedBox(height: IoFlipSpacing.md),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               GestureDetector(
                 child: Text(
                   l10n.ioLinkLabel,
-                  style: TopDashTextStyles.bodyMD.copyWith(
-                    color: TopDashColors.seedGrey90,
+                  style: IoFlipTextStyles.bodyMD.copyWith(
+                    color: IoFlipColors.seedGrey90,
                   ),
                 ),
                 // TODO(Samobrien): Route to Google I/O web page
               ),
-              const SizedBox(width: TopDashSpacing.md),
+              const SizedBox(width: IoFlipSpacing.md),
               GestureDetector(
                 child: Text(
                   l10n.howItsMadeLinkLabel,
-                  style: TopDashTextStyles.bodyMD.copyWith(
-                    color: TopDashColors.seedGrey90,
+                  style: IoFlipTextStyles.bodyMD.copyWith(
+                    color: IoFlipColors.seedGrey90,
                   ),
                 ),
                 // TODO(Samobrien): Route to how it's made web page
               ),
             ],
           ),
-          const SizedBox(height: TopDashSpacing.xlg),
+          const SizedBox(height: IoFlipSpacing.xlg),
         ],
       ),
     );

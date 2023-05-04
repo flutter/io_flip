@@ -50,14 +50,14 @@ class InitialsFormView extends StatelessWidget {
                   onChanged: (index, value) =>
                       _onInitialChanged(context, value, index),
                 ),
-                const SizedBox(width: TopDashSpacing.sm),
+                const SizedBox(width: IoFlipSpacing.sm),
                 _InitialFormField(
                   1,
                   focusNode: focusNodes[1],
                   onChanged: (index, value) =>
                       _onInitialChanged(context, value, index),
                 ),
-                const SizedBox(width: TopDashSpacing.sm),
+                const SizedBox(width: IoFlipSpacing.sm),
                 _InitialFormField(
                   2,
                   focusNode: focusNodes[2],
@@ -66,17 +66,17 @@ class InitialsFormView extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: TopDashSpacing.sm),
+            const SizedBox(height: IoFlipSpacing.sm),
             if (state.status == InitialsFormStatus.blacklisted)
               Text(
                 l10n.blacklistedErrorMessage,
-                style: TopDashTextStyles.bodyLG.copyWith(
-                  color: TopDashColors.seedRed,
+                style: IoFlipTextStyles.bodyLG.copyWith(
+                  color: IoFlipColors.seedRed,
                 ),
               )
             else if (state.status.isInvalid)
               Text(l10n.enterInitialsError),
-            const SizedBox(height: TopDashSpacing.xxlg),
+            const SizedBox(height: IoFlipSpacing.xxlg),
             RoundedButton.text(
               l10n.enter,
               onPressed: () {
@@ -134,14 +134,14 @@ class _InitialFormFieldState extends State<_InitialFormField> {
     final blacklisted = bloc.state.status == InitialsFormStatus.blacklisted;
     final decoration = BoxDecoration(
       color: widget.focusNode.hasPrimaryFocus
-          ? TopDashColors.seedPaletteNeutral20
-          : TopDashColors.seedBlack,
+          ? IoFlipColors.seedPaletteNeutral20
+          : IoFlipColors.seedBlack,
       border: Border.all(
         color: blacklisted
-            ? TopDashColors.seedRed
+            ? IoFlipColors.seedRed
             : widget.focusNode.hasPrimaryFocus
-                ? TopDashColors.seedYellow
-                : TopDashColors.seedPaletteNeutral40,
+                ? IoFlipColors.seedYellow
+                : IoFlipColors.seedPaletteNeutral40,
         width: 2,
       ),
     );
@@ -161,8 +161,8 @@ class _InitialFormFieldState extends State<_InitialFormField> {
           UpperCaseTextFormatter(),
           LengthLimitingTextInputFormatter(1)
         ],
-        style: TopDashTextStyles.mobileH1.copyWith(
-          color: blacklisted ? TopDashColors.seedRed : TopDashColors.seedYellow,
+        style: IoFlipTextStyles.mobileH1.copyWith(
+          color: blacklisted ? IoFlipColors.seedRed : IoFlipColors.seedYellow,
         ),
         textCapitalization: TextCapitalization.characters,
         decoration: const InputDecoration(

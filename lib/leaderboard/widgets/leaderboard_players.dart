@@ -18,18 +18,18 @@ class LeaderboardPlayers extends StatelessWidget {
     return Column(
       children: [
         for (final player in topPlayers) ...[
-          const SizedBox(height: TopDashSpacing.md),
+          const SizedBox(height: IoFlipSpacing.md),
           player,
         ],
         if (restPlayers.isNotEmpty) ...[
           const Divider(
             thickness: 2,
-            color: TopDashColors.seedGrey30,
+            color: IoFlipColors.seedGrey30,
           ),
         ],
         for (final player in restPlayers) ...[
           player,
-          const SizedBox(height: TopDashSpacing.md),
+          const SizedBox(height: IoFlipSpacing.md),
         ],
       ],
     );
@@ -53,26 +53,26 @@ class LeaderboardPlayer extends StatelessWidget {
     var color = Colors.transparent;
     Widget number = Text(
       (index + 1).toString(),
-      style: TopDashTextStyles.cardNumberXS,
+      style: IoFlipTextStyles.cardNumberXS,
     );
 
     switch (index) {
       case 0:
-        color = TopDashColors.seedGold;
+        color = IoFlipColors.seedGold;
         number = Assets.images.leaderboard.num1.image();
         break;
       case 1:
-        color = TopDashColors.seedSilver;
+        color = IoFlipColors.seedSilver;
         number = Assets.images.leaderboard.num2.image();
         break;
       case 2:
-        color = TopDashColors.seedBronze;
+        color = IoFlipColors.seedBronze;
         number = Assets.images.leaderboard.num3.image();
         break;
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.sm),
+      padding: const EdgeInsets.symmetric(horizontal: IoFlipSpacing.sm),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -88,13 +88,13 @@ class LeaderboardPlayer extends StatelessWidget {
                 ),
                 child: number,
               ),
-              const SizedBox(width: TopDashSpacing.xlg),
-              Text(initials, style: TopDashTextStyles.headlineH6),
+              const SizedBox(width: IoFlipSpacing.xlg),
+              Text(initials, style: IoFlipTextStyles.headlineH6),
             ],
           ),
           Text(
             value.toString(),
-            style: TopDashTextStyles.buttonLG,
+            style: IoFlipTextStyles.buttonLG,
           ),
         ],
       ),

@@ -36,20 +36,20 @@ class IoFlipBottomBar extends StatelessWidget {
   final double? height;
 
   static const EdgeInsets _defaultPadding = EdgeInsets.symmetric(
-    horizontal: TopDashSpacing.xlg,
-    vertical: TopDashSpacing.sm,
+    horizontal: IoFlipSpacing.xlg,
+    vertical: IoFlipSpacing.sm,
   );
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final isSmall = width < TopDashBreakpoints.small;
+    final isSmall = width < IoFlipBreakpoints.small;
     final defaultHeight = isSmall ? 64.0 : 96.0;
 
     return Container(
       padding: isSmall
           ? _defaultPadding
-          : _defaultPadding.copyWith(bottom: TopDashSpacing.xxlg),
+          : _defaultPadding.copyWith(bottom: IoFlipSpacing.xxlg),
       height: height ?? defaultHeight,
       child: CustomMultiChildLayout(
         delegate: ToolbarLayout(),

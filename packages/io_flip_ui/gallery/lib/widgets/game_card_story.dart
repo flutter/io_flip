@@ -111,7 +111,7 @@ class _GameCardItemState extends State<_GameCardItem> {
     final dx = (mousePosition.dx / widget.size.width) * 2 - 1;
     final dy = (mousePosition.dy / widget.size.height) * 2 - 1;
     return Padding(
-      padding: const EdgeInsets.all(TopDashSpacing.lg),
+      padding: const EdgeInsets.all(IoFlipSpacing.lg),
       child: Row(
         children: [
           MouseRegion(
@@ -132,7 +132,7 @@ class _GameCardItemState extends State<_GameCardItem> {
               isRare: widget.isRare,
             ),
           ),
-          const SizedBox(width: TopDashSpacing.md),
+          const SizedBox(width: IoFlipSpacing.md),
           Text('${widget.name} (${widget.size.width} x ${widget.size.height})'),
         ],
       ),

@@ -6,13 +6,13 @@ import 'package:io_flip_ui/io_flip_ui.dart';
 void main() {
   final dashbook = Dashbook(
     title: 'I/O Flip Dashbook',
-    theme: TopDashTheme.themeData.copyWith(
+    theme: IoFlipTheme.themeData.copyWith(
       // Edits to make drawer and its text visible with the dark theme.
-      cardColor: TopDashColors.seedBlack,
+      cardColor: IoFlipColors.seedBlack,
       expansionTileTheme:
-          const ExpansionTileThemeData(textColor: TopDashColors.seedWhite),
+          const ExpansionTileThemeData(textColor: IoFlipColors.seedWhite),
       inputDecorationTheme: const InputDecorationTheme(
-        hintStyle: TextStyle(color: TopDashColors.seedWhite),
+        hintStyle: TextStyle(color: IoFlipColors.seedWhite),
       ),
     ),
   );

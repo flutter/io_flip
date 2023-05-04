@@ -3,14 +3,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:io_flip_ui/src/widgets/io_flip_dialog.dart';
 
 void main() {
-  group('TopDashDialog', () {
+  group('IoFlipDialog', () {
     const child = Text('test');
 
     testWidgets('renders child widget', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: TopDashDialog(child: child),
+            body: IoFlipDialog(child: child),
           ),
         ),
       );
@@ -24,7 +24,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: TopDashDialog(
+            body: IoFlipDialog(
               onClose: () => onCloseCalled = true,
               child: child,
             ),
@@ -46,7 +46,7 @@ void main() {
               builder: (BuildContext context) => Scaffold(
                 body: Center(
                   child: ElevatedButton(
-                    onPressed: () => TopDashDialog.show(
+                    onPressed: () => IoFlipDialog.show(
                       context,
                       child: child,
                     ),

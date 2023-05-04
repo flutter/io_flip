@@ -25,11 +25,11 @@ class GameCardSize extends Equatable {
   /// XXS size.
   const GameCardSize.xxs()
       : this(
-          size: TopDashCardSizes.xxs,
-          titleTextStyle: TopDashTextStyles.cardTitleXXS,
-          descriptionTextStyle: TopDashTextStyles.cardDescriptionXXS,
+          size: IoFlipCardSizes.xxs,
+          titleTextStyle: IoFlipTextStyles.cardTitleXXS,
+          descriptionTextStyle: IoFlipTextStyles.cardDescriptionXXS,
           badgeSize: const Size.square(22),
-          powerTextStyle: TopDashTextStyles.cardNumberXXS,
+          powerTextStyle: IoFlipTextStyles.cardNumberXXS,
           powerTextStrokeWidth: 2,
           imageInset: const RelativeRect.fromLTRB(4, 3, 4, 24),
         );
@@ -37,11 +37,11 @@ class GameCardSize extends Equatable {
   /// XS size.
   const GameCardSize.xs()
       : this(
-          size: TopDashCardSizes.xs,
+          size: IoFlipCardSizes.xs,
           badgeSize: const Size.square(41),
-          titleTextStyle: TopDashTextStyles.cardTitleXS,
-          descriptionTextStyle: TopDashTextStyles.cardDescriptionXS,
-          powerTextStyle: TopDashTextStyles.cardNumberXS,
+          titleTextStyle: IoFlipTextStyles.cardTitleXS,
+          descriptionTextStyle: IoFlipTextStyles.cardDescriptionXS,
+          powerTextStyle: IoFlipTextStyles.cardNumberXS,
           powerTextStrokeWidth: 2,
           imageInset: const RelativeRect.fromLTRB(8, 6, 8, 44),
         );
@@ -49,11 +49,11 @@ class GameCardSize extends Equatable {
   /// SM size.
   const GameCardSize.sm()
       : this(
-          size: TopDashCardSizes.sm,
+          size: IoFlipCardSizes.sm,
           badgeSize: const Size.square(55),
-          titleTextStyle: TopDashTextStyles.cardTitleSM,
-          descriptionTextStyle: TopDashTextStyles.cardDescriptionSM,
-          powerTextStyle: TopDashTextStyles.cardNumberSM,
+          titleTextStyle: IoFlipTextStyles.cardTitleSM,
+          descriptionTextStyle: IoFlipTextStyles.cardDescriptionSM,
+          powerTextStyle: IoFlipTextStyles.cardNumberSM,
           powerTextStrokeWidth: 2,
           imageInset: const RelativeRect.fromLTRB(12, 10, 12, 60),
         );
@@ -61,11 +61,11 @@ class GameCardSize extends Equatable {
   /// MD size.
   const GameCardSize.md()
       : this(
-          size: TopDashCardSizes.md,
+          size: IoFlipCardSizes.md,
           badgeSize: const Size.square(70),
-          titleTextStyle: TopDashTextStyles.cardTitleMD,
-          descriptionTextStyle: TopDashTextStyles.cardDescriptionMD,
-          powerTextStyle: TopDashTextStyles.cardNumberMD,
+          titleTextStyle: IoFlipTextStyles.cardTitleMD,
+          descriptionTextStyle: IoFlipTextStyles.cardDescriptionMD,
+          powerTextStyle: IoFlipTextStyles.cardNumberMD,
           powerTextStrokeWidth: 3,
           imageInset: const RelativeRect.fromLTRB(14, 12, 14, 74),
         );
@@ -73,11 +73,11 @@ class GameCardSize extends Equatable {
   /// LG size.
   const GameCardSize.lg()
       : this(
-          size: TopDashCardSizes.lg,
+          size: IoFlipCardSizes.lg,
           badgeSize: const Size.square(89),
-          titleTextStyle: TopDashTextStyles.cardTitleLG,
-          descriptionTextStyle: TopDashTextStyles.cardDescriptionLG,
-          powerTextStyle: TopDashTextStyles.cardNumberLG,
+          titleTextStyle: IoFlipTextStyles.cardTitleLG,
+          descriptionTextStyle: IoFlipTextStyles.cardDescriptionLG,
+          powerTextStyle: IoFlipTextStyles.cardNumberLG,
           powerTextStrokeWidth: 4,
           imageInset: const RelativeRect.fromLTRB(18, 14, 18, 96),
         );
@@ -85,11 +85,11 @@ class GameCardSize extends Equatable {
   /// XL size.
   const GameCardSize.xl()
       : this(
-          size: TopDashCardSizes.xl,
+          size: IoFlipCardSizes.xl,
           badgeSize: const Size.square(110),
-          titleTextStyle: TopDashTextStyles.cardTitleXL,
-          descriptionTextStyle: TopDashTextStyles.cardDescriptionXL,
-          powerTextStyle: TopDashTextStyles.cardNumberXL,
+          titleTextStyle: IoFlipTextStyles.cardTitleXL,
+          descriptionTextStyle: IoFlipTextStyles.cardDescriptionXL,
+          powerTextStyle: IoFlipTextStyles.cardNumberXL,
           powerTextStrokeWidth: 4,
           imageInset: const RelativeRect.fromLTRB(20, 16, 20, 116),
         );
@@ -97,11 +97,11 @@ class GameCardSize extends Equatable {
   /// XXL size.
   const GameCardSize.xxl()
       : this(
-          size: TopDashCardSizes.xxl,
+          size: IoFlipCardSizes.xxl,
           badgeSize: const Size.square(130),
-          titleTextStyle: TopDashTextStyles.cardTitleXXL,
-          descriptionTextStyle: TopDashTextStyles.cardDescriptionXXL,
-          powerTextStyle: TopDashTextStyles.cardNumberXXL,
+          titleTextStyle: IoFlipTextStyles.cardTitleXXL,
+          descriptionTextStyle: IoFlipTextStyles.cardDescriptionXXL,
+          powerTextStyle: IoFlipTextStyles.cardNumberXXL,
           powerTextStrokeWidth: 4,
           imageInset: const RelativeRect.fromLTRB(24, 20, 24, 136),
         );
@@ -296,11 +296,11 @@ class GameCard extends StatelessWidget {
             errorBuilder: (_, __, ___) {
               return Container(
                 foregroundDecoration: const BoxDecoration(
-                  color: TopDashColors.seedGrey50,
+                  color: IoFlipColors.seedGrey50,
                   backgroundBlendMode: BlendMode.saturation,
                 ),
                 decoration: const BoxDecoration(
-                  color: TopDashColors.seedBlack,
+                  color: IoFlipColors.seedBlack,
                 ),
                 child: IoFlipLogo(),
               );
@@ -360,13 +360,13 @@ class GameCard extends StatelessWidget {
                                         size.size.width * 0.014,
                                         size.size.height * 0.013,
                                       ),
-                                      color: TopDashColors.seedBlack,
+                                      color: IoFlipColors.seedBlack,
                                     ),
                                   ],
                                   foreground: Paint()
                                     ..style = PaintingStyle.stroke
                                     ..strokeWidth = size.powerTextStrokeWidth
-                                    ..color = TopDashColors.seedBlack,
+                                    ..color = IoFlipColors.seedBlack,
                                 ),
                               ),
                               Text(
@@ -385,7 +385,7 @@ class GameCard extends StatelessWidget {
                   child: Text(
                     name,
                     style: size.titleTextStyle.copyWith(
-                      color: TopDashColors.seedBlack,
+                      color: IoFlipColors.seedBlack,
                     ),
                   ),
                 ),
@@ -400,7 +400,7 @@ class GameCard extends StatelessWidget {
                         description,
                         textAlign: TextAlign.center,
                         style: size.descriptionTextStyle.copyWith(
-                          color: TopDashColors.seedBlack,
+                          color: IoFlipColors.seedBlack,
                         ),
                       ),
                     ),

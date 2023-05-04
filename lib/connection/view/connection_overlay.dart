@@ -44,7 +44,7 @@ class _ConnectionOverlayFailure extends StatelessWidget {
         if (child != null) child!,
         Positioned.fill(
           child: Material(
-            color: TopDashColors.seedScrim.withOpacity(0.75),
+            color: IoFlipColors.seedScrim.withOpacity(0.75),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -52,7 +52,7 @@ class _ConnectionOverlayFailure extends StatelessWidget {
                   error == WebSocketErrorCode.playerAlreadyConnected
                       ? l10n.playerAlreadyConnectedError
                       : l10n.unknownConnectionError,
-                  style: TopDashTextStyles.mobileH1,
+                  style: IoFlipTextStyles.mobileH1,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
@@ -60,7 +60,7 @@ class _ConnectionOverlayFailure extends StatelessWidget {
                   error == WebSocketErrorCode.playerAlreadyConnected
                       ? l10n.playerAlreadyConnectedErrorBody
                       : l10n.unknownConnectionErrorBody,
-                  style: TopDashTextStyles.bodyXL,
+                  style: IoFlipTextStyles.bodyXL,
                   textAlign: TextAlign.center,
                 ),
                 if (error == WebSocketErrorCode.unknown) ...[
@@ -70,9 +70,9 @@ class _ConnectionOverlayFailure extends StatelessWidget {
                     onPressed: () => context.read<ConnectionBloc>().add(
                           const ConnectionRequested(),
                         ),
-                    backgroundColor: TopDashColors.seedBlack,
-                    foregroundColor: TopDashColors.seedWhite,
-                    borderColor: TopDashColors.seedPaletteNeutral40,
+                    backgroundColor: IoFlipColors.seedBlack,
+                    foregroundColor: IoFlipColors.seedWhite,
+                    borderColor: IoFlipColors.seedPaletteNeutral40,
                   ),
                 ],
               ],

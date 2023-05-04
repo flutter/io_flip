@@ -48,7 +48,7 @@ class _CardLandingPuffStoryState extends State<CardLandingPuffStory> {
                   ),
                 ],
               ),
-              const SizedBox(height: TopDashSpacing.lg),
+              const SizedBox(height: IoFlipSpacing.lg),
               ElevatedButton(
                 onPressed: () {
                   controller.run(bigFlipAnimation);

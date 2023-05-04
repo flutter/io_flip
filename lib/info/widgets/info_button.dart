@@ -11,7 +11,7 @@ class InfoButton extends StatelessWidget {
     return RoundedButton.svg(
       key: const Key('info_button'),
       Assets.icons.info,
-      onPressed: () => TopDashDialog.show(
+      onPressed: () => IoFlipDialog.show(
         context,
         child: const InfoView(),
       ),

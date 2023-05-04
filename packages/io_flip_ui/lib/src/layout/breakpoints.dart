@@ -1,5 +1,5 @@
-/// Namespace for Default TopDash Breakpoints
-abstract class TopDashBreakpoints {
+/// Namespace for Default IO FLIP Breakpoints
+abstract class IoFlipBreakpoints {
   /// Max width for a medium layout.
   static const double medium = 1150;
 

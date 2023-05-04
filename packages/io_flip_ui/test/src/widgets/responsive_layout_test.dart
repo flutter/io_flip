@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 
-extension _TopDashWidgetTester on WidgetTester {
+extension _IoFlipWidgetTester on WidgetTester {
   void setDisplaySize(Size size) {
     view
       ..physicalSize = size
@@ -18,7 +18,7 @@ extension _TopDashWidgetTester on WidgetTester {
 void main() {
   group('ResponsiveLayout', () {
     testWidgets('displays a large layout', (tester) async {
-      tester.setDisplaySize(const Size(TopDashBreakpoints.medium, 800));
+      tester.setDisplaySize(const Size(IoFlipBreakpoints.medium, 800));
       const smallKey = Key('__small__');
       const largeKey = Key('__large__');
 
@@ -34,7 +34,7 @@ void main() {
     });
 
     testWidgets('displays a small layout', (tester) async {
-      tester.setDisplaySize(const Size(TopDashBreakpoints.medium, 1200));
+      tester.setDisplaySize(const Size(IoFlipBreakpoints.medium, 1200));
       const smallKey = Key('__small__');
       const largeKey = Key('__large__');
 
@@ -68,7 +68,7 @@ void main() {
     });
 
     testWidgets('displays child when available (small)', (tester) async {
-      tester.setDisplaySize(const Size(TopDashBreakpoints.medium, 800));
+      tester.setDisplaySize(const Size(IoFlipBreakpoints.medium, 800));
 
       const smallKey = Key('__small__');
       const largeKey = Key('__large__');

@@ -8,16 +8,16 @@ class AppSpacingStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const spacingList = [
-      _SpacingItem(spacing: TopDashSpacing.xxxs, name: 'xxxs'),
-      _SpacingItem(spacing: TopDashSpacing.xxs, name: 'xxs'),
-      _SpacingItem(spacing: TopDashSpacing.xs, name: 'xs'),
-      _SpacingItem(spacing: TopDashSpacing.sm, name: 'sm'),
-      _SpacingItem(spacing: TopDashSpacing.md, name: 'md'),
-      _SpacingItem(spacing: TopDashSpacing.lg, name: 'lg'),
-      _SpacingItem(spacing: TopDashSpacing.xlgsm, name: 'xlgsm'),
-      _SpacingItem(spacing: TopDashSpacing.xlg, name: 'xlg'),
-      _SpacingItem(spacing: TopDashSpacing.xxlg, name: 'xxlg'),
-      _SpacingItem(spacing: TopDashSpacing.xxxlg, name: 'xxxlg'),
+      _SpacingItem(spacing: IoFlipSpacing.xxxs, name: 'xxxs'),
+      _SpacingItem(spacing: IoFlipSpacing.xxs, name: 'xxs'),
+      _SpacingItem(spacing: IoFlipSpacing.xs, name: 'xs'),
+      _SpacingItem(spacing: IoFlipSpacing.sm, name: 'sm'),
+      _SpacingItem(spacing: IoFlipSpacing.md, name: 'md'),
+      _SpacingItem(spacing: IoFlipSpacing.lg, name: 'lg'),
+      _SpacingItem(spacing: IoFlipSpacing.xlgsm, name: 'xlgsm'),
+      _SpacingItem(spacing: IoFlipSpacing.xlg, name: 'xlg'),
+      _SpacingItem(spacing: IoFlipSpacing.xxlg, name: 'xxlg'),
+      _SpacingItem(spacing: IoFlipSpacing.xxxlg, name: 'xxxlg'),
     ];
 
     return StoryScaffold(
@@ -39,30 +39,30 @@ class _SpacingItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(TopDashSpacing.sm),
+      padding: const EdgeInsets.all(IoFlipSpacing.sm),
       child: Row(
         children: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Container(
-                color: TopDashColors.seedBlack,
-                width: TopDashSpacing.xxs,
-                height: TopDashSpacing.lg,
+                color: IoFlipColors.seedBlack,
+                width: IoFlipSpacing.xxs,
+                height: IoFlipSpacing.lg,
               ),
               Container(
                 width: spacing,
-                height: TopDashSpacing.lg,
-                color: TopDashColors.seedPaletteBlue70,
+                height: IoFlipSpacing.lg,
+                color: IoFlipColors.seedPaletteBlue70,
               ),
               Container(
-                color: TopDashColors.seedBlack,
-                width: TopDashSpacing.xxs,
-                height: TopDashSpacing.lg,
+                color: IoFlipColors.seedBlack,
+                width: IoFlipSpacing.xxs,
+                height: IoFlipSpacing.lg,
               ),
             ],
           ),
-          const SizedBox(width: TopDashSpacing.sm),
+          const SizedBox(width: IoFlipSpacing.sm),
           Text('$name ($spacing)'),
         ],
       ),

@@ -4,9 +4,9 @@ import 'package:io_flip_ui/io_flip_ui.dart';
 /// {@template io_flip_dialog}
 /// IO FLIP themed dialog.
 /// {@endtemplate}
-class TopDashDialog extends StatelessWidget {
+class IoFlipDialog extends StatelessWidget {
   /// {@macro io_flip_dialog}
-  const TopDashDialog({
+  const IoFlipDialog({
     required this.child,
     this.showCloseButton = true,
     this.onClose,
@@ -24,7 +24,7 @@ class TopDashDialog extends StatelessWidget {
   }) async {
     return showGeneralDialog<void>(
       context: context,
-      pageBuilder: (context, _, __) => TopDashDialog(
+      pageBuilder: (context, _, __) => IoFlipDialog(
         isTransparent: isTransparent,
         showCloseButton: showCloseButton,
         onClose: onClose,
@@ -64,14 +64,14 @@ class TopDashDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: isTransparent ? Colors.transparent : null,
-      insetPadding: const EdgeInsets.all(TopDashSpacing.sm),
+      insetPadding: const EdgeInsets.all(IoFlipSpacing.sm),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(TopDashSpacing.lg),
+        borderRadius: BorderRadius.circular(IoFlipSpacing.lg),
         child: SingleChildScrollView(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 400),
             child: Padding(
-              padding: const EdgeInsets.all(TopDashSpacing.lg),
+              padding: const EdgeInsets.all(IoFlipSpacing.lg),
               child: Column(
                 children: [
                   if (showCloseButton)
@@ -79,10 +79,10 @@ class TopDashDialog extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       child: CloseButton(
                         onPressed: onClose,
-                        color: TopDashColors.seedWhite,
+                        color: IoFlipColors.seedWhite,
                       ),
                     ),
-                  const SizedBox(height: TopDashSpacing.lg),
+                  const SizedBox(height: IoFlipSpacing.lg),
                   child,
                 ],
               ),

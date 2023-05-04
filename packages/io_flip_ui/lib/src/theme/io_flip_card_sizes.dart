@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 /// Card sizes used in the I/O FLIP UI.
-abstract class TopDashCardSizes {
+abstract class IoFlipCardSizes {
   /// xxs card size
   static const Size xxs = Size(54, 72);
 

@@ -35,7 +35,7 @@ class ResponsiveLayoutBuilder extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth < constraints.maxHeight ||
-            constraints.maxWidth < TopDashBreakpoints.medium) {
+            constraints.maxWidth < IoFlipBreakpoints.medium) {
           return small(context, child);
         }
         return large(context, child);

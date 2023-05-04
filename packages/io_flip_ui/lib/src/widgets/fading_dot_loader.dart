@@ -36,7 +36,7 @@ class _FadingDotLoaderState extends State<FadingDotLoader>
         for (var i = 0; i < widget.numberOfDots; i++) ...[
           _AnimatedDot(index: i, animation: animationController),
           if (i < widget.numberOfDots - 1)
-            const SizedBox(width: TopDashSpacing.xs)
+            const SizedBox(width: IoFlipSpacing.xs)
         ],
       ],
     );
@@ -77,10 +77,10 @@ class _AnimatedDot extends StatelessWidget {
         );
       },
       child: Container(
-        width: TopDashSpacing.lg,
-        height: TopDashSpacing.lg,
+        width: IoFlipSpacing.lg,
+        height: IoFlipSpacing.lg,
         decoration: const BoxDecoration(
-          color: TopDashColors.seedPaletteBlue50,
+          color: IoFlipColors.seedPaletteBlue50,
           shape: BoxShape.circle,
         ),
       ),

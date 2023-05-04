@@ -142,15 +142,15 @@ class _DraftLoadedViewState extends State<DraftLoadedView> {
         child: SingleChildScrollView(
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              maxHeight: uiHeight + TopDashSpacing.xxxlg,
-              minHeight: uiHeight + TopDashSpacing.lg,
+              maxHeight: uiHeight + IoFlipSpacing.xxxlg,
+              minHeight: uiHeight + IoFlipSpacing.lg,
             ),
             child: Stack(
               children: [
                 AnimatedPositioned(
                   duration: _fadeInDuration,
                   curve: _fadeInCurve,
-                  right: center.dx + _stackSize.width / 2 + TopDashSpacing.xs,
+                  right: center.dx + _stackSize.width / 2 + IoFlipSpacing.xs,
                   top: _stackSize.height / 2 + _uiOffset,
                   child: AnimatedOpacity(
                     curve: _fadeInCurve,
@@ -162,7 +162,7 @@ class _DraftLoadedViewState extends State<DraftLoadedView> {
                       },
                       icon: const Icon(
                         Icons.arrow_back_ios_new,
-                        color: TopDashColors.seedWhite,
+                        color: IoFlipColors.seedWhite,
                       ),
                       iconSize: 20,
                     ),
@@ -171,7 +171,7 @@ class _DraftLoadedViewState extends State<DraftLoadedView> {
                 AnimatedPositioned(
                   duration: _fadeInDuration,
                   curve: _fadeInCurve,
-                  left: center.dx + _stackSize.width / 2 + TopDashSpacing.xs,
+                  left: center.dx + _stackSize.width / 2 + IoFlipSpacing.xs,
                   top: _stackSize.height / 2 + _uiOffset,
                   child: AnimatedOpacity(
                     curve: _fadeInCurve,
@@ -183,7 +183,7 @@ class _DraftLoadedViewState extends State<DraftLoadedView> {
                       },
                       icon: const Icon(
                         Icons.arrow_forward_ios,
-                        color: TopDashColors.seedWhite,
+                        color: IoFlipColors.seedWhite,
                       ),
                       iconSize: 20,
                     ),
@@ -335,7 +335,7 @@ class _SelectedDeck extends StatelessWidget {
       children: [
         for (var i = 0; i < 3; i++) ...[
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.xs),
+            padding: const EdgeInsets.symmetric(horizontal: IoFlipSpacing.xs),
             child: SelectedCard(
               i,
               key: ValueKey('SelectedCard$i'),
@@ -368,8 +368,8 @@ class SelectedCard extends StatelessWidget {
           height: _handSize.height,
           decoration: card == null
               ? BoxDecoration(
-                  borderRadius: BorderRadius.circular(TopDashSpacing.sm),
-                  border: Border.all(color: TopDashColors.seedGrey90),
+                  borderRadius: BorderRadius.circular(IoFlipSpacing.sm),
+                  border: Border.all(color: IoFlipColors.seedGrey90),
                 )
               : null,
           child: Stack(
@@ -386,15 +386,15 @@ class SelectedCard extends StatelessWidget {
                 )
               else
                 Positioned(
-                  bottom: TopDashSpacing.xs,
-                  right: TopDashSpacing.xs,
+                  bottom: IoFlipSpacing.xs,
+                  right: IoFlipSpacing.xs,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      color: TopDashColors.seedWhite,
+                      color: IoFlipColors.seedWhite,
                       borderRadius: BorderRadius.circular(4),
                       border: Border.all(
                         width: 2,
-                        color: TopDashColors.seedBlack,
+                        color: IoFlipColors.seedBlack,
                       ),
                       boxShadow: const [
                         BoxShadow(
@@ -452,18 +452,18 @@ class _BottomBar extends StatelessWidget {
               children: [
                 Text(
                   l10n.deckBuildingTitle,
-                  style: TopDashTextStyles.mobileH6Light,
+                  style: IoFlipTextStyles.mobileH6Light,
                 ),
-                const SizedBox(height: TopDashSpacing.xs),
+                const SizedBox(height: IoFlipSpacing.xs),
                 Text(
                   l10n.deckBuildingSubtitle,
-                  style: TopDashTextStyles.bodySM,
+                  style: IoFlipTextStyles.bodySM,
                 ),
               ],
             ),
       trailing: RoundedButton.icon(
         Icons.question_mark_rounded,
-        onPressed: () => TopDashDialog.show(
+        onPressed: () => IoFlipDialog.show(
           context,
           child: const HowToPlayDialog(),
         ),

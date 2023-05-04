@@ -26,7 +26,7 @@ class _FlipCountdownStoryState extends State<FlipCountdownStory> {
               FlipCountdown(
                 key: ValueKey(_replayCounter),
               ),
-              const SizedBox(height: TopDashSpacing.lg),
+              const SizedBox(height: IoFlipSpacing.lg),
               ElevatedButton(
                 onPressed: () => setState(() {
                   _replayCounter++;

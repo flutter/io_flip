@@ -28,7 +28,7 @@ class GameCardOverlayStory extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(width: TopDashSpacing.lg),
+              SizedBox(width: IoFlipSpacing.lg),
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -44,7 +44,7 @@ class GameCardOverlayStory extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(width: TopDashSpacing.lg),
+              SizedBox(width: IoFlipSpacing.lg),
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [

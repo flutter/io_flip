@@ -58,22 +58,22 @@ class _DialogContent extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-          padding: const EdgeInsets.all(TopDashSpacing.lg),
+          padding: const EdgeInsets.all(IoFlipSpacing.lg),
           child: FittedBox(
             fit: BoxFit.scaleDown,
             child: CardFan(cards: cards),
           ),
         ),
-        const SizedBox(height: TopDashSpacing.lg),
+        const SizedBox(height: IoFlipSpacing.lg),
         Text(
           l10n.shareTeamDialogDescription,
-          style: TopDashTextStyles.mobileH4,
+          style: IoFlipTextStyles.mobileH4,
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: TopDashSpacing.lg),
+        const SizedBox(height: IoFlipSpacing.lg),
         Text(
           initials,
-          style: TopDashTextStyles.mobileH1,
+          style: IoFlipTextStyles.mobileH1,
           textAlign: TextAlign.center,
         ),
         Row(
@@ -82,13 +82,13 @@ class _DialogContent extends StatelessWidget {
           children: [
             Image.asset(
               Assets.images.tempPreferencesCustom.path,
-              color: TopDashColors.seedGreen,
+              color: IoFlipColors.seedGreen,
             ),
-            const SizedBox(width: TopDashSpacing.sm),
+            const SizedBox(width: IoFlipSpacing.sm),
             Text(
               '$wins ${l10n.winStreakLabel}',
-              style: TopDashTextStyles.mobileH6
-                  .copyWith(color: TopDashColors.seedGreen),
+              style: IoFlipTextStyles.mobileH6
+                  .copyWith(color: IoFlipColors.seedGreen),
             ),
           ],
         ),

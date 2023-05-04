@@ -8,7 +8,7 @@ class BottomBarStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final isSmall = screenWidth < TopDashBreakpoints.small;
+    final isSmall = screenWidth < IoFlipBreakpoints.small;
     return StoryScaffold(
       title: 'Io Flip Bottom Bar',
       body: Column(

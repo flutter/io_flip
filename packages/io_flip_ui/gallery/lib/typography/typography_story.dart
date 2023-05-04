@@ -7,7 +7,7 @@ class TypographyStory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const textTheme = TopDashTextStyles.mobile;
+    const textTheme = IoFlipTextStyles.mobile;
 
     final textStyleList = [
       _TextItem(name: 'Display small', style: textTheme.displaySmall),
@@ -44,8 +44,8 @@ class _TextItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: TopDashSpacing.sm,
-        vertical: TopDashSpacing.lg,
+        horizontal: IoFlipSpacing.sm,
+        vertical: IoFlipSpacing.lg,
       ),
       child: Text(name, style: style),
     );

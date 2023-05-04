@@ -1,5 +1,5 @@
 /// Spacing used in the I/O FLIP UI.
-abstract class TopDashSpacing {
+abstract class IoFlipSpacing {
   /// The default unit of spacing
   static const double spaceUnit = 16;
 

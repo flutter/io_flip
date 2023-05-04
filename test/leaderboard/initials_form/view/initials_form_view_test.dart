@@ -194,7 +194,7 @@ void main() {
               widget is Container &&
               widget.decoration is BoxDecoration &&
               ((widget.decoration! as BoxDecoration).border ==
-                  Border.all(color: TopDashColors.seedRed, width: 2)),
+                  Border.all(color: IoFlipColors.seedRed, width: 2)),
         );
 
         expect(blacklistDecoration, findsNWidgets(3));

@@ -51,33 +51,33 @@ class CardOverlay extends StatelessWidget {
     required this.width,
     required this.height,
     super.key,
-  })  : color = TopDashColors.seedBlue,
+  })  : color = IoFlipColors.seedBlue,
         isDimmed = false,
         child = const Icon(
           Icons.check,
-          color: TopDashColors.seedWhite,
+          color: IoFlipColors.seedWhite,
         );
 
   const CardOverlay._lose({
     required this.width,
     required this.height,
     super.key,
-  })  : color = TopDashColors.seedRed,
+  })  : color = IoFlipColors.seedRed,
         isDimmed = true,
         child = const Icon(
           Icons.close,
-          color: TopDashColors.seedWhite,
+          color: IoFlipColors.seedWhite,
         );
 
   const CardOverlay._draw({
     required this.width,
     required this.height,
     super.key,
-  })  : color = TopDashColors.seedGrey50,
+  })  : color = IoFlipColors.seedGrey50,
         isDimmed = true,
         child = const Text(
           '=',
-          style: TextStyle(color: TopDashColors.seedWhite, fontSize: 24),
+          style: TextStyle(color: IoFlipColors.seedWhite, fontSize: 24),
         );
 
   /// Color
@@ -104,7 +104,7 @@ class CardOverlay extends StatelessWidget {
         width: width,
         height: height,
         decoration: BoxDecoration(
-          color: isDimmed ? TopDashColors.seedWhite.withOpacity(.5) : null,
+          color: isDimmed ? IoFlipColors.seedWhite.withOpacity(.5) : null,
           border: Border.all(width: 2, color: color),
           borderRadius: borderRadius,
         ),

@@ -9,7 +9,7 @@ class LeaderboardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const highlightColor = TopDashColors.seedYellow;
+    const highlightColor = IoFlipColors.seedYellow;
 
     final bloc = context.watch<LeaderboardBloc>();
     final state = bloc.state;
@@ -28,18 +28,18 @@ class LeaderboardView extends StatelessWidget {
     final longestStreak = leaderboard.scoreCardsWithLongestStreak;
 
     return Padding(
-      padding: const EdgeInsets.all(TopDashSpacing.xlg),
+      padding: const EdgeInsets.all(IoFlipSpacing.xlg),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 340),
         child: Column(
           children: [
             Text(
               l10n.leaderboardLongestStreak,
-              style: TopDashTextStyles.buttonSM.copyWith(color: highlightColor),
+              style: IoFlipTextStyles.buttonSM.copyWith(color: highlightColor),
             ),
-            const SizedBox(height: TopDashSpacing.sm),
+            const SizedBox(height: IoFlipSpacing.sm),
             const Divider(thickness: 2, color: highlightColor),
-            const SizedBox(height: TopDashSpacing.xs),
+            const SizedBox(height: IoFlipSpacing.xs),
             LeaderboardPlayers(
               players: longestStreak
                   .map(
