@@ -286,8 +286,8 @@ class GameSummaryFooter extends StatelessWidget {
     final playerDeck =
         bloc.isHost ? state.match.hostDeck : state.match.guestDeck;
     final result = state.matchState.result;
-    final showNextMatch = result == MatchResult.host && bloc.isHost ||
-        result == MatchResult.guest && !bloc.isHost ||
+    final showNextMatch = (result == MatchResult.host && bloc.isHost) ||
+        (result == MatchResult.guest && !bloc.isHost) ||
         result == MatchResult.draw;
 
     return Flex(
