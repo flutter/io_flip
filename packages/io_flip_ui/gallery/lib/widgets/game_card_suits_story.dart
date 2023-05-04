@@ -20,6 +20,7 @@ class GameCardSuitsStory extends StatelessWidget {
                 suitName: 'air',
                 description: 'The best air hockey player in all the Dashland',
                 power: 57,
+                isRare: false,
               ),
               SizedBox(height: 16),
               GameCard(
@@ -29,6 +30,7 @@ class GameCardSuitsStory extends StatelessWidget {
                 suitName: 'fire',
                 description: 'The hottest Dash in all the Dashland',
                 power: 57,
+                isRare: false,
               ),
               SizedBox(height: 16),
               GameCard(
@@ -38,6 +40,7 @@ class GameCardSuitsStory extends StatelessWidget {
                 suitName: 'water',
                 description: 'The best swimmer in all the Dashland',
                 power: 57,
+                isRare: false,
               ),
               SizedBox(height: 16),
               GameCard(
@@ -47,6 +50,7 @@ class GameCardSuitsStory extends StatelessWidget {
                 suitName: 'metal',
                 description: 'The most heavy metal Dash in all the Dashland',
                 power: 57,
+                isRare: false,
               ),
               SizedBox(height: 16),
               GameCard(
@@ -56,6 +60,7 @@ class GameCardSuitsStory extends StatelessWidget {
                 suitName: 'earth',
                 description: 'The most rock and roll Dash in all the Dashland',
                 power: 57,
+                isRare: false,
               ),
             ],
           ),
