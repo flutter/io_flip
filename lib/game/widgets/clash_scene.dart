@@ -111,9 +111,8 @@ class ClashSceneState extends State<ClashScene>
       },
     );
     final playerWins = widget.playerCard.power > widget.opponentCard.power;
-    final winningElement = _getElement(
-      playerWins ? widget.playerCard.suit : widget.opponentCard.suit,
-    );
+    final winningElement = _elementsMap[
+        playerWins ? widget.playerCard.suit : widget.opponentCard.suit];
     return Center(
       child: Stack(
         children: [
@@ -134,7 +133,7 @@ class ClashSceneState extends State<ClashScene>
           ),
           if (_flipCards)
             ElementalDamageAnimation(
-              winningElement,
+              winningElement!,
               direction: playerWins
                   ? DamageDirection.bottomToTop
                   : DamageDirection.topToBottom,
@@ -146,18 +145,11 @@ class ClashSceneState extends State<ClashScene>
     );
   }
 
-  Element _getElement(Suit suit) {
-    switch (suit) {
-      case Suit.air:
-        return Element.air;
-      case Suit.metal:
-        return Element.metal;
-      case Suit.fire:
-        return Element.fire;
-      case Suit.earth:
-        return Element.earth;
-      case Suit.water:
-        return Element.water;
-    }
-  }
+  static const _elementsMap = {
+    Suit.air: Element.air,
+    Suit.earth: Element.earth,
+    Suit.fire: Element.fire,
+    Suit.metal: Element.metal,
+    Suit.water: Element.water,
+  };
 }

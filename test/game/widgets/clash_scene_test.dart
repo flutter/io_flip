@@ -37,8 +37,8 @@ void main() {
     });
 
     testWidgets(
-      'flips both cards after countdown and invokes onFinished '
-      'callback when animation is complete',
+      'plays damage animation then flips both cards after countdown'
+      ' and invokes onFinished callback when animation is complete',
       (tester) async {
         var onFinishedCalled = false;
 
@@ -54,10 +54,14 @@ void main() {
 
         await mockNetworkImages(() async {
           await tester.pump(smallFlipAnimation.duration * 2);
-          await tester.pump(const Duration(seconds: 2));
         });
 
-        expect(find.byType(GameCard), findsNWidgets(2));
+        final elementalDamage = find.byType(ElementalDamageAnimation);
+        expect(elementalDamage, findsOneWidget);
+        tester
+            .widget<ElementalDamageAnimation>(elementalDamage)
+            .onComplete
+            ?.call();
         expect(onFinishedCalled, isTrue);
       },
     );

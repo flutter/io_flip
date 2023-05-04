@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
@@ -114,10 +115,16 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
               )
             else
               _BottomAnimation(
-                child: DualAnimation(
-                  back: elementalDamage.chargeBackBuilder,
-                  front: elementalDamage.chargeFrontBuilder,
-                  onComplete: _onStepCompleted,
+                child: Transform.translate(
+                  offset: Offset(
+                    0.45 * widget.size.width,
+                    0.21 * widget.size.height,
+                  ),
+                  child: DualAnimation(
+                    back: elementalDamage.chargeBackBuilder,
+                    front: elementalDamage.chargeFrontBuilder,
+                    onComplete: _onStepCompleted,
+                  ),
                 ),
               )
           ],
@@ -131,8 +138,12 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
                 child: elementalDamage.damageSendBuilder(_onStepCompleted),
               )
             else
-              _BottomAnimation(
-                child: elementalDamage.damageSendBuilder(_onStepCompleted),
+              Align(
+                alignment: const Alignment(0.7, 0),
+                child: Transform.rotate(
+                  angle: pi,
+                  child: elementalDamage.damageSendBuilder(_onStepCompleted),
+                ),
               )
           ],
         );
@@ -150,7 +161,13 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
                 ),
               )
             else
-              elementalDamage.damageReceiveBuilder(_onStepCompleted)
+              Transform.translate(
+                offset: -Offset(
+                  0.3 * widget.size.width,
+                  0.3 * widget.size.height,
+                ),
+                child: elementalDamage.damageReceiveBuilder(_onStepCompleted),
+              )
           ],
         );
       case _AnimationState.victory:
@@ -170,10 +187,16 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
               )
             else
               _BottomAnimation(
-                child: DualAnimation(
-                  back: elementalDamage.victoryChargeBackBuilder,
-                  front: elementalDamage.victoryChargeFrontBuilder,
-                  onComplete: _onStepCompleted,
+                child: Transform.translate(
+                  offset: Offset(
+                    0.28 * widget.size.width,
+                    0.11 * widget.size.height,
+                  ),
+                  child: DualAnimation(
+                    back: elementalDamage.victoryChargeBackBuilder,
+                    front: elementalDamage.victoryChargeFrontBuilder,
+                    onComplete: _onStepCompleted,
+                  ),
                 ),
               )
           ],

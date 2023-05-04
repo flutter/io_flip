@@ -56,7 +56,7 @@ class _ElementalDamageStoryState extends State<ElementalDamageStory> {
                 Positioned(
                   child: ElementalDamageAnimation(
                     widget.element,
-                    direction: DamageDirection.topToBottom,
+                    direction: DamageDirection.bottomToTop,
                     size: const GameCardSize.md(),
                     onComplete: () {},
                   ),
