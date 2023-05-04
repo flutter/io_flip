@@ -91,6 +91,61 @@ void main() {
       });
     });
 
+    group('getByTerm', () {
+      test('returns a PromptTerm when there is one', () async {
+        when(
+          () => dbClient.findBy(
+            'prompt_terms',
+            'term',
+            'Super Smell',
+          ),
+        ).thenAnswer(
+          (_) async => [
+            DbEntityRecord(
+              id: 'id1',
+              data: const {
+                'type': 'power',
+                'term': 'Super Smell',
+              },
+            ),
+          ],
+        );
+
+        final response = await promptRepository.getByTerm(
+          'Super Smell',
+        );
+
+        expect(
+          response,
+          equals(
+            PromptTerm(
+              id: 'id1',
+              type: PromptTermType.power,
+              term: 'Super Smell',
+            ),
+          ),
+        );
+      });
+
+      test("returns null when there isn't one", () async {
+        when(
+          () => dbClient.findBy(
+            'prompt_terms',
+            'term',
+            'Super Smell',
+          ),
+        ).thenAnswer(
+          (_) async => [],
+        );
+
+        final response = await promptRepository.getByTerm(
+          'Super Smell',
+        );
+
+        expect(response, isNull);
+      });
+    });
+
     group('isValidPrompt', () {
       const prompt = Prompt(
         power: 'AAA',
