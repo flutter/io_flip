@@ -2,7 +2,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:top_dash/prompt/prompt.dart';
+import 'package:io_flip/prompt/prompt.dart';
 
 void main() {
   group('PromptTermsRequested', () {

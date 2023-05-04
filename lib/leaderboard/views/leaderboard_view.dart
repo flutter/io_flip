@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/leaderboard/leaderboard.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/leaderboard/leaderboard.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class LeaderboardView extends StatelessWidget {

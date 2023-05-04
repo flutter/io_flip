@@ -4,8 +4,8 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:connection_repository/connection_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:io_flip/connection/connection.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:top_dash/connection/connection.dart';
 
 class _MockConnectionRepository extends Mock implements ConnectionRepository {}
 

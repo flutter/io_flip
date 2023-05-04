@@ -2,10 +2,10 @@ import 'package:flame/cache.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:io_flip/game/game.dart';
+import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/utils/utils.dart';
 import 'package:provider/provider.dart';
-import 'package:top_dash/game/game.dart';
-import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class MatchResultSplash extends StatefulWidget {

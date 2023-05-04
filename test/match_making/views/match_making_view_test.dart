@@ -7,13 +7,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
+import 'package:io_flip/game/game.dart';
+import 'package:io_flip/match_making/match_making.dart';
+import 'package:io_flip/settings/settings.dart';
+import 'package:io_flip/utils/utils.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
-import 'package:top_dash/game/game.dart';
-import 'package:top_dash/match_making/match_making.dart';
-import 'package:top_dash/settings/settings.dart';
-import 'package:top_dash/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';

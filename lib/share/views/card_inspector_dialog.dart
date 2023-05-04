@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' hide Card;
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
-import 'package:top_dash/share/share.dart';
+import 'package:io_flip/share/share.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 typedef ShowShareDialog = Future<void> Function(Card card);

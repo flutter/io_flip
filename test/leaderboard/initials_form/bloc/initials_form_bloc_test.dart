@@ -3,8 +3,8 @@
 import 'package:api_client/api_client.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:io_flip/leaderboard/initials_form/initials_form.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:top_dash/leaderboard/initials_form/initials_form.dart';
 
 class _MockLeaderboardResource extends Mock implements LeaderboardResource {}
 

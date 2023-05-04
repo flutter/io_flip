@@ -1,10 +1,10 @@
 import 'package:api_client/api_client.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:game_domain/game_domain.dart';
+import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/share/widgets/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/share/widgets/widgets.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class ShareHandDialog extends StatelessWidget {

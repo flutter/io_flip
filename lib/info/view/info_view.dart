@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/utils/utils.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class InfoView extends StatelessWidget {

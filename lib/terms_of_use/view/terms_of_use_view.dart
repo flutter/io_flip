@@ -1,9 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/terms_of_use/terms_of_use.dart';
-import 'package:top_dash/utils/utils.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/terms_of_use/terms_of_use.dart';
+import 'package:io_flip/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class TermsOfUseView extends StatelessWidget {

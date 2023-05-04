@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/info/view/info_view.dart';
+import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/info/view/info_view.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class InfoButton extends StatelessWidget {

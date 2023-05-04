@@ -3,9 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/share/bloc/download_bloc.dart';
+import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/share/bloc/download_bloc.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/how_to_play/how_to_play.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/utils/utils.dart';
+import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/how_to_play/how_to_play.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 const _imageHeight = 184.0;

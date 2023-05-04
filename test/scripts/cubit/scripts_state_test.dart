@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:top_dash/scripts/cubit/scripts_cubit.dart';
+import 'package:io_flip/scripts/cubit/scripts_cubit.dart';
 
 void main() {
   group('ScriptsState', () {

@@ -2,12 +2,12 @@ import 'package:api_client/api_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/how_to_play/how_to_play.dart';
-import 'package:top_dash/info/info.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/leaderboard/leaderboard.dart';
-import 'package:top_dash/terms_of_use/terms_of_use.dart';
+import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/how_to_play/how_to_play.dart';
+import 'package:io_flip/info/info.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/leaderboard/leaderboard.dart';
+import 'package:io_flip/terms_of_use/terms_of_use.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class MainMenuScreen extends StatelessWidget {

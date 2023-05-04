@@ -2,7 +2,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:top_dash/game/game.dart';
+import 'package:io_flip/game/game.dart';
 
 void main() {
   group('MatchLoadingState', () {

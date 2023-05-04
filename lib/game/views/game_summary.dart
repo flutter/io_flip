@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
+import 'package:io_flip/audio/audio.dart';
+import 'package:io_flip/audio/audio_controller.dart';
+import 'package:io_flip/game/game.dart';
+import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/info/info.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/match_making/match_making.dart';
+import 'package:io_flip/share/share.dart';
+import 'package:io_flip/utils/utils.dart';
 import 'package:provider/provider.dart';
-import 'package:top_dash/audio/audio.dart';
-import 'package:top_dash/audio/audio_controller.dart';
-import 'package:top_dash/game/game.dart';
-import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/info/info.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/match_making/match_making.dart';
-import 'package:top_dash/share/share.dart';
-import 'package:top_dash/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class GameSummaryView extends StatelessWidget {

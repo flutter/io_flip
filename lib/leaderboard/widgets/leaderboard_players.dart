@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:top_dash/gen/assets.gen.dart';
+import 'package:io_flip/gen/assets.gen.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class LeaderboardPlayers extends StatelessWidget {

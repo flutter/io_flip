@@ -3,11 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
-import 'package:top_dash/audio/audio.dart';
-import 'package:top_dash/game/game.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/match_making/match_making.dart';
-import 'package:top_dash/utils/utils.dart';
+import 'package:io_flip/audio/audio.dart';
+import 'package:io_flip/game/game.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/match_making/match_making.dart';
+import 'package:io_flip/utils/utils.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class MatchMakingView extends StatelessWidget {

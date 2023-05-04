@@ -4,8 +4,8 @@ import 'package:api_client/api_client.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_script_machine/game_script_machine.dart';
+import 'package:io_flip/scripts/cubit/scripts_cubit.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:top_dash/scripts/cubit/scripts_cubit.dart';
 
 class _MockScriptsResource extends Mock implements ScriptsResource {}
 

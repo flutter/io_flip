@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:top_dash/settings/settings_controller.dart';
+import 'package:io_flip/settings/settings_controller.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class AudioToggleButton extends StatelessWidget {

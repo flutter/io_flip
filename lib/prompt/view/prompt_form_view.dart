@@ -2,9 +2,9 @@ import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:top_dash/audio/audio.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/prompt/prompt.dart';
+import 'package:io_flip/audio/audio.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/prompt/prompt.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 
 class PromptFormView extends StatefulWidget {

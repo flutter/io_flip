@@ -4,10 +4,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
+import 'package:io_flip/match_making/match_making.dart';
+import 'package:io_flip/settings/settings.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
-import 'package:top_dash/match_making/match_making.dart';
-import 'package:top_dash/settings/settings.dart';
 
 import '../../helpers/helpers.dart';
 

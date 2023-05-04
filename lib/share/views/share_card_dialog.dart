@@ -2,8 +2,8 @@ import 'package:api_client/api_client.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:game_domain/game_domain.dart';
+import 'package:io_flip/share/share.dart';
 import 'package:provider/provider.dart';
-import 'package:top_dash/share/share.dart';
 import 'package:top_dash_ui/top_dash_ui.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 

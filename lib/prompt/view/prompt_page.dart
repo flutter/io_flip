@@ -1,7 +1,7 @@
 import 'package:api_client/api_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:top_dash/prompt/prompt.dart';
+import 'package:io_flip/prompt/prompt.dart';
 
 class PromptPage extends StatelessWidget {
   const PromptPage({super.key});
