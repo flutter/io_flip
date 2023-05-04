@@ -70,8 +70,8 @@ void main() {
       'puts players card over opponents when stronger',
       (tester) async {
         await tester.pumpSubject(
-          playerCard,
           opponentCard,
+          playerCard,
           onFinished: () {},
         );
 
@@ -90,8 +90,8 @@ void main() {
       'puts opponents card over players when stronger',
       (tester) async {
         await tester.pumpSubject(
-          opponentCard,
           playerCard,
+          opponentCard,
           onFinished: () {},
         );
 
