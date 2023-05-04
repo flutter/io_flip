@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:io_flip/share/views/views.dart';
 import 'package:io_flip/share/widgets/widgets.dart';
-import 'package:io_flip_ui/top_dash_ui.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 

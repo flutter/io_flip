@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:io_flip/l10n/l10n.dart';
 import 'package:io_flip/utils/utils.dart';
-import 'package:io_flip_ui/top_dash_ui.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 
 class InfoView extends StatelessWidget {
   const InfoView({super.key});

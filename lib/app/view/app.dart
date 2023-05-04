@@ -17,7 +17,7 @@ import 'package:io_flip/settings/persistence/persistence.dart';
 import 'package:io_flip/settings/settings.dart';
 import 'package:io_flip/style/snack_bar.dart';
 import 'package:io_flip/terms_of_use/terms_of_use.dart';
-import 'package:io_flip_ui/top_dash_ui.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:provider/provider.dart';
 

@@ -12,7 +12,7 @@ import 'package:io_flip/gen/assets.gen.dart';
 import 'package:io_flip/settings/settings.dart';
 import 'package:io_flip/share/views/card_inspector_dialog.dart';
 import 'package:io_flip/share/views/share_hand_page.dart';
-import 'package:io_flip_ui/top_dash_ui.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 

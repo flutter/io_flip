@@ -708,7 +708,7 @@ packages:
   io_flip_ui:
     dependency: "direct main"
     description:
-      path: "packages/top_dash_ui"
+      path: "packages/io_flip_ui"
       relative: true
     source: path
     version: "0.1.0+1"

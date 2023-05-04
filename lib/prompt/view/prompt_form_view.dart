@@ -5,7 +5,7 @@ import 'package:game_domain/game_domain.dart';
 import 'package:io_flip/audio/audio.dart';
 import 'package:io_flip/l10n/l10n.dart';
 import 'package:io_flip/prompt/prompt.dart';
-import 'package:io_flip_ui/top_dash_ui.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 
 class PromptFormView extends StatefulWidget {
   const PromptFormView({

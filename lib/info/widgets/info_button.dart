@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:io_flip/gen/assets.gen.dart';
 import 'package:io_flip/info/view/info_view.dart';
-import 'package:io_flip_ui/top_dash_ui.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 
 class InfoButton extends StatelessWidget {
   const InfoButton({super.key});
