@@ -1,0 +1,33 @@
+name: functions
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    paths:
+      - "functions/**"
+      - ".github/workflows/functions.yaml"
+    branches:
+      - main
+
+defaults:
+    run:
+        working-directory: functions
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build and test functions
+    steps:
+        - name: Checkout Repo
+          uses: actions/checkout@main
+        - name: Setup node
+          uses: actions/setup-node@v3
+          with:
+            node-version: 18
+        - run: npm install
+        - run: npm run lint
+        - run: npm test
+    
