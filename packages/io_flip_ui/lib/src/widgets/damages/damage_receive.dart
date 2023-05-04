@@ -13,6 +13,7 @@ class DamageReceive extends StatelessWidget {
   const DamageReceive(
     this.path, {
     required this.size,
+    required this.assetSize,
     super.key,
     this.onComplete,
   });
@@ -26,31 +27,31 @@ class DamageReceive extends StatelessWidget {
   /// Path of the asset containing the sprite sheet.
   final String path;
 
+  /// Size of the assets to use, large or small
+  final AssetSize assetSize;
+
   @override
   Widget build(BuildContext context) {
     final images = context.read<Images>();
     final height = 1.6 * size.height;
     final width = 1.6 * size.width;
-    final x = 0.3 * size.width;
-    final y = 0.3 * size.height;
 
-    return Transform.translate(
-      offset: Offset(x, y),
-      child: SizedBox(
-        height: height,
-        width: width,
-        child: SpriteAnimationWidget.asset(
-          path: path,
-          images: images,
-          anchor: Anchor.center,
-          onComplete: onComplete,
-          data: SpriteAnimationData.sequenced(
-            amount: 16,
-            amountPerRow: 4,
-            textureSize: Vector2(499.5, 509),
-            stepTime: 0.04,
-            loop: false,
-          ),
+    return SizedBox(
+      height: height,
+      width: width,
+      child: SpriteAnimationWidget.asset(
+        path: path,
+        images: images,
+        anchor: Anchor.center,
+        onComplete: onComplete,
+        data: SpriteAnimationData.sequenced(
+          amount: 16,
+          amountPerRow: 4,
+          textureSize: assetSize == AssetSize.large
+              ? Vector2(499.5, 509)
+              : Vector2(298, 305),
+          stepTime: 0.04,
+          loop: false,
         ),
       ),
     );

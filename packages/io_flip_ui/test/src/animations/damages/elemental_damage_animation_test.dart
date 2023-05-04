@@ -19,470 +19,894 @@ void main() {
       images = Images(prefix: '');
 
       await images.loadAll([
-        Assets.images.elements.metal.chargeBack.keyName,
-        Assets.images.elements.metal.chargeFront.keyName,
-        Assets.images.elements.metal.damageReceive.keyName,
-        Assets.images.elements.metal.damageSend.keyName,
-        Assets.images.elements.metal.victoryChargeBack.keyName,
-        Assets.images.elements.metal.victoryChargeFront.keyName,
-        Assets.images.elements.air.chargeBack.keyName,
-        Assets.images.elements.air.chargeFront.keyName,
-        Assets.images.elements.air.damageReceive.keyName,
-        Assets.images.elements.air.damageSend.keyName,
-        Assets.images.elements.air.victoryChargeBack.keyName,
-        Assets.images.elements.air.victoryChargeFront.keyName,
-        Assets.images.elements.earth.chargeBack.keyName,
-        Assets.images.elements.earth.chargeFront.keyName,
-        Assets.images.elements.earth.damageReceive.keyName,
-        Assets.images.elements.earth.damageSend.keyName,
-        Assets.images.elements.earth.victoryChargeBack.keyName,
-        Assets.images.elements.earth.victoryChargeFront.keyName,
-        Assets.images.elements.fire.chargeBack.keyName,
-        Assets.images.elements.fire.chargeFront.keyName,
-        Assets.images.elements.fire.damageReceive.keyName,
-        Assets.images.elements.fire.damageSend.keyName,
-        Assets.images.elements.fire.victoryChargeBack.keyName,
-        Assets.images.elements.fire.victoryChargeFront.keyName,
-        Assets.images.elements.water.chargeBack.keyName,
-        Assets.images.elements.water.chargeFront.keyName,
-        Assets.images.elements.water.damageReceive.keyName,
-        Assets.images.elements.water.damageSend.keyName,
-        Assets.images.elements.water.victoryChargeBack.keyName,
-        Assets.images.elements.water.victoryChargeFront.keyName,
+        ...Assets.images.elements.desktop.air.values.map((e) => e.keyName),
+        ...Assets.images.elements.desktop.earth.values.map((e) => e.keyName),
+        ...Assets.images.elements.desktop.fire.values.map((e) => e.keyName),
+        ...Assets.images.elements.desktop.metal.values.map((e) => e.keyName),
+        ...Assets.images.elements.desktop.water.values.map((e) => e.keyName),
+        ...Assets.images.elements.mobile.air.values.map((e) => e.keyName),
+        ...Assets.images.elements.mobile.earth.values.map((e) => e.keyName),
+        ...Assets.images.elements.mobile.fire.values.map((e) => e.keyName),
+        ...Assets.images.elements.mobile.metal.values.map((e) => e.keyName),
+        ...Assets.images.elements.mobile.water.values.map((e) => e.keyName),
       ]);
     });
 
-    group('MetalDamage', () {
-      testWidgets('renders entire animations flow', (tester) async {
-        final stepNotifier = ElementalDamageStepNotifier();
-        await tester.runAsync(() async {
-          await tester.pumpWidget(
-            Provider.value(
-              value: images,
-              child: Directionality(
-                textDirection: TextDirection.ltr,
-                child: ElementalDamageAnimation(
-                  Element.metal,
-                  direction: DamageDirection.topToBottom,
-                  size: const GameCardSize.md(),
-                  stepNotifier: stepNotifier,
+    group('With large assets', () {
+      group('MetalDamage', () {
+        testWidgets('renders entire animations flow', (tester) async {
+          final stepNotifier = ElementalDamageStepNotifier();
+          await tester.runAsync(() async {
+            await tester.pumpWidget(
+              Provider.value(
+                value: images,
+                child: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: ElementalDamageAnimation(
+                    Element.metal,
+                    direction: DamageDirection.topToBottom,
+                    size: const GameCardSize.md(),
+                    stepNotifier: stepNotifier,
+                  ),
                 ),
               ),
-            ),
-          );
+            );
 
-          expect(find.byType(DualAnimation), findsOneWidget);
-          expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
-          expect(find.byType(ChargeBack), findsOneWidget);
-          expect(find.byType(ChargeFront), findsOneWidget);
+            expect(find.byType(DualAnimation), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+            expect(find.byType(ChargeBack), findsOneWidget);
+            expect(find.byType(ChargeFront), findsOneWidget);
 
-          var chargedComplete = false;
-          unawaited(
-            stepNotifier.charged.then(
-              (_) {
-                chargedComplete = true;
-              },
-            ),
-          );
-          while (!chargedComplete) {
-            await tester.pump(const Duration(milliseconds: 17));
-          }
+            var chargedComplete = false;
+            unawaited(
+              stepNotifier.charged.then(
+                (_) {
+                  chargedComplete = true;
+                },
+              ),
+            );
+            while (!chargedComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
 
-          expect(find.byType(DamageSend), findsOneWidget);
-          expect(find.byType(SpriteAnimationWidget), findsOneWidget);
+            expect(find.byType(DamageSend), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsOneWidget);
 
-          var sendComplete = false;
-          unawaited(
-            stepNotifier.sent.then(
-              (_) {
-                sendComplete = true;
-              },
-            ),
-          );
-          while (!sendComplete) {
-            await tester.pump(const Duration(milliseconds: 17));
-          }
+            var sendComplete = false;
+            unawaited(
+              stepNotifier.sent.then(
+                (_) {
+                  sendComplete = true;
+                },
+              ),
+            );
+            while (!sendComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
 
-          expect(find.byType(DamageReceive), findsOneWidget);
-          expect(find.byType(SpriteAnimationWidget), findsOneWidget);
+            expect(find.byType(DamageReceive), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsOneWidget);
 
-          var receiveComplete = false;
-          unawaited(
-            stepNotifier.received.then(
-              (_) {
-                receiveComplete = true;
-              },
-            ),
-          );
-          while (!receiveComplete) {
-            await tester.pump(const Duration(milliseconds: 17));
-          }
+            var receiveComplete = false;
+            unawaited(
+              stepNotifier.received.then(
+                (_) {
+                  receiveComplete = true;
+                },
+              ),
+            );
+            while (!receiveComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
 
-          expect(find.byType(DualAnimation), findsOneWidget);
-          expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
-          expect(find.byType(VictoryChargeBack), findsOneWidget);
-          expect(find.byType(VictoryChargeFront), findsOneWidget);
+            expect(find.byType(DualAnimation), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+            expect(find.byType(VictoryChargeBack), findsOneWidget);
+            expect(find.byType(VictoryChargeFront), findsOneWidget);
 
-          var victoryComplete = false;
-          unawaited(
-            stepNotifier.victory.then(
-              (_) {
-                victoryComplete = true;
-              },
-            ),
-          );
-          while (!victoryComplete) {
-            await tester.pump(const Duration(milliseconds: 17));
-          }
-          expect(find.byType(SizedBox), findsOneWidget);
+            var victoryComplete = false;
+            unawaited(
+              stepNotifier.victory.then(
+                (_) {
+                  victoryComplete = true;
+                },
+              ),
+            );
+            while (!victoryComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+            expect(find.byType(SizedBox), findsOneWidget);
+          });
+        });
+      });
+
+      group('AirDamage', () {
+        testWidgets('renders entire animations flow', (tester) async {
+          final stepNotifier = ElementalDamageStepNotifier();
+          await tester.runAsync(() async {
+            await tester.pumpWidget(
+              Provider.value(
+                value: images,
+                child: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: ElementalDamageAnimation(
+                    Element.air,
+                    direction: DamageDirection.topToBottom,
+                    size: const GameCardSize.md(),
+                    stepNotifier: stepNotifier,
+                  ),
+                ),
+              ),
+            );
+
+            expect(find.byType(DualAnimation), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+            expect(find.byType(ChargeBack), findsOneWidget);
+            expect(find.byType(ChargeFront), findsOneWidget);
+
+            var chargedComplete = false;
+            unawaited(
+              stepNotifier.charged.then(
+                (_) {
+                  chargedComplete = true;
+                },
+              ),
+            );
+            while (!chargedComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+
+            expect(find.byType(DamageSend), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsOneWidget);
+
+            var sendComplete = false;
+            unawaited(
+              stepNotifier.sent.then(
+                (_) {
+                  sendComplete = true;
+                },
+              ),
+            );
+            while (!sendComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+
+            expect(find.byType(DamageReceive), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsOneWidget);
+
+            var receiveComplete = false;
+            unawaited(
+              stepNotifier.received.then(
+                (_) {
+                  receiveComplete = true;
+                },
+              ),
+            );
+            while (!receiveComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+
+            expect(find.byType(DualAnimation), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+            expect(find.byType(VictoryChargeBack), findsOneWidget);
+            expect(find.byType(VictoryChargeFront), findsOneWidget);
+
+            var victoryComplete = false;
+            unawaited(
+              stepNotifier.victory.then(
+                (_) {
+                  victoryComplete = true;
+                },
+              ),
+            );
+            while (!victoryComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+            expect(find.byType(SizedBox), findsOneWidget);
+          });
+        });
+      });
+
+      group('FireDamage', () {
+        testWidgets('renders entire animations flow', (tester) async {
+          final stepNotifier = ElementalDamageStepNotifier();
+          await tester.runAsync(() async {
+            await tester.pumpWidget(
+              Provider.value(
+                value: images,
+                child: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: ElementalDamageAnimation(
+                    Element.fire,
+                    direction: DamageDirection.bottomToTop,
+                    size: const GameCardSize.md(),
+                    stepNotifier: stepNotifier,
+                  ),
+                ),
+              ),
+            );
+
+            expect(find.byType(DualAnimation), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+            expect(find.byType(ChargeBack), findsOneWidget);
+            expect(find.byType(ChargeFront), findsOneWidget);
+
+            var chargedComplete = false;
+            unawaited(
+              stepNotifier.charged.then(
+                (_) {
+                  chargedComplete = true;
+                },
+              ),
+            );
+            while (!chargedComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+
+            expect(find.byType(DamageSend), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsOneWidget);
+
+            var sendComplete = false;
+            unawaited(
+              stepNotifier.sent.then(
+                (_) {
+                  sendComplete = true;
+                },
+              ),
+            );
+            while (!sendComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+
+            expect(find.byType(DamageReceive), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsOneWidget);
+
+            var receiveComplete = false;
+            unawaited(
+              stepNotifier.received.then(
+                (_) {
+                  receiveComplete = true;
+                },
+              ),
+            );
+            while (!receiveComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+
+            expect(find.byType(DualAnimation), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+            expect(find.byType(VictoryChargeBack), findsOneWidget);
+            expect(find.byType(VictoryChargeFront), findsOneWidget);
+
+            var victoryComplete = false;
+            unawaited(
+              stepNotifier.victory.then(
+                (_) {
+                  victoryComplete = true;
+                },
+              ),
+            );
+            while (!victoryComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+            expect(find.byType(SizedBox), findsOneWidget);
+          });
+        });
+      });
+
+      group('EarthDamage', () {
+        testWidgets('renders entire animations flow', (tester) async {
+          final stepNotifier = ElementalDamageStepNotifier();
+          await tester.runAsync(() async {
+            await tester.pumpWidget(
+              Provider.value(
+                value: images,
+                child: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: ElementalDamageAnimation(
+                    Element.earth,
+                    direction: DamageDirection.topToBottom,
+                    size: const GameCardSize.md(),
+                    stepNotifier: stepNotifier,
+                  ),
+                ),
+              ),
+            );
+
+            expect(find.byType(DualAnimation), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+            expect(find.byType(ChargeBack), findsOneWidget);
+            expect(find.byType(ChargeFront), findsOneWidget);
+
+            var chargedComplete = false;
+            unawaited(
+              stepNotifier.charged.then(
+                (_) {
+                  chargedComplete = true;
+                },
+              ),
+            );
+            while (!chargedComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+
+            expect(find.byType(DamageSend), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsOneWidget);
+
+            var sendComplete = false;
+            unawaited(
+              stepNotifier.sent.then(
+                (_) {
+                  sendComplete = true;
+                },
+              ),
+            );
+            while (!sendComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+
+            expect(find.byType(DamageReceive), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsOneWidget);
+
+            var receiveComplete = false;
+            unawaited(
+              stepNotifier.received.then(
+                (_) {
+                  receiveComplete = true;
+                },
+              ),
+            );
+            while (!receiveComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+
+            expect(find.byType(DualAnimation), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+            expect(find.byType(VictoryChargeBack), findsOneWidget);
+            expect(find.byType(VictoryChargeFront), findsOneWidget);
+
+            var victoryComplete = false;
+            unawaited(
+              stepNotifier.victory.then(
+                (_) {
+                  victoryComplete = true;
+                },
+              ),
+            );
+            while (!victoryComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+            expect(find.byType(SizedBox), findsOneWidget);
+          });
+        });
+      });
+
+      group('WaterDamage', () {
+        testWidgets('renders entire animations flow', (tester) async {
+          final stepNotifier = ElementalDamageStepNotifier();
+          await tester.runAsync(() async {
+            await tester.pumpWidget(
+              Provider.value(
+                value: images,
+                child: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: ElementalDamageAnimation(
+                    Element.water,
+                    direction: DamageDirection.topToBottom,
+                    size: const GameCardSize.md(),
+                    stepNotifier: stepNotifier,
+                  ),
+                ),
+              ),
+            );
+
+            expect(find.byType(DualAnimation), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+            expect(find.byType(ChargeBack), findsOneWidget);
+            expect(find.byType(ChargeFront), findsOneWidget);
+
+            var chargedComplete = false;
+            unawaited(
+              stepNotifier.charged.then(
+                (_) {
+                  chargedComplete = true;
+                },
+              ),
+            );
+            while (!chargedComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+
+            expect(find.byType(DamageSend), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsOneWidget);
+
+            var sendComplete = false;
+            unawaited(
+              stepNotifier.sent.then(
+                (_) {
+                  sendComplete = true;
+                },
+              ),
+            );
+            while (!sendComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+
+            expect(find.byType(DamageReceive), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsOneWidget);
+
+            var receiveComplete = false;
+            unawaited(
+              stepNotifier.received.then(
+                (_) {
+                  receiveComplete = true;
+                },
+              ),
+            );
+            while (!receiveComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+
+            expect(find.byType(DualAnimation), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+            expect(find.byType(VictoryChargeBack), findsOneWidget);
+            expect(find.byType(VictoryChargeFront), findsOneWidget);
+
+            var victoryComplete = false;
+            unawaited(
+              stepNotifier.victory.then(
+                (_) {
+                  victoryComplete = true;
+                },
+              ),
+            );
+            while (!victoryComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+            expect(find.byType(SizedBox), findsOneWidget);
+          });
         });
       });
     });
 
-    group('AirDamage', () {
-      testWidgets('renders entire animations flow', (tester) async {
-        final stepNotifier = ElementalDamageStepNotifier();
-        await tester.runAsync(() async {
-          await tester.pumpWidget(
-            Provider.value(
-              value: images,
-              child: Directionality(
-                textDirection: TextDirection.ltr,
-                child: ElementalDamageAnimation(
-                  Element.air,
-                  direction: DamageDirection.topToBottom,
-                  size: const GameCardSize.md(),
-                  stepNotifier: stepNotifier,
+    group('With small assets', () {
+      group('MetalDamage', () {
+        testWidgets('renders entire animations flow', (tester) async {
+          final stepNotifier = ElementalDamageStepNotifier();
+          await tester.runAsync(() async {
+            await tester.pumpWidget(
+              Provider.value(
+                value: images,
+                child: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: ElementalDamageAnimation(
+                    Element.metal,
+                    direction: DamageDirection.topToBottom,
+                    size: const GameCardSize.md(),
+                    assetSize: AssetSize.small,
+                    stepNotifier: stepNotifier,
+                  ),
                 ),
               ),
-            ),
-          );
+            );
 
-          expect(find.byType(DualAnimation), findsOneWidget);
-          expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
-          expect(find.byType(ChargeBack), findsOneWidget);
-          expect(find.byType(ChargeFront), findsOneWidget);
+            expect(find.byType(DualAnimation), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+            expect(find.byType(ChargeBack), findsOneWidget);
+            expect(find.byType(ChargeFront), findsOneWidget);
 
-          var chargedComplete = false;
-          unawaited(
-            stepNotifier.charged.then(
-              (_) {
-                chargedComplete = true;
-              },
-            ),
-          );
-          while (!chargedComplete) {
-            await tester.pump(const Duration(milliseconds: 17));
-          }
+            var chargedComplete = false;
+            unawaited(
+              stepNotifier.charged.then(
+                (_) {
+                  chargedComplete = true;
+                },
+              ),
+            );
+            while (!chargedComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
 
-          expect(find.byType(DamageSend), findsOneWidget);
-          expect(find.byType(SpriteAnimationWidget), findsOneWidget);
+            expect(find.byType(DamageSend), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsOneWidget);
 
-          var sendComplete = false;
-          unawaited(
-            stepNotifier.sent.then(
-              (_) {
-                sendComplete = true;
-              },
-            ),
-          );
-          while (!sendComplete) {
-            await tester.pump(const Duration(milliseconds: 17));
-          }
+            var sendComplete = false;
+            unawaited(
+              stepNotifier.sent.then(
+                (_) {
+                  sendComplete = true;
+                },
+              ),
+            );
+            while (!sendComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
 
-          expect(find.byType(DamageReceive), findsOneWidget);
-          expect(find.byType(SpriteAnimationWidget), findsOneWidget);
+            expect(find.byType(DamageReceive), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsOneWidget);
 
-          var receiveComplete = false;
-          unawaited(
-            stepNotifier.received.then(
-              (_) {
-                receiveComplete = true;
-              },
-            ),
-          );
-          while (!receiveComplete) {
-            await tester.pump(const Duration(milliseconds: 17));
-          }
+            var receiveComplete = false;
+            unawaited(
+              stepNotifier.received.then(
+                (_) {
+                  receiveComplete = true;
+                },
+              ),
+            );
+            while (!receiveComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
 
-          expect(find.byType(DualAnimation), findsOneWidget);
-          expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
-          expect(find.byType(VictoryChargeBack), findsOneWidget);
-          expect(find.byType(VictoryChargeFront), findsOneWidget);
+            expect(find.byType(DualAnimation), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+            expect(find.byType(VictoryChargeBack), findsOneWidget);
+            expect(find.byType(VictoryChargeFront), findsOneWidget);
 
-          var victoryComplete = false;
-          unawaited(
-            stepNotifier.victory.then(
-              (_) {
-                victoryComplete = true;
-              },
-            ),
-          );
-          while (!victoryComplete) {
-            await tester.pump(const Duration(milliseconds: 17));
-          }
-          expect(find.byType(SizedBox), findsOneWidget);
+            var victoryComplete = false;
+            unawaited(
+              stepNotifier.victory.then(
+                (_) {
+                  victoryComplete = true;
+                },
+              ),
+            );
+            while (!victoryComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+            expect(find.byType(SizedBox), findsOneWidget);
+          });
         });
       });
-    });
 
-    group('FireDamage', () {
-      testWidgets('renders entire animations flow', (tester) async {
-        final stepNotifier = ElementalDamageStepNotifier();
-        await tester.runAsync(() async {
-          await tester.pumpWidget(
-            Provider.value(
-              value: images,
-              child: Directionality(
-                textDirection: TextDirection.ltr,
-                child: ElementalDamageAnimation(
-                  Element.fire,
-                  direction: DamageDirection.bottomToTop,
-                  size: const GameCardSize.md(),
-                  stepNotifier: stepNotifier,
+      group('AirDamage', () {
+        testWidgets('renders entire animations flow', (tester) async {
+          final stepNotifier = ElementalDamageStepNotifier();
+          await tester.runAsync(() async {
+            await tester.pumpWidget(
+              Provider.value(
+                value: images,
+                child: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: ElementalDamageAnimation(
+                    Element.air,
+                    direction: DamageDirection.topToBottom,
+                    assetSize: AssetSize.small,
+                    size: const GameCardSize.md(),
+                    stepNotifier: stepNotifier,
+                  ),
                 ),
               ),
-            ),
-          );
+            );
 
-          expect(find.byType(DualAnimation), findsOneWidget);
-          expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
-          expect(find.byType(ChargeBack), findsOneWidget);
-          expect(find.byType(ChargeFront), findsOneWidget);
+            expect(find.byType(DualAnimation), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+            expect(find.byType(ChargeBack), findsOneWidget);
+            expect(find.byType(ChargeFront), findsOneWidget);
 
-          var chargedComplete = false;
-          unawaited(
-            stepNotifier.charged.then(
-              (_) {
-                chargedComplete = true;
-              },
-            ),
-          );
-          while (!chargedComplete) {
-            await tester.pump(const Duration(milliseconds: 17));
-          }
+            var chargedComplete = false;
+            unawaited(
+              stepNotifier.charged.then(
+                (_) {
+                  chargedComplete = true;
+                },
+              ),
+            );
+            while (!chargedComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
 
-          expect(find.byType(DamageSend), findsOneWidget);
-          expect(find.byType(SpriteAnimationWidget), findsOneWidget);
+            expect(find.byType(DamageSend), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsOneWidget);
 
-          var sendComplete = false;
-          unawaited(
-            stepNotifier.sent.then(
-              (_) {
-                sendComplete = true;
-              },
-            ),
-          );
-          while (!sendComplete) {
-            await tester.pump(const Duration(milliseconds: 17));
-          }
+            var sendComplete = false;
+            unawaited(
+              stepNotifier.sent.then(
+                (_) {
+                  sendComplete = true;
+                },
+              ),
+            );
+            while (!sendComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
 
-          expect(find.byType(DamageReceive), findsOneWidget);
-          expect(find.byType(SpriteAnimationWidget), findsOneWidget);
+            expect(find.byType(DamageReceive), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsOneWidget);
 
-          var receiveComplete = false;
-          unawaited(
-            stepNotifier.received.then(
-              (_) {
-                receiveComplete = true;
-              },
-            ),
-          );
-          while (!receiveComplete) {
-            await tester.pump(const Duration(milliseconds: 17));
-          }
+            var receiveComplete = false;
+            unawaited(
+              stepNotifier.received.then(
+                (_) {
+                  receiveComplete = true;
+                },
+              ),
+            );
+            while (!receiveComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
 
-          expect(find.byType(DualAnimation), findsOneWidget);
-          expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
-          expect(find.byType(VictoryChargeBack), findsOneWidget);
-          expect(find.byType(VictoryChargeFront), findsOneWidget);
+            expect(find.byType(DualAnimation), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+            expect(find.byType(VictoryChargeBack), findsOneWidget);
+            expect(find.byType(VictoryChargeFront), findsOneWidget);
 
-          var victoryComplete = false;
-          unawaited(
-            stepNotifier.victory.then(
-              (_) {
-                victoryComplete = true;
-              },
-            ),
-          );
-          while (!victoryComplete) {
-            await tester.pump(const Duration(milliseconds: 17));
-          }
-          expect(find.byType(SizedBox), findsOneWidget);
+            var victoryComplete = false;
+            unawaited(
+              stepNotifier.victory.then(
+                (_) {
+                  victoryComplete = true;
+                },
+              ),
+            );
+            while (!victoryComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+            expect(find.byType(SizedBox), findsOneWidget);
+          });
         });
       });
-    });
 
-    group('EarthDamage', () {
-      testWidgets('renders entire animations flow', (tester) async {
-        final stepNotifier = ElementalDamageStepNotifier();
-        await tester.runAsync(() async {
-          await tester.pumpWidget(
-            Provider.value(
-              value: images,
-              child: Directionality(
-                textDirection: TextDirection.ltr,
-                child: ElementalDamageAnimation(
-                  Element.earth,
-                  direction: DamageDirection.topToBottom,
-                  size: const GameCardSize.md(),
-                  stepNotifier: stepNotifier,
+      group('FireDamage', () {
+        testWidgets('renders entire animations flow', (tester) async {
+          final stepNotifier = ElementalDamageStepNotifier();
+          await tester.runAsync(() async {
+            await tester.pumpWidget(
+              Provider.value(
+                value: images,
+                child: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: ElementalDamageAnimation(
+                    Element.fire,
+                    direction: DamageDirection.bottomToTop,
+                    size: const GameCardSize.md(),
+                    assetSize: AssetSize.small,
+                    stepNotifier: stepNotifier,
+                  ),
                 ),
               ),
-            ),
-          );
+            );
 
-          expect(find.byType(DualAnimation), findsOneWidget);
-          expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
-          expect(find.byType(ChargeBack), findsOneWidget);
-          expect(find.byType(ChargeFront), findsOneWidget);
+            expect(find.byType(DualAnimation), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+            expect(find.byType(ChargeBack), findsOneWidget);
+            expect(find.byType(ChargeFront), findsOneWidget);
 
-          var chargedComplete = false;
-          unawaited(
-            stepNotifier.charged.then(
-              (_) {
-                chargedComplete = true;
-              },
-            ),
-          );
-          while (!chargedComplete) {
-            await tester.pump(const Duration(milliseconds: 17));
-          }
+            var chargedComplete = false;
+            unawaited(
+              stepNotifier.charged.then(
+                (_) {
+                  chargedComplete = true;
+                },
+              ),
+            );
+            while (!chargedComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
 
-          expect(find.byType(DamageSend), findsOneWidget);
-          expect(find.byType(SpriteAnimationWidget), findsOneWidget);
+            expect(find.byType(DamageSend), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsOneWidget);
 
-          var sendComplete = false;
-          unawaited(
-            stepNotifier.sent.then(
-              (_) {
-                sendComplete = true;
-              },
-            ),
-          );
-          while (!sendComplete) {
-            await tester.pump(const Duration(milliseconds: 17));
-          }
+            var sendComplete = false;
+            unawaited(
+              stepNotifier.sent.then(
+                (_) {
+                  sendComplete = true;
+                },
+              ),
+            );
+            while (!sendComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
 
-          expect(find.byType(DamageReceive), findsOneWidget);
-          expect(find.byType(SpriteAnimationWidget), findsOneWidget);
+            expect(find.byType(DamageReceive), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsOneWidget);
 
-          var receiveComplete = false;
-          unawaited(
-            stepNotifier.received.then(
-              (_) {
-                receiveComplete = true;
-              },
-            ),
-          );
-          while (!receiveComplete) {
-            await tester.pump(const Duration(milliseconds: 17));
-          }
+            var receiveComplete = false;
+            unawaited(
+              stepNotifier.received.then(
+                (_) {
+                  receiveComplete = true;
+                },
+              ),
+            );
+            while (!receiveComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
 
-          expect(find.byType(DualAnimation), findsOneWidget);
-          expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
-          expect(find.byType(VictoryChargeBack), findsOneWidget);
-          expect(find.byType(VictoryChargeFront), findsOneWidget);
+            expect(find.byType(DualAnimation), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+            expect(find.byType(VictoryChargeBack), findsOneWidget);
+            expect(find.byType(VictoryChargeFront), findsOneWidget);
 
-          var victoryComplete = false;
-          unawaited(
-            stepNotifier.victory.then(
-              (_) {
-                victoryComplete = true;
-              },
-            ),
-          );
-          while (!victoryComplete) {
-            await tester.pump(const Duration(milliseconds: 17));
-          }
-          expect(find.byType(SizedBox), findsOneWidget);
+            var victoryComplete = false;
+            unawaited(
+              stepNotifier.victory.then(
+                (_) {
+                  victoryComplete = true;
+                },
+              ),
+            );
+            while (!victoryComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+            expect(find.byType(SizedBox), findsOneWidget);
+          });
         });
       });
-    });
 
-    group('WaterDamage', () {
-      testWidgets('renders entire animations flow', (tester) async {
-        final stepNotifier = ElementalDamageStepNotifier();
-        await tester.runAsync(() async {
-          await tester.pumpWidget(
-            Provider.value(
-              value: images,
-              child: Directionality(
-                textDirection: TextDirection.ltr,
-                child: ElementalDamageAnimation(
-                  Element.water,
-                  direction: DamageDirection.topToBottom,
-                  size: const GameCardSize.md(),
-                  stepNotifier: stepNotifier,
+      group('EarthDamage', () {
+        testWidgets('renders entire animations flow', (tester) async {
+          final stepNotifier = ElementalDamageStepNotifier();
+          await tester.runAsync(() async {
+            await tester.pumpWidget(
+              Provider.value(
+                value: images,
+                child: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: ElementalDamageAnimation(
+                    Element.earth,
+                    assetSize: AssetSize.small,
+                    direction: DamageDirection.topToBottom,
+                    size: const GameCardSize.md(),
+                    stepNotifier: stepNotifier,
+                  ),
                 ),
               ),
-            ),
-          );
+            );
 
-          expect(find.byType(DualAnimation), findsOneWidget);
-          expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
-          expect(find.byType(ChargeBack), findsOneWidget);
-          expect(find.byType(ChargeFront), findsOneWidget);
+            expect(find.byType(DualAnimation), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+            expect(find.byType(ChargeBack), findsOneWidget);
+            expect(find.byType(ChargeFront), findsOneWidget);
 
-          var chargedComplete = false;
-          unawaited(
-            stepNotifier.charged.then(
-              (_) {
-                chargedComplete = true;
-              },
-            ),
-          );
-          while (!chargedComplete) {
-            await tester.pump(const Duration(milliseconds: 17));
-          }
+            var chargedComplete = false;
+            unawaited(
+              stepNotifier.charged.then(
+                (_) {
+                  chargedComplete = true;
+                },
+              ),
+            );
+            while (!chargedComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
 
-          expect(find.byType(DamageSend), findsOneWidget);
-          expect(find.byType(SpriteAnimationWidget), findsOneWidget);
+            expect(find.byType(DamageSend), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsOneWidget);
 
-          var sendComplete = false;
-          unawaited(
-            stepNotifier.sent.then(
-              (_) {
-                sendComplete = true;
-              },
-            ),
-          );
-          while (!sendComplete) {
-            await tester.pump(const Duration(milliseconds: 17));
-          }
+            var sendComplete = false;
+            unawaited(
+              stepNotifier.sent.then(
+                (_) {
+                  sendComplete = true;
+                },
+              ),
+            );
+            while (!sendComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
 
-          expect(find.byType(DamageReceive), findsOneWidget);
-          expect(find.byType(SpriteAnimationWidget), findsOneWidget);
+            expect(find.byType(DamageReceive), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsOneWidget);
 
-          var receiveComplete = false;
-          unawaited(
-            stepNotifier.received.then(
-              (_) {
-                receiveComplete = true;
-              },
-            ),
-          );
-          while (!receiveComplete) {
-            await tester.pump(const Duration(milliseconds: 17));
-          }
+            var receiveComplete = false;
+            unawaited(
+              stepNotifier.received.then(
+                (_) {
+                  receiveComplete = true;
+                },
+              ),
+            );
+            while (!receiveComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
 
-          expect(find.byType(DualAnimation), findsOneWidget);
-          expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
-          expect(find.byType(VictoryChargeBack), findsOneWidget);
-          expect(find.byType(VictoryChargeFront), findsOneWidget);
+            expect(find.byType(DualAnimation), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+            expect(find.byType(VictoryChargeBack), findsOneWidget);
+            expect(find.byType(VictoryChargeFront), findsOneWidget);
 
-          var victoryComplete = false;
-          unawaited(
-            stepNotifier.victory.then(
-              (_) {
-                victoryComplete = true;
-              },
-            ),
-          );
-          while (!victoryComplete) {
-            await tester.pump(const Duration(milliseconds: 17));
-          }
-          expect(find.byType(SizedBox), findsOneWidget);
+            var victoryComplete = false;
+            unawaited(
+              stepNotifier.victory.then(
+                (_) {
+                  victoryComplete = true;
+                },
+              ),
+            );
+            while (!victoryComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+            expect(find.byType(SizedBox), findsOneWidget);
+          });
+        });
+      });
+
+      group('WaterDamage', () {
+        testWidgets('renders entire animations flow', (tester) async {
+          final stepNotifier = ElementalDamageStepNotifier();
+          await tester.runAsync(() async {
+            await tester.pumpWidget(
+              Provider.value(
+                value: images,
+                child: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: ElementalDamageAnimation(
+                    Element.water,
+                    direction: DamageDirection.topToBottom,
+                    assetSize: AssetSize.small,
+                    size: const GameCardSize.md(),
+                    stepNotifier: stepNotifier,
+                  ),
+                ),
+              ),
+            );
+
+            expect(find.byType(DualAnimation), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+            expect(find.byType(ChargeBack), findsOneWidget);
+            expect(find.byType(ChargeFront), findsOneWidget);
+
+            var chargedComplete = false;
+            unawaited(
+              stepNotifier.charged.then(
+                (_) {
+                  chargedComplete = true;
+                },
+              ),
+            );
+            while (!chargedComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+
+            expect(find.byType(DamageSend), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsOneWidget);
+
+            var sendComplete = false;
+            unawaited(
+              stepNotifier.sent.then(
+                (_) {
+                  sendComplete = true;
+                },
+              ),
+            );
+            while (!sendComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+
+            expect(find.byType(DamageReceive), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsOneWidget);
+
+            var receiveComplete = false;
+            unawaited(
+              stepNotifier.received.then(
+                (_) {
+                  receiveComplete = true;
+                },
+              ),
+            );
+            while (!receiveComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+
+            expect(find.byType(DualAnimation), findsOneWidget);
+            expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
+            expect(find.byType(VictoryChargeBack), findsOneWidget);
+            expect(find.byType(VictoryChargeFront), findsOneWidget);
+
+            var victoryComplete = false;
+            unawaited(
+              stepNotifier.victory.then(
+                (_) {
+                  victoryComplete = true;
+                },
+              ),
+            );
+            while (!victoryComplete) {
+              await tester.pump(const Duration(milliseconds: 17));
+            }
+            expect(find.byType(SizedBox), findsOneWidget);
+          });
         });
       });
     });

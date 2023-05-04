@@ -14,6 +14,7 @@ class VictoryChargeFront extends StatelessWidget {
   const VictoryChargeFront(
     this.path, {
     required this.size,
+    required this.assetSize,
     super.key,
     this.onComplete,
   });
@@ -27,31 +28,31 @@ class VictoryChargeFront extends StatelessWidget {
   /// Path of the asset containing the sprite sheet.
   final String path;
 
+  /// Size of the assets to use, large or small
+  final AssetSize assetSize;
+
   @override
   Widget build(BuildContext context) {
     final images = context.read<Images>();
-    final height = 1.28 * size.height;
+    final height = 1.22 * size.height;
     final width = 1.59 * size.width;
-    final x = 0.30 * size.width;
-    final y = 0.13 * size.height;
 
-    return Transform.translate(
-      offset: -Offset(x, y),
-      child: SizedBox(
-        height: height,
-        width: width,
-        child: SpriteAnimationWidget.asset(
-          path: path,
-          images: images,
-          anchor: Anchor.center,
-          onComplete: onComplete,
-          data: SpriteAnimationData.sequenced(
-            amount: 18,
-            amountPerRow: 6,
-            textureSize: Vector2(607, 695),
-            stepTime: 0.04,
-            loop: false,
-          ),
+    return SizedBox(
+      height: height,
+      width: width,
+      child: SpriteAnimationWidget.asset(
+        path: path,
+        images: images,
+        anchor: Anchor.center,
+        onComplete: onComplete,
+        data: SpriteAnimationData.sequenced(
+          amount: 18,
+          amountPerRow: 6,
+          textureSize: assetSize == AssetSize.large
+              ? Vector2(607, 695)
+              : Vector2(364, 417),
+          stepTime: 0.04,
+          loop: false,
         ),
       ),
     );
