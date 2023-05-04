@@ -94,6 +94,7 @@ void main() {
     late Request request;
     late RequestContext context;
     late LeaderboardRepository leaderboardRepository;
+    late CardsRepository cardsRepository;
 
     late Logger logger;
     const gameUrl = GameUrl('https://example.com');
@@ -122,12 +123,18 @@ void main() {
         (_) async => scoreCard,
       );
 
+      cardsRepository = _MockCardRepository();
+      when(() => cardsRepository.getDeck(deckId)).thenAnswer(
+        (_) async => const Deck(id: deckId, userId: 'userId', cards: []),
+      );
+
       context = _MockRequestContext();
       when(() => context.request).thenReturn(request);
       when(() => context.read<Logger>()).thenReturn(logger);
       when(() => context.read<GameUrl>()).thenReturn(gameUrl);
       when(() => context.read<LeaderboardRepository>())
           .thenReturn(leaderboardRepository);
+      when(() => context.read<CardsRepository>()).thenReturn(cardsRepository);
     });
 
     test('responds with a 200', () async {
@@ -135,9 +142,8 @@ void main() {
       expect(response.statusCode, equals(HttpStatus.ok));
     });
 
-    test('responds with redirect when the scorecard is not found', () async {
-      when(() => leaderboardRepository.findScoreCardByLongestStreakDeck(deckId))
-          .thenAnswer(
+    test('responds with redirect when the deck is not found', () async {
+      when(() => cardsRepository.getDeck(deckId)).thenAnswer(
         (_) async => null,
       );
       final response = await route.onRequest(context);
