@@ -23,7 +23,6 @@ void main() {
 
       when(() => apiClient.shareHandUrl(any())).thenReturn('handUrl');
       when(() => apiClient.shareCardUrl(any())).thenReturn('cardUrl');
-      when(() => apiClient.shareGameUrl()).thenReturn('gameUrl');
       when(() => apiClient.getPublic(any())).thenAnswer((_) async => response);
       when(() => response.bodyBytes).thenReturn(bytes);
 
@@ -64,13 +63,6 @@ void main() {
       expect(
         resource.facebookShareCardUrl('id'),
         contains('cardUrl'),
-      );
-    });
-
-    test('shareGameUrl', () {
-      expect(
-        resource.shareGameUrl(),
-        equals('gameUrl'),
       );
     });
 

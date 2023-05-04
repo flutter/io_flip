@@ -131,23 +131,23 @@ class ShareHandPage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               GestureDetector(
+                onTap: () => openLink(ExternalLinks.googleIO),
                 child: Text(
                   l10n.ioLinkLabel,
                   style: IoFlipTextStyles.bodyMD.copyWith(
                     color: IoFlipColors.seedGrey90,
                   ),
                 ),
-                // TODO(Samobrien): Route to Google I/O web page
               ),
               const SizedBox(width: IoFlipSpacing.md),
               GestureDetector(
+                onTap: () => openLink(ExternalLinks.howItsMade),
                 child: Text(
                   l10n.howItsMadeLinkLabel,
                   style: IoFlipTextStyles.bodyMD.copyWith(
                     color: IoFlipColors.seedGrey90,
                   ),
                 ),
-                // TODO(Samobrien): Route to how it's made web page
               ),
             ],
           ),
