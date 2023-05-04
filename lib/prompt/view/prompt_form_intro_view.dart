@@ -48,7 +48,10 @@ class PromptFormIntroView extends StatelessWidget {
                             data: SpriteAnimationData.sequenced(
                               amount: 57,
                               amountPerRow: 19,
-                              textureSize: Vector2(812, 812),
+                              textureSize: platformAwareAsset(
+                                desktop: Vector2(812, 812),
+                                mobile: Vector2(406, 406),
+                              ),
                               stepTime: 0.04,
                             ),
                           ),
