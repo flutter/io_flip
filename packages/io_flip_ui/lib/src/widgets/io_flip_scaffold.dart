@@ -27,7 +27,7 @@ class IoFlipScaffold extends StatelessWidget {
             fit: BoxFit.none,
             image: AssetImage(
               Assets.images.backgroundPattern.path,
-              package: 'top_dash_ui',
+              package: 'io_flip_ui',
             ),
           ),
         ),

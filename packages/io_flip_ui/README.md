@@ -10,11 +10,11 @@ UI Toolkit for Top Dash.
 
 **❗ In order to start using Top Dash Ui you must have the [Flutter SDK][flutter_install_link] installed on your machine.**
 
-Add `top_dash_ui` to your `pubspec.yaml`:
+Add `io_flip_ui` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  top_dash_ui:
+  io_flip_ui:
 ```
 
 Install it:

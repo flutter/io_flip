@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 
-/// {@template top_dash_dialog}
-/// Top Dash themed dialog.
+/// {@template io_flip_dialog}
+/// IO FLIP themed dialog.
 /// {@endtemplate}
 class TopDashDialog extends StatelessWidget {
-  /// {@macro top_dash_dialog}
+  /// {@macro io_flip_dialog}
   const TopDashDialog({
     required this.child,
     this.showCloseButton = true,

@@ -214,7 +214,7 @@ class GameCard extends StatelessWidget {
     this.isRare = false,
     this.overlay,
     this.tilt = Offset.zero,
-    @visibleForTesting this.package = 'top_dash_ui',
+    @visibleForTesting this.package = 'io_flip_ui',
     super.key,
   });
 

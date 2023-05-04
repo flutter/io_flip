@@ -2,11 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 
-/// {@template top_dash_theme}
-/// Top Dash theme.
+/// {@template io_flip_theme}
+/// IO FLIP theme.
 /// {@endtemplate}
 class TopDashTheme {
-  /// [ThemeData] for Top Dash.
+  /// [ThemeData] for IO FLIP.
   static ThemeData get themeData {
     return ThemeData(
       useMaterial3: true,

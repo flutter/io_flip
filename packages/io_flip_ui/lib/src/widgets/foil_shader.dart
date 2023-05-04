@@ -12,7 +12,7 @@ class FoilShader extends StatelessWidget {
     super.key,
     this.dx = 0,
     this.dy = 0,
-    this.package = 'top_dash_ui',
+    this.package = 'io_flip_ui',
   });
 
   /// The optional x offset of the foil shader.

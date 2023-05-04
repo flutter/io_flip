@@ -373,7 +373,7 @@ class AssetGenImage {
     bool matchTextDirection = false,
     bool gaplessPlayback = false,
     bool isAntiAlias = false,
-    String? package = 'top_dash_ui',
+    String? package = 'io_flip_ui',
     FilterQuality filterQuality = FilterQuality.low,
     int? cacheWidth,
     int? cacheHeight,
@@ -408,7 +408,7 @@ class AssetGenImage {
 
   ImageProvider provider({
     AssetBundle? bundle,
-    String? package = 'top_dash_ui',
+    String? package = 'io_flip_ui',
   }) {
     return AssetImage(
       _assetName,
@@ -419,7 +419,7 @@ class AssetGenImage {
 
   String get path => _assetName;
 
-  String get keyName => 'packages/top_dash_ui/$_assetName';
+  String get keyName => 'packages/io_flip_ui/$_assetName';
 }
 
 class SvgGenImage {
@@ -431,7 +431,7 @@ class SvgGenImage {
     Key? key,
     bool matchTextDirection = false,
     AssetBundle? bundle,
-    String? package = 'top_dash_ui',
+    String? package = 'io_flip_ui',
     double? width,
     double? height,
     BoxFit fit = BoxFit.contain,
@@ -472,5 +472,5 @@ class SvgGenImage {
 
   String get path => _assetName;
 
-  String get keyName => 'packages/top_dash_ui/$_assetName';
+  String get keyName => 'packages/io_flip_ui/$_assetName';
 }
