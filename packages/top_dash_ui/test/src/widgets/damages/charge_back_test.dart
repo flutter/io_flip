@@ -25,6 +25,7 @@ void main() {
             child: const ChargeBack(
               '',
               size: GameCardSize.md(),
+              assetSize: AssetSize.large,
             ),
           ),
         ),

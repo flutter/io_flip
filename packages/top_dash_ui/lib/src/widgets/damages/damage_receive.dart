@@ -13,6 +13,7 @@ class DamageReceive extends StatelessWidget {
   const DamageReceive(
     this.path, {
     required this.size,
+    required this.assetSize,
     super.key,
     this.onComplete,
   });
@@ -25,6 +26,9 @@ class DamageReceive extends StatelessWidget {
 
   /// Path of the asset containing the sprite sheet.
   final String path;
+
+  /// Size of the assets to use, large or small
+  final AssetSize assetSize;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +47,9 @@ class DamageReceive extends StatelessWidget {
         data: SpriteAnimationData.sequenced(
           amount: 16,
           amountPerRow: 4,
-          textureSize: Vector2(499.5, 509),
+          textureSize: assetSize == AssetSize.large
+              ? Vector2(499.5, 509)
+              : Vector2(298, 305),
           stepTime: 0.04,
           loop: false,
         ),

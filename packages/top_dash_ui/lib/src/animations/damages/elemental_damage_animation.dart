@@ -43,7 +43,7 @@ class ElementalDamageAnimation extends StatefulWidget {
     this.element, {
     required this.direction,
     required this.size,
-    this.assetSize = AssetSize.large,
+    this.assetSize = AssetSize.small,
     this.onComplete,
     this.stepNotifier,
     super.key,
@@ -124,6 +124,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
                 child: DualAnimation(
                   back: elementalDamage.chargeBackBuilder,
                   front: elementalDamage.chargeFrontBuilder,
+                  assetSize: widget.assetSize,
                   onComplete: _onStepCompleted,
                 ),
               )
@@ -137,6 +138,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
                   child: DualAnimation(
                     back: elementalDamage.chargeBackBuilder,
                     front: elementalDamage.chargeFrontBuilder,
+                    assetSize: widget.assetSize,
                     onComplete: _onStepCompleted,
                   ),
                 ),
@@ -149,14 +151,20 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
             if (widget.direction == DamageDirection.topToBottom)
               Align(
                 alignment: const Alignment(-0.7, 0.3),
-                child: elementalDamage.damageSendBuilder(_onStepCompleted),
+                child: elementalDamage.damageSendBuilder(
+                  _onStepCompleted,
+                  widget.assetSize,
+                ),
               )
             else
               Align(
                 alignment: const Alignment(0.7, 0),
                 child: Transform.rotate(
                   angle: pi,
-                  child: elementalDamage.damageSendBuilder(_onStepCompleted),
+                  child: elementalDamage.damageSendBuilder(
+                    _onStepCompleted,
+                    widget.assetSize,
+                  ),
                 ),
               )
           ],
@@ -171,7 +179,10 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
                     0.3 * widget.size.width,
                     0.3 * widget.size.height,
                   ),
-                  child: elementalDamage.damageReceiveBuilder(_onStepCompleted),
+                  child: elementalDamage.damageReceiveBuilder(
+                    _onStepCompleted,
+                    widget.assetSize,
+                  ),
                 ),
               )
             else
@@ -180,7 +191,10 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
                   0.3 * widget.size.width,
                   0.3 * widget.size.height,
                 ),
-                child: elementalDamage.damageReceiveBuilder(_onStepCompleted),
+                child: elementalDamage.damageReceiveBuilder(
+                  _onStepCompleted,
+                  widget.assetSize,
+                ),
               )
           ],
         );
@@ -196,6 +210,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
                 child: DualAnimation(
                   back: elementalDamage.victoryChargeBackBuilder,
                   front: elementalDamage.victoryChargeFrontBuilder,
+                  assetSize: widget.assetSize,
                   onComplete: _onStepCompleted,
                 ),
               )
@@ -209,6 +224,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
                   child: DualAnimation(
                     back: elementalDamage.victoryChargeBackBuilder,
                     front: elementalDamage.victoryChargeFrontBuilder,
+                    assetSize: widget.assetSize,
                     onComplete: _onStepCompleted,
                   ),
                 ),

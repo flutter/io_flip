@@ -13,6 +13,7 @@ class DamageSend extends StatelessWidget {
   const DamageSend(
     this.path, {
     required this.size,
+    required this.assetSize,
     super.key,
     this.onComplete,
   });
@@ -25,6 +26,9 @@ class DamageSend extends StatelessWidget {
 
   /// path of the asset containing the sprite sheet
   final String path;
+
+  /// Size of the assets to use, large or small
+  final AssetSize assetSize;
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +47,11 @@ class DamageSend extends StatelessWidget {
           anchor: Anchor.center,
           onComplete: onComplete,
           data: SpriteAnimationData.sequenced(
-            amount: 30,
+            amount: 18,
             amountPerRow: 6,
-            textureSize: Vector2(568, 683),
+            textureSize: assetSize == AssetSize.large
+                ? Vector2(568, 683)
+                : Vector2(341, 410),
             stepTime: 0.04,
             loop: false,
           ),

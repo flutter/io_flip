@@ -14,6 +14,7 @@ class ChargeFront extends StatelessWidget {
   const ChargeFront(
     this.path, {
     required this.size,
+    required this.assetSize,
     super.key,
     this.onComplete,
   });
@@ -26,6 +27,9 @@ class ChargeFront extends StatelessWidget {
 
   /// Path of the asset containing the sprite sheet.
   final String path;
+
+  /// Size of the assets to use, large or small
+  final AssetSize assetSize;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +48,9 @@ class ChargeFront extends StatelessWidget {
         data: SpriteAnimationData.sequenced(
           amount: 20,
           amountPerRow: 5,
-          textureSize: Vector2(658, 860),
+          textureSize: assetSize == AssetSize.large
+              ? Vector2(658, 860)
+              : Vector2(395, 516),
           stepTime: 0.04,
           loop: false,
         ),

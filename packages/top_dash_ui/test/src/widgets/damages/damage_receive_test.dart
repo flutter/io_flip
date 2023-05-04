@@ -25,6 +25,7 @@ void main() {
             child: const DamageReceive(
               '',
               size: GameCardSize.md(),
+              assetSize: AssetSize.large,
             ),
           ),
         ),
