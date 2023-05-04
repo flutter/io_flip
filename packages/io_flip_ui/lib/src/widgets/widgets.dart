@@ -13,4 +13,5 @@ export 'io_flip_logo.dart';
 export 'io_flip_scaffold.dart';
 export 'responsive_layout.dart';
 export 'rounded_button.dart';
+export 'simple_flow.dart';
 export 'suit_icons.dart';

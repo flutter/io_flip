@@ -24,6 +24,11 @@ void main() {
         Directory.systemTemp.path,
         'image_loader',
       );
+
+      if (Directory(dest).existsSync()) {
+        Directory(dest).deleteSync(recursive: true);
+      }
+
       imageLoader = ImageLoader(
         csv: csv,
         image: image,
@@ -47,9 +52,9 @@ void main() {
     test('load the images', () async {
       when(() => csv.readAsLines()).thenAnswer(
         (_) async => [
-          'Character,Class,Power,Location,',
-          'Dash,Alien,Banjos,City,',
-          'Android,Mage,Bass,Forest,',
+          'Character,Class,Power,Power(shorter),Location,',
+          'Dash,Alien,Banjos,B,City,',
+          'Android,Mage,Bass,B,Forest,',
         ],
       );
 
