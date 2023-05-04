@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:csv/csv.dart';
+import 'package:data_loader/src/prompt_mapper.dart';
 import 'package:db_client/db_client.dart';
 import 'package:game_domain/game_domain.dart';
 
@@ -32,10 +33,21 @@ class DescriptionsLoader {
 
     final lines = const CsvToListConverter().convert(content);
     for (final parts in lines.skip(1)) {
-      final character = _normalizeTerm(parts.first as String);
-      final characterClass = _normalizeTerm(parts[1] as String);
-      final power = _normalizeTerm(parts[2] as String);
-      final location = _normalizeTerm(parts[3] as String);
+      final character = _normalizeTerm(
+        parts[promptColumnMap.keys.elementAt(0)] as String,
+      );
+      final characterClass = _normalizeTerm(
+        parts[promptColumnMap.keys.elementAt(1)] as String,
+      );
+      final power = _normalizeTerm(
+        parts[promptColumnMap.keys.elementAt(2)] as String,
+      );
+      final powerShortened = _normalizeTerm(
+        parts[promptColumnMap.keys.elementAt(2) + 1] as String,
+      );
+      final location = _normalizeTerm(
+        parts[promptColumnMap.keys.elementAt(3)] as String,
+      );
 
       for (var i = 4; i < parts.length; i++) {
         final value = parts[i] as String;
@@ -47,6 +59,7 @@ class DescriptionsLoader {
             character: character,
             characterClass: characterClass,
             power: power,
+            powerShortened: powerShortened,
             location: location,
             description: value,
           ),
@@ -60,12 +73,17 @@ class DescriptionsLoader {
     for (final description in descriptions) {
       progress++;
 
-      await _dbClient.add(
-        'card_descriptions',
-        description.toJson(),
-      );
+      try {
+        await _dbClient.add(
+          'card_descriptions',
+          description.toJson(),
+        );
+      } catch (e) {
+        print('Failed');
+        print(e);
+      }
       // So we don't get rate limited
-      await Future<void>.delayed(const Duration(milliseconds: 10));
+      await Future<void>.delayed(const Duration(milliseconds: 50));
 
       onProgress(progress, descriptions.length);
     }
