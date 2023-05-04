@@ -3,7 +3,6 @@
 import 'dart:io';
 
 import 'package:csv/csv.dart';
-import 'package:data_loader/src/prompt_mapper.dart';
 import 'package:db_client/db_client.dart';
 import 'package:game_domain/game_domain.dart';
 
