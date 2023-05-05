@@ -15,6 +15,22 @@ class LeaderboardRepository {
   final DbClient _dbClient;
   final String _blacklistDocumentId;
 
+  /// Retrieves the leaderboard players.
+  ///
+  /// The players are ordered by longest streak and returns the top 10.
+  Future<List<LeaderboardPlayer>> getLeaderboard() async {
+    final results = await _dbClient.orderBy('leaderboard', 'longestStreak');
+
+    return results
+        .map(
+          (e) => LeaderboardPlayer.fromJson({
+            'id': e.id,
+            ...e.data,
+          }),
+        )
+        .toList();
+  }
+
   /// Retrieves the blacklist for player initials.
   Future<List<String>> getInitialsBlacklist() async {
     final blacklistData = await _dbClient.getById(

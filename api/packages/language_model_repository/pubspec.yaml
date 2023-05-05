@@ -11,6 +11,8 @@ dependencies:
     path: ../db_client
   game_domain:
     path: ../game_domain
+  prompt_repository:
+    path: ../prompt_repository
 
 dev_dependencies:
   mocktail: ^0.3.0

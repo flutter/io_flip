@@ -496,6 +496,13 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     return false;
   }
 
+  Deck get playerDeck {
+    final matchLoadedState = state as MatchLoadedState;
+    return isHost
+        ? matchLoadedState.match.hostDeck
+        : matchLoadedState.match.guestDeck;
+  }
+
   List<Card> get playerCards {
     if (state is MatchLoadedState) {
       final matchLoadedState = state as MatchLoadedState;

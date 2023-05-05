@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:io_flip/audio/audio_controller.dart';
 import 'package:io_flip/game/game.dart';
+import 'package:io_flip/gen/assets.gen.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 
 import '../../helpers/helpers.dart';
+
+class _MockAudioController extends Mock implements AudioController {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -30,8 +35,16 @@ void main() {
       suit: Suit.air,
     );
 
-    testWidgets('displays both cards flipped initially', (tester) async {
-      await tester.pumpSubject(playerCard, opponentCard);
+    testWidgets('displays both cards flipped initially and plays "flip" sfx',
+        (tester) async {
+      final audioController = _MockAudioController();
+      await tester.pumpSubject(
+        playerCard,
+        opponentCard,
+        audioController: audioController,
+      );
+
+      verify(() => audioController.playSfx(Assets.sfx.flip)).called(1);
 
       expect(find.byType(FlippedGameCard), findsNWidgets(2));
     });
@@ -113,6 +126,7 @@ extension GameViewTest on WidgetTester {
     Card playerCard,
     Card opponentCard, {
     VoidCallback? onFinished,
+    AudioController? audioController,
   }) {
     return pumpApp(
       ClashScene(
@@ -120,6 +134,7 @@ extension GameViewTest on WidgetTester {
         opponentCard: opponentCard,
         playerCard: playerCard,
       ),
+      audioController: audioController,
     );
   }
 }

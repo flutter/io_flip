@@ -15,36 +15,40 @@ class _MockGoRouterState extends Mock implements GoRouterState {}
 
 class _MockSettingsController extends Mock implements SettingsController {}
 
-const deck = [
-  Card(
-    id: 'a',
-    name: '',
-    description: '',
-    image: '',
-    power: 1,
-    rarity: false,
-    suit: Suit.air,
-  ),
-  Card(
-    id: 'b',
-    name: '',
-    description: '',
-    image: '',
-    power: 1,
-    rarity: false,
-    suit: Suit.air,
-  ),
-  Card(
-    id: 'c',
-    name: '',
-    description: '',
-    image: '',
-    power: 1,
-    rarity: false,
-    suit: Suit.air,
-  ),
-];
-final pageData = MatchMakingPageData(cards: deck);
+const deck = Deck(
+  id: 'deckId',
+  userId: 'userId',
+  cards: [
+    Card(
+      id: 'a',
+      name: '',
+      description: '',
+      image: '',
+      power: 1,
+      rarity: false,
+      suit: Suit.air,
+    ),
+    Card(
+      id: 'b',
+      name: '',
+      description: '',
+      image: '',
+      power: 1,
+      rarity: false,
+      suit: Suit.air,
+    ),
+    Card(
+      id: 'c',
+      name: '',
+      description: '',
+      image: '',
+      power: 1,
+      rarity: false,
+      suit: Suit.air,
+    ),
+  ],
+);
+final pageData = MatchMakingPageData(deck: deck);
 void main() {
   group('MatchMakingPage', () {
     late GoRouterState goRouterState;
@@ -99,6 +103,25 @@ void main() {
     testWidgets('renders a MatchMakingView', (tester) async {
       await tester.pumpSubject();
       expect(find.byType(MatchMakingView), findsOneWidget);
+    });
+  });
+
+  group('MatchMakingPageData', () {
+    test('supports equality', () {
+      expect(
+        MatchMakingPageData(deck: deck),
+        equals(MatchMakingPageData(deck: deck)),
+      );
+      expect(
+        MatchMakingPageData(deck: deck),
+        isNot(
+          equals(
+            MatchMakingPageData(
+              deck: Deck(id: 'id', userId: 'userId', cards: const []),
+            ),
+          ),
+        ),
+      );
     });
   });
 }

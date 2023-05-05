@@ -27,6 +27,7 @@ class PromptTerm extends Equatable {
   const PromptTerm({
     required this.term,
     required this.type,
+    this.shortenedTerm,
     this.id,
   });
 
@@ -42,6 +43,10 @@ class PromptTerm extends Equatable {
   @JsonKey()
   final String term;
 
+  /// The shortened term of the prompt term.
+  @JsonKey()
+  final String? shortenedTerm;
+
   /// The type of the prompt term.
   @JsonKey()
   final PromptTermType type;
@@ -50,5 +55,5 @@ class PromptTerm extends Equatable {
   Map<String, dynamic> toJson() => _$PromptTermToJson(this);
 
   @override
-  List<Object?> get props => [id, term, type];
+  List<Object?> get props => [id, term, shortenedTerm, type];
 }

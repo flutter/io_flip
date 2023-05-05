@@ -91,6 +91,61 @@ void main() {
       });
     });
 
+    group('getByTerm', () {
+      test('returns a PromptTerm when there is one', () async {
+        when(
+          () => dbClient.findBy(
+            'prompt_terms',
+            'term',
+            'Super Smell',
+          ),
+        ).thenAnswer(
+          (_) async => [
+            DbEntityRecord(
+              id: 'id1',
+              data: const {
+                'type': 'power',
+                'term': 'Super Smell',
+              },
+            ),
+          ],
+        );
+
+        final response = await promptRepository.getByTerm(
+          'Super Smell',
+        );
+
+        expect(
+          response,
+          equals(
+            PromptTerm(
+              id: 'id1',
+              type: PromptTermType.power,
+              term: 'Super Smell',
+            ),
+          ),
+        );
+      });
+
+      test("returns null when there isn't one", () async {
+        when(
+          () => dbClient.findBy(
+            'prompt_terms',
+            'term',
+            'Super Smell',
+          ),
+        ).thenAnswer(
+          (_) async => [],
+        );
+
+        final response = await promptRepository.getByTerm(
+          'Super Smell',
+        );
+
+        expect(response, isNull);
+      });
+    });
+
     group('isValidPrompt', () {
       const prompt = Prompt(
         power: 'AAA',
@@ -223,6 +278,7 @@ void main() {
             {
               'type': 'location',
               'term': 'AAA',
+              'shortenedTerm': null,
             },
           ),
         ).thenAnswer((_) async => 'id');
@@ -240,10 +296,105 @@ void main() {
             {
               'type': 'location',
               'term': 'AAA',
+              'shortenedTerm': null,
             },
           ),
         ).called(1);
       });
+    });
+
+    group('ensurePromptImage', () {
+      test(
+        'returns the same url when there is no table for the combo',
+        () async {
+          when(
+            () => dbClient.findBy(
+              'image_lookup_table',
+              'prompt',
+              'dash_mage_volcano',
+            ),
+          ).thenAnswer(
+            (_) async => [],
+          );
+
+          final result = await promptRepository.ensurePromptImage(
+            promptCombination: 'dash_mage_volcano',
+            imageUrl: 'dash_mage_volcano_1.png',
+          );
+
+          expect(result, equals('dash_mage_volcano_1.png'));
+        },
+      );
+
+      test(
+        'returns the same url when there is a table for the combo '
+        'and the image url is present',
+        () async {
+          when(
+            () => dbClient.findBy(
+              'image_lookup_table',
+              'prompt',
+              'dash_mage_volcano',
+            ),
+          ).thenAnswer(
+            (_) async => [
+              DbEntityRecord(
+                id: '',
+                data: const {
+                  'available_images': [
+                    'dash_mage_volcano_1.png',
+                  ],
+                },
+              ),
+            ],
+          );
+
+          final result = await promptRepository.ensurePromptImage(
+            promptCombination: 'dash_mage_volcano',
+            imageUrl: 'dash_mage_volcano_1.png',
+          );
+
+          expect(result, equals('dash_mage_volcano_1.png'));
+        },
+      );
+
+      test(
+        'returns a random url when there is a table for the combo '
+        'and the image url is not present',
+        () async {
+          when(
+            () => dbClient.findBy(
+              'image_lookup_table',
+              'prompt',
+              'dash_mage_volcano',
+            ),
+          ).thenAnswer(
+            (_) async => [
+              DbEntityRecord(
+                id: '',
+                data: const {
+                  'available_images': [
+                    'dash_mage_volcano_1.png',
+                    'dash_mage_volcano_2.png',
+                  ],
+                },
+              ),
+            ],
+          );
+
+          final result = await promptRepository.ensurePromptImage(
+            promptCombination: 'dash_mage_volcano',
+            imageUrl: 'dash_mage_volcano_3.png',
+          );
+
+          final isOneOfTheOptions = [
+            'dash_mage_volcano_1.png',
+            'dash_mage_volcano_2.png',
+          ].contains(result);
+
+          expect(isOneOfTheOptions, isTrue);
+        },
+      );
     });
   });
 }

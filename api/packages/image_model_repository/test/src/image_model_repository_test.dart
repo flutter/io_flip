@@ -19,6 +19,15 @@ void main() {
 
     setUp(() {
       promptRepository = _MockPromptRepository();
+      when(
+        () => promptRepository.ensurePromptImage(
+          promptCombination: any(named: 'promptCombination'),
+          imageUrl: any(named: 'imageUrl'),
+        ),
+      ).thenAnswer((invocation) async {
+        return invocation.namedArguments[#imageUrl] as String;
+      });
+
       random = _MockRandom();
       when(() => random.nextInt(any())).thenReturn(0);
       repository = ImageModelRepository(
@@ -130,8 +139,8 @@ void main() {
     });
 
     group('assembleImageUrl', () {
-      test('replaces spaces in character with underscores', () {
-        final result = repository.assembleUrl(
+      test('replaces spaces in character with underscores', () async {
+        final result = await repository.assembleUrl(
           character: 'character with spaces',
           characterClass: 'characterClass',
           location: 'location',
@@ -146,8 +155,8 @@ void main() {
         );
       });
 
-      test('replaces spaces in characterClass with underscores', () {
-        final result = repository.assembleUrl(
+      test('replaces spaces in characterClass with underscores', () async {
+        final result = await repository.assembleUrl(
           character: 'character',
           characterClass: 'character class with spaces',
           location: 'location',
@@ -162,8 +171,8 @@ void main() {
         );
       });
 
-      test('replaces spaces in location with underscores', () {
-        final result = repository.assembleUrl(
+      test('replaces spaces in location with underscores', () async {
+        final result = await repository.assembleUrl(
           character: 'character',
           characterClass: 'characterClass',
           location: 'location with spaces',

@@ -21,6 +21,7 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     on<CardSwiped>(_onCardSwiped);
     on<CardSwipeStarted>(_onCardSwipeStarted);
     on<SelectCard>(_onSelectCard);
+    on<PlayerDeckRequested>(_onPlayerDeckRequested);
   }
 
   final GameResource _gameResource;
@@ -146,6 +147,29 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     if (card.rarity && !_playedHoloReveal.contains(card.id)) {
       _playedHoloReveal.add(card.id);
       _audioController.playSfx(Assets.sfx.holoReveal);
+    }
+  }
+
+  Future<void> _onPlayerDeckRequested(
+    PlayerDeckRequested event,
+    Emitter<DraftState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(status: DraftStateStatus.deckLoading));
+      final deckId = await _gameResource.createDeck(event.cardIds);
+      // TODO(jaime): refactor create deck call to return the full deck
+      final deck = await _gameResource.getDeck(deckId);
+      emit(
+        state.copyWith(
+          deck: deck,
+          status: DraftStateStatus.playerDeckCreated,
+          createPrivateMatch: event.createPrivateMatch,
+          privateMatchInviteCode: event.privateMatchInviteCode,
+        ),
+      );
+    } catch (e, s) {
+      addError(e, s);
+      emit(state.copyWith(status: DraftStateStatus.playerDeckFailed));
     }
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:data_loader/src/prompt_mapper.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:prompt_repository/prompt_repository.dart';
 
@@ -28,12 +29,16 @@ class DataLoader {
     for (final line in lines.skip(1)) {
       final parts = line.split(',');
 
-      for (var j = 0; j < 4; j++) {
-        if (parts[j].isNotEmpty) {
+      for (var j = 0; j < promptColumnMap.length; j++) {
+        final idx = promptColumnMap.keys.elementAt(j);
+        final type = promptColumnMap.values.elementAt(j);
+        if (parts[idx].isNotEmpty) {
           prompts.add(
             PromptTerm(
-              term: parts[j],
-              type: PromptTermType.values[j],
+              term: parts[idx],
+              shortenedTerm:
+                  type == PromptTermType.power ? parts[idx + 1] : null,
+              type: type,
             ),
           );
         }

@@ -88,15 +88,16 @@ class $AssetsImagesGen {
 class $AssetsMusicGen {
   const $AssetsMusicGen();
 
-  /// File path: assets/music/GoogleIO-GameMusic-JN-TimeToRumble-JN.mp3
-  String get googleIOGameMusicJNTimeToRumbleJN =>
-      'assets/music/GoogleIO-GameMusic-JN-TimeToRumble-JN.mp3';
+  /// File path: assets/music/GoogleIO-GameMusic-JN-TimeToRumble-JN-Rev1-Ext-LOOPEDonce.mp3
+  String get googleIOGameMusicJNTimeToRumbleJNRev1ExtLOOPEDonce =>
+      'assets/music/GoogleIO-GameMusic-JN-TimeToRumble-JN-Rev1-Ext-LOOPEDonce.mp3';
 
   /// File path: assets/music/README.md
   String get readme => 'assets/music/README.md';
 
   /// List of all assets
-  List<String> get values => [googleIOGameMusicJNTimeToRumbleJN, readme];
+  List<String> get values =>
+      [googleIOGameMusicJNTimeToRumbleJNRev1ExtLOOPEDonce, readme];
 }
 
 class $AssetsSfxGen {

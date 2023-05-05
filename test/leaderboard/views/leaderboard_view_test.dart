@@ -1,9 +1,8 @@
-import 'package:api_client/api_client.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:game_domain/game_domain.dart';
+import 'package:game_domain/game_domain.dart' as gd;
 import 'package:io_flip/leaderboard/leaderboard.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -13,20 +12,17 @@ class _MockLeaderboardBloc extends MockBloc<LeaderboardEvent, LeaderboardState>
     implements LeaderboardBloc {}
 
 void main() {
-  const cardOne = ScoreCard(
-    id: 'id1',
+  const playerOne = gd.LeaderboardPlayer(
+    id: 'id',
+    longestStreak: 1,
     initials: 'AAA',
-    wins: 1,
   );
-  const cardTwo = ScoreCard(
+  const playerTwo = gd.LeaderboardPlayer(
     id: 'id2',
-    initials: 'BBB',
     longestStreak: 2,
+    initials: 'BBB',
   );
-  const leaderboardResults = LeaderboardResults(
-    scoreCardsWithLongestStreak: [cardOne],
-    scoreCardsWithMostWins: [cardTwo],
-  );
+  const leaderboardPlayers = [playerOne, playerTwo];
 
   group('LeaderboardView', () {
     late LeaderboardBloc leaderboardBloc;
@@ -50,7 +46,10 @@ void main() {
       'renders CircularProgressIndicator when status is loading',
       (tester) async {
         when(() => leaderboardBloc.state).thenReturn(
-          const LeaderboardState(status: LeaderboardStateStatus.loading),
+          const LeaderboardState(
+            status: LeaderboardStateStatus.loading,
+            leaderboard: [],
+          ),
         );
         await tester.pumpSubject(leaderboardBloc: leaderboardBloc);
         expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -61,19 +60,10 @@ void main() {
       'renders leaderboard failure text when loading fails',
       (tester) async {
         when(() => leaderboardBloc.state).thenReturn(
-          const LeaderboardState(status: LeaderboardStateStatus.failed),
-        );
-        await tester.pumpSubject(leaderboardBloc: leaderboardBloc);
-
-        expect(find.text(tester.l10n.leaderboardFailedToLoad), findsOneWidget);
-      },
-    );
-
-    testWidgets(
-      'renders leaderboard failure text when leaderboard is null',
-      (tester) async {
-        when(() => leaderboardBloc.state).thenReturn(
-          const LeaderboardState(status: LeaderboardStateStatus.loaded),
+          const LeaderboardState(
+            status: LeaderboardStateStatus.failed,
+            leaderboard: [],
+          ),
         );
         await tester.pumpSubject(leaderboardBloc: leaderboardBloc);
 
@@ -85,7 +75,7 @@ void main() {
       when(() => leaderboardBloc.state).thenReturn(
         const LeaderboardState(
           status: LeaderboardStateStatus.loaded,
-          leaderboard: leaderboardResults,
+          leaderboard: leaderboardPlayers,
         ),
       );
       await tester.pumpSubject(leaderboardBloc: leaderboardBloc);
@@ -101,14 +91,16 @@ void main() {
         when(() => leaderboardBloc.state).thenReturn(
           const LeaderboardState(
             status: LeaderboardStateStatus.loaded,
-            leaderboard: leaderboardResults,
+            leaderboard: leaderboardPlayers,
           ),
         );
         await tester.pumpSubject(leaderboardBloc: leaderboardBloc);
 
         expect(find.byType(LeaderboardPlayers), findsOneWidget);
-        expect(find.text(cardOne.initials!), findsOneWidget);
-        expect(find.text(cardOne.longestStreak.toString()), findsOneWidget);
+        expect(find.text(playerOne.initials), findsOneWidget);
+        expect(find.text(playerOne.longestStreak.toString()), findsOneWidget);
+        expect(find.text(playerTwo.initials), findsOneWidget);
+        expect(find.text(playerTwo.longestStreak.toString()), findsOneWidget);
       },
     );
   });

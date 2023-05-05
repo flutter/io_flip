@@ -109,4 +109,72 @@ void main() {
       );
     });
   });
+
+  group('PlayerDeckRequested', () {
+    test('can be instantiated', () {
+      expect(
+        PlayerDeckRequested(const ['id1', 'id2', 'id3']),
+        isNotNull,
+      );
+    });
+
+    test('supports equality', () {
+      expect(
+        PlayerDeckRequested(
+          const ['id1', 'id2', 'id3'],
+          createPrivateMatch: true,
+          privateMatchInviteCode: 'code',
+        ),
+        equals(
+          PlayerDeckRequested(
+            const ['id1', 'id2', 'id3'],
+            createPrivateMatch: true,
+            privateMatchInviteCode: 'code',
+          ),
+        ),
+      );
+      expect(
+        PlayerDeckRequested(
+          const ['id1', 'id2', 'id3'],
+          createPrivateMatch: true,
+          privateMatchInviteCode: 'code',
+        ),
+        isNot(
+          equals(
+            PlayerDeckRequested(
+              const ['id1', 'id2', 'id4'],
+              createPrivateMatch: true,
+              privateMatchInviteCode: 'code',
+            ),
+          ),
+        ),
+      );
+      expect(
+        PlayerDeckRequested(
+          const ['id1', 'id2', 'id3'],
+        ),
+        isNot(
+          equals(
+            PlayerDeckRequested(
+              const ['id1', 'id2', 'id3'],
+              createPrivateMatch: true,
+            ),
+          ),
+        ),
+      );
+      expect(
+        PlayerDeckRequested(
+          const ['id1', 'id2', 'id3'],
+        ),
+        isNot(
+          equals(
+            PlayerDeckRequested(
+              const ['id1', 'id2', 'id3'],
+              privateMatchInviteCode: 'code',
+            ),
+          ),
+        ),
+      );
+    });
+  });
 }
