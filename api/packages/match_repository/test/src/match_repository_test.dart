@@ -145,7 +145,7 @@ void main() {
       );
     });
 
-    group('IsDraftMatch', () {
+    group('isDraftMatch', () {
       late DbClient dbClient;
       late MatchRepository matchRepository;
 

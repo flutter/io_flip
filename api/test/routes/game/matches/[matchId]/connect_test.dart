@@ -147,7 +147,7 @@ void main() {
       expect(response.statusCode, equals(HttpStatus.forbidden));
     });
 
-    test("responds with a 401 if match isn't a draft", () async {
+    test("responds with a 403 if match isn't a draft", () async {
       when(
         () => matchRepository.isDraftMatch(matchId),
       ).thenAnswer((_) => Future.value(false));
