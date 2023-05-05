@@ -124,7 +124,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     Emitter<GameState> emit,
   ) async {
     if (state is MatchLoadedState) {
-      print('updated: ${state.props}');
       final matchLoadedState = state as MatchLoadedState;
 
       final matchStatePlayerMoves = isHost
@@ -212,7 +211,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   ) async {
     if (state is MatchLoadedState) {
       final matchState = state as MatchLoadedState;
-      print('played: ${matchState.props}');
       emit(
         matchState.copyWith(
           turnAnimationsFinished: false,
