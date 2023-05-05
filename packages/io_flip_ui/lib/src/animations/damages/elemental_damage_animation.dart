@@ -11,8 +11,8 @@ import 'package:io_flip_ui/src/animations/damages/water_damage.dart';
 import 'package:io_flip_ui/src/widgets/damages/dual_animation.dart';
 
 /// {@template elemental_damage_step_notifier}
-/// A notifier that allows an external test to know when an [_AnimationState]
-/// is complete
+/// A notifier that allows an external
+/// test to know when an [DamageAnimationState] is complete
 /// {@endtemplate}
 @visibleForTesting
 class ElementalDamageStepNotifier {
@@ -21,16 +21,16 @@ class ElementalDamageStepNotifier {
   final _received = Completer<void>();
   final _victory = Completer<void>();
 
-  /// Future notifying when [_AnimationState.charging] is complete
+  /// Future notifying when [DamageAnimationState.charging] is complete
   Future<void> get charged => _charged.future;
 
-  /// Future notifying when [_AnimationState.sending] is complete
+  /// Future notifying when [DamageAnimationState.sending] is complete
   Future<void> get sent => _sent.future;
 
-  /// Future notifying when [_AnimationState.receiving] is complete
+  /// Future notifying when [DamageAnimationState.receiving] is complete
   Future<void> get received => _received.future;
 
-  /// Future notifying when [_AnimationState.victory] is complete
+  /// Future notifying when [DamageAnimationState.victory] is complete
   Future<void> get victory => _victory.future;
 }
 
@@ -42,6 +42,7 @@ class ElementalDamageAnimation extends StatefulWidget {
   const ElementalDamageAnimation(
     this.element, {
     required this.direction,
+    required this.initialState,
     required this.size,
     this.assetSize = AssetSize.large,
     this.onComplete,
@@ -62,11 +63,14 @@ class ElementalDamageAnimation extends StatefulWidget {
   /// Size of the card
   final GameCardSize size;
 
-  /// Notifies when an [_AnimationState] is complete
+  /// Notifies when an [DamageAnimationState] is complete
   final ElementalDamageStepNotifier? stepNotifier;
 
   /// Size of the assets to use, large or small
   final AssetSize assetSize;
+
+  /// Initial state of the animation
+  final DamageAnimationState initialState;
 
   @override
   State<ElementalDamageAnimation> createState() =>
@@ -74,7 +78,7 @@ class ElementalDamageAnimation extends StatefulWidget {
 }
 
 class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
-  var _animationState = _AnimationState.charging;
+  late var _animationState = widget.initialState;
   late final ElementalDamage elementalDamage;
 
   @override
@@ -112,7 +116,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
   @override
   Widget build(BuildContext context) {
     switch (_animationState) {
-      case _AnimationState.charging:
+      case DamageAnimationState.charging:
         return Stack(
           children: [
             if (widget.direction == DamageDirection.topToBottom)
@@ -145,7 +149,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
               )
           ],
         );
-      case _AnimationState.sending:
+      case DamageAnimationState.sending:
         return Stack(
           children: [
             if (widget.direction == DamageDirection.topToBottom)
@@ -169,7 +173,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
               )
           ],
         );
-      case _AnimationState.receiving:
+      case DamageAnimationState.receiving:
         return Stack(
           children: [
             if (widget.direction == DamageDirection.topToBottom)
@@ -198,7 +202,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
               )
           ],
         );
-      case _AnimationState.victory:
+      case DamageAnimationState.victory:
         return Stack(
           children: [
             if (widget.direction == DamageDirection.topToBottom)
@@ -231,32 +235,32 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
               )
           ],
         );
-      case _AnimationState.ended:
+      case DamageAnimationState.ended:
         widget.onComplete?.call();
         return const SizedBox.shrink();
     }
   }
 
   void _onStepCompleted() {
-    if (_animationState == _AnimationState.charging) {
+    if (_animationState == DamageAnimationState.charging) {
       widget.stepNotifier?._charged.complete();
       setState(() {
-        _animationState = _AnimationState.sending;
+        _animationState = DamageAnimationState.sending;
       });
-    } else if (_animationState == _AnimationState.sending) {
+    } else if (_animationState == DamageAnimationState.sending) {
       widget.stepNotifier?._sent.complete();
       setState(() {
-        _animationState = _AnimationState.receiving;
+        _animationState = DamageAnimationState.receiving;
       });
-    } else if (_animationState == _AnimationState.receiving) {
+    } else if (_animationState == DamageAnimationState.receiving) {
       widget.stepNotifier?._received.complete();
       setState(() {
-        _animationState = _AnimationState.victory;
+        _animationState = DamageAnimationState.victory;
       });
-    } else if (_animationState == _AnimationState.victory) {
+    } else if (_animationState == DamageAnimationState.victory) {
       widget.stepNotifier?._victory.complete();
       setState(() {
-        _animationState = _AnimationState.ended;
+        _animationState = DamageAnimationState.ended;
       });
     }
   }
@@ -277,7 +281,23 @@ class _BottomAnimation extends StatelessWidget {
   }
 }
 
-enum _AnimationState { charging, sending, receiving, victory, ended }
+/// State of the animation playing
+enum DamageAnimationState {
+  /// Charging animation
+  charging,
+
+  /// Sending animation
+  sending,
+
+  /// Receiving animation
+  receiving,
+
+  /// Victory animation
+  victory,
+
+  /// Animation ended
+  ended
+}
 
 /// Represents the size that should be used for the assets
 enum AssetSize {

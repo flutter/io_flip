@@ -118,6 +118,7 @@ class ClashSceneState extends State<ClashScene>
     final playerWins = widget.playerCard.power > widget.opponentCard.power;
     final winningElement = _elementsMap[
         playerWins ? widget.playerCard.suit : widget.opponentCard.suit];
+    final isSameElement = widget.playerCard.suit == widget.opponentCard.suit;
     return Center(
       child: Stack(
         children: [
@@ -147,6 +148,9 @@ class ClashSceneState extends State<ClashScene>
                 desktop: AssetSize.large,
                 mobile: AssetSize.small,
               ),
+              initialState: isSameElement
+                  ? DamageAnimationState.victory
+                  : DamageAnimationState.charging,
               onComplete: widget.onFinished,
             )
         ],
