@@ -2,13 +2,23 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flame/sprite.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
-import 'package:io_flip_ui/src/animations/damages/air_damage.dart';
-import 'package:io_flip_ui/src/animations/damages/earth_damage.dart';
-import 'package:io_flip_ui/src/animations/damages/fire_damage.dart';
-import 'package:io_flip_ui/src/animations/damages/water_damage.dart';
 import 'package:io_flip_ui/src/widgets/damages/dual_animation.dart';
+
+T _platformAwareAsset<T>({
+  required T desktop,
+  required T mobile,
+  bool isWeb = kIsWeb,
+  TargetPlatform? overrideDefaultTargetPlatform,
+}) {
+  final platform = overrideDefaultTargetPlatform ?? defaultTargetPlatform;
+  final isWebMobile = isWeb &&
+      (platform == TargetPlatform.iOS || platform == TargetPlatform.android);
+
+  return isWebMobile ? mobile : desktop;
+}
 
 /// {@template elemental_damage_step_notifier}
 /// A notifier that allows an external
@@ -117,32 +127,15 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
   Widget build(BuildContext context) {
     switch (_animationState) {
       case DamageAnimationState.charging:
-        return Stack(
-          children: [
-            if (widget.direction == DamageDirection.topToBottom)
-              Transform.translate(
-                offset: -Offset(
-                  0.32 * widget.size.width,
-                  0.315 * widget.size.height,
-                ),
-                child: DualAnimation(
-                  cardOffset: Offset(
+        return _platformAwareAsset(
+          mobile: const SizedBox.shrink(),
+          desktop: Stack(
+            children: [
+              if (widget.direction == DamageDirection.topToBottom)
+                Transform.translate(
+                  offset: -Offset(
                     0.32 * widget.size.width,
                     0.315 * widget.size.height,
-                  ),
-                  cardSize: widget.size,
-                  back: elementalDamage.chargeBackBuilder,
-                  front: elementalDamage.chargeFrontBuilder,
-                  assetSize: widget.assetSize,
-                  onComplete: _onStepCompleted,
-                ),
-              )
-            else
-              _BottomAnimation(
-                child: Transform.translate(
-                  offset: Offset(
-                    0.32 * widget.size.width,
-                    0.215 * widget.size.height,
                   ),
                   child: DualAnimation(
                     cardOffset: Offset(
@@ -155,9 +148,29 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
                     assetSize: widget.assetSize,
                     onComplete: _onStepCompleted,
                   ),
-                ),
-              )
-          ],
+                )
+              else
+                _BottomAnimation(
+                  child: Transform.translate(
+                    offset: Offset(
+                      0.32 * widget.size.width,
+                      0.215 * widget.size.height,
+                    ),
+                    child: DualAnimation(
+                      cardOffset: Offset(
+                        0.32 * widget.size.width,
+                        0.315 * widget.size.height,
+                      ),
+                      cardSize: widget.size,
+                      back: elementalDamage.chargeBackBuilder,
+                      front: elementalDamage.chargeFrontBuilder,
+                      assetSize: widget.assetSize,
+                      onComplete: _onStepCompleted,
+                    ),
+                  ),
+                )
+            ],
+          ),
         );
       case DamageAnimationState.sending:
         return Stack(
@@ -184,12 +197,26 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
           ],
         );
       case DamageAnimationState.receiving:
-        return Stack(
-          children: [
-            if (widget.direction == DamageDirection.topToBottom)
-              _BottomAnimation(
-                child: Transform.translate(
-                  offset: Offset(
+        return _platformAwareAsset(
+          mobile: const SizedBox.shrink(),
+          desktop: Stack(
+            children: [
+              if (widget.direction == DamageDirection.topToBottom)
+                _BottomAnimation(
+                  child: Transform.translate(
+                    offset: Offset(
+                      0.3 * widget.size.width,
+                      0.3 * widget.size.height,
+                    ),
+                    child: elementalDamage.damageReceiveBuilder(
+                      _onStepCompleted,
+                      widget.assetSize,
+                    ),
+                  ),
+                )
+              else
+                Transform.translate(
+                  offset: -Offset(
                     0.3 * widget.size.width,
                     0.3 * widget.size.height,
                   ),
@@ -197,48 +224,20 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
                     _onStepCompleted,
                     widget.assetSize,
                   ),
-                ),
-              )
-            else
-              Transform.translate(
-                offset: -Offset(
-                  0.3 * widget.size.width,
-                  0.3 * widget.size.height,
-                ),
-                child: elementalDamage.damageReceiveBuilder(
-                  _onStepCompleted,
-                  widget.assetSize,
-                ),
-              )
-          ],
+                )
+            ],
+          ),
         );
       case DamageAnimationState.victory:
-        return Stack(
-          children: [
-            if (widget.direction == DamageDirection.topToBottom)
-              Transform.translate(
-                offset: -Offset(
-                  0.25 * widget.size.width,
-                  0.11 * widget.size.height,
-                ),
-                child: DualAnimation(
-                  cardOffset: Offset(
+        return _platformAwareAsset(
+          mobile: const SizedBox.shrink(),
+          desktop: Stack(
+            children: [
+              if (widget.direction == DamageDirection.topToBottom)
+                Transform.translate(
+                  offset: -Offset(
                     0.25 * widget.size.width,
                     0.11 * widget.size.height,
-                  ),
-                  cardSize: widget.size,
-                  back: elementalDamage.victoryChargeBackBuilder,
-                  front: elementalDamage.victoryChargeFrontBuilder,
-                  assetSize: widget.assetSize,
-                  onComplete: _onStepCompleted,
-                ),
-              )
-            else
-              _BottomAnimation(
-                child: Transform.translate(
-                  offset: Offset(
-                    0.255 * widget.size.width,
-                    0.115 * widget.size.height,
                   ),
                   child: DualAnimation(
                     cardOffset: Offset(
@@ -251,9 +250,29 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
                     assetSize: widget.assetSize,
                     onComplete: _onStepCompleted,
                   ),
-                ),
-              )
-          ],
+                )
+              else
+                _BottomAnimation(
+                  child: Transform.translate(
+                    offset: Offset(
+                      0.255 * widget.size.width,
+                      0.115 * widget.size.height,
+                    ),
+                    child: DualAnimation(
+                      cardOffset: Offset(
+                        0.25 * widget.size.width,
+                        0.11 * widget.size.height,
+                      ),
+                      cardSize: widget.size,
+                      back: elementalDamage.victoryChargeBackBuilder,
+                      front: elementalDamage.victoryChargeFrontBuilder,
+                      assetSize: widget.assetSize,
+                      onComplete: _onStepCompleted,
+                    ),
+                  ),
+                )
+            ],
+          ),
         );
       case DamageAnimationState.ended:
         widget.onComplete?.call();

@@ -42,7 +42,7 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
 
       final cards = await _gameResource.generateCards(event.prompts);
       // We don't allow the user to move on while there are assets loading.
-      await _assetManager.ready;
+      //await _assetManager.ready;
 
       emit(
         state.copyWith(

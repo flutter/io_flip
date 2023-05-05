@@ -77,7 +77,7 @@ class _AppState extends State<App> {
       );
 
   late final _images = Images(prefix: '');
-  late final _assetManager = AssetManager(_images)..preload();
+  late final _assetManager = AssetManager(_images);//..preload();
 
   @override
   Widget build(BuildContext context) {
