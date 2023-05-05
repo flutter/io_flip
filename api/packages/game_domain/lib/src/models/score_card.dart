@@ -14,8 +14,10 @@ class ScoreCard extends Equatable {
     this.wins = 0,
     this.longestStreak = 0,
     this.currentStreak = 0,
-    this.currentDeck = '',
+    this.latestStreak = 0,
     this.longestStreakDeck = '',
+    this.currentDeck = '',
+    this.latestDeck = '',
     this.initials,
   });
 
@@ -39,13 +41,23 @@ class ScoreCard extends Equatable {
   @JsonKey()
   final int currentStreak;
 
-  /// Unique identifier of the deck played in the session
+  /// Latest streak of wins in the session. When a player loses,
+  /// the [currentStreak] is reset, and this [latestStreak] is used after
+  /// the match is finished.
+  @JsonKey()
+  final int latestStreak;
+
+  /// Unique identifier of the deck which was used to set the [longestStreak].
+  @JsonKey()
+  final String longestStreakDeck;
+
+  /// Unique identifier of the deck played in the session.
   @JsonKey()
   final String currentDeck;
 
-  /// Unique identifier of the deck which was used to set the [longestStreak]
+  /// Unique identifier of the deck played in the last session.
   @JsonKey()
-  final String longestStreakDeck;
+  final String latestDeck;
 
   /// Initials of the player.
   @JsonKey()
@@ -60,8 +72,10 @@ class ScoreCard extends Equatable {
         wins,
         longestStreak,
         currentStreak,
-        currentDeck,
+        latestStreak,
         longestStreakDeck,
+        currentDeck,
+        latestDeck,
         initials,
       ];
 }
