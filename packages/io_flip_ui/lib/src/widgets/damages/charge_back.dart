@@ -34,12 +34,12 @@ class ChargeBack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final images = context.read<Images>();
-    final height = 1.532 * size.height;
-    final width = 1.89 * size.width;
+    final width = 2.8 * size.width;
+    final height = 1.542 * size.height;
 
     return SizedBox(
-      height: height,
       width: width,
+      height: height,
       child: SpriteAnimationWidget.asset(
         path: path,
         images: images,

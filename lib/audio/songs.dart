@@ -6,7 +6,7 @@ const Set<Song> songs = {
   // Filenames with whitespace break package:audioplayers on iOS
   // (as of February 2022), so we use no whitespace.
   Song(
-    'GoogleIO-GameMusic-JN-TimeToRumble-JN.mp3',
+    'GoogleIO-GameMusic-JN-TimeToRumble-JN-Rev1-Ext-LOOPEDonce.mp3',
     'TimeToRumble',
     artist: 'GoogleIO-GameMUsic',
   ),
