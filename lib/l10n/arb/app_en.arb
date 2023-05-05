@@ -28,7 +28,7 @@
   "@letsGetStarted": {
     "description": "label let's get started"
   },
-  "select": "Select",
+  "select": "Next",
   "@select": {
     "description": "label select"
   },
@@ -36,11 +36,11 @@
   "@niceToMeetYou": {
     "description": "label nice to meet you"
   },
-  "introTextPromptPage": "With just a few prompts, I can build us an AI-designed pack of cards featuring some of our favorite Google characters: Dash, Sparky, Android, and Dino, imbued with special powers.",
+  "introTextPromptPage": "With just a few prompts, I can build you an AI-designed pack of cards featuring some of our favorite Google characters: Dash, Sparky, Android, and Dino, imbued with special powers.",
   "@introTextPromptPage": {
     "description": "Text for the intro when selecting the prompt to build the deck"
   },
-  "characterClassPromptPageTitle": "First, what's your team's type?",
+  "characterClassPromptPageTitle": "First, what's your team's class?",
   "@characterClassPromptPageTitle": {
     "description": "Title of the prompt page for character class"
   },
@@ -260,11 +260,11 @@
   "@facebookButtonLabel": {
     "description": "Label for the share to facebook button"
   },
-  "howToPlayIntroTitle": "Grab a pack and create your team from more than 100k unique AI-designed cards.",
+  "howToPlayIntroTitle": "Grab a pack and create your team from millions of AI-designed cards.",
   "@howToPlayIntroTitle": {
     "description": "Text shown in the first page of the how to play flow"
   },
-  "howToPlayDeckTitle": "Keep your winning streak alive on the leaderboard against opponents around the world.",
+  "howToPlayDeckTitle": "FLIP your way to the top of the leaderboard with the longest winning streak.",
   "@howToPlayDeckTitle": {
     "description": "Text shown in the deck page of the how to play flow"
   },
@@ -308,7 +308,7 @@
   "@mainMenuButtonLabel": {
     "description": "Text shown on the main menu button"
   },
-  "infoDialogTitle": "About I/O Flip",
+  "infoDialogTitle": "About I/O FLIP",
   "@infoAboutGameTitle": {
     "description": "Title shown in the info dialog"
   },
