@@ -40,26 +40,27 @@ class _FlipCountdownState extends State<FlipCountdown> {
   @override
   void initState() {
     super.initState();
-    _createAnimationWidget();
+    Future<void>.delayed(Duration(seconds: 1)).then((_) => widget.onComplete!());
+    //_createAnimationWidget();
   }
 
   void _createAnimationWidget() {
-    final images = context.read<Images>();
-    _animationNotifier = ValueNotifier<SpriteAnimationWidget>(
-      SpriteAnimationWidget.asset(
-        path: Assets.images.flipCountdown.keyName,
-        images: images,
-        anchor: Anchor.center,
-        onComplete: widget.onComplete,
-        data: SpriteAnimationData.sequenced(
-          amount: 60,
-          amountPerRow: 6,
-          textureSize: Vector2(1100, 750),
-          stepTime: 0.04,
-          loop: false,
-        ),
-      ),
-    );
+    //final images = context.read<Images>();
+    //_animationNotifier = ValueNotifier<SpriteAnimationWidget>(
+    //  SpriteAnimationWidget.asset(
+    //    path: Assets.images.flipCountdown.keyName,
+    //    images: images,
+    //    anchor: Anchor.center,
+    //    onComplete: widget.onComplete,
+    //    data: SpriteAnimationData.sequenced(
+    //      amount: 60,
+    //      amountPerRow: 6,
+    //      textureSize: Vector2(1100, 750),
+    //      stepTime: 0.04,
+    //      loop: false,
+    //    ),
+    //  ),
+    //);
   }
 
   @override
@@ -67,10 +68,11 @@ class _FlipCountdownState extends State<FlipCountdown> {
     return SizedBox(
       height: widget.height,
       width: widget.width,
-      child: ValueListenableBuilder<SpriteAnimationWidget>(
-        valueListenable: _animationNotifier,
-        builder: (_, animation, __) => animation,
-      ),
+      child: const Center(child: Text('3.2.1, aaaaa')),
+      //child: ValueListenableBuilder<SpriteAnimationWidget>(
+      //  valueListenable: _animationNotifier,
+      //  builder: (_, animation, __) => animation,
+      //),
     );
   }
 }
