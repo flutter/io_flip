@@ -216,7 +216,7 @@
   "@matchmaking": {
     "description": "Label of the match making page button"
   },
-  "getReadyToFlip": "Get ready to flip!",
+  "getReadyToFlip": "Get ready to FLIP!",
   "@getReadyToFlip": {
     "description": "Title displayed when match is found, before entering the game"
   },
