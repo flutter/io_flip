@@ -17,8 +17,8 @@ class LeaderboardResource {
 
   /// Get /game/leaderboard/results
   ///
-  /// Returns a [LeaderboardResults].
-  Future<LeaderboardResults?> getLeaderboardResults() async {
+  /// Returns a list of [LeaderboardPlayer].
+  Future<List<LeaderboardPlayer>> getLeaderboardResults() async {
     final response = await _apiClient.get('/game/leaderboard/results');
 
     if (response.statusCode != HttpStatus.ok) {
@@ -30,22 +30,13 @@ class LeaderboardResource {
 
     try {
       final json = jsonDecode(response.body) as Map<String, dynamic>;
-      final scoreCardsWithMostWins = json['scoreCardsWithMostWins'] as List;
-      final scoreCardsWithLongestStreak =
-          json['scoreCardsWithLongestStreak'] as List;
+      final leaderboardPlayers = json['leaderboardPlayers'] as List;
 
-      return LeaderboardResults(
-        scoreCardsWithMostWins: scoreCardsWithMostWins
-            .map(
-              (json) => ScoreCard.fromJson(json as Map<String, dynamic>),
-            )
-            .toList(),
-        scoreCardsWithLongestStreak: scoreCardsWithLongestStreak
-            .map(
-              (json) => ScoreCard.fromJson(json as Map<String, dynamic>),
-            )
-            .toList(),
-      );
+      return leaderboardPlayers
+          .map(
+            (json) => LeaderboardPlayer.fromJson(json as Map<String, dynamic>),
+          )
+          .toList();
     } catch (e) {
       throw ApiClientError(
         'GET /leaderboard/results returned invalid response "${response.body}"',
