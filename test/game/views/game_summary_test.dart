@@ -6,15 +6,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
+import 'package:io_flip/audio/audio_controller.dart';
+import 'package:io_flip/game/game.dart';
+import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/settings/settings.dart';
+import 'package:io_flip/share/views/card_inspector_dialog.dart';
+import 'package:io_flip/share/views/share_hand_page.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
-import 'package:top_dash/audio/audio_controller.dart';
-import 'package:top_dash/game/game.dart';
-import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/settings/settings.dart';
-import 'package:top_dash/share/views/card_inspector_dialog.dart';
-import 'package:top_dash/share/views/share_hand_page.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -156,6 +156,7 @@ void main() {
 
     void defaultMockState({
       ScoreCard? scoreCard,
+      MatchResult matchResult = MatchResult.guest,
     }) {
       mockState(
         baseState.copyWith(
@@ -173,7 +174,7 @@ void main() {
               'player_card',
               'player_card_3',
             ],
-            result: MatchResult.guest,
+            result: matchResult,
           ),
           turnAnimationsFinished: true,
         ),
@@ -415,8 +416,44 @@ void main() {
         (tester) async {
           final goRouter = MockGoRouter();
           when(() => bloc.playerCards).thenReturn([]);
+          when(() => bloc.playerDeck)
+              .thenReturn(Deck(id: 'id', userId: 'userId', cards: cards));
           when(() => bloc.isHost).thenReturn(false);
           defaultMockState();
+
+          await tester.pumpApp(
+            BlocProvider<GameBloc>.value(
+              value: bloc,
+              child: GameSummaryFooter(
+                isPhoneWidth: false,
+                routerNeglectCall: router.neglect,
+              ),
+            ),
+            router: goRouter,
+          );
+
+          await tester.tap(find.text(tester.l10n.nextMatch));
+          await tester.pumpAndSettle();
+
+          verifyNever(() => bloc.sendMatchLeft());
+          verify(
+            () => goRouter.goNamed(
+              'match_making',
+              extra: any(named: 'extra'),
+            ),
+          ).called(1);
+        },
+      );
+
+      testWidgets(
+        'navigates to matchmaking when the next match button is tapped '
+        'if there is a draw',
+        (tester) async {
+          final goRouter = MockGoRouter();
+          when(() => bloc.playerCards).thenReturn([]);
+          when(() => bloc.playerDeck)
+              .thenReturn(Deck(id: 'id', userId: 'userId', cards: cards));
+          defaultMockState(matchResult: MatchResult.draw);
 
           await tester.pumpApp(
             BlocProvider<GameBloc>.value(

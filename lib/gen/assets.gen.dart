@@ -88,22 +88,15 @@ class $AssetsImagesGen {
 class $AssetsMusicGen {
   const $AssetsMusicGen();
 
-  /// File path: assets/music/Mr_Smith-Azul.mp3
-  String get mrSmithAzul => 'assets/music/Mr_Smith-Azul.mp3';
-
-  /// File path: assets/music/Mr_Smith-Sonorus.mp3
-  String get mrSmithSonorus => 'assets/music/Mr_Smith-Sonorus.mp3';
-
-  /// File path: assets/music/Mr_Smith-Sunday_Solitude.mp3
-  String get mrSmithSundaySolitude =>
-      'assets/music/Mr_Smith-Sunday_Solitude.mp3';
+  /// File path: assets/music/GoogleIO-GameMusic-JN-TimeToRumble-JN.mp3
+  String get googleIOGameMusicJNTimeToRumbleJN =>
+      'assets/music/GoogleIO-GameMusic-JN-TimeToRumble-JN.mp3';
 
   /// File path: assets/music/README.md
   String get readme => 'assets/music/README.md';
 
   /// List of all assets
-  List<String> get values =>
-      [mrSmithAzul, mrSmithSonorus, mrSmithSundaySolitude, readme];
+  List<String> get values => [googleIOGameMusicJNTimeToRumbleJN, readme];
 }
 
 class $AssetsSfxGen {
@@ -255,20 +248,54 @@ class $AssetsImagesLeaderboardGen {
 class $AssetsImagesMobileGen {
   const $AssetsImagesMobileGen();
 
+  /// File path: assets/images/mobile/back_pack.png
+  AssetGenImage get backPack =>
+      const AssetGenImage('assets/images/mobile/back_pack.png');
+
+  /// File path: assets/images/mobile/card_master.png
+  AssetGenImage get cardMaster =>
+      const AssetGenImage('assets/images/mobile/card_master.png');
+
   /// File path: assets/images/mobile/draw_splash.png
   AssetGenImage get drawSplash =>
       const AssetGenImage('assets/images/mobile/draw_splash.png');
 
+  /// File path: assets/images/mobile/front_pack.png
+  AssetGenImage get frontPack =>
+      const AssetGenImage('assets/images/mobile/front_pack.png');
+
   /// File path: assets/images/mobile/loss_splash.png
   AssetGenImage get lossSplash =>
       const AssetGenImage('assets/images/mobile/loss_splash.png');
+
+  /// File path: assets/images/mobile/main.jpg
+  AssetGenImage get main =>
+      const AssetGenImage('assets/images/mobile/main.jpg');
+
+  /// File path: assets/images/mobile/stadium_background.png
+  AssetGenImage get stadiumBackground =>
+      const AssetGenImage('assets/images/mobile/stadium_background.png');
+
+  /// File path: assets/images/mobile/stadium_background_close_up.png
+  AssetGenImage get stadiumBackgroundCloseUp => const AssetGenImage(
+      'assets/images/mobile/stadium_background_close_up.png');
 
   /// File path: assets/images/mobile/win_splash.png
   AssetGenImage get winSplash =>
       const AssetGenImage('assets/images/mobile/win_splash.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [drawSplash, lossSplash, winSplash];
+  List<AssetGenImage> get values => [
+        backPack,
+        cardMaster,
+        drawSplash,
+        frontPack,
+        lossSplash,
+        main,
+        stadiumBackground,
+        stadiumBackgroundCloseUp,
+        winSplash
+      ];
 }
 
 class Assets {
@@ -338,7 +365,16 @@ class AssetGenImage {
     );
   }
 
-  ImageProvider provider() => AssetImage(_assetName);
+  ImageProvider provider({
+    AssetBundle? bundle,
+    String? package,
+  }) {
+    return AssetImage(
+      _assetName,
+      bundle: bundle,
+      package: package,
+    );
+  }
 
   String get path => _assetName;
 

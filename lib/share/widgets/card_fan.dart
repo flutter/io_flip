@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart' hide Card;
 import 'package:game_domain/game_domain.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 
 class CardFan extends StatelessWidget {
   const CardFan({
@@ -27,6 +27,7 @@ class CardFan extends StatelessWidget {
             name: card.name,
             suitName: card.suit.name,
             power: card.power,
+            isRare: card.rarity,
           ),
         )
         .toList();

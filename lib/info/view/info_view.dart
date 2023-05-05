@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/utils/utils.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/utils/utils.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 
 class InfoView extends StatelessWidget {
   const InfoView({super.key});
@@ -17,23 +17,23 @@ class InfoView extends StatelessWidget {
       l10n.faqLinkLabel: ExternalLinks.faq,
     };
 
-    final descriptionStyle = TopDashTextStyles.bodyLG.copyWith(
-      color: TopDashColors.seedWhite,
+    final descriptionStyle = IoFlipTextStyles.bodyLG.copyWith(
+      color: IoFlipColors.seedWhite,
     );
-    final linkStyle = TopDashTextStyles.bodyLG.copyWith(
-      color: TopDashColors.seedYellow,
+    final linkStyle = IoFlipTextStyles.bodyLG.copyWith(
+      color: IoFlipColors.seedYellow,
     );
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         IoFlipLogo(height: 93),
-        const SizedBox(height: TopDashSpacing.xxlg + TopDashSpacing.sm),
+        const SizedBox(height: IoFlipSpacing.xxlg + IoFlipSpacing.sm),
         Text(
           l10n.infoDialogTitle,
-          style: TopDashTextStyles.mobileH6Light,
+          style: IoFlipTextStyles.mobileH6Light,
         ),
-        const SizedBox(height: TopDashSpacing.md),
+        const SizedBox(height: IoFlipSpacing.md),
         RichText(
           textAlign: TextAlign.center,
           text: TextSpan(
@@ -58,13 +58,13 @@ class InfoView extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: TopDashSpacing.xxlg + TopDashSpacing.sm),
+        const SizedBox(height: IoFlipSpacing.xxlg + IoFlipSpacing.sm),
         Text(
           l10n.infoDialogOtherLinks,
-          style: TopDashTextStyles.mobileH6Light,
+          style: IoFlipTextStyles.mobileH6Light,
         ),
         for (final link in links.entries) ...[
-          const SizedBox(height: TopDashSpacing.md),
+          const SizedBox(height: IoFlipSpacing.md),
           Text(
             link.key,
             style: linkStyle,

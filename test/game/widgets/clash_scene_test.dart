@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:io_flip/game/game.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
-import 'package:top_dash/game/game.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -37,8 +37,8 @@ void main() {
     });
 
     testWidgets(
-      'flips both cards after countdown and invokes onFinished '
-      'callback when animation is complete',
+      'plays damage animation then flips both cards after countdown'
+      ' and invokes onFinished callback when animation is complete',
       (tester) async {
         var onFinishedCalled = false;
 
@@ -54,10 +54,14 @@ void main() {
 
         await mockNetworkImages(() async {
           await tester.pump(smallFlipAnimation.duration * 2);
-          await tester.pump(const Duration(seconds: 2));
         });
 
-        expect(find.byType(GameCard), findsNWidgets(2));
+        final elementalDamage = find.byType(ElementalDamageAnimation);
+        expect(elementalDamage, findsOneWidget);
+        tester
+            .widget<ElementalDamageAnimation>(elementalDamage)
+            .onComplete
+            ?.call();
         expect(onFinishedCalled, isTrue);
       },
     );
@@ -66,8 +70,8 @@ void main() {
       'puts players card over opponents when stronger',
       (tester) async {
         await tester.pumpSubject(
-          playerCard,
           opponentCard,
+          playerCard,
           onFinished: () {},
         );
 
@@ -86,8 +90,8 @@ void main() {
       'puts opponents card over players when stronger',
       (tester) async {
         await tester.pumpSubject(
-          opponentCard,
           playerCard,
+          opponentCard,
           onFinished: () {},
         );
 

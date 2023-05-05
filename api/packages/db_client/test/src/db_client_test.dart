@@ -229,7 +229,7 @@ void main() {
 
         when(() => collection.where('type', isEqualTo: 'big'))
             .thenReturn(queryReference);
-        when(() => collection.where('age', isEqualTo: 'old'))
+        when(() => queryReference.where('age', isEqualTo: 'old'))
             .thenReturn(queryReference);
 
         when(queryReference.get).thenAnswer((_) async {
@@ -276,7 +276,7 @@ void main() {
 
         when(() => collection.where('type', isEqualTo: 'big'))
             .thenReturn(queryReference);
-        when(() => collection.where('age', isEqualTo: 'old'))
+        when(() => queryReference.where('age', isEqualTo: 'old'))
             .thenReturn(queryReference);
 
         when(queryReference.get).thenAnswer((_) async => []);

@@ -4,23 +4,22 @@ import 'package:flame/extensions.dart';
 import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:top_dash/audio/audio_controller.dart';
-import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
-
-typedef DeckPackChildBuilder = Widget Function({
-  required bool isAnimating,
-});
+import 'package:io_flip/audio/audio_controller.dart';
+import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/utils/utils.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 
 class DeckPack extends StatefulWidget {
   const DeckPack({
-    required this.builder,
-    this.size = double.infinity,
+    required this.child,
+    required this.onComplete,
+    required this.size,
     super.key,
   });
 
-  final DeckPackChildBuilder builder;
-  final double size;
+  final Widget child;
+  final Size size;
+  final VoidCallback onComplete;
 
   @override
   State<DeckPack> createState() => DeckPackState();
@@ -41,13 +40,19 @@ class DeckPackState extends State<DeckPack> {
   Future<void> setupAnimation() async {
     final data = SpriteAnimationData.sequenced(
       amount: 56,
-      amountPerRow: 7,
-      textureSize: Vector2(1050, 1219),
+      amountPerRow: platformAwareAsset(desktop: 7, mobile: 8),
+      textureSize: platformAwareAsset(
+        desktop: Vector2(1050, 1219),
+        mobile: Vector2(750, 871),
+      ),
       stepTime: 0.04,
       loop: false,
     );
     await SpriteAnimation.load(
-      Assets.images.frontPack.keyName,
+      platformAwareAsset(
+        desktop: Assets.images.frontPack.keyName,
+        mobile: Assets.images.mobile.frontPack.keyName,
+      ),
       data,
       images: context.read<Images>(),
     ).then((animation) {
@@ -74,6 +79,7 @@ class DeckPackState extends State<DeckPack> {
   }
 
   void onComplete() {
+    widget.onComplete();
     setState(() {
       _isAnimationComplete = true;
     });
@@ -81,24 +87,24 @@ class DeckPackState extends State<DeckPack> {
 
   @override
   Widget build(BuildContext context) {
-    if (anim == null) return SizedBox.square(dimension: widget.size);
-    final child = widget.builder(isAnimating: !_isAnimationComplete);
-    return SizedBox.square(
-      dimension: widget.size,
+    if (anim == null) return SizedBox.fromSize(size: widget.size);
+    return SizedBox.fromSize(
+      size: widget.size,
       child: Center(
         child: Stack(
           alignment: Alignment.bottomCenter,
           children: [
-            if (_isAnimationComplete) child,
-            if (!_isAnimationComplete)
+            if (_isAnimationComplete)
+              widget.child
+            else
               AspectRatio(
                 // Aspect ratio of card
-                aspectRatio: 260 / 380,
+                aspectRatio: widget.size.aspectRatio,
                 child: Offstage(
                   offstage: !_underlayVisible,
                   child: StretchAnimation(
                     animating: _underlayVisible,
-                    child: Center(child: child),
+                    child: Center(child: widget.child),
                   ),
                 ),
               ),

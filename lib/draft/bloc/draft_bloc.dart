@@ -2,8 +2,8 @@ import 'package:api_client/api_client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:top_dash/audio/audio_controller.dart';
-import 'package:top_dash/gen/assets.gen.dart';
+import 'package:io_flip/audio/audio_controller.dart';
+import 'package:io_flip/gen/assets.gen.dart';
 
 part 'draft_event.dart';
 part 'draft_state.dart';
@@ -21,6 +21,7 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     on<CardSwiped>(_onCardSwiped);
     on<CardSwipeStarted>(_onCardSwipeStarted);
     on<SelectCard>(_onSelectCard);
+    on<PlayerDeckRequested>(_onPlayerDeckRequested);
   }
 
   final GameResource _gameResource;
@@ -100,13 +101,17 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     if (state.selectedCards.contains(topCard)) return;
     _audioController.playSfx(Assets.sfx.addToHand);
 
+    final oldSelectedCard = state.selectedCards[event.index];
     final selectedCards = List.of(state.selectedCards);
     selectedCards[event.index] = topCard;
 
     final selectionCompleted =
         selectedCards.length == 3 && !selectedCards.contains(null);
 
-    final cards = _dismissTopCard();
+    final cards = [
+      ...state.cards.skip(1),
+      if (oldSelectedCard != null) oldSelectedCard,
+    ];
     _playHoloReveal(cards);
 
     emit(
@@ -142,6 +147,29 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     if (card.rarity && !_playedHoloReveal.contains(card.id)) {
       _playedHoloReveal.add(card.id);
       _audioController.playSfx(Assets.sfx.holoReveal);
+    }
+  }
+
+  Future<void> _onPlayerDeckRequested(
+    PlayerDeckRequested event,
+    Emitter<DraftState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(status: DraftStateStatus.deckLoading));
+      final deckId = await _gameResource.createDeck(event.cardIds);
+      // TODO(jaime): refactor create deck call to return the full deck
+      final deck = await _gameResource.getDeck(deckId);
+      emit(
+        state.copyWith(
+          deck: deck,
+          status: DraftStateStatus.playerDeckCreated,
+          createPrivateMatch: event.createPrivateMatch,
+          privateMatchInviteCode: event.privateMatchInviteCode,
+        ),
+      );
+    } catch (e, s) {
+      addError(e, s);
+      emit(state.copyWith(status: DraftStateStatus.playerDeckFailed));
     }
   }
 }

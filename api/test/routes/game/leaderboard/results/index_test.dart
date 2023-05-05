@@ -21,47 +21,28 @@ void main() {
     late Request request;
     late RequestContext context;
 
-    const scoreCards = [
-      ScoreCard(
+    const leaderboardPlayers = [
+      LeaderboardPlayer(
         id: 'id',
-        wins: 1,
         longestStreak: 1,
-        currentStreak: 1,
-        currentDeck: 'deckId',
-        longestStreakDeck: 'longestId',
-        initials: 'initials',
+        initials: 'AAA',
       ),
-      ScoreCard(
+      LeaderboardPlayer(
         id: 'id2',
-        wins: 2,
         longestStreak: 2,
-        currentStreak: 2,
-        currentDeck: 'deckId2',
-        longestStreakDeck: 'longestId2',
-        initials: 'initials2',
+        initials: 'BBB',
       ),
-      ScoreCard(
+      LeaderboardPlayer(
         id: 'id3',
-        wins: 3,
         longestStreak: 3,
-        currentStreak: 3,
-        currentDeck: 'deckId3',
-        longestStreakDeck: 'longestId3',
-        initials: 'initials3',
+        initials: 'CCC',
       ),
     ];
 
     setUp(() {
       leaderboardRepository = _MockLeaderboardRepository();
-      when(
-        () => leaderboardRepository.getScoreCardsWithMostWins(),
-      ).thenAnswer(
-        (_) async => scoreCards,
-      );
-      when(
-        () => leaderboardRepository.getScoreCardsWithLongestStreak(),
-      ).thenAnswer(
-        (_) async => scoreCards,
+      when(() => leaderboardRepository.getLeaderboard()).thenAnswer(
+        (_) async => leaderboardPlayers,
       );
 
       request = _MockRequest();
@@ -84,69 +65,29 @@ void main() {
       expect(response.statusCode, equals(HttpStatus.methodNotAllowed));
     });
 
-    test('responds with the list score cards', () async {
+    test('responds with the list of leaderboard players', () async {
       final response = await route.onRequest(context);
 
       final json = await response.json();
+
       expect(
         json,
         equals({
-          'scoreCardsWithMostWins': [
+          'leaderboardPlayers': [
             {
               'id': 'id',
-              'wins': 1,
               'longestStreak': 1,
-              'currentStreak': 1,
-              'currentDeck': 'deckId',
-              'longestStreakDeck': 'longestId',
-              'initials': 'initials',
+              'initials': 'AAA',
             },
             {
               'id': 'id2',
-              'wins': 2,
               'longestStreak': 2,
-              'currentStreak': 2,
-              'currentDeck': 'deckId2',
-              'longestStreakDeck': 'longestId2',
-              'initials': 'initials2',
+              'initials': 'BBB',
             },
             {
               'id': 'id3',
-              'wins': 3,
               'longestStreak': 3,
-              'currentStreak': 3,
-              'currentDeck': 'deckId3',
-              'longestStreakDeck': 'longestId3',
-              'initials': 'initials3',
-            },
-          ],
-          'scoreCardsWithLongestStreak': [
-            {
-              'id': 'id',
-              'wins': 1,
-              'longestStreak': 1,
-              'currentStreak': 1,
-              'currentDeck': 'deckId',
-              'longestStreakDeck': 'longestId',
-              'initials': 'initials',
-            },
-            {
-              'id': 'id2',
-              'wins': 2,
-              'longestStreak': 2,
-              'currentStreak': 2,
-              'currentDeck': 'deckId2',
-              'longestStreakDeck': 'longestId2',
-              'initials': 'initials2',
-            },
-            {
-              'id': 'id3',
-              'wins': 3,
-              'longestStreak': 3,
-              'currentStreak': 3,
-              'currentDeck': 'deckId3',
-              'longestStreakDeck': 'longestId3',
-              'initials': 'initials3',
+              'initials': 'CCC',
             },
           ],
         }),

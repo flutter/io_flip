@@ -1,8 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:io_flip/match_making/match_making.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
-import 'package:top_dash/match_making/match_making.dart';
 
 void main() {
   group('MatchMakingState', () {

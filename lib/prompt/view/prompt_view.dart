@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/prompt/prompt.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/prompt/prompt.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 
 class PromptView extends StatelessWidget {
   const PromptView({super.key});

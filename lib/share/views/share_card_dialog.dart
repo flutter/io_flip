@@ -2,9 +2,9 @@ import 'package:api_client/api_client.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:game_domain/game_domain.dart';
+import 'package:io_flip/share/share.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:top_dash/share/share.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class ShareCardDialog extends StatelessWidget {
@@ -33,14 +33,15 @@ class ShareCardDialog extends StatelessWidget {
             description: card.description,
             suitName: card.suit.name,
             power: card.power,
+            isRare: card.rarity,
           ),
-          const SizedBox(height: TopDashSpacing.lg),
+          const SizedBox(height: IoFlipSpacing.lg),
           Text(
             card.name,
-            style: TopDashTextStyles.mobileH4Light,
+            style: IoFlipTextStyles.mobileH4Light,
           ),
-          Text(card.description, style: TopDashTextStyles.bodyLG),
-          const SizedBox(height: TopDashSpacing.lg),
+          Text(card.description, style: IoFlipTextStyles.bodyLG),
+          const SizedBox(height: IoFlipSpacing.lg),
         ],
       ),
       downloadContent: card,

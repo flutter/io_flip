@@ -1,0 +1,30 @@
+name: gallery
+description: Gallery project to showcase app_ui
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0-417.3.beta <4.0.0"
+  flutter: 3.10.0-1.4.pre
+
+dependencies:
+  dashbook: ^0.1.11
+  flame:
+    git:
+      url: https://github.com/willhlas/flame
+      path: packages/flame
+      ref: main
+  flutter:
+    sdk: flutter
+  intl: ^0.17.0
+  io_flip_ui:
+    path: ../
+  provider: ^6.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^3.1.0
+
+flutter:
+  uses-material-design: true

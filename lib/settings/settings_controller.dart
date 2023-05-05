@@ -4,7 +4,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:top_dash/settings/persistence/persistence.dart';
+import 'package:io_flip/settings/persistence/persistence.dart';
 
 /// An class that holds settings like [muted] or [musicOn],
 /// and saves them to an injected persistence store.

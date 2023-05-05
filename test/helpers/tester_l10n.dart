@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:top_dash/l10n/l10n.dart';
+import 'package:io_flip/l10n/l10n.dart';
 
 extension TesterL10n on WidgetTester {
   AppLocalizations get l10n {

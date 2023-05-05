@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:top_dash/utils/utils.dart';
+import 'package:io_flip/utils/utils.dart';
 
 void main() {
   group('platformAwareAsset', () {

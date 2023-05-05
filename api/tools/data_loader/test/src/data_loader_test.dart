@@ -49,9 +49,9 @@ void main() {
       test('load prompties correctly', () async {
         when(() => csv.readAsLines()).thenAnswer(
           (_) async => [
-            'Character,Class,Power,Power,Location,',
-            'Dash,Alien,Banjos,City,',
-            ',Mage,Bass,Forest,',
+            'Character,Class,Power,Power(Shorter),Location,',
+            'Dash,Alien,Banjos,B,City,',
+            ',Mage,Bass,Ba,Forest,',
           ],
         );
 
@@ -77,6 +77,7 @@ void main() {
           () => promptRepository.createPromptTerm(
             PromptTerm(
               term: 'Banjos',
+              shortenedTerm: 'B',
               type: PromptTermType.power,
             ),
           ),
@@ -85,6 +86,7 @@ void main() {
           () => promptRepository.createPromptTerm(
             PromptTerm(
               term: 'Bass',
+              shortenedTerm: 'Ba',
               type: PromptTermType.power,
             ),
           ),
@@ -118,9 +120,9 @@ void main() {
       test('progress is called correctly', () async {
         when(() => csv.readAsLines()).thenAnswer(
           (_) async => [
-            'Character,Class,Power,Power,Location,',
-            'Dash,Alien,Banjos,City,',
-            ',Mage,Bass,Forest,',
+            'Character,Class,Power,Power(Shorter),Location,',
+            'Dash,Alien,Banjos,B,City,',
+            ',Mage,Bass,Ba,Forest,',
           ],
         );
 

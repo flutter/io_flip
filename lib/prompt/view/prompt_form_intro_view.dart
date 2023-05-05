@@ -1,20 +1,27 @@
-import 'package:flow_builder/flow_builder.dart';
+import 'package:flame/cache.dart';
+import 'package:flame/extensions.dart';
+import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/utils/platform_aware_asset.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
+import 'package:provider/provider.dart';
 
 class PromptFormIntroView extends StatelessWidget {
   const PromptFormIntroView({super.key});
 
-  static const _gap = SizedBox(height: TopDashSpacing.xlg);
+  static const _gap = SizedBox(height: IoFlipSpacing.xlg);
+  static const _cardMasterHeight = 312.0;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final images = context.read<Images>();
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: TopDashSpacing.xlg),
+      padding: const EdgeInsets.symmetric(horizontal: IoFlipSpacing.xlg),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -26,31 +33,49 @@ class PromptFormIntroView extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _gap,
-                    Image.asset(
-                      Assets.images.cardMaster.path,
-                      height: 156,
-                      width: 156,
+                    Stack(
+                      alignment: Alignment.topCenter,
+                      children: [
+                        SizedBox.square(
+                          dimension: _cardMasterHeight,
+                          child: SpriteAnimationWidget.asset(
+                            path: platformAwareAsset(
+                              desktop: Assets.images.cardMaster.keyName,
+                              mobile: Assets.images.mobile.cardMaster.keyName,
+                            ),
+                            images: images,
+                            data: SpriteAnimationData.sequenced(
+                              amount: 57,
+                              amountPerRow: 19,
+                              textureSize: platformAwareAsset(
+                                desktop: Vector2(812, 812),
+                                mobile: Vector2(406, 406),
+                              ),
+                              stepTime: 0.04,
+                            ),
+                          ),
+                        ),
+                        Column(
+                          children: [
+                            SizedBox(
+                              height: _cardMasterHeight - (_gap.height! * 2),
+                            ),
+                            Text(
+                              l10n.niceToMeetYou,
+                              style: IoFlipTextStyles.headlineH4Light,
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: IoFlipSpacing.sm),
+                            Text(
+                              l10n.introTextPromptPage,
+                              style: IoFlipTextStyles.headlineH6Light,
+                              textAlign: TextAlign.center,
+                            ),
+                            _gap,
+                          ],
+                        )
+                      ],
                     ),
-                    _gap,
-                    Text(
-                      l10n.cardMaster,
-                      style: TopDashTextStyles.headlineH4Light,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: TopDashSpacing.sm),
-                    Text(
-                      l10n.niceToMeetYou,
-                      style: TopDashTextStyles.headlineH6Light,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: TopDashSpacing.sm),
-                    Text(
-                      l10n.introTextPromptPage,
-                      style: TopDashTextStyles.headlineH6Light,
-                      textAlign: TextAlign.center,
-                    ),
-                    _gap,
                   ],
                 ),
               ),
@@ -58,9 +83,10 @@ class PromptFormIntroView extends StatelessWidget {
           ),
           IoFlipBottomBar(
             middle: RoundedButton.text(
-              l10n.letsGetStarted.toUpperCase(),
-              onPressed: () =>
-                  context.flow<Prompt>().update((data) => data.setIntroSeen()),
+              l10n.letsGetStarted,
+              onPressed: () => context.updateFlow<Prompt>(
+                (data) => data.setIntroSeen(),
+              ),
             ),
           ),
         ],

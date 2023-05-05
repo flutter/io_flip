@@ -1,0 +1,21 @@
+name: flop
+
+on:
+  pull_request:
+    paths:
+      - "flop/**"
+      - ".github/workflows/flop.yaml"
+    branches:
+      - main
+
+jobs:
+  semantic-pull-request:
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/semantic_pull_request.yml@v1
+
+  build:
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1.12.0
+    with:
+      flutter_channel: beta
+      flutter_version: 3.10.0-1.4.pre
+      working_directory: flop
+      min_coverage: 0

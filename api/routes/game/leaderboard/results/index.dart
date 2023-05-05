@@ -8,21 +8,13 @@ FutureOr<Response> onRequest(RequestContext context) async {
   if (context.request.method == HttpMethod.get) {
     final leaderboardRepository = context.read<LeaderboardRepository>();
 
-    final scoreCardsWithMostWins =
-        await leaderboardRepository.getScoreCardsWithMostWins();
-    final scoreCardsWithLongestStreak =
-        await leaderboardRepository.getScoreCardsWithLongestStreak();
+    final leaderboardPlayers = await leaderboardRepository.getLeaderboard();
 
     return Response.json(
       body: {
-        'scoreCardsWithMostWins': scoreCardsWithMostWins
+        'leaderboardPlayers': leaderboardPlayers
             .map(
-              (card) => card.toJson(),
-            )
-            .toList(),
-        'scoreCardsWithLongestStreak': scoreCardsWithLongestStreak
-            .map(
-              (card) => card.toJson(),
+              (player) => player.toJson(),
             )
             .toList(),
       },

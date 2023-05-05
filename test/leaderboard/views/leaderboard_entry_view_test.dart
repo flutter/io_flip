@@ -1,9 +1,9 @@
 import 'package:api_client/api_client.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/leaderboard/initials_form/initials_form.dart';
+import 'package:io_flip/leaderboard/leaderboard.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/leaderboard/initials_form/initials_form.dart';
-import 'package:top_dash/leaderboard/leaderboard.dart';
 
 import '../../helpers/helpers.dart';
 

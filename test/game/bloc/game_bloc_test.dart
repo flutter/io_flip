@@ -9,12 +9,12 @@ import 'package:connection_repository/connection_repository.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:io_flip/audio/audio_controller.dart';
+import 'package:io_flip/game/game.dart';
+import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:top_dash/audio/audio_controller.dart';
-import 'package:top_dash/game/game.dart';
-import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 
 class _MockGameResource extends Mock implements GameResource {}
 
@@ -153,20 +153,24 @@ void main() {
       ),
     ];
 
+    const hostDeck = Deck(
+      id: 'hostDeck',
+      userId: 'hostUserId',
+      cards: hostCards,
+    );
+
+    const guestDeck = Deck(
+      id: 'guestDeck',
+      userId: 'guestUserId',
+      cards: guestCards,
+    );
+
     const baseState = MatchLoadedState(
       playerScoreCard: ScoreCard(id: 'scoreCardId'),
       match: Match(
         id: 'matchId',
-        hostDeck: Deck(
-          id: 'hostDeck',
-          userId: 'hostUserId',
-          cards: hostCards,
-        ),
-        guestDeck: Deck(
-          id: 'guestDeck',
-          userId: 'guestUserId',
-          cards: guestCards,
-        ),
+        hostDeck: hostDeck,
+        guestDeck: guestDeck,
       ),
       matchState: MatchState(
         id: 'matchStateId',
@@ -1299,6 +1303,40 @@ void main() {
         });
       });
     });
+
+    blocTest<GameBloc, GameState>(
+      'playerDeck returns host deck if is host',
+      build: () => GameBloc(
+        connectionRepository: connectionRepository,
+        gameResource: gameResource,
+        audioController: audioController,
+        matchMakerRepository: matchMakerRepository,
+        matchSolver: matchSolver,
+        isHost: true,
+        user: user,
+      ),
+      seed: () => baseState,
+      verify: (bloc) {
+        expect(bloc.playerDeck, equals(hostDeck));
+      },
+    );
+
+    blocTest<GameBloc, GameState>(
+      'playerDeck returns guest deck if is guest',
+      build: () => GameBloc(
+        connectionRepository: connectionRepository,
+        gameResource: gameResource,
+        audioController: audioController,
+        matchMakerRepository: matchMakerRepository,
+        matchSolver: matchSolver,
+        isHost: false,
+        user: user,
+      ),
+      seed: () => baseState,
+      verify: (bloc) {
+        expect(bloc.playerDeck, equals(guestDeck));
+      },
+    );
 
     blocTest<GameBloc, GameState>(
       'playerCards returns host cards if is host',

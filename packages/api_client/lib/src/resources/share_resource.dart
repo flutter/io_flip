@@ -59,11 +59,6 @@ class ShareResource {
     return _facebookShareUrl(handUrl);
   }
 
-  /// Returns the game url.
-  String shareGameUrl() {
-    return _apiClient.shareGameUrl();
-  }
-
   /// Get public/cards/:cardId
   ///
   /// Returns a [Uint8List] image, if any to be found.

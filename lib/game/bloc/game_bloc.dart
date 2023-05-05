@@ -7,11 +7,11 @@ import 'package:connection_repository/connection_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:io_flip/audio/audio_controller.dart';
+import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/share/share.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
-import 'package:top_dash/audio/audio_controller.dart';
-import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/share/share.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 
 part 'game_event.dart';
 part 'game_state.dart';
@@ -494,6 +494,13 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     }
 
     return false;
+  }
+
+  Deck get playerDeck {
+    final matchLoadedState = state as MatchLoadedState;
+    return isHost
+        ? matchLoadedState.match.hostDeck
+        : matchLoadedState.match.guestDeck;
   }
 
   List<Card> get playerCards {

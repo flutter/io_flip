@@ -1,10 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/terms_of_use/terms_of_use.dart';
-import 'package:top_dash/utils/utils.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/terms_of_use/terms_of_use.dart';
+import 'package:io_flip/utils/utils.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 
 class TermsOfUseView extends StatelessWidget {
   const TermsOfUseView({super.key});
@@ -12,8 +12,8 @@ class TermsOfUseView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final linkStyle = TopDashTextStyles.linkLG.copyWith(
-      color: TopDashColors.seedYellow,
+    final linkStyle = IoFlipTextStyles.linkLG.copyWith(
+      color: IoFlipColors.seedYellow,
     );
 
     return Column(
@@ -21,15 +21,15 @@ class TermsOfUseView extends StatelessWidget {
       children: [
         Text(
           l10n.termsOfUseTitle,
-          style: TopDashTextStyles.mobileH4Light,
+          style: IoFlipTextStyles.mobileH4Light,
         ),
-        const SizedBox(height: TopDashSpacing.sm),
+        const SizedBox(height: IoFlipSpacing.sm),
         RichText(
           textAlign: TextAlign.center,
           text: TextSpan(
             text: l10n.termsOfUseDescriptionPrefix,
-            style: TopDashTextStyles.bodyLG.copyWith(
-              color: TopDashColors.seedWhite,
+            style: IoFlipTextStyles.bodyLG.copyWith(
+              color: IoFlipColors.seedWhite,
             ),
             children: [
               const TextSpan(text: ' '),
@@ -51,7 +51,7 @@ class TermsOfUseView extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: TopDashSpacing.xxlg),
+        const SizedBox(height: IoFlipSpacing.xxlg),
         RoundedButton.text(
           l10n.termsOfUseContinueLabel,
           onPressed: () {

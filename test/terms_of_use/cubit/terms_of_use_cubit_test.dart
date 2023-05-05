@@ -1,6 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:top_dash/terms_of_use/terms_of_use.dart';
+import 'package:io_flip/terms_of_use/terms_of_use.dart';
 
 void main() {
   group('TermsOfUseCubit', () {

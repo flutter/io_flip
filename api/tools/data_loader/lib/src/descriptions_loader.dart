@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 
 import 'package:csv/csv.dart';
@@ -32,10 +34,18 @@ class DescriptionsLoader {
 
     final lines = const CsvToListConverter().convert(content);
     for (final parts in lines.skip(1)) {
-      final character = _normalizeTerm(parts.first as String);
-      final characterClass = _normalizeTerm(parts[1] as String);
-      final power = _normalizeTerm(parts[2] as String);
-      final location = _normalizeTerm(parts[3] as String);
+      final character = _normalizeTerm(
+        parts[0] as String,
+      );
+      final characterClass = _normalizeTerm(
+        parts[1] as String,
+      );
+      final power = _normalizeTerm(
+        parts[2] as String,
+      );
+      final location = _normalizeTerm(
+        parts[3] as String,
+      );
 
       for (var i = 4; i < parts.length; i++) {
         final value = parts[i] as String;
@@ -60,12 +70,17 @@ class DescriptionsLoader {
     for (final description in descriptions) {
       progress++;
 
-      await _dbClient.add(
-        'card_descriptions',
-        description.toJson(),
-      );
+      try {
+        await _dbClient.add(
+          'card_descriptions',
+          description.toJson(),
+        );
+      } catch (e) {
+        print('Failed');
+        print(e);
+      }
       // So we don't get rate limited
-      await Future<void>.delayed(const Duration(milliseconds: 10));
+      await Future<void>.delayed(const Duration(milliseconds: 5));
 
       onProgress(progress, descriptions.length);
     }

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_highlight/themes/monokai-sublime.dart';
 import 'package:highlight/languages/javascript.dart';
-import 'package:top_dash/scripts/cubit/scripts_cubit.dart';
-import 'package:top_dash/style/snack_bar.dart';
+import 'package:io_flip/scripts/cubit/scripts_cubit.dart';
+import 'package:io_flip/style/snack_bar.dart';
 
 class ScriptsView extends StatefulWidget {
   const ScriptsView({super.key});

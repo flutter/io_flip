@@ -1,14 +1,16 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart' as game;
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
-import 'package:top_dash/audio/audio_controller.dart';
-import 'package:top_dash/game/game.dart';
-import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/leaderboard/leaderboard.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip/audio/audio_controller.dart';
+import 'package:io_flip/game/game.dart';
+import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/leaderboard/leaderboard.dart';
+import 'package:io_flip/utils/utils.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 
 extension on List<TickerFuture> {
   Future<void> get allDone => Future.wait(
@@ -80,8 +82,8 @@ const playerHandCardSize = GameCardSize.xs();
 const opponentHandCardSize = GameCardSize.xxs();
 const counterSize = Size(56, 56);
 
-const cardSpacingX = TopDashSpacing.sm;
-const cardSpacingY = TopDashSpacing.xlg;
+const cardSpacingX = IoFlipSpacing.sm;
+const cardSpacingY = IoFlipSpacing.xlg;
 const cardsAtHand = 3;
 
 const movingCardDuration = Duration(milliseconds: 400);
@@ -120,6 +122,9 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
   late List<Offset> playerCardOffsets;
   late List<GameCardSize> playerCardSizes;
   late Offset counterOffset;
+  VelocityTracker? velocityTracker;
+
+  final velocity = ValueNotifier<Offset>(Offset.zero);
 
   late List<Tween<GameCardRect?>> playerCardTweens;
   late List<Animation<GameCardRect?>> opponentCardAnimations;
@@ -139,6 +144,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
 
   late final opponentCardControllers = createAnimationControllers();
   late final playerCardControllers = createAnimationControllers();
+  late final tiltTicker = createTicker(onTiltTick);
   late final playerAnimatedCardControllers = List.generate(
     cardsAtHand,
     (_) => AnimatedCardController(),
@@ -284,6 +290,9 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
         pointerStartPosition = event.localPosition;
         pointerPosition = event.localPosition;
         draggingCardIndex = cardIndex;
+        velocityTracker =
+            VelocityTracker.withKind(event.kind ?? PointerDeviceKind.touch);
+        tiltTicker.start();
       });
     }
   }
@@ -300,6 +309,12 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
       final currentDistance = pointerPosition!.dy - goalY;
       final progressY = 1.0 - (currentDistance / startDistance).clamp(0, 1);
       final relativeOffset = pointerPosition! - pointerStartPosition!;
+      if (event.sourceTimeStamp != null) {
+        velocityTracker?.addPosition(
+          event.sourceTimeStamp!,
+          event.localPosition,
+        );
+      }
 
       setState(() {
         draggingCardAccepted = goalRect.contains(pointerPosition!);
@@ -353,7 +368,21 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
       pointerStartPosition = null;
       draggingCardIndex = null;
       draggingCardAccepted = false;
+      velocity.value = Offset.zero;
+      tiltTicker.stop();
+      velocityTracker = null;
     });
+  }
+
+  void onTiltTick(_) {
+    const scale = 1 / 500;
+    final pps = velocityTracker
+        ?.getVelocity()
+        .clampMagnitude(0, 1 / scale)
+        .pixelsPerSecond;
+    if (pps != null) {
+      velocity.value = pps * scale;
+    }
   }
 
   void _onTapUp(TapUpDetails event) {
@@ -505,7 +534,10 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
               scale: 1.4,
               child: Center(
                 child: Image.asset(
-                  Assets.images.stadiumBackground.keyName,
+                  platformAwareAsset(
+                    desktop: Assets.images.stadiumBackground.keyName,
+                    mobile: Assets.images.mobile.stadiumBackground.keyName,
+                  ),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -549,18 +581,24 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
                     for (var i = 0; i < playerCards.length; i++)
                       AnimatedBuilder(
                         animation: playerCardControllers[i],
-                        builder: (context, _) => _PlayerCard(
-                          card: playerCards[i],
-                          isDragging: i == draggingCardIndex,
-                          rect: i == draggingCardIndex
-                              ? GameCardRect(
-                                  gameCardSize: playerCardSizes[i],
-                                  offset: playerCardOffsets[i],
-                                )
-                              : playerCardTweens[i]
-                                  .evaluate(playerCardControllers[i])!,
-                          animatedCardController:
-                              playerAnimatedCardControllers[i],
+                        builder: (context, _) => ValueListenableBuilder(
+                          valueListenable: i == draggingCardIndex
+                              ? velocity
+                              : const AlwaysStoppedAnimation(Offset.zero),
+                          builder: (context, velocity, child) => _PlayerCard(
+                            card: playerCards[i],
+                            isDragging: i == draggingCardIndex,
+                            velocity: velocity,
+                            rect: i == draggingCardIndex
+                                ? GameCardRect(
+                                    gameCardSize: playerCardSizes[i],
+                                    offset: playerCardOffsets[i],
+                                  )
+                                : playerCardTweens[i]
+                                    .evaluate(playerCardControllers[i])!,
+                            animatedCardController:
+                                playerAnimatedCardControllers[i],
+                          ),
                         ),
                       ),
                     _BoardCounter(counterOffset),
@@ -591,6 +629,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     for (final element in playerAnimatedCardControllers) {
       element.dispose();
     }
+    tiltTicker.dispose();
 
     super.dispose();
   }
@@ -608,10 +647,10 @@ class _PlaceholderCard extends StatelessWidget {
       child: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: TopDashColors.seedWhite.withOpacity(0.15),
-          borderRadius: BorderRadius.circular(10),
+          color: IoFlipColors.seedWhite.withOpacity(0.15),
+          borderRadius: BorderRadius.circular(rect.width * 0.08),
           border: Border.all(
-            color: TopDashColors.seedPaletteNeutral95,
+            color: IoFlipColors.seedPaletteNeutral95,
           ),
         ),
         child: Opacity(
@@ -687,12 +726,14 @@ class _PlayerCard extends StatelessWidget {
     required this.rect,
     required this.animatedCardController,
     required this.isDragging,
+    required this.velocity,
   });
 
   final game.Card card;
   final GameCardRect rect;
   final AnimatedCardController animatedCardController;
   final bool isDragging;
+  final Offset velocity;
 
   @override
   Widget build(BuildContext context) {
@@ -709,6 +750,7 @@ class _PlayerCard extends StatelessWidget {
         child: AnimatedCard(
           controller: animatedCardController,
           front: GameCard(
+            tilt: velocity,
             image: card.image,
             name: card.name,
             description: card.description,
@@ -745,10 +787,10 @@ class _ClashCard extends StatelessWidget {
       child: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: TopDashColors.seedWhite.withOpacity(0.15),
-          borderRadius: BorderRadius.circular(10),
+          color: IoFlipColors.seedWhite.withOpacity(0.15),
+          borderRadius: BorderRadius.circular(rect.width * 0.08),
           border: Border.all(
-            color: TopDashColors.seedPaletteNeutral95,
+            color: IoFlipColors.seedPaletteNeutral95,
           ),
         ),
         child: showPlus
@@ -769,7 +811,7 @@ class CrossPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = TopDashColors.seedWhite
+      ..color = IoFlipColors.seedWhite
       ..style = PaintingStyle.stroke;
 
     canvas
@@ -809,7 +851,7 @@ class _BoardCounter extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(
-            color: TopDashColors.seedWhite.withOpacity(.25),
+            color: IoFlipColors.seedWhite.withOpacity(.25),
             width: 8,
             strokeAlign: BorderSide.strokeAlignOutside,
           ),
@@ -819,14 +861,14 @@ class _BoardCounter extends StatelessWidget {
           width: counterSize.width,
           height: counterSize.height,
           decoration: BoxDecoration(
-            color: TopDashColors.seedWhite,
+            color: IoFlipColors.seedWhite,
             shape: BoxShape.circle,
-            border: Border.all(color: TopDashColors.seedBlack, width: 2),
+            border: Border.all(color: IoFlipColors.seedBlack, width: 2),
           ),
           child: Text(
             '$turnTimeRemaining',
-            style: TopDashTextStyles.cardNumberLG
-                .copyWith(color: TopDashColors.seedBlack),
+            style: IoFlipTextStyles.cardNumberLG
+                .copyWith(color: IoFlipColors.seedBlack),
           ),
         ),
       ),
@@ -888,7 +930,11 @@ class _ClashScene extends StatelessWidget {
               scale: 1.4,
               child: Center(
                 child: Image.asset(
-                  Assets.images.stadiumBackgroundCloseUp.keyName,
+                  platformAwareAsset(
+                    desktop: Assets.images.stadiumBackgroundCloseUp.keyName,
+                    mobile:
+                        Assets.images.mobile.stadiumBackgroundCloseUp.keyName,
+                  ),
                   fit: BoxFit.cover,
                 ),
               ),

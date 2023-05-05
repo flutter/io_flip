@@ -4,7 +4,7 @@ import 'package:mustache_template/mustache_template.dart';
 const _template = '''
       <img
         class="card-img"
-        src="{{{card.image}}}"
+        src="/public/cards/{{{card.id}}}"
         alt="{{card.name}}"
       >
 ''';

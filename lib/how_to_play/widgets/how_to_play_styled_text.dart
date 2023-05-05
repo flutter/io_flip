@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:styled_text/styled_text.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 
 class HowToPlayStyledText extends StatelessWidget {
   const HowToPlayStyledText(this.text, {super.key});
@@ -17,24 +17,24 @@ class HowToPlayStyledText extends StatelessWidget {
     );
   }
 
-  TextStyle get textStyle => TopDashTextStyles.mobileH4Light;
+  TextStyle get textStyle => IoFlipTextStyles.mobileH4Light;
 
   Map<String, StyledTextTagBase> textTags() {
     return {
       'yellow': StyledTextTag(
-        style: const TextStyle(color: TopDashColors.seedYellow),
+        style: const TextStyle(color: IoFlipColors.seedYellow),
       ),
       'lightblue': StyledTextTag(
-        style: const TextStyle(color: TopDashColors.seedPaletteLightBlue80),
+        style: const TextStyle(color: IoFlipColors.seedPaletteLightBlue80),
       ),
       'green': StyledTextTag(
-        style: const TextStyle(color: TopDashColors.seedGreen),
+        style: const TextStyle(color: IoFlipColors.seedGreen),
       ),
       'red': StyledTextTag(
-        style: const TextStyle(color: TopDashColors.seedRed),
+        style: const TextStyle(color: IoFlipColors.seedRed),
       ),
       'blue': StyledTextTag(
-        style: const TextStyle(color: TopDashColors.seedBlue),
+        style: const TextStyle(color: IoFlipColors.seedBlue),
       ),
     };
   }

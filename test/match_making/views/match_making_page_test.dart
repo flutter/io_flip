@@ -4,10 +4,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
+import 'package:io_flip/match_making/match_making.dart';
+import 'package:io_flip/settings/settings.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
-import 'package:top_dash/match_making/match_making.dart';
-import 'package:top_dash/settings/settings.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -15,36 +15,40 @@ class _MockGoRouterState extends Mock implements GoRouterState {}
 
 class _MockSettingsController extends Mock implements SettingsController {}
 
-const deck = [
-  Card(
-    id: 'a',
-    name: '',
-    description: '',
-    image: '',
-    power: 1,
-    rarity: false,
-    suit: Suit.air,
-  ),
-  Card(
-    id: 'b',
-    name: '',
-    description: '',
-    image: '',
-    power: 1,
-    rarity: false,
-    suit: Suit.air,
-  ),
-  Card(
-    id: 'c',
-    name: '',
-    description: '',
-    image: '',
-    power: 1,
-    rarity: false,
-    suit: Suit.air,
-  ),
-];
-final pageData = MatchMakingPageData(cards: deck);
+const deck = Deck(
+  id: 'deckId',
+  userId: 'userId',
+  cards: [
+    Card(
+      id: 'a',
+      name: '',
+      description: '',
+      image: '',
+      power: 1,
+      rarity: false,
+      suit: Suit.air,
+    ),
+    Card(
+      id: 'b',
+      name: '',
+      description: '',
+      image: '',
+      power: 1,
+      rarity: false,
+      suit: Suit.air,
+    ),
+    Card(
+      id: 'c',
+      name: '',
+      description: '',
+      image: '',
+      power: 1,
+      rarity: false,
+      suit: Suit.air,
+    ),
+  ],
+);
+final pageData = MatchMakingPageData(deck: deck);
 void main() {
   group('MatchMakingPage', () {
     late GoRouterState goRouterState;
@@ -99,6 +103,25 @@ void main() {
     testWidgets('renders a MatchMakingView', (tester) async {
       await tester.pumpSubject();
       expect(find.byType(MatchMakingView), findsOneWidget);
+    });
+  });
+
+  group('MatchMakingPageData', () {
+    test('supports equality', () {
+      expect(
+        MatchMakingPageData(deck: deck),
+        equals(MatchMakingPageData(deck: deck)),
+      );
+      expect(
+        MatchMakingPageData(deck: deck),
+        isNot(
+          equals(
+            MatchMakingPageData(
+              deck: Deck(id: 'id', userId: 'userId', cards: const []),
+            ),
+          ),
+        ),
+      );
     });
   });
 }

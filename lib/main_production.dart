@@ -6,11 +6,11 @@ import 'package:connection_repository/connection_repository.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:game_script_machine/game_script_machine.dart';
+import 'package:io_flip/app/app.dart';
+import 'package:io_flip/bootstrap.dart';
+import 'package:io_flip/firebase_options_production.dart';
+import 'package:io_flip/settings/persistence/persistence.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
-import 'package:top_dash/app/app.dart';
-import 'package:top_dash/bootstrap.dart';
-import 'package:top_dash/firebase_options_production.dart';
-import 'package:top_dash/settings/persistence/persistence.dart';
 
 void main() async {
   await Firebase.initializeApp(

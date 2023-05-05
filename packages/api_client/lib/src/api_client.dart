@@ -283,17 +283,22 @@ class ApiClient {
 
   /// Returns the share page url for the specified [deckId].
   String shareHandUrl(String deckId) {
-    return '${_base.host}/public/share?deckId=$deckId';
+    return _base.replace(
+      path: '/public/share',
+      queryParameters: {
+        'deckId': deckId,
+      },
+    ).toString();
   }
 
   /// Returns the share page url for the specified [cardId].
   String shareCardUrl(String cardId) {
-    return '${_base.host}/public/share?cardId=$cardId';
-  }
-
-  /// Returns the game url.
-  String shareGameUrl() {
-    return _base.host;
+    return _base.replace(
+      path: '/public/share',
+      queryParameters: {
+        'cardId': cardId,
+      },
+    ).toString();
   }
 }
 

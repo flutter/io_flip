@@ -1,14 +1,15 @@
 import 'dart:math' as math;
 
 import 'package:bloc_test/bloc_test.dart';
-import 'package:flow_builder/flow_builder.dart';
+import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:io_flip/prompt/prompt.dart';
+import 'package:io_flip/settings/settings.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:top_dash/prompt/prompt.dart';
-import 'package:top_dash/settings/settings.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -49,12 +50,20 @@ void main() {
     testWidgets('renders prompt form intro correctly', (tester) async {
       await tester.pumpSubject(promptFormBloc);
 
-      expect(find.byType(FlowBuilder<Prompt>), findsOneWidget);
+      final l10n = tester.l10n;
+      final expectedTexts = [
+        l10n.niceToMeetYou,
+        l10n.introTextPromptPage,
+        l10n.letsGetStarted,
+      ];
+
+      expect(find.byType(SimpleFlow<Prompt>), findsOneWidget);
       expect(find.byType(PromptFormIntroView), findsOneWidget);
-      expect(
-        find.text(tester.l10n.letsGetStarted.toUpperCase()),
-        findsOneWidget,
-      );
+      expect(find.byType(SpriteAnimationWidget), findsOneWidget);
+
+      for (final text in expectedTexts) {
+        expect(find.text(text), findsOneWidget);
+      }
     });
 
     testWidgets('renders character class form correctly', (tester) async {

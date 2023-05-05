@@ -2,13 +2,14 @@ import 'package:api_client/api_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:top_dash/gen/assets.gen.dart';
-import 'package:top_dash/how_to_play/how_to_play.dart';
-import 'package:top_dash/info/info.dart';
-import 'package:top_dash/l10n/l10n.dart';
-import 'package:top_dash/leaderboard/leaderboard.dart';
-import 'package:top_dash/terms_of_use/terms_of_use.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/how_to_play/how_to_play.dart';
+import 'package:io_flip/info/info.dart';
+import 'package:io_flip/l10n/l10n.dart';
+import 'package:io_flip/leaderboard/leaderboard.dart';
+import 'package:io_flip/terms_of_use/terms_of_use.dart';
+import 'package:io_flip/utils/utils.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 
 class MainMenuScreen extends StatelessWidget {
   const MainMenuScreen({super.key});
@@ -48,7 +49,7 @@ class MainMenuScreen extends StatelessWidget {
                   if (termsAccepted) {
                     GoRouter.of(context).go('/prompt');
                   } else {
-                    TopDashDialog.show(
+                    IoFlipDialog.show(
                       context,
                       child: const TermsOfUseView(),
                       showCloseButton: false,
@@ -60,7 +61,7 @@ class MainMenuScreen extends StatelessWidget {
           ),
           trailing: RoundedButton.icon(
             Icons.question_mark_rounded,
-            onPressed: () => TopDashDialog.show(
+            onPressed: () => IoFlipDialog.show(
               context,
               child: const HowToPlayDialog(),
             ),
@@ -80,12 +81,15 @@ class _MainMenuScreenView extends StatelessWidget {
       child: Column(
         children: [
           Image.asset(
-            Assets.images.main.path,
+            platformAwareAsset(
+              desktop: Assets.images.main.path,
+              mobile: Assets.images.mobile.main.path,
+            ),
             height: 312,
             fit: BoxFit.fitHeight,
           ),
           const LeaderboardView(),
-          const SizedBox(height: TopDashSpacing.xxlg),
+          const SizedBox(height: IoFlipSpacing.xxlg),
         ],
       ),
     );

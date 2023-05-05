@@ -3,10 +3,10 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
+import 'package:io_flip/share/share.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
-import 'package:top_dash/share/share.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -124,7 +124,6 @@ void main() {
       final shareResource = _MockShareResource();
       when(() => shareResource.facebookShareCardUrl(any())).thenReturn('');
       when(() => shareResource.twitterShareCardUrl(any())).thenReturn('');
-      when(shareResource.shareGameUrl).thenReturn('');
 
       await tester.pumpSubject(buildSubject(), shareResource: shareResource);
       await tester.tap(find.byIcon(Icons.share_outlined));

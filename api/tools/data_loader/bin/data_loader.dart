@@ -118,6 +118,36 @@ void main(List<String> args) async {
         '<card_variation_number> <character>',
       );
     }
+  } else if (subcommand == 'generate_tables') {
+    if (args.length == 6) {
+      final projectId = args[1];
+      final imagesFolder = args[2];
+      final csv = args[3];
+      final variations = args[4];
+      final character = args[5];
+
+      final dbClient = DbClient.initialize(projectId);
+
+      final csvFile = File(csv);
+      final imagesFolderDirectory = Directory(imagesFolder);
+
+      final generator = CreateImageLookup(
+        dbClient: dbClient,
+        csv: csvFile,
+        imagesFolder: imagesFolderDirectory,
+        variations: int.parse(variations),
+        character: character,
+      );
+
+      await generator.generateLookupTable((current, total) {
+        print('Progress: ($current of $total)');
+      });
+    } else {
+      print(
+        'Usage: dart bin/data_loader.dart generate_tables <project_id> <images_folder> <csv_file_location.csv> '
+        '<card_variation_number> <character>',
+      );
+    }
   } else {
     print('Unknown command: $subcommand');
   }

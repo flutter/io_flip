@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:top_dash/leaderboard/initials_form/initials_form.dart';
+import 'package:io_flip/leaderboard/initials_form/initials_form.dart';
 
 void main() {
   group('InitialsChanged', () {

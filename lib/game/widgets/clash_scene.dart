@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart' hide Card;
+import 'package:flutter/material.dart' hide Card, Element;
 import 'package:game_domain/game_domain.dart';
-import 'package:top_dash_ui/top_dash_ui.dart';
+import 'package:io_flip/utils/utils.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 
 class ClashScene extends StatefulWidget {
   const ClashScene({
@@ -37,7 +38,6 @@ class ClashSceneState extends State<ClashScene>
   var _flipCards = false;
 
   void onFlipCards() {
-    setState(() => _flipCards = true);
     motionController.stop();
     Future.delayed(
       const Duration(milliseconds: 100),
@@ -45,8 +45,10 @@ class ClashSceneState extends State<ClashScene>
     );
 
     playerController.run(smallFlipAnimation);
-
-    Future.delayed(const Duration(seconds: 2), () => widget.onFinished());
+    Future.delayed(
+      const Duration(milliseconds: 500),
+      () => setState(() => _flipCards = true),
+    );
   }
 
   @override
@@ -109,15 +111,18 @@ class ClashSceneState extends State<ClashScene>
         );
       },
     );
+    final playerWins = widget.playerCard.power > widget.opponentCard.power;
+    final winningElement = _elementsMap[
+        playerWins ? widget.playerCard.suit : widget.opponentCard.suit];
     return Center(
       child: Stack(
         children: [
-          if (widget.playerCard.power > widget.opponentCard.power) ...[
-            playerCard,
-            opponentCard
-          ] else ...[
+          if (playerWins) ...[
             opponentCard,
             playerCard
+          ] else ...[
+            playerCard,
+            opponentCard
           ],
           Positioned.fill(
             child: Visibility(
@@ -126,9 +131,30 @@ class ClashSceneState extends State<ClashScene>
                 onComplete: onFlipCards,
               ),
             ),
-          )
+          ),
+          if (_flipCards)
+            ElementalDamageAnimation(
+              winningElement!,
+              direction: playerWins
+                  ? DamageDirection.bottomToTop
+                  : DamageDirection.topToBottom,
+              size: const GameCardSize.lg(),
+              assetSize: platformAwareAsset<AssetSize>(
+                desktop: AssetSize.large,
+                mobile: AssetSize.small,
+              ),
+              onComplete: widget.onFinished,
+            )
         ],
       ),
     );
   }
+
+  static const _elementsMap = {
+    Suit.air: Element.air,
+    Suit.earth: Element.earth,
+    Suit.fire: Element.fire,
+    Suit.metal: Element.metal,
+    Suit.water: Element.water,
+  };
 }

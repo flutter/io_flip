@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
-import 'package:top_dash/audio/audio_controller.dart';
-import 'package:top_dash/draft/draft.dart';
+import 'package:io_flip/audio/audio_controller.dart';
+import 'package:io_flip/draft/draft.dart';
 
 class DraftPage extends StatelessWidget {
   const DraftPage({required this.prompts, super.key});

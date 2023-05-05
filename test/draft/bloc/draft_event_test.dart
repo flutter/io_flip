@@ -2,7 +2,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:top_dash/draft/draft.dart';
+import 'package:io_flip/draft/draft.dart';
 
 void main() {
   group('DeckRequested', () {
@@ -106,6 +106,74 @@ void main() {
       expect(
         SelectCard(0),
         isNot(equals(SelectCard(1))),
+      );
+    });
+  });
+
+  group('PlayerDeckRequested', () {
+    test('can be instantiated', () {
+      expect(
+        PlayerDeckRequested(const ['id1', 'id2', 'id3']),
+        isNotNull,
+      );
+    });
+
+    test('supports equality', () {
+      expect(
+        PlayerDeckRequested(
+          const ['id1', 'id2', 'id3'],
+          createPrivateMatch: true,
+          privateMatchInviteCode: 'code',
+        ),
+        equals(
+          PlayerDeckRequested(
+            const ['id1', 'id2', 'id3'],
+            createPrivateMatch: true,
+            privateMatchInviteCode: 'code',
+          ),
+        ),
+      );
+      expect(
+        PlayerDeckRequested(
+          const ['id1', 'id2', 'id3'],
+          createPrivateMatch: true,
+          privateMatchInviteCode: 'code',
+        ),
+        isNot(
+          equals(
+            PlayerDeckRequested(
+              const ['id1', 'id2', 'id4'],
+              createPrivateMatch: true,
+              privateMatchInviteCode: 'code',
+            ),
+          ),
+        ),
+      );
+      expect(
+        PlayerDeckRequested(
+          const ['id1', 'id2', 'id3'],
+        ),
+        isNot(
+          equals(
+            PlayerDeckRequested(
+              const ['id1', 'id2', 'id3'],
+              createPrivateMatch: true,
+            ),
+          ),
+        ),
+      );
+      expect(
+        PlayerDeckRequested(
+          const ['id1', 'id2', 'id3'],
+        ),
+        isNot(
+          equals(
+            PlayerDeckRequested(
+              const ['id1', 'id2', 'id3'],
+              privateMatchInviteCode: 'code',
+            ),
+          ),
+        ),
       );
     });
   });
