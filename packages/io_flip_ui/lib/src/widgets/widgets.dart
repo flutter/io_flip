@@ -9,6 +9,7 @@ export 'foil_shader.dart';
 export 'game_card.dart';
 export 'io_flip_bottom_bar.dart';
 export 'io_flip_dialog.dart';
+export 'io_flip_error_view.dart';
 export 'io_flip_logo.dart';
 export 'io_flip_scaffold.dart';
 export 'responsive_layout.dart';
