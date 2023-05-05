@@ -77,7 +77,6 @@ class _AppState extends State<App> {
       );
 
   late final _images = Images(prefix: '');
-  late final _assetManager = AssetManager(_images);//..preload();
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +94,6 @@ class _AppState extends State<App> {
           Provider.value(value: widget.gameScriptMachine),
           Provider.value(value: widget.user),
           Provider.value(value: _images),
-          Provider.value(value: _assetManager),
           Provider<SettingsController>(
             lazy: false,
             create: (context) => SettingsController(

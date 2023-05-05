@@ -68,7 +68,7 @@ class _FlipCountdownState extends State<FlipCountdown> {
     return SizedBox(
       height: widget.height,
       width: widget.width,
-      child: const Center(child: Text('3.2.1, aaaaa')),
+      child: const Center(child: Text('3.2.1, uhaaaaa')),
       //child: ValueListenableBuilder<SpriteAnimationWidget>(
       //  valueListenable: _animationNotifier,
       //  builder: (_, animation, __) => animation,
