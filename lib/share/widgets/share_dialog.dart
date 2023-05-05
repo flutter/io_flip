@@ -157,7 +157,7 @@ class _DownloadStatusBar extends StatelessWidget {
       child: Container(
         height: IoFlipSpacing.xxlg,
         decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(5)),
+          borderRadius: const BorderRadius.all(Radius.circular(100)),
           color: success ? IoFlipColors.seedGreen : IoFlipColors.seedRed,
         ),
         child: Center(

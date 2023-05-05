@@ -14,7 +14,7 @@ const _template = '''
       </div>
 ''';
 
-/// Builds the HMTL page for the sare card link.
+/// Builds the HTML page for the share card link.
 String buildHandContent({
   required String handImage,
   required String? initials,

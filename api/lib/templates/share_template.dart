@@ -29,6 +29,10 @@ const _template = '''
       href="https://fonts.googleapis.com/css?family=Google+Sans+Text:400,500"
       rel="stylesheet"
     />
+    <link
+      href="https://fonts.googleapis.com/css?family=Saira:700"
+      rel="stylesheet"
+    />
     <style>
       body {
         margin: 0;
@@ -80,9 +84,9 @@ const _template = '''
       }
 
       h3.initials {
-        font-family: "Google Sans";
+        font-family: "Saira";
         font-style: normal;
-        font-weight: 500;
+        font-weight: 700;
         font-size: 36px;
         line-height: 48px;
         display: flex;
