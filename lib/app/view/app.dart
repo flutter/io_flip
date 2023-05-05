@@ -8,7 +8,6 @@ import 'package:game_domain/game_domain.dart';
 import 'package:game_script_machine/game_script_machine.dart';
 import 'package:go_router/go_router.dart';
 import 'package:io_flip/app_lifecycle/app_lifecycle.dart';
-import 'package:io_flip/asset_manager/asset_manager.dart';
 import 'package:io_flip/audio/audio_controller.dart';
 import 'package:io_flip/connection/connection.dart';
 import 'package:io_flip/gen/assets.gen.dart';
