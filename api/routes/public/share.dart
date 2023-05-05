@@ -40,7 +40,7 @@ Future<Response> onRequest(RequestContext context) async {
         .findScoreCardByLongestStreakDeck(
           deckId,
         );
-    header = 'Check out my hand from I/O FLIP!';
+    header = 'Check out my AI powered team from I/O FLIP!';
     content = buildHandContent(
       handImage: '/public/decks/$deckId',
       initials: scoreCard?.initials,
