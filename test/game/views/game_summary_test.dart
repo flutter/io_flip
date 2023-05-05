@@ -425,7 +425,6 @@ void main() {
             BlocProvider<GameBloc>.value(
               value: bloc,
               child: GameSummaryFooter(
-                isPhoneWidth: false,
                 routerNeglectCall: router.neglect,
               ),
             ),
@@ -459,7 +458,6 @@ void main() {
             BlocProvider<GameBloc>.value(
               value: bloc,
               child: GameSummaryFooter(
-                isPhoneWidth: false,
                 routerNeglectCall: router.neglect,
               ),
             ),
@@ -517,7 +515,6 @@ void main() {
             BlocProvider<GameBloc>.value(
               value: bloc,
               child: GameSummaryFooter(
-                isPhoneWidth: false,
                 routerNeglectCall: router.neglect,
               ),
             ),
@@ -560,7 +557,6 @@ void main() {
             BlocProvider<GameBloc>.value(
               value: bloc,
               child: GameSummaryFooter(
-                isPhoneWidth: false,
                 routerNeglectCall: router.neglect,
               ),
             ),

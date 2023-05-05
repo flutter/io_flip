@@ -149,18 +149,41 @@ void main() {
       );
     });
     testWidgets(
-      'renders a timeout message when match times out',
+      'renders a timeout message when match times out and navigates to '
+      'main page',
       (tester) async {
+        final goRouter = MockGoRouter();
         mockState(MatchMakingState(status: MatchMakingStatus.timeout));
-        await tester.pumpSubject(bloc);
+
+        await tester.pumpSubject(
+          bloc,
+          goRouter: goRouter,
+        );
+
         expect(find.text('Match making timed out, sorry!'), findsOneWidget);
+
+        await tester.tap(find.byType(RoundedButton));
+        await tester.pumpAndSettle();
+
+        verify(() => goRouter.go('/')).called(1);
       },
     );
 
     testWidgets('renders an error message when it fails', (tester) async {
+      final goRouter = MockGoRouter();
       mockState(MatchMakingState(status: MatchMakingStatus.failed));
-      await tester.pumpSubject(bloc);
+
+      await tester.pumpSubject(
+        bloc,
+        goRouter: goRouter,
+      );
+
       expect(find.text('Match making failed, sorry!'), findsOneWidget);
+
+      await tester.tap(find.byType(RoundedButton));
+      await tester.pumpAndSettle();
+
+      verify(() => goRouter.go('/')).called(1);
     });
 
     testWidgets(

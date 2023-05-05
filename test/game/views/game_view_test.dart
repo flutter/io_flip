@@ -8,6 +8,7 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:game_script_machine/game_script_machine.dart';
 import 'package:go_router/go_router.dart';
 import 'package:io_flip/audio/audio_controller.dart';
 import 'package:io_flip/game/game.dart';
@@ -27,6 +28,8 @@ class _MockGameBloc extends Mock implements GameBloc {}
 class _MockLeaderboardResource extends Mock implements LeaderboardResource {}
 
 class _MockAudioController extends Mock implements AudioController {}
+
+class _MockGameScriptMachine extends Mock implements GameScriptMachine {}
 
 class _FakeGameState extends Fake implements GameState {}
 
@@ -110,11 +113,24 @@ void main() {
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
     });
 
-    testWidgets('renders an error message when failed', (tester) async {
-      mockState(MatchLoadFailedState());
-      await tester.pumpSubject(bloc);
-      expect(find.text('Unable to join game!'), findsOneWidget);
-    });
+    testWidgets(
+      'renders an error message when failed and navigates to main page',
+      (tester) async {
+        final goRouter = MockGoRouter();
+        mockState(MatchLoadFailedState());
+        await tester.pumpSubject(
+          bloc,
+          goRouter: goRouter,
+        );
+
+        expect(find.text('Unable to join game!'), findsOneWidget);
+
+        await tester.tap(find.byType(RoundedButton));
+        await tester.pumpAndSettle();
+
+        verify(() => goRouter.go('/')).called(1);
+      },
+    );
 
     group('Gameplay', () {
       final baseState = MatchLoadedState(
@@ -181,14 +197,14 @@ void main() {
             findsOneWidget,
           );
           expect(
-            find.widgetWithText(ElevatedButton, 'Replay'),
+            find.widgetWithText(RoundedButton, 'PLAY AGAIN'),
             findsOneWidget,
           );
         },
       );
 
       testWidgets(
-        'pops navigation when the replay button is tapped on opponent absent',
+        'goes to main page when the replay button is tapped on opponent absent',
         (tester) async {
           final goRouter = MockGoRouter();
 
@@ -199,10 +215,10 @@ void main() {
             goRouter: goRouter,
           );
 
-          await tester.tap(find.text('Replay'));
+          await tester.tap(find.byType(RoundedButton));
           await tester.pumpAndSettle();
 
-          verify(goRouter.pop).called(1);
+          verify(() => goRouter.go('/')).called(1);
         },
       );
 
@@ -444,6 +460,8 @@ void main() {
     });
 
     group('Card animation', () {
+      late GameScriptMachine gameScriptMachine;
+
       final baseState = MatchLoadedState(
         playerScoreCard: ScoreCard(id: 'scoreCardId'),
         match: Match(
@@ -465,6 +483,22 @@ void main() {
       );
 
       setUp(() {
+        gameScriptMachine = _MockGameScriptMachine();
+
+        when(
+          () => gameScriptMachine.compare(
+            playerCards.first,
+            opponentCards.first,
+          ),
+        ).thenReturn(0);
+
+        when(
+          () => gameScriptMachine.compareSuits(
+            playerCards.first.suit,
+            opponentCards.first.suit,
+          ),
+        ).thenReturn(0);
+
         when(() => bloc.playerCards).thenReturn(playerCards);
         when(() => bloc.opponentCards).thenReturn(opponentCards);
         when(() => bloc.lastPlayedPlayerCard).thenReturn(playerCards.first);
@@ -584,7 +618,11 @@ void main() {
             initialState: baseState,
           );
 
-          await tester.pumpSubject(bloc, audioController: audioController);
+          await tester.pumpSubject(
+            bloc,
+            audioController: audioController,
+            gameScriptMachine: gameScriptMachine,
+          );
 
           final playerCardFinder =
               find.byKey(Key('player_card_${playerCards.first.id}'));
@@ -677,7 +715,11 @@ void main() {
             initialState: baseState,
           );
 
-          await tester.pumpSubject(bloc, audioController: audioController);
+          await tester.pumpSubject(
+            bloc,
+            audioController: audioController,
+            gameScriptMachine: gameScriptMachine,
+          );
 
           final playerCardFinder =
               find.byKey(Key('player_card_${playerCards.first.id}'));
@@ -808,6 +850,7 @@ extension GameViewTest on WidgetTester {
     GoRouter? goRouter,
     LeaderboardResource? leaderboardResource,
     AudioController? audioController,
+    GameScriptMachine? gameScriptMachine,
   }) {
     final SettingsController settingsController = _MockSettingsController();
     when(() => settingsController.muted).thenReturn(ValueNotifier(true));
@@ -821,6 +864,7 @@ extension GameViewTest on WidgetTester {
         settingsController: settingsController,
         leaderboardResource: leaderboardResource,
         audioController: audioController,
+        gameScriptMachine: gameScriptMachine,
       );
     });
   }
