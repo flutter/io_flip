@@ -568,9 +568,12 @@ void main() {
 
       testWidgets(
         'completes and goes back when both players play a card and '
-        'clash scene finishes',
+        'clash scene finishes, plays round lost sfx',
         (tester) async {
           final controller = StreamController<GameState>.broadcast();
+          final audioController = _MockAudioController();
+          when(() => bloc.isWinningCard(playerCards.first, isPlayer: true))
+              .thenReturn(CardOverlayType.lose);
 
           whenListen(
             bloc,
@@ -578,7 +581,7 @@ void main() {
             initialState: baseState,
           );
 
-          await tester.pumpSubject(bloc);
+          await tester.pumpSubject(bloc, audioController: audioController);
 
           final playerCardFinder =
               find.byKey(Key('player_card_${playerCards.first.id}'));
@@ -645,6 +648,101 @@ void main() {
 
           expect(playerFinalOffset, equals(playerInitialOffset));
           expect(opponentFinalOffset, equals(opponentInitialOffset));
+
+          verify(() => audioController.playSfx(Assets.sfx.roundLost)).called(1);
+
+          verify(() => bloc.add(ClashSceneStarted())).called(1);
+          verify(() => bloc.add(ClashSceneCompleted())).called(1);
+          verify(() => bloc.add(TurnAnimationsFinished())).called(1);
+          verify(() => bloc.add(TurnTimerStarted())).called(1);
+        },
+      );
+
+      testWidgets(
+        'completes and goes back when both players play a card and '
+        'clash scene finishes, plays round win sfx',
+        (tester) async {
+          final controller = StreamController<GameState>.broadcast();
+          final audioController = _MockAudioController();
+
+          when(() => bloc.isWinningCard(playerCards.first, isPlayer: true))
+              .thenReturn(CardOverlayType.win);
+
+          whenListen(
+            bloc,
+            controller.stream,
+            initialState: baseState,
+          );
+
+          await tester.pumpSubject(bloc, audioController: audioController);
+
+          final playerCardFinder =
+              find.byKey(Key('player_card_${playerCards.first.id}'));
+          final opponentCardFinder =
+              find.byKey(Key('opponent_card_${opponentCards.first.id}'));
+
+          // Get card offset before moving
+          final playerInitialOffset = tester.getCenter(playerCardFinder);
+          final opponentInitialOffset = tester.getCenter(opponentCardFinder);
+
+          controller.add(
+            baseState.copyWith(
+              lastPlayedCardId: playerCards.first.id,
+              rounds: [
+                MatchRound(
+                  playerCardId: playerCards.first.id,
+                  opponentCardId: null,
+                )
+              ],
+            ),
+          );
+
+          // Get card offset after both players play and cards are in the clash
+          // zone
+          await tester.pumpAndSettle();
+          final playerClashOffset = tester.getCenter(playerCardFinder);
+          expect(playerClashOffset, isNot(equals(playerInitialOffset)));
+
+          controller.add(
+            baseState.copyWith(
+              lastPlayedCardId: opponentCards.first.id,
+              rounds: [
+                MatchRound(
+                  playerCardId: playerCards.first.id,
+                  opponentCardId: opponentCards.first.id,
+                )
+              ],
+            ),
+          );
+
+          await tester.pump();
+          await tester.pump();
+          await tester.pump(Duration(milliseconds: 400));
+
+          final opponentClashOffset = tester.getCenter(opponentCardFinder);
+          expect(opponentClashOffset, isNot(equals(opponentInitialOffset)));
+
+          controller.add(baseState.copyWith(isClashScene: true));
+
+          await tester.pumpAndSettle();
+
+          final clashScene = find.byType(ClashScene);
+          expect(clashScene, findsOneWidget);
+          tester.widget<ClashScene>(clashScene).onFinished();
+
+          controller.add(baseState.copyWith(isClashScene: false));
+
+          // Get card offset once clash is over and both cards are back in the
+          // original position
+          await tester.pump(turnEndDuration);
+          await tester.pumpAndSettle();
+          final playerFinalOffset = tester.getCenter(playerCardFinder);
+          final opponentFinalOffset = tester.getCenter(opponentCardFinder);
+
+          expect(playerFinalOffset, equals(playerInitialOffset));
+          expect(opponentFinalOffset, equals(opponentInitialOffset));
+
+          verify(() => audioController.playSfx(Assets.sfx.roundWin)).called(1);
 
           verify(() => bloc.add(ClashSceneStarted())).called(1);
           verify(() => bloc.add(ClashSceneCompleted())).called(1);
