@@ -1,6 +1,7 @@
 import 'package:api_client/api_client.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:game_domain/game_domain.dart';
 
 part 'leaderboard_event.dart';
 part 'leaderboard_state.dart';

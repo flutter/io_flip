@@ -1,22 +1,29 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:api_client/api_client.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:game_domain/game_domain.dart';
+import 'package:game_domain/game_domain.dart' as gd;
 import 'package:io_flip/leaderboard/leaderboard.dart';
 
 void main() {
-  const card = ScoreCard(id: 'id');
-  const leaderboardResult = LeaderboardResults(
-    scoreCardsWithLongestStreak: [card],
-    scoreCardsWithMostWins: [card],
-  );
+  const leaderboardPlayers = [
+    gd.LeaderboardPlayer(
+      id: 'id',
+      longestStreak: 1,
+      initials: 'AAA',
+    ),
+    gd.LeaderboardPlayer(
+      id: 'id2',
+      longestStreak: 2,
+      initials: 'BBB',
+    ),
+  ];
 
   group('LeaderboardState', () {
     test('can be instantiated', () {
       expect(
         LeaderboardState(
           status: LeaderboardStateStatus.initial,
+          leaderboard: const [],
         ),
         isNotNull,
       );
@@ -28,6 +35,7 @@ void main() {
         equals(
           LeaderboardState(
             status: LeaderboardStateStatus.initial,
+            leaderboard: const [],
           ),
         ),
       );
@@ -37,12 +45,12 @@ void main() {
       expect(
         LeaderboardState(
           status: LeaderboardStateStatus.initial,
-          leaderboard: leaderboardResult,
+          leaderboard: leaderboardPlayers,
         ),
         equals(
           LeaderboardState(
             status: LeaderboardStateStatus.initial,
-            leaderboard: leaderboardResult,
+            leaderboard: leaderboardPlayers,
           ),
         ),
       );
@@ -50,12 +58,13 @@ void main() {
       expect(
         LeaderboardState(
           status: LeaderboardStateStatus.initial,
+          leaderboard: const [],
         ),
         isNot(
           equals(
             LeaderboardState(
               status: LeaderboardStateStatus.initial,
-              leaderboard: leaderboardResult,
+              leaderboard: leaderboardPlayers,
             ),
           ),
         ),
@@ -66,12 +75,12 @@ void main() {
       expect(
         LeaderboardState(
           status: LeaderboardStateStatus.initial,
-          leaderboard: leaderboardResult,
+          leaderboard: leaderboardPlayers,
         ).copyWith(),
         equals(
           LeaderboardState(
             status: LeaderboardStateStatus.initial,
-            leaderboard: leaderboardResult,
+            leaderboard: leaderboardPlayers,
           ),
         ),
       );
@@ -81,14 +90,15 @@ void main() {
       expect(
         LeaderboardState(
           status: LeaderboardStateStatus.initial,
+          leaderboard: const [],
         ).copyWith(
           status: LeaderboardStateStatus.loading,
-          leaderboard: leaderboardResult,
+          leaderboard: leaderboardPlayers,
         ),
         equals(
           LeaderboardState(
             status: LeaderboardStateStatus.loading,
-            leaderboard: leaderboardResult,
+            leaderboard: leaderboardPlayers,
           ),
         ),
       );

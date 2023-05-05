@@ -21,11 +21,9 @@ class LeaderboardView extends StatelessWidget {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (state.status == LeaderboardStateStatus.failed || leaderboard == null) {
+    if (state.status == LeaderboardStateStatus.failed) {
       return Center(child: Text(l10n.leaderboardFailedToLoad));
     }
-
-    final longestStreak = leaderboard.scoreCardsWithLongestStreak;
 
     return Padding(
       padding: const EdgeInsets.all(IoFlipSpacing.xlg),
@@ -41,11 +39,11 @@ class LeaderboardView extends StatelessWidget {
             const Divider(thickness: 2, color: highlightColor),
             const SizedBox(height: IoFlipSpacing.xs),
             LeaderboardPlayers(
-              players: longestStreak
+              players: leaderboard
                   .map(
                     (e) => LeaderboardPlayer(
-                      index: longestStreak.indexOf(e),
-                      initials: e.initials ?? '',
+                      index: leaderboard.indexOf(e),
+                      initials: e.initials,
                       value: e.longestStreak,
                     ),
                   )

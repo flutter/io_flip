@@ -1,6 +1,7 @@
 export 'card.dart';
 export 'card_description.dart';
 export 'deck.dart';
+export 'leaderboard_player.dart';
 export 'match.dart';
 export 'match_state.dart';
 export 'prompt.dart';
