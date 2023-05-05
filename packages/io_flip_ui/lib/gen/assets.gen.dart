@@ -73,6 +73,9 @@ class $AssetsImagesCardFramesGen {
   AssetGenImage get cardWater =>
       const AssetGenImage('assets/images/card_frames/card_water.png');
 
+  $AssetsImagesCardFramesHolosGen get holos =>
+      const $AssetsImagesCardFramesHolosGen();
+
   /// List of all assets
   List<AssetGenImage> get values =>
       [cardAir, cardBack, cardEarth, cardFire, cardMetal, cardWater];
@@ -93,6 +96,34 @@ class $AssetsImagesSuitsGen {
   $AssetsImagesSuitsCardGen get card => const $AssetsImagesSuitsCardGen();
   $AssetsImagesSuitsOnboardingGen get onboarding =>
       const $AssetsImagesSuitsOnboardingGen();
+}
+
+class $AssetsImagesCardFramesHolosGen {
+  const $AssetsImagesCardFramesHolosGen();
+
+  /// File path: assets/images/card_frames/holos/card_air.png
+  AssetGenImage get cardAir =>
+      const AssetGenImage('assets/images/card_frames/holos/card_air.png');
+
+  /// File path: assets/images/card_frames/holos/card_earth.png
+  AssetGenImage get cardEarth =>
+      const AssetGenImage('assets/images/card_frames/holos/card_earth.png');
+
+  /// File path: assets/images/card_frames/holos/card_fire.png
+  AssetGenImage get cardFire =>
+      const AssetGenImage('assets/images/card_frames/holos/card_fire.png');
+
+  /// File path: assets/images/card_frames/holos/card_metal.png
+  AssetGenImage get cardMetal =>
+      const AssetGenImage('assets/images/card_frames/holos/card_metal.png');
+
+  /// File path: assets/images/card_frames/holos/card_water.png
+  AssetGenImage get cardWater =>
+      const AssetGenImage('assets/images/card_frames/holos/card_water.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values =>
+      [cardAir, cardEarth, cardFire, cardMetal, cardWater];
 }
 
 class $AssetsImagesElementsDesktopGen {
