@@ -15,8 +15,8 @@ class ShareResource {
   final ApiClient _apiClient;
 
   final _tweetContent =
-      'Check out my AI powered team of heroes created in the #IOFlipGame. '
-      'See you at #GoogleIO23!';
+      'Check out my AI-designed team of heroes from I/O FLIP at '
+      '#GoogleIO! #FlipWithGoogle';
 
   String _twitterShareUrl(String text) =>
       'https://twitter.com/intent/tweet?text=$text';
