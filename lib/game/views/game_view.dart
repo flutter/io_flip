@@ -9,6 +9,7 @@ import 'package:io_flip/audio/audio.dart';
 import 'package:io_flip/audio/audio_controller.dart';
 import 'package:io_flip/game/game.dart';
 import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/l10n/l10n.dart';
 import 'package:io_flip/leaderboard/leaderboard.dart';
 import 'package:io_flip/utils/utils.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
@@ -33,6 +34,7 @@ class GameView extends StatelessWidget {
         context.read<GameBloc>().sendMatchLeft();
       },
       builder: (context, state) {
+        final l10n = context.l10n;
         final Widget child;
 
         if (state is MatchLoadingState) {
@@ -40,8 +42,12 @@ class GameView extends StatelessWidget {
             child: CircularProgressIndicator(),
           );
         } else if (state is MatchLoadFailedState) {
-          child = const Center(
-            child: Text('Unable to join game!'),
+          child = IoFlipErrorView(
+            text: 'Unable to join game!',
+            buttonText: l10n.playAgain,
+            onPressed: () {
+              GoRouter.of(context).go('/');
+            },
           );
         } else if (state is MatchLoadedState) {
           if (state.matchState.result != null && state.turnAnimationsFinished) {
@@ -54,17 +60,12 @@ class GameView extends StatelessWidget {
             shareHandPageData: state.shareHandPageData,
           );
         } else if (state is OpponentAbsentState) {
-          child = Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text('Opponent left the game!'),
-                ElevatedButton(
-                  onPressed: () => GoRouter.of(context).pop(),
-                  child: const Text('Replay'),
-                ),
-              ],
-            ),
+          child = IoFlipErrorView(
+            text: 'Opponent left the game!',
+            buttonText: l10n.playAgain,
+            onPressed: () {
+              GoRouter.of(context).go('/');
+            },
           );
         } else {
           child = const SizedBox();

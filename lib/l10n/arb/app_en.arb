@@ -4,6 +4,10 @@
   "@play": {
     "description": "Label play"
   },
+  "playAgain": "PLAY AGAIN",
+  "@playAgain": {
+    "description": "Label play again"
+  },
   "ioFlip": "I/O FLIP",
   "@ioFlip": {
     "description": "I/O FLIP - Name of the game"

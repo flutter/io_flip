@@ -110,11 +110,24 @@ void main() {
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
     });
 
-    testWidgets('renders an error message when failed', (tester) async {
-      mockState(MatchLoadFailedState());
-      await tester.pumpSubject(bloc);
-      expect(find.text('Unable to join game!'), findsOneWidget);
-    });
+    testWidgets(
+      'renders an error message when failed and navigates to main page',
+      (tester) async {
+        final goRouter = MockGoRouter();
+        mockState(MatchLoadFailedState());
+        await tester.pumpSubject(
+          bloc,
+          goRouter: goRouter,
+        );
+
+        expect(find.text('Unable to join game!'), findsOneWidget);
+
+        await tester.tap(find.byType(RoundedButton));
+        await tester.pumpAndSettle();
+
+        verify(() => goRouter.go('/')).called(1);
+      },
+    );
 
     group('Gameplay', () {
       final baseState = MatchLoadedState(
@@ -181,14 +194,14 @@ void main() {
             findsOneWidget,
           );
           expect(
-            find.widgetWithText(ElevatedButton, 'Replay'),
+            find.widgetWithText(RoundedButton, 'PLAY AGAIN'),
             findsOneWidget,
           );
         },
       );
 
       testWidgets(
-        'pops navigation when the replay button is tapped on opponent absent',
+        'goes to main page when the replay button is tapped on opponent absent',
         (tester) async {
           final goRouter = MockGoRouter();
 
@@ -199,10 +212,10 @@ void main() {
             goRouter: goRouter,
           );
 
-          await tester.tap(find.text('Replay'));
+          await tester.tap(find.byType(RoundedButton));
           await tester.pumpAndSettle();
 
-          verify(goRouter.pop).called(1);
+          verify(() => goRouter.go('/')).called(1);
         },
       );
 
