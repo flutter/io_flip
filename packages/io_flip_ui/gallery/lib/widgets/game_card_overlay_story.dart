@@ -18,6 +18,7 @@ class GameCardOverlayStory extends StatelessWidget {
                 children: [
                   Text('Win'),
                   GameCard(
+                    size: GameCardSize.sm(),
                     image:
                         'https://firebasestorage.googleapis.com/v0/b/top-dash-dev.appspot.com/o/public%2Fdash_3.png?alt=media',
                     name: 'Dash the Great',
@@ -26,6 +27,7 @@ class GameCardOverlayStory extends StatelessWidget {
                     power: 57,
                     overlay: CardOverlayType.win,
                     isRare: false,
+                    isDimmed: true,
                   ),
                 ],
               ),
@@ -35,6 +37,7 @@ class GameCardOverlayStory extends StatelessWidget {
                 children: [
                   Text('Draw'),
                   GameCard(
+                    size: GameCardSize.sm(),
                     image:
                         'https://firebasestorage.googleapis.com/v0/b/top-dash-dev.appspot.com/o/public%2Fdash_3.png?alt=media',
                     name: 'Dash the Great',
@@ -52,6 +55,7 @@ class GameCardOverlayStory extends StatelessWidget {
                 children: [
                   Text('Lose'),
                   GameCard(
+                    size: GameCardSize.sm(),
                     image:
                         'https://firebasestorage.googleapis.com/v0/b/top-dash-dev.appspot.com/o/public%2Fdash_3.png?alt=media',
                     name: 'Dash the Great',

@@ -707,6 +707,7 @@ class _OpponentCard extends StatelessWidget {
                       isRare: card.rarity,
                       size: position.gameCardSize,
                       overlay: overlay,
+                      isDimmed: true,
                     ),
                   ],
                 )
@@ -759,6 +760,7 @@ class _PlayerCard extends StatelessWidget {
             isRare: card.rarity,
             size: rect.gameCardSize,
             overlay: overlay,
+            isDimmed: overlay != null,
           ),
           back: const FlippedGameCard(
             size: GameCardSize.xxs(),
