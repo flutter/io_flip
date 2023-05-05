@@ -45,6 +45,7 @@ flutter:
     - assets/images/elements/mobile/fire/
     - assets/images/elements/mobile/metal/
     - assets/images/elements/mobile/water/
+    - assets/images/result_badges/
     - assets/images/suits/onboarding/
     - assets/images/suits/card/
     - assets/images/card_frames/
