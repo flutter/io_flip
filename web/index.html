@@ -261,7 +261,7 @@
       An AI-designed card game powered by Google ML built with Flutter and
       Firebase for Google I/O 2023
     </p>
-    <div id="progress-bar" hidden>
+    <div id="progress-bar">
       <div id="progress-indicator"></div>
     </div>
     <div id="cookie-bar">
@@ -269,7 +269,6 @@
         This site uses cookies from Google to deliver and enhance the quality of
         its services and to analyze traffic. <link><a href="">Learn More.</a></link>
       </p>
-      
       <button id="confirm-cookies">OK, GOT IT</button>
     </div>
     <script>
@@ -286,6 +285,16 @@
         const splashLogo = document.querySelector("#splash_logo");
 
         const additionalScripts = [];
+
+        let cookiesAcceptanceCompleter;
+        let hasUserAcceptedCookies = new Promise((resolve) => {
+          cookiesAcceptanceCompleter = resolve;
+        });
+
+        cookieBarButton.addEventListener("click", function () {
+            cookieBar.remove();
+            cookiesAcceptanceCompleter();
+        });
 
         function injectScript(url) {
           return new Promise(function (resolve) {
@@ -361,25 +370,21 @@
                 serviceWorkerVersion: serviceWorkerVersion,
               },
               onEntrypointLoaded: function (engineInitializer) {
-                cookieBarButton.addEventListener("click", function () {
-                  cookieBar.remove();
-                  progressBar.hidden = false;
+                engineInitializer
+                  .initializeEngine()
+                  .then(async function (appRunner) {
+                    await hasUserAcceptedCookies;
+                    window.addEventListener(
+                      "flutter-first-frame",
+                      function () {
+                        progressBar.remove();
+                        splashLogo.remove();
+                        splashCopy.remove();
+                        document.body.classList.remove("loading-mode");
+                      }
+                    );
 
-                  engineInitializer
-                    .initializeEngine()
-                    .then(async function (appRunner) {
-                      window.addEventListener(
-                        "flutter-first-frame",
-                        function () {
-                          progressBar.remove();
-                          splashLogo.remove();
-                          splashCopy.remove();
-                          document.body.classList.remove("loading-mode");
-                        }
-                      );
-
-                      appRunner.runApp();
-                    });
+                    appRunner.runApp();
                 });
               },
             });
