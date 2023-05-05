@@ -16,8 +16,7 @@ Image rainbowFilter(Image image) {
       p
         ..r = p.r * (1 - strength) + color[0] * strength
         ..g = p.g * (1 - strength) + color[1] * strength
-        ..b = p.b * (1 - strength) + color[2] * strength
-        ..a = p.a * (1 - strength) + 255 * strength;
+        ..b = p.b * (1 - strength) + color[2] * strength;
     }
   }
 
