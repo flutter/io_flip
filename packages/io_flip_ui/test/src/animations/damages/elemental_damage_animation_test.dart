@@ -36,6 +36,7 @@ void main() {
       group('MetalDamage', () {
         testWidgets('renders entire animations flow', (tester) async {
           final stepNotifier = ElementalDamageStepNotifier();
+          final completer = Completer<void>();
           await tester.runAsync(() async {
             await tester.pumpWidget(
               Provider.value(
@@ -48,6 +49,7 @@ void main() {
                     initialState: DamageAnimationState.charging,
                     size: const GameCardSize.md(),
                     stepNotifier: stepNotifier,
+                    pointDeductionCompleter: completer,
                   ),
                 ),
               ),
@@ -96,9 +98,15 @@ void main() {
                 },
               ),
             );
+
             while (!receiveComplete) {
               await tester.pump(const Duration(milliseconds: 17));
             }
+
+            completer.complete();
+            await tester.pump();
+            expect(find.byType(Container), findsOneWidget);
+            await tester.pump();
 
             expect(find.byType(DualAnimation), findsOneWidget);
             expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
@@ -116,7 +124,7 @@ void main() {
             while (!victoryComplete) {
               await tester.pump(const Duration(milliseconds: 17));
             }
-            expect(find.byType(SizedBox), findsOneWidget);
+            expect(find.byType(Container), findsOneWidget);
           });
         });
       });
@@ -124,6 +132,7 @@ void main() {
       group('AirDamage', () {
         testWidgets('renders entire animations flow', (tester) async {
           final stepNotifier = ElementalDamageStepNotifier();
+          final completer = Completer<void>();
           await tester.runAsync(() async {
             await tester.pumpWidget(
               Provider.value(
@@ -136,6 +145,7 @@ void main() {
                     size: const GameCardSize.md(),
                     initialState: DamageAnimationState.charging,
                     stepNotifier: stepNotifier,
+                    pointDeductionCompleter: completer,
                   ),
                 ),
               ),
@@ -188,6 +198,11 @@ void main() {
               await tester.pump(const Duration(milliseconds: 17));
             }
 
+            completer.complete();
+            await tester.pump();
+            expect(find.byType(Container), findsOneWidget);
+            await tester.pump();
+
             expect(find.byType(DualAnimation), findsOneWidget);
             expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
             expect(find.byType(VictoryChargeBack), findsOneWidget);
@@ -204,7 +219,7 @@ void main() {
             while (!victoryComplete) {
               await tester.pump(const Duration(milliseconds: 17));
             }
-            expect(find.byType(SizedBox), findsOneWidget);
+            expect(find.byType(Container), findsOneWidget);
           });
         });
       });
@@ -212,6 +227,7 @@ void main() {
       group('FireDamage', () {
         testWidgets('renders entire animations flow', (tester) async {
           final stepNotifier = ElementalDamageStepNotifier();
+          final completer = Completer<void>();
           await tester.runAsync(() async {
             await tester.pumpWidget(
               Provider.value(
@@ -224,6 +240,7 @@ void main() {
                     initialState: DamageAnimationState.charging,
                     size: const GameCardSize.md(),
                     stepNotifier: stepNotifier,
+                    pointDeductionCompleter: completer,
                   ),
                 ),
               ),
@@ -276,6 +293,11 @@ void main() {
               await tester.pump(const Duration(milliseconds: 17));
             }
 
+            completer.complete();
+            await tester.pump();
+            expect(find.byType(Container), findsOneWidget);
+            await tester.pump();
+
             expect(find.byType(DualAnimation), findsOneWidget);
             expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
             expect(find.byType(VictoryChargeBack), findsOneWidget);
@@ -292,7 +314,7 @@ void main() {
             while (!victoryComplete) {
               await tester.pump(const Duration(milliseconds: 17));
             }
-            expect(find.byType(SizedBox), findsOneWidget);
+            expect(find.byType(Container), findsOneWidget);
           });
         });
       });
@@ -300,6 +322,7 @@ void main() {
       group('EarthDamage', () {
         testWidgets('renders entire animations flow', (tester) async {
           final stepNotifier = ElementalDamageStepNotifier();
+          final completer = Completer<void>();
           await tester.runAsync(() async {
             await tester.pumpWidget(
               Provider.value(
@@ -312,6 +335,7 @@ void main() {
                     initialState: DamageAnimationState.charging,
                     size: const GameCardSize.md(),
                     stepNotifier: stepNotifier,
+                    pointDeductionCompleter: completer,
                   ),
                 ),
               ),
@@ -364,6 +388,11 @@ void main() {
               await tester.pump(const Duration(milliseconds: 17));
             }
 
+            completer.complete();
+            await tester.pump();
+            expect(find.byType(Container), findsOneWidget);
+            await tester.pump();
+
             expect(find.byType(DualAnimation), findsOneWidget);
             expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
             expect(find.byType(VictoryChargeBack), findsOneWidget);
@@ -380,7 +409,7 @@ void main() {
             while (!victoryComplete) {
               await tester.pump(const Duration(milliseconds: 17));
             }
-            expect(find.byType(SizedBox), findsOneWidget);
+            expect(find.byType(Container), findsOneWidget);
           });
         });
       });
@@ -388,6 +417,7 @@ void main() {
       group('WaterDamage', () {
         testWidgets('renders entire animations flow', (tester) async {
           final stepNotifier = ElementalDamageStepNotifier();
+          final completer = Completer<void>();
           await tester.runAsync(() async {
             await tester.pumpWidget(
               Provider.value(
@@ -400,6 +430,7 @@ void main() {
                     initialState: DamageAnimationState.charging,
                     size: const GameCardSize.md(),
                     stepNotifier: stepNotifier,
+                    pointDeductionCompleter: completer,
                   ),
                 ),
               ),
@@ -452,6 +483,11 @@ void main() {
               await tester.pump(const Duration(milliseconds: 17));
             }
 
+            completer.complete();
+            await tester.pump();
+            expect(find.byType(Container), findsOneWidget);
+            await tester.pump();
+
             expect(find.byType(DualAnimation), findsOneWidget);
             expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
             expect(find.byType(VictoryChargeBack), findsOneWidget);
@@ -468,7 +504,7 @@ void main() {
             while (!victoryComplete) {
               await tester.pump(const Duration(milliseconds: 17));
             }
-            expect(find.byType(SizedBox), findsOneWidget);
+            expect(find.byType(Container), findsOneWidget);
           });
         });
       });
@@ -478,6 +514,7 @@ void main() {
       group('MetalDamage', () {
         testWidgets('renders entire animations flow', (tester) async {
           final stepNotifier = ElementalDamageStepNotifier();
+          final completer = Completer<void>();
           await tester.runAsync(() async {
             await tester.pumpWidget(
               Provider.value(
@@ -491,6 +528,7 @@ void main() {
                     initialState: DamageAnimationState.charging,
                     assetSize: AssetSize.small,
                     stepNotifier: stepNotifier,
+                    pointDeductionCompleter: completer,
                   ),
                 ),
               ),
@@ -543,6 +581,11 @@ void main() {
               await tester.pump(const Duration(milliseconds: 17));
             }
 
+            completer.complete();
+            await tester.pump();
+            expect(find.byType(Container), findsOneWidget);
+            await tester.pump();
+
             expect(find.byType(DualAnimation), findsOneWidget);
             expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
             expect(find.byType(VictoryChargeBack), findsOneWidget);
@@ -559,7 +602,7 @@ void main() {
             while (!victoryComplete) {
               await tester.pump(const Duration(milliseconds: 17));
             }
-            expect(find.byType(SizedBox), findsOneWidget);
+            expect(find.byType(Container), findsOneWidget);
           });
         });
       });
@@ -567,6 +610,7 @@ void main() {
       group('AirDamage', () {
         testWidgets('renders entire animations flow', (tester) async {
           final stepNotifier = ElementalDamageStepNotifier();
+          final completer = Completer<void>();
           await tester.runAsync(() async {
             await tester.pumpWidget(
               Provider.value(
@@ -580,6 +624,7 @@ void main() {
                     initialState: DamageAnimationState.charging,
                     size: const GameCardSize.md(),
                     stepNotifier: stepNotifier,
+                    pointDeductionCompleter: completer,
                   ),
                 ),
               ),
@@ -632,6 +677,11 @@ void main() {
               await tester.pump(const Duration(milliseconds: 17));
             }
 
+            completer.complete();
+            await tester.pump();
+            expect(find.byType(Container), findsOneWidget);
+            await tester.pump();
+
             expect(find.byType(DualAnimation), findsOneWidget);
             expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
             expect(find.byType(VictoryChargeBack), findsOneWidget);
@@ -648,7 +698,7 @@ void main() {
             while (!victoryComplete) {
               await tester.pump(const Duration(milliseconds: 17));
             }
-            expect(find.byType(SizedBox), findsOneWidget);
+            expect(find.byType(Container), findsOneWidget);
           });
         });
       });
@@ -656,6 +706,7 @@ void main() {
       group('FireDamage', () {
         testWidgets('renders entire animations flow', (tester) async {
           final stepNotifier = ElementalDamageStepNotifier();
+          final completer = Completer<void>();
           await tester.runAsync(() async {
             await tester.pumpWidget(
               Provider.value(
@@ -669,6 +720,7 @@ void main() {
                     initialState: DamageAnimationState.charging,
                     assetSize: AssetSize.small,
                     stepNotifier: stepNotifier,
+                    pointDeductionCompleter: completer,
                   ),
                 ),
               ),
@@ -721,6 +773,11 @@ void main() {
               await tester.pump(const Duration(milliseconds: 17));
             }
 
+            completer.complete();
+            await tester.pump();
+            expect(find.byType(Container), findsOneWidget);
+            await tester.pump();
+
             expect(find.byType(DualAnimation), findsOneWidget);
             expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
             expect(find.byType(VictoryChargeBack), findsOneWidget);
@@ -737,7 +794,7 @@ void main() {
             while (!victoryComplete) {
               await tester.pump(const Duration(milliseconds: 17));
             }
-            expect(find.byType(SizedBox), findsOneWidget);
+            expect(find.byType(Container), findsOneWidget);
           });
         });
       });
@@ -745,6 +802,7 @@ void main() {
       group('EarthDamage', () {
         testWidgets('renders entire animations flow', (tester) async {
           final stepNotifier = ElementalDamageStepNotifier();
+          final completer = Completer<void>();
           await tester.runAsync(() async {
             await tester.pumpWidget(
               Provider.value(
@@ -758,6 +816,7 @@ void main() {
                     initialState: DamageAnimationState.charging,
                     size: const GameCardSize.md(),
                     stepNotifier: stepNotifier,
+                    pointDeductionCompleter: completer,
                   ),
                 ),
               ),
@@ -810,6 +869,11 @@ void main() {
               await tester.pump(const Duration(milliseconds: 17));
             }
 
+            completer.complete();
+            await tester.pump();
+            expect(find.byType(Container), findsOneWidget);
+            await tester.pump();
+
             expect(find.byType(DualAnimation), findsOneWidget);
             expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
             expect(find.byType(VictoryChargeBack), findsOneWidget);
@@ -826,7 +890,7 @@ void main() {
             while (!victoryComplete) {
               await tester.pump(const Duration(milliseconds: 17));
             }
-            expect(find.byType(SizedBox), findsOneWidget);
+            expect(find.byType(Container), findsOneWidget);
           });
         });
       });
@@ -834,6 +898,7 @@ void main() {
       group('WaterDamage', () {
         testWidgets('renders entire animations flow', (tester) async {
           final stepNotifier = ElementalDamageStepNotifier();
+          final completer = Completer<void>();
           await tester.runAsync(() async {
             await tester.pumpWidget(
               Provider.value(
@@ -847,6 +912,7 @@ void main() {
                     initialState: DamageAnimationState.charging,
                     size: const GameCardSize.md(),
                     stepNotifier: stepNotifier,
+                    pointDeductionCompleter: completer,
                   ),
                 ),
               ),
@@ -899,6 +965,11 @@ void main() {
               await tester.pump(const Duration(milliseconds: 17));
             }
 
+            completer.complete();
+            await tester.pump();
+            expect(find.byType(Container), findsOneWidget);
+            await tester.pump();
+
             expect(find.byType(DualAnimation), findsOneWidget);
             expect(find.byType(SpriteAnimationWidget), findsNWidgets(2));
             expect(find.byType(VictoryChargeBack), findsOneWidget);
@@ -915,7 +986,7 @@ void main() {
             while (!victoryComplete) {
               await tester.pump(const Duration(milliseconds: 17));
             }
-            expect(find.byType(SizedBox), findsOneWidget);
+            expect(find.byType(Container), findsOneWidget);
           });
         });
       });

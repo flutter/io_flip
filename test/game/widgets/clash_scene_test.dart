@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:game_script_machine/game_script_machine.dart';
 import 'package:io_flip/audio/audio_controller.dart';
 import 'package:io_flip/game/game.dart';
 import 'package:io_flip/gen/assets.gen.dart';
@@ -11,6 +12,8 @@ import 'package:mocktail_image_network/mocktail_image_network.dart';
 import '../../helpers/helpers.dart';
 
 class _MockAudioController extends Mock implements AudioController {}
+
+class _MockGameScriptMachine extends Mock implements GameScriptMachine {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -84,13 +87,34 @@ void main() {
       suit: Suit.water,
     );
 
+    late GameScriptMachine gameScriptMachine;
+
+    setUp(() {
+      gameScriptMachine = _MockGameScriptMachine();
+    });
+
     testWidgets('displays both cards flipped initially and plays "flip" sfx',
         (tester) async {
       final audioController = _MockAudioController();
+
+      when(
+        () => gameScriptMachine.compare(
+          playerCard,
+          opponentCard,
+        ),
+      ).thenReturn(1);
+      when(
+        () => gameScriptMachine.compareSuits(
+          playerCard.suit,
+          opponentCard.suit,
+        ),
+      ).thenReturn(1);
+
       await tester.pumpSubject(
         playerCard,
         opponentCard,
         audioController: audioController,
+        gameScriptMachine: gameScriptMachine,
       );
 
       verify(() => audioController.playSfx(Assets.sfx.flip)).called(1);
@@ -106,11 +130,25 @@ void main() {
         var onFinishedCalled = false;
         final audioController = _MockAudioController();
 
+        when(
+          () => gameScriptMachine.compare(
+            playerCard,
+            opponentCard,
+          ),
+        ).thenReturn(0);
+        when(
+          () => gameScriptMachine.compareSuits(
+            playerCard.suit,
+            opponentCard.suit,
+          ),
+        ).thenReturn(0);
+
         await tester.pumpSubject(
           playerCard,
           opponentCard,
           onFinished: () => onFinishedCalled = true,
           audioController: audioController,
+          gameScriptMachine: gameScriptMachine,
         );
 
         final flipCountdown = find.byType(FlipCountdown);
@@ -141,11 +179,25 @@ void main() {
         var onFinishedCalled = false;
         final audioController = _MockAudioController();
 
+        when(
+          () => gameScriptMachine.compare(
+            playerCard,
+            waterOpponentCard,
+          ),
+        ).thenReturn(1);
+        when(
+          () => gameScriptMachine.compareSuits(
+            playerCard.suit,
+            waterOpponentCard.suit,
+          ),
+        ).thenReturn(1);
+
         await tester.pumpSubject(
           playerCard,
           waterOpponentCard,
           onFinished: () => onFinishedCalled = true,
           audioController: audioController,
+          gameScriptMachine: gameScriptMachine,
         );
 
         final flipCountdown = find.byType(FlipCountdown);
@@ -176,11 +228,25 @@ void main() {
         var onFinishedCalled = false;
         final audioController = _MockAudioController();
 
+        when(
+          () => gameScriptMachine.compare(
+            firePlayerCard,
+            opponentCard,
+          ),
+        ).thenReturn(1);
+        when(
+          () => gameScriptMachine.compareSuits(
+            firePlayerCard.suit,
+            opponentCard.suit,
+          ),
+        ).thenReturn(1);
+
         await tester.pumpSubject(
           firePlayerCard,
           opponentCard,
           onFinished: () => onFinishedCalled = true,
           audioController: audioController,
+          gameScriptMachine: gameScriptMachine,
         );
 
         final flipCountdown = find.byType(FlipCountdown);
@@ -211,11 +277,25 @@ void main() {
         var onFinishedCalled = false;
         final audioController = _MockAudioController();
 
+        when(
+          () => gameScriptMachine.compare(
+            earthPlayerCard,
+            opponentCard,
+          ),
+        ).thenReturn(1);
+        when(
+          () => gameScriptMachine.compareSuits(
+            earthPlayerCard.suit,
+            opponentCard.suit,
+          ),
+        ).thenReturn(1);
+
         await tester.pumpSubject(
           earthPlayerCard,
           opponentCard,
           onFinished: () => onFinishedCalled = true,
           audioController: audioController,
+          gameScriptMachine: gameScriptMachine,
         );
 
         final flipCountdown = find.byType(FlipCountdown);
@@ -246,11 +326,25 @@ void main() {
         var onFinishedCalled = false;
         final audioController = _MockAudioController();
 
+        when(
+          () => gameScriptMachine.compare(
+            opponentCard,
+            metalPlayerCard,
+          ),
+        ).thenReturn(-1);
+        when(
+          () => gameScriptMachine.compareSuits(
+            opponentCard.suit,
+            metalPlayerCard.suit,
+          ),
+        ).thenReturn(-1);
+
         await tester.pumpSubject(
-          metalPlayerCard,
           opponentCard,
+          metalPlayerCard,
           onFinished: () => onFinishedCalled = true,
           audioController: audioController,
+          gameScriptMachine: gameScriptMachine,
         );
 
         final flipCountdown = find.byType(FlipCountdown);
@@ -269,6 +363,8 @@ void main() {
             .widget<ElementalDamageAnimation>(elementalDamage)
             .onComplete
             ?.call();
+
+        await tester.pumpAndSettle();
         expect(onFinishedCalled, isTrue);
       },
     );
@@ -281,11 +377,25 @@ void main() {
         var onFinishedCalled = false;
         final audioController = _MockAudioController();
 
+        when(
+          () => gameScriptMachine.compare(
+            waterPlayerCard,
+            opponentCard,
+          ),
+        ).thenReturn(1);
+        when(
+          () => gameScriptMachine.compareSuits(
+            waterPlayerCard.suit,
+            opponentCard.suit,
+          ),
+        ).thenReturn(1);
+
         await tester.pumpSubject(
           waterPlayerCard,
           opponentCard,
           onFinished: () => onFinishedCalled = true,
           audioController: audioController,
+          gameScriptMachine: gameScriptMachine,
         );
 
         final flipCountdown = find.byType(FlipCountdown);
@@ -304,37 +414,36 @@ void main() {
             .widget<ElementalDamageAnimation>(elementalDamage)
             .onComplete
             ?.call();
+        tester
+            .state<ClashSceneState>(find.byType(ClashScene))
+            .onDamageRecieved();
+
+        await tester.pumpAndSettle();
         expect(onFinishedCalled, isTrue);
       },
     );
 
     testWidgets(
-      'puts players card over opponents when stronger',
+      'puts players card over opponents when suit is stronger',
       (tester) async {
-        await tester.pumpSubject(
-          opponentCard,
-          playerCard,
-          onFinished: () {},
-        );
+        when(
+          () => gameScriptMachine.compare(
+            playerCard,
+            opponentCard,
+          ),
+        ).thenReturn(1);
+        when(
+          () => gameScriptMachine.compareSuits(
+            playerCard.suit,
+            opponentCard.suit,
+          ),
+        ).thenReturn(1);
 
-        final stack = find.byWidgetPredicate((stack) {
-          if (stack is Stack) {
-            return stack.children.first.key == const Key('player_card') &&
-                stack.children[1].key == const Key('opponent_card');
-          }
-          return false;
-        });
-        expect(stack, findsOneWidget);
-      },
-    );
-
-    testWidgets(
-      'puts opponents card over players when stronger',
-      (tester) async {
         await tester.pumpSubject(
           playerCard,
           opponentCard,
           onFinished: () {},
+          gameScriptMachine: gameScriptMachine,
         );
 
         final stack = find.byWidgetPredicate((stack) {
@@ -344,6 +453,42 @@ void main() {
           }
           return false;
         });
+
+        expect(stack, findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'puts opponents card over players when suit is stronger',
+      (tester) async {
+        when(
+          () => gameScriptMachine.compare(
+            playerCard,
+            opponentCard,
+          ),
+        ).thenReturn(-1);
+        when(
+          () => gameScriptMachine.compareSuits(
+            playerCard.suit,
+            opponentCard.suit,
+          ),
+        ).thenReturn(-1);
+
+        await tester.pumpSubject(
+          playerCard,
+          opponentCard,
+          onFinished: () {},
+          gameScriptMachine: gameScriptMachine,
+        );
+
+        final stack = find.byWidgetPredicate((stack) {
+          if (stack is Stack) {
+            return stack.children.first.key == const Key('player_card') &&
+                stack.children[1].key == const Key('opponent_card');
+          }
+          return false;
+        });
+
         expect(stack, findsOneWidget);
       },
     );
@@ -356,6 +501,7 @@ extension GameViewTest on WidgetTester {
     Card opponentCard, {
     VoidCallback? onFinished,
     AudioController? audioController,
+    GameScriptMachine? gameScriptMachine,
   }) {
     return pumpApp(
       ClashScene(
@@ -364,6 +510,7 @@ extension GameViewTest on WidgetTester {
         playerCard: playerCard,
       ),
       audioController: audioController,
+      gameScriptMachine: gameScriptMachine,
     );
   }
 }
