@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart' as game;
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
+import 'package:io_flip/audio/audio.dart';
 import 'package:io_flip/audio/audio_controller.dart';
 import 'package:io_flip/game/game.dart';
 import 'package:io_flip/gen/assets.gen.dart';
@@ -619,6 +620,14 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
                     _BoardCounter(counterOffset),
                   ],
                 ),
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(IoFlipSpacing.sm),
+              child: Positioned(
+                left: 0,
+                bottom: 0,
+                child: AudioToggleButton(),
               ),
             ),
             _ClashScene(
