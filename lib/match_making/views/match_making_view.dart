@@ -44,6 +44,7 @@ class MatchMakingView extends StatelessWidget {
         }
       },
       builder: (context, state) {
+        final l10n = context.l10n;
         if (state.status == MatchMakingStatus.processing ||
             state.status == MatchMakingStatus.initial) {
           return ResponsiveLayoutBuilder(
@@ -67,22 +68,29 @@ class MatchMakingView extends StatelessWidget {
         }
 
         if (state.status == MatchMakingStatus.timeout) {
-          return const IoFlipScaffold(
-            body: Center(
-              child: Text('Match making timed out, sorry!'),
+          return IoFlipScaffold(
+            body: IoFlipErrorView(
+              text: 'Match making timed out, sorry!',
+              buttonText: l10n.playAgain,
+              onPressed: () {
+                GoRouter.of(context).go('/');
+              },
             ),
           );
         }
 
         if (state.status == MatchMakingStatus.failed) {
-          return const IoFlipScaffold(
-            body: Center(
-              child: Text('Match making failed, sorry!'),
+          return IoFlipScaffold(
+            body: IoFlipErrorView(
+              text: 'Match making failed, sorry!',
+              buttonText: l10n.playAgain,
+              onPressed: () {
+                GoRouter.of(context).go('/');
+              },
             ),
           );
         }
 
-        final l10n = context.l10n;
         return IoFlipScaffold(
           body: Center(
             child: Column(

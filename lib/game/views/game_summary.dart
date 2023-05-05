@@ -16,6 +16,8 @@ import 'package:provider/provider.dart';
 class GameSummaryView extends StatelessWidget {
   const GameSummaryView({super.key});
 
+  static const _gap = SizedBox(width: IoFlipSpacing.sm);
+
   @override
   Widget build(BuildContext context) {
     final result = context.select((GameBloc bloc) => bloc.gameResult());
@@ -63,16 +65,18 @@ class GameSummaryView extends StatelessWidget {
               child: _CardsView(),
             ),
             const Spacer(),
-            Padding(
-              padding: const EdgeInsets.all(IoFlipSpacing.sm),
+            const Padding(
+              padding: EdgeInsets.all(IoFlipSpacing.sm),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  const AudioToggleButton(),
-                  const Spacer(),
-                  GameSummaryFooter(isPhoneWidth: isPhoneWidth),
-                  const Spacer(),
-                  const InfoButton(),
+                  AudioToggleButton(),
+                  _gap,
+                  Expanded(
+                    child: GameSummaryFooter(),
+                  ),
+                  _gap,
+                  InfoButton(),
                 ],
               ),
             ),
@@ -267,16 +271,11 @@ class _RoundSummary extends StatelessWidget {
 
 class GameSummaryFooter extends StatelessWidget {
   const GameSummaryFooter({
-    required this.isPhoneWidth,
     RouterNeglectCall routerNeglectCall = Router.neglect,
     super.key,
   }) : _routerNeglectCall = routerNeglectCall;
 
   final RouterNeglectCall _routerNeglectCall;
-  final bool isPhoneWidth;
-
-  static const Widget _gap =
-      SizedBox(width: IoFlipSpacing.md, height: IoFlipSpacing.md);
 
   @override
   Widget build(BuildContext context) {
@@ -290,9 +289,11 @@ class GameSummaryFooter extends StatelessWidget {
         (result == MatchResult.guest && !bloc.isHost) ||
         result == MatchResult.draw;
 
-    return Flex(
-      direction: isPhoneWidth ? Axis.vertical : Axis.horizontal,
-      mainAxisSize: MainAxisSize.min,
+    return Wrap(
+      spacing: IoFlipSpacing.sm,
+      runSpacing: IoFlipSpacing.sm,
+      alignment: WrapAlignment.center,
+      runAlignment: WrapAlignment.center,
       children: [
         if (showNextMatch)
           RoundedButton.text(
@@ -305,7 +306,6 @@ class GameSummaryFooter extends StatelessWidget {
               ),
             ),
           ),
-        _gap,
         RoundedButton.text(
           l10n.submitScore,
           backgroundColor: IoFlipColors.seedBlack,
