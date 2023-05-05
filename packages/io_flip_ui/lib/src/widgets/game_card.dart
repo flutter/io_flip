@@ -213,6 +213,7 @@ class GameCard extends StatelessWidget {
     required this.isRare,
     this.size = const GameCardSize.lg(),
     this.overlay,
+    this.isDimmed = false,
     this.tilt = Offset.zero,
     @visibleForTesting this.package = 'io_flip_ui',
     super.key,
@@ -241,6 +242,9 @@ class GameCard extends StatelessWidget {
 
   /// Is a rare card
   final bool isRare;
+
+  /// Whether the card should be dimmed or not.
+  final bool isDimmed;
 
   /// An offset with x and y values between -1 and 1, representing how much the
   /// card should be tilted.
@@ -312,8 +316,10 @@ class GameCard extends StatelessWidget {
         ),
       ],
     );
+    final borderRadius = BorderRadius.circular(size.width * 0.08);
 
     return Stack(
+      clipBehavior: Clip.none,
       children: [
         SizedBox(
           width: size.width,
@@ -328,7 +334,7 @@ class GameCard extends StatelessWidget {
               children: [
                 if (isRare)
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(size.width * 0.08),
+                    borderRadius: borderRadius,
                     child: FoilShader(
                       package: package,
                       dx: tilt.dx,
@@ -412,10 +418,16 @@ class GameCard extends StatelessWidget {
           ),
         ),
         if (overlay != null)
-          CardOverlay.ofType(
-            overlay!,
-            size.width,
-            size.height,
+          Positioned(
+            top: -1,
+            bottom: -1,
+            left: -1,
+            right: -1,
+            child: CardOverlay.ofType(
+              overlay!,
+              borderRadius: borderRadius,
+              isDimmed: isDimmed,
+            ),
           )
       ],
     );

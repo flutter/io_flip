@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:io_flip_ui/gen/assets.gen.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 
 class _FakeCustomPainter extends Fake implements CustomPainter {}
@@ -7,7 +8,7 @@ class _FakeCustomPainter extends Fake implements CustomPainter {}
 void main() {
   group('CardOverlay', () {
     testWidgets(
-      'renders check icon and blue background when is win type',
+      'renders win asset and green background when is win type',
       (tester) async {
         const width = 1200.0;
         const height = 800.0;
@@ -17,20 +18,34 @@ void main() {
             child: SizedBox(
               width: width,
               height: height,
-              child: CardOverlay.ofType(CardOverlayType.win, width, height),
+              child: CardOverlay.ofType(
+                CardOverlayType.win,
+                borderRadius: BorderRadius.circular(4),
+                isDimmed: false,
+              ),
             ),
           ),
         );
 
         expect(
-          find.byIcon(Icons.check),
-          findsOneWidget,
+          tester.widget(find.byType(CardOverlay)),
+          isA<CardOverlay>()
+              .having(
+                (o) => o.asset,
+                'asset',
+                equals(Assets.images.resultBadges.win.path),
+              )
+              .having(
+                (o) => o.color,
+                'color',
+                equals(IoFlipColors.seedGreen),
+              ),
         );
       },
     );
 
     testWidgets(
-      'renders close icon and red background when is lose type',
+      'renders lose asset and red background when is lose type',
       (tester) async {
         const width = 1200.0;
         const height = 800.0;
@@ -40,20 +55,34 @@ void main() {
             child: SizedBox(
               width: width,
               height: height,
-              child: CardOverlay.ofType(CardOverlayType.lose, width, height),
+              child: CardOverlay.ofType(
+                CardOverlayType.lose,
+                borderRadius: BorderRadius.circular(4),
+                isDimmed: false,
+              ),
             ),
           ),
         );
 
         expect(
-          find.byIcon(Icons.close),
-          findsOneWidget,
+          tester.widget(find.byType(CardOverlay)),
+          isA<CardOverlay>()
+              .having(
+                (o) => o.asset,
+                'asset',
+                equals(Assets.images.resultBadges.lose.path),
+              )
+              .having(
+                (o) => o.color,
+                'color',
+                equals(IoFlipColors.seedRed),
+              ),
         );
       },
     );
 
     testWidgets(
-      'renders = and blue background when is draw type',
+      'renders draw asset and neutral background when is draw type',
       (tester) async {
         const width = 1200.0;
         const height = 800.0;
@@ -63,14 +92,28 @@ void main() {
             child: SizedBox(
               width: width,
               height: height,
-              child: CardOverlay.ofType(CardOverlayType.draw, width, height),
+              child: CardOverlay.ofType(
+                CardOverlayType.draw,
+                borderRadius: BorderRadius.circular(4),
+                isDimmed: false,
+              ),
             ),
           ),
         );
 
         expect(
-          find.text('='),
-          findsOneWidget,
+          tester.widget(find.byType(CardOverlay)),
+          isA<CardOverlay>()
+              .having(
+                (o) => o.asset,
+                'asset',
+                equals(Assets.images.resultBadges.draw.path),
+              )
+              .having(
+                (o) => o.color,
+                'color',
+                equals(IoFlipColors.seedPaletteNeutral90),
+              ),
         );
       },
     );

@@ -39,6 +39,8 @@ class $AssetsImagesGen {
   SvgGenImage get ioFlipLogo03 =>
       const SvgGenImage('assets/images/io_flip_logo_03.svg');
 
+  $AssetsImagesResultBadgesGen get resultBadges =>
+      const $AssetsImagesResultBadgesGen();
   $AssetsImagesSuitsGen get suits => const $AssetsImagesSuitsGen();
 
   /// List of all assets
@@ -85,6 +87,25 @@ class $AssetsImagesElementsGen {
       const $AssetsImagesElementsDesktopGen();
   $AssetsImagesElementsMobileGen get mobile =>
       const $AssetsImagesElementsMobileGen();
+}
+
+class $AssetsImagesResultBadgesGen {
+  const $AssetsImagesResultBadgesGen();
+
+  /// File path: assets/images/result_badges/draw.png
+  AssetGenImage get draw =>
+      const AssetGenImage('assets/images/result_badges/draw.png');
+
+  /// File path: assets/images/result_badges/lose.png
+  AssetGenImage get lose =>
+      const AssetGenImage('assets/images/result_badges/lose.png');
+
+  /// File path: assets/images/result_badges/win.png
+  AssetGenImage get win =>
+      const AssetGenImage('assets/images/result_badges/win.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [draw, lose, win];
 }
 
 class $AssetsImagesSuitsGen {
