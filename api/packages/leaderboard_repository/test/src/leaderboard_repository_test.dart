@@ -32,6 +32,55 @@ void main() {
       );
     });
 
+    group('getLeaderboard', () {
+      test('returns list of leaderboard players', () async {
+        const playerOne = LeaderboardPlayer(
+          id: 'id',
+          longestStreak: 2,
+          initials: 'AAA',
+        );
+        const playerTwo = LeaderboardPlayer(
+          id: 'id2',
+          longestStreak: 3,
+          initials: 'BBB',
+        );
+
+        when(() => dbClient.orderBy('leaderboard', 'longestStreak'))
+            .thenAnswer((_) async {
+          return [
+            DbEntityRecord(
+              id: 'id',
+              data: {
+                'longestStreak': playerOne.longestStreak,
+                'initials': playerOne.initials,
+              },
+            ),
+            DbEntityRecord(
+              id: 'id2',
+              data: {
+                'longestStreak': playerTwo.longestStreak,
+                'initials': playerTwo.initials,
+              },
+            ),
+          ];
+        });
+
+        final result = await leaderboardRepository.getLeaderboard();
+
+        expect(result, equals([playerOne, playerTwo]));
+      });
+
+      test('returns empty list if results are empty', () async {
+        when(() => dbClient.orderBy('leaderboard', 'longestStreak'))
+            .thenAnswer((_) async {
+          return [];
+        });
+
+        final response = await leaderboardRepository.getLeaderboard();
+        expect(response, isEmpty);
+      });
+    });
+
     group('getInitialsBlacklist', () {
       const blacklist = ['AAA', 'BBB', 'CCC'];
 

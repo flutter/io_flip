@@ -30,42 +30,24 @@ void main() {
       });
 
       test('makes the correct call ', () async {
-        const scoreCard = ScoreCard(
+        const leaderboardPlayer = LeaderboardPlayer(
           id: 'id',
-          wins: 2,
-          currentStreak: 2,
-          longestStreak: 3,
-          longestStreakDeck: 'deckId',
+          longestStreak: 1,
+          initials: 'TST',
         );
 
         when(() => response.statusCode).thenReturn(HttpStatus.ok);
         when(() => response.body).thenReturn(
           jsonEncode(
             {
-              'scoreCardsWithMostWins': [scoreCard.toJson()],
-              'scoreCardsWithLongestStreak': [scoreCard.toJson()],
+              'leaderboardPlayers': [leaderboardPlayer.toJson()],
             },
           ),
         );
 
         final results = await resource.getLeaderboardResults();
 
-        expect(
-          results,
-          isA<LeaderboardResults>()
-              .having(
-                (lr) => lr.scoreCardsWithMostWins,
-                'scoreCardsWithMostWins',
-                equals([scoreCard]),
-              )
-              .having(
-                (lr) => lr.scoreCardsWithLongestStreak,
-                'scoreCardsWithLongestStreak',
-                equals(
-                  [scoreCard],
-                ),
-              ),
-        );
+        expect(results, equals([leaderboardPlayer]));
       });
 
       test('throws ApiClientError when request fails', () async {

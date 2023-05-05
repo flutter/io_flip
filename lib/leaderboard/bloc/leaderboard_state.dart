@@ -10,20 +10,21 @@ enum LeaderboardStateStatus {
 class LeaderboardState extends Equatable {
   const LeaderboardState({
     required this.status,
-    this.leaderboard,
+    required this.leaderboard,
   });
 
   const LeaderboardState.initial()
       : this(
           status: LeaderboardStateStatus.initial,
+          leaderboard: const [],
         );
 
   final LeaderboardStateStatus status;
-  final LeaderboardResults? leaderboard;
+  final List<LeaderboardPlayer> leaderboard;
 
   LeaderboardState copyWith({
     LeaderboardStateStatus? status,
-    LeaderboardResults? leaderboard,
+    List<LeaderboardPlayer>? leaderboard,
   }) {
     return LeaderboardState(
       status: status ?? this.status,
