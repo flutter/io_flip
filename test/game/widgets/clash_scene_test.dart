@@ -74,6 +74,16 @@ void main() {
       suit: Suit.air,
     );
 
+    const waterOpponentCard = Card(
+      id: 'opponent_card',
+      name: 'guest_card',
+      description: '',
+      image: 'image.png',
+      rarity: true,
+      power: 1,
+      suit: Suit.water,
+    );
+
     testWidgets('displays both cards flipped initially and plays "flip" sfx',
         (tester) async {
       final audioController = _MockAudioController();
@@ -91,7 +101,7 @@ void main() {
     testWidgets(
       'plays damage animation then flips both cards after countdown'
       ' ,invokes onFinished callback when animation is complete'
-      ' and plays "air" sfx',
+      ' and does not plays any sfx because the elements are the same',
       (tester) async {
         var onFinishedCalled = false;
         final audioController = _MockAudioController();
@@ -99,6 +109,41 @@ void main() {
         await tester.pumpSubject(
           playerCard,
           opponentCard,
+          onFinished: () => onFinishedCalled = true,
+          audioController: audioController,
+        );
+
+        final flipCountdown = find.byType(FlipCountdown);
+        expect(flipCountdown, findsOneWidget);
+        tester.widget<FlipCountdown>(flipCountdown).onComplete?.call();
+
+        await mockNetworkImages(() async {
+          await tester.pump(smallFlipAnimation.duration * 2);
+        });
+
+        final elementalDamage = find.byType(ElementalDamageAnimation);
+
+        verifyNever(() => audioController.playSfx(Assets.sfx.air));
+        expect(elementalDamage, findsOneWidget);
+        tester
+            .widget<ElementalDamageAnimation>(elementalDamage)
+            .onComplete
+            ?.call();
+        expect(onFinishedCalled, isTrue);
+      },
+    );
+
+    testWidgets(
+      'plays damage animation then flips both cards after countdown'
+      ' ,invokes onFinished callback when animation is complete'
+      ' and plays "air" sfx',
+      (tester) async {
+        var onFinishedCalled = false;
+        final audioController = _MockAudioController();
+
+        await tester.pumpSubject(
+          playerCard,
+          waterOpponentCard,
           onFinished: () => onFinishedCalled = true,
           audioController: audioController,
         );
