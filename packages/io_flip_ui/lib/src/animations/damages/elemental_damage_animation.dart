@@ -118,8 +118,8 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
             if (widget.direction == DamageDirection.topToBottom)
               Transform.translate(
                 offset: -Offset(
-                  0.35 * widget.size.width,
-                  0.31 * widget.size.height,
+                  0.356 * widget.size.width,
+                  0.32 * widget.size.height,
                 ),
                 child: DualAnimation(
                   back: elementalDamage.chargeBackBuilder,
@@ -204,8 +204,8 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
             if (widget.direction == DamageDirection.topToBottom)
               Transform.translate(
                 offset: -Offset(
-                  0.3 * widget.size.width,
-                  0.1 * widget.size.height,
+                  0.29 * widget.size.width,
+                  0.11 * widget.size.height,
                 ),
                 child: DualAnimation(
                   back: elementalDamage.victoryChargeBackBuilder,

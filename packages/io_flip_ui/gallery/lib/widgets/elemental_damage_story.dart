@@ -25,9 +25,8 @@ class _ElementalDamageStoryState extends State<ElementalDamageStory> {
             width: 300,
             height: 500,
             child: Stack(
-              clipBehavior: Clip.none,
               children: [
-                const Positioned(
+                Positioned(
                   top: 0,
                   left: 0,
                   child: GameCard(
@@ -35,9 +34,9 @@ class _ElementalDamageStoryState extends State<ElementalDamageStory> {
                         'https://firebasestorage.googleapis.com/v0/b/top-dash-dev.appspot.com/o/public%2FDash_pirate_trumpets_field.png?alt=media',
                     name: 'Dash the Great',
                     description: 'The best Dash in all the Dashland',
-                    suitName: 'earth',
+                    suitName: widget.element.name,
                     power: 57,
-                    size: GameCardSize.md(),
+                    size: const GameCardSize.md(),
                   ),
                 ),
                 const Positioned(
