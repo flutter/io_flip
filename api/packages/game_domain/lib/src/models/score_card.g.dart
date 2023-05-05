@@ -11,8 +11,10 @@ ScoreCard _$ScoreCardFromJson(Map<String, dynamic> json) => ScoreCard(
       wins: json['wins'] as int? ?? 0,
       longestStreak: json['longestStreak'] as int? ?? 0,
       currentStreak: json['currentStreak'] as int? ?? 0,
-      currentDeck: json['currentDeck'] as String? ?? '',
+      latestStreak: json['latestStreak'] as int? ?? 0,
       longestStreakDeck: json['longestStreakDeck'] as String? ?? '',
+      currentDeck: json['currentDeck'] as String? ?? '',
+      latestDeck: json['latestDeck'] as String? ?? '',
       initials: json['initials'] as String?,
     );
 
@@ -21,7 +23,9 @@ Map<String, dynamic> _$ScoreCardToJson(ScoreCard instance) => <String, dynamic>{
       'wins': instance.wins,
       'longestStreak': instance.longestStreak,
       'currentStreak': instance.currentStreak,
-      'currentDeck': instance.currentDeck,
+      'latestStreak': instance.latestStreak,
       'longestStreakDeck': instance.longestStreakDeck,
+      'currentDeck': instance.currentDeck,
+      'latestDeck': instance.latestDeck,
       'initials': instance.initials,
     };

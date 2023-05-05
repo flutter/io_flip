@@ -123,7 +123,7 @@ class _ResultView extends StatelessWidget {
             const SizedBox(width: IoFlipSpacing.sm),
             Text(
               context.l10n
-                  .gameSummaryStreak(state.playerScoreCard.currentStreak),
+                  .gameSummaryStreak(state.playerScoreCard.latestStreak),
               style: IoFlipTextStyles.mobileH6
                   .copyWith(color: IoFlipColors.seedYellow),
             ),
@@ -316,7 +316,7 @@ class GameSummaryFooter extends StatelessWidget {
             final event = LeaderboardEntryRequested(
               shareHandPageData: ShareHandPageData(
                 initials: '',
-                wins: state.playerScoreCard.currentStreak,
+                wins: state.playerScoreCard.latestStreak,
                 deckId: playerDeck.id,
                 deck: bloc.playerCards,
               ),
