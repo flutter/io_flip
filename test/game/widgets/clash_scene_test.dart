@@ -25,6 +25,45 @@ void main() {
       power: 2,
       suit: Suit.air,
     );
+    const firePlayerCard = Card(
+      id: 'fire_player_card',
+      name: 'fire_host_card',
+      description: '',
+      image: 'image.png',
+      rarity: true,
+      power: 2,
+      suit: Suit.fire,
+    );
+
+    const earthPlayerCard = Card(
+      id: 'earth_player_card',
+      name: 'earth_host_card',
+      description: '',
+      image: 'image.png',
+      rarity: true,
+      power: 2,
+      suit: Suit.earth,
+    );
+
+    const metalPlayerCard = Card(
+      id: 'metal_player_card',
+      name: 'metal_host_card',
+      description: '',
+      image: 'image.png',
+      rarity: true,
+      power: 2,
+      suit: Suit.metal,
+    );
+
+    const waterPlayerCard = Card(
+      id: 'water_player_card',
+      name: 'water_host_card',
+      description: '',
+      image: 'image.png',
+      rarity: true,
+      power: 2,
+      suit: Suit.water,
+    );
     const opponentCard = Card(
       id: 'opponent_card',
       name: 'guest_card',
@@ -51,14 +90,17 @@ void main() {
 
     testWidgets(
       'plays damage animation then flips both cards after countdown'
-      ' and invokes onFinished callback when animation is complete',
+      ' ,invokes onFinished callback when animation is complete'
+      ' and plays "air" sfx',
       (tester) async {
         var onFinishedCalled = false;
+        final audioController = _MockAudioController();
 
         await tester.pumpSubject(
           playerCard,
           opponentCard,
           onFinished: () => onFinishedCalled = true,
+          audioController: audioController,
         );
 
         final flipCountdown = find.byType(FlipCountdown);
@@ -70,6 +112,148 @@ void main() {
         });
 
         final elementalDamage = find.byType(ElementalDamageAnimation);
+
+        verify(() => audioController.playSfx(Assets.sfx.air)).called(1);
+        expect(elementalDamage, findsOneWidget);
+        tester
+            .widget<ElementalDamageAnimation>(elementalDamage)
+            .onComplete
+            ?.call();
+        expect(onFinishedCalled, isTrue);
+      },
+    );
+
+    testWidgets(
+      'plays damage animation then flips both cards after countdown'
+      ' ,invokes onFinished callback when animation is complete'
+      ' and plays "fire" sfx',
+      (tester) async {
+        var onFinishedCalled = false;
+        final audioController = _MockAudioController();
+
+        await tester.pumpSubject(
+          firePlayerCard,
+          opponentCard,
+          onFinished: () => onFinishedCalled = true,
+          audioController: audioController,
+        );
+
+        final flipCountdown = find.byType(FlipCountdown);
+        expect(flipCountdown, findsOneWidget);
+        tester.widget<FlipCountdown>(flipCountdown).onComplete?.call();
+
+        await mockNetworkImages(() async {
+          await tester.pump(smallFlipAnimation.duration * 2);
+        });
+
+        final elementalDamage = find.byType(ElementalDamageAnimation);
+
+        verify(() => audioController.playSfx(Assets.sfx.fire)).called(1);
+        expect(elementalDamage, findsOneWidget);
+        tester
+            .widget<ElementalDamageAnimation>(elementalDamage)
+            .onComplete
+            ?.call();
+        expect(onFinishedCalled, isTrue);
+      },
+    );
+
+    testWidgets(
+      'plays damage animation then flips both cards after countdown'
+      ' ,invokes onFinished callback when animation is complete'
+      ' and plays "earth" sfx',
+      (tester) async {
+        var onFinishedCalled = false;
+        final audioController = _MockAudioController();
+
+        await tester.pumpSubject(
+          earthPlayerCard,
+          opponentCard,
+          onFinished: () => onFinishedCalled = true,
+          audioController: audioController,
+        );
+
+        final flipCountdown = find.byType(FlipCountdown);
+        expect(flipCountdown, findsOneWidget);
+        tester.widget<FlipCountdown>(flipCountdown).onComplete?.call();
+
+        await mockNetworkImages(() async {
+          await tester.pump(smallFlipAnimation.duration * 2);
+        });
+
+        final elementalDamage = find.byType(ElementalDamageAnimation);
+
+        verify(() => audioController.playSfx(Assets.sfx.earth)).called(1);
+        expect(elementalDamage, findsOneWidget);
+        tester
+            .widget<ElementalDamageAnimation>(elementalDamage)
+            .onComplete
+            ?.call();
+        expect(onFinishedCalled, isTrue);
+      },
+    );
+
+    testWidgets(
+      'plays damage animation then flips both cards after countdown'
+      ' ,invokes onFinished callback when animation is complete'
+      ' and plays "metal" sfx',
+      (tester) async {
+        var onFinishedCalled = false;
+        final audioController = _MockAudioController();
+
+        await tester.pumpSubject(
+          metalPlayerCard,
+          opponentCard,
+          onFinished: () => onFinishedCalled = true,
+          audioController: audioController,
+        );
+
+        final flipCountdown = find.byType(FlipCountdown);
+        expect(flipCountdown, findsOneWidget);
+        tester.widget<FlipCountdown>(flipCountdown).onComplete?.call();
+
+        await mockNetworkImages(() async {
+          await tester.pump(smallFlipAnimation.duration * 2);
+        });
+
+        final elementalDamage = find.byType(ElementalDamageAnimation);
+
+        verify(() => audioController.playSfx(Assets.sfx.metal)).called(1);
+        expect(elementalDamage, findsOneWidget);
+        tester
+            .widget<ElementalDamageAnimation>(elementalDamage)
+            .onComplete
+            ?.call();
+        expect(onFinishedCalled, isTrue);
+      },
+    );
+
+    testWidgets(
+      'plays damage animation then flips both cards after countdown'
+      ' ,invokes onFinished callback when animation is complete'
+      ' and plays "water" sfx',
+      (tester) async {
+        var onFinishedCalled = false;
+        final audioController = _MockAudioController();
+
+        await tester.pumpSubject(
+          waterPlayerCard,
+          opponentCard,
+          onFinished: () => onFinishedCalled = true,
+          audioController: audioController,
+        );
+
+        final flipCountdown = find.byType(FlipCountdown);
+        expect(flipCountdown, findsOneWidget);
+        tester.widget<FlipCountdown>(flipCountdown).onComplete?.call();
+
+        await mockNetworkImages(() async {
+          await tester.pump(smallFlipAnimation.duration * 2);
+        });
+
+        final elementalDamage = find.byType(ElementalDamageAnimation);
+
+        verify(() => audioController.playSfx(Assets.sfx.water)).called(1);
         expect(elementalDamage, findsOneWidget);
         tester
             .widget<ElementalDamageAnimation>(elementalDamage)
