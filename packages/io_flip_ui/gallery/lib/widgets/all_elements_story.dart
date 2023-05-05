@@ -84,6 +84,7 @@ class _ElementalDamageGroup extends StatelessWidget {
             child: ElementalDamageAnimation(
               element,
               direction: DamageDirection.topToBottom,
+              initialState: DamageAnimationState.charging,
               size: const GameCardSize.xs(),
               onComplete: () {},
             ),
