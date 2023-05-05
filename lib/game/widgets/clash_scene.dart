@@ -159,6 +159,7 @@ class ClashSceneState extends State<ClashScene> with TickerProviderStateMixin {
         back: powerDecrementAnimation == null ||
                 winningSuit == ComparisonResult.player
             ? GameCard(
+                size: cardSize,
                 image: widget.playerCard.image,
                 name: widget.playerCard.name,
                 description: widget.playerCard.description,
@@ -170,6 +171,7 @@ class ClashSceneState extends State<ClashScene> with TickerProviderStateMixin {
                 animation: powerDecrementAnimation!,
                 builder: (_, __) {
                   return GameCard(
+                    size: cardSize,
                     image: widget.playerCard.image,
                     name: widget.playerCard.name,
                     description: widget.playerCard.description,
@@ -199,6 +201,7 @@ class ClashSceneState extends State<ClashScene> with TickerProviderStateMixin {
         back: powerDecrementAnimation == null ||
                 winningSuit == ComparisonResult.opponent
             ? GameCard(
+                size: cardSize,
                 image: widget.opponentCard.image,
                 name: widget.opponentCard.name,
                 description: widget.opponentCard.description,
@@ -210,6 +213,7 @@ class ClashSceneState extends State<ClashScene> with TickerProviderStateMixin {
                 animation: powerDecrementAnimation!,
                 builder: (_, __) {
                   return GameCard(
+                    size: cardSize,
                     image: widget.opponentCard.image,
                     name: widget.opponentCard.name,
                     description: widget.opponentCard.description,
