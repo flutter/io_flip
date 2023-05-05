@@ -118,10 +118,15 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
             if (widget.direction == DamageDirection.topToBottom)
               Transform.translate(
                 offset: -Offset(
-                  0.356 * widget.size.width,
-                  0.32 * widget.size.height,
+                  0.32 * widget.size.width,
+                  0.315 * widget.size.height,
                 ),
                 child: DualAnimation(
+                  cardOffset: Offset(
+                    0.32 * widget.size.width,
+                    0.315 * widget.size.height,
+                  ),
+                  cardSize: widget.size,
                   back: elementalDamage.chargeBackBuilder,
                   front: elementalDamage.chargeFrontBuilder,
                   assetSize: widget.assetSize,
@@ -132,10 +137,15 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
               _BottomAnimation(
                 child: Transform.translate(
                   offset: Offset(
-                    0.45 * widget.size.width,
-                    0.21 * widget.size.height,
+                    0.32 * widget.size.width,
+                    0.215 * widget.size.height,
                   ),
                   child: DualAnimation(
+                    cardOffset: Offset(
+                      0.32 * widget.size.width,
+                      0.315 * widget.size.height,
+                    ),
+                    cardSize: widget.size,
                     back: elementalDamage.chargeBackBuilder,
                     front: elementalDamage.chargeFrontBuilder,
                     assetSize: widget.assetSize,
@@ -204,10 +214,15 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
             if (widget.direction == DamageDirection.topToBottom)
               Transform.translate(
                 offset: -Offset(
-                  0.29 * widget.size.width,
+                  0.25 * widget.size.width,
                   0.11 * widget.size.height,
                 ),
                 child: DualAnimation(
+                  cardOffset: Offset(
+                    0.25 * widget.size.width,
+                    0.11 * widget.size.height,
+                  ),
+                  cardSize: widget.size,
                   back: elementalDamage.victoryChargeBackBuilder,
                   front: elementalDamage.victoryChargeFrontBuilder,
                   assetSize: widget.assetSize,
@@ -218,10 +233,15 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
               _BottomAnimation(
                 child: Transform.translate(
                   offset: Offset(
-                    0.28 * widget.size.width,
-                    0.11 * widget.size.height,
+                    0.255 * widget.size.width,
+                    0.115 * widget.size.height,
                   ),
                   child: DualAnimation(
+                    cardOffset: Offset(
+                      0.25 * widget.size.width,
+                      0.11 * widget.size.height,
+                    ),
+                    cardSize: widget.size,
                     back: elementalDamage.victoryChargeBackBuilder,
                     front: elementalDamage.victoryChargeFrontBuilder,
                     assetSize: widget.assetSize,

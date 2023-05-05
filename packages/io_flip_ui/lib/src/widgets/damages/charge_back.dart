@@ -34,25 +34,32 @@ class ChargeBack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final images = context.read<Images>();
-    final width = 2.8 * size.width;
-    final height = 1.542 * size.height;
+    final width = 1.64 * size.width;
+    final height = 1.53 * size.height;
+    final textureSize =
+        assetSize == AssetSize.large ? Vector2(658, 860) : Vector2(395, 516);
 
     return SizedBox(
       width: width,
       height: height,
-      child: SpriteAnimationWidget.asset(
-        path: path,
-        images: images,
-        anchor: Anchor.center,
-        onComplete: onComplete,
-        data: SpriteAnimationData.sequenced(
-          amount: 20,
-          amountPerRow: 5,
-          textureSize: assetSize == AssetSize.large
-              ? Vector2(658, 860)
-              : Vector2(395, 516),
-          stepTime: 0.04,
-          loop: false,
+      child: FittedBox(
+        fit: BoxFit.fill,
+        child: SizedBox(
+          width: textureSize.x,
+          height: textureSize.y,
+          child: SpriteAnimationWidget.asset(
+            path: path,
+            images: images,
+            anchor: Anchor.center,
+            onComplete: onComplete,
+            data: SpriteAnimationData.sequenced(
+              amount: 20,
+              amountPerRow: 5,
+              textureSize: textureSize,
+              stepTime: 0.04,
+              loop: false,
+            ),
+          ),
         ),
       ),
     );

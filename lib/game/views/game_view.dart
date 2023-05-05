@@ -882,7 +882,9 @@ class _CardLandingPuffEffect extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final showCardLanding = context.select<GameBloc, bool>(
-      (bloc) => (bloc.state as MatchLoadedState).showCardLanding,
+      (bloc) =>
+          bloc.state is MatchLoadedState &&
+          (bloc.state as MatchLoadedState).showCardLanding,
     );
     if (showCardLanding) {
       return Positioned(
@@ -912,7 +914,9 @@ class _ClashScene extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isClashScene = context.select<GameBloc, bool>(
-      (bloc) => (bloc.state as MatchLoadedState).isClashScene,
+      (bloc) =>
+          bloc.state is MatchLoadedState &&
+          (bloc.state as MatchLoadedState).isClashScene,
     );
 
     if (isClashScene) {

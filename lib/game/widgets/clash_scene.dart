@@ -71,6 +71,8 @@ class ClashSceneState extends State<ClashScene>
 
   @override
   Widget build(BuildContext context) {
+    const cardSize = GameCardSize.md();
+    final clashSceneSize = Size(cardSize.width * 1.7, cardSize.height * 2.15);
     final playerCard = AnimatedBuilder(
       key: const Key('player_card'),
       animation: motion,
@@ -80,8 +82,11 @@ class ClashSceneState extends State<ClashScene>
           right: motion.value,
           child: AnimatedCard(
             controller: playerController,
-            front: const FlippedGameCard(),
+            front: const FlippedGameCard(
+              size: cardSize,
+            ),
             back: GameCard(
+              size: cardSize,
               image: widget.playerCard.image,
               name: widget.playerCard.name,
               description: widget.playerCard.description,
@@ -102,8 +107,11 @@ class ClashSceneState extends State<ClashScene>
           left: motion.value,
           child: AnimatedCard(
             controller: opponentController,
-            front: const FlippedGameCard(),
+            front: const FlippedGameCard(
+              size: cardSize,
+            ),
             back: GameCard(
+              size: cardSize,
               image: widget.opponentCard.image,
               name: widget.opponentCard.name,
               description: widget.opponentCard.description,
@@ -119,37 +127,40 @@ class ClashSceneState extends State<ClashScene>
     final winningElement = _elementsMap[
         playerWins ? widget.playerCard.suit : widget.opponentCard.suit];
     return Center(
-      child: Stack(
-        children: [
-          if (playerWins) ...[
-            opponentCard,
-            playerCard
-          ] else ...[
-            playerCard,
-            opponentCard
-          ],
-          Positioned.fill(
-            child: Visibility(
-              visible: !_flipCards,
-              child: FlipCountdown(
-                onComplete: onFlipCards,
+      child: SizedBox.fromSize(
+        size: clashSceneSize,
+        child: Stack(
+          children: [
+            if (playerWins) ...[
+              opponentCard,
+              playerCard
+            ] else ...[
+              playerCard,
+              opponentCard
+            ],
+            Positioned.fill(
+              child: Visibility(
+                visible: !_flipCards,
+                child: FlipCountdown(
+                  onComplete: onFlipCards,
+                ),
               ),
             ),
-          ),
-          if (_flipCards)
-            ElementalDamageAnimation(
-              winningElement!,
-              direction: playerWins
-                  ? DamageDirection.bottomToTop
-                  : DamageDirection.topToBottom,
-              size: const GameCardSize.lg(),
-              assetSize: platformAwareAsset<AssetSize>(
-                desktop: AssetSize.large,
-                mobile: AssetSize.small,
-              ),
-              onComplete: widget.onFinished,
-            )
-        ],
+            if (_flipCards)
+              ElementalDamageAnimation(
+                winningElement!,
+                direction: playerWins
+                    ? DamageDirection.bottomToTop
+                    : DamageDirection.topToBottom,
+                size: cardSize,
+                assetSize: platformAwareAsset<AssetSize>(
+                  desktop: AssetSize.large,
+                  mobile: AssetSize.small,
+                ),
+                onComplete: widget.onFinished,
+              )
+          ],
+        ),
       ),
     );
   }
