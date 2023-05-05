@@ -196,6 +196,40 @@ void main() {
         ),
       ).thenReturn(transaction);
 
+      final document = _MockDocumentSnapshot<Map<String, dynamic>>();
+      when(document.data).thenReturn(<String, dynamic>{
+        'host': 'host',
+        'guest': 'EMPTY',
+      });
+
+      when(() => transaction.get(docRef)).thenAnswer((_) async => document);
+
+      db.mockTransaction = transaction;
+    }
+
+    void mockRaceConditionErrorTransaction(
+      String guestId,
+      String matchId,
+    ) {
+      final docRef = _MockDocumentReference<Map<String, dynamic>>();
+      when(() => collection.doc(matchId)).thenReturn(docRef);
+
+      final transaction = _MockTransaction();
+      when(
+        () => transaction.update(
+          docRef,
+          {'guest': guestId},
+        ),
+      ).thenReturn(transaction);
+
+      final document = _MockDocumentSnapshot<Map<String, dynamic>>();
+      when(document.data).thenReturn(<String, dynamic>{
+        'host': 'host',
+        'guest': 'some_other_id',
+      });
+
+      when(() => transaction.get(docRef)).thenAnswer((_) async => document);
+
       db.mockTransaction = transaction;
     }
 
@@ -341,6 +375,26 @@ void main() {
               guest: 'guest123',
             ),
           ),
+        );
+      },
+    );
+
+    test(
+      'fails when a race condition happens',
+      () async {
+        mockQueryResult(
+          matches: [
+            DraftMatch(
+              id: 'match123',
+              host: 'host123',
+            ),
+          ],
+        );
+        mockRaceConditionErrorTransaction('guest123', 'match123');
+
+        await expectLater(
+          () => matchMakerRepository.findMatch('guest123'),
+          throwsA(isA<MatchMakingTimeout>()),
         );
       },
     );
