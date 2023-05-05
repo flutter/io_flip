@@ -92,6 +92,22 @@ class MatchRepository {
     );
   }
 
+  /// Returns true if match exists and guest is empty, else returns false
+  Future<bool> isDraftMatch(String matchId) async {
+    final matchData = await _dbClient.getById('matches', matchId);
+
+    if (matchData == null) {
+      return false;
+    }
+
+    final guestDeckId = matchData.data['guest'] as String;
+
+    if (guestDeckId == emptyKey) {
+      return true;
+    }
+    return false;
+  }
+
   Future<DbEntityRecord?> _findMatchStateByMatchId(String matchId) async {
     final result = await _dbClient.findBy(
       'match_states',
@@ -156,7 +172,7 @@ class MatchRepository {
       userId: userId,
     );
 
-    if (match.guestDeck.userId.contains(_cpuPrefix) &&
+    if (match.guestDeck.userId.startsWith(_cpuPrefix) &&
         newMatchState.guestPlayedCards.length < 3 &&
         newMatchState.guestPlayedCards.length <=
             newMatchState.hostPlayedCards.length) {

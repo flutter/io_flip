@@ -145,6 +145,55 @@ void main() {
       );
     });
 
+    group('IsDraftMatch', () {
+      late DbClient dbClient;
+      late MatchRepository matchRepository;
+
+      const matchId = 'matchId';
+      const hostDeckId = 'hostDeckId';
+      const guestDeckId = 'guestDeckId';
+
+      setUp(() {
+        dbClient = _MockDbClient();
+
+        matchRepository = MatchRepository(
+          cardsRepository: _MockCardRepository(),
+          dbClient: dbClient,
+          matchSolver: _MockMatchSolver(),
+        );
+      });
+
+      test('returns false when guest exists', () async {
+        when(() => dbClient.getById('matches', matchId)).thenAnswer(
+          (_) async => DbEntityRecord(
+            id: matchId,
+            data: const {
+              'host': hostDeckId,
+              'guest': guestDeckId,
+            },
+          ),
+        );
+        final isDraftMatch = await matchRepository.isDraftMatch(matchId);
+
+        expect(isDraftMatch, isFalse);
+      });
+
+      test('returns true when guest is empty', () async {
+        when(() => dbClient.getById('matches', matchId)).thenAnswer(
+          (_) async => DbEntityRecord(
+            id: matchId,
+            data: const {
+              'host': hostDeckId,
+              'guest': emptyKey,
+            },
+          ),
+        );
+        final isDraftMatch = await matchRepository.isDraftMatch(matchId);
+
+        expect(isDraftMatch, isTrue);
+      });
+    });
+
     group('getScoreCard', () {
       late CardsRepository cardsRepository;
       late DbClient dbClient;

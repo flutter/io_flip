@@ -18,6 +18,9 @@ FutureOr<Response> onRequest(RequestContext context, String matchId) async {
       userId: user.id,
     );
 
+    if (!await matchRepository.isDraftMatch(matchId)) {
+      return Response(statusCode: HttpStatus.forbidden);
+    }
     if (playerConnected || !matchRepository.trackPlayerPresence) {
       try {
         final cardsRepository = context.read<CardsRepository>();
