@@ -341,7 +341,7 @@ void main() {
               DbEntityRecord(
                 id: '',
                 data: const {
-                  'available_images': [
+                  'available_images': <dynamic>[
                     'dash_mage_volcano_1.png',
                   ],
                 },
