@@ -168,11 +168,11 @@ const _template = '''
     </main>
     <footer>
       <div class="links">
-        <a href="#">Google I/O</a>
-        <a href="#">How It's Made</a>
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
-        <a href="#">FAQ</a>
+        <a href="https://io.google/2023/">Google I/O</a>
+        <a href="https://flutter.dev/flip">How It's Made</a>
+        <a href="https://policies.google.com/privacy">Privacy Policy</a>
+        <a href="https://policies.google.com/terms">Terms of Service</a>
+        <a href="https://flutter.dev/flip">FAQ</a>
       </div>
     </footer>
   </body>

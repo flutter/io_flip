@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:io_flip/l10n/l10n.dart';
 import 'package:io_flip/utils/utils.dart';
@@ -43,6 +44,8 @@ class InfoView extends StatelessWidget {
               const TextSpan(text: ' '),
               TextSpan(
                 text: l10n.infoDialogDescriptionInfixOne,
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () => openLink(ExternalLinks.howItsMade),
                 style: linkStyle,
               ),
               const TextSpan(text: ' '),
@@ -53,6 +56,8 @@ class InfoView extends StatelessWidget {
               const TextSpan(text: ' '),
               TextSpan(
                 text: l10n.infoDialogDescriptionSuffix,
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () => openLink(ExternalLinks.openSourceCode),
                 style: linkStyle,
               ),
             ],
@@ -65,9 +70,13 @@ class InfoView extends StatelessWidget {
         ),
         for (final link in links.entries) ...[
           const SizedBox(height: IoFlipSpacing.md),
-          Text(
-            link.key,
-            style: linkStyle,
+          RichText(
+            text: TextSpan(
+              text: link.key,
+              style: linkStyle,
+              recognizer: TapGestureRecognizer()
+                ..onTap = () => openLink(link.value),
+            ),
           )
         ]
       ],
