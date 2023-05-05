@@ -90,7 +90,8 @@ class PromptRepository {
     if (results.isEmpty) {
       return imageUrl;
     } else {
-      final images = results.first.data['available_images'] as List<String>;
+      final images =
+          (results.first.data['available_images'] as List).cast<String>();
 
       if (images.contains(imageUrl)) {
         return imageUrl;
