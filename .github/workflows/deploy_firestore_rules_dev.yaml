@@ -15,7 +15,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@main
       - name: GitHub Action for Firebase
-        uses: w9jds/firebase-action@v11.24.1
+        uses: w9jds/firebase-action@v11.30.1
         with:
           args: deploy --only firestore:rules
         env:
