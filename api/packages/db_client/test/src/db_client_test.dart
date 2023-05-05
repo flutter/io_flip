@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:db_client/db_client.dart';
 import 'package:firedart/firedart.dart';
+import 'package:grpc/grpc.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
@@ -66,6 +67,22 @@ void main() {
         expect(id, equals('id'));
         verify(() => collection.add({'name': 'Dash'})).called(1);
       });
+
+      test('tries 3 times when getting a GrpcError before giving up', () async {
+        final firestore = _MockFirestore();
+
+        when(() => firestore.collection('birds')).thenThrow(
+          GrpcError.invalidArgument(),
+        );
+
+        final client = DbClient(firestore: firestore);
+        await expectLater(
+          () => client.add('birds', {'name': 'Dash'}),
+          throwsA(isA<GrpcError>()),
+        );
+
+        verify(() => firestore.collection('birds')).called(3);
+      });
     });
 
     group('set', () {
@@ -89,6 +106,25 @@ void main() {
         verify(() => firestore.collection('birds')).called(1);
         verify(() => collection.document('id')).called(1);
         verify(() => ref.set({'name': 'Dash'})).called(1);
+      });
+
+      test('tries 3 times when getting a GrpcError before giving up', () async {
+        final firestore = _MockFirestore();
+        when(() => firestore.collection('birds')).thenThrow(
+          GrpcError.invalidArgument(),
+        );
+
+        final client = DbClient(firestore: firestore);
+        await expectLater(
+          () => client.set(
+            'birds',
+            DbEntityRecord(id: 'id', data: const {'name': 'Dash'}),
+          ),
+          throwsA(
+            isA<GrpcError>(),
+          ),
+        );
+        verify(() => firestore.collection('birds')).called(3);
       });
     });
 
@@ -115,6 +151,23 @@ void main() {
         expect(record, isNotNull);
         expect(record!.id, equals('id'));
         expect(record.data['name'], equals('Dash'));
+      });
+
+      test('tries 3 times when getting a GrpcError before giving up', () async {
+        final firestore = _MockFirestore();
+
+        when(() => firestore.collection('birds')).thenThrow(
+          GrpcError.invalidArgument(),
+        );
+
+        final client = DbClient(firestore: firestore);
+        await expectLater(
+          () => client.getById('birds', 'id'),
+          throwsA(
+            isA<GrpcError>(),
+          ),
+        );
+        verify(() => firestore.collection('birds')).called(3);
       });
 
       test("returns null when the entity doesn't exists", () async {
@@ -158,6 +211,32 @@ void main() {
 
         verify(() => reference.update({'name': 'Dash'})).called(1);
       });
+
+      test('tries 3 times when getting a GrpcError before giving up', () async {
+        final firestore = _MockFirestore();
+
+        when(() => firestore.collection('birds')).thenThrow(
+          GrpcError.invalidArgument(),
+        );
+
+        final client = DbClient(firestore: firestore);
+        await expectLater(
+          () => client.update(
+            'birds',
+            DbEntityRecord(
+              id: '1',
+              data: const {
+                'name': 'Dash',
+              },
+            ),
+          ),
+          throwsA(
+            isA<GrpcError>(),
+          ),
+        );
+
+        verify(() => firestore.collection('birds')).called(3);
+      });
     });
 
     group('findBy', () {
@@ -198,6 +277,24 @@ void main() {
 
         expect(result.last.id, equals('2'));
         expect(result.last.data, equals({'name': 'furn'}));
+      });
+
+      test('tries 3 times when getting a GrpcError before giving up', () async {
+        final firestore = _MockFirestore();
+        when(() => firestore.collection('birds')).thenThrow(
+          GrpcError.invalidArgument(),
+        );
+
+        final client = DbClient(firestore: firestore);
+
+        await expectLater(
+          () => client.findBy('birds', 'type', 'big'),
+          throwsA(
+            isA<GrpcError>(),
+          ),
+        );
+
+        verify(() => firestore.collection('birds')).called(3);
       });
 
       test('returns empty when no results are returned', () async {
@@ -267,6 +364,30 @@ void main() {
         expect(result.last.data, equals({'name': 'furn'}));
       });
 
+      test('tries 3 times when getting a GrpcError before giving up', () async {
+        final firestore = _MockFirestore();
+        when(() => firestore.collection('birds')).thenThrow(
+          GrpcError.invalidArgument(),
+        );
+
+        final client = DbClient(firestore: firestore);
+
+        await expectLater(
+          () => client.find(
+            'birds',
+            {
+              'type': 'big',
+              'age': 'old',
+            },
+          ),
+          throwsA(
+            isA<GrpcError>(),
+          ),
+        );
+
+        verify(() => firestore.collection('birds')).called(3);
+      });
+
       test('returns empty when no results are returned', () async {
         final firestore = _MockFirestore();
         final collection = _MockCollectionReference();
@@ -334,6 +455,23 @@ void main() {
 
         expect(result.last.id, equals('2'));
         expect(result.last.data, equals({'score': 2}));
+      });
+
+      test('tries 3 times when getting a GrpcError before giving up', () async {
+        final firestore = _MockFirestore();
+        when(() => firestore.collection('birds')).thenThrow(
+          GrpcError.invalidArgument(),
+        );
+
+        final client = DbClient(firestore: firestore);
+        await expectLater(
+          () => client.orderBy('birds', 'score'),
+          throwsA(
+            isA<GrpcError>(),
+          ),
+        );
+
+        verify(() => firestore.collection('birds')).called(3);
       });
 
       test('returns empty when no results are returned', () async {

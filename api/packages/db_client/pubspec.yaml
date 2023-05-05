@@ -12,6 +12,7 @@ dependencies:
     git:
       url: https://github.com/VGVentures/firedart.git
       ref: master
+  grpc: ^3.1.0
 
 dev_dependencies:
   mocktail: ^0.3.0
