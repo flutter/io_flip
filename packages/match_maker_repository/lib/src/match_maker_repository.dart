@@ -11,6 +11,10 @@ const _inviteKey = 'INVITE';
 /// Represents an error that occurs when a matchmaking process times out.
 class MatchMakingTimeout extends Error {}
 
+/// Throw when tried to join a match, but a race condition occurred
+/// and another user joined the match first.
+class MatchMakingRaceError extends Error {}
+
 /// {@template match_maker_repository}
 /// Repository for match making.
 /// {@endtemplate}
@@ -155,6 +159,11 @@ class MatchMakerRepository {
         try {
           await db.runTransaction<Transaction>((transaction) async {
             final ref = collection.doc(match.id);
+            final snapshot = await transaction.get(ref);
+
+            if (snapshot.data()!['guest'] != emptyKey) {
+              throw MatchMakingRaceError();
+            }
             return transaction.update(ref, {'guest': id});
           });
           return match.copyWithGuest(guest: id);
