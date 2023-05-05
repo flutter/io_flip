@@ -28,8 +28,15 @@ class PromptFormView extends StatefulWidget {
 
 class _PromptFormViewState extends State<PromptFormView> {
   late int selectedIndex;
+  late final scrollController = FixedExtentScrollController(
+    initialItem: widget.initialItem,
+  );
 
   static const _gap = SizedBox(height: IoFlipSpacing.xxxlg);
+  static const itemPadding = EdgeInsets.symmetric(
+    horizontal: 20,
+    vertical: 6,
+  );
 
   @override
   void initState() {
@@ -63,12 +70,10 @@ class _PromptFormViewState extends State<PromptFormView> {
                   decoration: BoxDecoration(
                     borderRadius:
                         BorderRadius.circular(PromptFormView.itemExtent),
-                    color: IoFlipColors.seedYellow,
+                    border:
+                        Border.all(color: IoFlipColors.seedYellow, width: 2),
                   ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 6,
-                  ),
+                  padding: itemPadding,
                   child: Text(
                     selectedText,
                     style: IoFlipTextStyles.mobileH3.copyWith(
@@ -93,9 +98,7 @@ class _PromptFormViewState extends State<PromptFormView> {
                     ),
                   ),
                   child: ListWheelScrollView.useDelegate(
-                    controller: FixedExtentScrollController(
-                      initialItem: widget.initialItem,
-                    ),
+                    controller: scrollController,
                     diameterRatio: 500, // flat list in practice
                     scrollBehavior: ScrollConfiguration.of(context).copyWith(
                       dragDevices: {
@@ -113,12 +116,32 @@ class _PromptFormViewState extends State<PromptFormView> {
                     childDelegate: ListWheelChildBuilderDelegate(
                       builder: (_, index) {
                         return Center(
-                          child: Text(
-                            widget.itemsList[index],
-                            style: IoFlipTextStyles.mobileH3.copyWith(
-                              color: index == selectedIndex
-                                  ? IoFlipColors.seedBlack
-                                  : IoFlipColors.seedGrey70,
+                          child: MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: GestureDetector(
+                              onTap: () {
+                                scrollController.animateToItem(
+                                  index,
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeOutCubic,
+                                );
+                              },
+                              child: Container(
+                                padding: itemPadding,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                    PromptFormView.itemExtent,
+                                  ),
+                                ),
+                                child: Text(
+                                  widget.itemsList[index],
+                                  style: IoFlipTextStyles.mobileH3.copyWith(
+                                    color: index == selectedIndex
+                                        ? IoFlipColors.seedYellow
+                                        : IoFlipColors.seedGrey70,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         );
