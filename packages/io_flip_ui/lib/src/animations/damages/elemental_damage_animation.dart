@@ -17,7 +17,7 @@ T _platformAwareAsset<T>({
   final isWebMobile = isWeb &&
       (platform == TargetPlatform.iOS || platform == TargetPlatform.android);
 
-  return isWebMobile ? mobile : desktop;
+  return mobile;
 }
 
 /// {@template elemental_damage_step_notifier}
@@ -94,6 +94,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
   @override
   void initState() {
     super.initState();
+
     switch (widget.element) {
       case Element.metal:
         elementalDamage = widget.assetSize == AssetSize.large
@@ -128,7 +129,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
     switch (_animationState) {
       case DamageAnimationState.charging:
         return _platformAwareAsset(
-          mobile: const SizedBox.shrink(),
+          mobile: _Skip(onSkip: _onStepCompleted),
           desktop: Stack(
             children: [
               if (widget.direction == DamageDirection.topToBottom)
@@ -198,7 +199,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
         );
       case DamageAnimationState.receiving:
         return _platformAwareAsset(
-          mobile: const SizedBox.shrink(),
+          mobile: _Skip(onSkip: _onStepCompleted),
           desktop: Stack(
             children: [
               if (widget.direction == DamageDirection.topToBottom)
@@ -230,7 +231,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
         );
       case DamageAnimationState.victory:
         return _platformAwareAsset(
-          mobile: const SizedBox.shrink(),
+          mobile: _Skip(onSkip: _onStepCompleted),
           desktop: Stack(
             children: [
               if (widget.direction == DamageDirection.topToBottom)
@@ -302,6 +303,26 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
         _animationState = DamageAnimationState.ended;
       });
     }
+  }
+}
+
+class _Skip extends StatelessWidget {
+  const _Skip({
+    required this.onSkip,
+  });
+
+  final VoidCallback onSkip;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: Future<void>.delayed(const Duration(seconds: 1)).then((_) {
+        onSkip();
+      }),
+      builder: (_, __) {
+        return const SizedBox.shrink();
+      },
+    );
   }
 }
 
