@@ -622,11 +622,11 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
                 ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.all(IoFlipSpacing.sm),
-              child: Positioned(
-                left: 0,
-                bottom: 0,
+            const Positioned(
+              left: 0,
+              bottom: 0,
+              child: Padding(
+                padding: EdgeInsets.all(IoFlipSpacing.sm),
                 child: AudioToggleButton(),
               ),
             ),
