@@ -1,10 +1,27 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart' hide Card, Element;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:game_script_machine/game_script_machine.dart';
 import 'package:io_flip/audio/audio_controller.dart';
 import 'package:io_flip/gen/assets.gen.dart';
 import 'package:io_flip/utils/utils.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
+
+enum ComparisonResult { player, opponent, none }
+
+extension on int {
+  ComparisonResult get result {
+    if (this == 1) {
+      return ComparisonResult.player;
+    } else if (this == -1) {
+      return ComparisonResult.opponent;
+    } else {
+      return ComparisonResult.none;
+    }
+  }
+}
 
 class ClashScene extends StatefulWidget {
   const ClashScene({
@@ -22,8 +39,7 @@ class ClashScene extends StatefulWidget {
   State<StatefulWidget> createState() => ClashSceneState();
 }
 
-class ClashSceneState extends State<ClashScene>
-    with SingleTickerProviderStateMixin {
+class ClashSceneState extends State<ClashScene> with TickerProviderStateMixin {
   final AnimatedCardController opponentController = AnimatedCardController();
   final AnimatedCardController playerController = AnimatedCardController();
   late final AnimationController motionController = AnimationController(
@@ -37,6 +53,18 @@ class ClashSceneState extends State<ClashScene>
   ]).animate(
     CurvedAnimation(parent: motionController, curve: Curves.easeOutCirc),
   );
+
+  late final AnimationController damageController = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 2),
+  );
+
+  final Completer<void> damageCompleter = Completer<void>();
+
+  Animation<int>? powerDecrementAnimation;
+
+  late final ComparisonResult winningCard;
+  late final ComparisonResult winningSuit;
 
   var _flipCards = false;
 
@@ -54,9 +82,48 @@ class ClashSceneState extends State<ClashScene>
     );
   }
 
+  void onDamageRecieved() => damageController
+    ..forward()
+    ..addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        damageCompleter.complete();
+      }
+    });
+
+  void _getResults() {
+    final gameScript = context.read<GameScriptMachine>();
+    final playerCard = widget.playerCard;
+    final opponentCard = widget.opponentCard;
+
+    winningCard = gameScript.compare(playerCard, opponentCard).result;
+    winningSuit =
+        gameScript.compareSuits(playerCard.suit, opponentCard.suit).result;
+
+    if (winningSuit != ComparisonResult.none) {
+      int power;
+
+      if (winningSuit == ComparisonResult.player) {
+        power = widget.opponentCard.power;
+      } else {
+        power = widget.playerCard.power;
+      }
+
+      powerDecrementAnimation = IntTween(
+        begin: power,
+        end: power - 10,
+      ).animate(
+        CurvedAnimation(
+          parent: damageController,
+          curve: Curves.easeOutCirc,
+        ),
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    _getResults();
     motionController.forward();
     context.read<AudioController>().playSfx(Assets.sfx.flip);
   }
@@ -66,6 +133,7 @@ class ClashSceneState extends State<ClashScene>
     motionController.dispose();
     opponentController.dispose();
     playerController.dispose();
+    damageController.dispose();
     super.dispose();
   }
 
@@ -76,58 +144,89 @@ class ClashSceneState extends State<ClashScene>
     final playerCard = AnimatedBuilder(
       key: const Key('player_card'),
       animation: motion,
-      builder: (_, __) {
+      builder: (_, child) {
         return Positioned(
           bottom: 0,
           right: motion.value,
-          child: AnimatedCard(
-            controller: playerController,
-            front: const FlippedGameCard(
-              size: cardSize,
-            ),
-            back: GameCard(
-              size: cardSize,
-              image: widget.playerCard.image,
-              name: widget.playerCard.name,
-              description: widget.playerCard.description,
-              power: widget.playerCard.power,
-              suitName: widget.playerCard.suit.name,
-              isRare: widget.playerCard.rarity,
-            ),
-          ),
+          child: child!,
         );
       },
+      child: AnimatedCard(
+        controller: playerController,
+        front: const FlippedGameCard(
+          size: cardSize,
+        ),
+        back: powerDecrementAnimation == null ||
+                winningSuit == ComparisonResult.player
+            ? GameCard(
+                image: widget.playerCard.image,
+                name: widget.playerCard.name,
+                description: widget.playerCard.description,
+                power: widget.playerCard.power,
+                suitName: widget.playerCard.suit.name,
+                isRare: widget.playerCard.rarity,
+              )
+            : AnimatedBuilder(
+                animation: powerDecrementAnimation!,
+                builder: (_, __) {
+                  return GameCard(
+                    image: widget.playerCard.image,
+                    name: widget.playerCard.name,
+                    description: widget.playerCard.description,
+                    power: powerDecrementAnimation!.value,
+                    suitName: widget.playerCard.suit.name,
+                    isRare: widget.playerCard.rarity,
+                  );
+                },
+              ),
+      ),
     );
     final opponentCard = AnimatedBuilder(
       key: const Key('opponent_card'),
       animation: motion,
-      builder: (_, __) {
+      builder: (_, child) {
         return Positioned(
           top: 0,
           left: motion.value,
-          child: AnimatedCard(
-            controller: opponentController,
-            front: const FlippedGameCard(
-              size: cardSize,
-            ),
-            back: GameCard(
-              size: cardSize,
-              image: widget.opponentCard.image,
-              name: widget.opponentCard.name,
-              description: widget.opponentCard.description,
-              power: widget.opponentCard.power,
-              suitName: widget.opponentCard.suit.name,
-              isRare: widget.opponentCard.rarity,
-            ),
-          ),
+          child: child!,
         );
       },
+      child: AnimatedCard(
+        controller: opponentController,
+        front: const FlippedGameCard(
+          size: cardSize,
+        ),
+        back: powerDecrementAnimation == null ||
+                winningSuit == ComparisonResult.opponent
+            ? GameCard(
+                image: widget.opponentCard.image,
+                name: widget.opponentCard.name,
+                description: widget.opponentCard.description,
+                power: widget.opponentCard.power,
+                suitName: widget.opponentCard.suit.name,
+                isRare: widget.opponentCard.rarity,
+              )
+            : AnimatedBuilder(
+                animation: powerDecrementAnimation!,
+                builder: (_, __) {
+                  return GameCard(
+                    image: widget.opponentCard.image,
+                    name: widget.opponentCard.name,
+                    description: widget.opponentCard.description,
+                    power: powerDecrementAnimation!.value,
+                    suitName: widget.opponentCard.suit.name,
+                    isRare: widget.opponentCard.rarity,
+                  );
+                },
+              ),
+      ),
     );
-    final playerWins = widget.playerCard.power > widget.opponentCard.power;
-    final winningElement = _elementsMap[
-        playerWins ? widget.playerCard.suit : widget.opponentCard.suit];
-    final isSameElement = widget.playerCard.suit == widget.opponentCard.suit;
-    if (_flipCards && !isSameElement) {
+
+    final winningElement = _elementsMap[winningSuit == ComparisonResult.player
+        ? widget.playerCard.suit
+        : widget.opponentCard.suit];
+
+    if (_flipCards && winningSuit != ComparisonResult.none) {
       switch (winningElement!) {
         case Element.fire:
           context.read<AudioController>().playSfx(Assets.sfx.fire);
@@ -152,7 +251,7 @@ class ClashSceneState extends State<ClashScene>
         size: clashSceneSize,
         child: Stack(
           children: [
-            if (playerWins) ...[
+            if (winningSuit == ComparisonResult.player) ...[
               opponentCard,
               playerCard
             ] else ...[
@@ -170,7 +269,7 @@ class ClashSceneState extends State<ClashScene>
             if (_flipCards)
               ElementalDamageAnimation(
                 winningElement!,
-                direction: playerWins
+                direction: winningSuit == ComparisonResult.player
                     ? DamageDirection.bottomToTop
                     : DamageDirection.topToBottom,
                 size: cardSize,
@@ -178,9 +277,11 @@ class ClashSceneState extends State<ClashScene>
                   desktop: AssetSize.large,
                   mobile: AssetSize.small,
                 ),
-                initialState: isSameElement
+                initialState: winningSuit == ComparisonResult.none
                     ? DamageAnimationState.victory
                     : DamageAnimationState.charging,
+                onDamageReceived: onDamageRecieved,
+                pointDeductionCompleter: damageCompleter,
                 onComplete: widget.onFinished,
               )
           ],

@@ -46,6 +46,8 @@ class ElementalDamageAnimation extends StatefulWidget {
     required this.size,
     this.assetSize = AssetSize.large,
     this.onComplete,
+    this.onDamageReceived,
+    this.pointDeductionCompleter,
     this.stepNotifier,
     super.key,
   });
@@ -53,6 +55,12 @@ class ElementalDamageAnimation extends StatefulWidget {
   /// Optional callback to be called when all the animations of the damage
   /// are complete.
   final VoidCallback? onComplete;
+
+  /// Optional callback to be called when the damage is received.
+  final VoidCallback? onDamageReceived;
+
+  /// Completer to be completed when the points have been deducted.
+  final Completer<void>? pointDeductionCompleter;
 
   /// Element defining which [ElementalDamage] to use
   final Element element;
@@ -212,6 +220,8 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
               )
           ],
         );
+      case DamageAnimationState.waitingVictory:
+        return Container();
       case DamageAnimationState.victory:
         return Stack(
           children: [
@@ -257,11 +267,11 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
         );
       case DamageAnimationState.ended:
         widget.onComplete?.call();
-        return const SizedBox.shrink();
+        return Container();
     }
   }
 
-  void _onStepCompleted() {
+  Future<void> _onStepCompleted() async {
     if (_animationState == DamageAnimationState.charging) {
       widget.stepNotifier?._charged.complete();
       setState(() {
@@ -273,7 +283,14 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
         _animationState = DamageAnimationState.receiving;
       });
     } else if (_animationState == DamageAnimationState.receiving) {
+      setState(() {
+        _animationState = DamageAnimationState.waitingVictory;
+      });
+
       widget.stepNotifier?._received.complete();
+      widget.onDamageReceived?.call();
+      await widget.pointDeductionCompleter?.future;
+
       setState(() {
         _animationState = DamageAnimationState.victory;
       });
@@ -311,6 +328,9 @@ enum DamageAnimationState {
 
   /// Receiving animation
   receiving,
+
+  /// Waiting for victory animation
+  waitingVictory,
 
   /// Victory animation
   victory,
