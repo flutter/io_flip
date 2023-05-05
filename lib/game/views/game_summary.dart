@@ -65,18 +65,18 @@ class GameSummaryView extends StatelessWidget {
               child: _CardsView(),
             ),
             const Spacer(),
-            Padding(
-              padding: const EdgeInsets.all(IoFlipSpacing.sm),
+            const Padding(
+              padding: EdgeInsets.all(IoFlipSpacing.sm),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  const AudioToggleButton(),
+                  AudioToggleButton(),
                   _gap,
                   Expanded(
-                    child: GameSummaryFooter(isPhoneWidth: isPhoneWidth),
+                    child: GameSummaryFooter(),
                   ),
                   _gap,
-                  const InfoButton(),
+                  InfoButton(),
                 ],
               ),
             ),
@@ -271,13 +271,11 @@ class _RoundSummary extends StatelessWidget {
 
 class GameSummaryFooter extends StatelessWidget {
   const GameSummaryFooter({
-    required this.isPhoneWidth,
     RouterNeglectCall routerNeglectCall = Router.neglect,
     super.key,
   }) : _routerNeglectCall = routerNeglectCall;
 
   final RouterNeglectCall _routerNeglectCall;
-  final bool isPhoneWidth;
 
   @override
   Widget build(BuildContext context) {
