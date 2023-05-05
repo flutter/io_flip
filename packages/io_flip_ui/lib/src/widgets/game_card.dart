@@ -259,26 +259,56 @@ class GameCard extends StatelessWidget {
   (String, SvgPicture) _mapSuitNameToAssets() {
     switch (suitName) {
       case 'fire':
+        if (isRare) {
+          return (
+            Assets.images.cardFrames.holos.cardFire.keyName,
+            Assets.images.suits.card.fire.svg(),
+          );
+        }
         return (
           Assets.images.cardFrames.cardFire.keyName,
           Assets.images.suits.card.fire.svg(),
         );
       case 'water':
+        if (isRare) {
+          return (
+            Assets.images.cardFrames.holos.cardWater.keyName,
+            Assets.images.suits.card.water.svg(),
+          );
+        }
         return (
           Assets.images.cardFrames.cardWater.keyName,
           Assets.images.suits.card.water.svg(),
         );
       case 'earth':
+        if (isRare) {
+          return (
+            Assets.images.cardFrames.holos.cardEarth.keyName,
+            Assets.images.suits.card.earth.svg(),
+          );
+        }
         return (
           Assets.images.cardFrames.cardEarth.keyName,
           Assets.images.suits.card.earth.svg(),
         );
       case 'air':
+        if (isRare) {
+          return (
+            Assets.images.cardFrames.holos.cardAir.keyName,
+            Assets.images.suits.card.air.svg(),
+          );
+        }
         return (
           Assets.images.cardFrames.cardAir.keyName,
           Assets.images.suits.card.air.svg(),
         );
       case 'metal':
+        if (isRare) {
+          return (
+            Assets.images.cardFrames.holos.cardMetal.keyName,
+            Assets.images.suits.card.metal.svg(),
+          );
+        }
         return (
           Assets.images.cardFrames.cardMetal.keyName,
           Assets.images.suits.card.metal.svg(),

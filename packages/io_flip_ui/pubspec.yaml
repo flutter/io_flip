@@ -49,6 +49,7 @@ flutter:
     - assets/images/suits/onboarding/
     - assets/images/suits/card/
     - assets/images/card_frames/
+    - assets/images/card_frames/holos/
 
   fonts:
     - family: Google Sans
