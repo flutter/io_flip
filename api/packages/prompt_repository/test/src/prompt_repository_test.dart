@@ -395,6 +395,35 @@ void main() {
           expect(isOneOfTheOptions, isTrue);
         },
       );
+
+      test(
+        'returns the same url when there is no entries in the table',
+        () async {
+          when(
+            () => dbClient.findBy(
+              'image_lookup_table',
+              'prompt',
+              'dash_mage_volcano',
+            ),
+          ).thenAnswer(
+            (_) async => [
+              DbEntityRecord(
+                id: '',
+                data: const {
+                  'available_images': <String>[],
+                },
+              ),
+            ],
+          );
+
+          final result = await promptRepository.ensurePromptImage(
+            promptCombination: 'dash_mage_volcano',
+            imageUrl: 'dash_mage_volcano_1.png',
+          );
+
+          expect(result, equals('dash_mage_volcano_1.png'));
+        },
+      );
     });
   });
 }

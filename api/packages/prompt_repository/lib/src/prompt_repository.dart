@@ -96,7 +96,11 @@ class PromptRepository {
       if (images.contains(imageUrl)) {
         return imageUrl;
       } else {
-        return ([...images]..shuffle()).first;
+        final list = ([...images]..shuffle());
+        if (list.isEmpty) {
+          return imageUrl;
+        }
+        return list.first;
       }
     }
   }
