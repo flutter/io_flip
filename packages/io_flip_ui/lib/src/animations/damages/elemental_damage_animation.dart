@@ -78,7 +78,7 @@ class ElementalDamageAnimation extends StatefulWidget {
 }
 
 class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
-  var _animationState = DamageAnimationState.charging;
+  late var _animationState = widget.initialState;
   late final ElementalDamage elementalDamage;
 
   @override
