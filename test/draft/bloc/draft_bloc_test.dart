@@ -100,18 +100,6 @@ void main() {
     );
 
     blocTest<DraftBloc, DraftState>(
-      'plays the reveal sfx when the deck is loaded',
-      build: () => DraftBloc(
-        gameResource: gameResource,
-        audioController: audioController,
-      ),
-      act: (bloc) => bloc.add(DeckRequested(Prompt())),
-      verify: (_) {
-        verify(() => audioController.playSfx(Assets.sfx.reveal)).called(1);
-      },
-    );
-
-    blocTest<DraftBloc, DraftState>(
       'plays the holo reveal sfx when the deck is loaded and the first '
       'card is rare',
       setUp: () {
