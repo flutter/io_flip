@@ -11,8 +11,8 @@ import 'package:io_flip_ui/src/animations/damages/water_damage.dart';
 import 'package:io_flip_ui/src/widgets/damages/dual_animation.dart';
 
 /// {@template elemental_damage_step_notifier}
-/// A notifier that allows an external test to know when an [DamageAnimationState]
-/// is complete
+/// A notifier that allows an external
+/// test to know when an [DamageAnimationState] is complete
 /// {@endtemplate}
 @visibleForTesting
 class ElementalDamageStepNotifier {
