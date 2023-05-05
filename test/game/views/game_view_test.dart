@@ -660,7 +660,7 @@ void main() {
 
       testWidgets(
         'completes and goes back when both players play a card and '
-        'clash scene finishes, plays round wind sfx',
+        'clash scene finishes, plays round win sfx',
         (tester) async {
           final controller = StreamController<GameState>.broadcast();
           final audioController = _MockAudioController();
