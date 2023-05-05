@@ -957,14 +957,10 @@ class _ClashScene extends StatelessWidget {
           alignment: Alignment.center,
           children: [
             Transform.scale(
-              scale: 1.4,
+              scale: 3,
               child: Center(
                 child: Image.asset(
-                  platformAwareAsset(
-                    desktop: Assets.images.stadiumBackgroundCloseUp.keyName,
-                    mobile:
-                        Assets.images.mobile.stadiumBackgroundCloseUp.keyName,
-                  ),
+                  Assets.images.stadiumBackground.keyName,
                   fit: BoxFit.cover,
                 ),
               ),

@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - feat/improving-clash-scene-perfomance
 
 jobs:
   deploy-dev:
