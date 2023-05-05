@@ -144,7 +144,7 @@ void main() {
 
       testWidgets('renders the game in its initial state', (tester) async {
         mockState(baseState);
-        await tester.pumpSubject(bloc, audioController: _MockAudioController());
+        await tester.pumpSubject(bloc);
 
         expect(
           find.byKey(const Key('opponent_hidden_card_opponent_card')),
