@@ -34,12 +34,12 @@ class VictoryChargeFront extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final images = context.read<Images>();
-    final height = 1.22 * size.height;
     final width = 1.59 * size.width;
+    final height = 1.24 * size.height;
 
     return SizedBox(
-      height: height,
       width: width,
+      height: height,
       child: SpriteAnimationWidget.asset(
         path: path,
         images: images,

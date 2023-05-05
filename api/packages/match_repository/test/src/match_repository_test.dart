@@ -661,9 +661,11 @@ void main() {
                 data: {
                   'wins': 1,
                   'currentStreak': 1,
+                  'latestStreak': 1,
                   'longestStreak': 1,
-                  'longestStreakDeck': hostDeck.id,
                   'currentDeck': hostDeck.id,
+                  'latestDeck': hostDeck.id,
+                  'longestStreakDeck': hostDeck.id,
                 },
               ),
             ),
@@ -674,8 +676,11 @@ void main() {
               'score_cards',
               DbEntityRecord(
                 id: guestDeck.userId,
-                data: const {
+                data: {
                   'currentStreak': 0,
+                  'latestStreak': 0,
+                  'currentDeck': guestDeck.id,
+                  'latestDeck': guestDeck.id,
                 },
               ),
             ),
@@ -713,8 +718,10 @@ void main() {
                 data: {
                   'wins': 1,
                   'currentStreak': 1,
+                  'latestStreak': 1,
                   'longestStreak': 1,
                   'currentDeck': guestDeck.id,
+                  'latestDeck': guestDeck.id,
                   'longestStreakDeck': guestDeck.id,
                 },
               ),
@@ -726,8 +733,11 @@ void main() {
               'score_cards',
               DbEntityRecord(
                 id: hostDeck.userId,
-                data: const {
+                data: {
                   'currentStreak': 0,
+                  'latestStreak': 0,
+                  'currentDeck': hostDeck.id,
+                  'latestDeck': hostDeck.id,
                 },
               ),
             ),
@@ -767,9 +777,9 @@ void main() {
                 data: {
                   'wins': 1,
                   'currentStreak': 1,
-                  'longestStreak': 2,
+                  'latestStreak': 1,
                   'currentDeck': guestDeck.id,
-                  'longestStreakDeck': 'longestStreakDeckId',
+                  'latestDeck': guestDeck.id,
                 },
               ),
             ),
@@ -780,8 +790,11 @@ void main() {
               'score_cards',
               DbEntityRecord(
                 id: hostDeck.userId,
-                data: const {
+                data: {
                   'currentStreak': 0,
+                  'latestStreak': 0,
+                  'currentDeck': hostDeck.id,
+                  'latestDeck': hostDeck.id,
                 },
               ),
             ),
@@ -1023,9 +1036,11 @@ void main() {
                 data: {
                   'wins': 1,
                   'currentStreak': 1,
+                  'latestStreak': 1,
                   'longestStreak': 1,
-                  'longestStreakDeck': hostDeck.id,
                   'currentDeck': hostDeck.id,
+                  'latestDeck': hostDeck.id,
+                  'longestStreakDeck': hostDeck.id,
                 },
               ),
             ),
@@ -1036,8 +1051,11 @@ void main() {
               'score_cards',
               DbEntityRecord(
                 id: guestDeck.userId,
-                data: const {
+                data: {
                   'currentStreak': 0,
+                  'latestStreak': 0,
+                  'currentDeck': guestDeck.id,
+                  'latestDeck': guestDeck.id,
                 },
               ),
             ),
@@ -1082,8 +1100,10 @@ void main() {
                 data: {
                   'wins': 1,
                   'currentStreak': 1,
+                  'latestStreak': 1,
                   'longestStreak': 1,
                   'currentDeck': guestDeck.id,
+                  'latestDeck': guestDeck.id,
                   'longestStreakDeck': guestDeck.id,
                 },
               ),
@@ -1095,8 +1115,11 @@ void main() {
               'score_cards',
               DbEntityRecord(
                 id: hostDeck.userId,
-                data: const {
+                data: {
                   'currentStreak': 0,
+                  'latestStreak': 0,
+                  'currentDeck': hostDeck.id,
+                  'latestDeck': hostDeck.id,
                 },
               ),
             ),
@@ -1143,9 +1166,9 @@ void main() {
                 data: {
                   'wins': 1,
                   'currentStreak': 1,
-                  'longestStreak': 2,
+                  'latestStreak': 1,
                   'currentDeck': guestDeck.id,
-                  'longestStreakDeck': 'longestStreakDeckId',
+                  'latestDeck': guestDeck.id,
                 },
               ),
             ),
@@ -1156,8 +1179,11 @@ void main() {
               'score_cards',
               DbEntityRecord(
                 id: hostDeck.userId,
-                data: const {
+                data: {
                   'currentStreak': 0,
+                  'latestStreak': 0,
+                  'currentDeck': hostDeck.id,
+                  'latestDeck': hostDeck.id,
                 },
               ),
             ),
