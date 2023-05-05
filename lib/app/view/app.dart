@@ -8,6 +8,7 @@ import 'package:game_domain/game_domain.dart';
 import 'package:game_script_machine/game_script_machine.dart';
 import 'package:go_router/go_router.dart';
 import 'package:io_flip/app_lifecycle/app_lifecycle.dart';
+import 'package:io_flip/asset_manager/asset_manager.dart';
 import 'package:io_flip/audio/audio_controller.dart';
 import 'package:io_flip/connection/connection.dart';
 import 'package:io_flip/gen/assets.gen.dart';
@@ -75,6 +76,9 @@ class _AppState extends State<App> {
         isScriptsEnabled: widget.isScriptsEnabled,
       );
 
+  late final _images = Images(prefix: '');
+  late final _assetManager = AssetManager(_images)..preload();
+
   @override
   Widget build(BuildContext context) {
     return AppLifecycleObserver(
@@ -90,7 +94,8 @@ class _AppState extends State<App> {
           Provider.value(value: widget.matchSolver),
           Provider.value(value: widget.gameScriptMachine),
           Provider.value(value: widget.user),
-          Provider.value(value: Images(prefix: '')),
+          Provider.value(value: _images),
+          Provider.value(value: _assetManager),
           Provider<SettingsController>(
             lazy: false,
             create: (context) => SettingsController(

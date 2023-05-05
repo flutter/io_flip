@@ -2,6 +2,7 @@ import 'package:api_client/api_client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:io_flip/asset_manager/asset_manager.dart';
 import 'package:io_flip/audio/audio_controller.dart';
 import 'package:io_flip/gen/assets.gen.dart';
 
@@ -12,8 +13,10 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
   DraftBloc({
     required GameResource gameResource,
     required AudioController audioController,
+    required AssetManager assetManager,
   })  : _gameResource = gameResource,
         _audioController = audioController,
+        _assetManager = assetManager,
         super(const DraftState.initial()) {
     on<DeckRequested>(_onDeckRequested);
     on<PreviousCard>(_onPreviousCard);
@@ -26,6 +29,7 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
 
   final GameResource _gameResource;
   final AudioController _audioController;
+  final AssetManager _assetManager;
 
   final List<String> _playedHoloReveal = [];
 
@@ -37,6 +41,8 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
       emit(state.copyWith(status: DraftStateStatus.deckLoading));
 
       final cards = await _gameResource.generateCards(event.prompts);
+      // We don't allow the user to move on while there are assets loading.
+      await _assetManager.ready;
 
       emit(
         state.copyWith(

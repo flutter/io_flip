@@ -44,6 +44,13 @@ abstract class ElementalDamage {
   /// String containing the [VictoryChargeFront] animation path.
   final String _victoryChargeFrontPath;
 
+  String get chargeBackPath => _chargeBackPath;
+  String get chargeFrontPath => _chargeFrontPath;
+  String get damageReceivePath => _damageReceivePath;
+  String get damageSendPath => _damageSendPath;
+  String get victoryChargeBackPath => _victoryChargeBackPath;
+  String get victoryChargeFrontPath => _victoryChargeFrontPath;
+
   /// Widget builder returning the [ChargeBack] animation.
   ChargeBack chargeBackBuilder(
     VoidCallback? onComplete,
