@@ -6,8 +6,6 @@ import 'package:game_domain/game_domain.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:uuid/uuid.dart';
 
-const _emptyKey = 'EMPTY';
-
 const _inviteKey = 'INVITE';
 
 /// Represents an error that occurs when a matchmaking process times out.
@@ -64,7 +62,7 @@ class MatchMakerRepository {
       return DraftMatch(
         id: id,
         host: host,
-        guest: guest == _emptyKey || guest == _inviteKey ? null : guest,
+        guest: guest == emptyKey || guest == _inviteKey ? null : guest,
         hostConnected: hostConnected ?? false,
         guestConnected: guestConnected ?? false,
       );
@@ -138,7 +136,7 @@ class MatchMakerRepository {
     final matchesResult = await collection
         .where(
           'guest',
-          isEqualTo: _emptyKey,
+          isEqualTo: emptyKey,
         )
         .where(
           'hostConnected',
@@ -215,7 +213,7 @@ class MatchMakerRepository {
     final inviteCode = inviteOnly ? _inviteCode() : null;
     final result = await collection.add({
       'host': id,
-      'guest': inviteOnly ? _inviteKey : _emptyKey,
+      'guest': inviteOnly ? _inviteKey : emptyKey,
       if (inviteCode != null) 'inviteCode': inviteCode,
     });
 

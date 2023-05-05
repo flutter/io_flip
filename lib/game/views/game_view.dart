@@ -131,6 +131,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
   final List<TickerFuture> _runningPlayerAnimations = [];
   final List<TickerFuture> _runningOpponentAnimations = [];
   List<AnimationController> clashControllers = [];
+  late AudioController audioController;
 
   List<AnimationController> createAnimationControllers() {
     return List.generate(
@@ -149,6 +150,12 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     cardsAtHand,
     (_) => AnimatedCardController(),
   );
+
+  @override
+  void initState() {
+    super.initState();
+    audioController = context.read<AudioController>();
+  }
 
   @override
   void didChangeDependencies() {
@@ -435,6 +442,14 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     await playerAnimatedCardControllers[lastPlayedPlayerCardIndex!]
         .run(bigFlipAnimation);
     clashControllers = [];
+
+    final playerCard = bloc.playerCards[lastPlayedPlayerCardIndex!];
+    final overlayType = bloc.isWinningCard(playerCard, isPlayer: true);
+    if (CardOverlayType.win == overlayType) {
+      audioController.playSfx(Assets.sfx.roundWin);
+    } else if (CardOverlayType.lose == overlayType) {
+      audioController.playSfx(Assets.sfx.roundLost);
+    }
     bloc
       ..add(const TurnAnimationsFinished())
       ..add(const TurnTimerStarted());
@@ -707,6 +722,7 @@ class _OpponentCard extends StatelessWidget {
                       isRare: card.rarity,
                       size: position.gameCardSize,
                       overlay: overlay,
+                      isDimmed: true,
                     ),
                   ],
                 )
@@ -759,6 +775,7 @@ class _PlayerCard extends StatelessWidget {
             isRare: card.rarity,
             size: rect.gameCardSize,
             overlay: overlay,
+            isDimmed: overlay != null,
           ),
           back: const FlippedGameCard(
             size: GameCardSize.xxs(),

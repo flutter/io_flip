@@ -126,6 +126,27 @@ class ClashSceneState extends State<ClashScene>
     final playerWins = widget.playerCard.power > widget.opponentCard.power;
     final winningElement = _elementsMap[
         playerWins ? widget.playerCard.suit : widget.opponentCard.suit];
+    final isSameElement = widget.playerCard.suit == widget.opponentCard.suit;
+    if (_flipCards && !isSameElement) {
+      switch (winningElement!) {
+        case Element.fire:
+          context.read<AudioController>().playSfx(Assets.sfx.fire);
+          break;
+        case Element.air:
+          context.read<AudioController>().playSfx(Assets.sfx.air);
+          break;
+        case Element.earth:
+          context.read<AudioController>().playSfx(Assets.sfx.earth);
+          break;
+        case Element.metal:
+          context.read<AudioController>().playSfx(Assets.sfx.metal);
+          break;
+        case Element.water:
+          context.read<AudioController>().playSfx(Assets.sfx.water);
+          break;
+      }
+    }
+
     return Center(
       child: SizedBox.fromSize(
         size: clashSceneSize,
@@ -157,6 +178,9 @@ class ClashSceneState extends State<ClashScene>
                   desktop: AssetSize.large,
                   mobile: AssetSize.small,
                 ),
+                initialState: isSameElement
+                    ? DamageAnimationState.victory
+                    : DamageAnimationState.charging,
                 onComplete: widget.onFinished,
               )
           ],

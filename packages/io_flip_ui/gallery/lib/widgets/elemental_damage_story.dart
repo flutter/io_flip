@@ -59,6 +59,7 @@ class _ElementalDamageStoryState extends State<ElementalDamageStory> {
                     widget.element,
                     direction: DamageDirection.topToBottom,
                     size: const GameCardSize.md(),
+                    initialState: DamageAnimationState.charging,
                     onComplete: () {},
                   ),
                 ),

@@ -92,6 +92,22 @@ class MatchRepository {
     );
   }
 
+  /// Returns true if match exists and guest is empty, else returns false
+  Future<bool> isDraftMatch(String matchId) async {
+    final matchData = await _dbClient.getById('matches', matchId);
+
+    if (matchData == null) {
+      return false;
+    }
+
+    final guestDeckId = matchData.data['guest'] as String;
+
+    if (guestDeckId == emptyKey) {
+      return true;
+    }
+    return false;
+  }
+
   Future<DbEntityRecord?> _findMatchStateByMatchId(String matchId) async {
     final result = await _dbClient.findBy(
       'match_states',
@@ -156,7 +172,7 @@ class MatchRepository {
       userId: userId,
     );
 
-    if (match.guestDeck.userId.contains(_cpuPrefix) &&
+    if (match.guestDeck.userId.startsWith(_cpuPrefix) &&
         newMatchState.guestPlayedCards.length < 3 &&
         newMatchState.guestPlayedCards.length <=
             newMatchState.hostPlayedCards.length) {
@@ -271,10 +287,8 @@ class MatchRepository {
   }
 
   Future<void> _playerWon(ScoreCard scoreCard) async {
-    var newStreak = scoreCard.longestStreak;
-    if (scoreCard.currentStreak + 1 > scoreCard.longestStreak) {
-      newStreak = scoreCard.currentStreak + 1;
-    }
+    final newStreak = scoreCard.currentStreak + 1;
+    final isLongestStreak = newStreak > scoreCard.longestStreak;
 
     await _dbClient.update(
       'score_cards',
@@ -282,12 +296,12 @@ class MatchRepository {
         id: scoreCard.id,
         data: {
           'wins': scoreCard.wins + 1,
-          'currentStreak': scoreCard.currentStreak + 1,
-          'longestStreak': newStreak,
+          'currentStreak': newStreak,
+          'latestStreak': newStreak,
+          if (isLongestStreak) 'longestStreak': newStreak,
           'currentDeck': scoreCard.currentDeck,
-          'longestStreakDeck': newStreak > scoreCard.longestStreak
-              ? scoreCard.currentDeck
-              : scoreCard.longestStreakDeck,
+          'latestDeck': scoreCard.currentDeck,
+          if (isLongestStreak) 'longestStreakDeck': scoreCard.currentDeck,
         },
       ),
     );
@@ -298,8 +312,11 @@ class MatchRepository {
       'score_cards',
       DbEntityRecord(
         id: scoreCard.id,
-        data: const {
+        data: {
           'currentStreak': 0,
+          if (scoreCard.currentDeck != scoreCard.latestDeck) 'latestStreak': 0,
+          'currentDeck': scoreCard.currentDeck,
+          'latestDeck': scoreCard.currentDeck,
         },
       ),
     );
