@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Card;
@@ -435,6 +437,14 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     await playerAnimatedCardControllers[lastPlayedPlayerCardIndex!]
         .run(bigFlipAnimation);
     clashControllers = [];
+
+    final playerCard = bloc.playerCards[lastPlayedPlayerCardIndex!];
+    final overlayType = bloc.isWinningCard(playerCard, isPlayer: true);
+    if (CardOverlayType.win == overlayType) {
+      context.read<AudioController>().playSfx(Assets.sfx.roundWin);
+    } else if (CardOverlayType.lose == overlayType) {
+      context.read<AudioController>().playSfx(Assets.sfx.roundLost);
+    }
     bloc
       ..add(const TurnAnimationsFinished())
       ..add(const TurnTimerStarted());
