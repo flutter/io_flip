@@ -79,6 +79,9 @@ void main() {
     when(
       () => matchRepository.getPlayerConnectivity(userId: userId),
     ).thenAnswer((_) => Future.value(true));
+    when(
+      () => matchRepository.isDraftMatch(matchId),
+    ).thenAnswer((_) => Future.value(true));
 
     promptRepository = _MockPromptRepository();
     when(
@@ -140,6 +143,14 @@ void main() {
         () => matchRepository.getPlayerConnectivity(userId: userId),
       ).thenAnswer((_) => Future.value(false));
       when(() => matchRepository.trackPlayerPresence).thenReturn(true);
+      final response = await route.onRequest(context, matchId);
+      expect(response.statusCode, equals(HttpStatus.forbidden));
+    });
+
+    test("responds with a 401 if match isn't a draft", () async {
+      when(
+        () => matchRepository.isDraftMatch(matchId),
+      ).thenAnswer((_) => Future.value(false));
       final response = await route.onRequest(context, matchId);
       expect(response.statusCode, equals(HttpStatus.forbidden));
     });
