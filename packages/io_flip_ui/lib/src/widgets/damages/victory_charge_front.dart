@@ -34,25 +34,32 @@ class VictoryChargeFront extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final images = context.read<Images>();
-    final width = 1.59 * size.width;
-    final height = 1.24 * size.height;
+    final width = 1.5 * size.width;
+    final height = 1.22 * size.height;
+    final textureSize =
+        assetSize == AssetSize.large ? Vector2(607, 695) : Vector2(364, 417);
 
     return SizedBox(
       width: width,
       height: height,
-      child: SpriteAnimationWidget.asset(
-        path: path,
-        images: images,
-        anchor: Anchor.center,
-        onComplete: onComplete,
-        data: SpriteAnimationData.sequenced(
-          amount: 18,
-          amountPerRow: 6,
-          textureSize: assetSize == AssetSize.large
-              ? Vector2(607, 695)
-              : Vector2(364, 417),
-          stepTime: 0.04,
-          loop: false,
+      child: FittedBox(
+        fit: BoxFit.fill,
+        child: SizedBox(
+          width: textureSize.x,
+          height: textureSize.y,
+          child: SpriteAnimationWidget.asset(
+            path: path,
+            images: images,
+            anchor: Anchor.center,
+            onComplete: onComplete,
+            data: SpriteAnimationData.sequenced(
+              amount: 18,
+              amountPerRow: 6,
+              textureSize: textureSize,
+              stepTime: 0.04,
+              loop: false,
+            ),
+          ),
         ),
       ),
     );

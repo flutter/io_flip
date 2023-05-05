@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+
 import 'package:card_renderer/card_renderer.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:http/http.dart';
@@ -101,7 +102,7 @@ class CardRenderer {
   }
 
   List<_Line> _splitText(String string, BitmapFont font, int width) {
-    final words = string.split(RegExp(r"\s+"));
+    final words = string.split(RegExp(r'\s+'));
     final lines = <_Line>[];
 
     var lineWidth = 0;
@@ -113,7 +114,7 @@ class CardRenderer {
       w = ws.toString();
       final chars = w.codeUnits;
       var wordWidth = 0;
-      for (var c in chars) {
+      for (final c in chars) {
         if (!font.characters.containsKey(c)) {
           wordWidth += font.base ~/ 2;
         } else {

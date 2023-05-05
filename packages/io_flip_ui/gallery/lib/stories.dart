@@ -62,6 +62,10 @@ void addStories(Dashbook dashbook) {
   dashbook
       .storiesOf('Elemental Damage Story')
       .add(
+        'All elements',
+        (context) => const AllElementsStory(),
+      )
+      .add(
         'Metal Damage Story',
         (context) => const ElementalDamageStory(Element.metal),
       )
