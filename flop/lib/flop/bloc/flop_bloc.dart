@@ -341,6 +341,9 @@ class FlopBloc extends Bloc<FlopEvent, FlopState> {
       print(e);
       print(s);
       addError(e, s);
+
+      await Future<void>.delayed(const Duration(seconds: 2));
+      reload();
     }
   }
 }
