@@ -6,42 +6,49 @@ import 'package:http/http.dart';
 import 'package:image/image.dart';
 
 // Component Sizes
-const _cardSize = _Size(width: 500, height: 655);
-const _characterSize = _Size(width: 434, height: 408);
-const _descriptionSize = _Size(width: 404, height: 112);
-const _powerSpriteSize = _Size(width: 170, height: 97);
+const _cardSize = _Size(width: 327, height: 435);
+const _characterSize = _Size(width: 279, height: 279);
+const _descriptionSize = _Size(width: 263, height: 72);
+const _powerSpriteSize = _Size(width: 113, height: 64);
 
 // Component Positions
-const _titlePosition = 445;
-const _characterPosition = 33;
-const _powerSpritePosition = [322, 65];
-const _descriptionPosition = [48, 522];
+const _titlePosition = 300;
+const _characterPosition = [24, 20];
+const _powerSpritePosition = [218, 44];
+const _descriptionPosition = [32, 345];
 const _elementIconPositions = {
-  Suit.air: [318, 19],
-  Suit.earth: [314, 7],
-  Suit.fire: [336, 3],
-  Suit.water: [338, 5],
-  Suit.metal: [328, 37],
+  Suit.air: [213, 12],
+  Suit.earth: [210, 4],
+  Suit.fire: [225, 2],
+  Suit.water: [226, 3],
+  Suit.metal: [220, 24],
 };
 
 // Assets
 const _powerSpriteAsset = 'http://127.0.0.1:8080/assets/power-sprites.png';
-const _titleFontAsset = 'http://127.0.0.1:8080/assets/Saira-Bold-42.ttf.zip';
+const _titleFontAsset = 'http://127.0.0.1:8080/assets/Saira-Bold-28.ttf.zip';
 const _descriptionFontAsset =
-    'http://127.0.0.1:8080/assets/GoogleSans-21.ttf.zip';
+    'http://127.0.0.1:8080/assets/GoogleSans-14.ttf.zip';
 const _elementIconAssets = {
   Suit.air: 'http://127.0.0.1:8080/assets/icon-air.png',
-  Suit.earth: 'http://127.0.0.1:8080/assets/icon-ground.png',
+  Suit.earth: 'http://127.0.0.1:8080/assets/icon-earth.png',
   Suit.fire: 'http://127.0.0.1:8080/assets/icon-fire.png',
   Suit.water: 'http://127.0.0.1:8080/assets/icon-water.png',
   Suit.metal: 'http://127.0.0.1:8080/assets/icon-metal.png',
 };
 const _elementFrameAssets = {
   Suit.air: 'http://127.0.0.1:8080/assets/card-air.png',
-  Suit.earth: 'http://127.0.0.1:8080/assets/card-ground.png',
+  Suit.earth: 'http://127.0.0.1:8080/assets/card-earth.png',
   Suit.fire: 'http://127.0.0.1:8080/assets/card-fire.png',
   Suit.water: 'http://127.0.0.1:8080/assets/card-water.png',
   Suit.metal: 'http://127.0.0.1:8080/assets/card-metal.png',
+};
+const _holoFrameAssets = {
+  Suit.air: 'http://127.0.0.1:8080/assets/holos/card-air.png',
+  Suit.earth: 'http://127.0.0.1:8080/assets/holos/card-earth.png',
+  Suit.fire: 'http://127.0.0.1:8080/assets/holos/card-fire.png',
+  Suit.water: 'http://127.0.0.1:8080/assets/holos/card-water.png',
+  Suit.metal: 'http://127.0.0.1:8080/assets/holos/card-metal.png',
 };
 
 /// {@template card_renderer_failure}
@@ -142,7 +149,13 @@ class CardRenderer {
     try {
       final assets = await Future.wait([
         _getFile(Uri.parse(card.image)),
-        _getFile(Uri.parse(_elementFrameAssets[card.suit]!)),
+        _getFile(
+          Uri.parse(
+            card.rarity
+                ? _holoFrameAssets[card.suit]!
+                : _elementFrameAssets[card.suit]!,
+          ),
+        ),
         _getFile(Uri.parse(_elementIconAssets[card.suit]!)),
         _getFile(Uri.parse(_powerSpriteAsset)),
         _getFile(Uri.parse(_descriptionFontAsset)),
@@ -165,8 +178,8 @@ class CardRenderer {
         ..convert(numChannels: 4, alpha: 0)
         ..compositeImage(
           characterCmd,
-          dstX: _characterPosition,
-          dstY: _characterPosition,
+          dstX: _characterPosition.first,
+          dstY: _characterPosition.last,
           dstW: _characterSize.width,
           dstH: _characterSize.height,
         )
@@ -174,27 +187,13 @@ class CardRenderer {
           frameCmd,
           dstX: 0,
           dstY: 0,
-        )
-        ..compositeImage(
-          elementIconCmd,
-          dstX: elementIcon.dstX,
-          dstY: elementIcon.dstY,
-        )
-        ..compositeImage(
-          powerSpriteCmd,
-          dstX: power.dstX,
-          dstY: power.dstY,
-          srcX: power.srcX,
-          srcY: power.srcY,
-          srcW: power.width,
-          srcH: power.height,
-          dstW: power.width,
-          dstH: power.height,
         );
 
-      final lineHeight = descriptionFont.lineHeight;
-
       final titleLines = _splitText(card.name, titleFont, _cardSize.width);
+
+      final titleLineHeight = titleFont.lineHeight;
+      var titlePosition = _titlePosition;
+      if (titleLines.length > 1) titlePosition -= titleLineHeight ~/ 2;
 
       for (var i = 0; i < titleLines.length; i++) {
         final line = titleLines[i];
@@ -202,10 +201,11 @@ class CardRenderer {
           line.text.trimRight(),
           font: titleFont,
           x: ((_cardSize.width - line.width) / 2).round(),
-          y: _titlePosition + ((lineHeight + 5) * i),
+          y: titlePosition + ((titleLineHeight - 15) * i),
         );
       }
 
+      final lineHeight = descriptionFont.lineHeight;
       final descriptionLines =
           _splitText(card.description, descriptionFont, _descriptionSize.width);
 
@@ -225,7 +225,24 @@ class CardRenderer {
           ..filter(rainbowFilter)
           ..chromaticAberration(shift: 2);
       }
-      compositionCommand.encodePng();
+      compositionCommand
+        ..compositeImage(
+          elementIconCmd,
+          dstX: elementIcon.dstX,
+          dstY: elementIcon.dstY,
+        )
+        ..compositeImage(
+          powerSpriteCmd,
+          dstX: power.dstX,
+          dstY: power.dstY,
+          srcX: power.srcX,
+          srcY: power.srcY,
+          srcW: power.width,
+          srcH: power.height,
+          dstW: power.width,
+          dstH: power.height,
+        )
+        ..encodePng();
 
       await compositionCommand.execute();
 
@@ -256,7 +273,7 @@ class CardRenderer {
           .toList();
 
       const angleValue = 10;
-      const offsetModifier = 12;
+      const offsetModifier = 5;
 
       final compositionCommand = _createCommand()
         ..createImage(
@@ -322,7 +339,9 @@ class _PowerSprite {
   int get height => size.height;
   int get srcX => (power % 10) * size.width;
   int get srcY => (power ~/ 10) * size.height;
-  int get dstX => _powerSpritePosition.first;
+  int get dstX => (power == 100)
+      ? _powerSpritePosition.first - 6
+      : _powerSpritePosition.first;
   int get dstY => _powerSpritePosition.last;
 }
 

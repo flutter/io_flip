@@ -163,14 +163,14 @@ void main() {
         verify(
           () => httpClient.get(
             Uri.parse(
-              'http://127.0.0.1:8080/assets/GoogleSans-21.ttf.zip',
+              'http://127.0.0.1:8080/assets/GoogleSans-14.ttf.zip',
             ),
           ),
         ).called(1);
         verify(
           () => httpClient.get(
             Uri.parse(
-              'http://127.0.0.1:8080/assets/Saira-Bold-42.ttf.zip',
+              'http://127.0.0.1:8080/assets/Saira-Bold-28.ttf.zip',
             ),
           ),
         ).called(1);
