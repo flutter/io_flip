@@ -196,4 +196,3 @@ class _AnimatedRing extends StatelessWidget {
     );
   }
 }
-
