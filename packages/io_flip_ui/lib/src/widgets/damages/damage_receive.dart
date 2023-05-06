@@ -197,38 +197,3 @@ class _AnimatedRing extends StatelessWidget {
   }
 }
 
-// class _AnimatedRingState extends State<_AnimatedRing> {
-//   var opacity = 0;
-//   @override
-//   void initState() {
-//     super.initState();
-//     Future.delayed(Duration(milliseconds:(widget.animationController.duration?.inMilliseconds??0 * 1/widget.index)as int),
-//         () => opacity = 1);
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return SizedBox(
-//       child: AnimatedBuilder(
-//         animation: widget.animationController,
-//         builder: (context, child) {
-//           final scale = widget.animationController.value;
-//           return Transform.scale(
-//             scale: scale,
-//             child: Container(
-//               decoration: BoxDecoration(
-//                 gradient: RadialGradient(colors: [
-//                   Colors.transparent,
-//                   widget.color.withOpacity(1 - scale)
-//                 ]),
-//                 borderRadius: BorderRadius.circular(widget.size / 2),
-//               ),
-//               width: widget.size / 4,
-//               height: widget.size / 4,
-//             ),
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
