@@ -72,6 +72,7 @@ class ChargeBack extends StatelessWidget {
       return _MobileAnimation(
         onComplete: onComplete,
         animationColor: animationColor,
+        cardSize: size,
         width: width,
         height: height,
       );
@@ -83,12 +84,14 @@ class _MobileAnimation extends StatefulWidget {
   const _MobileAnimation({
     required this.onComplete,
     required this.animationColor,
+    required this.cardSize,
     required this.width,
     required this.height,
   });
 
   final VoidCallback? onComplete;
   final Color animationColor;
+  final GameCardSize cardSize;
   final double width;
   final double height;
 
@@ -105,7 +108,7 @@ class _MobileAnimationState extends State<_MobileAnimation> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        _scale = 1.1;
+        _scale = 1.2;
       });
     });
   }
@@ -128,16 +131,25 @@ class _MobileAnimationState extends State<_MobileAnimation> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedScale(
-      duration: const Duration(milliseconds: 400),
-      onEnd: _onComplete,
-      scale: _scale,
-      child: ColoredBox(
-        color: widget.animationColor,
-        child: SizedBox(
-          width: widget.width,
-          height: widget.height,
+    return Align(
+      alignment: const Alignment(0, -.5),
+      child: AnimatedContainer(
+        curve: Curves.easeOutQuad,
+        duration: const Duration(milliseconds: 400),
+        width: widget.cardSize.width * _scale,
+        height: widget.cardSize.height * _scale,
+        decoration: BoxDecoration(
+          color: widget.animationColor,
+          borderRadius: BorderRadius.circular(widget.cardSize.width / 2),
+          boxShadow: [
+            BoxShadow(
+              color: widget.animationColor,
+              blurRadius: 22 * _scale,
+              spreadRadius: 22 * _scale,
+            ),
+          ],
         ),
+        onEnd: _onComplete,
       ),
     );
   }

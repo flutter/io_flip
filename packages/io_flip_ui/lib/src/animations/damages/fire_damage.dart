@@ -24,6 +24,6 @@ class FireDamage extends ElementalDamage {
           victoryChargeFrontPath:
               Assets.images.elements.desktop.fire.victoryChargeFront.keyName,
           badgePath: Assets.images.suits.card.fire.keyName,
-          animationColor: IoFlipColors.seedRed,
+          animationColor: IoFlipColors.seedGold,
         );
 }

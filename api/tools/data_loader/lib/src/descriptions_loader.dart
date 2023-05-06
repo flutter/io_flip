@@ -64,10 +64,10 @@ class DescriptionsLoader {
       }
     }
 
-    var progress = 0;
+    var progress = 13965;
     onProgress(progress, descriptions.length);
 
-    for (final description in descriptions) {
+    for (final description in descriptions.skip(13965)) {
       progress++;
 
       try {

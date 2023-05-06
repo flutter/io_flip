@@ -23,6 +23,6 @@ class EarthDamage extends ElementalDamage {
           victoryChargeFrontPath:
               Assets.images.elements.desktop.earth.victoryChargeFront.keyName,
           badgePath: Assets.images.suits.card.earth.keyName,
-          animationColor: IoFlipColors.seedGreen,
+          animationColor: IoFlipColors.seedRed,
         );
 }
