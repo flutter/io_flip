@@ -43,15 +43,16 @@ class MatchResultSplashState extends State<MatchResultSplash> {
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: width),
               child: SizedBox.expand(
-                child: isMobile
-                    ? _MobileMatchResultSplash(
-                        result: widget.result,
-                        onComplete: onComplete,
-                      )
-                    : _DesktopMatchResultSplash(
-                        result: widget.result,
-                        onComplete: onComplete,
-                      ),
+                child: platformAwareAsset(
+                  mobile: _MobileMatchResultSplash(
+                    result: widget.result,
+                    onComplete: onComplete,
+                  ),
+                  desktop: _DesktopMatchResultSplash(
+                    result: widget.result,
+                    onComplete: onComplete,
+                  ),
+                ),
               ),
             ),
           );

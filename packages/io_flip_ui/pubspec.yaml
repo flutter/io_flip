@@ -50,6 +50,8 @@ flutter:
     - assets/images/suits/card/
     - assets/images/card_frames/
     - assets/images/card_frames/holos/
+    - assets/images/flip_countdown/mobile/
+    - assets/images/flip_countdown/desktop/
 
   fonts:
     - family: Google Sans
