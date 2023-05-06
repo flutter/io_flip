@@ -1,0 +1,32 @@
+name: deploy_flop_dev
+
+on:
+  pull_request:
+    paths:
+      - "flop/**"
+      - ".github/workflows/flop.yaml"
+    branches:
+      - main
+
+jobs:
+  deploy-dev:
+    runs-on: ubuntu-latest
+    name: Deploy App Development
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.10.0-1.4.pre"
+          channel: "beta"
+      - run: cd flop && flutter packages get
+      - run: cd flop && flutter build web --web-renderer canvaskit -t lib/main.dart --dart-define SHARING_ENABLED=true --dart-define ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }} --dart-define ENCRYPTION_IV=${{ secrets.ENCRYPTION_IV }} --dart-define RECAPTCHA_KEY=${{ secrets.RECAPTCHA_KEY }} --dart-define ALLOW_PRIVATE_MATCHES=true
+
+
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_DEV }}"
+          projectId: top-dash-dev
+          target: flop_dev
+          expires: 30d
+          channelId: live

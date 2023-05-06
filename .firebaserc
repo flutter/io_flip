@@ -8,6 +8,9 @@
         "app_dev": [
           "a16e0900d-fe2c-3609-b43c-87093e447b78"
         ],
+        "flop_dev": [
+          "flop-a16e0900d-fe2c-3609-b43c-87093e447b78"
+        ],
         "app_staging": [
           "a26e0900d-fe2c-3609-b43c-87093e447b78"
         ]
