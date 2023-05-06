@@ -15,13 +15,17 @@ abstract class ElementalDamage {
     required String damageSendPath,
     required String victoryChargeBackPath,
     required String victoryChargeFrontPath,
+    required String badgePath,
+    required Color animationColor,
     required this.size,
   })  : _chargeBackPath = chargeBackPath,
         _chargeFrontPath = chargeFrontPath,
         _damageReceivePath = damageReceivePath,
         _damageSendPath = damageSendPath,
         _victoryChargeFrontPath = victoryChargeBackPath,
-        _victoryChargeBackPath = victoryChargeFrontPath;
+        _victoryChargeBackPath = victoryChargeFrontPath,
+        _badgePath = badgePath,
+        _animationColor = animationColor;
 
   /// Size of the card.
   final GameCardSize size;
@@ -44,6 +48,12 @@ abstract class ElementalDamage {
   /// String containing the [VictoryChargeFront] animation path.
   final String _victoryChargeFrontPath;
 
+  /// String containing the badg animation path, used in mobile only.
+  final String _badgePath;
+
+  /// Base color of the animation, used in mobile only.
+  final Color _animationColor;
+
   /// Widget builder returning the [ChargeBack] animation.
   ChargeBack chargeBackBuilder(
     VoidCallback? onComplete,
@@ -53,6 +63,7 @@ abstract class ElementalDamage {
       _chargeBackPath,
       size: size,
       assetSize: assetSize,
+      animationColor: _animationColor,
       onComplete: onComplete,
     );
   }
@@ -66,6 +77,7 @@ abstract class ElementalDamage {
       _chargeFrontPath,
       size: size,
       assetSize: assetSize,
+      animationColor: _animationColor,
       onComplete: onComplete,
     );
   }
@@ -80,6 +92,7 @@ abstract class ElementalDamage {
       size: size,
       assetSize: assetSize,
       onComplete: onComplete,
+      animationColor: _animationColor,
     );
   }
 
@@ -92,6 +105,7 @@ abstract class ElementalDamage {
       _damageSendPath,
       size: size,
       assetSize: assetSize,
+      badgePath: _badgePath,
       onComplete: onComplete,
     );
   }
@@ -105,6 +119,7 @@ abstract class ElementalDamage {
       _victoryChargeBackPath,
       size: size,
       assetSize: assetSize,
+      animationColor: _animationColor,
       onComplete: onComplete,
     );
   }
@@ -118,6 +133,7 @@ abstract class ElementalDamage {
       _victoryChargeFrontPath,
       size: size,
       assetSize: assetSize,
+      animationColor: _animationColor,
       onComplete: onComplete,
     );
   }

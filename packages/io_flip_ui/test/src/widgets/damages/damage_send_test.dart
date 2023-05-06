@@ -2,6 +2,7 @@ import 'package:flame/cache.dart';
 import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:io_flip_ui/gen/assets.gen.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
@@ -22,10 +23,11 @@ void main() {
           textDirection: TextDirection.ltr,
           child: Provider.value(
             value: images,
-            child: const DamageSend(
+            child: DamageSend(
               '',
               assetSize: AssetSize.large,
-              size: GameCardSize.md(),
+              size: const GameCardSize.md(),
+              badgePath: Assets.images.suits.card.air.path,
             ),
           ),
         ),
