@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:io_flip/gen/assets.gen.dart';
 import 'package:io_flip/how_to_play/how_to_play.dart';
@@ -222,11 +221,7 @@ class _AffectedIndicator extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.all(IoFlipSpacing.sm),
-        child: SvgPicture.asset(
-          Assets.icons.cancel,
-          height: 20,
-          width: 20,
-        ),
+        child: Assets.icons.cancel.svg(width: 20, height: 20),
       ),
     );
   }
