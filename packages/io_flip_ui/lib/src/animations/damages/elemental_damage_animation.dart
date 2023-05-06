@@ -7,6 +7,7 @@ import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:io_flip_ui/src/animations/damages/air_damage.dart';
 import 'package:io_flip_ui/src/animations/damages/earth_damage.dart';
 import 'package:io_flip_ui/src/animations/damages/fire_damage.dart';
+import 'package:io_flip_ui/src/animations/damages/metal_damage.dart';
 import 'package:io_flip_ui/src/animations/damages/water_damage.dart';
 import 'package:io_flip_ui/src/widgets/damages/dual_animation.dart';
 
