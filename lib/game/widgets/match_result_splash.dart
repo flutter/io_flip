@@ -12,10 +12,12 @@ class MatchResultSplash extends StatefulWidget {
   const MatchResultSplash({
     required this.child,
     required this.result,
+    required this.isWeb,
     super.key,
   });
 
   final Widget child;
+  final bool isWeb;
   final GameResult result;
 
   @override
@@ -44,6 +46,7 @@ class MatchResultSplashState extends State<MatchResultSplash> {
               constraints: BoxConstraints(maxWidth: width),
               child: SizedBox.expand(
                 child: platformAwareAsset(
+                  isWeb: widget.isWeb,
                   mobile: _MobileMatchResultSplash(
                     result: widget.result,
                     onComplete: onComplete,

@@ -239,7 +239,7 @@ void main() {
             await tester.pumpApp(
               BlocProvider<GameBloc>.value(
                 value: bloc,
-                child: GameView(),
+                child: GameSummaryView(isWeb: true),
               ),
               settingsController: settingsController,
             );
@@ -265,7 +265,7 @@ void main() {
             await tester.pumpApp(
               BlocProvider<GameBloc>.value(
                 value: bloc,
-                child: GameView(),
+                child: GameSummaryView(isWeb: true),
               ),
               settingsController: settingsController,
             );
@@ -291,7 +291,7 @@ void main() {
             await tester.pumpApp(
               BlocProvider<GameBloc>.value(
                 value: bloc,
-                child: GameView(),
+                child: GameSummaryView(isWeb: true),
               ),
               settingsController: settingsController,
             );
@@ -675,7 +675,7 @@ extension GameSummaryViewTest on WidgetTester {
       await pumpApp(
         BlocProvider<GameBloc>.value(
           value: bloc,
-          child: GameView(),
+          child: GameSummaryView(),
         ),
         router: goRouter,
         settingsController: settingsController,
