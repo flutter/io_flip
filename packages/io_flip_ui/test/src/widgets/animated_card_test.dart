@@ -107,20 +107,60 @@ void main() {
         expect(find.byWidget(back), findsNothing);
       });
 
-      testWidgets('can run knockOutAnimation', (tester) async {
+      testWidgets('can run opponentKnockOutAnimation', (tester) async {
         await tester.pumpWidget(buildSubject());
 
-        unawaited(controller.run(knockOutAnimation));
+        unawaited(controller.run(opponentKnockOutAnimation));
         await tester.pumpAndSettle();
 
         expect(find.byWidget(front), findsOneWidget);
         expect(find.byWidget(back), findsNothing);
       });
 
-      testWidgets('can run attackAnimation', (tester) async {
+      testWidgets('can run playerKnockOutAnimation', (tester) async {
         await tester.pumpWidget(buildSubject());
 
-        unawaited(controller.run(attackAnimation));
+        unawaited(controller.run(playerKnockOutAnimation));
+        await tester.pumpAndSettle();
+
+        expect(find.byWidget(front), findsOneWidget);
+        expect(find.byWidget(back), findsNothing);
+      });
+
+      testWidgets('can run playerAttackForwardAnimation', (tester) async {
+        await tester.pumpWidget(buildSubject());
+
+        unawaited(controller.run(playerAttackForwardAnimation));
+        await tester.pumpAndSettle();
+
+        expect(find.byWidget(front), findsOneWidget);
+        expect(find.byWidget(back), findsNothing);
+      });
+
+      testWidgets('can run playerAttackBackAnimation', (tester) async {
+        await tester.pumpWidget(buildSubject());
+
+        unawaited(controller.run(playerAttackBackAnimation));
+        await tester.pumpAndSettle();
+
+        expect(find.byWidget(front), findsOneWidget);
+        expect(find.byWidget(back), findsNothing);
+      });
+
+      testWidgets('can run opponentAttackForwardAnimation', (tester) async {
+        await tester.pumpWidget(buildSubject());
+
+        unawaited(controller.run(opponentAttackForwardAnimation));
+        await tester.pumpAndSettle();
+
+        expect(find.byWidget(front), findsOneWidget);
+        expect(find.byWidget(back), findsNothing);
+      });
+
+      testWidgets('can run opponentAttackBackAnimation', (tester) async {
+        await tester.pumpWidget(buildSubject());
+
+        unawaited(controller.run(opponentAttackBackAnimation));
         await tester.pumpAndSettle();
 
         expect(find.byWidget(front), findsOneWidget);

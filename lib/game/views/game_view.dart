@@ -987,8 +987,7 @@ class _ClashScene extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox.fromSize(
-              size: boardSize,
+            Positioned.fill(
               child: ClashScene(
                 onFinished: onFinished,
                 opponentCard: opponentCard,
