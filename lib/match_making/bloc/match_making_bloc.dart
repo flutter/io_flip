@@ -31,7 +31,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   final String deckId;
   final ConnectionRepository _connectionRepository;
 
-  static const defaultHostWaitTime = Duration(seconds: 4);
+  static const defaultHostWaitTime = Duration(seconds: 1);
   final Duration hostWaitTime;
 
   Future<void> _connectToMatch({
@@ -167,7 +167,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
 
       return Future.value(false);
     }).timeout(
-      Duration(seconds: isPrivate ? 120 : 8),
+      Duration(seconds: isPrivate ? 120 : 3),
       onTimeout: () async {
         await subscription.cancel();
         await Future<void>.delayed(hostWaitTime);
