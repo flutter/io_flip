@@ -84,7 +84,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       final scoreCard = values.last as ScoreCard?;
 
       if (match == null || matchState == null || scoreCard == null) {
-        emit(const MatchLoadFailedState());
+        emit(MatchLoadFailedState(deck: event.deck));
       } else {
         _audioController.playSfx(Assets.sfx.startGame);
         emit(
@@ -111,11 +111,11 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           add(ScoreCardUpdated(state));
         });
 
-        add(ManagePlayerPresence(event.matchId));
+        add(ManagePlayerPresence(event.matchId, event.deck));
       }
     } catch (e, s) {
       addError(e, s);
-      emit(const MatchLoadFailedState());
+      emit(MatchLoadFailedState(deck: event.deck));
     }
   }
 
@@ -246,7 +246,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         final matchState = await _gameResource.getMatchState(match.id);
         final matchOver = matchState?.isOver();
         if (matchOver != true) {
-          emit(const OpponentAbsentState());
+          emit(OpponentAbsentState(deck: event.deck));
         }
         completer.complete();
       });

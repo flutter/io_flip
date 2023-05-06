@@ -121,7 +121,7 @@ void main() {
       'renders an error message when failed and navigates to match making',
       (tester) async {
         final goRouter = MockGoRouter();
-        mockState(MatchLoadFailedState());
+        mockState(MatchLoadFailedState(deck: deck));
         await tester.pumpSubject(
           bloc,
           goRouter: goRouter,
@@ -200,7 +200,7 @@ void main() {
       testWidgets(
         'renders the opponent absent message when the opponent leaves',
         (tester) async {
-          mockState(OpponentAbsentState());
+          mockState(OpponentAbsentState(deck: deck));
           await tester.pumpSubject(bloc);
 
           expect(
@@ -220,7 +220,7 @@ void main() {
         (tester) async {
           final goRouter = MockGoRouter();
 
-          mockState(OpponentAbsentState());
+          mockState(OpponentAbsentState(deck: deck));
 
           await tester.pumpSubject(
             bloc,

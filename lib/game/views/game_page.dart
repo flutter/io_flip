@@ -51,7 +51,7 @@ class GamePage extends StatelessWidget {
           matchSolver: matchSolver,
           user: user,
           isHost: isHost,
-        )..add(MatchRequested(matchId));
+        )..add(MatchRequested(matchId, deck));
       },
       child: const GameView(),
     );

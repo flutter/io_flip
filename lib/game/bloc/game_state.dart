@@ -12,10 +12,12 @@ class MatchLoadingState extends GameState {
 }
 
 class MatchLoadFailedState extends GameState {
-  const MatchLoadFailedState();
+  const MatchLoadFailedState({required this.deck});
+
+  final Deck? deck;
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [deck];
 }
 
 class MatchRound extends Equatable {
@@ -120,10 +122,12 @@ class LeaderboardEntryState extends GameState {
 }
 
 class OpponentAbsentState extends GameState {
-  const OpponentAbsentState();
+  const OpponentAbsentState({required this.deck});
+
+  final Deck? deck;
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [deck];
 }
 
 class ManagePlayerPresenceFailedState extends GameState {

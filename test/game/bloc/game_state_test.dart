@@ -5,6 +5,8 @@ import 'package:game_domain/game_domain.dart';
 import 'package:io_flip/game/game.dart';
 
 void main() {
+  const deck = Deck(id: 'id', userId: 'userId', cards: []);
+
   group('MatchLoadingState', () {
     test('can be instantiated', () {
       expect(MatchLoadingState(), isNotNull);
@@ -20,13 +22,24 @@ void main() {
 
   group('MatchLoadFailedState', () {
     test('can be instantiated', () {
-      expect(MatchLoadFailedState(), isNotNull);
+      expect(MatchLoadFailedState(deck: deck), isNotNull);
     });
 
     test('supports equality', () {
       expect(
-        MatchLoadFailedState(),
-        equals(MatchLoadFailedState()),
+        MatchLoadFailedState(deck: deck),
+        equals(MatchLoadFailedState(deck: deck)),
+      );
+
+      expect(
+        MatchLoadFailedState(deck: deck),
+        isNot(
+          equals(
+            MatchLoadFailedState(
+              deck: Deck(id: '', userId: '', cards: const []),
+            ),
+          ),
+        ),
       );
     });
   });
@@ -535,13 +548,24 @@ void main() {
 
   group('OpponentAbsentState', () {
     test('can be instantiated', () {
-      expect(OpponentAbsentState(), isNotNull);
+      expect(OpponentAbsentState(deck: deck), isNotNull);
     });
 
     test('supports equality', () {
       expect(
-        OpponentAbsentState(),
-        equals(OpponentAbsentState()),
+        OpponentAbsentState(deck: deck),
+        equals(OpponentAbsentState(deck: deck)),
+      );
+
+      expect(
+        OpponentAbsentState(deck: deck),
+        isNot(
+          equals(
+            OpponentAbsentState(
+              deck: Deck(id: '', userId: '', cards: const []),
+            ),
+          ),
+        ),
       );
     });
   });

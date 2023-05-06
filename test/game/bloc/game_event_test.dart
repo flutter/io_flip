@@ -8,20 +8,33 @@ import 'package:io_flip/game/game.dart';
 
 void main() {
   group('GameEvent', () {
+    const deck = Deck(id: 'deckId', userId: 'userId', cards: []);
     group('MatchRequested', () {
       test('can be instantiated', () {
-        expect(MatchRequested('match1'), isNotNull);
+        expect(MatchRequested('match1', deck), isNotNull);
       });
 
       test('supports equality', () {
         expect(
-          MatchRequested('match1'),
-          equals(MatchRequested('match1')),
+          MatchRequested('match1', deck),
+          equals(MatchRequested('match1', deck)),
         );
 
         expect(
-          MatchRequested('match1'),
-          isNot(equals(MatchRequested('match2'))),
+          MatchRequested('match1', deck),
+          isNot(equals(MatchRequested('match2', deck))),
+        );
+
+        expect(
+          MatchRequested('match1', deck),
+          isNot(
+            equals(
+              MatchRequested(
+                'match1',
+                Deck(id: '', userId: '', cards: const []),
+              ),
+            ),
+          ),
         );
       });
     });
@@ -96,18 +109,30 @@ void main() {
 
     group('PresenceCheckRequested', () {
       test('can be instantiated', () {
-        expect(ManagePlayerPresence('match1'), isNotNull);
+        expect(ManagePlayerPresence('match1', deck), isNotNull);
       });
 
       test('supports equality', () {
         expect(
-          ManagePlayerPresence('match1'),
-          equals(ManagePlayerPresence('match1')),
+          ManagePlayerPresence('match1', deck),
+          equals(ManagePlayerPresence('match1', deck)),
         );
 
         expect(
-          ManagePlayerPresence('match1'),
-          isNot(equals(ManagePlayerPresence('match2'))),
+          ManagePlayerPresence('match1', deck),
+          isNot(equals(ManagePlayerPresence('match2', deck))),
+        );
+
+        expect(
+          ManagePlayerPresence('match1', deck),
+          isNot(
+            equals(
+              ManagePlayerPresence(
+                'match1',
+                Deck(id: '', userId: '', cards: const []),
+              ),
+            ),
+          ),
         );
       });
     });
