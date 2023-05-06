@@ -94,29 +94,19 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
     super.initState();
     switch (widget.element) {
       case Element.metal:
-        elementalDamage = widget.assetSize == AssetSize.large
-            ? MetalDamage.large(size: widget.size)
-            : MetalDamage.small(size: widget.size);
+        elementalDamage = MetalDamage(size: widget.size);
         break;
       case Element.air:
-        elementalDamage = widget.assetSize == AssetSize.large
-            ? AirDamage.large(size: widget.size)
-            : AirDamage.small(size: widget.size);
+        elementalDamage = AirDamage(size: widget.size);
         break;
       case Element.fire:
-        elementalDamage = widget.assetSize == AssetSize.large
-            ? FireDamage.large(size: widget.size)
-            : FireDamage.small(size: widget.size);
+        elementalDamage = FireDamage(size: widget.size);
         break;
       case Element.earth:
-        elementalDamage = widget.assetSize == AssetSize.large
-            ? EarthDamage.large(size: widget.size)
-            : EarthDamage.small(size: widget.size);
+        elementalDamage = EarthDamage(size: widget.size);
         break;
       case Element.water:
-        elementalDamage = widget.assetSize == AssetSize.large
-            ? WaterDamage.large(size: widget.size)
-            : WaterDamage.small(size: widget.size);
+        elementalDamage = WaterDamage(size: widget.size);
         break;
     }
   }

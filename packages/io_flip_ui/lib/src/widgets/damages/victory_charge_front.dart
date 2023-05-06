@@ -15,6 +15,7 @@ class VictoryChargeFront extends StatelessWidget {
     this.path, {
     required this.size,
     required this.assetSize,
+    required this.animationColor,
     super.key,
     this.onComplete,
   });
@@ -28,6 +29,9 @@ class VictoryChargeFront extends StatelessWidget {
   /// Path of the asset containing the sprite sheet.
   final String path;
 
+  /// The color of the animation, used on mobile animation.
+  final Color animationColor;
+
   /// Size of the assets to use, large or small
   final AssetSize assetSize;
 
@@ -36,9 +40,9 @@ class VictoryChargeFront extends StatelessWidget {
     final images = context.read<Images>();
     final width = 1.5 * size.width;
     final height = 1.22 * size.height;
-    final textureSize =
-        assetSize == AssetSize.large ? Vector2(607, 695) : Vector2(364, 417);
+    final textureSize = Vector2(607, 695);
 
+    if (assetSize == AssetSize.large) {
     return SizedBox(
       width: width,
       height: height,
@@ -60,6 +64,72 @@ class VictoryChargeFront extends StatelessWidget {
               loop: false,
             ),
           ),
+        ),
+      ),
+    );
+    } else {
+      return _MobileAnimation(
+        onComplete: onComplete,
+        animationColor: animationColor,
+        width: width,
+        height: height,
+      );
+    }
+  }
+}
+
+class _MobileAnimation extends StatefulWidget {
+  const _MobileAnimation({
+    required this.onComplete,
+    required this.animationColor,
+    required this.width,
+    required this.height,
+  });
+
+  final VoidCallback? onComplete;
+  final Color animationColor;
+  final double width;
+  final double height;
+
+  @override
+  State<_MobileAnimation> createState() => _MobileAnimationState();
+}
+
+class _MobileAnimationState extends State<_MobileAnimation> {
+  var _scale = 0.0;
+  var _step = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.onComplete?.call();
+    });
+  }
+
+  void _onComplete() {
+    if (_step == 0) {
+      setState(() {
+        _scale = 1;
+        _step = 1;
+      });
+    } else {
+      widget.onComplete?.call();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedScale(
+      duration: const Duration(milliseconds: 400),
+      onEnd: _onComplete,
+      scale: _scale,
+      child: ColoredBox(
+        //color: widget.animationColor,
+        color: Colors.transparent,
+        child: SizedBox(
+          width: widget.width,
+          height: widget.height,
         ),
       ),
     );
