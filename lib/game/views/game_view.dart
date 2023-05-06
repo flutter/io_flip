@@ -47,12 +47,15 @@ class GameView extends StatelessWidget {
             text: 'Unable to join game!',
             buttonText: l10n.playAgain,
             onPressed: () {
-              GoRouter.of(context).goNamed(
-                'match_making',
-                extra: MatchMakingPageData(
-                  deck: context.read<GameBloc>().playerDeck,
-                ),
-              );
+              final deck = state.deck;
+              if (deck != null) {
+                GoRouter.of(context).goNamed(
+                  'match_making',
+                  extra: MatchMakingPageData(deck: deck),
+                );
+              } else {
+                GoRouter.of(context).go('/');
+              }
             },
           );
         } else if (state is MatchLoadedState) {
@@ -70,12 +73,15 @@ class GameView extends StatelessWidget {
             text: 'Opponent left the game!',
             buttonText: l10n.playAgain,
             onPressed: () {
-              GoRouter.of(context).goNamed(
-                'match_making',
-                extra: MatchMakingPageData(
-                  deck: context.read<GameBloc>().playerDeck,
-                ),
-              );
+              final deck = state.deck;
+              if (deck != null) {
+                GoRouter.of(context).goNamed(
+                  'match_making',
+                  extra: MatchMakingPageData(deck: deck),
+                );
+              } else {
+                GoRouter.of(context).go('/');
+              }
             },
           );
         } else {

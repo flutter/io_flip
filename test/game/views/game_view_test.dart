@@ -143,6 +143,26 @@ void main() {
       },
     );
 
+    testWidgets(
+      'renders an error message when failed and navigates to home '
+      'if deck not available',
+      (tester) async {
+        final goRouter = MockGoRouter();
+        mockState(MatchLoadFailedState(deck: null));
+        await tester.pumpSubject(
+          bloc,
+          goRouter: goRouter,
+        );
+
+        expect(find.text('Unable to join game!'), findsOneWidget);
+
+        await tester.tap(find.byType(RoundedButton));
+        await tester.pumpAndSettle();
+
+        verify(() => goRouter.go('/')).called(1);
+      },
+    );
+
     group('Gameplay', () {
       final baseState = MatchLoadedState(
         playerScoreCard: ScoreCard(id: 'scoreCardId'),
@@ -238,6 +258,26 @@ void main() {
               ),
             ),
           ).called(1);
+        },
+      );
+
+      testWidgets(
+        'goes to home when the replay button is tapped on opponent absent '
+        'and no deck is available',
+        (tester) async {
+          final goRouter = MockGoRouter();
+
+          mockState(OpponentAbsentState(deck: null));
+
+          await tester.pumpSubject(
+            bloc,
+            goRouter: goRouter,
+          );
+
+          await tester.tap(find.byType(RoundedButton));
+          await tester.pumpAndSettle();
+
+          verify(() => goRouter.go('/')).called(1);
         },
       );
 
