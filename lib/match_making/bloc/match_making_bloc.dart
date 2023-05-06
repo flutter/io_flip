@@ -167,10 +167,9 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
 
       return Future.value(false);
     }).timeout(
-      Duration(seconds: isPrivate ? 120 : 8),
+      Duration(seconds: isPrivate ? 120 : 3),
       onTimeout: () async {
         await subscription.cancel();
-        await Future<void>.delayed(hostWaitTime);
         if (state.status == MatchMakingStatus.completed) return;
         try {
           await _gameResource.connectToCpuMatch(matchId: match.id);
