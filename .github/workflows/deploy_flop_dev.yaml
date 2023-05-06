@@ -1,10 +1,10 @@
 name: deploy_flop_dev
 
 on:
-  pull_request:
+  push:
     paths:
       - "flop/**"
-      - ".github/workflows/flop.yaml"
+      - ".github/workflows/deploy_flop_dev.yaml"
     branches:
       - main
 
