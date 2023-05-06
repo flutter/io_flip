@@ -53,7 +53,7 @@ class MatchMakingPage extends StatelessWidget {
           deckId: deck.id,
         )..add(mapEvent());
       },
-      child: MatchMakingView(cards: deck.cards),
+      child: MatchMakingView(deck: deck),
     );
   }
 }

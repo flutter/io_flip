@@ -12,7 +12,7 @@ import 'package:io_flip_ui/io_flip_ui.dart';
 
 class MatchMakingView extends StatelessWidget {
   const MatchMakingView({
-    required this.cards,
+    required this.deck,
     super.key,
     Future<void> Function(ClipboardData) setClipboardData = Clipboard.setData,
     RouterNeglectCall routerNeglectCall = Router.neglect,
@@ -20,7 +20,7 @@ class MatchMakingView extends StatelessWidget {
         _routerNeglectCall = routerNeglectCall;
 
   final Future<void> Function(ClipboardData) _setClipboardData;
-  final List<Card> cards;
+  final Deck deck;
   final RouterNeglectCall _routerNeglectCall;
 
   @override
@@ -49,7 +49,7 @@ class MatchMakingView extends StatelessWidget {
             state.status == MatchMakingStatus.initial) {
           return ResponsiveLayoutBuilder(
             small: (_, __) => _WaitingForMatchView(
-              cards: cards,
+              cards: deck.cards,
               setClipboardData: _setClipboardData,
               inviteCode: state.match?.inviteCode,
               title: IoFlipTextStyles.mobileH4Light,
@@ -57,7 +57,7 @@ class MatchMakingView extends StatelessWidget {
               key: const Key('small_waiting_for_match_view'),
             ),
             large: (_, __) => _WaitingForMatchView(
-              cards: cards,
+              cards: deck.cards,
               setClipboardData: _setClipboardData,
               inviteCode: state.match?.inviteCode,
               title: IoFlipTextStyles.headlineH4Light,
