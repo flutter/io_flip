@@ -221,7 +221,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
           ],
         );
       case DamageAnimationState.waitingVictory:
-        return Container();
+        return const SizedBox.shrink(key: Key('elementalDamage_empty'));
       case DamageAnimationState.victory:
         return Stack(
           children: [
@@ -266,7 +266,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
           ],
         );
       case DamageAnimationState.ended:
-        return const SizedBox.shrink();
+        return const SizedBox.shrink(key: Key('elementalDamage_empty'));
     }
   }
 

@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 
 void main() {
   group('ElementalDamageAnimation', () {
+    final findEmpty = find.byKey(const Key('elementalDamage_empty'));
     late Images images;
 
     setUp(() async {
@@ -105,7 +106,7 @@ void main() {
 
             completer.complete();
             await tester.pump();
-            expect(find.byType(Container), findsOneWidget);
+            expect(findEmpty, findsOneWidget);
             await tester.pump();
 
             expect(find.byType(DualAnimation), findsOneWidget);
@@ -124,7 +125,7 @@ void main() {
             while (!victoryComplete) {
               await tester.pump(const Duration(milliseconds: 17));
             }
-            expect(find.byType(Container), findsOneWidget);
+            expect(findEmpty, findsOneWidget);
           });
         });
       });
@@ -200,7 +201,7 @@ void main() {
 
             completer.complete();
             await tester.pump();
-            expect(find.byType(Container), findsOneWidget);
+            expect(findEmpty, findsOneWidget);
             await tester.pump();
 
             expect(find.byType(DualAnimation), findsOneWidget);
@@ -219,7 +220,7 @@ void main() {
             while (!victoryComplete) {
               await tester.pump(const Duration(milliseconds: 17));
             }
-            expect(find.byType(Container), findsOneWidget);
+            expect(findEmpty, findsOneWidget);
           });
         });
       });
@@ -295,7 +296,7 @@ void main() {
 
             completer.complete();
             await tester.pump();
-            expect(find.byType(Container), findsOneWidget);
+            expect(findEmpty, findsOneWidget);
             await tester.pump();
 
             expect(find.byType(DualAnimation), findsOneWidget);
@@ -314,7 +315,7 @@ void main() {
             while (!victoryComplete) {
               await tester.pump(const Duration(milliseconds: 17));
             }
-            expect(find.byType(Container), findsOneWidget);
+            expect(findEmpty, findsOneWidget);
           });
         });
       });
@@ -390,7 +391,7 @@ void main() {
 
             completer.complete();
             await tester.pump();
-            expect(find.byType(Container), findsOneWidget);
+            expect(findEmpty, findsOneWidget);
             await tester.pump();
 
             expect(find.byType(DualAnimation), findsOneWidget);
@@ -409,7 +410,7 @@ void main() {
             while (!victoryComplete) {
               await tester.pump(const Duration(milliseconds: 17));
             }
-            expect(find.byType(Container), findsOneWidget);
+            expect(findEmpty, findsOneWidget);
           });
         });
       });
@@ -485,7 +486,7 @@ void main() {
 
             completer.complete();
             await tester.pump();
-            expect(find.byType(Container), findsOneWidget);
+            expect(findEmpty, findsOneWidget);
             await tester.pump();
 
             expect(find.byType(DualAnimation), findsOneWidget);
@@ -504,7 +505,7 @@ void main() {
             while (!victoryComplete) {
               await tester.pump(const Duration(milliseconds: 17));
             }
-            expect(find.byType(Container), findsOneWidget);
+            expect(findEmpty, findsOneWidget);
           });
         });
       });
@@ -583,7 +584,7 @@ void main() {
 
             completer.complete();
             await tester.pump();
-            expect(find.byType(Container), findsOneWidget);
+            expect(findEmpty, findsOneWidget);
             await tester.pump();
 
             expect(find.byType(DualAnimation), findsOneWidget);
@@ -602,7 +603,7 @@ void main() {
             while (!victoryComplete) {
               await tester.pump(const Duration(milliseconds: 17));
             }
-            expect(find.byType(Container), findsOneWidget);
+            expect(findEmpty, findsOneWidget);
           });
         });
       });
@@ -679,7 +680,7 @@ void main() {
 
             completer.complete();
             await tester.pump();
-            expect(find.byType(Container), findsOneWidget);
+            expect(findEmpty, findsOneWidget);
             await tester.pump();
 
             expect(find.byType(DualAnimation), findsOneWidget);
@@ -698,7 +699,7 @@ void main() {
             while (!victoryComplete) {
               await tester.pump(const Duration(milliseconds: 17));
             }
-            expect(find.byType(Container), findsOneWidget);
+            expect(findEmpty, findsOneWidget);
           });
         });
       });
@@ -775,7 +776,7 @@ void main() {
 
             completer.complete();
             await tester.pump();
-            expect(find.byType(Container), findsOneWidget);
+            expect(findEmpty, findsOneWidget);
             await tester.pump();
 
             expect(find.byType(DualAnimation), findsOneWidget);
@@ -794,7 +795,7 @@ void main() {
             while (!victoryComplete) {
               await tester.pump(const Duration(milliseconds: 17));
             }
-            expect(find.byType(Container), findsOneWidget);
+            expect(findEmpty, findsOneWidget);
           });
         });
       });
@@ -871,7 +872,7 @@ void main() {
 
             completer.complete();
             await tester.pump();
-            expect(find.byType(Container), findsOneWidget);
+            expect(findEmpty, findsOneWidget);
             await tester.pump();
 
             expect(find.byType(DualAnimation), findsOneWidget);
@@ -890,7 +891,7 @@ void main() {
             while (!victoryComplete) {
               await tester.pump(const Duration(milliseconds: 17));
             }
-            expect(find.byType(Container), findsOneWidget);
+            expect(findEmpty, findsOneWidget);
           });
         });
       });
@@ -967,7 +968,7 @@ void main() {
 
             completer.complete();
             await tester.pump();
-            expect(find.byType(Container), findsOneWidget);
+            expect(findEmpty, findsOneWidget);
             await tester.pump();
 
             expect(find.byType(DualAnimation), findsOneWidget);
@@ -986,7 +987,7 @@ void main() {
             while (!victoryComplete) {
               await tester.pump(const Duration(milliseconds: 17));
             }
-            expect(find.byType(Container), findsOneWidget);
+            expect(findEmpty, findsOneWidget);
           });
         });
       });
