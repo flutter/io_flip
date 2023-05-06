@@ -315,11 +315,9 @@ class GameSummaryFooter extends StatelessWidget {
             final router = GoRouter.of(context);
             final event = LeaderboardEntryRequested(
               shareHandPageData: ShareHandPageData(
-                initials: '',
-                wins: state.playerScoreCard.latestStreak,
-                deckId: playerDeck.id,
-                deck: bloc.playerCards,
-              ),
+                  initials: '',
+                  wins: state.playerScoreCard.latestStreak,
+                  deck: playerDeck),
             );
 
             if (showNextMatch) {

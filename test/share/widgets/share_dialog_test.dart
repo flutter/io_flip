@@ -110,7 +110,8 @@ void main() {
         downloadBloc: downloadBloc,
       );
       await tester.tap(find.text(tester.l10n.saveButtonLabel));
-      verify(() => downloadBloc.add(const DownloadRequested(card: card)))
+      verify(() =>
+              downloadBloc.add(const DownloadCardsRequested(cards: [card])))
           .called(1);
     });
 
@@ -162,7 +163,7 @@ extension ShareCardDialogTest on WidgetTester {
             urlLauncher: (url) async {
               launchedUrl = url;
             },
-            downloadContent: card,
+            downloadCards: const [card],
           ),
         ),
       );

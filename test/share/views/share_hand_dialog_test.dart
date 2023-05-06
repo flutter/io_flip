@@ -72,10 +72,9 @@ extension ShareCardDialogTest on WidgetTester {
       return pumpApp(
         const IoFlipDialog(
           child: ShareHandDialog(
-            cards: [card, card, card],
+            deck: Deck(id: 'test', userId: '', cards: [card, card, card]),
             wins: 5,
             initials: 'AAA',
-            deckId: 'test',
           ),
         ),
         shareResource: shareResource,

@@ -44,7 +44,7 @@ class ShareCardDialog extends StatelessWidget {
           const SizedBox(height: IoFlipSpacing.lg),
         ],
       ),
-      downloadContent: card,
+      downloadCards: [card],
     );
   }
 }
