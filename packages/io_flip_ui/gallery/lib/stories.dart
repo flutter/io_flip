@@ -120,14 +120,36 @@ void addStories(Dashbook dashbook) {
         ..action('Small Flip', (_) => _controller.run(smallFlipAnimation))
         ..action('Big Flip', (_) => _controller.run(bigFlipAnimation))
         ..action('Jump', (_) => _controller.run(jumpAnimation))
-        ..action('Knock Out', (_) => _controller.run(knockOutAnimation))
+        ..action(
+          'Player Knock Out',
+          (_) => _controller.run(playerKnockOutAnimation),
+        )
+        ..action(
+          'Opponent Knock Out',
+          (_) => _controller.run(opponentKnockOutAnimation),
+        )
         ..action(
           'Flip and Jump',
           (_) => _controller
               .run(smallFlipAnimation)
               .then((_) => _controller.run(jumpAnimation)),
         )
-        ..action('Attack', (_) => _controller.run(attackAnimation));
+        ..action(
+          'Player Attack Forward',
+          (_) => _controller.run(playerAttackForwardAnimation),
+        )
+        ..action(
+          'Player Attack Back',
+          (_) => _controller.run(playerAttackBackAnimation),
+        )
+        ..action(
+          'Opponent Attack Forward',
+          (_) => _controller.run(opponentAttackForwardAnimation),
+        )
+        ..action(
+          'Opponent Attack Back',
+          (_) => _controller.run(opponentAttackBackAnimation),
+        );
 
       return AnimatedCardStory(controller: _controller);
     },
