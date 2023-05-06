@@ -4,12 +4,15 @@ import 'dart:js' as js;
 
 import 'package:flop/app/app.dart';
 import 'package:flop/bootstrap.dart';
+import 'package:flutter/foundation.dart';
 
 void main() {
   bootstrap(
     () => App(
       setAppCheckDebugToken: (appCheckDebugToken) {
-        js.context['FIREBASE_APPCHECK_DEBUG_TOKEN'] = appCheckDebugToken;
+        if (kDebugMode) {
+          js.context['FIREBASE_APPCHECK_DEBUG_TOKEN'] = appCheckDebugToken;
+        }
       },
       reload: () {
         window.location.reload();
