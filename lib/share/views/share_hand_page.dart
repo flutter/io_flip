@@ -116,7 +116,7 @@ class ShareHandPage extends StatelessWidget {
                 const Spacer(),
                 RoundedButton.svg(
                   key: const Key('share_page_info_button'),
-                  Assets.icons.info,
+                  Assets.icons.info.keyName,
                   onPressed: () => IoFlipDialog.show(
                     context,
                     child: const InfoView(),

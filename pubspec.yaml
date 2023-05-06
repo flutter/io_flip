@@ -84,3 +84,7 @@ flutter:
     - assets/images/leaderboard/
     - assets/music/
     - assets/sfx/
+
+flutter_gen:
+  integrations:
+    flutter_svg: true

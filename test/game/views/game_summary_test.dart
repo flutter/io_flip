@@ -210,6 +210,7 @@ void main() {
 
         verify(() => audioController.playSfx(Assets.sfx.drawMatch)).called(1);
       });
+
       testWidgets(
         'renders in small phone layout',
         (tester) async {
@@ -220,6 +221,84 @@ void main() {
 
           expect(
             find.byType(GameSummaryView),
+            findsOneWidget,
+          );
+        },
+      );
+
+      testWidgets(
+        'renders win splash on small phone layout',
+        (tester) async {
+          tester.setSmallestPhoneDisplaySize();
+          defaultMockState();
+          when(bloc.gameResult).thenReturn(GameResult.win);
+          final SettingsController settingsController =
+              _MockSettingsController();
+          when(() => settingsController.muted).thenReturn(ValueNotifier(true));
+          await mockNetworkImages(() async {
+            await tester.pumpApp(
+              BlocProvider<GameBloc>.value(
+                value: bloc,
+                child: GameView(),
+              ),
+              settingsController: settingsController,
+            );
+          });
+
+          expect(
+            find.byKey(Key('matchResultSplash_win_mobile')),
+            findsOneWidget,
+          );
+        },
+      );
+
+      testWidgets(
+        'renders loss splash on small phone layout',
+        (tester) async {
+          tester.setSmallestPhoneDisplaySize();
+          defaultMockState();
+          when(bloc.gameResult).thenReturn(GameResult.lose);
+          final SettingsController settingsController =
+              _MockSettingsController();
+          when(() => settingsController.muted).thenReturn(ValueNotifier(true));
+          await mockNetworkImages(() async {
+            await tester.pumpApp(
+              BlocProvider<GameBloc>.value(
+                value: bloc,
+                child: GameView(),
+              ),
+              settingsController: settingsController,
+            );
+          });
+
+          expect(
+            find.byKey(Key('matchResultSplash_loss_mobile')),
+            findsOneWidget,
+          );
+        },
+      );
+
+      testWidgets(
+        'renders draw splash on small phone layout',
+        (tester) async {
+          tester.setSmallestPhoneDisplaySize();
+          defaultMockState();
+          when(bloc.gameResult).thenReturn(GameResult.draw);
+          final SettingsController settingsController =
+              _MockSettingsController();
+          when(() => settingsController.muted).thenReturn(ValueNotifier(true));
+          await mockNetworkImages(() async {
+            await tester.pumpApp(
+              BlocProvider<GameBloc>.value(
+                value: bloc,
+                child: GameView(),
+              ),
+              settingsController: settingsController,
+            );
+          });
+
+          expect(
+            find.byKey(Key('matchResultSplash_draw_mobile')),
             findsOneWidget,
           );
         },

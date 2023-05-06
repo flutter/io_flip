@@ -8,18 +8,20 @@
 // ignore_for_file: directives_ordering,unnecessary_import,implicit_dynamic_list_literal,deprecated_member_use
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter/services.dart';
 
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
   /// File path: assets/icons/cancel.svg
-  String get cancel => 'assets/icons/cancel.svg';
+  SvgGenImage get cancel => const SvgGenImage('assets/icons/cancel.svg');
 
   /// File path: assets/icons/info.svg
-  String get info => 'assets/icons/info.svg';
+  SvgGenImage get info => const SvgGenImage('assets/icons/info.svg');
 
   /// List of all assets
-  List<String> get values => [cancel, info];
+  List<SvgGenImage> get values => [cancel, info];
 }
 
 class $AssetsImagesGen {
@@ -233,17 +235,15 @@ class $AssetsImagesMobileGen {
   AssetGenImage get cardMaster =>
       const AssetGenImage('assets/images/mobile/card_master.png');
 
-  /// File path: assets/images/mobile/draw_splash.png
-  AssetGenImage get drawSplash =>
-      const AssetGenImage('assets/images/mobile/draw_splash.png');
+  /// File path: assets/images/mobile/draw.svg
+  SvgGenImage get draw => const SvgGenImage('assets/images/mobile/draw.svg');
 
   /// File path: assets/images/mobile/front_pack.png
   AssetGenImage get frontPack =>
       const AssetGenImage('assets/images/mobile/front_pack.png');
 
-  /// File path: assets/images/mobile/loss_splash.png
-  AssetGenImage get lossSplash =>
-      const AssetGenImage('assets/images/mobile/loss_splash.png');
+  /// File path: assets/images/mobile/loss.svg
+  SvgGenImage get loss => const SvgGenImage('assets/images/mobile/loss.svg');
 
   /// File path: assets/images/mobile/main.jpg
   AssetGenImage get main =>
@@ -257,21 +257,20 @@ class $AssetsImagesMobileGen {
   AssetGenImage get stadiumBackgroundCloseUp => const AssetGenImage(
       'assets/images/mobile/stadium_background_close_up.png');
 
-  /// File path: assets/images/mobile/win_splash.png
-  AssetGenImage get winSplash =>
-      const AssetGenImage('assets/images/mobile/win_splash.png');
+  /// File path: assets/images/mobile/win.svg
+  SvgGenImage get win => const SvgGenImage('assets/images/mobile/win.svg');
 
   /// List of all assets
-  List<AssetGenImage> get values => [
+  List<dynamic> get values => [
         backPack,
         cardMaster,
-        drawSplash,
+        draw,
         frontPack,
-        lossSplash,
+        loss,
         main,
         stadiumBackground,
         stadiumBackgroundCloseUp,
-        winSplash
+        win
       ];
 }
 
@@ -350,6 +349,59 @@ class AssetGenImage {
       _assetName,
       bundle: bundle,
       package: package,
+    );
+  }
+
+  String get path => _assetName;
+
+  String get keyName => _assetName;
+}
+
+class SvgGenImage {
+  const SvgGenImage(this._assetName);
+
+  final String _assetName;
+
+  SvgPicture svg({
+    Key? key,
+    bool matchTextDirection = false,
+    AssetBundle? bundle,
+    String? package,
+    double? width,
+    double? height,
+    BoxFit fit = BoxFit.contain,
+    AlignmentGeometry alignment = Alignment.center,
+    bool allowDrawingOutsideViewBox = false,
+    WidgetBuilder? placeholderBuilder,
+    String? semanticsLabel,
+    bool excludeFromSemantics = false,
+    SvgTheme theme = const SvgTheme(),
+    ColorFilter? colorFilter,
+    Clip clipBehavior = Clip.hardEdge,
+    @deprecated Color? color,
+    @deprecated BlendMode colorBlendMode = BlendMode.srcIn,
+    @deprecated bool cacheColorFilter = false,
+  }) {
+    return SvgPicture.asset(
+      _assetName,
+      key: key,
+      matchTextDirection: matchTextDirection,
+      bundle: bundle,
+      package: package,
+      width: width,
+      height: height,
+      fit: fit,
+      alignment: alignment,
+      allowDrawingOutsideViewBox: allowDrawingOutsideViewBox,
+      placeholderBuilder: placeholderBuilder,
+      semanticsLabel: semanticsLabel,
+      excludeFromSemantics: excludeFromSemantics,
+      theme: theme,
+      colorFilter: colorFilter,
+      color: color,
+      colorBlendMode: colorBlendMode,
+      clipBehavior: clipBehavior,
+      cacheColorFilter: cacheColorFilter,
     );
   }
 

@@ -31,6 +31,22 @@ class $AssetsImagesGen {
   AssetGenImage get flipCountdown =>
       const AssetGenImage('assets/images/flip_countdown.png');
 
+  /// File path: assets/images/flip_countdown_1.png
+  AssetGenImage get flipCountdown1 =>
+      const AssetGenImage('assets/images/flip_countdown_1.png');
+
+  /// File path: assets/images/flip_countdown_2.png
+  AssetGenImage get flipCountdown2 =>
+      const AssetGenImage('assets/images/flip_countdown_2.png');
+
+  /// File path: assets/images/flip_countdown_3.png
+  AssetGenImage get flipCountdown3 =>
+      const AssetGenImage('assets/images/flip_countdown_3.png');
+
+  /// File path: assets/images/flip_countdown_flip.png
+  AssetGenImage get flipCountdownFlip =>
+      const AssetGenImage('assets/images/flip_countdown_flip.png');
+
   /// File path: assets/images/io_flip_logo.svg
   SvgGenImage get ioFlipLogo =>
       const SvgGenImage('assets/images/io_flip_logo.svg');
@@ -44,8 +60,17 @@ class $AssetsImagesGen {
   $AssetsImagesSuitsGen get suits => const $AssetsImagesSuitsGen();
 
   /// List of all assets
-  List<dynamic> get values =>
-      [backgroundPattern, cardLanding, flipCountdown, ioFlipLogo, ioFlipLogo03];
+  List<dynamic> get values => [
+        backgroundPattern,
+        cardLanding,
+        flipCountdown,
+        flipCountdown1,
+        flipCountdown2,
+        flipCountdown3,
+        flipCountdownFlip,
+        ioFlipLogo,
+        ioFlipLogo03
+      ];
 }
 
 class $AssetsImagesCardFramesGen {
