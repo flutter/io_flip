@@ -24,7 +24,7 @@ const card = Card(
   power: 1,
   suit: Suit.air,
 );
-
+const deck = Deck(id: 'id', userId: 'userId', cards: [card]);
 void main() {
   group('ShareDialog', () {
     late DownloadBloc downloadBloc;
@@ -113,6 +113,9 @@ void main() {
       verify(
         () => downloadBloc.add(const DownloadCardsRequested(cards: [card])),
       ).called(1);
+      verify(
+        () => downloadBloc.add(const DownloadDeckRequested(deck: deck)),
+      ).called(1);
     });
 
     testWidgets('renders a downloading button while the downloading',
@@ -164,6 +167,7 @@ extension ShareCardDialogTest on WidgetTester {
               launchedUrl = url;
             },
             downloadCards: const [card],
+            downloadDeck: deck,
           ),
         ),
       );
