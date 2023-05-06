@@ -7,25 +7,8 @@ import 'package:io_flip_ui/io_flip_ui.dart';
 /// of a card on another.
 /// {@endtemplate}
 class WaterDamage extends ElementalDamage {
-  /// {@macro water_damage_small}
-  WaterDamage.small({required super.size})
-      : super(
-          chargeBackPath:
-              Assets.images.elements.mobile.water.chargeBack.keyName,
-          chargeFrontPath:
-              Assets.images.elements.mobile.water.chargeFront.keyName,
-          damageReceivePath:
-              Assets.images.elements.mobile.water.damageReceive.keyName,
-          damageSendPath:
-              Assets.images.elements.mobile.water.damageSend.keyName,
-          victoryChargeBackPath:
-              Assets.images.elements.mobile.water.victoryChargeBack.keyName,
-          victoryChargeFrontPath:
-              Assets.images.elements.mobile.water.victoryChargeFront.keyName,
-        );
-
-  /// {@macro water_damage_large}
-  WaterDamage.large({required super.size})
+  /// {@macro water_damage}
+  WaterDamage({required super.size})
       : super(
           chargeBackPath:
               Assets.images.elements.desktop.water.chargeBack.keyName,
@@ -39,5 +22,7 @@ class WaterDamage extends ElementalDamage {
               Assets.images.elements.desktop.water.victoryChargeBack.keyName,
           victoryChargeFrontPath:
               Assets.images.elements.desktop.water.victoryChargeFront.keyName,
+          badgePath: Assets.images.suits.card.water.keyName,
+          animationColor: IoFlipColors.seedBlue,
         );
 }

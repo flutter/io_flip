@@ -26,6 +26,7 @@ void main() {
               '',
               assetSize: AssetSize.large,
               size: GameCardSize.md(),
+              animationColor: Colors.white,
             ),
           ),
         ),
