@@ -11,6 +11,7 @@ import 'package:io_flip/game/game.dart';
 import 'package:io_flip/gen/assets.gen.dart';
 import 'package:io_flip/l10n/l10n.dart';
 import 'package:io_flip/leaderboard/leaderboard.dart';
+import 'package:io_flip/match_making/match_making.dart';
 import 'package:io_flip/utils/utils.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 
@@ -46,7 +47,12 @@ class GameView extends StatelessWidget {
             text: 'Unable to join game!',
             buttonText: l10n.playAgain,
             onPressed: () {
-              GoRouter.of(context).go('/');
+              GoRouter.of(context).goNamed(
+                'match_making',
+                extra: MatchMakingPageData(
+                  deck: context.read<GameBloc>().playerDeck,
+                ),
+              );
             },
           );
         } else if (state is MatchLoadedState) {
@@ -64,7 +70,12 @@ class GameView extends StatelessWidget {
             text: 'Opponent left the game!',
             buttonText: l10n.playAgain,
             onPressed: () {
-              GoRouter.of(context).go('/');
+              GoRouter.of(context).goNamed(
+                'match_making',
+                extra: MatchMakingPageData(
+                  deck: context.read<GameBloc>().playerDeck,
+                ),
+              );
             },
           );
         } else {

@@ -139,6 +139,37 @@ void main() {
     );
 
     blocTest<MatchMakingBloc, MatchMakingState>(
+      'emits a failure when a race condition occurred too many times '
+      'and preserves the deckID',
+      build: () => MatchMakingBloc(
+        matchMakerRepository: matchMakerRepository,
+        connectionRepository: connectionRepository,
+        gameResource: gameResource,
+        deckId: 'starting_deck_id',
+        hostWaitTime: Duration.zero,
+      ),
+      setUp: () {
+        when(() => matchMakerRepository.findMatch('starting_deck_id'))
+            .thenThrow(
+          MatchMakingRaceError(),
+        );
+      },
+      act: (bloc) => bloc.add(MatchRequested(raceConditionCounter: 5)),
+      expect: () => [
+        MatchMakingState(
+          status: MatchMakingStatus.processing,
+        ),
+        MatchMakingState(
+          status: MatchMakingStatus.failed,
+        ),
+      ],
+      verify: (_) {
+        verify(() => matchMakerRepository.findMatch('starting_deck_id'))
+            .called(2);
+      },
+    );
+
+    blocTest<MatchMakingBloc, MatchMakingState>(
       "creates a match when there isn't one open",
       build: () => MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
