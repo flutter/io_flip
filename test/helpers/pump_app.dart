@@ -70,7 +70,7 @@ extension PumpApp on WidgetTester {
     ConnectionRepository? connectionRepository,
     MatchSolver? matchSolver,
     GameScriptMachine? gameScriptMachine,
-    UISoundAdapter? uiSoundAdaptater,
+    UISoundAdapter? uiSoundAdapter,
     User? user,
     GoRouter? router,
     Images? images,
@@ -109,7 +109,7 @@ extension PumpApp on WidgetTester {
             value: matchSolver ?? _MockMatchSolver(),
           ),
           Provider.value(
-            value: uiSoundAdaptater ?? _createUISoundAdapter(),
+            value: uiSoundAdapter ?? _createUISoundAdapter(),
           ),
           Provider.value(
             value: gameScriptMachine ?? _MockGameScriptMachine(),
@@ -147,9 +147,11 @@ extension PumpAppWithRouter on WidgetTester {
     MatchMakerRepository? matchMakerRepository,
     MatchSolver? matchSolver,
     GameScriptMachine? gameScriptMachine,
+    UISoundAdapter? uiSoundAdapter,
     AudioController? audioController,
     User? user,
     T? bloc,
+    Images? images,
   }) {
     return pumpWidget(
       MultiProvider(
@@ -182,11 +184,17 @@ extension PumpAppWithRouter on WidgetTester {
             value: gameScriptMachine ?? _MockGameScriptMachine(),
           ),
           Provider.value(
+            value: uiSoundAdapter ?? _createUISoundAdapter(),
+          ),
+          Provider.value(
             value: audioController ?? _MockAudioController(),
           ),
           Provider.value(
             value: user ?? _MockUser(),
           ),
+          Provider.value(
+            value: images ?? _MockImages(),
+          )
         ],
         child: bloc != null
             ? BlocProvider.value(

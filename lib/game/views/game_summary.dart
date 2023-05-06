@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
@@ -17,6 +19,7 @@ class GameSummaryView extends StatelessWidget {
   const GameSummaryView({super.key});
 
   static const _gap = SizedBox(width: IoFlipSpacing.sm);
+  static const cardInspectorDuration = Duration(seconds: 4);
 
   @override
   Widget build(BuildContext context) {
@@ -97,24 +100,45 @@ class GameSummaryView extends StatelessWidget {
     final text = context.l10n.cardInspectorText;
     const textStyle = IoFlipTextStyles.bodyMD;
 
-    const defaultPadding = 16;
+    const defaultPadding = IoFlipSpacing.lg;
     final screenSize = MediaQuery.sizeOf(context);
     final textSize = calculateTextSize(text, textStyle);
-    final horizontalMargin =
-        (screenSize.width - textSize.width - (2 * defaultPadding)) / 2;
+    final double horizontalMargin = math.max(
+      0,
+      (screenSize.width - textSize.width - (2 * defaultPadding)) / 2,
+    );
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(text, style: textStyle),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        backgroundColor: IoFlipColors.seedBlack.withOpacity(.5),
-        margin: EdgeInsets.only(
-          bottom: MediaQuery.of(context).size.height / 2,
-          right: horizontalMargin,
-          left: horizontalMargin,
-        ),
-      ),
+    showDialog<void>(
+      context: context,
+      barrierColor: Colors.transparent,
+      builder: (context) {
+        return Dialog(
+          insetPadding: EdgeInsets.symmetric(
+            horizontal: horizontalMargin,
+            vertical: IoFlipSpacing.md,
+          ),
+          backgroundColor: IoFlipColors.seedBlack.withOpacity(.7),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: IoFlipSpacing.md,
+              horizontal: defaultPadding,
+            ),
+            child: Text(text, style: textStyle, textAlign: TextAlign.center),
+          ),
+        );
+      },
+    );
+
+    Future.delayed(
+      GameSummaryView.cardInspectorDuration,
+      () {
+        if (ModalRoute.of(context)?.isCurrent != true) {
+          GoRouter.maybeOf(context)?.pop();
+        }
+      },
     );
   }
 }
