@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:game_domain/game_domain.dart';
@@ -21,7 +19,6 @@ class GameSummaryView extends StatelessWidget {
 
   final bool isWeb;
   static const _gap = SizedBox(width: IoFlipSpacing.sm);
-  static const cardInspectorDuration = Duration(seconds: 4);
 
   @override
   Widget build(BuildContext context) {
@@ -44,104 +41,51 @@ class GameSummaryView extends StatelessWidget {
       body: MatchResultSplash(
         isWeb: isWeb,
         result: result ?? GameResult.draw,
-        child: Builder(
-          builder: (context) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              showCardInspectorSnackBar(context);
-            });
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (!isPhoneWidth && screenHeight > 610)
-                  Padding(
-                    padding: const EdgeInsets.only(top: IoFlipSpacing.lg),
-                    child: IoFlipLogo(
-                      height: 97,
-                      width: 64,
-                    ),
-                  )
-                else if (screenHeight > 660)
-                  Padding(
-                    padding: const EdgeInsets.only(top: IoFlipSpacing.md),
-                    child: IoFlipLogo(
-                      height: 88,
-                      width: 133,
-                    ),
-                  ),
-                const Spacer(),
-                const SizedBox(height: IoFlipSpacing.sm),
-                const _ResultView(),
-                const FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: _CardsView(),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (!isPhoneWidth && screenHeight > 610)
+              Padding(
+                padding: const EdgeInsets.only(top: IoFlipSpacing.lg),
+                child: IoFlipLogo(
+                  height: 97,
+                  width: 64,
                 ),
-                const Spacer(),
-                const Padding(
-                  padding: EdgeInsets.all(IoFlipSpacing.sm),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      AudioToggleButton(),
-                      _gap,
-                      Expanded(
-                        child: GameSummaryFooter(),
-                      ),
-                      _gap,
-                      InfoButton(),
-                    ],
-                  ),
+              )
+            else if (screenHeight > 660)
+              Padding(
+                padding: const EdgeInsets.only(top: IoFlipSpacing.md),
+                child: IoFlipLogo(
+                  height: 88,
+                  width: 133,
                 ),
-              ],
-            );
-          },
+              ),
+            const Spacer(),
+            const SizedBox(height: IoFlipSpacing.sm),
+            const _ResultView(),
+            const FittedBox(
+              fit: BoxFit.scaleDown,
+              child: _CardsView(),
+            ),
+            const Spacer(),
+            const Padding(
+              padding: EdgeInsets.all(IoFlipSpacing.sm),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  AudioToggleButton(),
+                  _gap,
+                  Expanded(
+                    child: GameSummaryFooter(),
+                  ),
+                  _gap,
+                  InfoButton(),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
-    );
-  }
-
-  void showCardInspectorSnackBar(BuildContext context) {
-    final text = context.l10n.cardInspectorText;
-    const textStyle = IoFlipTextStyles.bodyMD;
-
-    const defaultPadding = IoFlipSpacing.lg;
-    final screenSize = MediaQuery.sizeOf(context);
-    final textSize = calculateTextSize(text, textStyle);
-    final double horizontalMargin = math.max(
-      0,
-      (screenSize.width - textSize.width - (2 * defaultPadding)) / 2,
-    );
-
-    showDialog<void>(
-      context: context,
-      barrierColor: Colors.transparent,
-      builder: (context) {
-        return Dialog(
-          insetPadding: EdgeInsets.symmetric(
-            horizontal: horizontalMargin,
-            vertical: IoFlipSpacing.md,
-          ),
-          backgroundColor: IoFlipColors.seedBlack.withOpacity(.7),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: IoFlipSpacing.md,
-              horizontal: defaultPadding,
-            ),
-            child: Text(text, style: textStyle, textAlign: TextAlign.center),
-          ),
-        );
-      },
-    );
-
-    Future.delayed(
-      GameSummaryView.cardInspectorDuration,
-      () {
-        if (ModalRoute.of(context)?.isCurrent != true) {
-          GoRouter.maybeOf(context)?.pop();
-        }
-      },
     );
   }
 }
