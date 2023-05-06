@@ -226,7 +226,7 @@ void main() {
         isHost: isHost,
         connectionRepository: connectionRepository,
       ),
-      act: (bloc) => bloc.add(MatchRequested(match.id)),
+      act: (bloc) => bloc.add(MatchRequested(match.id, hostDeck)),
       expect: () => [
         MatchLoadingState(),
         MatchLoadedState(
@@ -256,7 +256,7 @@ void main() {
         isHost: isHost,
         connectionRepository: connectionRepository,
       ),
-      act: (bloc) => bloc.add(MatchRequested(match.id)),
+      act: (bloc) => bloc.add(MatchRequested(match.id, hostDeck)),
       verify: (_) {
         verify(() => audioController.playSfx(Assets.sfx.startGame)).called(1);
       },
@@ -277,10 +277,10 @@ void main() {
         when(() => gameResource.getMatch(match.id))
             .thenAnswer((_) async => null);
       },
-      act: (bloc) => bloc.add(MatchRequested(match.id)),
+      act: (bloc) => bloc.add(MatchRequested(match.id, hostDeck)),
       expect: () => [
         MatchLoadingState(),
-        MatchLoadFailedState(),
+        MatchLoadFailedState(deck: hostDeck),
       ],
     );
 
@@ -298,10 +298,10 @@ void main() {
       setUp: () {
         when(() => gameResource.getMatch(match.id)).thenThrow(Exception('Ops'));
       },
-      act: (bloc) => bloc.add(MatchRequested(match.id)),
+      act: (bloc) => bloc.add(MatchRequested(match.id, hostDeck)),
       expect: () => [
         MatchLoadingState(),
-        MatchLoadFailedState(),
+        MatchLoadFailedState(deck: hostDeck),
       ],
     );
 
@@ -331,7 +331,7 @@ void main() {
           user: user,
           isHost: true,
           connectionRepository: connectionRepository,
-        )..add(MatchRequested(baseState.match.id));
+        )..add(MatchRequested(baseState.match.id, hostDeck));
 
         await Future.microtask(() {});
 
@@ -372,7 +372,7 @@ void main() {
           matchSolver: matchSolver,
           isHost: true,
           connectionRepository: connectionRepository,
-        )..add(MatchRequested(baseState.match.id));
+        )..add(MatchRequested(baseState.match.id, hostDeck));
 
         await Future.microtask(() {});
 
@@ -1167,7 +1167,7 @@ void main() {
               user: user,
               isHost: true,
             )
-              ..add(MatchRequested(match.id))
+              ..add(MatchRequested(match.id, hostDeck))
               ..add(MatchStateUpdated(baseState.matchState));
 
             async.elapse(Duration(milliseconds: 2500));
@@ -1212,7 +1212,7 @@ void main() {
               user: user,
               isHost: true,
             )
-              ..add(MatchRequested(baseState.match.id))
+              ..add(MatchRequested(baseState.match.id, hostDeck))
               ..add(MatchStateUpdated(baseState.matchState));
 
             async.elapse(Duration(milliseconds: 10500));
@@ -1249,7 +1249,7 @@ void main() {
               user: user,
               isHost: false,
             )
-              ..add(MatchRequested(baseState.match.id))
+              ..add(MatchRequested(baseState.match.id, hostDeck))
               ..add(MatchStateUpdated(baseState.matchState));
 
             async.elapse(Duration(milliseconds: 10500));
@@ -1286,7 +1286,7 @@ void main() {
               user: user,
               isHost: false,
             )
-              ..add(MatchRequested(baseState.match.id))
+              ..add(MatchRequested(baseState.match.id, hostDeck))
               ..add(MatchStateUpdated(baseState.matchState));
 
             async.elapse(Duration(milliseconds: 10500));
@@ -1566,7 +1566,7 @@ void main() {
           matchSolver: matchSolver,
         ),
         act: (bloc) {
-          bloc.add(ManagePlayerPresence(match.id));
+          bloc.add(ManagePlayerPresence(match.id, hostDeck));
           matchController.add(
             DraftMatch(
               id: 'matchId',
@@ -1576,7 +1576,7 @@ void main() {
             ),
           );
         },
-        expect: () => [OpponentAbsentState()],
+        expect: () => [OpponentAbsentState(deck: hostDeck)],
         verify: (_) {
           verify(() => matchMakerRepository.watchMatch(match.id)).called(1);
         },
@@ -1594,7 +1594,7 @@ void main() {
           matchSolver: matchSolver,
         ),
         act: (bloc) {
-          bloc.add(ManagePlayerPresence(match.id));
+          bloc.add(ManagePlayerPresence(match.id, hostDeck));
           matchController.add(
             DraftMatch(
               id: 'matchId',
@@ -1604,7 +1604,7 @@ void main() {
             ),
           );
         },
-        expect: () => [OpponentAbsentState()],
+        expect: () => [OpponentAbsentState(deck: hostDeck)],
         verify: (_) {
           verify(() => matchMakerRepository.watchMatch(match.id)).called(1);
         },
@@ -1622,7 +1622,7 @@ void main() {
           matchSolver: matchSolver,
         ),
         act: (bloc) {
-          bloc.add(ManagePlayerPresence(match.id));
+          bloc.add(ManagePlayerPresence(match.id, hostDeck));
           matchController.add(
             DraftMatch(
               id: 'matchId',
@@ -1656,7 +1656,7 @@ void main() {
           );
         },
         act: (bloc) {
-          bloc.add(ManagePlayerPresence(match.id));
+          bloc.add(ManagePlayerPresence(match.id, hostDeck));
           matchController.add(
             DraftMatch(
               id: 'matchId',
@@ -1693,7 +1693,7 @@ void main() {
           matchSolver: matchSolver,
         ),
         act: (bloc) {
-          bloc.add(ManagePlayerPresence(match.id));
+          bloc.add(ManagePlayerPresence(match.id, hostDeck));
           matchController.add(
             DraftMatch(
               id: 'matchId',

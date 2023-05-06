@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:io_flip/game/game.dart';
 import 'package:mocktail/mocktail.dart';
@@ -13,7 +14,8 @@ void main() {
   group('GamePage', () {
     late GoRouterState goRouterState;
     const matchId = 'matchId';
-    final data = GamePageData(isHost: true, matchId: matchId);
+    const deck = Deck(id: 'deckId', userId: 'userId', cards: []);
+    final data = GamePageData(isHost: true, matchId: matchId, deck: deck);
 
     setUp(() {
       goRouterState = _MockGoRouterState();
@@ -25,7 +27,8 @@ void main() {
         GamePage.routeBuilder(null, goRouterState),
         isA<GamePage>()
             .having((page) => page.isHost, 'isHost', equals(data.isHost))
-            .having((page) => page.matchId, 'matchId', equals(data.matchId)),
+            .having((page) => page.matchId, 'matchId', equals(data.matchId))
+            .having((page) => page.deck, 'deck', equals(data.deck)),
       );
     });
 
@@ -34,6 +37,7 @@ void main() {
         GamePage(
           matchId: 'matchId',
           isHost: false,
+          deck: deck,
         ),
       );
 

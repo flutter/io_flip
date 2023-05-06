@@ -14,6 +14,7 @@ import 'package:io_flip/audio/audio_controller.dart';
 import 'package:io_flip/game/game.dart';
 import 'package:io_flip/gen/assets.gen.dart';
 import 'package:io_flip/leaderboard/leaderboard.dart';
+import 'package:io_flip/match_making/views/match_making_page.dart';
 import 'package:io_flip/settings/settings_controller.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:mocktail/mocktail.dart';
@@ -70,6 +71,8 @@ void main() {
       ),
     ];
 
+    final deck = Deck(id: '', userId: '', cards: playerCards);
+
     setUpAll(() {
       registerFallbackValue(
         Card(
@@ -93,6 +96,7 @@ void main() {
       when(() => bloc.canPlayerPlay(any())).thenReturn(true);
       when(() => bloc.isPlayerAllowedToPlay).thenReturn(true);
       when(() => bloc.matchCompleted(any())).thenReturn(false);
+      when(() => bloc.playerDeck).thenReturn(deck);
 
       leaderboardResource = _MockLeaderboardResource();
       when(() => leaderboardResource.getInitialsBlacklist())
@@ -114,10 +118,37 @@ void main() {
     });
 
     testWidgets(
-      'renders an error message when failed and navigates to main page',
+      'renders an error message when failed and navigates to match making',
       (tester) async {
         final goRouter = MockGoRouter();
-        mockState(MatchLoadFailedState());
+        mockState(MatchLoadFailedState(deck: deck));
+        await tester.pumpSubject(
+          bloc,
+          goRouter: goRouter,
+        );
+
+        expect(find.text('Unable to join game!'), findsOneWidget);
+
+        await tester.tap(find.byType(RoundedButton));
+        await tester.pumpAndSettle();
+
+        verify(
+          () => goRouter.goNamed(
+            'match_making',
+            extra: MatchMakingPageData(
+              deck: deck,
+            ),
+          ),
+        ).called(1);
+      },
+    );
+
+    testWidgets(
+      'renders an error message when failed and navigates to home '
+      'if deck not available',
+      (tester) async {
+        final goRouter = MockGoRouter();
+        mockState(MatchLoadFailedState(deck: null));
         await tester.pumpSubject(
           bloc,
           goRouter: goRouter,
@@ -189,7 +220,7 @@ void main() {
       testWidgets(
         'renders the opponent absent message when the opponent leaves',
         (tester) async {
-          mockState(OpponentAbsentState());
+          mockState(OpponentAbsentState(deck: deck));
           await tester.pumpSubject(bloc);
 
           expect(
@@ -204,11 +235,39 @@ void main() {
       );
 
       testWidgets(
-        'goes to main page when the replay button is tapped on opponent absent',
+        'goes to match making when the replay button is tapped '
+        'on opponent absent',
         (tester) async {
           final goRouter = MockGoRouter();
 
-          mockState(OpponentAbsentState());
+          mockState(OpponentAbsentState(deck: deck));
+
+          await tester.pumpSubject(
+            bloc,
+            goRouter: goRouter,
+          );
+
+          await tester.tap(find.byType(RoundedButton));
+          await tester.pumpAndSettle();
+
+          verify(
+            () => goRouter.goNamed(
+              'match_making',
+              extra: MatchMakingPageData(
+                deck: deck,
+              ),
+            ),
+          ).called(1);
+        },
+      );
+
+      testWidgets(
+        'goes to home when the replay button is tapped on opponent absent '
+        'and no deck is available',
+        (tester) async {
+          final goRouter = MockGoRouter();
+
+          mockState(OpponentAbsentState(deck: null));
 
           await tester.pumpSubject(
             bloc,

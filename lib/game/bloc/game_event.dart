@@ -5,12 +5,13 @@ abstract class GameEvent extends Equatable {
 }
 
 class MatchRequested extends GameEvent {
-  const MatchRequested(this.matchId);
+  const MatchRequested(this.matchId, this.deck);
 
   final String matchId;
+  final Deck? deck;
 
   @override
-  List<Object> get props => [matchId];
+  List<Object?> get props => [matchId, deck];
 }
 
 class PlayerPlayed extends GameEvent {
@@ -32,12 +33,13 @@ class MatchStateUpdated extends GameEvent {
 }
 
 class ManagePlayerPresence extends GameEvent {
-  const ManagePlayerPresence(this.matchId);
+  const ManagePlayerPresence(this.matchId, this.deck);
 
   final String matchId;
+  final Deck? deck;
 
   @override
-  List<Object> get props => [matchId];
+  List<Object?> get props => [matchId, deck];
 }
 
 class ScoreCardUpdated extends GameEvent {
