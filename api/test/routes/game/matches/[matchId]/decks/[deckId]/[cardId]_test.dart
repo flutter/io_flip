@@ -61,6 +61,38 @@ void main() {
       expect(response.statusCode, equals(HttpStatus.noContent));
     });
 
+    test('returns bad request when the move is invalid', () async {
+      when(
+        () => matchRepository.playCard(
+          matchId: matchId,
+          cardId: cardId,
+          deckId: deckId,
+          userId: userId,
+        ),
+      ).thenThrow(
+        PlayCardFailure(),
+      );
+      final response = await route.onRequest(context, matchId, deckId, cardId);
+
+      expect(response.statusCode, equals(HttpStatus.badRequest));
+    });
+
+    test('returns not found when the resources cannot be found', () async {
+      when(
+        () => matchRepository.playCard(
+          matchId: matchId,
+          cardId: cardId,
+          deckId: deckId,
+          userId: userId,
+        ),
+      ).thenThrow(
+        MatchNotFoundFailure(),
+      );
+      final response = await route.onRequest(context, matchId, deckId, cardId);
+
+      expect(response.statusCode, equals(HttpStatus.notFound));
+    });
+
     test("rethrows error when the card can't be played", () async {
       when(
         () => matchRepository.playCard(
