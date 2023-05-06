@@ -23,6 +23,10 @@ extension on int {
   }
 }
 
+extension on TickerFuture {
+  Future<void> get done => orCancel.then<void>((_) {}, onError: (_) {});
+}
+
 class ClashScene extends StatefulWidget {
   const ClashScene({
     required this.onFinished,
@@ -40,6 +44,7 @@ class ClashScene extends StatefulWidget {
 }
 
 class ClashSceneState extends State<ClashScene> with TickerProviderStateMixin {
+  Color bgColor = Colors.transparent;
   final AnimatedCardController opponentController = AnimatedCardController();
   final AnimatedCardController playerController = AnimatedCardController();
   late final AnimationController motionController = AnimationController(
@@ -89,6 +94,32 @@ class ClashSceneState extends State<ClashScene> with TickerProviderStateMixin {
         damageCompleter.complete();
       }
     });
+
+  Future<void> onElementalComplete() async {
+    if (winningCard != ComparisonResult.none) {
+      setState(() {
+        bgColor = Colors.black.withOpacity(0.5);
+      });
+
+      if (winningCard == ComparisonResult.player) {
+        await playerController.run(playerAttackForwardAnimation).done;
+        await Future<void>.delayed(const Duration(milliseconds: 5));
+        await Future.wait([
+          playerController.run(playerAttackBackAnimation).done,
+          opponentController.run(opponentKnockOutAnimation).done,
+        ]);
+      } else if (winningCard == ComparisonResult.opponent) {
+        await opponentController.run(opponentAttackForwardAnimation).done;
+        await Future<void>.delayed(const Duration(milliseconds: 5));
+        await Future.wait([
+          opponentController.run(opponentAttackBackAnimation).done,
+          playerController.run(playerKnockOutAnimation).done,
+        ]);
+      }
+    }
+
+    widget.onFinished();
+  }
 
   void _getResults() {
     final gameScript = context.read<GameScriptMachine>();
@@ -250,45 +281,49 @@ class ClashSceneState extends State<ClashScene> with TickerProviderStateMixin {
       }
     }
 
-    return Center(
-      child: SizedBox.fromSize(
-        size: clashSceneSize,
-        child: Stack(
-          children: [
-            if (winningSuit == ComparisonResult.player) ...[
-              opponentCard,
-              playerCard
-            ] else ...[
-              playerCard,
-              opponentCard
-            ],
-            Positioned.fill(
-              child: Visibility(
-                visible: !_flipCards,
-                child: FlipCountdown(
-                  onComplete: onFlipCards,
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      color: bgColor,
+      child: Center(
+        child: SizedBox.fromSize(
+          size: clashSceneSize,
+          child: Stack(
+            children: [
+              if (winningCard == ComparisonResult.player) ...[
+                opponentCard,
+                playerCard
+              ] else ...[
+                playerCard,
+                opponentCard
+              ],
+              Positioned.fill(
+                child: Visibility(
+                  visible: !_flipCards,
+                  child: FlipCountdown(
+                    onComplete: onFlipCards,
+                  ),
                 ),
               ),
-            ),
-            if (_flipCards)
-              ElementalDamageAnimation(
-                winningElement!,
-                direction: winningSuit == ComparisonResult.player
-                    ? DamageDirection.bottomToTop
-                    : DamageDirection.topToBottom,
-                size: cardSize,
-                assetSize: platformAwareAsset<AssetSize>(
-                  desktop: AssetSize.large,
-                  mobile: AssetSize.small,
-                ),
-                initialState: winningSuit == ComparisonResult.none
-                    ? DamageAnimationState.victory
-                    : DamageAnimationState.charging,
-                onDamageReceived: onDamageRecieved,
-                pointDeductionCompleter: damageCompleter,
-                onComplete: widget.onFinished,
-              )
-          ],
+              if (_flipCards)
+                ElementalDamageAnimation(
+                  winningElement!,
+                  direction: winningSuit == ComparisonResult.player
+                      ? DamageDirection.bottomToTop
+                      : DamageDirection.topToBottom,
+                  size: cardSize,
+                  assetSize: platformAwareAsset<AssetSize>(
+                    desktop: AssetSize.large,
+                    mobile: AssetSize.small,
+                  ),
+                  initialState: winningSuit == ComparisonResult.none
+                      ? DamageAnimationState.victory
+                      : DamageAnimationState.charging,
+                  onDamageReceived: onDamageRecieved,
+                  pointDeductionCompleter: damageCompleter,
+                  onComplete: onElementalComplete,
+                )
+            ],
+          ),
         ),
       ),
     );

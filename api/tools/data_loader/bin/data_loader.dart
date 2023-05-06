@@ -148,6 +148,51 @@ void main(List<String> args) async {
         '<card_variation_number> <character>',
       );
     }
+  } else if (subcommand == 'normalize') {
+    if (args.length == 3) {
+      final imagesFolder = args[1];
+      final destinationFolder = args[2];
+
+      final imagesFolderDirectory = Directory(imagesFolder);
+      final destinationFolderDirectory = Directory(destinationFolder);
+
+      final generator = NormalizeImageNames(
+        imagesFolder: imagesFolderDirectory,
+        destImagesFolder: destinationFolderDirectory,
+      );
+
+      await generator.normalize((current, total) {
+        print('Progress: ($current of $total)');
+      });
+    } else {
+      print(
+        'Usage: dart bin/data_loader.dart normalize <images_folder> ',
+      );
+    }
+  } else if (subcommand == 'missing_descriptions') {
+    if (args.length == 4) {
+      final projectId = args[1];
+      final csvPath = args[2];
+      final character = args[3];
+
+      final csv = File(csvPath);
+      final dbClient = DbClient.initialize(projectId);
+
+      final generator = MissingDescriptions(
+        dbClient: dbClient,
+        csv: csv,
+        character: character,
+      );
+
+      await generator.checkMissing((__, _) {
+        // Progress printing gets in the way on this command.
+      });
+      print('Done');
+    } else {
+      print(
+        'Usage: dart bin/data_loader.dart normalize <images_folder> ',
+      );
+    }
   } else {
     print('Unknown command: $subcommand');
   }

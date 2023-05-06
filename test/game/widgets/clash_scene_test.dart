@@ -175,7 +175,7 @@ void main() {
       'plays damage animation then flips both cards after countdown'
       ' ,invokes onFinished callback when animation is complete'
       ' and plays "air" sfx',
-      (tester) async {
+      (tester) => mockNetworkImages(() async {
         var onFinishedCalled = false;
         final audioController = _MockAudioController();
 
@@ -204,9 +204,7 @@ void main() {
         expect(flipCountdown, findsOneWidget);
         tester.widget<FlipCountdown>(flipCountdown).onComplete?.call();
 
-        await mockNetworkImages(() async {
-          await tester.pump(smallFlipAnimation.duration * 2);
-        });
+        await tester.pump(smallFlipAnimation.duration * 2);
 
         final elementalDamage = find.byType(ElementalDamageAnimation);
 
@@ -216,15 +214,17 @@ void main() {
             .widget<ElementalDamageAnimation>(elementalDamage)
             .onComplete
             ?.call();
+
+        await tester.pumpAndSettle();
         expect(onFinishedCalled, isTrue);
-      },
+      }),
     );
 
     testWidgets(
       'plays damage animation then flips both cards after countdown'
       ' ,invokes onFinished callback when animation is complete'
       ' and plays "fire" sfx',
-      (tester) async {
+      (tester) => mockNetworkImages(() async {
         var onFinishedCalled = false;
         final audioController = _MockAudioController();
 
@@ -253,9 +253,7 @@ void main() {
         expect(flipCountdown, findsOneWidget);
         tester.widget<FlipCountdown>(flipCountdown).onComplete?.call();
 
-        await mockNetworkImages(() async {
-          await tester.pump(smallFlipAnimation.duration * 2);
-        });
+        await tester.pump(smallFlipAnimation.duration * 2);
 
         final elementalDamage = find.byType(ElementalDamageAnimation);
 
@@ -265,15 +263,16 @@ void main() {
             .widget<ElementalDamageAnimation>(elementalDamage)
             .onComplete
             ?.call();
+        await tester.pumpAndSettle();
         expect(onFinishedCalled, isTrue);
-      },
+      }),
     );
 
     testWidgets(
       'plays damage animation then flips both cards after countdown'
       ' ,invokes onFinished callback when animation is complete'
       ' and plays "earth" sfx',
-      (tester) async {
+      (tester) => mockNetworkImages(() async {
         var onFinishedCalled = false;
         final audioController = _MockAudioController();
 
@@ -302,9 +301,7 @@ void main() {
         expect(flipCountdown, findsOneWidget);
         tester.widget<FlipCountdown>(flipCountdown).onComplete?.call();
 
-        await mockNetworkImages(() async {
-          await tester.pump(smallFlipAnimation.duration * 2);
-        });
+        await tester.pump(smallFlipAnimation.duration * 2);
 
         final elementalDamage = find.byType(ElementalDamageAnimation);
 
@@ -314,15 +311,16 @@ void main() {
             .widget<ElementalDamageAnimation>(elementalDamage)
             .onComplete
             ?.call();
+        await tester.pumpAndSettle();
         expect(onFinishedCalled, isTrue);
-      },
+      }),
     );
 
     testWidgets(
       'plays damage animation then flips both cards after countdown'
       ' ,invokes onFinished callback when animation is complete'
       ' and plays "metal" sfx',
-      (tester) async {
+      (tester) => mockNetworkImages(() async {
         var onFinishedCalled = false;
         final audioController = _MockAudioController();
 
@@ -351,9 +349,7 @@ void main() {
         expect(flipCountdown, findsOneWidget);
         tester.widget<FlipCountdown>(flipCountdown).onComplete?.call();
 
-        await mockNetworkImages(() async {
-          await tester.pump(smallFlipAnimation.duration * 2);
-        });
+        await tester.pump(smallFlipAnimation.duration * 2);
 
         final elementalDamage = find.byType(ElementalDamageAnimation);
 
@@ -365,15 +361,16 @@ void main() {
             ?.call();
 
         await tester.pumpAndSettle();
+
         expect(onFinishedCalled, isTrue);
-      },
+      }),
     );
 
     testWidgets(
       'plays damage animation then flips both cards after countdown'
       ' ,invokes onFinished callback when animation is complete'
       ' and plays "water" sfx',
-      (tester) async {
+      (tester) => mockNetworkImages(() async {
         var onFinishedCalled = false;
         final audioController = _MockAudioController();
 
@@ -402,9 +399,7 @@ void main() {
         expect(flipCountdown, findsOneWidget);
         tester.widget<FlipCountdown>(flipCountdown).onComplete?.call();
 
-        await mockNetworkImages(() async {
-          await tester.pump(smallFlipAnimation.duration * 2);
-        });
+        await tester.pump(smallFlipAnimation.duration * 2);
 
         final elementalDamage = find.byType(ElementalDamageAnimation);
 
@@ -420,7 +415,7 @@ void main() {
 
         await tester.pumpAndSettle();
         expect(onFinishedCalled, isTrue);
-      },
+      }),
     );
 
     testWidgets(

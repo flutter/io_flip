@@ -221,7 +221,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
           ],
         );
       case DamageAnimationState.waitingVictory:
-        return Container();
+        return const SizedBox.shrink(key: Key('elementalDamage_empty'));
       case DamageAnimationState.victory:
         return Stack(
           children: [
@@ -266,8 +266,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
           ],
         );
       case DamageAnimationState.ended:
-        widget.onComplete?.call();
-        return Container();
+        return const SizedBox.shrink(key: Key('elementalDamage_empty'));
     }
   }
 
@@ -296,6 +295,7 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
       });
     } else if (_animationState == DamageAnimationState.victory) {
       widget.stepNotifier?._victory.complete();
+      widget.onComplete?.call();
       setState(() {
         _animationState = DamageAnimationState.ended;
       });

@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
@@ -16,8 +17,9 @@ import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:provider/provider.dart';
 
 class GameSummaryView extends StatelessWidget {
-  const GameSummaryView({super.key});
+  const GameSummaryView({super.key, this.isWeb = kIsWeb});
 
+  final bool isWeb;
   static const _gap = SizedBox(width: IoFlipSpacing.sm);
   static const cardInspectorDuration = Duration(seconds: 4);
 
@@ -40,6 +42,7 @@ class GameSummaryView extends StatelessWidget {
     final screenHeight = MediaQuery.sizeOf(context).height;
     return IoFlipScaffold(
       body: MatchResultSplash(
+        isWeb: isWeb,
         result: result ?? GameResult.draw,
         child: Builder(
           builder: (context) {
