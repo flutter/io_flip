@@ -97,6 +97,10 @@ class _ElementalDamageGroup extends StatelessWidget {
             child: direction == DamageDirection.topToBottom ? card2 : card1,
           ),
           Positioned(
+            top: 0,
+            left: 0,
+            bottom: 0,
+            right: 0,
             child: ElementalDamageAnimation(
               element,
               direction: direction,
