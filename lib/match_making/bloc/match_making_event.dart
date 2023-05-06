@@ -5,11 +5,10 @@ abstract class MatchMakingEvent extends Equatable {
 }
 
 class MatchRequested extends MatchMakingEvent {
-  const MatchRequested({this.raceConditionCounter = 0});
-  final int raceConditionCounter;
+  const MatchRequested();
 
   @override
-  List<Object> get props => [raceConditionCounter];
+  List<Object> get props => [];
 }
 
 class PrivateMatchRequested extends MatchMakingEvent {
