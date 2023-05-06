@@ -535,8 +535,7 @@ void main() {
               LeaderboardEntryRequested(
                 shareHandPageData: ShareHandPageData(
                   initials: '',
-                  deck: const [],
-                  deckId: '',
+                  deck: baseState.match.guestDeck,
                   wins: 0,
                 ),
               ),
@@ -571,8 +570,7 @@ void main() {
               LeaderboardEntryRequested(
                 shareHandPageData: ShareHandPageData(
                   initials: '',
-                  deck: const [],
-                  deckId: '',
+                  deck: baseState.match.hostDeck,
                   wins: 0,
                 ),
               ),

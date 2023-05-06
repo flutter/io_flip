@@ -26,7 +26,6 @@ class InitialsFormView extends StatelessWidget {
               extra: ShareHandPageData(
                 initials: state.initials.join(),
                 wins: shareHandPageData!.wins,
-                deckId: shareHandPageData!.deckId,
                 deck: shareHandPageData!.deck,
               ),
             );

@@ -2,6 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:io_flip/l10n/l10n.dart';
 import 'package:io_flip/leaderboard/initials_form/initials_form.dart';
@@ -87,8 +88,11 @@ void main() {
           ]),
           initialState: const InitialsFormState(),
         );
-        const data =
-            ShareHandPageData(initials: 'AAA', wins: 0, deckId: '', deck: []);
+        const data = ShareHandPageData(
+          initials: 'AAA',
+          wins: 0,
+          deck: Deck(id: '', userId: '', cards: []),
+        );
 
         await tester.pumpSubject(
           initialsFormBloc,

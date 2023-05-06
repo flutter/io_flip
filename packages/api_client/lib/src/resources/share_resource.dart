@@ -62,12 +62,28 @@ class ShareResource {
   /// Get public/cards/:cardId
   ///
   /// Returns a [Uint8List] image, if any to be found.
-  Future<Uint8List> getShareImage(String cardId) async {
+  Future<Uint8List> getShareCardImage(String cardId) async {
     final response = await _apiClient.getPublic('/public/cards/$cardId');
 
     if (response.statusCode != HttpStatus.ok) {
       throw ApiClientError(
         'GET public/cards/$cardId returned status ${response.statusCode} with the following response: "${response.body}"',
+        StackTrace.current,
+      );
+    }
+
+    return response.bodyBytes;
+  }
+
+  /// Get public/deck/:deckId
+  ///
+  /// Returns a [Uint8List] image, if any to be found.
+  Future<Uint8List> getShareDeckImage(String deckId) async {
+    final response = await _apiClient.getPublic('/public/decks/$deckId');
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw ApiClientError(
+        'GET public/decks/$deckId returned status ${response.statusCode} with the following response: "${response.body}"',
         StackTrace.current,
       );
     }

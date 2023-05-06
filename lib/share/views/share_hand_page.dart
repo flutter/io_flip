@@ -14,7 +14,6 @@ class ShareHandPage extends StatelessWidget {
   const ShareHandPage({
     required this.initials,
     required this.wins,
-    required this.deckId,
     required this.deck,
     super.key,
   });
@@ -25,15 +24,13 @@ class ShareHandPage extends StatelessWidget {
       key: const Key('share_hand_page'),
       initials: data?.initials ?? '',
       wins: data?.wins ?? 0,
-      deckId: data?.deckId ?? '',
-      deck: data?.deck ?? [],
+      deck: data?.deck ?? const Deck(id: '', userId: '', cards: []),
     );
   }
 
   final String initials;
   final int wins;
-  final String deckId;
-  final List<Card> deck;
+  final Deck deck;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +50,7 @@ class ShareHandPage extends StatelessWidget {
           const SizedBox(height: IoFlipSpacing.xxlg),
           Align(
             alignment: Alignment.topCenter,
-            child: CardFan(cards: deck),
+            child: CardFan(cards: deck.cards),
           ),
           Text(
             initials,
@@ -93,8 +90,7 @@ class ShareHandPage extends StatelessWidget {
                       onPressed: () => IoFlipDialog.show(
                         context,
                         child: ShareHandDialog(
-                          cards: deck,
-                          deckId: deckId,
+                          deck: deck,
                           initials: initials,
                           wins: wins,
                         ),
@@ -162,14 +158,12 @@ class ShareHandPageData extends Equatable {
   const ShareHandPageData({
     required this.initials,
     required this.wins,
-    required this.deckId,
     required this.deck,
   });
   final String initials;
   final int wins;
-  final String deckId;
-  final List<Card> deck;
+  final Deck deck;
 
   @override
-  List<Object> get props => [wins, initials, deckId];
+  List<Object> get props => [wins, initials, deck];
 }

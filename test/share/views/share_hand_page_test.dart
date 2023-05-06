@@ -40,8 +40,11 @@ const card = Card(
   power: 1,
   suit: Suit.air,
 );
-const pageData =
-    ShareHandPageData(initials: 'AAA', wins: 0, deckId: '', deck: []);
+const pageData = ShareHandPageData(
+  initials: 'AAA',
+  wins: 0,
+  deck: Deck(id: '', userId: '', cards: []),
+);
 
 void main() {
   late GoRouterState goRouterState;
@@ -73,7 +76,6 @@ void main() {
         ShareHandPage.routeBuilder(null, goRouterState),
         isA<ShareHandPage>()
             .having((page) => page.deck, 'deck', pageData.deck)
-            .having((page) => page.deckId, 'deckId', pageData.deckId)
             .having((page) => page.wins, 'wins', pageData.wins)
             .having((page) => page.initials, 'initials', pageData.initials),
       );
@@ -191,8 +193,7 @@ extension ShareCardDialogTest on WidgetTester {
         const ShareHandPage(
           wins: 5,
           initials: 'AAA',
-          deckId: '',
-          deck: [card, card, card],
+          deck: Deck(id: '', userId: '', cards: [card, card, card]),
         ),
         shareResource: shareResource,
         router: router,

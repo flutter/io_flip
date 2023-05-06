@@ -317,8 +317,7 @@ class GameSummaryFooter extends StatelessWidget {
               shareHandPageData: ShareHandPageData(
                 initials: '',
                 wins: state.playerScoreCard.latestStreak,
-                deckId: playerDeck.id,
-                deck: bloc.playerCards,
+                deck: playerDeck,
               ),
             );
 
