@@ -110,9 +110,9 @@ void main() {
         downloadBloc: downloadBloc,
       );
       await tester.tap(find.text(tester.l10n.saveButtonLabel));
-      verify(() =>
-              downloadBloc.add(const DownloadCardsRequested(cards: [card])))
-          .called(1);
+      verify(
+        () => downloadBloc.add(const DownloadCardsRequested(cards: [card])),
+      ).called(1);
     });
 
     testWidgets('renders a downloading button while the downloading',
