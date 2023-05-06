@@ -592,24 +592,27 @@ void main() {
         ).called(1);
       });
 
-      test('throws PlayCardFailure when match state is not found', () async {
-        when(() => dbClient.findBy('match_states', 'matchId', matchId))
-            .thenAnswer((_) async => []);
+      test(
+        'throws MatchNotFoundFailure when match state is not found',
+        () async {
+          when(() => dbClient.findBy('match_states', 'matchId', matchId))
+              .thenAnswer((_) async => []);
 
-        await expectLater(
-          () => matchRepository.playCard(
-            matchId: matchId,
-            cardId: 'F',
-            deckId: hostDeck.id,
-            userId: hostDeck.userId,
-          ),
-          throwsA(isA<PlayCardFailure>()),
-        );
-      });
+          await expectLater(
+            () => matchRepository.playCard(
+              matchId: matchId,
+              cardId: 'F',
+              deckId: hostDeck.id,
+              userId: hostDeck.userId,
+            ),
+            throwsA(isA<MatchNotFoundFailure>()),
+          );
+        },
+      );
 
       test(
-        "throws PlayCardFailure when match is over, and its match can't be "
-        'found',
+        "throws MatchNotFoundFailure when match is over, and its match can't "
+        'be found',
         () async {
           when(() => dbClient.findBy('match_states', 'matchId', matchId))
               .thenAnswer(
@@ -636,7 +639,7 @@ void main() {
               deckId: hostDeck.id,
               userId: hostDeck.userId,
             ),
-            throwsA(isA<PlayCardFailure>()),
+            throwsA(isA<MatchNotFoundFailure>()),
           );
         },
       );

@@ -1,0 +1,53 @@
+<html>
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png" />
+
+  <script type="text/javascript">
+    window.addEventListener('load', function() {
+      let botArea = document.getElementById('botArea');
+      let field = document.getElementById('botCount');
+      let button = document.getElementById('summon');
+
+      button.addEventListener('click', function() {
+        let number = parseInt(field.value);
+        summonSquad(number);
+      });
+
+      function summonSquad(number) {
+        for (let i = 0; i < number; i++) {
+          setTimeout(summonBot, 2500 * Math.random());
+        }
+      }
+
+      function summonBot() {
+        let iframe = document.createElement('iframe');
+        iframe.src = '/';
+        iframe.width = 500;
+        iframe.height = 500;
+        iframe.frameBorder = 0;
+
+        botArea.appendChild(iframe);
+      }
+
+      if (location.hash.length > 0) {
+        let number = parseInt(location.hash.substring(1));
+        summonSquad(number);
+      }
+    });
+  </script>
+  <body>
+    <div style="text-align: center;">
+      <img src="/assets/assets/flop.png" width="200" height="200"/>
+      <h1>Hello, I am Flop and I am ready to help you!</h1>
+      <hr />
+      <label>How many bots should I summon?</label>
+      <input type="number" id="botCount" value="5" />
+      <button id="summon">Summon</button>
+    </div>
+    <div style="text-align: center;" id="botArea">
+    </div>
+  </body>
+</html>

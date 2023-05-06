@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-// TODO(all): add links.
-
 abstract class ExternalLinks {
   static const String googleIO = 'https://io.google/2023/';
   static const String privacyPolicy = 'https://policies.google.com/privacy';

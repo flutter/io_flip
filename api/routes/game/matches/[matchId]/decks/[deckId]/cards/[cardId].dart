@@ -23,6 +23,10 @@ FutureOr<Response> onRequest(
         deckId: deckId,
         userId: user.id,
       );
+    } on MatchNotFoundFailure {
+      return Response(statusCode: HttpStatus.notFound);
+    } on PlayCardFailure {
+      return Response(statusCode: HttpStatus.badRequest);
     } catch (e, s) {
       context.read<Logger>().severe('Error playing a move', e, s);
       rethrow;

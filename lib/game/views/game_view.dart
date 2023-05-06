@@ -465,9 +465,9 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     final playerCard = bloc.playerCards[lastPlayedPlayerCardIndex!];
     final overlayType = bloc.isWinningCard(playerCard, isPlayer: true);
     if (CardOverlayType.win == overlayType) {
-      audioController.playSfx(Assets.sfx.roundWin);
+      audioController.playSfx(Assets.sfx.winMatch);
     } else if (CardOverlayType.lose == overlayType) {
-      audioController.playSfx(Assets.sfx.roundLost);
+      audioController.playSfx(Assets.sfx.lostMatch);
     }
     bloc
       ..add(const TurnAnimationsFinished())

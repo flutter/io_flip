@@ -8,7 +8,10 @@ import 'package:game_domain/game_domain.dart';
 class GetMatchFailure extends Error {}
 
 /// Throw when adding a move to a match fails.
-class PlayCardFailure extends Error {}
+class PlayCardFailure implements Exception {}
+
+/// Throw when a match is not found.
+class MatchNotFoundFailure implements Exception {}
 
 /// Throw when calculating the result of a match fails.
 class CalculateResultFailure extends Error {}
@@ -144,7 +147,9 @@ class MatchRepository {
   /// Plays a card on the given match. If the match is against a CPU, it plays
   /// the CPU card next.
   ///
-  /// throws [PlayCardFailure] if any of the match, deck or match state
+  /// throws [MatchNotFoundFailure] if any of the match, deck or match state.
+  /// throws [PlayCardFailure] if the move is invalid.
+  ///
   /// are not found.
   Future<void> playCard({
     required String matchId,
@@ -154,15 +159,15 @@ class MatchRepository {
   }) async {
     final match = await getMatch(matchId);
 
-    if (match == null) throw PlayCardFailure();
+    if (match == null) throw MatchNotFoundFailure();
 
     final deck = await _cardsRepository.getDeck(deckId);
 
-    if (deck == null || deck.userId != userId) throw PlayCardFailure();
+    if (deck == null || deck.userId != userId) throw MatchNotFoundFailure();
 
     final matchState = await getMatchState(matchId);
 
-    if (matchState == null) throw PlayCardFailure();
+    if (matchState == null) throw MatchNotFoundFailure();
 
     final newMatchState = await _playCard(
       match: match,

@@ -121,9 +121,6 @@ class $AssetsSfxGen {
   /// File path: assets/sfx/clock_running.mp3
   String get clockRunning => 'assets/sfx/clock_running.mp3';
 
-  /// File path: assets/sfx/damage.mp3
-  String get damage => 'assets/sfx/damage.mp3';
-
   /// File path: assets/sfx/deck_open.mp3
   String get deckOpen => 'assets/sfx/deck_open.mp3';
 
@@ -138,9 +135,6 @@ class $AssetsSfxGen {
 
   /// File path: assets/sfx/flip.mp3
   String get flip => 'assets/sfx/flip.mp3';
-
-  /// File path: assets/sfx/ground.mp3
-  String get ground => 'assets/sfx/ground.mp3';
 
   /// File path: assets/sfx/holo_reveal.mp3
   String get holoReveal => 'assets/sfx/holo_reveal.mp3';
@@ -157,15 +151,6 @@ class $AssetsSfxGen {
   /// File path: assets/sfx/play_card.mp3
   String get playCard => 'assets/sfx/play_card.mp3';
 
-  /// File path: assets/sfx/reveal.mp3
-  String get reveal => 'assets/sfx/reveal.mp3';
-
-  /// File path: assets/sfx/round_lost.mp3
-  String get roundLost => 'assets/sfx/round_lost.mp3';
-
-  /// File path: assets/sfx/round_win.mp3
-  String get roundWin => 'assets/sfx/round_win.mp3';
-
   /// File path: assets/sfx/start_game.mp3
   String get startGame => 'assets/sfx/start_game.mp3';
 
@@ -175,9 +160,6 @@ class $AssetsSfxGen {
   /// File path: assets/sfx/win_match.mp3
   String get winMatch => 'assets/sfx/win_match.mp3';
 
-  /// File path: assets/sfx/wind.mp3
-  String get wind => 'assets/sfx/wind.mp3';
-
   /// List of all assets
   List<String> get values => [
         addToHand,
@@ -186,25 +168,19 @@ class $AssetsSfxGen {
         cardMovement,
         click,
         clockRunning,
-        damage,
         deckOpen,
         drawMatch,
         earth,
         fire,
         flip,
-        ground,
         holoReveal,
         lostMatch,
         matchSeaching,
         metal,
         playCard,
-        reveal,
-        roundLost,
-        roundWin,
         startGame,
         water,
-        winMatch,
-        wind
+        winMatch
       ];
 }
 
