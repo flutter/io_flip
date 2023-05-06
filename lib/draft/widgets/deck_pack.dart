@@ -27,6 +27,11 @@ class DeckPack extends StatefulWidget {
 
 @visibleForTesting
 class DeckPackState extends State<DeckPack> {
+  late final Images images;
+  final asset = platformAwareAsset(
+    desktop: Assets.images.frontPack.keyName,
+    mobile: Assets.images.mobile.frontPack.keyName,
+  );
   bool _underlayVisible = false;
   bool _isAnimationComplete = false;
   Widget? anim;
@@ -34,7 +39,14 @@ class DeckPackState extends State<DeckPack> {
   @override
   void initState() {
     super.initState();
+    images = context.read<Images>();
     setupAnimation();
+  }
+
+  @override
+  void dispose() {
+    images.clear(asset);
+    super.dispose();
   }
 
   Future<void> setupAnimation() async {
@@ -49,12 +61,9 @@ class DeckPackState extends State<DeckPack> {
       loop: false,
     );
     await SpriteAnimation.load(
-      platformAwareAsset(
-        desktop: Assets.images.frontPack.keyName,
-        mobile: Assets.images.mobile.frontPack.keyName,
-      ),
+      asset,
       data,
-      images: context.read<Images>(),
+      images: images,
     ).then((animation) {
       if (!mounted) return;
       final ticker = animation.ticker()
