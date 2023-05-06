@@ -675,7 +675,7 @@ extension GameSummaryViewTest on WidgetTester {
       await pumpApp(
         BlocProvider<GameBloc>.value(
           value: bloc,
-          child: GameSummaryView(),
+          child: GameView(),
         ),
         router: goRouter,
         settingsController: settingsController,
