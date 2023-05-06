@@ -70,9 +70,9 @@ final jumpAnimation = CardAnimation(
 
 /// An animation that moves the card to the bottom right,
 /// as if it had been knocked out.
-final knockOutAnimation = CardAnimation(
+final playerKnockOutAnimation = CardAnimation(
   curve: Curves.easeOut,
-  duration: const Duration(milliseconds: 400),
+  duration: const Duration(seconds: 1),
   animatable: TransformTween(
     endTranslateX: 100,
     endTranslateY: 100,
@@ -81,9 +81,22 @@ final knockOutAnimation = CardAnimation(
   ),
 );
 
+/// An animation that moves the card to the top left,
+/// as if it had been knocked out.
+final opponentKnockOutAnimation = CardAnimation(
+  curve: Curves.easeOut,
+  duration: const Duration(seconds: 1),
+  animatable: TransformTween(
+    endTranslateX: -100,
+    endTranslateY: -100,
+    endTranslateZ: 100,
+    endRotateZ: -math.pi / 12,
+  ),
+);
+
 /// An animation that causes the card to strike to the bottom right.
-final attackAnimation = CardAnimation(
-  duration: const Duration(seconds: 2),
+final opponentAttackForwardAnimation = CardAnimation(
+  duration: const Duration(seconds: 1),
   animatable: TweenSequence([
     TweenSequenceItem(
       tween: TransformTween(
@@ -109,15 +122,60 @@ final attackAnimation = CardAnimation(
       ).chain(CurveTween(curve: Curves.easeInExpo)),
       weight: 0.5,
     ),
+  ]),
+);
+
+/// An animation that causes the card to strike to the bottom right.
+final opponentAttackBackAnimation = CardAnimation(
+  duration: const Duration(seconds: 1),
+  animatable: TransformTween(
+    beginTranslateZ: -300,
+    endTranslateZ: -300,
+    beginTranslateX: 50,
+    beginTranslateY: 50,
+    beginRotateZ: math.pi / 30,
+  ),
+);
+
+/// An animation that causes the card to strike to the top left.
+final playerAttackForwardAnimation = CardAnimation(
+  duration: const Duration(seconds: 1),
+  animatable: TweenSequence([
     TweenSequenceItem(
       tween: TransformTween(
-        beginTranslateZ: -300,
-        endTranslateZ: -300,
-        beginTranslateX: 50,
-        beginTranslateY: 50,
-        beginRotateZ: math.pi / 30,
+        endTranslateZ: -50,
       ),
-      weight: 1,
+      weight: 0.1,
+    ),
+    TweenSequenceItem(
+      tween: TransformTween(
+        beginTranslateZ: -50,
+        endTranslateZ: -100,
+        endRotateZ: math.pi / 30,
+      ).chain(CurveTween(curve: Curves.easeIn)),
+      weight: 0.4,
+    ),
+    TweenSequenceItem(
+      tween: TransformTween(
+        beginTranslateZ: -100,
+        endTranslateZ: -100,
+        endTranslateX: -50,
+        endTranslateY: -50,
+        beginRotateZ: math.pi / 30,
+      ).chain(CurveTween(curve: Curves.easeInExpo)),
+      weight: 0.5,
     ),
   ]),
+);
+
+/// An animation that causes the card to strike to the top left.
+final playerAttackBackAnimation = CardAnimation(
+  duration: const Duration(seconds: 1),
+  animatable: TransformTween(
+    beginTranslateZ: -300,
+    endTranslateZ: -300,
+    beginTranslateX: -50,
+    beginTranslateY: -50,
+    beginRotateZ: -math.pi / 30,
+  ),
 );
