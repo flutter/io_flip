@@ -32,7 +32,6 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   final ConnectionRepository _connectionRepository;
 
   static const defaultHostWaitTime = Duration(seconds: 4);
-  static const raceConditionRetryThreshold = 5;
   final Duration hostWaitTime;
 
   Future<void> _connectToMatch({
@@ -80,16 +79,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
       }
     } catch (e, s) {
       addError(e, s);
-      if (e is MatchMakingRaceError &&
-          event.raceConditionCounter <= raceConditionRetryThreshold) {
-        add(
-          MatchRequested(
-            raceConditionCounter: event.raceConditionCounter + 1,
-          ),
-        );
-      } else {
-        emit(state.copyWith(status: MatchMakingStatus.failed));
-      }
+      emit(state.copyWith(status: MatchMakingStatus.failed));
     }
   }
 
