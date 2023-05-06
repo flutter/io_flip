@@ -9,16 +9,39 @@ import 'package:io_flip/utils/platform_aware_asset.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:provider/provider.dart';
 
-class PromptFormIntroView extends StatelessWidget {
+class PromptFormIntroView extends StatefulWidget {
   const PromptFormIntroView({super.key});
 
   static const _gap = SizedBox(height: IoFlipSpacing.xlg);
   static const _cardMasterHeight = 312.0;
 
   @override
+  State<PromptFormIntroView> createState() => _PromptFormIntroViewState();
+}
+
+class _PromptFormIntroViewState extends State<PromptFormIntroView> {
+  late final Images images;
+  final asset = platformAwareAsset(
+    desktop: Assets.images.cardMaster.keyName,
+    mobile: Assets.images.mobile.cardMaster.keyName,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    images = context.read<Images>();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    images.clear(asset);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final images = context.read<Images>();
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: IoFlipSpacing.xlg),
@@ -37,12 +60,9 @@ class PromptFormIntroView extends StatelessWidget {
                       alignment: Alignment.topCenter,
                       children: [
                         SizedBox.square(
-                          dimension: _cardMasterHeight,
+                          dimension: PromptFormIntroView._cardMasterHeight,
                           child: SpriteAnimationWidget.asset(
-                            path: platformAwareAsset(
-                              desktop: Assets.images.cardMaster.keyName,
-                              mobile: Assets.images.mobile.cardMaster.keyName,
-                            ),
+                            path: asset,
                             images: images,
                             data: SpriteAnimationData.sequenced(
                               amount: 57,
@@ -58,7 +78,8 @@ class PromptFormIntroView extends StatelessWidget {
                         Column(
                           children: [
                             SizedBox(
-                              height: _cardMasterHeight - (_gap.height! * 2),
+                              height: PromptFormIntroView._cardMasterHeight -
+                                  (PromptFormIntroView._gap.height! * 2),
                             ),
                             Text(
                               l10n.niceToMeetYou,
@@ -71,7 +92,7 @@ class PromptFormIntroView extends StatelessWidget {
                               style: IoFlipTextStyles.headlineH6Light,
                               textAlign: TextAlign.center,
                             ),
-                            _gap,
+                            PromptFormIntroView._gap,
                           ],
                         )
                       ],
