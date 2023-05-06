@@ -38,49 +38,81 @@ class GameSummaryView extends StatelessWidget {
     return IoFlipScaffold(
       body: MatchResultSplash(
         result: result ?? GameResult.draw,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (!isPhoneWidth && screenHeight > 610)
-              Padding(
-                padding: const EdgeInsets.only(top: IoFlipSpacing.lg),
-                child: IoFlipLogo(
-                  height: 97,
-                  width: 64,
-                ),
-              )
-            else if (screenHeight > 660)
-              Padding(
-                padding: const EdgeInsets.only(top: IoFlipSpacing.md),
-                child: IoFlipLogo(
-                  height: 88,
-                  width: 133,
-                ),
-              ),
-            const Spacer(),
-            const SizedBox(height: IoFlipSpacing.sm),
-            const _ResultView(),
-            const FittedBox(
-              fit: BoxFit.scaleDown,
-              child: _CardsView(),
-            ),
-            const Spacer(),
-            const Padding(
-              padding: EdgeInsets.all(IoFlipSpacing.sm),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  AudioToggleButton(),
-                  _gap,
-                  Expanded(
-                    child: GameSummaryFooter(),
+        child: Builder(
+          builder: (context) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              showCardInspectorSnackBar(context);
+            });
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (!isPhoneWidth && screenHeight > 610)
+                  Padding(
+                    padding: const EdgeInsets.only(top: IoFlipSpacing.lg),
+                    child: IoFlipLogo(
+                      height: 97,
+                      width: 64,
+                    ),
+                  )
+                else if (screenHeight > 660)
+                  Padding(
+                    padding: const EdgeInsets.only(top: IoFlipSpacing.md),
+                    child: IoFlipLogo(
+                      height: 88,
+                      width: 133,
+                    ),
                   ),
-                  _gap,
-                  InfoButton(),
-                ],
-              ),
-            ),
-          ],
+                const Spacer(),
+                const SizedBox(height: IoFlipSpacing.sm),
+                const _ResultView(),
+                const FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: _CardsView(),
+                ),
+                const Spacer(),
+                const Padding(
+                  padding: EdgeInsets.all(IoFlipSpacing.sm),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      AudioToggleButton(),
+                      _gap,
+                      Expanded(
+                        child: GameSummaryFooter(),
+                      ),
+                      _gap,
+                      InfoButton(),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  void showCardInspectorSnackBar(BuildContext context) {
+    final text = context.l10n.cardInspectorText;
+    const textStyle = IoFlipTextStyles.bodyMD;
+
+    const defaultPadding = 16;
+    final screenSize = MediaQuery.sizeOf(context);
+    final textSize = calculateTextSize(text, textStyle);
+    final horizontalMargin =
+        (screenSize.width - textSize.width - (2 * defaultPadding)) / 2;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(text, style: textStyle),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        backgroundColor: IoFlipColors.seedBlack.withOpacity(.5),
+        margin: EdgeInsets.only(
+          bottom: MediaQuery.of(context).size.height / 2,
+          right: horizontalMargin,
+          left: horizontalMargin,
         ),
       ),
     );
