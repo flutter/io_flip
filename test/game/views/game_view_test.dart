@@ -690,7 +690,7 @@ void main() {
           expect(playerFinalOffset, equals(playerInitialOffset));
           expect(opponentFinalOffset, equals(opponentInitialOffset));
 
-          verify(() => audioController.playSfx(Assets.sfx.roundLost)).called(1);
+          verify(() => audioController.playSfx(Assets.sfx.lostMatch)).called(1);
 
           verify(() => bloc.add(ClashSceneStarted())).called(1);
           verify(() => bloc.add(ClashSceneCompleted())).called(1);
@@ -787,7 +787,7 @@ void main() {
           expect(playerFinalOffset, equals(playerInitialOffset));
           expect(opponentFinalOffset, equals(opponentInitialOffset));
 
-          verify(() => audioController.playSfx(Assets.sfx.roundWin)).called(1);
+          verify(() => audioController.playSfx(Assets.sfx.winMatch)).called(1);
 
           verify(() => bloc.add(ClashSceneStarted())).called(1);
           verify(() => bloc.add(ClashSceneCompleted())).called(1);
