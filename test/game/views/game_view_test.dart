@@ -215,7 +215,8 @@ void main() {
       );
 
       testWidgets(
-        'goes to match making when the replay button is tapped on opponent absent',
+        'goes to match making when the replay button is tapped '
+        'on opponent absent',
         (tester) async {
           final goRouter = MockGoRouter();
 
