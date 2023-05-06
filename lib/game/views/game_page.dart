@@ -14,6 +14,7 @@ class GamePage extends StatelessWidget {
   const GamePage({
     required this.matchId,
     required this.isHost,
+    required this.deck,
     super.key,
   });
 
@@ -24,11 +25,13 @@ class GamePage extends StatelessWidget {
       key: const Key('game'),
       matchId: data?.matchId ?? '',
       isHost: data?.isHost ?? false,
+      deck: data?.deck,
     );
   }
 
   final String matchId;
   final bool isHost;
+  final Deck? deck;
 
   @override
   Widget build(BuildContext context) {
@@ -59,11 +62,13 @@ class GamePageData extends Equatable {
   const GamePageData({
     required this.isHost,
     required this.matchId,
+    required this.deck,
   });
 
   final bool isHost;
   final String? matchId;
+  final Deck deck;
 
   @override
-  List<Object?> get props => [isHost, matchId];
+  List<Object?> get props => [isHost, matchId, deck];
 }

@@ -37,6 +37,7 @@ class MatchMakingView extends StatelessWidget {
                 extra: GamePageData(
                   isHost: current.isHost,
                   matchId: current.match?.id ?? '',
+                  deck: deck,
                 ),
               ),
             ),

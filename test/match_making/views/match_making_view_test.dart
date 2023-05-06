@@ -26,6 +26,40 @@ class _MockRouter extends Mock implements NeglectRouter {}
 
 class _MockBuildContext extends Mock implements BuildContext {}
 
+const deck = Deck(
+  id: 'deckId',
+  userId: 'userId',
+  cards: [
+    Card(
+      id: 'a',
+      name: '',
+      description: '',
+      image: '',
+      power: 1,
+      rarity: false,
+      suit: Suit.air,
+    ),
+    Card(
+      id: 'b',
+      name: '',
+      description: '',
+      image: '',
+      power: 1,
+      rarity: false,
+      suit: Suit.air,
+    ),
+    Card(
+      id: 'c',
+      name: '',
+      description: '',
+      image: '',
+      power: 1,
+      rarity: false,
+      suit: Suit.air,
+    ),
+  ],
+);
+
 void main() {
   group('MatchMakingView', () {
     late MatchMakingBloc bloc;
@@ -46,6 +80,7 @@ void main() {
         GamePageData(
           isHost: true,
           matchId: null,
+          deck: deck,
         ),
       );
     });
@@ -237,6 +272,7 @@ void main() {
         final data = GamePageData(
           isHost: true,
           matchId: 'matchId',
+          deck: deck,
         );
 
         await tester.pump(Duration(seconds: 3));
@@ -269,39 +305,7 @@ extension MatchMakingViewTest on WidgetTester {
           child: MatchMakingView(
             setClipboardData: setClipboardData ?? Clipboard.setData,
             routerNeglectCall: routerNeglectCall,
-            deck: Deck(
-              id: 'deckId',
-              userId: 'userId',
-              cards: const [
-                Card(
-                  id: 'a',
-                  name: '',
-                  description: '',
-                  image: '',
-                  power: 1,
-                  rarity: false,
-                  suit: Suit.air,
-                ),
-                Card(
-                  id: 'b',
-                  name: '',
-                  description: '',
-                  image: '',
-                  power: 1,
-                  rarity: false,
-                  suit: Suit.air,
-                ),
-                Card(
-                  id: 'c',
-                  name: '',
-                  description: '',
-                  image: '',
-                  power: 1,
-                  rarity: false,
-                  suit: Suit.air,
-                ),
-              ],
-            ),
+            deck: deck,
           ),
         ),
         router: goRouter,
