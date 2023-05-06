@@ -184,8 +184,8 @@ void main() {
       );
     });
     testWidgets(
-      'renders a timeout message when match times out and navigates to '
-      'main page',
+      'renders a timeout message when match making times out and navigates to '
+      'match making again',
       (tester) async {
         final goRouter = MockGoRouter();
         mockState(MatchMakingState(status: MatchMakingStatus.timeout));
@@ -200,26 +200,39 @@ void main() {
         await tester.tap(find.byType(RoundedButton));
         await tester.pumpAndSettle();
 
-        verify(() => goRouter.go('/')).called(1);
+        verify(
+          () => goRouter.pushReplacementNamed(
+            'match_making',
+            extra: MatchMakingPageData(deck: deck),
+          ),
+        ).called(1);
       },
     );
 
-    testWidgets('renders an error message when it fails', (tester) async {
-      final goRouter = MockGoRouter();
-      mockState(MatchMakingState(status: MatchMakingStatus.failed));
+    testWidgets(
+      'renders an error message when it fails and navigates to match making',
+      (tester) async {
+        final goRouter = MockGoRouter();
+        mockState(MatchMakingState(status: MatchMakingStatus.failed));
 
-      await tester.pumpSubject(
-        bloc,
-        goRouter: goRouter,
-      );
+        await tester.pumpSubject(
+          bloc,
+          goRouter: goRouter,
+        );
 
-      expect(find.text('Match making failed, sorry!'), findsOneWidget);
+        expect(find.text('Match making failed, sorry!'), findsOneWidget);
 
-      await tester.tap(find.byType(RoundedButton));
-      await tester.pumpAndSettle();
+        await tester.tap(find.byType(RoundedButton));
+        await tester.pumpAndSettle();
 
-      verify(() => goRouter.go('/')).called(1);
-    });
+        verify(
+          () => goRouter.pushReplacementNamed(
+            'match_making',
+            extra: MatchMakingPageData(deck: deck),
+          ),
+        ).called(1);
+      },
+    );
 
     testWidgets(
       'renders transition screen when matchmaking is completed, before going '

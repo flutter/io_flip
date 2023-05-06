@@ -74,7 +74,10 @@ class MatchMakingView extends StatelessWidget {
               text: 'Match making timed out, sorry!',
               buttonText: l10n.playAgain,
               onPressed: () {
-                GoRouter.of(context).go('/');
+                GoRouter.of(context).pushReplacementNamed(
+                  'match_making',
+                  extra: MatchMakingPageData(deck: deck),
+                );
               },
             ),
           );
@@ -86,7 +89,10 @@ class MatchMakingView extends StatelessWidget {
               text: 'Match making failed, sorry!',
               buttonText: l10n.playAgain,
               onPressed: () {
-                GoRouter.of(context).go('/');
+                GoRouter.of(context).pushReplacementNamed(
+                  'match_making',
+                  extra: MatchMakingPageData(deck: deck),
+                );
               },
             ),
           );
