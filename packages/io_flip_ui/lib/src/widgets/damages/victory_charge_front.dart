@@ -73,6 +73,7 @@ class VictoryChargeFront extends StatelessWidget {
         animationColor: animationColor,
         width: width,
         height: height,
+        cardSize: size,
       );
     }
   }
@@ -82,12 +83,14 @@ class _MobileAnimation extends StatefulWidget {
   const _MobileAnimation({
     required this.onComplete,
     required this.animationColor,
+    required this.cardSize,
     required this.width,
     required this.height,
   });
 
   final VoidCallback? onComplete;
   final Color animationColor;
+  final GameCardSize cardSize;
   final double width;
   final double height;
 
@@ -96,40 +99,57 @@ class _MobileAnimation extends StatefulWidget {
 }
 
 class _MobileAnimationState extends State<_MobileAnimation> {
-  var _scale = 0.0;
-  var _step = 0;
+  late var _top = widget.cardSize.height;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      widget.onComplete?.call();
+      setState(() {
+        _top = 0;
+      });
     });
   }
 
   void _onComplete() {
-    if (_step == 0) {
-      setState(() {
-        _scale = 1;
-        _step = 1;
-      });
-    } else {
       widget.onComplete?.call();
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedScale(
-      duration: const Duration(milliseconds: 400),
-      onEnd: _onComplete,
-      scale: _scale,
-      child: ColoredBox(
-        //color: widget.animationColor,
-        color: Colors.transparent,
-        child: SizedBox(
-          width: widget.width,
-          height: widget.height,
+    return Align(
+      alignment: const Alignment(0, -.8),
+      child: SizedBox(
+        width: widget.width,
+        height: widget.height,
+        child: Stack(
+          children: [
+            AnimatedPositioned(
+              onEnd: _onComplete,
+              duration: const Duration(milliseconds: 400),
+              top: _top,
+              child: Opacity(
+                opacity: .6,
+                child: Container(
+                  width: widget.cardSize.width * 1.3,
+                  height: widget.cardSize.height * .02,
+                  decoration: BoxDecoration(
+                    color: widget.animationColor,
+                    borderRadius: BorderRadius.circular(
+                      widget.cardSize.width / 2,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: widget.animationColor,
+                        blurRadius: widget.cardSize.height * .06,
+                        spreadRadius: widget.cardSize.height * .05,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
