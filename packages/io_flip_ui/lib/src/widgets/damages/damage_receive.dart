@@ -90,6 +90,8 @@ class _MobileAnimationState extends State<_MobileAnimation>
     with TickerProviderStateMixin {
   late List<AnimationController> animationControllers;
 
+  var _stepCounter = 1;
+
   @override
   void initState() {
     super.initState();
@@ -97,17 +99,33 @@ class _MobileAnimationState extends State<_MobileAnimation>
       2,
       (index) => AnimationController(
         vsync: this,
-        duration: Duration(seconds: 2),
+        duration: const Duration(milliseconds: 750),
       ),
     );
     animationControllers.first
       ..forward()
       ..repeat();
     Future.delayed(
-        Duration(milliseconds: 1000),
-        () => animationControllers.last
-          ..forward()
-          ..repeat());
+      const Duration(milliseconds: 500),
+      () => animationControllers.last
+        ..forward()
+        ..addStatusListener(
+          (status) {
+            if (status == AnimationStatus.completed) {
+              _stepCounter--;
+              if (_stepCounter == 0) {
+                animationControllers.first.stop();
+                animationControllers.last.stop();
+                widget.onComplete?.call();
+              } else {
+                animationControllers.last
+                  ..reset()
+                  ..forward();
+              }
+            }
+          },
+        ),
+    );
   }
 
   @override
@@ -120,20 +138,22 @@ class _MobileAnimationState extends State<_MobileAnimation>
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      child: Stack(children: [
-        _AnimatedRing(
-          animationController: animationControllers.first,
-          index: 1,
-          color: widget.animationColor,
-          size: widget.width,
-        ),
-        _AnimatedRing(
-          animationController: animationControllers.last,
-          index: 3,
-          color: widget.animationColor,
-          size: widget.width,
-        ),
-      ]),
+      child: Stack(
+        children: [
+          _AnimatedRing(
+            animationController: animationControllers.first,
+            index: 1,
+            color: widget.animationColor,
+            size: widget.width,
+          ),
+          _AnimatedRing(
+            animationController: animationControllers.last,
+            index: 3,
+            color: widget.animationColor,
+            size: widget.width,
+          ),
+        ],
+      ),
     );
   }
 }
@@ -151,6 +171,7 @@ class _AnimatedRing extends StatelessWidget {
   final int index;
   final Color color;
   final double size;
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(

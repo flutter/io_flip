@@ -330,23 +330,21 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
           return Stack(
             children: [
               if (widget.direction == DamageDirection.topToBottom)
-                _BottomAnimation(
-                  child: Transform.translate(
-                    offset: Offset(
-                      0.3 * widget.size.width,
-                      0.3 * widget.size.height,
-                    ),
-                    child: elementalDamage.damageReceiveBuilder(
-                      _onStepCompleted,
-                      widget.assetSize,
-                    ),
+                Transform.translate(
+                  offset: Offset(
+                    1.32 * widget.size.width,
+                    1.16 * widget.size.height,
+                  ),
+                  child: elementalDamage.damageReceiveBuilder(
+                    _onStepCompleted,
+                    widget.assetSize,
                   ),
                 )
               else
                 Transform.translate(
                   offset: -Offset(
-                    0.3 * widget.size.width,
-                    0.3 * widget.size.height,
+                    -0.6 * widget.size.width,
+                    -0.02 * widget.size.height,
                   ),
                   child: elementalDamage.damageReceiveBuilder(
                     _onStepCompleted,

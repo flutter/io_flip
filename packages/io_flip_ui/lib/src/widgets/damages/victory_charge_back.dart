@@ -112,7 +112,7 @@ class _MobileAnimationState extends State<_MobileAnimation> {
   }
 
   void _onComplete() {
-      widget.onComplete?.call();
+    widget.onComplete?.call();
   }
 
   @override

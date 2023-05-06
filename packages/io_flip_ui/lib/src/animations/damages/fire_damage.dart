@@ -7,7 +7,6 @@ import 'package:io_flip_ui/io_flip_ui.dart';
 /// of a card on another.
 /// {@endtemplate}
 class FireDamage extends ElementalDamage {
-
   /// {@macro fire_damage}
   FireDamage({required super.size})
       : super(

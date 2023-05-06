@@ -43,30 +43,30 @@ class ChargeFront extends StatelessWidget {
     final textureSize = Vector2(658, 860);
 
     if (assetSize == AssetSize.large) {
-    return SizedBox(
-      width: width,
-      height: height,
-      child: FittedBox(
-        fit: BoxFit.fill,
-        child: SizedBox(
-          width: textureSize.x,
-          height: textureSize.y,
-          child: SpriteAnimationWidget.asset(
-            path: path,
-            images: images,
-            anchor: Anchor.center,
-            onComplete: onComplete,
-            data: SpriteAnimationData.sequenced(
-              amount: 20,
-              amountPerRow: 5,
-              textureSize: textureSize,
-              stepTime: 0.04,
-              loop: false,
+      return SizedBox(
+        width: width,
+        height: height,
+        child: FittedBox(
+          fit: BoxFit.fill,
+          child: SizedBox(
+            width: textureSize.x,
+            height: textureSize.y,
+            child: SpriteAnimationWidget.asset(
+              path: path,
+              images: images,
+              anchor: Anchor.center,
+              onComplete: onComplete,
+              data: SpriteAnimationData.sequenced(
+                amount: 20,
+                amountPerRow: 5,
+                textureSize: textureSize,
+                stepTime: 0.04,
+                loop: false,
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
     } else {
       return _MobileAnimation(
         onComplete: onComplete,
@@ -78,7 +78,6 @@ class ChargeFront extends StatelessWidget {
     }
   }
 }
-
 
 class _MobileAnimation extends StatefulWidget {
   const _MobileAnimation({
@@ -132,7 +131,7 @@ class _MobileAnimationState extends State<_MobileAnimation> {
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: const Alignment(0, -.2),
+      alignment: const Alignment(0, 5),
       child: AnimatedOpacity(
         duration: const Duration(milliseconds: 400),
         opacity: .8 * _scale,

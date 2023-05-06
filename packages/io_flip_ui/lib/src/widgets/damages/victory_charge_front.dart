@@ -43,30 +43,30 @@ class VictoryChargeFront extends StatelessWidget {
     final textureSize = Vector2(607, 695);
 
     if (assetSize == AssetSize.large) {
-    return SizedBox(
-      width: width,
-      height: height,
-      child: FittedBox(
-        fit: BoxFit.fill,
-        child: SizedBox(
-          width: textureSize.x,
-          height: textureSize.y,
-          child: SpriteAnimationWidget.asset(
-            path: path,
-            images: images,
-            anchor: Anchor.center,
-            onComplete: onComplete,
-            data: SpriteAnimationData.sequenced(
-              amount: 18,
-              amountPerRow: 6,
-              textureSize: textureSize,
-              stepTime: 0.04,
-              loop: false,
+      return SizedBox(
+        width: width,
+        height: height,
+        child: FittedBox(
+          fit: BoxFit.fill,
+          child: SizedBox(
+            width: textureSize.x,
+            height: textureSize.y,
+            child: SpriteAnimationWidget.asset(
+              path: path,
+              images: images,
+              anchor: Anchor.center,
+              onComplete: onComplete,
+              data: SpriteAnimationData.sequenced(
+                amount: 18,
+                amountPerRow: 6,
+                textureSize: textureSize,
+                stepTime: 0.04,
+                loop: false,
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
     } else {
       return _MobileAnimation(
         onComplete: onComplete,
@@ -112,7 +112,7 @@ class _MobileAnimationState extends State<_MobileAnimation> {
   }
 
   void _onComplete() {
-      widget.onComplete?.call();
+    widget.onComplete?.call();
   }
 
   @override
