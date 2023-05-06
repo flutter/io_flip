@@ -86,48 +86,128 @@ class _MobileAnimation extends StatefulWidget {
   State<_MobileAnimation> createState() => _MobileAnimationState();
 }
 
-class _MobileAnimationState extends State<_MobileAnimation> {
-  var _scale = 1.0;
-  var _step = 0;
+class _MobileAnimationState extends State<_MobileAnimation>
+    with TickerProviderStateMixin {
+  late List<AnimationController> animationControllers;
 
   @override
   void initState() {
     super.initState();
-
-    Future.delayed(const Duration(milliseconds: 200), () {
-      setState(() {
-        _scale = 1.6;
-      });
-    });
+    animationControllers = List.generate(
+      2,
+      (index) => AnimationController(
+        vsync: this,
+        duration: Duration(seconds: 2),
+      ),
+    );
+    animationControllers.first
+      ..forward()
+      ..repeat();
+    Future.delayed(
+        Duration(milliseconds: 1000),
+        () => animationControllers.last
+          ..forward()
+          ..repeat());
   }
 
-  void _onComplete() {
-    if (_step == 0) {
-      setState(() {
-        _scale = 1;
-        _step = 1;
-      });
-    } else {
-      widget.onComplete?.call();
-    }
+  @override
+  void dispose() {
+    animationControllers.first.dispose();
+    animationControllers.last.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      child: AnimatedScale(
-        duration: const Duration(milliseconds: 400),
-        onEnd: _onComplete,
-        scale: _scale,
-        child: Container(
-          decoration: BoxDecoration(
-            color: widget.animationColor,
-            borderRadius: BorderRadius.circular(widget.width / 2),
-          ),
-          width: widget.width / 10,
-          height: widget.height / 10,
+      child: Stack(children: [
+        _AnimatedRing(
+          animationController: animationControllers.first,
+          index: 1,
+          color: widget.animationColor,
+          size: widget.width,
         ),
+        _AnimatedRing(
+          animationController: animationControllers.last,
+          index: 3,
+          color: widget.animationColor,
+          size: widget.width,
+        ),
+      ]),
+    );
+  }
+}
+
+class _AnimatedRing extends StatelessWidget {
+  const _AnimatedRing({
+    super.key,
+    required this.animationController,
+    required this.index,
+    required this.color,
+    required this.size,
+  });
+
+  final AnimationController animationController;
+  final int index;
+  final Color color;
+  final double size;
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      child: AnimatedBuilder(
+        animation: animationController,
+        builder: (context, child) {
+          final scale = animationController.value;
+          return Transform.scale(
+            scale: scale,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: RadialGradient(
+                    colors: [Colors.transparent, color.withOpacity(1 - scale)]),
+                borderRadius: BorderRadius.circular(size / 2),
+              ),
+              width: size / 4,
+              height: size / 4,
+            ),
+          );
+        },
       ),
     );
   }
 }
+
+// class _AnimatedRingState extends State<_AnimatedRing> {
+//   var opacity = 0;
+//   @override
+//   void initState() {
+//     super.initState();
+//     Future.delayed(Duration(milliseconds:(widget.animationController.duration?.inMilliseconds??0 * 1/widget.index)as int),
+//         () => opacity = 1);
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return SizedBox(
+//       child: AnimatedBuilder(
+//         animation: widget.animationController,
+//         builder: (context, child) {
+//           final scale = widget.animationController.value;
+//           return Transform.scale(
+//             scale: scale,
+//             child: Container(
+//               decoration: BoxDecoration(
+//                 gradient: RadialGradient(colors: [
+//                   Colors.transparent,
+//                   widget.color.withOpacity(1 - scale)
+//                 ]),
+//                 borderRadius: BorderRadius.circular(widget.size / 2),
+//               ),
+//               width: widget.size / 4,
+//               height: widget.size / 4,
+//             ),
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }
