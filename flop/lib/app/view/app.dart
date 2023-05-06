@@ -5,9 +5,11 @@ class App extends StatelessWidget {
   const App({
     super.key,
     required this.setAppCheckDebugToken,
+    required this.reload,
   });
 
   final void Function(String) setAppCheckDebugToken;
+  final void Function() reload;
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +22,7 @@ class App extends StatelessWidget {
       ),
       home: FlopPage(
         setAppCheckDebugToken: setAppCheckDebugToken,
+        reload: reload,
       ),
     );
   }
