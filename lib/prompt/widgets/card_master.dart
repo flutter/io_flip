@@ -18,7 +18,6 @@ class _CardMasterState extends State<CardMaster> {
   late final Images images;
   late final bool isStill;
   String? asset;
-  int? osVersion;
 
   @override
   void initState() {
@@ -30,10 +29,7 @@ class _CardMasterState extends State<CardMaster> {
 
   Future<void> _loadAsset() async {
     final loaded = await deviceInfoAwareAsset(
-      predicate: (info) {
-        osVersion = info.osVersion;
-        return true;
-      },
+      predicate: isOlderAndroid,
       asset: () => Assets.images.mobile.cardMasterStill.keyName,
       orElse: () => platformAwareAsset(
         desktop: Assets.images.cardMaster.keyName,
@@ -65,7 +61,10 @@ class _CardMasterState extends State<CardMaster> {
     }
 
     if (isStill) {
-      return Center(child: Text(osVersion?.toString() ?? 'null'));
+      return Image.asset(
+        loadedAsset,
+        height: CardMaster.cardMasterHeight,
+      );
     } else {
       return SizedBox.square(
         dimension: CardMaster.cardMasterHeight,

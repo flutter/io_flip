@@ -18,12 +18,19 @@ T platformAwareAsset<T>({
 class DeviceInfo extends Equatable {
   const DeviceInfo({
     required this.osVersion,
+    required this.platform,
   });
 
   final int osVersion;
+  final TargetPlatform platform;
 
   @override
   List<Object?> get props => [osVersion];
+}
+
+bool isOlderAndroid(DeviceInfo deviceInfo) {
+  return deviceInfo.platform == TargetPlatform.android &&
+      deviceInfo.osVersion <= 11;
 }
 
 Future<T> deviceInfoAwareAsset<T>({
@@ -54,6 +61,7 @@ Future<T> deviceInfoAwareAsset<T>({
 
       info = DeviceInfo(
         osVersion: version,
+        platform: platform,
       );
     } catch (_) {
       return orElse();
