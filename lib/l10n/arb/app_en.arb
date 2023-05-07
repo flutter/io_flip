@@ -102,6 +102,10 @@
       }
     }
   },
+  "cardInspectorText": "Tap cards to inspect and share",
+  "@cardInspectorText": {
+    "description": "Text shown on game summary to allow the user that can inspect cards"
+  },
   "nextMatch": "NEXT MATCH",
   "@nextMatch": {
     "description": "Label show on the summary page to start the next match"
