@@ -33,6 +33,9 @@ class InitialsFormView extends StatelessWidget {
             GoRouter.of(context).go('/');
           }
         }
+        if (state.status == InitialsFormStatus.blacklisted) {
+          focusNodes.last.requestFocus();
+        }
       },
       builder: (context, state) {
         if (state.status == InitialsFormStatus.failure) {
@@ -97,6 +100,8 @@ class InitialsFormView extends StatelessWidget {
       if (index < focusNodes.length - 1) {
         FocusScope.of(context).requestFocus(focusNodes[index + 1]);
       }
+    } else if (index > 0) {
+      FocusScope.of(context).requestFocus(focusNodes[index - 1]);
     }
   }
 }
