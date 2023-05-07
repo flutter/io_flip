@@ -20,6 +20,7 @@ dependencies:
   connection_repository:
     path: packages/connection_repository
   cross_file: ^0.3.3+4
+  device_info_plus: ^8.2.2
   equatable: ^2.0.5
   firebase_app_check: ^0.1.2
   firebase_auth: ^4.4.0

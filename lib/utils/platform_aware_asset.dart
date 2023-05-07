@@ -1,3 +1,5 @@
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
 T platformAwareAsset<T>({
@@ -11,4 +13,58 @@ T platformAwareAsset<T>({
       (platform == TargetPlatform.iOS || platform == TargetPlatform.android);
 
   return isWebMobile ? mobile : desktop;
+}
+
+class DeviceInfo extends Equatable {
+  const DeviceInfo({
+    required this.osVersion,
+  });
+
+  final int osVersion;
+
+  @override
+  List<Object?> get props => [osVersion];
+}
+
+Future<T> deviceInfoAwareAsset<T>({
+  required bool Function(DeviceInfo deviceInfo) predicate,
+  required T Function() asset,
+  required T Function() orElse,
+  TargetPlatform? overrideDefaultTargetPlatform,
+}) async {
+  final deviceInfo = DeviceInfoPlugin();
+  final platform = overrideDefaultTargetPlatform ?? defaultTargetPlatform;
+
+  late DeviceInfo info;
+  if (platform == TargetPlatform.iOS || platform == TargetPlatform.android) {
+    final webInfo = await deviceInfo.webBrowserInfo;
+    final userAgent = webInfo.userAgent;
+
+    try {
+      late int version;
+      if (platform == TargetPlatform.android) {
+        version = int.parse(
+          userAgent?.split('Android ')[1].split(';')[0].split('.')[0] ?? '',
+        );
+      } else {
+        version = int.parse(
+          userAgent?.split('Version/')[1].split(' Mobile')[0].split('.')[0] ?? '',
+        );
+      }
+
+      info = DeviceInfo(
+        osVersion: version,
+      );
+    } catch (_) {
+      return orElse();
+    }
+  } else {
+    return orElse();
+  }
+
+  if (predicate(info)) {
+    return asset();
+  } else {
+    return orElse();
+  }
 }
