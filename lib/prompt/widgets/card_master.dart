@@ -7,7 +7,17 @@ import 'package:io_flip/gen/assets.gen.dart';
 import 'package:io_flip/utils/utils.dart';
 
 class CardMaster extends StatefulWidget {
-  const CardMaster({super.key});
+  const CardMaster({
+    super.key,
+    this.deviceInfoAwareAsset,
+  });
+
+  final Future<T> Function<T>({
+    required bool Function(DeviceInfo deviceInfo) predicate,
+    required T Function() asset,
+    required T Function() orElse,
+  })? deviceInfoAwareAsset;
+
   static const cardMasterHeight = 312.0;
 
   @override
@@ -28,7 +38,7 @@ class _CardMasterState extends State<CardMaster> {
   }
 
   Future<void> _loadAsset() async {
-    final loaded = await deviceInfoAwareAsset(
+    final loaded = await (widget.deviceInfoAwareAsset ?? deviceInfoAwareAsset)(
       predicate: isOlderAndroid,
       asset: () => Assets.images.mobile.cardMasterStill.keyName,
       orElse: () => platformAwareAsset(

@@ -25,7 +25,7 @@ class DeviceInfo extends Equatable {
   final TargetPlatform platform;
 
   @override
-  List<Object?> get props => [osVersion];
+  List<Object?> get props => [osVersion, platform];
 }
 
 bool isOlderAndroid(DeviceInfo deviceInfo) {
@@ -38,8 +38,9 @@ Future<T> deviceInfoAwareAsset<T>({
   required T Function() asset,
   required T Function() orElse,
   TargetPlatform? overrideDefaultTargetPlatform,
+  DeviceInfoPlugin? overrideDeviceInfoPlugin,
 }) async {
-  final deviceInfo = DeviceInfoPlugin();
+  final deviceInfo = overrideDeviceInfoPlugin ?? DeviceInfoPlugin();
   final platform = overrideDefaultTargetPlatform ?? defaultTargetPlatform;
 
   late DeviceInfo info;
@@ -55,7 +56,8 @@ Future<T> deviceInfoAwareAsset<T>({
         );
       } else {
         version = int.parse(
-          userAgent?.split('Version/')[1].split(' Mobile')[0].split('.')[0] ?? '',
+          userAgent?.split('Version/')[1].split(' Mobile')[0].split('.')[0] ??
+              '',
         );
       }
 
