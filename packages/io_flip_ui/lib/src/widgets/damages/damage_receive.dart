@@ -112,7 +112,6 @@ class _MobileAnimationState extends State<_MobileAnimation>
         ..addStatusListener(
           (status) {
             if (status == AnimationStatus.completed) {
-              _stepCounter--;
               if (_stepCounter == 0) {
                 animationControllers.first.stop();
                 animationControllers.last.stop();
@@ -122,6 +121,7 @@ class _MobileAnimationState extends State<_MobileAnimation>
                   ..reset()
                   ..forward();
               }
+              _stepCounter--;
             }
           },
         ),
