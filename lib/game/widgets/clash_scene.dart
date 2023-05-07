@@ -312,7 +312,7 @@ class ClashSceneState extends State<ClashScene> with TickerProviderStateMixin {
                       : DamageDirection.topToBottom,
                   size: cardSize,
                   assetSize: platformAwareAsset<AssetSize>(
-                    desktop: AssetSize.small,
+                    desktop: AssetSize.large,
                     mobile: AssetSize.small,
                   ),
                   initialState: winningSuit == ComparisonResult.none
