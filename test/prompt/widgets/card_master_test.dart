@@ -38,10 +38,10 @@ extension CardMasterTest on WidgetTester {
     bool isOldAndroid = false,
     bool isDesktop = false,
   }) async {
-    Future<T> deviceInfoAwareAsset<T>({
+    Future<String> deviceInfoAwareAsset({
       required bool Function(DeviceInfo deviceInfo) predicate,
-      required T Function() asset,
-      required T Function() orElse,
+      required String Function() asset,
+      required String Function() orElse,
     }) async {
       if (isOldAndroid) {
         return asset();

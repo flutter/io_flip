@@ -12,11 +12,7 @@ class CardMaster extends StatefulWidget {
     this.deviceInfoAwareAsset,
   });
 
-  final Future<T> Function<T>({
-    required bool Function(DeviceInfo deviceInfo) predicate,
-    required T Function() asset,
-    required T Function() orElse,
-  })? deviceInfoAwareAsset;
+  final DeviceInfoAwareAsset<String>? deviceInfoAwareAsset;
 
   static const cardMasterHeight = 312.0;
 
