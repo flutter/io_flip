@@ -173,8 +173,7 @@ class MatchMakerRepository {
       }
 
       if (retryNumber == _maxRetries) {
-        log('Joining match failed, creating a new one.');
-        return _createMatch(id);
+        throw MatchMakingTimeout();
       }
 
       log('No match available, trying again in 2 seconds...');

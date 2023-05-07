@@ -380,7 +380,7 @@ void main() {
     );
 
     test(
-      'creates a new match when a race condition happens',
+      'fails when a race condition happens',
       () async {
         mockQueryResult(
           matches: [
@@ -391,34 +391,16 @@ void main() {
           ],
         );
         mockRaceConditionErrorTransaction('guest123', 'match123');
-        mockAdd('guest123', emptyKey, 'matchId');
-        mockAddState('matchId', const [], const []);
 
-        final match = await matchMakerRepository.findMatch('guest123');
-        expect(
-          match,
-          equals(
-            DraftMatch(
-              id: 'matchId',
-              host: 'guest123',
-            ),
-          ),
+        await expectLater(
+          () => matchMakerRepository.findMatch('guest123'),
+          throwsA(isA<MatchMakingTimeout>()),
         );
-
-        verify(
-          () => matchStateCollection.add(
-            {
-              'matchId': 'matchId',
-              'hostPlayedCards': const <String>[],
-              'guestPlayedCards': const <String>[],
-            },
-          ),
-        ).called(1);
       },
     );
 
     test(
-      'returns a new match as host when when max retry reaches its maximum',
+      'throws MatchMakingTimeout when max retry reach its maximum',
       () async {
         mockQueryResult(
           matches: [
@@ -428,31 +410,13 @@ void main() {
             ),
           ],
         );
-        mockAdd('hostId', emptyKey, 'matchId');
-        mockAddState('matchId', const [], const []);
         // The mock default behavior is to fail the transaction. So no need
         // manually mock a failed transaction.
 
-        final match = await matchMakerRepository.findMatch('hostId');
-        expect(
-          match,
-          equals(
-            DraftMatch(
-              id: 'matchId',
-              host: 'hostId',
-            ),
-          ),
+        await expectLater(
+          () => matchMakerRepository.findMatch('guest123'),
+          throwsA(isA<MatchMakingTimeout>()),
         );
-
-        verify(
-          () => matchStateCollection.add(
-            {
-              'matchId': 'matchId',
-              'hostPlayedCards': const <String>[],
-              'guestPlayedCards': const <String>[],
-            },
-          ),
-        ).called(1);
       },
     );
 
