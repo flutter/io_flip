@@ -143,6 +143,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
   late List<GameCardSize> playerCardSizes;
   late Offset counterOffset;
   VelocityTracker? velocityTracker;
+  VoidCallback? afterClashCompleted;
 
   final velocity = ValueNotifier<Offset>(Offset.zero);
 
@@ -175,6 +176,24 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     audioController = context.read<AudioController>();
+    layoutAll();
+
+    final bloc = context.read<GameBloc>();
+    final state = bloc.state;
+    if (state is MatchLoadedState) {
+      final cardId =
+          state.rounds.isNotEmpty ? state.rounds.first.opponentCardId : null;
+      if (cardId != null) {
+        final cardIndex = bloc.opponentCards.indexWhere(
+          (card) => card.id == cardId,
+        );
+        if (cardIndex != -1) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            animateOpponentCard(cardIndex);
+          });
+        }
+      }
+    }
   }
 
   @override
@@ -183,9 +202,6 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     final newScreenSize = MediaQuery.sizeOf(context);
 
     if (newScreenSize != screenSize) {
-      if (screenSize == Size.zero) {
-        layoutAll();
-      }
       screenSize = newScreenSize;
       boardOffset = Offset(
         (screenSize.width - boardSize.width) / 2,
@@ -449,6 +465,12 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     return false;
   }
 
+  void animateOpponentCard(int opponentIndex) {
+    final controller = opponentCardControllers[opponentIndex];
+    _runningOpponentAnimations.add(controller.forward());
+    clashControllers.add(controller);
+  }
+
   Future<void> clashSceneCompleted() async {
     final bloc = context.read<GameBloc>()..add(const ClashSceneCompleted());
     for (final controller in clashControllers) {
@@ -473,10 +495,11 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     bloc
       ..add(const TurnAnimationsFinished())
       ..add(const TurnTimerStarted());
+    afterClashCompleted?.call();
+    afterClashCompleted = null;
   }
 
   int? lastPlayedPlayerCardIndex;
-  int? lastPlayedOpponentCardIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -538,10 +561,11 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
             });
           }
           if (opponentIndex >= 0) {
-            lastPlayedOpponentCardIndex = opponentIndex;
-            final controller = opponentCardControllers[opponentIndex];
-            _runningOpponentAnimations.add(controller.forward());
-            clashControllers.add(controller);
+            if (state.isClashScene) {
+              afterClashCompleted = () => animateOpponentCard(opponentIndex);
+            } else {
+              animateOpponentCard(opponentIndex);
+            }
           }
 
           if (state.rounds.isNotEmpty) {
@@ -736,7 +760,9 @@ class _OpponentCard extends StatelessWidget {
     final alreadyPlayed = context.select<GameBloc, bool>((bloc) {
       if (bloc.state is MatchLoadedState) {
         final state = bloc.state as MatchLoadedState;
-        return state.rounds.any((element) => element.opponentCardId == card.id);
+        return state.rounds.any(
+          (round) => round.isComplete() && round.opponentCardId == card.id,
+        );
       }
       return false;
     });
