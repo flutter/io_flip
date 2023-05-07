@@ -112,7 +112,6 @@ class _MobileAnimationState extends State<_MobileAnimation>
         ..addStatusListener(
           (status) {
             if (status == AnimationStatus.completed) {
-              _stepCounter--;
               if (_stepCounter == 0) {
                 animationControllers.first.stop();
                 animationControllers.last.stop();
@@ -122,6 +121,7 @@ class _MobileAnimationState extends State<_MobileAnimation>
                   ..reset()
                   ..forward();
               }
+              _stepCounter--;
             }
           },
         ),
@@ -160,7 +160,6 @@ class _MobileAnimationState extends State<_MobileAnimation>
 
 class _AnimatedRing extends StatelessWidget {
   const _AnimatedRing({
-    super.key,
     required this.animationController,
     required this.index,
     required this.color,
@@ -184,7 +183,8 @@ class _AnimatedRing extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 gradient: RadialGradient(
-                    colors: [Colors.transparent, color.withOpacity(1 - scale)]),
+                  colors: [Colors.transparent, color.withOpacity(1 - scale)],
+                ),
                 borderRadius: BorderRadius.circular(size / 2),
               ),
               width: size / 4,

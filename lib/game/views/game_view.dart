@@ -108,6 +108,7 @@ const cardsAtHand = 3;
 const movingCardDuration = Duration(milliseconds: 400);
 const droppedCardDuration = Duration(milliseconds: 200);
 const turnEndDuration = Duration(milliseconds: 250);
+const clashSceneTransitionDuration = Duration(milliseconds: 500);
 
 class _GameBoard extends StatefulWidget {
   const _GameBoard();
@@ -571,7 +572,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
         child: Stack(
           children: [
             AnimatedScale(
-              duration: Duration(milliseconds: 500),
+              duration: clashSceneTransitionDuration,
               scale: isClashScene ? 4 : 1.4,
               child: Center(
                 child: Image.asset(
@@ -584,7 +585,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
               ),
             ),
             AnimatedOpacity(
-              duration: Duration(milliseconds: 500),
+              duration: clashSceneTransitionDuration,
               opacity: isClashScene ? 0 : 1,
               child: Center(
                 child: SizedBox.fromSize(
@@ -971,7 +972,6 @@ class _ClashScene extends StatefulWidget {
 }
 
 class _ClashSceneState extends State<_ClashScene> {
-  var scale = 1.4;
   @override
   void initState() {
     super.initState();
