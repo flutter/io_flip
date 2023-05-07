@@ -44,58 +44,115 @@ class GameSummaryView extends StatelessWidget {
       body: MatchResultSplash(
         isWeb: isWeb,
         result: result ?? GameResult.draw,
-        child: Builder(
-          builder: (context) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              showCardInspectorSnackBar(context);
-            });
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (!isPhoneWidth && screenHeight > 610)
-                  Padding(
-                    padding: const EdgeInsets.only(top: IoFlipSpacing.lg),
-                    child: IoFlipLogo(
-                      height: 97,
-                      width: 64,
-                    ),
-                  )
-                else if (screenHeight > 660)
-                  Padding(
-                    padding: const EdgeInsets.only(top: IoFlipSpacing.md),
-                    child: IoFlipLogo(
-                      height: 88,
-                      width: 133,
-                    ),
-                  ),
-                const Spacer(),
-                const SizedBox(height: IoFlipSpacing.sm),
-                const _ResultView(),
-                const FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: _CardsView(),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (!isPhoneWidth && screenHeight > 610)
+              Padding(
+                padding: const EdgeInsets.only(top: IoFlipSpacing.lg),
+                child: IoFlipLogo(
+                  height: 97,
+                  width: 64,
                 ),
-                const Spacer(),
-                const Padding(
-                  padding: EdgeInsets.all(IoFlipSpacing.sm),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      AudioToggleButton(),
-                      _gap,
-                      Expanded(
-                        child: GameSummaryFooter(),
-                      ),
-                      _gap,
-                      InfoButton(),
-                    ],
-                  ),
+              )
+            else if (screenHeight > 660)
+              Padding(
+                padding: const EdgeInsets.only(top: IoFlipSpacing.md),
+                child: IoFlipLogo(
+                  height: 88,
+                  width: 133,
                 ),
-              ],
-            );
-          },
+              ),
+            const Spacer(),
+            const SizedBox(height: IoFlipSpacing.sm),
+            const _ResultView(),
+            const FittedBox(
+              fit: BoxFit.scaleDown,
+              child: _CardsView(),
+            ),
+            const Spacer(),
+            const Padding(
+              padding: EdgeInsets.all(IoFlipSpacing.sm),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  AudioToggleButton(),
+                  _gap,
+                  Expanded(
+                    child: GameSummaryFooter(),
+                  ),
+                  _gap,
+                  InfoButton(),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
+    );
+  }
+}
+
+class _ResultView extends StatefulWidget {
+  const _ResultView();
+
+  @override
+  State<_ResultView> createState() => _ResultViewState();
+}
+
+class _ResultViewState extends State<_ResultView> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showCardInspectorSnackBar(context);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bloc = context.watch<GameBloc>();
+    final state = bloc.state as MatchLoadedState;
+    late final String title;
+
+    switch (bloc.gameResult()) {
+      case GameResult.win:
+        title = context.l10n.gameWonTitle;
+        break;
+      case GameResult.lose:
+        title = context.l10n.gameLostTitle;
+        break;
+      case GameResult.draw:
+        title = context.l10n.gameTiedTitle;
+        break;
+      case null:
+        return Center(child: Text(context.l10n.gameResultError));
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          title,
+          style: IoFlipTextStyles.mobileH1,
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              Assets.images.tempPreferencesCustom.path,
+              color: IoFlipColors.seedYellow,
+            ),
+            const SizedBox(width: IoFlipSpacing.sm),
+            Text(
+              context.l10n
+                  .gameSummaryStreak(state.playerScoreCard.latestStreak),
+              style: IoFlipTextStyles.mobileH6
+                  .copyWith(color: IoFlipColors.seedYellow),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -142,57 +199,6 @@ class GameSummaryView extends StatelessWidget {
           GoRouter.maybeOf(context)?.pop();
         }
       },
-    );
-  }
-}
-
-class _ResultView extends StatelessWidget {
-  const _ResultView();
-
-  @override
-  Widget build(BuildContext context) {
-    final bloc = context.watch<GameBloc>();
-    final state = bloc.state as MatchLoadedState;
-    late final String title;
-
-    switch (bloc.gameResult()) {
-      case GameResult.win:
-        title = context.l10n.gameWonTitle;
-        break;
-      case GameResult.lose:
-        title = context.l10n.gameLostTitle;
-        break;
-      case GameResult.draw:
-        title = context.l10n.gameTiedTitle;
-        break;
-      case null:
-        return Center(child: Text(context.l10n.gameResultError));
-    }
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          title,
-          style: IoFlipTextStyles.mobileH1,
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(
-              Assets.images.tempPreferencesCustom.path,
-              color: IoFlipColors.seedYellow,
-            ),
-            const SizedBox(width: IoFlipSpacing.sm),
-            Text(
-              context.l10n
-                  .gameSummaryStreak(state.playerScoreCard.latestStreak),
-              style: IoFlipTextStyles.mobileH6
-                  .copyWith(color: IoFlipColors.seedYellow),
-            ),
-          ],
-        ),
-      ],
     );
   }
 }
