@@ -106,12 +106,30 @@ class AudioController {
   /// Preloads all sound effects.
   Future<void> initialize() async {
     _log.info('Preloading sound effects');
-    // This assumes there is only a limited number of sound effects in the game.
-    // If there are hundreds of long sound effect files, it's better
-    // to be more selective when preloading.
+    final toLoad = [
+      Assets.sfx.addToHand,
+      Assets.sfx.air,
+      Assets.sfx.arenaAmbiance,
+      Assets.sfx.cardMovement,
+      Assets.sfx.click,
+      Assets.sfx.clockRunning,
+      Assets.sfx.deckOpen,
+      Assets.sfx.drawMatch,
+      Assets.sfx.earth,
+      Assets.sfx.fire,
+      Assets.sfx.flip,
+      Assets.sfx.holoReveal,
+      Assets.sfx.lostMatch,
+      Assets.sfx.matchSeaching,
+      Assets.sfx.metal,
+      Assets.sfx.playCard,
+      Assets.sfx.startGame,
+      Assets.sfx.water,
+      Assets.sfx.winMatch,
+    ];
 
     await AudioCache.instance.loadAll(
-      Assets.sfx.values.map(_replaceUrl).toList(),
+      toLoad.map(_replaceUrl).toList(),
     );
   }
 
