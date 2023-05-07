@@ -60,8 +60,6 @@ void main() {
       when(() => bloc.matchCompleted(any())).thenReturn(true);
     });
 
-    tearDown(() {});
-
     void mockState(GameState state) {
       whenListen(
         bloc,
