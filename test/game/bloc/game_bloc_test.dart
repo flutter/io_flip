@@ -246,6 +246,100 @@ void main() {
     );
 
     blocTest<GameBloc, GameState>(
+      'loads a match with an initially played guest card',
+      setUp: () {
+        when(() => gameResource.getMatchState(match.id)).thenAnswer(
+          (_) async => MatchState(
+            id: 'matchStateId',
+            matchId: match.id,
+            guestPlayedCards: const ['playedCardId'],
+            hostPlayedCards: const [],
+          ),
+        );
+      },
+      build: () => GameBloc(
+        gameResource: gameResource,
+        matchMakerRepository: matchMakerRepository,
+        audioController: audioController,
+        matchSolver: matchSolver,
+        user: user,
+        isHost: true,
+        connectionRepository: connectionRepository,
+      ),
+      act: (bloc) => bloc.add(MatchRequested(match.id, hostDeck)),
+      expect: () => [
+        MatchLoadingState(),
+        MatchLoadedState(
+          playerScoreCard: ScoreCard(id: 'scoreCardId'),
+          match: match,
+          matchState: MatchState(
+            id: 'matchStateId',
+            matchId: match.id,
+            guestPlayedCards: const ['playedCardId'],
+            hostPlayedCards: const [],
+          ),
+          rounds: const [
+            MatchRound(playerCardId: null, opponentCardId: 'playedCardId'),
+          ],
+          turnAnimationsFinished: true,
+          turnTimeRemaining: 10,
+          isClashScene: false,
+          showCardLanding: false,
+        ),
+      ],
+      verify: (_) {
+        verify(() => gameResource.getMatch(match.id)).called(1);
+      },
+    );
+
+    blocTest<GameBloc, GameState>(
+      'loads a match with an initially played host card',
+      setUp: () {
+        when(() => gameResource.getMatchState(match.id)).thenAnswer(
+          (_) async => MatchState(
+            id: 'matchStateId',
+            matchId: match.id,
+            guestPlayedCards: const [],
+            hostPlayedCards: const ['playedCardId'],
+          ),
+        );
+      },
+      build: () => GameBloc(
+        gameResource: gameResource,
+        matchMakerRepository: matchMakerRepository,
+        audioController: audioController,
+        matchSolver: matchSolver,
+        user: user,
+        isHost: false,
+        connectionRepository: connectionRepository,
+      ),
+      act: (bloc) => bloc.add(MatchRequested(match.id, hostDeck)),
+      expect: () => [
+        MatchLoadingState(),
+        MatchLoadedState(
+          playerScoreCard: ScoreCard(id: 'scoreCardId'),
+          match: match,
+          matchState: MatchState(
+            id: 'matchStateId',
+            matchId: match.id,
+            guestPlayedCards: const [],
+            hostPlayedCards: const ['playedCardId'],
+          ),
+          rounds: const [
+            MatchRound(playerCardId: null, opponentCardId: 'playedCardId'),
+          ],
+          turnAnimationsFinished: true,
+          turnTimeRemaining: 10,
+          isClashScene: false,
+          showCardLanding: false,
+        ),
+      ],
+      verify: (_) {
+        verify(() => gameResource.getMatch(match.id)).called(1);
+      },
+    );
+
+    blocTest<GameBloc, GameState>(
       'plays the startGame sfx when match is loaded',
       build: () => GameBloc(
         gameResource: gameResource,
@@ -357,6 +451,7 @@ void main() {
               MatchRound(
                 playerCardId: null,
                 opponentCardId: 'card6',
+                turnTimerStarted: true,
               ),
             ],
           ),

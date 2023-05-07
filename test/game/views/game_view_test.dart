@@ -69,6 +69,15 @@ void main() {
         power: 1,
         suit: Suit.air,
       ),
+      Card(
+        id: 'opponent_card_2',
+        name: 'guest_card',
+        description: '',
+        image: '',
+        rarity: true,
+        power: 1,
+        suit: Suit.air,
+      ),
     ];
 
     final deck = Deck(id: '', userId: '', cards: playerCards);
@@ -410,7 +419,7 @@ void main() {
             baseState.copyWith(
               rounds: [
                 MatchRound(
-                  playerCardId: null,
+                  playerCardId: 'player_card',
                   opponentCardId: 'opponent_card',
                 )
               ],
@@ -427,6 +436,149 @@ void main() {
             find.byKey(const Key('player_card_player_card')),
             findsOneWidget,
           );
+        },
+      );
+
+      testWidgets(
+        'shows an initially played opponent card in the clash area',
+        (tester) async {
+          mockState(
+            baseState.copyWith(
+              rounds: [
+                MatchRound(
+                  playerCardId: null,
+                  opponentCardId: 'opponent_card',
+                ),
+              ],
+            ),
+          );
+          await tester.pumpSubject(bloc);
+
+          Rect getClashRect() =>
+              tester.getRect(find.byKey(const Key('clash_card_0')));
+          Rect getOpponentCardRect() => tester.getRect(
+                find.byKey(const Key('opponent_card_opponent_card')),
+              );
+
+          await tester.pumpAndSettle();
+
+          expect(getClashRect(), equals(getOpponentCardRect()));
+        },
+      );
+
+      testWidgets(
+        'does not move opponent card until after clash scene ends',
+        (tester) async {
+          final gameScriptMachine = _MockGameScriptMachine();
+          when(
+            () => gameScriptMachine.compare(
+              playerCards.first,
+              opponentCards.first,
+            ),
+          ).thenReturn(0);
+
+          when(
+            () => gameScriptMachine.compareSuits(
+              playerCards.first.suit,
+              opponentCards.first.suit,
+            ),
+          ).thenReturn(0);
+          final controller = StreamController<GameState>();
+          whenListen(bloc, controller.stream, initialState: baseState);
+
+          when(() => bloc.lastPlayedOpponentCard)
+              .thenReturn(opponentCards.first);
+          when(() => bloc.lastPlayedPlayerCard).thenReturn(playerCards.first);
+          await tester.pumpSubject(
+            bloc,
+            gameScriptMachine: gameScriptMachine,
+          );
+          controller.add(
+            baseState.copyWith(
+              lastPlayedCardId: 'opponent_card',
+              rounds: [
+                MatchRound(
+                  playerCardId: null,
+                  opponentCardId: 'opponent_card',
+                ),
+              ],
+            ),
+          );
+          await tester.pumpAndSettle();
+          controller.add(
+            baseState.copyWith(
+              lastPlayedCardId: playerCards.first.id,
+              rounds: [
+                MatchRound(
+                  playerCardId: playerCards.first.id,
+                  opponentCardId: 'opponent_card',
+                ),
+              ],
+            ),
+          );
+          await tester.pumpAndSettle();
+          controller.add(
+            baseState.copyWith(
+              isClashScene: true,
+              lastPlayedCardId: playerCards.first.id,
+              rounds: [
+                MatchRound(
+                  playerCardId: playerCards.first.id,
+                  opponentCardId: 'opponent_card',
+                ),
+              ],
+            ),
+          );
+          await tester.pumpAndSettle();
+
+          Rect getClashRect() =>
+              tester.getRect(find.byKey(const Key('clash_card_0')));
+          Rect getOpponentCardRect() => tester.getRect(
+                find.byKey(const Key('opponent_card_opponent_card_2')),
+              );
+
+          await tester.pumpAndSettle();
+
+          expect(getOpponentCardRect(), isNot(equals(getClashRect())));
+
+          controller.add(
+            baseState.copyWith(
+              lastPlayedCardId: 'opponent_card_2',
+              isClashScene: true,
+              rounds: [
+                MatchRound(
+                  playerCardId: playerCards.first.id,
+                  opponentCardId: 'opponent_card',
+                ),
+                MatchRound(
+                  playerCardId: null,
+                  opponentCardId: 'opponent_card_2',
+                ),
+              ],
+            ),
+          );
+          await tester.pump();
+          tester.widget<ClashScene>(find.byType(ClashScene)).onFinished();
+          controller.add(
+            baseState.copyWith(
+              lastPlayedCardId: 'opponent_card_2',
+              isClashScene: false,
+              rounds: [
+                MatchRound(
+                  playerCardId: playerCards.first.id,
+                  opponentCardId: 'opponent_card',
+                ),
+                MatchRound(
+                  playerCardId: null,
+                  opponentCardId: 'opponent_card_2',
+                ),
+              ],
+            ),
+          );
+          await tester.pump(turnEndDuration);
+          await tester.pumpAndSettle();
+
+          expect(getOpponentCardRect(), equals(getClashRect()));
         },
       );
 
