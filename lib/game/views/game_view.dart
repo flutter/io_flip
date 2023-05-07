@@ -479,6 +479,12 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final isClashScene = context.select<GameBloc, bool>(
+      (bloc) =>
+          bloc.state is MatchLoadedState &&
+          (bloc.state as MatchLoadedState).isClashScene,
+    );
+
     final playerCards =
         context.select<GameBloc, List<Card>>((bloc) => bloc.playerCards);
     final opponentCards =
@@ -564,8 +570,9 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
         onTapUp: _onTapUp,
         child: Stack(
           children: [
-            Transform.scale(
-              scale: 1.4,
+            AnimatedScale(
+              duration: Duration(milliseconds: 500),
+              scale: isClashScene ? 4 : 1.4,
               child: Center(
                 child: Image.asset(
                   platformAwareAsset(
@@ -576,67 +583,71 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
                 ),
               ),
             ),
-            Center(
-              child: SizedBox.fromSize(
-                size: boardSize,
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    for (final offset in playerCardStartOffsets)
-                      _PlaceholderCard(
-                        rect: offset & playerHandCardSize.size,
+            AnimatedOpacity(
+              duration: Duration(milliseconds: 500),
+              opacity: isClashScene ? 0 : 1,
+              child: Center(
+                child: SizedBox.fromSize(
+                  size: boardSize,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      for (final offset in playerCardStartOffsets)
+                        _PlaceholderCard(
+                          rect: offset & playerHandCardSize.size,
+                        ),
+                      for (final offset in opponentCardOffsets)
+                        _PlaceholderCard(
+                          rect: offset & opponentHandCardSize.size,
+                        ),
+                      ...clashCardOffsets.mapIndexed(
+                        (i, offset) {
+                          var rect = offset & clashCardSize.size;
+                          if (i == 1 && draggingCardAccepted) {
+                            rect = rect.inflate(8);
+                          }
+                          return _ClashCard(
+                            key: Key('clash_card_$i'),
+                            rect: rect,
+                            showPlus: i == 1,
+                          );
+                        },
                       ),
-                    for (final offset in opponentCardOffsets)
-                      _PlaceholderCard(
-                        rect: offset & opponentHandCardSize.size,
+                      ...opponentCards.mapIndexed(
+                        (i, card) {
+                          return _OpponentCard(
+                            card: card,
+                            animation: opponentCardAnimations[i],
+                          );
+                        },
                       ),
-                    ...clashCardOffsets.mapIndexed(
-                      (i, offset) {
-                        var rect = offset & clashCardSize.size;
-                        if (i == 1 && draggingCardAccepted) {
-                          rect = rect.inflate(8);
-                        }
-                        return _ClashCard(
-                          key: Key('clash_card_$i'),
-                          rect: rect,
-                          showPlus: i == 1,
-                        );
-                      },
-                    ),
-                    ...opponentCards.mapIndexed(
-                      (i, card) {
-                        return _OpponentCard(
-                          card: card,
-                          animation: opponentCardAnimations[i],
-                        );
-                      },
-                    ),
-                    const _CardLandingPuffEffect(),
-                    for (var i = 0; i < playerCards.length; i++)
-                      AnimatedBuilder(
-                        animation: playerCardControllers[i],
-                        builder: (context, _) => ValueListenableBuilder(
-                          valueListenable: i == draggingCardIndex
-                              ? velocity
-                              : const AlwaysStoppedAnimation(Offset.zero),
-                          builder: (context, velocity, child) => _PlayerCard(
-                            card: playerCards[i],
-                            isDragging: i == draggingCardIndex,
-                            velocity: velocity,
-                            rect: i == draggingCardIndex
-                                ? GameCardRect(
-                                    gameCardSize: playerCardSizes[i],
-                                    offset: playerCardOffsets[i],
-                                  )
-                                : playerCardTweens[i]
-                                    .evaluate(playerCardControllers[i])!,
-                            animatedCardController:
-                                playerAnimatedCardControllers[i],
+                      const _CardLandingPuffEffect(),
+                      for (var i = 0; i < playerCards.length; i++)
+                        AnimatedBuilder(
+                          animation: playerCardControllers[i],
+                          builder: (context, _) => ValueListenableBuilder(
+                            valueListenable: i == draggingCardIndex
+                                ? velocity
+                                : const AlwaysStoppedAnimation(Offset.zero),
+                            builder: (context, velocity, child) => _PlayerCard(
+                              card: playerCards[i],
+                              isDragging: i == draggingCardIndex,
+                              velocity: velocity,
+                              rect: i == draggingCardIndex
+                                  ? GameCardRect(
+                                      gameCardSize: playerCardSizes[i],
+                                      offset: playerCardOffsets[i],
+                                    )
+                                  : playerCardTweens[i]
+                                      .evaluate(playerCardControllers[i])!,
+                              animatedCardController:
+                                  playerAnimatedCardControllers[i],
+                            ),
                           ),
                         ),
-                      ),
-                    _BoardCounter(counterOffset),
-                  ],
+                      _BoardCounter(counterOffset),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -946,7 +957,7 @@ class _CardLandingPuffEffect extends StatelessWidget {
   }
 }
 
-class _ClashScene extends StatelessWidget {
+class _ClashScene extends StatefulWidget {
   const _ClashScene({
     required this.onFinished,
     required this.boardSize,
@@ -954,6 +965,17 @@ class _ClashScene extends StatelessWidget {
 
   final VoidCallback onFinished;
   final Size boardSize;
+
+  @override
+  State<_ClashScene> createState() => _ClashSceneState();
+}
+
+class _ClashSceneState extends State<_ClashScene> {
+  var scale = 1.4;
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -974,22 +996,9 @@ class _ClashScene extends StatelessWidget {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            Transform.scale(
-              scale: 1.4,
-              child: Center(
-                child: Image.asset(
-                  platformAwareAsset(
-                    desktop: Assets.images.stadiumBackgroundCloseUp.keyName,
-                    mobile:
-                        Assets.images.mobile.stadiumBackgroundCloseUp.keyName,
-                  ),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
             Positioned.fill(
               child: ClashScene(
-                onFinished: onFinished,
+                onFinished: widget.onFinished,
                 opponentCard: opponentCard,
                 playerCard: playerCard,
               ),

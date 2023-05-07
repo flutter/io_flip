@@ -94,63 +94,35 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
     super.initState();
     switch (widget.element) {
       case Element.metal:
-        elementalDamage = widget.assetSize == AssetSize.large
-            ? MetalDamage.large(size: widget.size)
-            : MetalDamage.small(size: widget.size);
+        elementalDamage = MetalDamage(size: widget.size);
         break;
       case Element.air:
-        elementalDamage = widget.assetSize == AssetSize.large
-            ? AirDamage.large(size: widget.size)
-            : AirDamage.small(size: widget.size);
+        elementalDamage = AirDamage(size: widget.size);
         break;
       case Element.fire:
-        elementalDamage = widget.assetSize == AssetSize.large
-            ? FireDamage.large(size: widget.size)
-            : FireDamage.small(size: widget.size);
+        elementalDamage = FireDamage(size: widget.size);
         break;
       case Element.earth:
-        elementalDamage = widget.assetSize == AssetSize.large
-            ? EarthDamage.large(size: widget.size)
-            : EarthDamage.small(size: widget.size);
+        elementalDamage = EarthDamage(size: widget.size);
         break;
       case Element.water:
-        elementalDamage = widget.assetSize == AssetSize.large
-            ? WaterDamage.large(size: widget.size)
-            : WaterDamage.small(size: widget.size);
+        elementalDamage = WaterDamage(size: widget.size);
         break;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    switch (_animationState) {
-      case DamageAnimationState.charging:
-        return Stack(
-          children: [
-            if (widget.direction == DamageDirection.topToBottom)
-              Transform.translate(
-                offset: -Offset(
-                  0.32 * widget.size.width,
-                  0.315 * widget.size.height,
-                ),
-                child: DualAnimation(
-                  cardOffset: Offset(
+    if (widget.assetSize == AssetSize.large) {
+      switch (_animationState) {
+        case DamageAnimationState.charging:
+          return Stack(
+            children: [
+              if (widget.direction == DamageDirection.topToBottom)
+                Transform.translate(
+                  offset: -Offset(
                     0.32 * widget.size.width,
                     0.315 * widget.size.height,
-                  ),
-                  cardSize: widget.size,
-                  back: elementalDamage.chargeBackBuilder,
-                  front: elementalDamage.chargeFrontBuilder,
-                  assetSize: widget.assetSize,
-                  onComplete: _onStepCompleted,
-                ),
-              )
-            else
-              _BottomAnimation(
-                child: Transform.translate(
-                  offset: Offset(
-                    0.32 * widget.size.width,
-                    0.215 * widget.size.height,
                   ),
                   child: DualAnimation(
                     cardOffset: Offset(
@@ -163,41 +135,72 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
                     assetSize: widget.assetSize,
                     onComplete: _onStepCompleted,
                   ),
-                ),
-              )
-          ],
-        );
-      case DamageAnimationState.sending:
-        return Stack(
-          children: [
-            if (widget.direction == DamageDirection.topToBottom)
-              Align(
-                alignment: const Alignment(-0.7, 0.3),
-                child: elementalDamage.damageSendBuilder(
-                  _onStepCompleted,
-                  widget.assetSize,
-                ),
-              )
-            else
-              Align(
-                alignment: const Alignment(0.7, 0),
-                child: Transform.rotate(
-                  angle: pi,
+                )
+              else
+                _BottomAnimation(
+                  child: Transform.translate(
+                    offset: Offset(
+                      0.32 * widget.size.width,
+                      0.215 * widget.size.height,
+                    ),
+                    child: DualAnimation(
+                      cardOffset: Offset(
+                        0.32 * widget.size.width,
+                        0.315 * widget.size.height,
+                      ),
+                      cardSize: widget.size,
+                      back: elementalDamage.chargeBackBuilder,
+                      front: elementalDamage.chargeFrontBuilder,
+                      assetSize: widget.assetSize,
+                      onComplete: _onStepCompleted,
+                    ),
+                  ),
+                )
+            ],
+          );
+        case DamageAnimationState.sending:
+          return Stack(
+            children: [
+              if (widget.direction == DamageDirection.topToBottom)
+                Align(
+                  alignment: const Alignment(-0.7, 0.3),
                   child: elementalDamage.damageSendBuilder(
                     _onStepCompleted,
                     widget.assetSize,
                   ),
-                ),
-              )
-          ],
-        );
-      case DamageAnimationState.receiving:
-        return Stack(
-          children: [
-            if (widget.direction == DamageDirection.topToBottom)
-              _BottomAnimation(
-                child: Transform.translate(
-                  offset: Offset(
+                )
+              else
+                Align(
+                  alignment: const Alignment(0.7, 0),
+                  child: Transform.rotate(
+                    angle: pi,
+                    child: elementalDamage.damageSendBuilder(
+                      _onStepCompleted,
+                      widget.assetSize,
+                    ),
+                  ),
+                )
+            ],
+          );
+        case DamageAnimationState.receiving:
+          return Stack(
+            children: [
+              if (widget.direction == DamageDirection.topToBottom)
+                _BottomAnimation(
+                  child: Transform.translate(
+                    offset: Offset(
+                      0.3 * widget.size.width,
+                      0.3 * widget.size.height,
+                    ),
+                    child: elementalDamage.damageReceiveBuilder(
+                      _onStepCompleted,
+                      widget.assetSize,
+                    ),
+                  ),
+                )
+              else
+                Transform.translate(
+                  offset: -Offset(
                     0.3 * widget.size.width,
                     0.3 * widget.size.height,
                   ),
@@ -205,50 +208,19 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
                     _onStepCompleted,
                     widget.assetSize,
                   ),
-                ),
-              )
-            else
-              Transform.translate(
-                offset: -Offset(
-                  0.3 * widget.size.width,
-                  0.3 * widget.size.height,
-                ),
-                child: elementalDamage.damageReceiveBuilder(
-                  _onStepCompleted,
-                  widget.assetSize,
-                ),
-              )
-          ],
-        );
-      case DamageAnimationState.waitingVictory:
-        return const SizedBox.shrink(key: Key('elementalDamage_empty'));
-      case DamageAnimationState.victory:
-        return Stack(
-          children: [
-            if (widget.direction == DamageDirection.topToBottom)
-              Transform.translate(
-                offset: -Offset(
-                  0.25 * widget.size.width,
-                  0.11 * widget.size.height,
-                ),
-                child: DualAnimation(
-                  cardOffset: Offset(
+                )
+            ],
+          );
+        case DamageAnimationState.waitingVictory:
+          return const SizedBox.shrink(key: Key('elementalDamage_empty'));
+        case DamageAnimationState.victory:
+          return Stack(
+            children: [
+              if (widget.direction == DamageDirection.topToBottom)
+                Transform.translate(
+                  offset: -Offset(
                     0.25 * widget.size.width,
                     0.11 * widget.size.height,
-                  ),
-                  cardSize: widget.size,
-                  back: elementalDamage.victoryChargeBackBuilder,
-                  front: elementalDamage.victoryChargeFrontBuilder,
-                  assetSize: widget.assetSize,
-                  onComplete: _onStepCompleted,
-                ),
-              )
-            else
-              _BottomAnimation(
-                child: Transform.translate(
-                  offset: Offset(
-                    0.255 * widget.size.width,
-                    0.115 * widget.size.height,
                   ),
                   child: DualAnimation(
                     cardOffset: Offset(
@@ -261,12 +233,172 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
                     assetSize: widget.assetSize,
                     onComplete: _onStepCompleted,
                   ),
-                ),
-              )
-          ],
-        );
-      case DamageAnimationState.ended:
-        return const SizedBox.shrink(key: Key('elementalDamage_empty'));
+                )
+              else
+                _BottomAnimation(
+                  child: Transform.translate(
+                    offset: Offset(
+                      0.255 * widget.size.width,
+                      0.115 * widget.size.height,
+                    ),
+                    child: DualAnimation(
+                      cardOffset: Offset(
+                        0.25 * widget.size.width,
+                        0.11 * widget.size.height,
+                      ),
+                      cardSize: widget.size,
+                      back: elementalDamage.victoryChargeBackBuilder,
+                      front: elementalDamage.victoryChargeFrontBuilder,
+                      assetSize: widget.assetSize,
+                      onComplete: _onStepCompleted,
+                    ),
+                  ),
+                )
+            ],
+          );
+        case DamageAnimationState.ended:
+          return const SizedBox.shrink(key: Key('elementalDamage_empty'));
+      }
+    } else {
+      switch (_animationState) {
+        case DamageAnimationState.charging:
+          return Stack(
+            children: [
+              if (widget.direction == DamageDirection.topToBottom)
+                Transform.translate(
+                  offset: -Offset(
+                    0.32 * widget.size.width,
+                    0.32 * widget.size.height,
+                  ),
+                  child: DualAnimation(
+                    cardOffset: Offset(
+                      0.32 * widget.size.width,
+                      0.315 * widget.size.height,
+                    ),
+                    cardSize: widget.size,
+                    back: elementalDamage.chargeBackBuilder,
+                    front: elementalDamage.chargeFrontBuilder,
+                    assetSize: widget.assetSize,
+                    onComplete: _onStepCompleted,
+                  ),
+                )
+              else
+                Transform.translate(
+                  offset: Offset(
+                    0.38 * widget.size.width,
+                    0.86 * widget.size.height,
+                  ),
+                  child: DualAnimation(
+                    cardOffset: Offset(
+                      0.32 * widget.size.width,
+                      0.315 * widget.size.height,
+                    ),
+                    cardSize: widget.size,
+                    back: elementalDamage.chargeBackBuilder,
+                    front: elementalDamage.chargeFrontBuilder,
+                    assetSize: widget.assetSize,
+                    onComplete: _onStepCompleted,
+                  ),
+                )
+            ],
+          );
+        case DamageAnimationState.sending:
+          return Stack(
+            children: [
+              if (widget.direction == DamageDirection.topToBottom)
+                Align(
+                  alignment: const Alignment(-0.7, 0.3),
+                  child: elementalDamage.damageSendBuilder(
+                    _onStepCompleted,
+                    widget.assetSize,
+                  ),
+                )
+              else
+                Align(
+                  alignment: const Alignment(-0.7, 0),
+                  child: Transform.rotate(
+                    angle: pi,
+                    child: elementalDamage.damageSendBuilder(
+                      _onStepCompleted,
+                      widget.assetSize,
+                    ),
+                  ),
+                )
+            ],
+          );
+        case DamageAnimationState.receiving:
+          return Stack(
+            children: [
+              if (widget.direction == DamageDirection.topToBottom)
+                Transform.translate(
+                  offset: Offset(
+                    1.32 * widget.size.width,
+                    1.16 * widget.size.height,
+                  ),
+                  child: elementalDamage.damageReceiveBuilder(
+                    _onStepCompleted,
+                    widget.assetSize,
+                  ),
+                )
+              else
+                Transform.translate(
+                  offset: -Offset(
+                    -0.6 * widget.size.width,
+                    -0.02 * widget.size.height,
+                  ),
+                  child: elementalDamage.damageReceiveBuilder(
+                    _onStepCompleted,
+                    widget.assetSize,
+                  ),
+                )
+            ],
+          );
+        case DamageAnimationState.waitingVictory:
+          return const SizedBox.shrink(key: Key('elementalDamage_empty'));
+        case DamageAnimationState.victory:
+          return Stack(
+            children: [
+              if (widget.direction == DamageDirection.topToBottom)
+                Transform.translate(
+                  offset: -Offset(
+                    0.25 * widget.size.width,
+                    0.11 * widget.size.height,
+                  ),
+                  child: DualAnimation(
+                    cardOffset: Offset(
+                      0.25 * widget.size.width,
+                      0.11 * widget.size.height,
+                    ),
+                    cardSize: widget.size,
+                    back: elementalDamage.victoryChargeBackBuilder,
+                    front: elementalDamage.victoryChargeFrontBuilder,
+                    assetSize: widget.assetSize,
+                    onComplete: _onStepCompleted,
+                  ),
+                )
+              else
+                Transform.translate(
+                  offset: Offset(
+                    0.46 * widget.size.width,
+                    1.10 * widget.size.height,
+                  ),
+                  child: DualAnimation(
+                    cardOffset: Offset(
+                      0.25 * widget.size.width,
+                      0.11 * widget.size.height,
+                    ),
+                    cardSize: widget.size,
+                    back: elementalDamage.victoryChargeBackBuilder,
+                    front: elementalDamage.victoryChargeFrontBuilder,
+                    assetSize: widget.assetSize,
+                    onComplete: _onStepCompleted,
+                  ),
+                )
+            ],
+          );
+        case DamageAnimationState.ended:
+          return const SizedBox.shrink(key: Key('elementalDamage_empty'));
+      }
     }
   }
 
