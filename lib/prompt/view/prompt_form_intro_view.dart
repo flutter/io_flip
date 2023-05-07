@@ -1,43 +1,13 @@
-import 'package:flame/cache.dart';
-import 'package:flame/extensions.dart';
-import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:game_domain/game_domain.dart';
-import 'package:io_flip/gen/assets.gen.dart';
 import 'package:io_flip/l10n/l10n.dart';
-import 'package:io_flip/utils/platform_aware_asset.dart';
+import 'package:io_flip/prompt/prompt.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
-import 'package:provider/provider.dart';
 
-class PromptFormIntroView extends StatefulWidget {
+class PromptFormIntroView extends StatelessWidget {
   const PromptFormIntroView({super.key});
 
   static const _gap = SizedBox(height: IoFlipSpacing.xlg);
-  static const _cardMasterHeight = 312.0;
-
-  @override
-  State<PromptFormIntroView> createState() => _PromptFormIntroViewState();
-}
-
-class _PromptFormIntroViewState extends State<PromptFormIntroView> {
-  late final Images images;
-  final asset = platformAwareAsset(
-    desktop: Assets.images.cardMaster.keyName,
-    mobile: Assets.images.mobile.cardMaster.keyName,
-  );
-
-  @override
-  void initState() {
-    super.initState();
-    images = context.read<Images>();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-
-    images.clear(asset);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,26 +29,11 @@ class _PromptFormIntroViewState extends State<PromptFormIntroView> {
                     Stack(
                       alignment: Alignment.topCenter,
                       children: [
-                        SizedBox.square(
-                          dimension: PromptFormIntroView._cardMasterHeight,
-                          child: SpriteAnimationWidget.asset(
-                            path: asset,
-                            images: images,
-                            data: SpriteAnimationData.sequenced(
-                              amount: 57,
-                              amountPerRow: 19,
-                              textureSize: platformAwareAsset(
-                                desktop: Vector2(812, 812),
-                                mobile: Vector2(406, 406),
-                              ),
-                              stepTime: 0.04,
-                            ),
-                          ),
-                        ),
+                        const CardMaster(),
                         Column(
                           children: [
                             SizedBox(
-                              height: PromptFormIntroView._cardMasterHeight -
+                              height: CardMaster.cardMasterHeight -
                                   (PromptFormIntroView._gap.height! * 2),
                             ),
                             Text(

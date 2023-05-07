@@ -235,6 +235,10 @@ class $AssetsImagesMobileGen {
   AssetGenImage get cardMaster =>
       const AssetGenImage('assets/images/mobile/card_master.png');
 
+  /// File path: assets/images/mobile/card_master_still.png
+  AssetGenImage get cardMasterStill =>
+      const AssetGenImage('assets/images/mobile/card_master_still.png');
+
   /// File path: assets/images/mobile/draw.svg
   SvgGenImage get draw => const SvgGenImage('assets/images/mobile/draw.svg');
 
@@ -264,6 +268,7 @@ class $AssetsImagesMobileGen {
   List<dynamic> get values => [
         backPack,
         cardMaster,
+        cardMasterStill,
         draw,
         frontPack,
         loss,
