@@ -23,75 +23,110 @@ extension on List<TickerFuture> {
       );
 }
 
-class GameView extends StatelessWidget {
+class GameView extends StatefulWidget {
   const GameView({super.key});
 
   @override
+  State<GameView> createState() => _GameViewState();
+}
+
+class _GameViewState extends State<GameView> {
+  List<ImageProvider> imagesToEvict = [];
+
+  Future<void> preloadOpponentImages(List<Card> opponentCards) async {
+    final providers = [
+      for (final card in opponentCards) NetworkImage(card.image),
+    ];
+
+    imagesToEvict.addAll(providers);
+    await Future.wait([
+      for (final provider in providers) precacheImage(provider, context),
+    ]);
+  }
+
+  @override
+  void dispose() {
+    for (final provider in imagesToEvict) {
+      provider.evict();
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocConsumer<GameBloc, GameState>(
+    return BlocListener<GameBloc, GameState>(
       listenWhen: (previous, current) =>
-          context.read<GameBloc>().matchCompleted(current),
+          current is MatchLoadedState && previous is! MatchLoadedState,
       listener: (context, state) {
-        context.read<GameBloc>().sendMatchLeft();
+        final bloc = context.read<GameBloc>();
+        preloadOpponentImages(bloc.opponentCards);
       },
-      builder: (context, state) {
-        final l10n = context.l10n;
-        final Widget child;
+      child: BlocConsumer<GameBloc, GameState>(
+        listenWhen: (previous, current) =>
+            context.read<GameBloc>().matchCompleted(current),
+        listener: (context, state) {
+          context.read<GameBloc>().sendMatchLeft();
+        },
+        builder: (context, state) {
+          final l10n = context.l10n;
+          final Widget child;
 
-        if (state is MatchLoadingState) {
-          child = const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (state is MatchLoadFailedState) {
-          child = IoFlipErrorView(
-            text: 'Unable to join game!',
-            buttonText: l10n.playAgain,
-            onPressed: () {
-              final deck = state.deck;
-              if (deck != null) {
-                GoRouter.of(context).goNamed(
-                  'match_making',
-                  extra: MatchMakingPageData(deck: deck),
-                );
-              } else {
-                GoRouter.of(context).go('/');
-              }
-            },
-          );
-        } else if (state is MatchLoadedState) {
-          if (state.matchState.result != null && state.turnAnimationsFinished) {
-            return const GameSummaryView();
+          if (state is MatchLoadingState) {
+            child = const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (state is MatchLoadFailedState) {
+            child = IoFlipErrorView(
+              text: 'Unable to join game!',
+              buttonText: l10n.playAgain,
+              onPressed: () {
+                final deck = state.deck;
+                if (deck != null) {
+                  GoRouter.of(context).goNamed(
+                    'match_making',
+                    extra: MatchMakingPageData(deck: deck),
+                  );
+                } else {
+                  GoRouter.of(context).go('/');
+                }
+              },
+            );
+          } else if (state is MatchLoadedState) {
+            if (state.matchState.result != null &&
+                state.turnAnimationsFinished) {
+              return const GameSummaryView();
+            }
+            child = const _GameBoard();
+          } else if (state is LeaderboardEntryState) {
+            child = LeaderboardEntryView(
+              scoreCardId: state.scoreCardId,
+              shareHandPageData: state.shareHandPageData,
+            );
+          } else if (state is OpponentAbsentState) {
+            child = IoFlipErrorView(
+              text: 'Opponent left the game!',
+              buttonText: l10n.playAgain,
+              onPressed: () {
+                final deck = state.deck;
+                if (deck != null) {
+                  GoRouter.of(context).goNamed(
+                    'match_making',
+                    extra: MatchMakingPageData(deck: deck),
+                  );
+                } else {
+                  GoRouter.of(context).go('/');
+                }
+              },
+            );
+          } else {
+            child = const SizedBox();
           }
-          child = const _GameBoard();
-        } else if (state is LeaderboardEntryState) {
-          child = LeaderboardEntryView(
-            scoreCardId: state.scoreCardId,
-            shareHandPageData: state.shareHandPageData,
-          );
-        } else if (state is OpponentAbsentState) {
-          child = IoFlipErrorView(
-            text: 'Opponent left the game!',
-            buttonText: l10n.playAgain,
-            onPressed: () {
-              final deck = state.deck;
-              if (deck != null) {
-                GoRouter.of(context).goNamed(
-                  'match_making',
-                  extra: MatchMakingPageData(deck: deck),
-                );
-              } else {
-                GoRouter.of(context).go('/');
-              }
-            },
-          );
-        } else {
-          child = const SizedBox();
-        }
 
-        return IoFlipScaffold(
-          body: child,
-        );
-      },
+          return IoFlipScaffold(
+            body: child,
+          );
+        },
+      ),
     );
   }
 }
