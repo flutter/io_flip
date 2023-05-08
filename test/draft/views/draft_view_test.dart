@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, one_member_abstracts
 
+import 'package:api_client/api_client.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flame/cache.dart';
 import 'package:flutter/material.dart' hide Card;
@@ -14,6 +15,7 @@ import 'package:io_flip/how_to_play/how_to_play.dart';
 import 'package:io_flip/l10n/l10n.dart';
 import 'package:io_flip/match_making/match_making.dart';
 import 'package:io_flip/settings/settings.dart';
+import 'package:io_flip/share/share.dart';
 import 'package:io_flip/utils/utils.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
@@ -29,6 +31,8 @@ class _MockRouter extends Mock implements NeglectRouter {}
 class _MockBuildContext extends Mock implements BuildContext {}
 
 class _MockAudioController extends Mock implements AudioController {}
+
+class _MockShareResource extends Mock implements ShareResource {}
 
 void main() {
   group('DraftView', () {
@@ -225,6 +229,28 @@ void main() {
 
       verify(() => draftBloc.add(PreviousCard())).called(1);
     });
+
+    testWidgets(
+      'opens share dialog card by tapping share icon',
+      (tester) async {
+        mockState(
+          [
+            DraftState(
+              cards: const [card1, card2],
+              selectedCards: const [],
+              status: DraftStateStatus.deckLoaded,
+              firstCardOpacity: 1,
+            )
+          ],
+        );
+        await tester.pumpSubject(draftBloc: draftBloc);
+
+        await tester.tap(find.byIcon(Icons.share_outlined));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(ShareCardDialog), findsOneWidget);
+      },
+    );
 
     testWidgets('renders an error message when loading failed', (tester) async {
       mockState(
@@ -601,6 +627,10 @@ extension DraftViewTest on WidgetTester {
     final SettingsController settingsController = _MockSettingsController();
     when(() => settingsController.muted).thenReturn(ValueNotifier(true));
 
+    final ShareResource shareResource = _MockShareResource();
+    when(() => shareResource.twitterShareCardUrl(any())).thenReturn('');
+    when(() => shareResource.facebookShareCardUrl(any())).thenReturn('');
+
     await mockNetworkImages(() async {
       await pumpApp(
         BlocProvider.value(
@@ -615,6 +645,7 @@ extension DraftViewTest on WidgetTester {
         router: goRouter,
         settingsController: settingsController,
         audioController: audioController,
+        shareResource: shareResource,
       );
       await pump();
 

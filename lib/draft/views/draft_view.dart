@@ -7,6 +7,7 @@ import 'package:io_flip/draft/draft.dart';
 import 'package:io_flip/how_to_play/how_to_play.dart';
 import 'package:io_flip/l10n/l10n.dart';
 import 'package:io_flip/match_making/match_making.dart';
+import 'package:io_flip/share/share.dart';
 import 'package:io_flip/utils/utils.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 
@@ -296,13 +297,28 @@ class _TopCard extends StatelessWidget {
       },
       child: Opacity(
         opacity: opacity,
-        child: GameCard(
-          image: card.image,
-          name: card.name,
-          description: card.description,
-          power: card.power,
-          suitName: card.suit.name,
-          isRare: card.rarity,
+        child: Stack(
+          children: [
+            GameCard(
+              image: card.image,
+              name: card.name,
+              description: card.description,
+              power: card.power,
+              suitName: card.suit.name,
+              isRare: card.rarity,
+            ),
+            Positioned(
+              top: IoFlipSpacing.sm,
+              left: IoFlipSpacing.md,
+              child: RoundedButton.icon(
+                Icons.share_outlined,
+                onPressed: () => IoFlipDialog.show(
+                  context,
+                  child: ShareCardDialog(card: card),
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );
