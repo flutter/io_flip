@@ -23,7 +23,6 @@ Middleware contentTypeHeader() {
     return (context) async {
       final method = context.request.method;
       final headers = context.request.headers;
-      print(headers[HttpHeaders.contentTypeHeader]);
 
       if (methodsRequiringContentTypeJson.contains(method) &&
           !headers.isContentTypeJson()) {

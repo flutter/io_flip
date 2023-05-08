@@ -32,6 +32,5 @@ Handler middleware(Handler handler) {
       .use(provider<FirebaseCloudStorage>((_) => firebaseCloudStorage))
       .use(provider<WebSocketHandlerFactory>((_) => ws.webSocketHandler))
       .use(corsHeaders())
-      .use(allowHeaders())
-      .use(contentTypeHeader());
+      .use(allowHeaders());
 }
