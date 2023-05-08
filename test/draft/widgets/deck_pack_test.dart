@@ -70,6 +70,7 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.byWidget(child), findsOneWidget);
+        expect(find.byType(AnimatedDeckPack), findsNothing);
         expect(complete, isTrue);
       });
     });
@@ -117,7 +118,8 @@ void main() {
         await tester.pump();
 
         expect(find.byWidget(child), findsOneWidget);
-        expect(find.byType(SpriteAnimationWidget), findsOneWidget);
+        expect(find.byType(SpriteAnimationWidget), findsNothing);
+        expect(find.byType(SpriteAnimationDeckPack), findsNothing);
         expect(complete, isTrue);
       });
     });

@@ -94,7 +94,8 @@ class DeckPackState extends State<DeckPack> {
                   ),
                 ),
               ),
-            if (_deckPackAnimation != null) _deckPackAnimation!,
+            if (!_isAnimationComplete && _deckPackAnimation != null)
+              _deckPackAnimation!,
           ],
         ),
       ),
