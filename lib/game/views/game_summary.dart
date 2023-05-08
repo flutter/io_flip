@@ -272,7 +272,7 @@ class _CardsView extends StatelessWidget {
             isTransparent: true,
             child: CardInspectorDialog(
               playerCardIds: playerCardIds,
-              deck: cards,
+              cards: cards,
               startingIndex: index + card,
             ),
           ),

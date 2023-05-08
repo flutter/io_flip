@@ -360,6 +360,18 @@
   "@howItsMadeLinkLabel": {
     "description": "Text shown on the How it's made link"
   },
+  "shareCardDisclaimer": "If you choose to share, your card will be made available at a unique URL for 30 days and then automatically deleted.",
+  "@shareCardDisclaimer": {
+    "description": "Disclaimer shown on the share card dialog"
+  },
+  "shareCardDialogDescription": "Share your AI-designed creation then head into a match.",
+  "@shareCardDialogDescription": {
+    "description": "Text shown on the share card dialog"
+  },
+  "shareTeamDisclaimer": "If you choose to share, your initials, cards and score will be made available at a unique URL for 30 days and then automatically deleted.",
+  "@shareTeamDisclaimer": {
+    "description": "Disclaimer shown on the share team dialog"
+  },
   "shareTeamDialogDescription": "Share your team from I/O FLIP and challenge your friends to beat your streak!",
   "@shareTeamDialogDescription": {
     "description": "Text shown on the share team dialog"

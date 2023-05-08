@@ -1,4 +1,5 @@
 import 'package:api_client/api_client.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:io_flip/share/views/share_card_dialog.dart';
@@ -38,8 +39,10 @@ extension ShareCardDialogTest on WidgetTester {
       when(() => shareResource.twitterShareCardUrl(any())).thenReturn('');
       when(() => shareResource.facebookShareCardUrl(any())).thenReturn('');
       return pumpApp(
-        const ShareCardDialog(
-          card: card,
+        const SingleChildScrollView(
+          child: ShareCardDialog(
+            card: card,
+          ),
         ),
         shareResource: shareResource,
       );
