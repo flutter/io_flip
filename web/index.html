@@ -333,7 +333,7 @@
             const value = Math.floor((loaded / totalAssets) * 100) + "%";
             progressIndicator.style.width = value;
 
-            if (assets.length == 0 || isMobile()) {
+            if (assets.length == 0) {
               dispatchAppLoad();
             } else {
               load(assets.shift());
