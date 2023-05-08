@@ -25,6 +25,23 @@ void main() {
     late ConnectionRepository connectionRepository;
     late StreamController<DraftMatch> watchController;
     const deckId = 'deckId';
+    const hostDeck = Deck(
+      id: 'hostDeckId',
+      userId: 'hostUserId',
+      cards: [],
+    );
+
+    const guestDeck = Deck(
+      id: 'guestDeckId',
+      userId: 'guestUserId',
+      cards: [],
+    );
+
+    const match = Match(
+      id: 'matchId',
+      hostDeck: hostDeck,
+      guestDeck: guestDeck,
+    );
 
     setUp(() {
       matchMakerRepository = _MockMatchMakerRepository();
@@ -229,6 +246,84 @@ void main() {
           ),
         ),
       );
+    });
+
+    test('completes the match when is host and a guest joins at last moment',
+        () {
+      fakeAsync((async) {
+        when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
+          (_) async => DraftMatch(
+            id: '',
+            host: deckId,
+          ),
+        );
+        when(() => gameResource.getMatch(any())).thenAnswer((_) async => match);
+        when(() => gameResource.connectToCpuMatch(matchId: ''))
+            .thenThrow(Exception());
+        final stream =
+            StreamController<DraftMatch>(onCancel: () async {}).stream;
+        when(() => matchMakerRepository.watchMatch(any())).thenAnswer(
+          (_) => stream,
+        );
+
+        final bloc = MatchMakingBloc(
+          matchMakerRepository: matchMakerRepository,
+          connectionRepository: connectionRepository,
+          gameResource: gameResource,
+          deckId: deckId,
+          hostWaitTime: const Duration(milliseconds: 200),
+        )..add(MatchRequested());
+
+        async.elapse(Duration(seconds: 5));
+        expect(
+          bloc.state,
+          equals(
+            MatchMakingState(
+              status: MatchMakingStatus.completed,
+              match: DraftMatch(id: '', host: deckId, guest: 'guestUserId'),
+              isHost: true,
+            ),
+          ),
+        );
+      });
+    });
+
+    test('emits timeout if getMatch returns null after timeout', () {
+      fakeAsync((async) {
+        when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
+          (_) async => DraftMatch(
+            id: '',
+            host: deckId,
+          ),
+        );
+        when(() => gameResource.getMatch(any())).thenAnswer((_) async => null);
+        when(() => gameResource.connectToCpuMatch(matchId: ''))
+            .thenThrow(Exception());
+        final stream =
+            StreamController<DraftMatch>(onCancel: () async {}).stream;
+        when(() => matchMakerRepository.watchMatch(any())).thenAnswer(
+          (_) => stream,
+        );
+
+        final bloc = MatchMakingBloc(
+          matchMakerRepository: matchMakerRepository,
+          connectionRepository: connectionRepository,
+          gameResource: gameResource,
+          deckId: deckId,
+          hostWaitTime: const Duration(milliseconds: 200),
+        )..add(MatchRequested());
+
+        async.elapse(Duration(seconds: 5));
+        expect(
+          bloc.state,
+          equals(
+            MatchMakingState(
+              status: MatchMakingStatus.timeout,
+              match: DraftMatch(id: '', host: deckId),
+            ),
+          ),
+        );
+      });
     });
 
     test(
