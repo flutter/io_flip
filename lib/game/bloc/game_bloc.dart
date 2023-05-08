@@ -301,23 +301,32 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   ) {
     if (state is MatchLoadedState) {
       final matchLoadedState = state as MatchLoadedState;
+      final isEndOfRound = matchLoadedState.matchState.hostPlayedCards.length ==
+          matchLoadedState.matchState.guestPlayedCards.length;
       if (isPlayerAllowedToPlay &&
           !matchLoadedState.matchState.isOver() &&
           (matchLoadedState.rounds.isEmpty ||
               !matchLoadedState.rounds.last.turnTimerStarted)) {
-        emit(
-          matchLoadedState.copyWith(
-            turnTimeRemaining: _turnMaxTime,
-            rounds: [
-              if (matchLoadedState.rounds.isNotEmpty) ...[
-                ...matchLoadedState.rounds
-                    .take(matchLoadedState.rounds.length - 1),
-                matchLoadedState.rounds.last.copyWith(turnTimerStarted: true),
-              ] else
-                ...matchLoadedState.rounds,
-            ],
-          ),
-        );
+        if (isEndOfRound) {
+          emit(
+            matchLoadedState.copyWith(
+              turnTimeRemaining: _turnMaxTime,
+            ),
+          );
+        } else {
+          emit(
+            matchLoadedState.copyWith(
+              rounds: [
+                if (matchLoadedState.rounds.isNotEmpty) ...[
+                  ...matchLoadedState.rounds
+                      .take(matchLoadedState.rounds.length - 1),
+                  matchLoadedState.rounds.last.copyWith(turnTimerStarted: true),
+                ] else
+                  ...matchLoadedState.rounds,
+              ],
+            ),
+          );
+        }
 
         _turnTimer?.cancel();
 
