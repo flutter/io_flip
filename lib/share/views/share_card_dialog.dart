@@ -2,6 +2,7 @@ import 'package:api_client/api_client.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:game_domain/game_domain.dart';
+import 'package:io_flip/l10n/l10n.dart';
 import 'package:io_flip/share/share.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,7 @@ class ShareCardDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final shareResource = context.read<ShareResource>();
     return ShareDialog(
       twitterShareUrl: shareResource.twitterShareCardUrl(card.id),
@@ -43,7 +45,7 @@ class ShareCardDialog extends StatelessWidget {
           ),
           const SizedBox(height: IoFlipSpacing.sm),
           Text(
-            card.description,
+            l10n.shareCardDialogDescription,
             style: IoFlipTextStyles.bodyLG,
             textAlign: TextAlign.center,
           ),
