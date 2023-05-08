@@ -39,8 +39,14 @@ class ShareCardDialog extends StatelessWidget {
           Text(
             card.name,
             style: IoFlipTextStyles.mobileH4Light,
+            textAlign: TextAlign.center,
           ),
-          Text(card.description, style: IoFlipTextStyles.bodyLG),
+          const SizedBox(height: IoFlipSpacing.sm),
+          Text(
+            card.description,
+            style: IoFlipTextStyles.bodyLG,
+            textAlign: TextAlign.center,
+          ),
           const SizedBox(height: IoFlipSpacing.lg),
         ],
       ),
