@@ -51,5 +51,9 @@ service cloud.firestore {
     match /score_cards/{score_card} {
       allow read, write: if isAuthenticated() && request.auth.uid == score_card;
     }
+
+    match /config/{doc} {
+      allow read if isAuthenticated();
+    }
   }
 }
