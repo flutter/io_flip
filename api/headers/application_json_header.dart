@@ -31,7 +31,7 @@ Middleware contentTypeHeader() {
             'for ${method.value} $path';
         print(message);
 
-        return Response(statusCode: HttpStatus.forbidden);
+        return Response(statusCode: HttpStatus.badRequest);
       }
 
       final response = await handler(context);
