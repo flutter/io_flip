@@ -24,8 +24,6 @@ void main() {
       );
   final cards = [card('1'), card('2'), card('3')];
 
-  setUp(() {});
-
   group('CardInspector', () {
     Widget buildSubject() => CardInspectorDialog(
           cards: cards,
