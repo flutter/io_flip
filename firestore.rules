@@ -53,7 +53,7 @@ service cloud.firestore {
     }
 
     match /config/{doc} {
-      allow read if isAuthenticated();
+      allow read: if isAuthenticated();
     }
   }
 }
