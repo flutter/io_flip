@@ -15,6 +15,7 @@ class _MockBoolValueListener extends Mock implements ValueNotifier<bool> {}
 class _MockAudioPlayer extends Mock implements AudioPlayer {}
 
 class _MockAudioPlayerFactory {
+  _MockAudioPlayerFactory();
   final Map<String, AudioPlayer> players = {};
   final Map<String, StreamController<void>> controllers = {};
 
@@ -25,6 +26,7 @@ class _MockAudioPlayerFactory {
     when(
       () => player.play(
         any(),
+        volume: any(named: 'volume'),
       ),
     ).thenAnswer((_) async {});
     when(() => player.onPlayerComplete).thenAnswer(
@@ -104,7 +106,8 @@ void main() {
         );
 
         final player = playerFactory.players['musicPlayer'];
-        verify(() => player!.play(any())).called(1);
+        verify(() => player!.play(any(), volume: any(named: 'volume')))
+            .called(1);
       });
 
       test('replace an old settings', () {
