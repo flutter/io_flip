@@ -11,8 +11,8 @@ import 'package:io_flip_ui/src/animations/damages/water_damage.dart';
 import 'package:io_flip_ui/src/widgets/damages/dual_animation.dart';
 
 /// {@template elemental_damage_step_notifier}
-/// A notifier that allows an external test to know when an [_AnimationState]
-/// is complete
+/// A notifier that allows an external
+/// test to know when an [DamageAnimationState] is complete
 /// {@endtemplate}
 @visibleForTesting
 class ElementalDamageStepNotifier {
@@ -21,16 +21,16 @@ class ElementalDamageStepNotifier {
   final _received = Completer<void>();
   final _victory = Completer<void>();
 
-  /// Future notifying when [_AnimationState.charging] is complete
+  /// Future notifying when [DamageAnimationState.charging] is complete
   Future<void> get charged => _charged.future;
 
-  /// Future notifying when [_AnimationState.sending] is complete
+  /// Future notifying when [DamageAnimationState.sending] is complete
   Future<void> get sent => _sent.future;
 
-  /// Future notifying when [_AnimationState.receiving] is complete
+  /// Future notifying when [DamageAnimationState.receiving] is complete
   Future<void> get received => _received.future;
 
-  /// Future notifying when [_AnimationState.victory] is complete
+  /// Future notifying when [DamageAnimationState.victory] is complete
   Future<void> get victory => _victory.future;
 }
 
@@ -42,9 +42,12 @@ class ElementalDamageAnimation extends StatefulWidget {
   const ElementalDamageAnimation(
     this.element, {
     required this.direction,
+    required this.initialState,
     required this.size,
     this.assetSize = AssetSize.large,
     this.onComplete,
+    this.onDamageReceived,
+    this.pointDeductionCompleter,
     this.stepNotifier,
     super.key,
   });
@@ -52,6 +55,12 @@ class ElementalDamageAnimation extends StatefulWidget {
   /// Optional callback to be called when all the animations of the damage
   /// are complete.
   final VoidCallback? onComplete;
+
+  /// Optional callback to be called when the damage is received.
+  final VoidCallback? onDamageReceived;
+
+  /// Completer to be completed when the points have been deducted.
+  final Completer<void>? pointDeductionCompleter;
 
   /// Element defining which [ElementalDamage] to use
   final Element element;
@@ -62,11 +71,14 @@ class ElementalDamageAnimation extends StatefulWidget {
   /// Size of the card
   final GameCardSize size;
 
-  /// Notifies when an [_AnimationState] is complete
+  /// Notifies when an [DamageAnimationState] is complete
   final ElementalDamageStepNotifier? stepNotifier;
 
   /// Size of the assets to use, large or small
   final AssetSize assetSize;
+
+  /// Initial state of the animation
+  final DamageAnimationState initialState;
 
   @override
   State<ElementalDamageAnimation> createState() =>
@@ -74,7 +86,7 @@ class ElementalDamageAnimation extends StatefulWidget {
 }
 
 class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
-  var _animationState = _AnimationState.charging;
+  late var _animationState = widget.initialState;
   late final ElementalDamage elementalDamage;
 
   @override
@@ -82,100 +94,113 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
     super.initState();
     switch (widget.element) {
       case Element.metal:
-        elementalDamage = widget.assetSize == AssetSize.large
-            ? MetalDamage.large(size: widget.size)
-            : MetalDamage.small(size: widget.size);
+        elementalDamage = MetalDamage(size: widget.size);
         break;
       case Element.air:
-        elementalDamage = widget.assetSize == AssetSize.large
-            ? AirDamage.large(size: widget.size)
-            : AirDamage.small(size: widget.size);
+        elementalDamage = AirDamage(size: widget.size);
         break;
       case Element.fire:
-        elementalDamage = widget.assetSize == AssetSize.large
-            ? FireDamage.large(size: widget.size)
-            : FireDamage.small(size: widget.size);
+        elementalDamage = FireDamage(size: widget.size);
         break;
       case Element.earth:
-        elementalDamage = widget.assetSize == AssetSize.large
-            ? EarthDamage.large(size: widget.size)
-            : EarthDamage.small(size: widget.size);
+        elementalDamage = EarthDamage(size: widget.size);
         break;
       case Element.water:
-        elementalDamage = widget.assetSize == AssetSize.large
-            ? WaterDamage.large(size: widget.size)
-            : WaterDamage.small(size: widget.size);
+        elementalDamage = WaterDamage(size: widget.size);
         break;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    switch (_animationState) {
-      case _AnimationState.charging:
-        return Stack(
-          children: [
-            if (widget.direction == DamageDirection.topToBottom)
-              Transform.translate(
-                offset: -Offset(
-                  0.35 * widget.size.width,
-                  0.31 * widget.size.height,
-                ),
-                child: DualAnimation(
-                  back: elementalDamage.chargeBackBuilder,
-                  front: elementalDamage.chargeFrontBuilder,
-                  assetSize: widget.assetSize,
-                  onComplete: _onStepCompleted,
-                ),
-              )
-            else
-              _BottomAnimation(
-                child: Transform.translate(
-                  offset: Offset(
-                    0.45 * widget.size.width,
-                    0.21 * widget.size.height,
+    if (widget.assetSize == AssetSize.large) {
+      switch (_animationState) {
+        case DamageAnimationState.charging:
+          return Stack(
+            children: [
+              if (widget.direction == DamageDirection.topToBottom)
+                Transform.translate(
+                  offset: -Offset(
+                    0.32 * widget.size.width,
+                    0.315 * widget.size.height,
                   ),
                   child: DualAnimation(
+                    cardOffset: Offset(
+                      0.32 * widget.size.width,
+                      0.315 * widget.size.height,
+                    ),
+                    cardSize: widget.size,
                     back: elementalDamage.chargeBackBuilder,
                     front: elementalDamage.chargeFrontBuilder,
                     assetSize: widget.assetSize,
                     onComplete: _onStepCompleted,
                   ),
-                ),
-              )
-          ],
-        );
-      case _AnimationState.sending:
-        return Stack(
-          children: [
-            if (widget.direction == DamageDirection.topToBottom)
-              Align(
-                alignment: const Alignment(-0.7, 0.3),
-                child: elementalDamage.damageSendBuilder(
-                  _onStepCompleted,
-                  widget.assetSize,
-                ),
-              )
-            else
-              Align(
-                alignment: const Alignment(0.7, 0),
-                child: Transform.rotate(
-                  angle: pi,
+                )
+              else
+                _BottomAnimation(
+                  child: Transform.translate(
+                    offset: Offset(
+                      0.32 * widget.size.width,
+                      0.215 * widget.size.height,
+                    ),
+                    child: DualAnimation(
+                      cardOffset: Offset(
+                        0.32 * widget.size.width,
+                        0.315 * widget.size.height,
+                      ),
+                      cardSize: widget.size,
+                      back: elementalDamage.chargeBackBuilder,
+                      front: elementalDamage.chargeFrontBuilder,
+                      assetSize: widget.assetSize,
+                      onComplete: _onStepCompleted,
+                    ),
+                  ),
+                )
+            ],
+          );
+        case DamageAnimationState.sending:
+          return Stack(
+            children: [
+              if (widget.direction == DamageDirection.topToBottom)
+                Align(
+                  alignment: const Alignment(-0.7, 0.3),
                   child: elementalDamage.damageSendBuilder(
                     _onStepCompleted,
                     widget.assetSize,
                   ),
-                ),
-              )
-          ],
-        );
-      case _AnimationState.receiving:
-        return Stack(
-          children: [
-            if (widget.direction == DamageDirection.topToBottom)
-              _BottomAnimation(
-                child: Transform.translate(
-                  offset: Offset(
+                )
+              else
+                Align(
+                  alignment: const Alignment(0.7, 0),
+                  child: Transform.rotate(
+                    angle: pi,
+                    child: elementalDamage.damageSendBuilder(
+                      _onStepCompleted,
+                      widget.assetSize,
+                    ),
+                  ),
+                )
+            ],
+          );
+        case DamageAnimationState.receiving:
+          return Stack(
+            children: [
+              if (widget.direction == DamageDirection.topToBottom)
+                _BottomAnimation(
+                  child: Transform.translate(
+                    offset: Offset(
+                      0.3 * widget.size.width,
+                      0.3 * widget.size.height,
+                    ),
+                    child: elementalDamage.damageReceiveBuilder(
+                      _onStepCompleted,
+                      widget.assetSize,
+                    ),
+                  ),
+                )
+              else
+                Transform.translate(
+                  offset: -Offset(
                     0.3 * widget.size.width,
                     0.3 * widget.size.height,
                   ),
@@ -183,80 +208,228 @@ class _ElementalDamageAnimationState extends State<ElementalDamageAnimation> {
                     _onStepCompleted,
                     widget.assetSize,
                   ),
-                ),
-              )
-            else
-              Transform.translate(
-                offset: -Offset(
-                  0.3 * widget.size.width,
-                  0.3 * widget.size.height,
-                ),
-                child: elementalDamage.damageReceiveBuilder(
-                  _onStepCompleted,
-                  widget.assetSize,
-                ),
-              )
-          ],
-        );
-      case _AnimationState.victory:
-        return Stack(
-          children: [
-            if (widget.direction == DamageDirection.topToBottom)
-              Transform.translate(
-                offset: -Offset(
-                  0.3 * widget.size.width,
-                  0.1 * widget.size.height,
-                ),
-                child: DualAnimation(
-                  back: elementalDamage.victoryChargeBackBuilder,
-                  front: elementalDamage.victoryChargeFrontBuilder,
-                  assetSize: widget.assetSize,
-                  onComplete: _onStepCompleted,
-                ),
-              )
-            else
-              _BottomAnimation(
-                child: Transform.translate(
-                  offset: Offset(
-                    0.28 * widget.size.width,
+                )
+            ],
+          );
+        case DamageAnimationState.waitingVictory:
+          return const SizedBox.shrink(key: Key('elementalDamage_empty'));
+        case DamageAnimationState.victory:
+          return Stack(
+            children: [
+              if (widget.direction == DamageDirection.topToBottom)
+                Transform.translate(
+                  offset: -Offset(
+                    0.25 * widget.size.width,
                     0.11 * widget.size.height,
                   ),
                   child: DualAnimation(
+                    cardOffset: Offset(
+                      0.25 * widget.size.width,
+                      0.11 * widget.size.height,
+                    ),
+                    cardSize: widget.size,
                     back: elementalDamage.victoryChargeBackBuilder,
                     front: elementalDamage.victoryChargeFrontBuilder,
                     assetSize: widget.assetSize,
                     onComplete: _onStepCompleted,
                   ),
-                ),
-              )
-          ],
-        );
-      case _AnimationState.ended:
-        widget.onComplete?.call();
-        return const SizedBox.shrink();
+                )
+              else
+                _BottomAnimation(
+                  child: Transform.translate(
+                    offset: Offset(
+                      0.255 * widget.size.width,
+                      0.115 * widget.size.height,
+                    ),
+                    child: DualAnimation(
+                      cardOffset: Offset(
+                        0.25 * widget.size.width,
+                        0.11 * widget.size.height,
+                      ),
+                      cardSize: widget.size,
+                      back: elementalDamage.victoryChargeBackBuilder,
+                      front: elementalDamage.victoryChargeFrontBuilder,
+                      assetSize: widget.assetSize,
+                      onComplete: _onStepCompleted,
+                    ),
+                  ),
+                )
+            ],
+          );
+        case DamageAnimationState.ended:
+          return const SizedBox.shrink(key: Key('elementalDamage_empty'));
+      }
+    } else {
+      switch (_animationState) {
+        case DamageAnimationState.charging:
+          return Stack(
+            children: [
+              if (widget.direction == DamageDirection.topToBottom)
+                Transform.translate(
+                  offset: -Offset(
+                    0.32 * widget.size.width,
+                    0.32 * widget.size.height,
+                  ),
+                  child: DualAnimation(
+                    cardOffset: Offset(
+                      0.32 * widget.size.width,
+                      0.315 * widget.size.height,
+                    ),
+                    cardSize: widget.size,
+                    back: elementalDamage.chargeBackBuilder,
+                    front: elementalDamage.chargeFrontBuilder,
+                    assetSize: widget.assetSize,
+                    onComplete: _onStepCompleted,
+                  ),
+                )
+              else
+                Transform.translate(
+                  offset: Offset(
+                    0.38 * widget.size.width,
+                    0.86 * widget.size.height,
+                  ),
+                  child: DualAnimation(
+                    cardOffset: Offset(
+                      0.32 * widget.size.width,
+                      0.315 * widget.size.height,
+                    ),
+                    cardSize: widget.size,
+                    back: elementalDamage.chargeBackBuilder,
+                    front: elementalDamage.chargeFrontBuilder,
+                    assetSize: widget.assetSize,
+                    onComplete: _onStepCompleted,
+                  ),
+                )
+            ],
+          );
+        case DamageAnimationState.sending:
+          return Stack(
+            children: [
+              if (widget.direction == DamageDirection.topToBottom)
+                Align(
+                  alignment: const Alignment(-0.7, 0.3),
+                  child: elementalDamage.damageSendBuilder(
+                    _onStepCompleted,
+                    widget.assetSize,
+                  ),
+                )
+              else
+                Align(
+                  alignment: const Alignment(-0.7, 0),
+                  child: Transform.rotate(
+                    angle: pi,
+                    child: elementalDamage.damageSendBuilder(
+                      _onStepCompleted,
+                      widget.assetSize,
+                    ),
+                  ),
+                )
+            ],
+          );
+        case DamageAnimationState.receiving:
+          return Stack(
+            children: [
+              if (widget.direction == DamageDirection.topToBottom)
+                Transform.translate(
+                  offset: Offset(
+                    1.32 * widget.size.width,
+                    1.16 * widget.size.height,
+                  ),
+                  child: elementalDamage.damageReceiveBuilder(
+                    _onStepCompleted,
+                    widget.assetSize,
+                  ),
+                )
+              else
+                Transform.translate(
+                  offset: -Offset(
+                    -0.6 * widget.size.width,
+                    -0.02 * widget.size.height,
+                  ),
+                  child: elementalDamage.damageReceiveBuilder(
+                    _onStepCompleted,
+                    widget.assetSize,
+                  ),
+                )
+            ],
+          );
+        case DamageAnimationState.waitingVictory:
+          return const SizedBox.shrink(key: Key('elementalDamage_empty'));
+        case DamageAnimationState.victory:
+          return Stack(
+            children: [
+              if (widget.direction == DamageDirection.topToBottom)
+                Transform.translate(
+                  offset: -Offset(
+                    0.25 * widget.size.width,
+                    0.11 * widget.size.height,
+                  ),
+                  child: DualAnimation(
+                    cardOffset: Offset(
+                      0.25 * widget.size.width,
+                      0.11 * widget.size.height,
+                    ),
+                    cardSize: widget.size,
+                    back: elementalDamage.victoryChargeBackBuilder,
+                    front: elementalDamage.victoryChargeFrontBuilder,
+                    assetSize: widget.assetSize,
+                    onComplete: _onStepCompleted,
+                  ),
+                )
+              else
+                Transform.translate(
+                  offset: Offset(
+                    0.46 * widget.size.width,
+                    1.10 * widget.size.height,
+                  ),
+                  child: DualAnimation(
+                    cardOffset: Offset(
+                      0.25 * widget.size.width,
+                      0.11 * widget.size.height,
+                    ),
+                    cardSize: widget.size,
+                    back: elementalDamage.victoryChargeBackBuilder,
+                    front: elementalDamage.victoryChargeFrontBuilder,
+                    assetSize: widget.assetSize,
+                    onComplete: _onStepCompleted,
+                  ),
+                )
+            ],
+          );
+        case DamageAnimationState.ended:
+          return const SizedBox.shrink(key: Key('elementalDamage_empty'));
+      }
     }
   }
 
-  void _onStepCompleted() {
-    if (_animationState == _AnimationState.charging) {
+  Future<void> _onStepCompleted() async {
+    if (_animationState == DamageAnimationState.charging) {
       widget.stepNotifier?._charged.complete();
       setState(() {
-        _animationState = _AnimationState.sending;
+        _animationState = DamageAnimationState.sending;
       });
-    } else if (_animationState == _AnimationState.sending) {
+    } else if (_animationState == DamageAnimationState.sending) {
       widget.stepNotifier?._sent.complete();
       setState(() {
-        _animationState = _AnimationState.receiving;
+        _animationState = DamageAnimationState.receiving;
       });
-    } else if (_animationState == _AnimationState.receiving) {
+    } else if (_animationState == DamageAnimationState.receiving) {
+      setState(() {
+        _animationState = DamageAnimationState.waitingVictory;
+      });
+
       widget.stepNotifier?._received.complete();
+      widget.onDamageReceived?.call();
+      await widget.pointDeductionCompleter?.future;
+
       setState(() {
-        _animationState = _AnimationState.victory;
+        _animationState = DamageAnimationState.victory;
       });
-    } else if (_animationState == _AnimationState.victory) {
+    } else if (_animationState == DamageAnimationState.victory) {
       widget.stepNotifier?._victory.complete();
+      widget.onComplete?.call();
       setState(() {
-        _animationState = _AnimationState.ended;
+        _animationState = DamageAnimationState.ended;
       });
     }
   }
@@ -277,7 +450,26 @@ class _BottomAnimation extends StatelessWidget {
   }
 }
 
-enum _AnimationState { charging, sending, receiving, victory, ended }
+/// State of the animation playing
+enum DamageAnimationState {
+  /// Charging animation
+  charging,
+
+  /// Sending animation
+  sending,
+
+  /// Receiving animation
+  receiving,
+
+  /// Waiting for victory animation
+  waitingVictory,
+
+  /// Victory animation
+  victory,
+
+  /// Animation ended
+  ended
+}
 
 /// Represents the size that should be used for the assets
 enum AssetSize {

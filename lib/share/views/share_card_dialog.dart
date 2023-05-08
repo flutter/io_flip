@@ -33,6 +33,7 @@ class ShareCardDialog extends StatelessWidget {
             description: card.description,
             suitName: card.suit.name,
             power: card.power,
+            isRare: card.rarity,
           ),
           const SizedBox(height: IoFlipSpacing.lg),
           Text(
@@ -43,7 +44,7 @@ class ShareCardDialog extends StatelessWidget {
           const SizedBox(height: IoFlipSpacing.lg),
         ],
       ),
-      downloadContent: card,
+      downloadCards: [card],
     );
   }
 }

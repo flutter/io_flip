@@ -14,7 +14,6 @@ class ShareHandPage extends StatelessWidget {
   const ShareHandPage({
     required this.initials,
     required this.wins,
-    required this.deckId,
     required this.deck,
     super.key,
   });
@@ -25,15 +24,13 @@ class ShareHandPage extends StatelessWidget {
       key: const Key('share_hand_page'),
       initials: data?.initials ?? '',
       wins: data?.wins ?? 0,
-      deckId: data?.deckId ?? '',
-      deck: data?.deck ?? [],
+      deck: data?.deck ?? const Deck(id: '', userId: '', cards: []),
     );
   }
 
   final String initials;
   final int wins;
-  final String deckId;
-  final List<Card> deck;
+  final Deck deck;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +50,7 @@ class ShareHandPage extends StatelessWidget {
           const SizedBox(height: IoFlipSpacing.xxlg),
           Align(
             alignment: Alignment.topCenter,
-            child: CardFan(cards: deck),
+            child: CardFan(cards: deck.cards),
           ),
           Text(
             initials,
@@ -93,8 +90,7 @@ class ShareHandPage extends StatelessWidget {
                       onPressed: () => IoFlipDialog.show(
                         context,
                         child: ShareHandDialog(
-                          cards: deck,
-                          deckId: deckId,
+                          deck: deck,
                           initials: initials,
                           wins: wins,
                         ),
@@ -116,7 +112,7 @@ class ShareHandPage extends StatelessWidget {
                 const Spacer(),
                 RoundedButton.svg(
                   key: const Key('share_page_info_button'),
-                  Assets.icons.info,
+                  Assets.icons.info.keyName,
                   onPressed: () => IoFlipDialog.show(
                     context,
                     child: const InfoView(),
@@ -131,23 +127,23 @@ class ShareHandPage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               GestureDetector(
+                onTap: () => openLink(ExternalLinks.googleIO),
                 child: Text(
                   l10n.ioLinkLabel,
                   style: IoFlipTextStyles.bodyMD.copyWith(
                     color: IoFlipColors.seedGrey90,
                   ),
                 ),
-                // TODO(Samobrien): Route to Google I/O web page
               ),
               const SizedBox(width: IoFlipSpacing.md),
               GestureDetector(
+                onTap: () => openLink(ExternalLinks.howItsMade),
                 child: Text(
                   l10n.howItsMadeLinkLabel,
                   style: IoFlipTextStyles.bodyMD.copyWith(
                     color: IoFlipColors.seedGrey90,
                   ),
                 ),
-                // TODO(Samobrien): Route to how it's made web page
               ),
             ],
           ),
@@ -162,14 +158,12 @@ class ShareHandPageData extends Equatable {
   const ShareHandPageData({
     required this.initials,
     required this.wins,
-    required this.deckId,
     required this.deck,
   });
   final String initials;
   final int wins;
-  final String deckId;
-  final List<Card> deck;
+  final Deck deck;
 
   @override
-  List<Object> get props => [wins, initials, deckId];
+  List<Object> get props => [wins, initials, deck];
 }

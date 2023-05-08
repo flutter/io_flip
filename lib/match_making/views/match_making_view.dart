@@ -20,7 +20,7 @@ class MatchMakingView extends StatelessWidget {
         _routerNeglectCall = routerNeglectCall;
 
   final Future<void> Function(ClipboardData) _setClipboardData;
-  final List<Card> deck;
+  final Deck deck;
   final RouterNeglectCall _routerNeglectCall;
 
   @override
@@ -37,6 +37,7 @@ class MatchMakingView extends StatelessWidget {
                 extra: GamePageData(
                   isHost: current.isHost,
                   matchId: current.match?.id ?? '',
+                  deck: deck,
                 ),
               ),
             ),
@@ -44,11 +45,12 @@ class MatchMakingView extends StatelessWidget {
         }
       },
       builder: (context, state) {
+        final l10n = context.l10n;
         if (state.status == MatchMakingStatus.processing ||
             state.status == MatchMakingStatus.initial) {
           return ResponsiveLayoutBuilder(
             small: (_, __) => _WaitingForMatchView(
-              deck: deck,
+              cards: deck.cards,
               setClipboardData: _setClipboardData,
               inviteCode: state.match?.inviteCode,
               title: IoFlipTextStyles.mobileH4Light,
@@ -56,7 +58,7 @@ class MatchMakingView extends StatelessWidget {
               key: const Key('small_waiting_for_match_view'),
             ),
             large: (_, __) => _WaitingForMatchView(
-              deck: deck,
+              cards: deck.cards,
               setClipboardData: _setClipboardData,
               inviteCode: state.match?.inviteCode,
               title: IoFlipTextStyles.headlineH4Light,
@@ -67,22 +69,35 @@ class MatchMakingView extends StatelessWidget {
         }
 
         if (state.status == MatchMakingStatus.timeout) {
-          return const IoFlipScaffold(
-            body: Center(
-              child: Text('Match making timed out, sorry!'),
+          return IoFlipScaffold(
+            body: IoFlipErrorView(
+              text: 'Match making timed out, sorry!',
+              buttonText: l10n.playAgain,
+              onPressed: () {
+                GoRouter.of(context).pushReplacementNamed(
+                  'match_making',
+                  extra: MatchMakingPageData(deck: deck),
+                );
+              },
             ),
           );
         }
 
         if (state.status == MatchMakingStatus.failed) {
-          return const IoFlipScaffold(
-            body: Center(
-              child: Text('Match making failed, sorry!'),
+          return IoFlipScaffold(
+            body: IoFlipErrorView(
+              text: 'Match making failed, sorry!',
+              buttonText: l10n.playAgain,
+              onPressed: () {
+                GoRouter.of(context).pushReplacementNamed(
+                  'match_making',
+                  extra: MatchMakingPageData(deck: deck),
+                );
+              },
             ),
           );
         }
 
-        final l10n = context.l10n;
         return IoFlipScaffold(
           body: Center(
             child: Column(
@@ -114,12 +129,12 @@ class _WaitingForMatchView extends StatelessWidget {
   const _WaitingForMatchView({
     required this.title,
     required this.subtitle,
-    required this.deck,
+    required this.cards,
     required this.setClipboardData,
     this.inviteCode,
     super.key,
   });
-  final List<Card> deck;
+  final List<Card> cards;
   final String? inviteCode;
   final Future<void> Function(ClipboardData) setClipboardData;
   final TextStyle title;
@@ -162,7 +177,7 @@ class _WaitingForMatchView extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        for (final card in deck)
+                        for (final card in cards)
                           Padding(
                             padding: const EdgeInsets.all(IoFlipSpacing.xs),
                             child: GameCard(
@@ -172,6 +187,7 @@ class _WaitingForMatchView extends StatelessWidget {
                               description: card.description,
                               suitName: card.suit.name,
                               power: card.power,
+                              isRare: card.rarity,
                             ),
                           ),
                       ],

@@ -8,9 +8,12 @@ import 'package:io_flip/info/info.dart';
 import 'package:io_flip/settings/settings.dart';
 import 'package:io_flip/share/views/views.dart';
 import 'package:io_flip/share/widgets/widgets.dart';
+import 'package:io_flip/utils/utils.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -22,6 +25,12 @@ class _MockGoRouter extends Mock implements GoRouter {}
 
 class _MockShareResource extends Mock implements ShareResource {}
 
+class _MockUrlLauncher extends Mock
+    with MockPlatformInterfaceMixin
+    implements UrlLauncherPlatform {}
+
+class _FakeLaunchOptions extends Fake implements LaunchOptions {}
+
 const card = Card(
   id: '',
   name: 'name',
@@ -31,16 +40,34 @@ const card = Card(
   power: 1,
   suit: Suit.air,
 );
-const pageData =
-    ShareHandPageData(initials: 'AAA', wins: 0, deckId: '', deck: []);
+const pageData = ShareHandPageData(
+  initials: 'AAA',
+  wins: 0,
+  deck: Deck(id: '', userId: '', cards: []),
+);
 
 void main() {
   late GoRouterState goRouterState;
+  late UrlLauncherPlatform urlLauncher;
 
   setUp(() {
     goRouterState = _MockGoRouterState();
     when(() => goRouterState.extra).thenReturn(pageData);
     when(() => goRouterState.queryParams).thenReturn({});
+
+    urlLauncher = _MockUrlLauncher();
+    when(
+      () => urlLauncher.canLaunch(any()),
+    ).thenAnswer((_) async => true);
+
+    when(
+      () => urlLauncher.launchUrl(any(), any()),
+    ).thenAnswer((_) async => true);
+    UrlLauncherPlatform.instance = urlLauncher;
+  });
+
+  setUpAll(() {
+    registerFallbackValue(_FakeLaunchOptions());
   });
 
   group('ShareHandPage', () {
@@ -49,7 +76,6 @@ void main() {
         ShareHandPage.routeBuilder(null, goRouterState),
         isA<ShareHandPage>()
             .having((page) => page.deck, 'deck', pageData.deck)
-            .having((page) => page.deckId, 'deckId', pageData.deckId)
             .having((page) => page.wins, 'wins', pageData.wins)
             .having((page) => page.initials, 'initials', pageData.initials),
       );
@@ -134,6 +160,24 @@ void main() {
 
       expect(find.byType(InfoView), findsOneWidget);
     });
+
+    testWidgets('tapping io link opens io', (tester) async {
+      await tester.pumpSubject();
+      await tester.tap(find.text(tester.l10n.ioLinkLabel));
+
+      verify(
+        () => urlLauncher.launchUrl(ExternalLinks.googleIO, any()),
+      ).called(1);
+    });
+
+    testWidgets('tapping how its made link opens how its made', (tester) async {
+      await tester.pumpSubject();
+      await tester.tap(find.text(tester.l10n.howItsMadeLinkLabel));
+
+      verify(
+        () => urlLauncher.launchUrl(ExternalLinks.howItsMade, any()),
+      ).called(1);
+    });
   });
 }
 
@@ -149,8 +193,7 @@ extension ShareCardDialogTest on WidgetTester {
         const ShareHandPage(
           wins: 5,
           initials: 'AAA',
-          deckId: '',
-          deck: [card, card, card],
+          deck: Deck(id: '', userId: '', cards: [card, card, card]),
         ),
         shareResource: shareResource,
         router: router,

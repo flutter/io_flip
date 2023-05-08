@@ -51,3 +51,19 @@ class SelectCard extends DraftEvent {
   @override
   List<Object> get props => [index];
 }
+
+class PlayerDeckRequested extends DraftEvent {
+  const PlayerDeckRequested(
+    this.cardIds, {
+    this.createPrivateMatch,
+    this.privateMatchInviteCode,
+  });
+
+  final List<String> cardIds;
+  final bool? createPrivateMatch;
+  final String? privateMatchInviteCode;
+
+  @override
+  List<Object?> get props =>
+      [cardIds, createPrivateMatch, privateMatchInviteCode];
+}

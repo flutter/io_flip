@@ -26,13 +26,15 @@ class InitialsFormView extends StatelessWidget {
               extra: ShareHandPageData(
                 initials: state.initials.join(),
                 wins: shareHandPageData!.wins,
-                deckId: shareHandPageData!.deckId,
                 deck: shareHandPageData!.deck,
               ),
             );
           } else {
             GoRouter.of(context).go('/');
           }
+        }
+        if (state.status == InitialsFormStatus.blacklisted) {
+          focusNodes.last.requestFocus();
         }
       },
       builder: (context, state) {
@@ -98,6 +100,8 @@ class InitialsFormView extends StatelessWidget {
       if (index < focusNodes.length - 1) {
         FocusScope.of(context).requestFocus(focusNodes[index + 1]);
       }
+    } else if (index > 0) {
+      FocusScope.of(context).requestFocus(focusNodes[index - 1]);
     }
   }
 }

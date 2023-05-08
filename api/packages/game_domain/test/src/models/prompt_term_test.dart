@@ -72,6 +72,20 @@ void main() {
           ),
         ),
       );
+
+      expect(
+        promptTerm,
+        isNot(
+          equals(
+            PromptTerm(
+              id: '',
+              term: '',
+              shortenedTerm: 'shortenedTerm',
+              type: PromptTermType.location,
+            ),
+          ),
+        ),
+      );
     });
 
     test('can serializes to json', () {
@@ -87,6 +101,7 @@ void main() {
           {
             'id': 'id',
             'term': 'term',
+            'shortenedTerm': null,
             'type': 'location',
           },
         ),
@@ -98,6 +113,7 @@ void main() {
         const {
           'id': 'id',
           'term': 'term',
+          'shortenedTerm': 't',
           'type': 'location',
         },
       );
@@ -108,6 +124,7 @@ void main() {
           PromptTerm(
             id: 'id',
             term: 'term',
+            shortenedTerm: 't',
             type: PromptTermType.location,
           ),
         ),

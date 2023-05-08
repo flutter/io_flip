@@ -12,6 +12,8 @@ class _MockCommand extends Mock implements Command {}
 
 class _MockBitmapFont extends Mock implements BitmapFont {}
 
+class _MockBitmapFontCharacter extends Mock implements BitmapFontCharacter {}
+
 class _MockResponse extends Mock implements Response {}
 
 abstract class __HttpClient {
@@ -30,6 +32,9 @@ void main() {
   group('CardRenderer', () {
     late __HttpClient httpClient;
     late __BitmapFontLoader bitmapFontLoader;
+    late BitmapFont font;
+    late BitmapFontCharacter character;
+    late Map<int, BitmapFontCharacter> characters;
 
     late CardRenderer cardRenderer;
 
@@ -47,9 +52,11 @@ void main() {
       late Command illustrationCommand;
       late Command frameCommand;
       late Command compositionCommand;
+      late Command elementIconCommand;
+      late Command powerSpriteCommand;
 
       const card = Card(
-        id: '',
+        id: 'Description',
         name: 'Card Description',
         description: '',
         image: 'http://image.com/bla.png',
@@ -71,6 +78,8 @@ void main() {
         illustrationCommand = _MockCommand();
         frameCommand = _MockCommand();
         compositionCommand = _MockCommand();
+        elementIconCommand = _MockCommand();
+        powerSpriteCommand = _MockCommand();
 
         when(compositionCommand.execute)
             .thenAnswer((_) async => compositionCommand);
@@ -85,7 +94,14 @@ void main() {
         });
 
         bitmapFontLoader = _MockBitmapFontLoader();
-        when(() => bitmapFontLoader.load(any())).thenReturn(_MockBitmapFont());
+        font = _MockBitmapFont();
+        character = _MockBitmapFontCharacter();
+        characters = {67: character};
+        when(() => bitmapFontLoader.load(any())).thenReturn(font);
+        when(() => font.lineHeight).thenReturn(0);
+        when(() => font.base).thenReturn(0);
+        when(() => font.characters).thenReturn(characters);
+        when(() => character.xAdvance).thenReturn(0);
 
         var commandCounter = 0;
         cardRenderer = CardRenderer(
@@ -98,6 +114,10 @@ void main() {
               case 1:
                 return frameCommand;
               case 2:
+                return elementIconCommand;
+              case 3:
+                return powerSpriteCommand;
+              case 4:
                 return compositionCommand;
               default:
                 throw Exception('Unexpected command creation');
@@ -113,6 +133,14 @@ void main() {
       });
 
       test('loads the correct images', () async {
+        const elementIconAssets = {
+          Suit.air: 'http://127.0.0.1:8080/assets/icon-air.png',
+          Suit.earth: 'http://127.0.0.1:8080/assets/icon-ground.png',
+          Suit.fire: 'http://127.0.0.1:8080/assets/icon-fire.png',
+          Suit.water: 'http://127.0.0.1:8080/assets/icon-water.png',
+          Suit.metal: 'http://127.0.0.1:8080/assets/icon-metal.png',
+        };
+
         await cardRenderer.renderCard(card);
 
         verify(() => httpClient.get(Uri.parse(card.image))).called(1);
@@ -123,8 +151,26 @@ void main() {
         ).called(1);
         verify(
           () => httpClient.get(
+            Uri.parse('http://127.0.0.1:8080/assets/power-sprites.png'),
+          ),
+        ).called(1);
+        verify(
+          () => httpClient.get(
+            Uri.parse(elementIconAssets[card.suit]!),
+          ),
+        ).called(1);
+
+        verify(
+          () => httpClient.get(
             Uri.parse(
-              'http://127.0.0.1:8080/assets/GoogleSans-Regular.ttf.zip',
+              'http://127.0.0.1:8080/assets/GoogleSans-14.ttf.zip',
+            ),
+          ),
+        ).called(1);
+        verify(
+          () => httpClient.get(
+            Uri.parse(
+              'http://127.0.0.1:8080/assets/Saira-Bold-28.ttf.zip',
             ),
           ),
         ).called(1);
@@ -135,6 +181,8 @@ void main() {
 
         verify(() => illustrationCommand.decodePng(any())).called(1);
         verify(() => frameCommand.decodePng(any())).called(1);
+        verify(() => elementIconCommand.decodePng(any())).called(1);
+        verify(() => powerSpriteCommand.decodePng(any())).called(1);
       });
 
       test('draw the correct texts in the image', () async {
@@ -142,11 +190,10 @@ void main() {
 
         verify(
           () => compositionCommand.drawString(
-            card.power.toString(),
+            card.description,
             font: any(named: 'font'),
             x: any(named: 'x'),
             y: any(named: 'y'),
-            color: any(named: 'color'),
           ),
         ).called(1);
 
@@ -156,7 +203,6 @@ void main() {
             font: any(named: 'font'),
             x: any(named: 'x'),
             y: any(named: 'y'),
-            color: any(named: 'color'),
           ),
         ).called(1);
       });
@@ -240,14 +286,21 @@ void main() {
         });
 
         bitmapFontLoader = _MockBitmapFontLoader();
-        when(() => bitmapFontLoader.load(any())).thenReturn(_MockBitmapFont());
+        font = _MockBitmapFont();
+        character = _MockBitmapFontCharacter();
+        characters = {67: character};
+        when(() => bitmapFontLoader.load(any())).thenReturn(font);
+        when(() => font.lineHeight).thenReturn(0);
+        when(() => font.base).thenReturn(0);
+        when(() => font.characters).thenReturn(characters);
+        when(() => character.xAdvance).thenReturn(0);
 
         var commandCounter = 0;
         cardRenderer = CardRenderer(
           getCall: httpClient.get,
           parseFont: bitmapFontLoader.load,
           createCommand: () {
-            if (commandCounter++ == 12) {
+            if (commandCounter++ == 18) {
               return compositionCommand;
             } else {
               final command = _MockCommand();

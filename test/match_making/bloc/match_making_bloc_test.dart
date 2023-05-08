@@ -25,7 +25,6 @@ void main() {
     late ConnectionRepository connectionRepository;
     late StreamController<DraftMatch> watchController;
     const deckId = 'deckId';
-    final cardIds = ['a', 'b', 'c'];
 
     setUp(() {
       matchMakerRepository = _MockMatchMakerRepository();
@@ -35,9 +34,6 @@ void main() {
           .thenAnswer((_) => watchController.stream);
 
       gameResource = _MockGameResource();
-      when(
-        () => gameResource.createDeck(cardIds),
-      ).thenAnswer((_) async => deckId);
 
       when(() => connectionRepository.messages).thenAnswer(
         (_) => Stream.fromIterable([
@@ -55,7 +51,7 @@ void main() {
           matchMakerRepository: _MockMatchMakerRepository(),
           connectionRepository: connectionRepository,
           gameResource: gameResource,
-          cardIds: cardIds,
+          deckId: deckId,
         ),
         isNotNull,
       );
@@ -67,7 +63,7 @@ void main() {
           matchMakerRepository: _MockMatchMakerRepository(),
           connectionRepository: connectionRepository,
           gameResource: gameResource,
-          cardIds: cardIds,
+          deckId: deckId,
         ).state,
         equals(MatchMakingState.initial()),
       );
@@ -79,7 +75,7 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         connectionRepository: connectionRepository,
         gameResource: gameResource,
-        cardIds: cardIds,
+        deckId: deckId,
         hostWaitTime: Duration.zero,
       ),
       setUp: () {
@@ -123,7 +119,7 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         connectionRepository: connectionRepository,
         gameResource: gameResource,
-        cardIds: cardIds,
+        deckId: deckId,
         hostWaitTime: Duration.zero,
       ),
       setUp: () {
@@ -148,7 +144,7 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         connectionRepository: connectionRepository,
         gameResource: gameResource,
-        cardIds: cardIds,
+        deckId: deckId,
       ),
       setUp: () {
         when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
@@ -195,7 +191,7 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         connectionRepository: connectionRepository,
         gameResource: gameResource,
-        cardIds: cardIds,
+        deckId: deckId,
       )..add(MatchRequested());
 
       expect(
@@ -257,11 +253,11 @@ void main() {
           matchMakerRepository: matchMakerRepository,
           connectionRepository: connectionRepository,
           gameResource: gameResource,
-          cardIds: cardIds,
+          deckId: deckId,
           hostWaitTime: const Duration(milliseconds: 200),
         )..add(MatchRequested());
 
-        async.elapse(Duration(seconds: 8));
+        async.elapse(Duration(seconds: 5));
         expect(
           bloc.state,
           equals(
@@ -297,11 +293,11 @@ void main() {
           matchMakerRepository: matchMakerRepository,
           connectionRepository: connectionRepository,
           gameResource: gameResource,
-          cardIds: cardIds,
+          deckId: deckId,
           hostWaitTime: const Duration(milliseconds: 200),
         )..add(MatchRequested());
 
-        async.elapse(Duration(seconds: 8));
+        async.elapse(Duration(seconds: 5));
         expect(
           bloc.state,
           equals(
@@ -335,11 +331,11 @@ void main() {
           matchMakerRepository: matchMakerRepository,
           connectionRepository: connectionRepository,
           gameResource: gameResource,
-          cardIds: cardIds,
+          deckId: deckId,
           hostWaitTime: const Duration(milliseconds: 200),
         )..add(PrivateMatchRequested());
 
-        async.elapse(Duration(seconds: 30));
+        async.elapse(Duration(seconds: 122));
         expect(
           bloc.state,
           equals(
@@ -359,7 +355,7 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         connectionRepository: connectionRepository,
         gameResource: gameResource,
-        cardIds: cardIds,
+        deckId: deckId,
       ),
       setUp: () {
         when(() => matchMakerRepository.createPrivateMatch(deckId)).thenAnswer(
@@ -400,7 +396,7 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         connectionRepository: connectionRepository,
         gameResource: gameResource,
-        cardIds: cardIds,
+        deckId: deckId,
       ),
       setUp: () {
         when(() => matchMakerRepository.createPrivateMatch(deckId)).thenThrow(
@@ -424,7 +420,7 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         connectionRepository: connectionRepository,
         gameResource: gameResource,
-        cardIds: cardIds,
+        deckId: deckId,
       ),
       setUp: () {
         when(
@@ -472,7 +468,7 @@ void main() {
         matchMakerRepository: matchMakerRepository,
         connectionRepository: connectionRepository,
         gameResource: gameResource,
-        cardIds: cardIds,
+        deckId: deckId,
       ),
       setUp: () {
         when(

@@ -10,45 +10,58 @@ import 'package:leaderboard_repository/leaderboard_repository.dart';
 Future<Response> onRequest(RequestContext context) async {
   final cardId = context.request.uri.queryParameters['cardId'];
   final deckId = context.request.uri.queryParameters['deckId'];
+  final gameUrl = context.read<GameUrl>().url;
 
   late String content;
   late String header;
-  late String metaImage;
+  final String metaImagePath;
+  final redirectResponse = Response(
+    statusCode: HttpStatus.movedPermanently,
+    headers: {
+      HttpHeaders.locationHeader: gameUrl,
+    },
+  );
 
   if (cardId != null) {
     final card = await context.read<CardsRepository>().getCard(cardId);
     if (card == null) {
-      return Response(statusCode: HttpStatus.notFound);
+      return redirectResponse;
     }
     header = 'Check out my card from I/O FLIP!';
     content = buildShareCardContent(card: card);
-    metaImage = card.image;
+    metaImagePath = '/public/cards/$cardId';
   } else if (deckId != null) {
+    final deck = await context.read<CardsRepository>().getDeck(deckId);
+    if (deck == null) {
+      return redirectResponse;
+    }
     final scoreCard = await context
         .read<LeaderboardRepository>()
         .findScoreCardByLongestStreakDeck(
           deckId,
         );
-    header = 'Check out my hand from I/O FLIP!';
+    header = 'Check out my AI powered team from I/O FLIP!';
     content = buildHandContent(
-      // TODO(erickzanardo): add image when the share image task is done.
-      handImage: '',
-      initials: 'AAA',
-      streak: scoreCard?.longestStreak.toString() ?? '0',
+      handImage: '/public/decks/$deckId',
+      initials: scoreCard?.initials,
+      streak: scoreCard?.longestStreak.toString(),
     );
-    metaImage = '';
+    metaImagePath = '/public/decks/$deckId';
   } else {
-    return Response(statusCode: HttpStatus.notFound);
+    return redirectResponse;
   }
 
   final meta = TemplateMetadata(
-    title: '',
+    title: header,
     description: '',
-    shareUrl: '',
+    shareUrl: context.request.uri.toString(),
     favIconUrl: '',
     ga: '',
-    gameUrl: context.read<GameUrl>().url,
-    image: metaImage,
+    gameUrl: gameUrl,
+    image: context.request.uri.replace(
+      path: metaImagePath,
+      queryParameters: {},
+    ).toString(),
   );
 
   return Response.bytes(

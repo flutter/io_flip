@@ -124,7 +124,6 @@ void main() {
       final shareResource = _MockShareResource();
       when(() => shareResource.facebookShareCardUrl(any())).thenReturn('');
       when(() => shareResource.twitterShareCardUrl(any())).thenReturn('');
-      when(shareResource.shareGameUrl).thenReturn('');
 
       await tester.pumpSubject(buildSubject(), shareResource: shareResource);
       await tester.tap(find.byIcon(Icons.share_outlined));

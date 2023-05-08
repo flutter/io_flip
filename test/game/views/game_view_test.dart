@@ -8,22 +8,29 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:game_script_machine/game_script_machine.dart';
 import 'package:go_router/go_router.dart';
 import 'package:io_flip/audio/audio_controller.dart';
 import 'package:io_flip/game/game.dart';
 import 'package:io_flip/gen/assets.gen.dart';
 import 'package:io_flip/leaderboard/leaderboard.dart';
+import 'package:io_flip/match_making/views/match_making_page.dart';
+import 'package:io_flip/settings/settings_controller.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 
 import '../../helpers/helpers.dart';
 
+class _MockSettingsController extends Mock implements SettingsController {}
+
 class _MockGameBloc extends Mock implements GameBloc {}
 
 class _MockLeaderboardResource extends Mock implements LeaderboardResource {}
 
 class _MockAudioController extends Mock implements AudioController {}
+
+class _MockGameScriptMachine extends Mock implements GameScriptMachine {}
 
 class _FakeGameState extends Fake implements GameState {}
 
@@ -62,7 +69,18 @@ void main() {
         power: 1,
         suit: Suit.air,
       ),
+      Card(
+        id: 'opponent_card_2',
+        name: 'guest_card',
+        description: '',
+        image: '',
+        rarity: true,
+        power: 1,
+        suit: Suit.air,
+      ),
     ];
+
+    final deck = Deck(id: '', userId: '', cards: playerCards);
 
     setUpAll(() {
       registerFallbackValue(
@@ -87,6 +105,7 @@ void main() {
       when(() => bloc.canPlayerPlay(any())).thenReturn(true);
       when(() => bloc.isPlayerAllowedToPlay).thenReturn(true);
       when(() => bloc.matchCompleted(any())).thenReturn(false);
+      when(() => bloc.playerDeck).thenReturn(deck);
 
       leaderboardResource = _MockLeaderboardResource();
       when(() => leaderboardResource.getInitialsBlacklist())
@@ -107,11 +126,51 @@ void main() {
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
     });
 
-    testWidgets('renders an error message when failed', (tester) async {
-      mockState(MatchLoadFailedState());
-      await tester.pumpSubject(bloc);
-      expect(find.text('Unable to join game!'), findsOneWidget);
-    });
+    testWidgets(
+      'renders an error message when failed and navigates to match making',
+      (tester) async {
+        final goRouter = MockGoRouter();
+        mockState(MatchLoadFailedState(deck: deck));
+        await tester.pumpSubject(
+          bloc,
+          goRouter: goRouter,
+        );
+
+        expect(find.text('Unable to join game!'), findsOneWidget);
+
+        await tester.tap(find.byType(RoundedButton));
+        await tester.pumpAndSettle();
+
+        verify(
+          () => goRouter.goNamed(
+            'match_making',
+            extra: MatchMakingPageData(
+              deck: deck,
+            ),
+          ),
+        ).called(1);
+      },
+    );
+
+    testWidgets(
+      'renders an error message when failed and navigates to home '
+      'if deck not available',
+      (tester) async {
+        final goRouter = MockGoRouter();
+        mockState(MatchLoadFailedState(deck: null));
+        await tester.pumpSubject(
+          bloc,
+          goRouter: goRouter,
+        );
+
+        expect(find.text('Unable to join game!'), findsOneWidget);
+
+        await tester.tap(find.byType(RoundedButton));
+        await tester.pumpAndSettle();
+
+        verify(() => goRouter.go('/')).called(1);
+      },
+    );
 
     group('Gameplay', () {
       final baseState = MatchLoadedState(
@@ -170,7 +229,7 @@ void main() {
       testWidgets(
         'renders the opponent absent message when the opponent leaves',
         (tester) async {
-          mockState(OpponentAbsentState());
+          mockState(OpponentAbsentState(deck: deck));
           await tester.pumpSubject(bloc);
 
           expect(
@@ -178,28 +237,56 @@ void main() {
             findsOneWidget,
           );
           expect(
-            find.widgetWithText(ElevatedButton, 'Replay'),
+            find.widgetWithText(RoundedButton, 'PLAY AGAIN'),
             findsOneWidget,
           );
         },
       );
 
       testWidgets(
-        'pops navigation when the replay button is tapped on opponent absent',
+        'goes to match making when the replay button is tapped '
+        'on opponent absent',
         (tester) async {
           final goRouter = MockGoRouter();
 
-          mockState(OpponentAbsentState());
+          mockState(OpponentAbsentState(deck: deck));
 
           await tester.pumpSubject(
             bloc,
             goRouter: goRouter,
           );
 
-          await tester.tap(find.text('Replay'));
+          await tester.tap(find.byType(RoundedButton));
           await tester.pumpAndSettle();
 
-          verify(goRouter.pop).called(1);
+          verify(
+            () => goRouter.goNamed(
+              'match_making',
+              extra: MatchMakingPageData(
+                deck: deck,
+              ),
+            ),
+          ).called(1);
+        },
+      );
+
+      testWidgets(
+        'goes to home when the replay button is tapped on opponent absent '
+        'and no deck is available',
+        (tester) async {
+          final goRouter = MockGoRouter();
+
+          mockState(OpponentAbsentState(deck: null));
+
+          await tester.pumpSubject(
+            bloc,
+            goRouter: goRouter,
+          );
+
+          await tester.tap(find.byType(RoundedButton));
+          await tester.pumpAndSettle();
+
+          verify(() => goRouter.go('/')).called(1);
         },
       );
 
@@ -317,7 +404,8 @@ void main() {
             ),
           );
 
-          await tester.pumpAndSettle();
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 200));
 
           expect(getClashRect().contains(getPlayerCenter()), isTrue);
           expect(getClashRect(), equals(startClashRect.inflate(8)));
@@ -331,7 +419,7 @@ void main() {
             baseState.copyWith(
               rounds: [
                 MatchRound(
-                  playerCardId: null,
+                  playerCardId: 'player_card',
                   opponentCardId: 'opponent_card',
                 )
               ],
@@ -348,6 +436,149 @@ void main() {
             find.byKey(const Key('player_card_player_card')),
             findsOneWidget,
           );
+        },
+      );
+
+      testWidgets(
+        'shows an initially played opponent card in the clash area',
+        (tester) async {
+          mockState(
+            baseState.copyWith(
+              rounds: [
+                MatchRound(
+                  playerCardId: null,
+                  opponentCardId: 'opponent_card',
+                ),
+              ],
+            ),
+          );
+          await tester.pumpSubject(bloc);
+
+          Rect getClashRect() =>
+              tester.getRect(find.byKey(const Key('clash_card_0')));
+          Rect getOpponentCardRect() => tester.getRect(
+                find.byKey(const Key('opponent_card_opponent_card')),
+              );
+
+          await tester.pumpAndSettle();
+
+          expect(getClashRect(), equals(getOpponentCardRect()));
+        },
+      );
+
+      testWidgets(
+        'does not move opponent card until after clash scene ends',
+        (tester) async {
+          final gameScriptMachine = _MockGameScriptMachine();
+          when(
+            () => gameScriptMachine.compare(
+              playerCards.first,
+              opponentCards.first,
+            ),
+          ).thenReturn(0);
+
+          when(
+            () => gameScriptMachine.compareSuits(
+              playerCards.first.suit,
+              opponentCards.first.suit,
+            ),
+          ).thenReturn(0);
+          final controller = StreamController<GameState>();
+          whenListen(bloc, controller.stream, initialState: baseState);
+
+          when(() => bloc.lastPlayedOpponentCard)
+              .thenReturn(opponentCards.first);
+          when(() => bloc.lastPlayedPlayerCard).thenReturn(playerCards.first);
+          await tester.pumpSubject(
+            bloc,
+            gameScriptMachine: gameScriptMachine,
+          );
+          controller.add(
+            baseState.copyWith(
+              lastPlayedCardId: 'opponent_card',
+              rounds: [
+                MatchRound(
+                  playerCardId: null,
+                  opponentCardId: 'opponent_card',
+                ),
+              ],
+            ),
+          );
+          await tester.pumpAndSettle();
+          controller.add(
+            baseState.copyWith(
+              lastPlayedCardId: playerCards.first.id,
+              rounds: [
+                MatchRound(
+                  playerCardId: playerCards.first.id,
+                  opponentCardId: 'opponent_card',
+                ),
+              ],
+            ),
+          );
+          await tester.pumpAndSettle();
+          controller.add(
+            baseState.copyWith(
+              isClashScene: true,
+              lastPlayedCardId: playerCards.first.id,
+              rounds: [
+                MatchRound(
+                  playerCardId: playerCards.first.id,
+                  opponentCardId: 'opponent_card',
+                ),
+              ],
+            ),
+          );
+          await tester.pumpAndSettle();
+
+          Rect getClashRect() =>
+              tester.getRect(find.byKey(const Key('clash_card_0')));
+          Rect getOpponentCardRect() => tester.getRect(
+                find.byKey(const Key('opponent_card_opponent_card_2')),
+              );
+
+          await tester.pumpAndSettle();
+
+          expect(getOpponentCardRect(), isNot(equals(getClashRect())));
+
+          controller.add(
+            baseState.copyWith(
+              lastPlayedCardId: 'opponent_card_2',
+              isClashScene: true,
+              rounds: [
+                MatchRound(
+                  playerCardId: playerCards.first.id,
+                  opponentCardId: 'opponent_card',
+                ),
+                MatchRound(
+                  playerCardId: null,
+                  opponentCardId: 'opponent_card_2',
+                ),
+              ],
+            ),
+          );
+          await tester.pump();
+          tester.widget<ClashScene>(find.byType(ClashScene)).onFinished();
+          controller.add(
+            baseState.copyWith(
+              lastPlayedCardId: 'opponent_card_2',
+              isClashScene: false,
+              rounds: [
+                MatchRound(
+                  playerCardId: playerCards.first.id,
+                  opponentCardId: 'opponent_card',
+                ),
+                MatchRound(
+                  playerCardId: null,
+                  opponentCardId: 'opponent_card_2',
+                ),
+              ],
+            ),
+          );
+          await tester.pump(turnEndDuration);
+          await tester.pumpAndSettle();
+
+          expect(getOpponentCardRect(), equals(getClashRect()));
         },
       );
 
@@ -440,6 +671,8 @@ void main() {
     });
 
     group('Card animation', () {
+      late GameScriptMachine gameScriptMachine;
+
       final baseState = MatchLoadedState(
         playerScoreCard: ScoreCard(id: 'scoreCardId'),
         match: Match(
@@ -461,6 +694,22 @@ void main() {
       );
 
       setUp(() {
+        gameScriptMachine = _MockGameScriptMachine();
+
+        when(
+          () => gameScriptMachine.compare(
+            playerCards.first,
+            opponentCards.first,
+          ),
+        ).thenReturn(0);
+
+        when(
+          () => gameScriptMachine.compareSuits(
+            playerCards.first.suit,
+            opponentCards.first.suit,
+          ),
+        ).thenReturn(0);
+
         when(() => bloc.playerCards).thenReturn(playerCards);
         when(() => bloc.opponentCards).thenReturn(opponentCards);
         when(() => bloc.lastPlayedPlayerCard).thenReturn(playerCards.first);
@@ -567,9 +816,12 @@ void main() {
 
       testWidgets(
         'completes and goes back when both players play a card and '
-        'clash scene finishes',
+        'clash scene finishes, plays round lost sfx',
         (tester) async {
           final controller = StreamController<GameState>.broadcast();
+          final audioController = _MockAudioController();
+          when(() => bloc.isWinningCard(playerCards.first, isPlayer: true))
+              .thenReturn(CardOverlayType.lose);
 
           whenListen(
             bloc,
@@ -577,7 +829,11 @@ void main() {
             initialState: baseState,
           );
 
-          await tester.pumpSubject(bloc);
+          await tester.pumpSubject(
+            bloc,
+            audioController: audioController,
+            gameScriptMachine: gameScriptMachine,
+          );
 
           final playerCardFinder =
               find.byKey(Key('player_card_${playerCards.first.id}'));
@@ -645,6 +901,105 @@ void main() {
           expect(playerFinalOffset, equals(playerInitialOffset));
           expect(opponentFinalOffset, equals(opponentInitialOffset));
 
+          verify(() => audioController.playSfx(Assets.sfx.lostMatch)).called(1);
+
+          verify(() => bloc.add(ClashSceneStarted())).called(1);
+          verify(() => bloc.add(ClashSceneCompleted())).called(1);
+          verify(() => bloc.add(TurnAnimationsFinished())).called(1);
+          verify(() => bloc.add(TurnTimerStarted())).called(1);
+        },
+      );
+
+      testWidgets(
+        'completes and goes back when both players play a card and '
+        'clash scene finishes, plays round win sfx',
+        (tester) async {
+          final controller = StreamController<GameState>.broadcast();
+          final audioController = _MockAudioController();
+
+          when(() => bloc.isWinningCard(playerCards.first, isPlayer: true))
+              .thenReturn(CardOverlayType.win);
+
+          whenListen(
+            bloc,
+            controller.stream,
+            initialState: baseState,
+          );
+
+          await tester.pumpSubject(
+            bloc,
+            audioController: audioController,
+            gameScriptMachine: gameScriptMachine,
+          );
+
+          final playerCardFinder =
+              find.byKey(Key('player_card_${playerCards.first.id}'));
+          final opponentCardFinder =
+              find.byKey(Key('opponent_card_${opponentCards.first.id}'));
+
+          // Get card offset before moving
+          final playerInitialOffset = tester.getCenter(playerCardFinder);
+          final opponentInitialOffset = tester.getCenter(opponentCardFinder);
+
+          controller.add(
+            baseState.copyWith(
+              lastPlayedCardId: playerCards.first.id,
+              rounds: [
+                MatchRound(
+                  playerCardId: playerCards.first.id,
+                  opponentCardId: null,
+                )
+              ],
+            ),
+          );
+
+          // Get card offset after both players play and cards are in the clash
+          // zone
+          await tester.pumpAndSettle();
+          final playerClashOffset = tester.getCenter(playerCardFinder);
+          expect(playerClashOffset, isNot(equals(playerInitialOffset)));
+
+          controller.add(
+            baseState.copyWith(
+              lastPlayedCardId: opponentCards.first.id,
+              rounds: [
+                MatchRound(
+                  playerCardId: playerCards.first.id,
+                  opponentCardId: opponentCards.first.id,
+                )
+              ],
+            ),
+          );
+
+          await tester.pump();
+          await tester.pump();
+          await tester.pump(Duration(milliseconds: 400));
+
+          final opponentClashOffset = tester.getCenter(opponentCardFinder);
+          expect(opponentClashOffset, isNot(equals(opponentInitialOffset)));
+
+          controller.add(baseState.copyWith(isClashScene: true));
+
+          await tester.pumpAndSettle();
+
+          final clashScene = find.byType(ClashScene);
+          expect(clashScene, findsOneWidget);
+          tester.widget<ClashScene>(clashScene).onFinished();
+
+          controller.add(baseState.copyWith(isClashScene: false));
+
+          // Get card offset once clash is over and both cards are back in the
+          // original position
+          await tester.pump(turnEndDuration);
+          await tester.pumpAndSettle();
+          final playerFinalOffset = tester.getCenter(playerCardFinder);
+          final opponentFinalOffset = tester.getCenter(opponentCardFinder);
+
+          expect(playerFinalOffset, equals(playerInitialOffset));
+          expect(opponentFinalOffset, equals(opponentInitialOffset));
+
+          verify(() => audioController.playSfx(Assets.sfx.winMatch)).called(1);
+
           verify(() => bloc.add(ClashSceneStarted())).called(1);
           verify(() => bloc.add(ClashSceneCompleted())).called(1);
           verify(() => bloc.add(TurnAnimationsFinished())).called(1);
@@ -706,7 +1061,10 @@ extension GameViewTest on WidgetTester {
     GoRouter? goRouter,
     LeaderboardResource? leaderboardResource,
     AudioController? audioController,
+    GameScriptMachine? gameScriptMachine,
   }) {
+    final SettingsController settingsController = _MockSettingsController();
+    when(() => settingsController.muted).thenReturn(ValueNotifier(true));
     return mockNetworkImages(() {
       return pumpApp(
         BlocProvider<GameBloc>.value(
@@ -714,8 +1072,10 @@ extension GameViewTest on WidgetTester {
           child: GameView(),
         ),
         router: goRouter,
+        settingsController: settingsController,
         leaderboardResource: leaderboardResource,
         audioController: audioController,
+        gameScriptMachine: gameScriptMachine,
       );
     });
   }

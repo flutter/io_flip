@@ -4,6 +4,10 @@
   "@play": {
     "description": "Label play"
   },
+  "playAgain": "PLAY AGAIN",
+  "@playAgain": {
+    "description": "Label play again"
+  },
   "ioFlip": "I/O FLIP",
   "@ioFlip": {
     "description": "I/O FLIP - Name of the game"
@@ -28,7 +32,7 @@
   "@letsGetStarted": {
     "description": "label let's get started"
   },
-  "select": "Select",
+  "select": "Next",
   "@select": {
     "description": "label select"
   },
@@ -36,11 +40,11 @@
   "@niceToMeetYou": {
     "description": "label nice to meet you"
   },
-  "introTextPromptPage": "With just a few prompts, I can build us an AI-designed pack of cards featuring some of our favorite Google characters: Dash, Sparky, Android, and Dino, imbued with special powers.",
+  "introTextPromptPage": "With just a few prompts, I can build you an AI-designed pack of cards featuring some of our favorite Google characters: Dash, Sparky, Android, and Dino, imbued with special powers.",
   "@introTextPromptPage": {
     "description": "Text for the intro when selecting the prompt to build the deck"
   },
-  "characterClassPromptPageTitle": "First, what's your team's type?",
+  "characterClassPromptPageTitle": "First, what's your team's class?",
   "@characterClassPromptPageTitle": {
     "description": "Title of the prompt page for character class"
   },
@@ -97,6 +101,10 @@
         "type": "int"
       }
     }
+  },
+  "cardInspectorText": "Tap cards to inspect and share",
+  "@cardInspectorText": {
+    "description": "Text shown on game summary to allow the user that can inspect cards"
   },
   "nextMatch": "NEXT MATCH",
   "@nextMatch": {
@@ -216,7 +224,7 @@
   "@matchmaking": {
     "description": "Label of the match making page button"
   },
-  "getReadyToFlip": "Get ready to flip!",
+  "getReadyToFlip": "Get ready to FLIP!",
   "@getReadyToFlip": {
     "description": "Title displayed when match is found, before entering the game"
   },
@@ -232,7 +240,7 @@
   "@quitGameDialogDescription": {
     "description": "Description of the quit game dialog"
   },
-  "playerAlreadyConnectedError": "I/O Flip is already open on another tab",
+  "playerAlreadyConnectedError": "I/O FLIP is already open on another tab",
   "@playerAlreadyConnectedError": {
     "description": "Error message shown when user connects in multiple tabs"
   },
@@ -260,15 +268,15 @@
   "@facebookButtonLabel": {
     "description": "Label for the share to facebook button"
   },
-  "howToPlayIntroTitle": "Grab a pack and create your team from more than 100k unique AI-designed cards.",
+  "howToPlayIntroTitle": "Grab a pack and create your team from millions of AI-designed cards.",
   "@howToPlayIntroTitle": {
     "description": "Text shown in the first page of the how to play flow"
   },
-  "howToPlayDeckTitle": "Keep your winning streak alive on the leaderboard against opponents around the world.",
+  "howToPlayDeckTitle": "FLIP your way to the top of the leaderboard with the longest winning streak.",
   "@howToPlayDeckTitle": {
     "description": "Text shown in the deck page of the how to play flow"
   },
-  "howToPlayElementsTitle": "Flip your way to victory! Elemental powers apply extra damage in a match.",
+  "howToPlayElementsTitle": "FLIP your way to victory! Elemental powers apply extra damage in a match.",
   "@howToPlayElementsTitle": {
     "description": "Text shown in the elements page of the how to play flow"
   },
@@ -308,7 +316,7 @@
   "@mainMenuButtonLabel": {
     "description": "Text shown on the main menu button"
   },
-  "infoDialogTitle": "About I/O Flip",
+  "infoDialogTitle": "About I/O FLIP",
   "@infoAboutGameTitle": {
     "description": "Title shown in the info dialog"
   },
@@ -316,7 +324,7 @@
   "@infoDialogDescription": {
     "description": "Description prefix text shown in the info dialog"
   },
-  "infoDialogDescriptionInfixOne": "how I/O Flip was made",
+  "infoDialogDescriptionInfixOne": "how I/O FLIP was made",
   "@infoDialogDescriptionInfixOne": {
     "description": "First description infix text shown in the info dialog"
   },
@@ -352,7 +360,7 @@
   "@howItsMadeLinkLabel": {
     "description": "Text shown on the How it's made link"
   },
-  "shareTeamDialogDescription": "Share your team from I/O Flip and challenge your friends to beat your streak!",
+  "shareTeamDialogDescription": "Share your team from I/O FLIP and challenge your friends to beat your streak!",
   "@shareTeamDialogDescription": {
     "description": "Text shown on the share team dialog"
   },

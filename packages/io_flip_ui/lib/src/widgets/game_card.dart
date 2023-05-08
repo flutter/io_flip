@@ -210,9 +210,10 @@ class GameCard extends StatelessWidget {
     required this.suitName,
     required this.power,
     required this.description,
+    required this.isRare,
     this.size = const GameCardSize.lg(),
-    this.isRare = false,
     this.overlay,
+    this.isDimmed = false,
     this.tilt = Offset.zero,
     @visibleForTesting this.package = 'io_flip_ui',
     super.key,
@@ -242,6 +243,9 @@ class GameCard extends StatelessWidget {
   /// Is a rare card
   final bool isRare;
 
+  /// Whether the card should be dimmed or not.
+  final bool isDimmed;
+
   /// An offset with x and y values between -1 and 1, representing how much the
   /// card should be tilted.
   final Offset tilt;
@@ -255,26 +259,56 @@ class GameCard extends StatelessWidget {
   (String, SvgPicture) _mapSuitNameToAssets() {
     switch (suitName) {
       case 'fire':
+        if (isRare) {
+          return (
+            Assets.images.cardFrames.holos.cardFire.keyName,
+            Assets.images.suits.card.fire.svg(),
+          );
+        }
         return (
           Assets.images.cardFrames.cardFire.keyName,
           Assets.images.suits.card.fire.svg(),
         );
       case 'water':
+        if (isRare) {
+          return (
+            Assets.images.cardFrames.holos.cardWater.keyName,
+            Assets.images.suits.card.water.svg(),
+          );
+        }
         return (
           Assets.images.cardFrames.cardWater.keyName,
           Assets.images.suits.card.water.svg(),
         );
       case 'earth':
+        if (isRare) {
+          return (
+            Assets.images.cardFrames.holos.cardEarth.keyName,
+            Assets.images.suits.card.earth.svg(),
+          );
+        }
         return (
           Assets.images.cardFrames.cardEarth.keyName,
           Assets.images.suits.card.earth.svg(),
         );
       case 'air':
+        if (isRare) {
+          return (
+            Assets.images.cardFrames.holos.cardAir.keyName,
+            Assets.images.suits.card.air.svg(),
+          );
+        }
         return (
           Assets.images.cardFrames.cardAir.keyName,
           Assets.images.suits.card.air.svg(),
         );
       case 'metal':
+        if (isRare) {
+          return (
+            Assets.images.cardFrames.holos.cardMetal.keyName,
+            Assets.images.suits.card.metal.svg(),
+          );
+        }
         return (
           Assets.images.cardFrames.cardMetal.keyName,
           Assets.images.suits.card.metal.svg(),
@@ -312,8 +346,10 @@ class GameCard extends StatelessWidget {
         ),
       ],
     );
+    final borderRadius = BorderRadius.circular(size.width * 0.08);
 
     return Stack(
+      clipBehavior: Clip.none,
       children: [
         SizedBox(
           width: size.width,
@@ -328,7 +364,7 @@ class GameCard extends StatelessWidget {
               children: [
                 if (isRare)
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(size.width * 0.075),
+                    borderRadius: borderRadius,
                     child: FoilShader(
                       package: package,
                       dx: tilt.dx,
@@ -384,6 +420,7 @@ class GameCard extends StatelessWidget {
                   alignment: const Alignment(0, .5),
                   child: Text(
                     name,
+                    textAlign: TextAlign.center,
                     style: size.titleTextStyle.copyWith(
                       color: IoFlipColors.seedBlack,
                     ),
@@ -411,10 +448,16 @@ class GameCard extends StatelessWidget {
           ),
         ),
         if (overlay != null)
-          CardOverlay.ofType(
-            overlay!,
-            size.width,
-            size.height,
+          Positioned(
+            top: -1,
+            bottom: -1,
+            left: -1,
+            right: -1,
+            child: CardOverlay.ofType(
+              overlay!,
+              borderRadius: borderRadius,
+              isDimmed: isDimmed,
+            ),
           )
       ],
     );

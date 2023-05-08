@@ -2,6 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:io_flip/l10n/l10n.dart';
 import 'package:io_flip/leaderboard/initials_form/initials_form.dart';
@@ -87,8 +88,11 @@ void main() {
           ]),
           initialState: const InitialsFormState(),
         );
-        const data =
-            ShareHandPageData(initials: 'AAA', wins: 0, deckId: '', deck: []);
+        const data = ShareHandPageData(
+          initials: 'AAA',
+          wins: 0,
+          deck: Deck(id: '', userId: '', cards: []),
+        );
 
         await tester.pumpSubject(
           initialsFormBloc,
@@ -131,6 +135,10 @@ void main() {
           expect(input.controller.text == 'A', isTrue);
         }
 
+        await tester.enterText(initial2, '');
+        await tester.pumpAndSettle();
+
+        expect(inputs.last.controller.text, isEmpty);
         expect(find.text(l10n.enterInitialsError), findsNothing);
       });
 
@@ -164,6 +172,36 @@ void main() {
 
         expect(find.text(l10n.enterInitialsError), findsOneWidget);
       });
+
+      testWidgets(
+        'requests focus on last input when status is '
+        'InitialsFormStatus.blacklisted',
+        (tester) async {
+          whenListen(
+            initialsFormBloc,
+            Stream.fromIterable([
+              const InitialsFormState(
+                initials: ['A', 'A', 'A'],
+                status: InitialsFormStatus.blacklisted,
+              ),
+            ]),
+            initialState: const InitialsFormState(),
+          );
+
+          await tester.pumpSubject(initialsFormBloc);
+
+          final inputs =
+              tester.widgetList<EditableText>(find.byType(EditableText));
+
+          for (final input in inputs) {
+            if (input != inputs.last) {
+              expect(input.focusNode.hasFocus, isFalse);
+            } else {
+              expect(input.focusNode.hasFocus, isTrue);
+            }
+          }
+        },
+      );
 
       testWidgets('shows blacklist error text on blacklist initials',
           (tester) async {

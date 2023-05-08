@@ -1,13 +1,17 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart' as game;
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
+import 'package:io_flip/audio/audio.dart';
 import 'package:io_flip/audio/audio_controller.dart';
 import 'package:io_flip/game/game.dart';
 import 'package:io_flip/gen/assets.gen.dart';
+import 'package:io_flip/l10n/l10n.dart';
 import 'package:io_flip/leaderboard/leaderboard.dart';
+import 'package:io_flip/match_making/match_making.dart';
 import 'package:io_flip/utils/utils.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 
@@ -31,6 +35,7 @@ class GameView extends StatelessWidget {
         context.read<GameBloc>().sendMatchLeft();
       },
       builder: (context, state) {
+        final l10n = context.l10n;
         final Widget child;
 
         if (state is MatchLoadingState) {
@@ -38,8 +43,20 @@ class GameView extends StatelessWidget {
             child: CircularProgressIndicator(),
           );
         } else if (state is MatchLoadFailedState) {
-          child = const Center(
-            child: Text('Unable to join game!'),
+          child = IoFlipErrorView(
+            text: 'Unable to join game!',
+            buttonText: l10n.playAgain,
+            onPressed: () {
+              final deck = state.deck;
+              if (deck != null) {
+                GoRouter.of(context).goNamed(
+                  'match_making',
+                  extra: MatchMakingPageData(deck: deck),
+                );
+              } else {
+                GoRouter.of(context).go('/');
+              }
+            },
           );
         } else if (state is MatchLoadedState) {
           if (state.matchState.result != null && state.turnAnimationsFinished) {
@@ -52,17 +69,20 @@ class GameView extends StatelessWidget {
             shareHandPageData: state.shareHandPageData,
           );
         } else if (state is OpponentAbsentState) {
-          child = Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text('Opponent left the game!'),
-                ElevatedButton(
-                  onPressed: () => GoRouter.of(context).pop(),
-                  child: const Text('Replay'),
-                ),
-              ],
-            ),
+          child = IoFlipErrorView(
+            text: 'Opponent left the game!',
+            buttonText: l10n.playAgain,
+            onPressed: () {
+              final deck = state.deck;
+              if (deck != null) {
+                GoRouter.of(context).goNamed(
+                  'match_making',
+                  extra: MatchMakingPageData(deck: deck),
+                );
+              } else {
+                GoRouter.of(context).go('/');
+              }
+            },
           );
         } else {
           child = const SizedBox();
@@ -88,6 +108,7 @@ const cardsAtHand = 3;
 const movingCardDuration = Duration(milliseconds: 400);
 const droppedCardDuration = Duration(milliseconds: 200);
 const turnEndDuration = Duration(milliseconds: 250);
+const clashSceneTransitionDuration = Duration(milliseconds: 500);
 
 class _GameBoard extends StatefulWidget {
   const _GameBoard();
@@ -121,12 +142,17 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
   late List<Offset> playerCardOffsets;
   late List<GameCardSize> playerCardSizes;
   late Offset counterOffset;
+  VelocityTracker? velocityTracker;
+  VoidCallback? afterClashCompleted;
+
+  final velocity = ValueNotifier<Offset>(Offset.zero);
 
   late List<Tween<GameCardRect?>> playerCardTweens;
   late List<Animation<GameCardRect?>> opponentCardAnimations;
   final List<TickerFuture> _runningPlayerAnimations = [];
   final List<TickerFuture> _runningOpponentAnimations = [];
   List<AnimationController> clashControllers = [];
+  late AudioController audioController;
 
   List<AnimationController> createAnimationControllers() {
     return List.generate(
@@ -140,10 +166,35 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
 
   late final opponentCardControllers = createAnimationControllers();
   late final playerCardControllers = createAnimationControllers();
+  late final tiltTicker = createTicker(onTiltTick);
   late final playerAnimatedCardControllers = List.generate(
     cardsAtHand,
     (_) => AnimatedCardController(),
   );
+
+  @override
+  void initState() {
+    super.initState();
+    audioController = context.read<AudioController>();
+    layoutAll();
+
+    final bloc = context.read<GameBloc>();
+    final state = bloc.state;
+    if (state is MatchLoadedState) {
+      final cardId =
+          state.rounds.isNotEmpty ? state.rounds.first.opponentCardId : null;
+      if (cardId != null) {
+        final cardIndex = bloc.opponentCards.indexWhere(
+          (card) => card.id == cardId,
+        );
+        if (cardIndex != -1) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            animateOpponentCard(cardIndex);
+          });
+        }
+      }
+    }
+  }
 
   @override
   void didChangeDependencies() {
@@ -151,9 +202,6 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     final newScreenSize = MediaQuery.sizeOf(context);
 
     if (newScreenSize != screenSize) {
-      if (screenSize == Size.zero) {
-        layoutAll();
-      }
       screenSize = newScreenSize;
       boardOffset = Offset(
         (screenSize.width - boardSize.width) / 2,
@@ -285,6 +333,9 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
         pointerStartPosition = event.localPosition;
         pointerPosition = event.localPosition;
         draggingCardIndex = cardIndex;
+        velocityTracker =
+            VelocityTracker.withKind(event.kind ?? PointerDeviceKind.touch);
+        tiltTicker.start();
       });
     }
   }
@@ -301,6 +352,12 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
       final currentDistance = pointerPosition!.dy - goalY;
       final progressY = 1.0 - (currentDistance / startDistance).clamp(0, 1);
       final relativeOffset = pointerPosition! - pointerStartPosition!;
+      if (event.sourceTimeStamp != null) {
+        velocityTracker?.addPosition(
+          event.sourceTimeStamp!,
+          event.localPosition,
+        );
+      }
 
       setState(() {
         draggingCardAccepted = goalRect.contains(pointerPosition!);
@@ -354,7 +411,21 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
       pointerStartPosition = null;
       draggingCardIndex = null;
       draggingCardAccepted = false;
+      velocity.value = Offset.zero;
+      tiltTicker.stop();
+      velocityTracker = null;
     });
+  }
+
+  void onTiltTick(_) {
+    const scale = 1 / 500;
+    final pps = velocityTracker
+        ?.getVelocity()
+        .clampMagnitude(0, 1 / scale)
+        .pixelsPerSecond;
+    if (pps != null) {
+      velocity.value = pps * scale;
+    }
   }
 
   void _onTapUp(TapUpDetails event) {
@@ -394,6 +465,12 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     return false;
   }
 
+  void animateOpponentCard(int opponentIndex) {
+    final controller = opponentCardControllers[opponentIndex];
+    _runningOpponentAnimations.add(controller.forward());
+    clashControllers.add(controller);
+  }
+
   Future<void> clashSceneCompleted() async {
     final bloc = context.read<GameBloc>()..add(const ClashSceneCompleted());
     for (final controller in clashControllers) {
@@ -407,16 +484,31 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     await playerAnimatedCardControllers[lastPlayedPlayerCardIndex!]
         .run(bigFlipAnimation);
     clashControllers = [];
+
+    final playerCard = bloc.playerCards[lastPlayedPlayerCardIndex!];
+    final overlayType = bloc.isWinningCard(playerCard, isPlayer: true);
+    if (CardOverlayType.win == overlayType) {
+      audioController.playSfx(Assets.sfx.winMatch);
+    } else if (CardOverlayType.lose == overlayType) {
+      audioController.playSfx(Assets.sfx.lostMatch);
+    }
     bloc
       ..add(const TurnAnimationsFinished())
       ..add(const TurnTimerStarted());
+    afterClashCompleted?.call();
+    afterClashCompleted = null;
   }
 
   int? lastPlayedPlayerCardIndex;
-  int? lastPlayedOpponentCardIndex;
 
   @override
   Widget build(BuildContext context) {
+    final isClashScene = context.select<GameBloc, bool>(
+      (bloc) =>
+          bloc.state is MatchLoadedState &&
+          (bloc.state as MatchLoadedState).isClashScene,
+    );
+
     final playerCards =
         context.select<GameBloc, List<Card>>((bloc) => bloc.playerCards);
     final opponentCards =
@@ -469,10 +561,11 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
             });
           }
           if (opponentIndex >= 0) {
-            lastPlayedOpponentCardIndex = opponentIndex;
-            final controller = opponentCardControllers[opponentIndex];
-            _runningOpponentAnimations.add(controller.forward());
-            clashControllers.add(controller);
+            if (state.isClashScene) {
+              afterClashCompleted = () => animateOpponentCard(opponentIndex);
+            } else {
+              animateOpponentCard(opponentIndex);
+            }
           }
 
           if (state.rounds.isNotEmpty) {
@@ -502,8 +595,9 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
         onTapUp: _onTapUp,
         child: Stack(
           children: [
-            Transform.scale(
-              scale: 1.4,
+            AnimatedScale(
+              duration: clashSceneTransitionDuration,
+              scale: isClashScene ? 4 : 1.4,
               child: Center(
                 child: Image.asset(
                   platformAwareAsset(
@@ -514,62 +608,80 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
                 ),
               ),
             ),
-            Center(
-              child: SizedBox.fromSize(
-                size: boardSize,
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    for (final offset in playerCardStartOffsets)
-                      _PlaceholderCard(
-                        rect: offset & playerHandCardSize.size,
-                      ),
-                    for (final offset in opponentCardOffsets)
-                      _PlaceholderCard(
-                        rect: offset & opponentHandCardSize.size,
-                      ),
-                    ...clashCardOffsets.mapIndexed(
-                      (i, offset) {
-                        var rect = offset & clashCardSize.size;
-                        if (i == 1 && draggingCardAccepted) {
-                          rect = rect.inflate(8);
-                        }
-                        return _ClashCard(
-                          key: Key('clash_card_$i'),
-                          rect: rect,
-                          showPlus: i == 1,
-                        );
-                      },
-                    ),
-                    ...opponentCards.mapIndexed(
-                      (i, card) {
-                        return _OpponentCard(
-                          card: card,
-                          animation: opponentCardAnimations[i],
-                        );
-                      },
-                    ),
-                    const _CardLandingPuffEffect(),
-                    for (var i = 0; i < playerCards.length; i++)
-                      AnimatedBuilder(
-                        animation: playerCardControllers[i],
-                        builder: (context, _) => _PlayerCard(
-                          card: playerCards[i],
-                          isDragging: i == draggingCardIndex,
-                          rect: i == draggingCardIndex
-                              ? GameCardRect(
-                                  gameCardSize: playerCardSizes[i],
-                                  offset: playerCardOffsets[i],
-                                )
-                              : playerCardTweens[i]
-                                  .evaluate(playerCardControllers[i])!,
-                          animatedCardController:
-                              playerAnimatedCardControllers[i],
+            AnimatedOpacity(
+              duration: clashSceneTransitionDuration,
+              opacity: isClashScene ? 0 : 1,
+              child: Center(
+                child: SizedBox.fromSize(
+                  size: boardSize,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      for (final offset in playerCardStartOffsets)
+                        _PlaceholderCard(
+                          rect: offset & playerHandCardSize.size,
                         ),
+                      for (final offset in opponentCardOffsets)
+                        _PlaceholderCard(
+                          rect: offset & opponentHandCardSize.size,
+                        ),
+                      ...clashCardOffsets.mapIndexed(
+                        (i, offset) {
+                          var rect = offset & clashCardSize.size;
+                          if (i == 1 && draggingCardAccepted) {
+                            rect = rect.inflate(8);
+                          }
+                          return _ClashCard(
+                            key: Key('clash_card_$i'),
+                            rect: rect,
+                            showPlus: i == 1,
+                          );
+                        },
                       ),
-                    _BoardCounter(counterOffset),
-                  ],
+                      ...opponentCards.mapIndexed(
+                        (i, card) {
+                          return _OpponentCard(
+                            card: card,
+                            animation: opponentCardAnimations[i],
+                          );
+                        },
+                      ),
+                      const _CardLandingPuffEffect(),
+                      for (var i = 0; i < playerCards.length; i++)
+                        AnimatedBuilder(
+                          animation: playerCardControllers[i],
+                          builder: (context, _) => ValueListenableBuilder(
+                            valueListenable: i == draggingCardIndex
+                                ? velocity
+                                : const AlwaysStoppedAnimation(Offset.zero),
+                            builder: (context, velocity, child) => _PlayerCard(
+                              card: playerCards[i],
+                              isDragging: i == draggingCardIndex,
+                              velocity: velocity,
+                              rect: i == draggingCardIndex
+                                  ? GameCardRect(
+                                      gameCardSize: playerCardSizes[i],
+                                      offset: playerCardOffsets[i],
+                                    )
+                                  : playerCardTweens[i]
+                                      .evaluate(playerCardControllers[i])!,
+                              animatedCardController:
+                                  playerAnimatedCardControllers[i],
+                            ),
+                          ),
+                        ),
+                      _BoardCounter(counterOffset),
+                    ],
+                  ),
                 ),
+              ),
+            ),
+            const Positioned(
+              left: 0,
+              bottom: 0,
+              child: Padding(
+                padding: EdgeInsets.all(IoFlipSpacing.sm),
+                child: AudioToggleButton(),
               ),
             ),
             _ClashScene(
@@ -595,6 +707,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     for (final element in playerAnimatedCardControllers) {
       element.dispose();
     }
+    tiltTicker.dispose();
 
     super.dispose();
   }
@@ -613,7 +726,7 @@ class _PlaceholderCard extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: IoFlipColors.seedWhite.withOpacity(0.15),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(rect.width * 0.08),
           border: Border.all(
             color: IoFlipColors.seedPaletteNeutral95,
           ),
@@ -647,7 +760,9 @@ class _OpponentCard extends StatelessWidget {
     final alreadyPlayed = context.select<GameBloc, bool>((bloc) {
       if (bloc.state is MatchLoadedState) {
         final state = bloc.state as MatchLoadedState;
-        return state.rounds.any((element) => element.opponentCardId == card.id);
+        return state.rounds.any(
+          (round) => round.isComplete() && round.opponentCardId == card.id,
+        );
       }
       return false;
     });
@@ -672,6 +787,7 @@ class _OpponentCard extends StatelessWidget {
                       isRare: card.rarity,
                       size: position.gameCardSize,
                       overlay: overlay,
+                      isDimmed: true,
                     ),
                   ],
                 )
@@ -691,12 +807,14 @@ class _PlayerCard extends StatelessWidget {
     required this.rect,
     required this.animatedCardController,
     required this.isDragging,
+    required this.velocity,
   });
 
   final game.Card card;
   final GameCardRect rect;
   final AnimatedCardController animatedCardController;
   final bool isDragging;
+  final Offset velocity;
 
   @override
   Widget build(BuildContext context) {
@@ -713,6 +831,7 @@ class _PlayerCard extends StatelessWidget {
         child: AnimatedCard(
           controller: animatedCardController,
           front: GameCard(
+            tilt: velocity,
             image: card.image,
             name: card.name,
             description: card.description,
@@ -721,6 +840,7 @@ class _PlayerCard extends StatelessWidget {
             isRare: card.rarity,
             size: rect.gameCardSize,
             overlay: overlay,
+            isDimmed: overlay != null,
           ),
           back: const FlippedGameCard(
             size: GameCardSize.xxs(),
@@ -750,7 +870,7 @@ class _ClashCard extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: IoFlipColors.seedWhite.withOpacity(0.15),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(rect.width * 0.08),
           border: Border.all(
             color: IoFlipColors.seedPaletteNeutral95,
           ),
@@ -844,7 +964,9 @@ class _CardLandingPuffEffect extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final showCardLanding = context.select<GameBloc, bool>(
-      (bloc) => (bloc.state as MatchLoadedState).showCardLanding,
+      (bloc) =>
+          bloc.state is MatchLoadedState &&
+          (bloc.state as MatchLoadedState).showCardLanding,
     );
     if (showCardLanding) {
       return Positioned(
@@ -862,7 +984,7 @@ class _CardLandingPuffEffect extends StatelessWidget {
   }
 }
 
-class _ClashScene extends StatelessWidget {
+class _ClashScene extends StatefulWidget {
   const _ClashScene({
     required this.onFinished,
     required this.boardSize,
@@ -872,9 +994,21 @@ class _ClashScene extends StatelessWidget {
   final Size boardSize;
 
   @override
+  State<_ClashScene> createState() => _ClashSceneState();
+}
+
+class _ClashSceneState extends State<_ClashScene> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final isClashScene = context.select<GameBloc, bool>(
-      (bloc) => (bloc.state as MatchLoadedState).isClashScene,
+      (bloc) =>
+          bloc.state is MatchLoadedState &&
+          (bloc.state as MatchLoadedState).isClashScene,
     );
 
     if (isClashScene) {
@@ -888,23 +1022,9 @@ class _ClashScene extends StatelessWidget {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            Transform.scale(
-              scale: 1.4,
-              child: Center(
-                child: Image.asset(
-                  platformAwareAsset(
-                    desktop: Assets.images.stadiumBackgroundCloseUp.keyName,
-                    mobile:
-                        Assets.images.mobile.stadiumBackgroundCloseUp.keyName,
-                  ),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            SizedBox.fromSize(
-              size: boardSize,
+            Positioned.fill(
               child: ClashScene(
-                onFinished: onFinished,
+                onFinished: widget.onFinished,
                 opponentCard: opponentCard,
                 playerCard: playerCard,
               ),

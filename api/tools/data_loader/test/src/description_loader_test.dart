@@ -108,6 +108,19 @@ void main() {
         ).called(1);
       });
 
+      test('does nothing when inserting fails', () async {
+        when(() => dbClient.add(any(), any())).thenThrow(Exception());
+        when(() => csv.readAsString()).thenAnswer(
+          (_) async => ListToCsvConverter().convert([
+            ['Character', 'Class', 'Power', 'Location', 'Desc 1', 'Desc 2'],
+            ['Dash', 'Alien', 'Banjos', 'City', 'Desc 1', 'Desc 2'],
+            ['Sparky', 'Alien', 'Banjos', 'City', 'Desc 1', 'Desc 2'],
+          ]),
+        );
+
+        await expectLater(dataLoader.loadDescriptions((_, __) {}), completes);
+      });
+
       test('progress is called correctly', () async {
         when(() => csv.readAsString()).thenAnswer(
           (_) async => ListToCsvConverter().convert([

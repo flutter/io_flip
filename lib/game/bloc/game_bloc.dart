@@ -84,14 +84,36 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       final scoreCard = values.last as ScoreCard?;
 
       if (match == null || matchState == null || scoreCard == null) {
-        emit(const MatchLoadFailedState());
+        emit(MatchLoadFailedState(deck: event.deck));
       } else {
         _audioController.playSfx(Assets.sfx.startGame);
+        final String? initialOpponentCard;
+        if (isHost && matchState.guestPlayedCards.isNotEmpty) {
+          initialOpponentCard = matchState.guestPlayedCards.first;
+        } else if (!isHost && matchState.hostPlayedCards.isNotEmpty) {
+          initialOpponentCard = matchState.hostPlayedCards.first;
+        } else {
+          initialOpponentCard = null;
+        }
+
+        if (initialOpponentCard != null) {
+          playedCardsInOrder.add(initialOpponentCard);
+        }
+
         emit(
           MatchLoadedState(
             match: match,
             matchState: matchState,
-            rounds: const [],
+            rounds: [
+              if (initialOpponentCard != null)
+                MatchRound(
+                  playerCardId: null,
+                  opponentCardId: isHost
+                      ? matchState.guestPlayedCards.first
+                      : matchState.hostPlayedCards.first,
+                ),
+            ],
+            lastPlayedCardId: initialOpponentCard,
             playerScoreCard: scoreCard,
             turnTimeRemaining: _turnMaxTime,
             turnAnimationsFinished: true,
@@ -111,11 +133,11 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           add(ScoreCardUpdated(state));
         });
 
-        add(ManagePlayerPresence(event.matchId));
+        add(ManagePlayerPresence(event.matchId, event.deck));
       }
     } catch (e, s) {
       addError(e, s);
-      emit(const MatchLoadFailedState());
+      emit(MatchLoadFailedState(deck: event.deck));
     }
   }
 
@@ -246,7 +268,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         final matchState = await _gameResource.getMatchState(match.id);
         final matchOver = matchState?.isOver();
         if (matchOver != true) {
-          emit(const OpponentAbsentState());
+          emit(OpponentAbsentState(deck: event.deck));
         }
         completer.complete();
       });
@@ -281,9 +303,21 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       final matchLoadedState = state as MatchLoadedState;
       if (isPlayerAllowedToPlay &&
           !matchLoadedState.matchState.isOver() &&
-          matchLoadedState.matchState.hostPlayedCards.length ==
-              matchLoadedState.matchState.guestPlayedCards.length) {
-        emit(matchLoadedState.copyWith(turnTimeRemaining: _turnMaxTime));
+          (matchLoadedState.rounds.isEmpty ||
+              !matchLoadedState.rounds.last.turnTimerStarted)) {
+        emit(
+          matchLoadedState.copyWith(
+            turnTimeRemaining: _turnMaxTime,
+            rounds: [
+              if (matchLoadedState.rounds.isNotEmpty) ...[
+                ...matchLoadedState.rounds
+                    .take(matchLoadedState.rounds.length - 1),
+                matchLoadedState.rounds.last.copyWith(turnTimerStarted: true),
+              ] else
+                ...matchLoadedState.rounds,
+            ],
+          ),
+        );
 
         _turnTimer?.cancel();
 
@@ -496,6 +530,13 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     return false;
   }
 
+  Deck get playerDeck {
+    final matchLoadedState = state as MatchLoadedState;
+    return isHost
+        ? matchLoadedState.match.hostDeck
+        : matchLoadedState.match.guestDeck;
+  }
+
   List<Card> get playerCards {
     if (state is MatchLoadedState) {
       final matchLoadedState = state as MatchLoadedState;
@@ -508,7 +549,9 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
   Card get lastPlayedPlayerCard {
     final matchLoadedState = state as MatchLoadedState;
-    final cardId = matchLoadedState.rounds.last.playerCardId;
+    final cardId = matchLoadedState.rounds
+        .lastWhere((round) => round.isComplete())
+        .playerCardId;
     return playerCards.firstWhere((card) => card.id == cardId);
   }
 

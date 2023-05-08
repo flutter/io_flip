@@ -24,6 +24,7 @@ void main() {
                   description: 'description',
                   suitName: suitName,
                   power: 1,
+                  isRare: false,
                 ),
               ),
             ),
@@ -56,6 +57,53 @@ void main() {
       });
     }
 
+    for (final suitName in ['fire', 'air', 'earth', 'water', 'metal']) {
+      group('when is a $suitName rare card', () {
+        testWidgets('renders holo correctly', (tester) async {
+          await tester.pumpWidget(
+            mockNetworkImages(
+              () => Directionality(
+                textDirection: TextDirection.ltr,
+                child: GameCard(
+                  package: null,
+                  image: 'image',
+                  name: 'name',
+                  description: 'description',
+                  suitName: suitName,
+                  power: 1,
+                  isRare: true,
+                ),
+              ),
+            ),
+          );
+
+          expect(
+            find.text('name'),
+            findsOneWidget,
+          );
+
+          expect(
+            find.byWidgetPredicate(
+              (widget) {
+                if (widget is Image && widget.image is AssetImage) {
+                  final assetImage = widget.image as AssetImage;
+                  return assetImage.assetName ==
+                      'packages/io_flip_ui/assets/images/card_frames/holos/card_$suitName.png';
+                }
+                return false;
+              },
+            ),
+            findsOneWidget,
+          );
+
+          expect(
+            find.text('1'),
+            findsNWidgets(2), // Two texts are stacked to draw the border.
+          );
+        });
+      });
+    }
+
     testWidgets(
       'renders IO flip game as a placeholder when loading fails',
       (tester) async {
@@ -69,6 +117,7 @@ void main() {
                 description: 'description',
                 suitName: 'air',
                 power: 1,
+                isRare: false,
               ),
             ),
           ),
@@ -90,6 +139,7 @@ void main() {
               description: 'description',
               suitName: '',
               power: 1,
+              isRare: false,
             ),
           ),
         ),
@@ -110,6 +160,7 @@ void main() {
               suitName: 'air',
               power: 1,
               overlay: CardOverlayType.win,
+              isRare: false,
             ),
           ),
         ),
@@ -128,7 +179,7 @@ void main() {
               image: 'image',
               name: 'name',
               description: 'description',
-              suitName: 'air',
+              suitName: 'earth',
               power: 1,
               isRare: true,
             ),

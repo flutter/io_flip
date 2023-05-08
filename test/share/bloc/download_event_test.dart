@@ -14,18 +14,36 @@ void main() {
     power: 20,
     suit: Suit.fire,
   );
-  group('DownloadRequested', () {
+  const deck = Deck(id: '', userId: '', cards: [card]);
+
+  group('DownloadCardsRequested', () {
     test('can be instantiated', () {
       expect(
-        DownloadRequested(card: card),
+        DownloadCardsRequested(cards: const [card]),
         isNotNull,
       );
     });
 
     test('supports equality', () {
       expect(
-        DownloadRequested(card: card),
-        equals(DownloadRequested(card: card)),
+        DownloadCardsRequested(cards: const [card]),
+        equals(DownloadCardsRequested(cards: const [card])),
+      );
+    });
+  });
+
+  group('DownloadDeckRequested', () {
+    test('can be instantiated', () {
+      expect(
+        DownloadDeckRequested(deck: deck),
+        isNotNull,
+      );
+    });
+
+    test('supports equality', () {
+      expect(
+        DownloadDeckRequested(deck: deck),
+        equals(DownloadDeckRequested(deck: deck)),
       );
     });
   });

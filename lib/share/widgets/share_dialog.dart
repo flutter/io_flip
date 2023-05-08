@@ -14,7 +14,8 @@ class ShareDialog extends StatelessWidget {
     required this.twitterShareUrl,
     required this.facebookShareUrl,
     required this.content,
-    required this.downloadContent,
+    this.downloadCards,
+    this.downloadDeck,
     this.urlLauncher,
     super.key,
   });
@@ -23,7 +24,8 @@ class ShareDialog extends StatelessWidget {
   final String facebookShareUrl;
   final AsyncValueSetter<String>? urlLauncher;
   final Widget content;
-  final Card downloadContent;
+  final List<Card>? downloadCards;
+  final Deck? downloadDeck;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,8 @@ class ShareDialog extends StatelessWidget {
         facebookShareUrl: facebookShareUrl,
         content: content,
         urlLauncher: urlLauncher,
-        downloadContent: downloadContent,
+        downloadCards: downloadCards,
+        downloadDeck: downloadDeck,
         key: key,
       ),
     );
@@ -46,7 +49,8 @@ class ShareDialogView extends StatelessWidget {
     required this.twitterShareUrl,
     required this.facebookShareUrl,
     required this.content,
-    required this.downloadContent,
+    this.downloadCards,
+    this.downloadDeck,
     AsyncValueSetter<String>? urlLauncher,
     super.key,
   }) : _urlLauncher = urlLauncher ?? launchUrlString;
@@ -55,7 +59,8 @@ class ShareDialogView extends StatelessWidget {
   final String facebookShareUrl;
   final AsyncValueSetter<String> _urlLauncher;
   final Widget content;
-  final Card downloadContent;
+  final List<Card>? downloadCards;
+  final Deck? downloadDeck;
 
   @override
   Widget build(BuildContext context) {
@@ -90,11 +95,18 @@ class ShareDialogView extends StatelessWidget {
                 onPressed: () => _urlLauncher(facebookShareUrl),
               ),
               const SizedBox(height: IoFlipSpacing.sm),
-              _SaveButton(
-                status: bloc.state.status,
-                onSave: () =>
-                    bloc.add(DownloadRequested(card: downloadContent)),
-              ),
+              if (downloadCards != null || downloadDeck != null)
+                _SaveButton(
+                  status: bloc.state.status,
+                  onSave: () {
+                    if (downloadCards != null) {
+                      bloc.add(DownloadCardsRequested(cards: downloadCards!));
+                    }
+                    if (downloadDeck != null) {
+                      bloc.add(DownloadDeckRequested(deck: downloadDeck!));
+                    }
+                  },
+                ),
               const SizedBox(height: IoFlipSpacing.sm),
               if (bloc.state.status != DownloadStatus.idle &&
                   bloc.state.status != DownloadStatus.loading)
@@ -157,7 +169,7 @@ class _DownloadStatusBar extends StatelessWidget {
       child: Container(
         height: IoFlipSpacing.xxlg,
         decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(5)),
+          borderRadius: const BorderRadius.all(Radius.circular(100)),
           color: success ? IoFlipColors.seedGreen : IoFlipColors.seedRed,
         ),
         child: Center(

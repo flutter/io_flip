@@ -145,6 +145,55 @@ void main() {
       );
     });
 
+    group('isDraftMatch', () {
+      late DbClient dbClient;
+      late MatchRepository matchRepository;
+
+      const matchId = 'matchId';
+      const hostDeckId = 'hostDeckId';
+      const guestDeckId = 'guestDeckId';
+
+      setUp(() {
+        dbClient = _MockDbClient();
+
+        matchRepository = MatchRepository(
+          cardsRepository: _MockCardRepository(),
+          dbClient: dbClient,
+          matchSolver: _MockMatchSolver(),
+        );
+      });
+
+      test('returns false when guest exists', () async {
+        when(() => dbClient.getById('matches', matchId)).thenAnswer(
+          (_) async => DbEntityRecord(
+            id: matchId,
+            data: const {
+              'host': hostDeckId,
+              'guest': guestDeckId,
+            },
+          ),
+        );
+        final isDraftMatch = await matchRepository.isDraftMatch(matchId);
+
+        expect(isDraftMatch, isFalse);
+      });
+
+      test('returns true when guest is empty', () async {
+        when(() => dbClient.getById('matches', matchId)).thenAnswer(
+          (_) async => DbEntityRecord(
+            id: matchId,
+            data: const {
+              'host': hostDeckId,
+              'guest': emptyKey,
+            },
+          ),
+        );
+        final isDraftMatch = await matchRepository.isDraftMatch(matchId);
+
+        expect(isDraftMatch, isTrue);
+      });
+    });
+
     group('getScoreCard', () {
       late CardsRepository cardsRepository;
       late DbClient dbClient;
@@ -543,24 +592,27 @@ void main() {
         ).called(1);
       });
 
-      test('throws PlayCardFailure when match state is not found', () async {
-        when(() => dbClient.findBy('match_states', 'matchId', matchId))
-            .thenAnswer((_) async => []);
+      test(
+        'throws MatchNotFoundFailure when match state is not found',
+        () async {
+          when(() => dbClient.findBy('match_states', 'matchId', matchId))
+              .thenAnswer((_) async => []);
 
-        await expectLater(
-          () => matchRepository.playCard(
-            matchId: matchId,
-            cardId: 'F',
-            deckId: hostDeck.id,
-            userId: hostDeck.userId,
-          ),
-          throwsA(isA<PlayCardFailure>()),
-        );
-      });
+          await expectLater(
+            () => matchRepository.playCard(
+              matchId: matchId,
+              cardId: 'F',
+              deckId: hostDeck.id,
+              userId: hostDeck.userId,
+            ),
+            throwsA(isA<MatchNotFoundFailure>()),
+          );
+        },
+      );
 
       test(
-        "throws PlayCardFailure when match is over, and its match can't be "
-        'found',
+        "throws MatchNotFoundFailure when match is over, and its match can't "
+        'be found',
         () async {
           when(() => dbClient.findBy('match_states', 'matchId', matchId))
               .thenAnswer(
@@ -587,7 +639,7 @@ void main() {
               deckId: hostDeck.id,
               userId: hostDeck.userId,
             ),
-            throwsA(isA<PlayCardFailure>()),
+            throwsA(isA<MatchNotFoundFailure>()),
           );
         },
       );
@@ -661,9 +713,11 @@ void main() {
                 data: {
                   'wins': 1,
                   'currentStreak': 1,
+                  'latestStreak': 1,
                   'longestStreak': 1,
-                  'longestStreakDeck': hostDeck.id,
                   'currentDeck': hostDeck.id,
+                  'latestDeck': hostDeck.id,
+                  'longestStreakDeck': hostDeck.id,
                 },
               ),
             ),
@@ -674,8 +728,11 @@ void main() {
               'score_cards',
               DbEntityRecord(
                 id: guestDeck.userId,
-                data: const {
+                data: {
                   'currentStreak': 0,
+                  'latestStreak': 0,
+                  'currentDeck': guestDeck.id,
+                  'latestDeck': guestDeck.id,
                 },
               ),
             ),
@@ -713,8 +770,10 @@ void main() {
                 data: {
                   'wins': 1,
                   'currentStreak': 1,
+                  'latestStreak': 1,
                   'longestStreak': 1,
                   'currentDeck': guestDeck.id,
+                  'latestDeck': guestDeck.id,
                   'longestStreakDeck': guestDeck.id,
                 },
               ),
@@ -726,8 +785,11 @@ void main() {
               'score_cards',
               DbEntityRecord(
                 id: hostDeck.userId,
-                data: const {
+                data: {
                   'currentStreak': 0,
+                  'latestStreak': 0,
+                  'currentDeck': hostDeck.id,
+                  'latestDeck': hostDeck.id,
                 },
               ),
             ),
@@ -767,9 +829,9 @@ void main() {
                 data: {
                   'wins': 1,
                   'currentStreak': 1,
-                  'longestStreak': 2,
+                  'latestStreak': 1,
                   'currentDeck': guestDeck.id,
-                  'longestStreakDeck': 'longestStreakDeckId',
+                  'latestDeck': guestDeck.id,
                 },
               ),
             ),
@@ -780,8 +842,11 @@ void main() {
               'score_cards',
               DbEntityRecord(
                 id: hostDeck.userId,
-                data: const {
+                data: {
                   'currentStreak': 0,
+                  'latestStreak': 0,
+                  'currentDeck': hostDeck.id,
+                  'latestDeck': hostDeck.id,
                 },
               ),
             ),
@@ -1023,9 +1088,11 @@ void main() {
                 data: {
                   'wins': 1,
                   'currentStreak': 1,
+                  'latestStreak': 1,
                   'longestStreak': 1,
-                  'longestStreakDeck': hostDeck.id,
                   'currentDeck': hostDeck.id,
+                  'latestDeck': hostDeck.id,
+                  'longestStreakDeck': hostDeck.id,
                 },
               ),
             ),
@@ -1036,8 +1103,11 @@ void main() {
               'score_cards',
               DbEntityRecord(
                 id: guestDeck.userId,
-                data: const {
+                data: {
                   'currentStreak': 0,
+                  'latestStreak': 0,
+                  'currentDeck': guestDeck.id,
+                  'latestDeck': guestDeck.id,
                 },
               ),
             ),
@@ -1082,8 +1152,10 @@ void main() {
                 data: {
                   'wins': 1,
                   'currentStreak': 1,
+                  'latestStreak': 1,
                   'longestStreak': 1,
                   'currentDeck': guestDeck.id,
+                  'latestDeck': guestDeck.id,
                   'longestStreakDeck': guestDeck.id,
                 },
               ),
@@ -1095,8 +1167,11 @@ void main() {
               'score_cards',
               DbEntityRecord(
                 id: hostDeck.userId,
-                data: const {
+                data: {
                   'currentStreak': 0,
+                  'latestStreak': 0,
+                  'currentDeck': hostDeck.id,
+                  'latestDeck': hostDeck.id,
                 },
               ),
             ),
@@ -1143,9 +1218,9 @@ void main() {
                 data: {
                   'wins': 1,
                   'currentStreak': 1,
-                  'longestStreak': 2,
+                  'latestStreak': 1,
                   'currentDeck': guestDeck.id,
-                  'longestStreakDeck': 'longestStreakDeckId',
+                  'latestDeck': guestDeck.id,
                 },
               ),
             ),
@@ -1156,8 +1231,11 @@ void main() {
               'score_cards',
               DbEntityRecord(
                 id: hostDeck.userId,
-                data: const {
+                data: {
                   'currentStreak': 0,
+                  'latestStreak': 0,
+                  'currentDeck': hostDeck.id,
+                  'latestDeck': hostDeck.id,
                 },
               ),
             ),

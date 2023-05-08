@@ -9,30 +9,28 @@ import 'package:provider/provider.dart';
 
 class ShareHandDialog extends StatelessWidget {
   const ShareHandDialog({
-    required this.cards,
     required this.wins,
     required this.initials,
-    required this.deckId,
+    required this.deck,
     super.key,
   });
 
-  final List<Card> cards;
+  final Deck deck;
   final int wins;
   final String initials;
-  final String deckId;
 
   @override
   Widget build(BuildContext context) {
     final shareResource = context.watch<ShareResource>();
-    final twitterLink = shareResource.twitterShareHandUrl(deckId);
-    final facebookLink = shareResource.facebookShareHandUrl(deckId);
+    final twitterLink = shareResource.twitterShareHandUrl(deck.id);
+    final facebookLink = shareResource.facebookShareHandUrl(deck.id);
     return ShareDialog(
       twitterShareUrl: twitterLink,
       facebookShareUrl: facebookLink,
-      // TODO(Samobrien): add cards to be downloaded
-      downloadContent: cards.first,
+      downloadCards: deck.cards,
+      downloadDeck: deck,
       content: _DialogContent(
-        cards: cards,
+        cards: deck.cards,
         wins: wins,
         initials: initials,
       ),

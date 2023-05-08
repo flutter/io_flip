@@ -53,10 +53,26 @@ void main() {
 
         await tester.drag(
           find.byType(ListWheelScrollView),
-          Offset(0, -PromptFormView.itemExtent * 1.6),
+          Offset(0, -PromptFormView.itemExtent * 2.2),
         );
+        await tester.pumpAndSettle();
         await tester.tap(find.text(tester.l10n.select.toUpperCase()));
 
+        await tester.pumpAndSettle();
+
+        expect(data, equals(Prompt(characterClass: _itemsList[2])));
+      },
+    );
+
+    testWidgets(
+      'taps item in list and is selected correctly',
+      (tester) async {
+        late Prompt data;
+        await tester.pumpSubject(onStep: (step) => data = step);
+
+        await tester.tap(find.text(_itemsList[2]));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(tester.l10n.select.toUpperCase()));
         await tester.pumpAndSettle();
 
         expect(data, equals(Prompt(characterClass: _itemsList[2])));

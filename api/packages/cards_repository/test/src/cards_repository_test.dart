@@ -119,13 +119,13 @@ void main() {
             characterName: 'dash',
             characterClass: 'mage',
             characterPower: 'baggles',
-            characterLocation: 'beach',
           ),
         ).thenAnswer((_) async => 'Super Bird');
         when(
           () => languageModelRepository.generateFlavorText(
             character: 'dash',
             characterPower: 'baggles',
+            characterClass: 'mage',
             location: 'beach',
           ),
         ).thenAnswer((_) async => 'Super Bird Is Ready!');

@@ -7,25 +7,8 @@ import 'package:io_flip_ui/io_flip_ui.dart';
 /// of a card on another.
 /// {@endtemplate}
 class MetalDamage extends ElementalDamage {
-  /// {@macro metal_damage_small}
-  MetalDamage.small({required super.size})
-      : super(
-          chargeBackPath:
-              Assets.images.elements.mobile.metal.chargeBack.keyName,
-          chargeFrontPath:
-              Assets.images.elements.mobile.metal.chargeFront.keyName,
-          damageReceivePath:
-              Assets.images.elements.mobile.metal.damageReceive.keyName,
-          damageSendPath:
-              Assets.images.elements.mobile.metal.damageSend.keyName,
-          victoryChargeBackPath:
-              Assets.images.elements.mobile.metal.victoryChargeBack.keyName,
-          victoryChargeFrontPath:
-              Assets.images.elements.mobile.metal.victoryChargeFront.keyName,
-        );
-
-  /// {@macro metal_damage_large}
-  MetalDamage.large({required super.size})
+  /// {@macro metal_damage}
+  MetalDamage({required super.size})
       : super(
           chargeBackPath:
               Assets.images.elements.desktop.metal.chargeBack.keyName,
@@ -39,5 +22,7 @@ class MetalDamage extends ElementalDamage {
               Assets.images.elements.desktop.metal.victoryChargeBack.keyName,
           victoryChargeFrontPath:
               Assets.images.elements.desktop.metal.victoryChargeFront.keyName,
+          badgePath: Assets.images.suits.card.metal.keyName,
+          animationColor: IoFlipColors.seedGreen,
         );
 }

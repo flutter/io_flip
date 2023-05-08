@@ -43,7 +43,7 @@ void main() {
       request = _MockRequest();
       when(() => request.method).thenReturn(HttpMethod.get);
       when(() => request.uri).thenReturn(
-        Uri.parse('/public/share?cardId=${card.id}'),
+        Uri.parse('http://gameapi.com/public/share?cardId=${card.id}'),
       );
 
       logger = _MockLogger();
@@ -65,20 +65,28 @@ void main() {
       expect(response.statusCode, equals(HttpStatus.ok));
     });
 
-    test('responds with a 404 when the card is not found', () async {
+    test('redirects when the card is not found', () async {
       when(() => cardsRepository.getCard(card.id)).thenAnswer(
         (_) async => null,
       );
       final response = await route.onRequest(context);
-      expect(response.statusCode, equals(HttpStatus.notFound));
+      expect(response.statusCode, equals(HttpStatus.movedPermanently));
+      expect(
+        response.headers[HttpHeaders.locationHeader],
+        equals('https://example.com'),
+      );
     });
 
-    test('responds with a 404 when no cardId is in the request', () async {
+    test('redirects when no cardId is in the request', () async {
       when(() => request.uri).thenReturn(
         Uri.parse('/public/share'),
       );
       final response = await route.onRequest(context);
-      expect(response.statusCode, equals(HttpStatus.notFound));
+      expect(response.statusCode, equals(HttpStatus.movedPermanently));
+      expect(
+        response.headers[HttpHeaders.locationHeader],
+        equals('https://example.com'),
+      );
     });
   });
 
@@ -86,6 +94,8 @@ void main() {
     late Request request;
     late RequestContext context;
     late LeaderboardRepository leaderboardRepository;
+    late CardsRepository cardsRepository;
+
     late Logger logger;
     const gameUrl = GameUrl('https://example.com');
     const deckId = 'deckId';
@@ -113,12 +123,18 @@ void main() {
         (_) async => scoreCard,
       );
 
+      cardsRepository = _MockCardRepository();
+      when(() => cardsRepository.getDeck(deckId)).thenAnswer(
+        (_) async => const Deck(id: deckId, userId: 'userId', cards: []),
+      );
+
       context = _MockRequestContext();
       when(() => context.request).thenReturn(request);
       when(() => context.read<Logger>()).thenReturn(logger);
       when(() => context.read<GameUrl>()).thenReturn(gameUrl);
       when(() => context.read<LeaderboardRepository>())
           .thenReturn(leaderboardRepository);
+      when(() => context.read<CardsRepository>()).thenReturn(cardsRepository);
     });
 
     test('responds with a 200', () async {
@@ -126,21 +142,28 @@ void main() {
       expect(response.statusCode, equals(HttpStatus.ok));
     });
 
-    test('responds with a 200 when the deck is not found', () async {
-      when(() => leaderboardRepository.findScoreCardByLongestStreakDeck(deckId))
-          .thenAnswer(
+    test('responds with redirect when the deck is not found', () async {
+      when(() => cardsRepository.getDeck(deckId)).thenAnswer(
         (_) async => null,
       );
       final response = await route.onRequest(context);
-      expect(response.statusCode, equals(HttpStatus.ok));
+      expect(response.statusCode, equals(HttpStatus.movedPermanently));
+      expect(
+        response.headers[HttpHeaders.locationHeader],
+        equals('https://example.com'),
+      );
     });
 
-    test('responds with a 404 when no deckId is in the request', () async {
+    test('responds with redirect when no deckId is in the request', () async {
       when(() => request.uri).thenReturn(
         Uri.parse('/public/share'),
       );
       final response = await route.onRequest(context);
-      expect(response.statusCode, equals(HttpStatus.notFound));
+      expect(response.statusCode, equals(HttpStatus.movedPermanently));
+      expect(
+        response.headers[HttpHeaders.locationHeader],
+        equals('https://example.com'),
+      );
     });
   });
 }

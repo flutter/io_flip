@@ -15,7 +15,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
     required MatchMakerRepository matchMakerRepository,
     required ConnectionRepository connectionRepository,
     required GameResource gameResource,
-    required this.cardIds,
+    required this.deckId,
     this.hostWaitTime = defaultHostWaitTime,
   })  : _matchMakerRepository = matchMakerRepository,
         _connectionRepository = connectionRepository,
@@ -28,10 +28,10 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
 
   final MatchMakerRepository _matchMakerRepository;
   final GameResource _gameResource;
-  final List<String> cardIds;
+  final String deckId;
   final ConnectionRepository _connectionRepository;
 
-  static const defaultHostWaitTime = Duration(seconds: 4);
+  static const defaultHostWaitTime = Duration(seconds: 2);
   final Duration hostWaitTime;
 
   Future<void> _connectToMatch({
@@ -55,8 +55,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   ) async {
     try {
       emit(state.copyWith(status: MatchMakingStatus.processing));
-      final playerId = await _gameResource.createDeck(cardIds);
-      final match = await _matchMakerRepository.findMatch(playerId);
+      final match = await _matchMakerRepository.findMatch(deckId);
       final isHost = match.guest == null;
 
       await _connectToMatch(
@@ -90,8 +89,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   ) async {
     try {
       emit(state.copyWith(status: MatchMakingStatus.processing));
-      final playerId = await _gameResource.createDeck(cardIds);
-      final match = await _matchMakerRepository.createPrivateMatch(playerId);
+      final match = await _matchMakerRepository.createPrivateMatch(deckId);
 
       await _connectToMatch(
         matchId: match.id,
@@ -114,9 +112,8 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   ) async {
     try {
       emit(state.copyWith(status: MatchMakingStatus.processing));
-      final playerId = await _gameResource.createDeck(cardIds);
       final match = await _matchMakerRepository.joinPrivateMatch(
-        guestId: playerId,
+        guestId: deckId,
         inviteCode: event.inviteCode,
       );
       await _connectToMatch(
@@ -170,9 +167,11 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
 
       return Future.value(false);
     }).timeout(
-      Duration(seconds: isPrivate ? 30 : 8),
+      Duration(seconds: isPrivate ? 120 : 4),
       onTimeout: () async {
         await subscription.cancel();
+        await Future<void>.delayed(hostWaitTime);
+        if (state.status == MatchMakingStatus.completed) return;
         try {
           await _gameResource.connectToCpuMatch(matchId: match.id);
           emit(

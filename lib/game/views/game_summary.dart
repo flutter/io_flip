@@ -1,3 +1,6 @@
+import 'dart:math' as math;
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
@@ -14,7 +17,11 @@ import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:provider/provider.dart';
 
 class GameSummaryView extends StatelessWidget {
-  const GameSummaryView({super.key});
+  const GameSummaryView({super.key, this.isWeb = kIsWeb});
+
+  final bool isWeb;
+  static const _gap = SizedBox(width: IoFlipSpacing.sm);
+  static const cardInspectorDuration = Duration(seconds: 4);
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +42,7 @@ class GameSummaryView extends StatelessWidget {
     final screenHeight = MediaQuery.sizeOf(context).height;
     return IoFlipScaffold(
       body: MatchResultSplash(
+        isWeb: isWeb,
         result: result ?? GameResult.draw,
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -63,16 +71,18 @@ class GameSummaryView extends StatelessWidget {
               child: _CardsView(),
             ),
             const Spacer(),
-            Padding(
-              padding: const EdgeInsets.all(IoFlipSpacing.sm),
+            const Padding(
+              padding: EdgeInsets.all(IoFlipSpacing.sm),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  const AudioToggleButton(),
-                  const Spacer(),
-                  GameSummaryFooter(isPhoneWidth: isPhoneWidth),
-                  const Spacer(),
-                  const InfoButton(),
+                  AudioToggleButton(),
+                  _gap,
+                  Expanded(
+                    child: GameSummaryFooter(),
+                  ),
+                  _gap,
+                  InfoButton(),
                 ],
               ),
             ),
@@ -83,8 +93,21 @@ class GameSummaryView extends StatelessWidget {
   }
 }
 
-class _ResultView extends StatelessWidget {
+class _ResultView extends StatefulWidget {
   const _ResultView();
+
+  @override
+  State<_ResultView> createState() => _ResultViewState();
+}
+
+class _ResultViewState extends State<_ResultView> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showCardInspectorSnackBar(context);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,13 +146,59 @@ class _ResultView extends StatelessWidget {
             const SizedBox(width: IoFlipSpacing.sm),
             Text(
               context.l10n
-                  .gameSummaryStreak(state.playerScoreCard.currentStreak),
+                  .gameSummaryStreak(state.playerScoreCard.latestStreak),
               style: IoFlipTextStyles.mobileH6
                   .copyWith(color: IoFlipColors.seedYellow),
             ),
           ],
         ),
       ],
+    );
+  }
+
+  void showCardInspectorSnackBar(BuildContext context) {
+    final text = context.l10n.cardInspectorText;
+    const textStyle = IoFlipTextStyles.bodyMD;
+
+    const defaultPadding = IoFlipSpacing.lg;
+    final screenSize = MediaQuery.sizeOf(context);
+    final textSize = calculateTextSize(text, textStyle);
+    final double horizontalMargin = math.max(
+      0,
+      (screenSize.width - textSize.width - (2 * defaultPadding)) / 2,
+    );
+
+    showDialog<void>(
+      context: context,
+      barrierColor: Colors.transparent,
+      builder: (context) {
+        return Dialog(
+          insetPadding: EdgeInsets.symmetric(
+            horizontal: horizontalMargin,
+            vertical: IoFlipSpacing.md,
+          ),
+          backgroundColor: IoFlipColors.seedBlack.withOpacity(.7),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: IoFlipSpacing.md,
+              horizontal: defaultPadding,
+            ),
+            child: Text(text, style: textStyle, textAlign: TextAlign.center),
+          ),
+        );
+      },
+    );
+
+    Future.delayed(
+      GameSummaryView.cardInspectorDuration,
+      () {
+        if (ModalRoute.of(context)?.isCurrent != true) {
+          GoRouter.maybeOf(context)?.pop();
+        }
+      },
     );
   }
 }
@@ -267,16 +336,11 @@ class _RoundSummary extends StatelessWidget {
 
 class GameSummaryFooter extends StatelessWidget {
   const GameSummaryFooter({
-    required this.isPhoneWidth,
     RouterNeglectCall routerNeglectCall = Router.neglect,
     super.key,
   }) : _routerNeglectCall = routerNeglectCall;
 
   final RouterNeglectCall _routerNeglectCall;
-  final bool isPhoneWidth;
-
-  static const Widget _gap =
-      SizedBox(width: IoFlipSpacing.md, height: IoFlipSpacing.md);
 
   @override
   Widget build(BuildContext context) {
@@ -290,9 +354,11 @@ class GameSummaryFooter extends StatelessWidget {
         (result == MatchResult.guest && !bloc.isHost) ||
         result == MatchResult.draw;
 
-    return Flex(
-      direction: isPhoneWidth ? Axis.vertical : Axis.horizontal,
-      mainAxisSize: MainAxisSize.min,
+    return Wrap(
+      spacing: IoFlipSpacing.sm,
+      runSpacing: IoFlipSpacing.sm,
+      alignment: WrapAlignment.center,
+      runAlignment: WrapAlignment.center,
       children: [
         if (showNextMatch)
           RoundedButton.text(
@@ -301,11 +367,10 @@ class GameSummaryFooter extends StatelessWidget {
               context,
               () => GoRouter.of(context).goNamed(
                 'match_making',
-                extra: MatchMakingPageData(cards: bloc.playerCards),
+                extra: MatchMakingPageData(deck: bloc.playerDeck),
               ),
             ),
           ),
-        _gap,
         RoundedButton.text(
           l10n.submitScore,
           backgroundColor: IoFlipColors.seedBlack,
@@ -316,9 +381,8 @@ class GameSummaryFooter extends StatelessWidget {
             final event = LeaderboardEntryRequested(
               shareHandPageData: ShareHandPageData(
                 initials: '',
-                wins: state.playerScoreCard.currentStreak,
-                deckId: playerDeck.id,
-                deck: bloc.playerCards,
+                wins: state.playerScoreCard.latestStreak,
+                deck: playerDeck,
               ),
             );
 

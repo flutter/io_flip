@@ -196,6 +196,40 @@ void main() {
         ),
       ).thenReturn(transaction);
 
+      final document = _MockDocumentSnapshot<Map<String, dynamic>>();
+      when(document.data).thenReturn(<String, dynamic>{
+        'host': 'host',
+        'guest': 'EMPTY',
+      });
+
+      when(() => transaction.get(docRef)).thenAnswer((_) async => document);
+
+      db.mockTransaction = transaction;
+    }
+
+    void mockRaceConditionErrorTransaction(
+      String guestId,
+      String matchId,
+    ) {
+      final docRef = _MockDocumentReference<Map<String, dynamic>>();
+      when(() => collection.doc(matchId)).thenReturn(docRef);
+
+      final transaction = _MockTransaction();
+      when(
+        () => transaction.update(
+          docRef,
+          {'guest': guestId},
+        ),
+      ).thenReturn(transaction);
+
+      final document = _MockDocumentSnapshot<Map<String, dynamic>>();
+      when(document.data).thenReturn(<String, dynamic>{
+        'host': 'host',
+        'guest': 'some_other_id',
+      });
+
+      when(() => transaction.get(docRef)).thenAnswer((_) async => document);
+
       db.mockTransaction = transaction;
     }
 
@@ -346,7 +380,7 @@ void main() {
     );
 
     test(
-      'throws MatchMakingTimeout when max retry reach its maximum',
+      'creates a new match when a race condition happens',
       () async {
         mockQueryResult(
           matches: [
@@ -356,13 +390,69 @@ void main() {
             ),
           ],
         );
+        mockRaceConditionErrorTransaction('guest123', 'match123');
+        mockAdd('guest123', emptyKey, 'matchId');
+        mockAddState('matchId', const [], const []);
+
+        final match = await matchMakerRepository.findMatch('guest123');
+        expect(
+          match,
+          equals(
+            DraftMatch(
+              id: 'matchId',
+              host: 'guest123',
+            ),
+          ),
+        );
+
+        verify(
+          () => matchStateCollection.add(
+            {
+              'matchId': 'matchId',
+              'hostPlayedCards': const <String>[],
+              'guestPlayedCards': const <String>[],
+            },
+          ),
+        ).called(1);
+      },
+    );
+
+    test(
+      'returns a new match as host when when max retry reaches its maximum',
+      () async {
+        mockQueryResult(
+          matches: [
+            DraftMatch(
+              id: 'match123',
+              host: 'host123',
+            ),
+          ],
+        );
+        mockAdd('hostId', emptyKey, 'matchId');
+        mockAddState('matchId', const [], const []);
         // The mock default behavior is to fail the transaction. So no need
         // manually mock a failed transaction.
 
-        await expectLater(
-          () => matchMakerRepository.findMatch('guest123'),
-          throwsA(isA<MatchMakingTimeout>()),
+        final match = await matchMakerRepository.findMatch('hostId');
+        expect(
+          match,
+          equals(
+            DraftMatch(
+              id: 'matchId',
+              host: 'hostId',
+            ),
+          ),
         );
+
+        verify(
+          () => matchStateCollection.add(
+            {
+              'matchId': 'matchId',
+              'hostPlayedCards': const <String>[],
+              'guestPlayedCards': const <String>[],
+            },
+          ),
+        ).called(1);
       },
     );
 

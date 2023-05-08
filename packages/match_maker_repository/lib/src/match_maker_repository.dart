@@ -6,12 +6,14 @@ import 'package:game_domain/game_domain.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:uuid/uuid.dart';
 
-const _emptyKey = 'EMPTY';
-
 const _inviteKey = 'INVITE';
 
 /// Represents an error that occurs when a matchmaking process times out.
 class MatchMakingTimeout extends Error {}
+
+/// Throw when tried to join a match, but a race condition occurred
+/// and another user joined the match first.
+class MatchMakingRaceError extends Error {}
 
 /// {@template match_maker_repository}
 /// Repository for match making.
@@ -64,7 +66,7 @@ class MatchMakerRepository {
       return DraftMatch(
         id: id,
         host: host,
-        guest: guest == _emptyKey || guest == _inviteKey ? null : guest,
+        guest: guest == emptyKey || guest == _inviteKey ? null : guest,
         hostConnected: hostConnected ?? false,
         guestConnected: guestConnected ?? false,
       );
@@ -138,7 +140,7 @@ class MatchMakerRepository {
     final matchesResult = await collection
         .where(
           'guest',
-          isEqualTo: _emptyKey,
+          isEqualTo: emptyKey,
         )
         .where(
           'hostConnected',
@@ -157,6 +159,11 @@ class MatchMakerRepository {
         try {
           await db.runTransaction<Transaction>((transaction) async {
             final ref = collection.doc(match.id);
+            final snapshot = await transaction.get(ref);
+
+            if (snapshot.data()!['guest'] != emptyKey) {
+              throw MatchMakingRaceError();
+            }
             return transaction.update(ref, {'guest': id});
           });
           return match.copyWithGuest(guest: id);
@@ -166,7 +173,8 @@ class MatchMakerRepository {
       }
 
       if (retryNumber == _maxRetries) {
-        throw MatchMakingTimeout();
+        log('Joining match failed, creating a new one.');
+        return _createMatch(id);
       }
 
       log('No match available, trying again in 2 seconds...');
@@ -215,7 +223,7 @@ class MatchMakerRepository {
     final inviteCode = inviteOnly ? _inviteCode() : null;
     final result = await collection.add({
       'host': id,
-      'guest': inviteOnly ? _inviteKey : _emptyKey,
+      'guest': inviteOnly ? _inviteKey : emptyKey,
       if (inviteCode != null) 'inviteCode': inviteCode,
     });
 

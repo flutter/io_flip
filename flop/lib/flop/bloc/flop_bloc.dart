@@ -22,11 +22,13 @@ part 'flop_state.dart';
 class FlopBloc extends Bloc<FlopEvent, FlopState> {
   FlopBloc({
     required this.setAppCheckDebugToken,
+    required this.reload,
   }) : super(const FlopState.initial()) {
     on<NextStepRequested>(_onNextStepRequested);
   }
 
   final void Function(String) setAppCheckDebugToken;
+  final void Function() reload;
 
   late AuthenticationRepository authenticationRepository;
   late ConnectionRepository connectionRepository;
@@ -319,6 +321,10 @@ class FlopBloc extends Bloc<FlopEvent, FlopState> {
                 status: FlopStatus.success,
               ),
             );
+
+            await Future<void>.delayed(const Duration(seconds: 2));
+            reload();
+
             break;
         }
       }
@@ -335,6 +341,9 @@ class FlopBloc extends Bloc<FlopEvent, FlopState> {
       print(e);
       print(s);
       addError(e, s);
+
+      await Future<void>.delayed(const Duration(seconds: 2));
+      reload();
     }
   }
 }

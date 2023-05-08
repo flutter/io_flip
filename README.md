@@ -37,6 +37,31 @@ _\*I/O FLIP works on Web._
 
 Check [the data loader docs](api/tools/data_loader) for documentation on how the initial data is loaded.
 
+## Running the loading testing bot locally
+
+[Flop](./flop) is a loading testing bot written in Flutter that runs on web meant to help testing
+the scaling of the backend of the game.
+
+To execute it in the staging environment, open a terminal an execute:
+
+```bash
+./scripts/start_flop_webserver.sh
+```
+
+You will be able to open the url where Flop started and check the progress of the bot run.
+
+Which page represents one instance of Flop, to start several instance at the same time,
+the `scripts/spam_flop.sh` can be used, this scripts needs to receive the port where Flop
+started, so assuming that flop is running on `http://localhost:54678`, run:
+
+```bash
+./scripts/spam_flop.sh 54678
+```
+
+The same can be accomplished by using the `army.html` page that is bundled in the in it.
+When loaded you will be able to select how many Flop instances to load, and it is also possible
+to autoload instances of the bot by adding a # with the number of desired bots to spawn.
+
 ---
 
 ## Running Tests 🧪

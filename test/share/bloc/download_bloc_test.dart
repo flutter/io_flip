@@ -23,18 +23,20 @@ void main() {
     power: 20,
     suit: Suit.fire,
   );
+  const deck = Deck(id: 'id', userId: 'userId', cards: [card]);
 
   group('DownloadBloc', () {
     late ShareResource shareResource;
-
     setUp(() {
       shareResource = _MockShareResource();
-      when(() => shareResource.getShareImage(any()))
+      when(() => shareResource.getShareCardImage(any()))
+          .thenAnswer((_) async => Uint8List(8));
+      when(() => shareResource.getShareDeckImage(any()))
           .thenAnswer((_) async => Uint8List(8));
       when(() => file.saveTo(any())).thenAnswer((_) async {});
     });
 
-    group('Download Requested', () {
+    group('Download Cards Requested', () {
       blocTest<DownloadBloc, DownloadState>(
         'can request a Download',
         build: () => DownloadBloc(
@@ -44,7 +46,7 @@ void main() {
           },
         ),
         act: (bloc) => bloc.add(
-          const DownloadRequested(card: card),
+          const DownloadCardsRequested(cards: [card]),
         ),
         expect: () => const [
           DownloadState(
@@ -57,15 +59,58 @@ void main() {
       );
 
       blocTest<DownloadBloc, DownloadState>(
-        'emits failure when an error occured',
+        'emits failure when an error occurred',
         setUp: () {
-          when(() => shareResource.getShareImage(any()))
+          when(() => shareResource.getShareCardImage(any()))
               .thenThrow(Exception('oops'));
         },
         build: () => DownloadBloc(
           shareResource: shareResource,
         ),
-        act: (bloc) => bloc.add(const DownloadRequested(card: card)),
+        act: (bloc) => bloc.add(const DownloadCardsRequested(cards: [card])),
+        expect: () => const [
+          DownloadState(
+            status: DownloadStatus.loading,
+          ),
+          DownloadState(
+            status: DownloadStatus.failure,
+          ),
+        ],
+      );
+    });
+
+    group('Download Deck Requested', () {
+      blocTest<DownloadBloc, DownloadState>(
+        'can request a Download',
+        build: () => DownloadBloc(
+          shareResource: shareResource,
+          parseBytes: (bytes, {String? mimeType, String? name}) {
+            return file;
+          },
+        ),
+        act: (bloc) => bloc.add(
+          const DownloadDeckRequested(deck: deck),
+        ),
+        expect: () => const [
+          DownloadState(
+            status: DownloadStatus.loading,
+          ),
+          DownloadState(
+            status: DownloadStatus.completed,
+          ),
+        ],
+      );
+
+      blocTest<DownloadBloc, DownloadState>(
+        'emits failure when an error occurred',
+        setUp: () {
+          when(() => shareResource.getShareDeckImage(any()))
+              .thenThrow(Exception('oops'));
+        },
+        build: () => DownloadBloc(
+          shareResource: shareResource,
+        ),
+        act: (bloc) => bloc.add(const DownloadDeckRequested(deck: deck)),
         expect: () => const [
           DownloadState(
             status: DownloadStatus.loading,

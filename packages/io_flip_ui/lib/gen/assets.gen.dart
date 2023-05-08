@@ -26,10 +26,8 @@ class $AssetsImagesGen {
       const AssetGenImage('assets/images/card_landing.png');
 
   $AssetsImagesElementsGen get elements => const $AssetsImagesElementsGen();
-
-  /// File path: assets/images/flip_countdown.png
-  AssetGenImage get flipCountdown =>
-      const AssetGenImage('assets/images/flip_countdown.png');
+  $AssetsImagesFlipCountdownGen get flipCountdown =>
+      const $AssetsImagesFlipCountdownGen();
 
   /// File path: assets/images/io_flip_logo.svg
   SvgGenImage get ioFlipLogo =>
@@ -39,11 +37,13 @@ class $AssetsImagesGen {
   SvgGenImage get ioFlipLogo03 =>
       const SvgGenImage('assets/images/io_flip_logo_03.svg');
 
+  $AssetsImagesResultBadgesGen get resultBadges =>
+      const $AssetsImagesResultBadgesGen();
   $AssetsImagesSuitsGen get suits => const $AssetsImagesSuitsGen();
 
   /// List of all assets
   List<dynamic> get values =>
-      [backgroundPattern, cardLanding, flipCountdown, ioFlipLogo, ioFlipLogo03];
+      [backgroundPattern, cardLanding, ioFlipLogo, ioFlipLogo03];
 }
 
 class $AssetsImagesCardFramesGen {
@@ -73,6 +73,9 @@ class $AssetsImagesCardFramesGen {
   AssetGenImage get cardWater =>
       const AssetGenImage('assets/images/card_frames/card_water.png');
 
+  $AssetsImagesCardFramesHolosGen get holos =>
+      const $AssetsImagesCardFramesHolosGen();
+
   /// List of all assets
   List<AssetGenImage> get values =>
       [cardAir, cardBack, cardEarth, cardFire, cardMetal, cardWater];
@@ -87,12 +90,68 @@ class $AssetsImagesElementsGen {
       const $AssetsImagesElementsMobileGen();
 }
 
+class $AssetsImagesFlipCountdownGen {
+  const $AssetsImagesFlipCountdownGen();
+
+  $AssetsImagesFlipCountdownDesktopGen get desktop =>
+      const $AssetsImagesFlipCountdownDesktopGen();
+  $AssetsImagesFlipCountdownMobileGen get mobile =>
+      const $AssetsImagesFlipCountdownMobileGen();
+}
+
+class $AssetsImagesResultBadgesGen {
+  const $AssetsImagesResultBadgesGen();
+
+  /// File path: assets/images/result_badges/draw.png
+  AssetGenImage get draw =>
+      const AssetGenImage('assets/images/result_badges/draw.png');
+
+  /// File path: assets/images/result_badges/lose.png
+  AssetGenImage get lose =>
+      const AssetGenImage('assets/images/result_badges/lose.png');
+
+  /// File path: assets/images/result_badges/win.png
+  AssetGenImage get win =>
+      const AssetGenImage('assets/images/result_badges/win.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [draw, lose, win];
+}
+
 class $AssetsImagesSuitsGen {
   const $AssetsImagesSuitsGen();
 
   $AssetsImagesSuitsCardGen get card => const $AssetsImagesSuitsCardGen();
   $AssetsImagesSuitsOnboardingGen get onboarding =>
       const $AssetsImagesSuitsOnboardingGen();
+}
+
+class $AssetsImagesCardFramesHolosGen {
+  const $AssetsImagesCardFramesHolosGen();
+
+  /// File path: assets/images/card_frames/holos/card_air.png
+  AssetGenImage get cardAir =>
+      const AssetGenImage('assets/images/card_frames/holos/card_air.png');
+
+  /// File path: assets/images/card_frames/holos/card_earth.png
+  AssetGenImage get cardEarth =>
+      const AssetGenImage('assets/images/card_frames/holos/card_earth.png');
+
+  /// File path: assets/images/card_frames/holos/card_fire.png
+  AssetGenImage get cardFire =>
+      const AssetGenImage('assets/images/card_frames/holos/card_fire.png');
+
+  /// File path: assets/images/card_frames/holos/card_metal.png
+  AssetGenImage get cardMetal =>
+      const AssetGenImage('assets/images/card_frames/holos/card_metal.png');
+
+  /// File path: assets/images/card_frames/holos/card_water.png
+  AssetGenImage get cardWater =>
+      const AssetGenImage('assets/images/card_frames/holos/card_water.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values =>
+      [cardAir, cardEarth, cardFire, cardMetal, cardWater];
 }
 
 class $AssetsImagesElementsDesktopGen {
@@ -123,6 +182,41 @@ class $AssetsImagesElementsMobileGen {
       const $AssetsImagesElementsMobileMetalGen();
   $AssetsImagesElementsMobileWaterGen get water =>
       const $AssetsImagesElementsMobileWaterGen();
+}
+
+class $AssetsImagesFlipCountdownDesktopGen {
+  const $AssetsImagesFlipCountdownDesktopGen();
+
+  /// File path: assets/images/flip_countdown/desktop/flip_countdown.png
+  AssetGenImage get flipCountdown => const AssetGenImage(
+      'assets/images/flip_countdown/desktop/flip_countdown.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [flipCountdown];
+}
+
+class $AssetsImagesFlipCountdownMobileGen {
+  const $AssetsImagesFlipCountdownMobileGen();
+
+  /// File path: assets/images/flip_countdown/mobile/flip_countdown_1.png
+  AssetGenImage get flipCountdown1 => const AssetGenImage(
+      'assets/images/flip_countdown/mobile/flip_countdown_1.png');
+
+  /// File path: assets/images/flip_countdown/mobile/flip_countdown_2.png
+  AssetGenImage get flipCountdown2 => const AssetGenImage(
+      'assets/images/flip_countdown/mobile/flip_countdown_2.png');
+
+  /// File path: assets/images/flip_countdown/mobile/flip_countdown_3.png
+  AssetGenImage get flipCountdown3 => const AssetGenImage(
+      'assets/images/flip_countdown/mobile/flip_countdown_3.png');
+
+  /// File path: assets/images/flip_countdown/mobile/flip_countdown_flip.png
+  AssetGenImage get flipCountdownFlip => const AssetGenImage(
+      'assets/images/flip_countdown/mobile/flip_countdown_flip.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values =>
+      [flipCountdown1, flipCountdown2, flipCountdown3, flipCountdownFlip];
 }
 
 class $AssetsImagesSuitsCardGen {

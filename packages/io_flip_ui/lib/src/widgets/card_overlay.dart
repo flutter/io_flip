@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:io_flip_ui/gen/assets.gen.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 
 /// {@template game_card_overlay_type}
@@ -21,100 +22,95 @@ enum CardOverlayType {
 class CardOverlay extends StatelessWidget {
   /// {@macro card_overlay}
   factory CardOverlay.ofType(
-    CardOverlayType type,
-    double? width,
-    double? height,
-  ) {
+    CardOverlayType type, {
+    required BorderRadius borderRadius,
+    required bool isDimmed,
+  }) {
     switch (type) {
       case CardOverlayType.draw:
         return CardOverlay._draw(
           key: const Key('draw_card_overlay'),
-          width: width,
-          height: height,
+          borderRadius: borderRadius,
+          isDimmed: isDimmed,
         );
       case CardOverlayType.win:
         return CardOverlay._win(
           key: const Key('win_card_overlay'),
-          width: width,
-          height: height,
+          borderRadius: borderRadius,
+          isDimmed: isDimmed,
         );
       case CardOverlayType.lose:
         return CardOverlay._lose(
           key: const Key('lose_card_overlay'),
-          width: width,
-          height: height,
+          borderRadius: borderRadius,
+          isDimmed: isDimmed,
         );
     }
   }
 
-  const CardOverlay._win({
-    required this.width,
-    required this.height,
+  CardOverlay._win({
+    required this.borderRadius,
+    required this.isDimmed,
     super.key,
-  })  : color = IoFlipColors.seedBlue,
-        isDimmed = false,
-        child = const Icon(
-          Icons.check,
-          color: IoFlipColors.seedWhite,
-        );
+  })  : color = IoFlipColors.seedGreen,
+        asset = Assets.images.resultBadges.win.path;
 
-  const CardOverlay._lose({
-    required this.width,
-    required this.height,
+  CardOverlay._lose({
+    required this.borderRadius,
+    required this.isDimmed,
     super.key,
   })  : color = IoFlipColors.seedRed,
-        isDimmed = true,
-        child = const Icon(
-          Icons.close,
-          color: IoFlipColors.seedWhite,
-        );
+        asset = Assets.images.resultBadges.lose.path;
 
-  const CardOverlay._draw({
-    required this.width,
-    required this.height,
+  CardOverlay._draw({
+    required this.borderRadius,
+    required this.isDimmed,
     super.key,
-  })  : color = IoFlipColors.seedGrey50,
-        isDimmed = true,
-        child = const Text(
-          '=',
-          style: TextStyle(color: IoFlipColors.seedWhite, fontSize: 24),
-        );
+  })  : color = IoFlipColors.seedPaletteNeutral90,
+        asset = Assets.images.resultBadges.draw.path;
 
   /// Color
   final Color color;
 
-  /// Child widget
-  final Widget child;
+  /// Result badge asset
+  final String asset;
 
-  /// Width
-  final double? width;
-
-  /// Height
-  final double? height;
+  /// Border radius
+  final BorderRadius borderRadius;
 
   /// Whether the card has a dimming effect
   final bool isDimmed;
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = BorderRadius.circular(10);
     return ClipRRect(
       borderRadius: borderRadius,
-      child: Container(
-        width: width,
-        height: height,
+      child: DecoratedBox(
         decoration: BoxDecoration(
-          color: isDimmed ? IoFlipColors.seedWhite.withOpacity(.5) : null,
-          border: Border.all(width: 2, color: color),
+          color: isDimmed ? IoFlipColors.seedBlack.withOpacity(.4) : null,
+          border: Border.all(width: 4, color: color),
           borderRadius: borderRadius,
         ),
         child: Stack(
           children: [
-            CustomPaint(
-              size: const Size(40, 40),
-              painter: OverlayTriangle(color),
+            Positioned(
+              top: 3,
+              left: 3,
+              child: CustomPaint(
+                size: const Size(40, 40),
+                painter: OverlayTriangle(color),
+              ),
             ),
-            child,
+            Positioned(
+              top: 3,
+              left: 3,
+              child: Image.asset(
+                asset,
+                package: 'io_flip_ui',
+                height: 40,
+                width: 40,
+              ),
+            ),
           ],
         ),
       ),

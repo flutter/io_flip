@@ -8,6 +8,7 @@ class StretchAnimation extends StatefulWidget {
   const StretchAnimation({
     required this.child,
     this.animating = false,
+    this.onComplete,
     super.key,
   });
 
@@ -16,6 +17,9 @@ class StretchAnimation extends StatefulWidget {
 
   /// Whether or not the animation is enabled.
   final bool animating;
+
+  /// Called when the animation finishes.
+  final VoidCallback? onComplete;
 
   @override
   State<StretchAnimation> createState() => _StretchAnimationState();
@@ -36,6 +40,11 @@ class _StretchAnimationState extends State<StretchAnimation>
   @override
   void initState() {
     super.initState();
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        widget.onComplete?.call();
+      }
+    });
     if (widget.animating) {
       _controller.forward();
     }

@@ -21,6 +21,7 @@ void main() {
                 description: 'description',
                 suitName: 'air',
                 power: 1,
+                isRare: false,
               ),
             ),
           );

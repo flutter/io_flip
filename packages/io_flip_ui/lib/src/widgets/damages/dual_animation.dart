@@ -58,6 +58,8 @@ class DualAnimation extends StatefulWidget {
     required this.front,
     required VoidCallback onComplete,
     required this.assetSize,
+    required this.cardSize,
+    required this.cardOffset,
     super.key,
   }) : controller = DualAnimationController(onComplete);
 
@@ -73,6 +75,12 @@ class DualAnimation extends StatefulWidget {
   /// Size of the assets to use, large or small
   final AssetSize assetSize;
 
+  /// Size of the cards
+  final GameCardSize cardSize;
+
+  /// Offset of the card within this widget
+  final Offset cardOffset;
+
   @override
   State<DualAnimation> createState() => _DualAnimationState();
 }
@@ -82,9 +90,17 @@ class _DualAnimationState extends State<DualAnimation> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        widget.back.call(
-          widget.controller.backAnimationCompleted,
-          widget.assetSize,
+        ClipPath(
+          clipper: ReverseRRectClipper(
+            RRect.fromRectAndRadius(
+              widget.cardOffset & widget.cardSize.size,
+              Radius.circular(widget.cardSize.width * 0.085),
+            ),
+          ),
+          child: widget.back.call(
+            widget.controller.backAnimationCompleted,
+            widget.assetSize,
+          ),
         ),
         widget.front.call(
           widget.controller.frontAnimationCompleted,
@@ -92,5 +108,30 @@ class _DualAnimationState extends State<DualAnimation> {
         ),
       ],
     );
+  }
+}
+
+/// {@template reverse_rrect_clip}
+/// Clips to the opposite of the given [RRect].
+/// {@endtemplate}
+@visibleForTesting
+class ReverseRRectClipper extends CustomClipper<Path> {
+  /// {@macro reverse_rrect_clip}
+  const ReverseRRectClipper(this.roundedRect);
+
+  /// The rounded rect that should be cutout.
+  final RRect roundedRect;
+
+  @override
+  Path getClip(Size size) {
+    return Path()
+      ..fillType = PathFillType.evenOdd
+      ..addRect(Offset.zero & size)
+      ..addRRect(roundedRect);
+  }
+
+  @override
+  bool shouldReclip(covariant ReverseRRectClipper oldClipper) {
+    return oldClipper.roundedRect != roundedRect;
   }
 }

@@ -79,9 +79,9 @@ void main() {
       test('return the missing files', () async {
         when(() => csv.readAsLines()).thenAnswer(
           (_) async => [
-            'Character,Class,Power,Location,',
-            'Dash,Alien,Banjos,City,',
-            'Android,Mage,Bass,Forest,',
+            'Character,Class,Power,Power(Shorter),Location,',
+            'Dash,Alien,Banjos,B,City,',
+            'Android,Mage,Bass,B,Forest,',
           ],
         );
 
@@ -112,8 +112,9 @@ void main() {
       test('progress is called correctly', () async {
         when(() => csv.readAsLines()).thenAnswer(
           (_) async => [
-            'Character,Class,Power,Location,',
-            'Dash,Alien,Banjos,City,',
+            'Character,Class,Power,Power(Shorter),Location,',
+            'Dash,Alien,Banjos,B,City,',
+            'Android,Mage,Bass,B,Forest,',
           ],
         );
         final generator = CreateImageLookup(
@@ -133,7 +134,10 @@ void main() {
           progress,
           equals(
             [
-              [1, 1],
+              [1, 4],
+              [2, 4],
+              [3, 4],
+              [4, 4],
             ],
           ),
         );

@@ -188,6 +188,7 @@ void main() {
         defaultMockState();
         when(bloc.gameResult).thenReturn(GameResult.lose);
         await tester.pumpSubject(bloc, audioController: audioController);
+        await tester.pumpAndSettle(GameSummaryView.cardInspectorDuration);
 
         verify(() => audioController.playSfx(Assets.sfx.lostMatch)).called(1);
       });
@@ -198,6 +199,7 @@ void main() {
         defaultMockState();
         when(bloc.gameResult).thenReturn(GameResult.win);
         await tester.pumpSubject(bloc, audioController: audioController);
+        await tester.pumpAndSettle(GameSummaryView.cardInspectorDuration);
 
         verify(() => audioController.playSfx(Assets.sfx.winMatch)).called(1);
       });
@@ -207,9 +209,11 @@ void main() {
         defaultMockState();
         when(bloc.gameResult).thenReturn(GameResult.draw);
         await tester.pumpSubject(bloc, audioController: audioController);
+        await tester.pumpAndSettle(GameSummaryView.cardInspectorDuration);
 
         verify(() => audioController.playSfx(Assets.sfx.drawMatch)).called(1);
       });
+
       testWidgets(
         'renders in small phone layout',
         (tester) async {
@@ -217,9 +221,88 @@ void main() {
           defaultMockState();
           when(bloc.gameResult).thenReturn(GameResult.draw);
           await tester.pumpSubject(bloc);
+          await tester.pumpAndSettle(GameSummaryView.cardInspectorDuration);
 
           expect(
             find.byType(GameSummaryView),
+            findsOneWidget,
+          );
+        },
+      );
+
+      testWidgets(
+        'renders win splash on small phone layout',
+        (tester) async {
+          tester.setSmallestPhoneDisplaySize();
+          defaultMockState();
+          when(bloc.gameResult).thenReturn(GameResult.win);
+          final SettingsController settingsController =
+              _MockSettingsController();
+          when(() => settingsController.muted).thenReturn(ValueNotifier(true));
+          await mockNetworkImages(() async {
+            await tester.pumpApp(
+              BlocProvider<GameBloc>.value(
+                value: bloc,
+                child: GameSummaryView(isWeb: true),
+              ),
+              settingsController: settingsController,
+            );
+          });
+
+          expect(
+            find.byKey(Key('matchResultSplash_win_mobile')),
+            findsOneWidget,
+          );
+        },
+      );
+
+      testWidgets(
+        'renders loss splash on small phone layout',
+        (tester) async {
+          tester.setSmallestPhoneDisplaySize();
+          defaultMockState();
+          when(bloc.gameResult).thenReturn(GameResult.lose);
+          final SettingsController settingsController =
+              _MockSettingsController();
+          when(() => settingsController.muted).thenReturn(ValueNotifier(true));
+          await mockNetworkImages(() async {
+            await tester.pumpApp(
+              BlocProvider<GameBloc>.value(
+                value: bloc,
+                child: GameSummaryView(isWeb: true),
+              ),
+              settingsController: settingsController,
+            );
+          });
+
+          expect(
+            find.byKey(Key('matchResultSplash_loss_mobile')),
+            findsOneWidget,
+          );
+        },
+      );
+
+      testWidgets(
+        'renders draw splash on small phone layout',
+        (tester) async {
+          tester.setSmallestPhoneDisplaySize();
+          defaultMockState();
+          when(bloc.gameResult).thenReturn(GameResult.draw);
+          final SettingsController settingsController =
+              _MockSettingsController();
+          when(() => settingsController.muted).thenReturn(ValueNotifier(true));
+          await mockNetworkImages(() async {
+            await tester.pumpApp(
+              BlocProvider<GameBloc>.value(
+                value: bloc,
+                child: GameSummaryView(isWeb: true),
+              ),
+              settingsController: settingsController,
+            );
+          });
+
+          expect(
+            find.byKey(Key('matchResultSplash_draw_mobile')),
             findsOneWidget,
           );
         },
@@ -232,6 +315,7 @@ void main() {
           defaultMockState();
           when(bloc.gameResult).thenReturn(GameResult.draw);
           await tester.pumpSubject(bloc);
+          await tester.pumpAndSettle(GameSummaryView.cardInspectorDuration);
 
           expect(
             find.byType(GameSummaryView),
@@ -245,6 +329,7 @@ void main() {
           defaultMockState();
           when(bloc.gameResult).thenReturn(GameResult.draw);
           await tester.pumpSubject(bloc);
+          await tester.pumpAndSettle(GameSummaryView.cardInspectorDuration);
 
           expect(
             find.text(tester.l10n.gameTiedTitle),
@@ -267,7 +352,7 @@ void main() {
           );
 
           tester.setLandscapeDisplaySize();
-          await tester.pumpAndSettle();
+          await tester.pumpAndSettle(GameSummaryView.cardInspectorDuration);
           expect(
             find.byType(IoFlipLogo),
             findsOneWidget,
@@ -300,6 +385,7 @@ void main() {
           );
           when(bloc.gameResult).thenReturn(GameResult.win);
           await tester.pumpSubject(bloc);
+          await tester.pumpAndSettle(GameSummaryView.cardInspectorDuration);
 
           expect(
             find.text(tester.l10n.gameWonTitle),
@@ -315,6 +401,7 @@ void main() {
           when(bloc.gameResult).thenReturn(GameResult.lose);
 
           await tester.pumpSubject(bloc);
+          await tester.pumpAndSettle(GameSummaryView.cardInspectorDuration);
 
           expect(
             find.text(tester.l10n.gameLostTitle),
@@ -332,6 +419,7 @@ void main() {
           when(() => bloc.isHost).thenReturn(false);
           defaultMockState();
           await tester.pumpSubject(bloc);
+          await tester.pumpAndSettle(GameSummaryView.cardInspectorDuration);
 
           expect(
             find.byType(GameCard),
@@ -363,6 +451,7 @@ void main() {
           when(() => bloc.isHost).thenReturn(true);
           defaultMockState();
           await tester.pumpSubject(bloc);
+          await tester.pumpAndSettle(GameSummaryView.cardInspectorDuration);
 
           expect(find.textContaining('W'), findsOneWidget);
           expect(find.textContaining('D'), findsOneWidget);
@@ -389,7 +478,7 @@ void main() {
           defaultMockState();
           await tester.pumpSubject(bloc, goRouter: goRouter);
           await tester.tap(find.byType(GameCard).first);
-          await tester.pumpAndSettle();
+          await tester.pumpAndSettle(GameSummaryView.cardInspectorDuration);
 
           expect(find.byType(CardInspectorDialog), findsOneWidget);
         },
@@ -416,6 +505,8 @@ void main() {
         (tester) async {
           final goRouter = MockGoRouter();
           when(() => bloc.playerCards).thenReturn([]);
+          when(() => bloc.playerDeck)
+              .thenReturn(Deck(id: 'id', userId: 'userId', cards: cards));
           when(() => bloc.isHost).thenReturn(false);
           defaultMockState();
 
@@ -423,7 +514,6 @@ void main() {
             BlocProvider<GameBloc>.value(
               value: bloc,
               child: GameSummaryFooter(
-                isPhoneWidth: false,
                 routerNeglectCall: router.neglect,
               ),
             ),
@@ -449,13 +539,14 @@ void main() {
         (tester) async {
           final goRouter = MockGoRouter();
           when(() => bloc.playerCards).thenReturn([]);
+          when(() => bloc.playerDeck)
+              .thenReturn(Deck(id: 'id', userId: 'userId', cards: cards));
           defaultMockState(matchResult: MatchResult.draw);
 
           await tester.pumpApp(
             BlocProvider<GameBloc>.value(
               value: bloc,
               child: GameSummaryFooter(
-                isPhoneWidth: false,
                 routerNeglectCall: router.neglect,
               ),
             ),
@@ -478,15 +569,11 @@ void main() {
       testWidgets(
         'pops navigation when the submit score button is tapped and canceled',
         (tester) async {
-          final goRouter = MockGoRouter();
-
           when(() => bloc.isHost).thenReturn(false);
           when(() => bloc.playerCards).thenReturn([]);
           defaultMockState();
-          await tester.pumpSubject(
-            bloc,
-            goRouter: goRouter,
-          );
+          await tester.pumpSubjectWithRouter(bloc);
+          await tester.pumpAndSettle(GameSummaryView.cardInspectorDuration);
 
           await tester.tap(find.text(tester.l10n.submitScore));
           await tester.pumpAndSettle();
@@ -496,7 +583,7 @@ void main() {
           await tester.tap(find.text(tester.l10n.cancel));
           await tester.pumpAndSettle();
 
-          verify(goRouter.pop).called(1);
+          expect(find.byType(QuitGameDialog), findsNothing);
         },
       );
 
@@ -513,7 +600,6 @@ void main() {
             BlocProvider<GameBloc>.value(
               value: bloc,
               child: GameSummaryFooter(
-                isPhoneWidth: false,
                 routerNeglectCall: router.neglect,
               ),
             ),
@@ -534,8 +620,7 @@ void main() {
               LeaderboardEntryRequested(
                 shareHandPageData: ShareHandPageData(
                   initials: '',
-                  deck: const [],
-                  deckId: '',
+                  deck: baseState.match.guestDeck,
                   wins: 0,
                 ),
               ),
@@ -556,7 +641,6 @@ void main() {
             BlocProvider<GameBloc>.value(
               value: bloc,
               child: GameSummaryFooter(
-                isPhoneWidth: false,
                 routerNeglectCall: router.neglect,
               ),
             ),
@@ -571,13 +655,47 @@ void main() {
               LeaderboardEntryRequested(
                 shareHandPageData: ShareHandPageData(
                   initials: '',
-                  deck: const [],
-                  deckId: '',
+                  deck: baseState.match.hostDeck,
                   wins: 0,
                 ),
               ),
             ),
           ).called(1);
+        },
+      );
+
+      testWidgets(
+        'pops snackbar when duration ends',
+        (tester) async {
+          when(() => bloc.isHost).thenReturn(false);
+          when(() => bloc.playerCards).thenReturn([]);
+          defaultMockState();
+          await tester.pumpSubjectWithRouter(bloc);
+          await tester.pumpAndSettle();
+
+          expect(find.text(tester.l10n.cardInspectorText), findsOneWidget);
+
+          await tester.pumpAndSettle(GameSummaryView.cardInspectorDuration);
+          expect(find.text(tester.l10n.cardInspectorText), findsNothing);
+        },
+      );
+
+      testWidgets(
+        'pops snackbar when tapping',
+        (tester) async {
+          when(() => bloc.isHost).thenReturn(false);
+          when(() => bloc.playerCards).thenReturn([]);
+          defaultMockState();
+          await tester.pumpSubjectWithRouter(bloc);
+          await tester.pumpAndSettle();
+
+          expect(find.text(tester.l10n.cardInspectorText), findsOneWidget);
+
+          await tester.tapAt(Offset.zero);
+          await tester.pumpAndSettle();
+          expect(find.text(tester.l10n.cardInspectorText), findsNothing);
+
+          await tester.pumpAndSettle(GameSummaryView.cardInspectorDuration);
         },
       );
     });
@@ -599,6 +717,39 @@ extension GameSummaryViewTest on WidgetTester {
           child: GameView(),
         ),
         router: goRouter,
+        settingsController: settingsController,
+        audioController: audioController,
+      );
+      state<MatchResultSplashState>(
+        find.byType(MatchResultSplash),
+      ).onComplete();
+      await pump();
+    });
+  }
+
+  Future<void> pumpSubjectWithRouter(
+    GameBloc bloc, {
+    AudioController? audioController,
+  }) {
+    final SettingsController settingsController = _MockSettingsController();
+    final goRouter = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (_, __) {
+            return BlocProvider<GameBloc>.value(
+              value: bloc,
+              child: GameSummaryView(),
+            );
+          },
+        ),
+      ],
+    );
+
+    when(() => settingsController.muted).thenReturn(ValueNotifier(true));
+    return mockNetworkImages(() async {
+      await pumpAppWithRouter(
+        goRouter,
         settingsController: settingsController,
         audioController: audioController,
       );

@@ -15,8 +15,8 @@ class ShareResource {
   final ApiClient _apiClient;
 
   final _tweetContent =
-      'Check out my AI powered team of heroes created in the #IOFlipGame. '
-      'See you at #GoogleIO23!';
+      'Check out my AI-designed team of heroes from I/O FLIP at '
+      '#GoogleIO! #FlipWithGoogle';
 
   String _twitterShareUrl(String text) =>
       'https://twitter.com/intent/tweet?text=$text';
@@ -59,20 +59,31 @@ class ShareResource {
     return _facebookShareUrl(handUrl);
   }
 
-  /// Returns the game url.
-  String shareGameUrl() {
-    return _apiClient.shareGameUrl();
-  }
-
   /// Get public/cards/:cardId
   ///
   /// Returns a [Uint8List] image, if any to be found.
-  Future<Uint8List> getShareImage(String cardId) async {
+  Future<Uint8List> getShareCardImage(String cardId) async {
     final response = await _apiClient.getPublic('/public/cards/$cardId');
 
     if (response.statusCode != HttpStatus.ok) {
       throw ApiClientError(
         'GET public/cards/$cardId returned status ${response.statusCode} with the following response: "${response.body}"',
+        StackTrace.current,
+      );
+    }
+
+    return response.bodyBytes;
+  }
+
+  /// Get public/deck/:deckId
+  ///
+  /// Returns a [Uint8List] image, if any to be found.
+  Future<Uint8List> getShareDeckImage(String deckId) async {
+    final response = await _apiClient.getPublic('/public/decks/$deckId');
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw ApiClientError(
+        'GET public/decks/$deckId returned status ${response.statusCode} with the following response: "${response.body}"',
         StackTrace.current,
       );
     }
