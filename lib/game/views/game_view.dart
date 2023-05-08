@@ -597,6 +597,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
           children: [
             AnimatedScale(
               duration: clashSceneTransitionDuration,
+              curve: Curves.easeOutCubic,
               scale: isClashScene ? 4 : 1.4,
               child: Center(
                 child: Image.asset(
@@ -1013,23 +1014,16 @@ class _ClashSceneState extends State<_ClashScene> {
 
     if (isClashScene) {
       final opponentCard = context.select<GameBloc, Card>(
-        (bloc) => bloc.lastPlayedOpponentCard,
+        (bloc) => bloc.clashSceneOpponentCard,
       );
       final playerCard = context.select<GameBloc, Card>(
-        (bloc) => bloc.lastPlayedPlayerCard,
+        (bloc) => bloc.clashScenePlayerCard,
       );
       return Positioned.fill(
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Positioned.fill(
-              child: ClashScene(
-                onFinished: widget.onFinished,
-                opponentCard: opponentCard,
-                playerCard: playerCard,
-              ),
-            )
-          ],
+        child: ClashScene(
+          onFinished: widget.onFinished,
+          opponentCard: opponentCard,
+          playerCard: playerCard,
         ),
       );
     }
