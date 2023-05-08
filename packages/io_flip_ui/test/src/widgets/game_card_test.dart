@@ -189,6 +189,36 @@ void main() {
 
       expect(find.byType(FoilShader), findsOneWidget);
     });
+
+    testWidgets(
+        "don't render shader if on mobile even if "
+        'is rare', (tester) async {
+      await tester.pumpWidget(
+        mockNetworkImages(
+          () => Directionality(
+            textDirection: TextDirection.ltr,
+            child: GameCard(
+              package: null,
+              image: 'image',
+              name: 'name',
+              description: 'description',
+              suitName: 'earth',
+              power: 1,
+              isRare: true,
+              overridePlatformAwareAsset: ({
+                required bool desktop,
+                required bool mobile,
+                bool isWeb = true,
+                TargetPlatform? overrideDefaultTargetPlatform,
+              }) =>
+                  mobile,
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byType(FoilShader), findsNothing);
+    });
   });
 
   group('GameCardSize', () {

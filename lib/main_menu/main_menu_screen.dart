@@ -8,7 +8,6 @@ import 'package:io_flip/info/info.dart';
 import 'package:io_flip/l10n/l10n.dart';
 import 'package:io_flip/leaderboard/leaderboard.dart';
 import 'package:io_flip/terms_of_use/terms_of_use.dart';
-import 'package:io_flip/utils/utils.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 
 class MainMenuScreen extends StatelessWidget {

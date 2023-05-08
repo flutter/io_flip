@@ -4,7 +4,7 @@ import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:io_flip/gen/assets.gen.dart';
-import 'package:io_flip/utils/utils.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 
 class CardMaster extends StatefulWidget {
   const CardMaster({

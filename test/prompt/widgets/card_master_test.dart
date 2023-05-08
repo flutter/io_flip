@@ -1,7 +1,7 @@
 import 'package:flame/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:io_flip/prompt/prompt.dart';
-import 'package:io_flip/utils/utils.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 
 import '../../helpers/helpers.dart';
 
