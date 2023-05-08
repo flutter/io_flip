@@ -106,7 +106,8 @@ void main() {
         );
 
         final player = playerFactory.players['musicPlayer'];
-        verify(() => player!.play(any())).called(1);
+        verify(() => player!.play(any(), volume: any(named: 'volume')))
+            .called(1);
       });
 
       test('replace an old settings', () {
