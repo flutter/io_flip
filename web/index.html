@@ -309,6 +309,12 @@
           return /Android|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent);
         }
 
+        function filterAssetsByPlatform(assets) {
+          const platformToExclude = isMobile() ? 'desktop' : 'mobile';
+
+          return assets.filter((asset) => !asset.includes(platformToExclude));
+        }
+
         function beginPreloading(manifestAssets) {
           var assets = [
             "flutter.js",
@@ -397,7 +403,7 @@
             .map((list) => list.map((url) => "assets/" + url))
             .reduce((arr, curr) => [...arr, ...curr]);
 
-          beginPreloading(assets);
+          beginPreloading(filterAssetsByPlatform(assets));
         });
       })();
     </script>
