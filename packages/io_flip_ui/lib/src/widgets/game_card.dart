@@ -217,6 +217,7 @@ class GameCard extends StatelessWidget {
     this.tilt = Offset.zero,
     @visibleForTesting this.package = 'io_flip_ui',
     super.key,
+    @visibleForTesting this.overridePlatformAwareAsset,
   });
 
   /// [CardOverlayType] type of overlay or null if no overlay
@@ -249,6 +250,9 @@ class GameCard extends StatelessWidget {
   /// An offset with x and y values between -1 and 1, representing how much the
   /// card should be tilted.
   final Offset tilt;
+
+  /// Used to override the default asset resolution based on the platform.
+  final PlatformAwareAsset<bool>? overridePlatformAwareAsset;
 
   /// The name of the package from which this widget is included.
   ///
@@ -348,6 +352,12 @@ class GameCard extends StatelessWidget {
     );
     final borderRadius = BorderRadius.circular(size.width * 0.08);
 
+    final isShaderAvailable =
+        (overridePlatformAwareAsset ?? platformAwareAsset)(
+      desktop: true,
+      mobile: false,
+    );
+
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -362,7 +372,7 @@ class GameCard extends StatelessWidget {
             ),
             child: Stack(
               children: [
-                if (isRare)
+                if (isRare && isShaderAvailable)
                   ClipRRect(
                     borderRadius: borderRadius,
                     child: FoilShader(
