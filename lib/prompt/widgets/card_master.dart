@@ -35,7 +35,7 @@ class _CardMasterState extends State<CardMaster> {
 
   Future<void> _loadAsset() async {
     final loaded = await (widget.deviceInfoAwareAsset ?? deviceInfoAwareAsset)(
-      predicate: isOlderAndroid,
+      predicate: isAndroid,
       asset: () => Assets.images.mobile.cardMasterStill.keyName,
       orElse: () => platformAwareAsset(
         desktop: Assets.images.desktop.cardMaster.keyName,
