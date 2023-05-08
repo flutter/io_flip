@@ -6,12 +6,12 @@ import 'package:data_loader/src/prompt_mapper.dart';
 import 'package:db_client/db_client.dart';
 import 'package:game_domain/game_domain.dart';
 
-/// {@template check_missing_descriptions}
-/// Dart tool that feed descriptions into the Descriptions base
+/// {@template check_missing_image_tables}
+/// Dart tool that checks if there are any missing tables.
 /// {@endtemplate}
-class MissingDescriptions {
-  /// {@macro check_missing_descriptions}
-  const MissingDescriptions({
+class MissingImageTables {
+  /// {@macro check_missing_image_tables}
+  const MissingImageTables({
     required DbClient dbClient,
     required File csv,
     required String character,
@@ -27,38 +27,33 @@ class MissingDescriptions {
     return term.trim().toLowerCase().replaceAll(' ', '_');
   }
 
-  /// Loads the descriptions from the CSV file into the database
+  /// Checks if the database have all the image tables.
   /// [onProgress] is called everytime there is progress,
   /// it takes in the current inserted and the total to insert.
   Future<void> checkMissing(void Function(int, int) onProgress) async {
     final lines = await _csv.readAsLines();
 
     final map = mapCsvToPrompts(lines);
-    final queries = <Map<String, dynamic>>[];
+    final queries = <String>[];
 
     for (final characterClass in map[PromptTermType.characterClass]!) {
-      for (final power in map[PromptTermType.power]!) {
-        for (final location in map[PromptTermType.location]!) {
-          queries.add(
-            {
-              'character': _normalizeTerm(_character),
-              'characterClass': _normalizeTerm(characterClass),
-              'power': _normalizeTerm(power),
-              'location': _normalizeTerm(location),
-            },
-          );
-        }
+      for (final location in map[PromptTermType.location]!) {
+        queries.add(
+          '${_normalizeTerm(_character)}_${_normalizeTerm(characterClass)}'
+          '_${_normalizeTerm(location)}',
+        );
       }
     }
 
     for (final query in queries) {
-      final result = await _dbClient.find(
-        'card_descriptions',
+      final result = await _dbClient.findBy(
+        'image_lookup_table',
+        'prompt',
         query,
       );
 
       if (result.isEmpty) {
-        print(query.values.join('_'));
+        print(query);
       }
     }
     print('Done');
