@@ -83,14 +83,28 @@ void main() {
     test(
       'return the asset when the predicate is true and platform default',
       () async {
-        TestWidgetsFlutterBinding.ensureInitialized();
         final result = await deviceInfoAwareAsset(
           predicate: (_) => true,
           asset: () => 'A',
           orElse: () => 'B',
+          overrideDeviceInfoPlugin: deviceInfoPlugin,
         );
 
         expect(result, equals('A'));
+      },
+    );
+
+    test(
+      'return orElse when the predicate is true and platform default',
+      () async {
+        final result = await deviceInfoAwareAsset(
+          predicate: (_) => true,
+          asset: () => 'A',
+          orElse: () => 'B',
+          overrideDefaultTargetPlatform: TargetPlatform.macOS,
+        );
+
+        expect(result, equals('B'));
       },
     );
 
