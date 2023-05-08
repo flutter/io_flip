@@ -307,7 +307,9 @@ class ClashSceneState extends State<ClashScene> with TickerProviderStateMixin {
               if (_flipCards)
                 ElementalDamageAnimation(
                   winningElement!,
-                  direction: winningCard == ComparisonResult.player
+                  direction: winningSuit == ComparisonResult.player ||
+                          (winningSuit == ComparisonResult.none &&
+                              winningCard == ComparisonResult.player)
                       ? DamageDirection.bottomToTop
                       : DamageDirection.topToBottom,
                   size: cardSize,
