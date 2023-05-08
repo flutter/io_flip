@@ -82,7 +82,7 @@ class _MainMenuScreenView extends StatelessWidget {
         children: [
           Image.asset(
             platformAwareAsset(
-              desktop: Assets.images.main.path,
+              desktop: Assets.images.desktop.main.path,
               mobile: Assets.images.mobile.main.path,
             ),
             height: 312,

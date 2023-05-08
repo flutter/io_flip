@@ -38,7 +38,7 @@ class _CardMasterState extends State<CardMaster> {
       predicate: isOlderAndroid,
       asset: () => Assets.images.mobile.cardMasterStill.keyName,
       orElse: () => platformAwareAsset(
-        desktop: Assets.images.cardMaster.keyName,
+        desktop: Assets.images.desktop.cardMaster.keyName,
         mobile: Assets.images.mobile.cardMaster.keyName,
       ),
     );

@@ -27,14 +27,6 @@ class $AssetsIconsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
-  /// File path: assets/images/back_pack.png
-  AssetGenImage get backPack =>
-      const AssetGenImage('assets/images/back_pack.png');
-
-  /// File path: assets/images/card_master.png
-  AssetGenImage get cardMaster =>
-      const AssetGenImage('assets/images/card_master.png');
-
   $AssetsImagesDesktopGen get desktop => const $AssetsImagesDesktopGen();
 
   /// File path: assets/images/download.png
@@ -45,25 +37,9 @@ class $AssetsImagesGen {
   AssetGenImage get facebook =>
       const AssetGenImage('assets/images/facebook.png');
 
-  /// File path: assets/images/front_pack.png
-  AssetGenImage get frontPack =>
-      const AssetGenImage('assets/images/front_pack.png');
-
   $AssetsImagesLeaderboardGen get leaderboard =>
       const $AssetsImagesLeaderboardGen();
-
-  /// File path: assets/images/main.jpg
-  AssetGenImage get main => const AssetGenImage('assets/images/main.jpg');
-
   $AssetsImagesMobileGen get mobile => const $AssetsImagesMobileGen();
-
-  /// File path: assets/images/stadium_background.png
-  AssetGenImage get stadiumBackground =>
-      const AssetGenImage('assets/images/stadium_background.png');
-
-  /// File path: assets/images/stadium_background_close_up.png
-  AssetGenImage get stadiumBackgroundCloseUp =>
-      const AssetGenImage('assets/images/stadium_background_close_up.png');
 
   /// File path: assets/images/temp_preferences_custom.png
   AssetGenImage get tempPreferencesCustom =>
@@ -73,18 +49,8 @@ class $AssetsImagesGen {
   AssetGenImage get twitter => const AssetGenImage('assets/images/twitter.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [
-        backPack,
-        cardMaster,
-        download,
-        facebook,
-        frontPack,
-        main,
-        stadiumBackground,
-        stadiumBackgroundCloseUp,
-        tempPreferencesCustom,
-        twitter
-      ];
+  List<AssetGenImage> get values =>
+      [download, facebook, tempPreferencesCustom, twitter];
 }
 
 class $AssetsMusicGen {
@@ -189,20 +155,49 @@ class $AssetsSfxGen {
 class $AssetsImagesDesktopGen {
   const $AssetsImagesDesktopGen();
 
+  /// File path: assets/images/desktop/card_master.png
+  AssetGenImage get cardMaster =>
+      const AssetGenImage('assets/images/desktop/card_master.png');
+
   /// File path: assets/images/desktop/draw_splash.png
   AssetGenImage get drawSplash =>
       const AssetGenImage('assets/images/desktop/draw_splash.png');
 
+  /// File path: assets/images/desktop/front_pack.png
+  AssetGenImage get frontPack =>
+      const AssetGenImage('assets/images/desktop/front_pack.png');
+
   /// File path: assets/images/desktop/loss_splash.png
   AssetGenImage get lossSplash =>
       const AssetGenImage('assets/images/desktop/loss_splash.png');
+
+  /// File path: assets/images/desktop/main.jpg
+  AssetGenImage get main =>
+      const AssetGenImage('assets/images/desktop/main.jpg');
+
+  /// File path: assets/images/desktop/stadium_background.png
+  AssetGenImage get stadiumBackground =>
+      const AssetGenImage('assets/images/desktop/stadium_background.png');
+
+  /// File path: assets/images/desktop/stadium_background_close_up.png
+  AssetGenImage get stadiumBackgroundCloseUp => const AssetGenImage(
+      'assets/images/desktop/stadium_background_close_up.png');
 
   /// File path: assets/images/desktop/win_splash.png
   AssetGenImage get winSplash =>
       const AssetGenImage('assets/images/desktop/win_splash.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [drawSplash, lossSplash, winSplash];
+  List<AssetGenImage> get values => [
+        cardMaster,
+        drawSplash,
+        frontPack,
+        lossSplash,
+        main,
+        stadiumBackground,
+        stadiumBackgroundCloseUp,
+        winSplash
+      ];
 }
 
 class $AssetsImagesLeaderboardGen {
@@ -227,10 +222,6 @@ class $AssetsImagesLeaderboardGen {
 class $AssetsImagesMobileGen {
   const $AssetsImagesMobileGen();
 
-  /// File path: assets/images/mobile/back_pack.png
-  AssetGenImage get backPack =>
-      const AssetGenImage('assets/images/mobile/back_pack.png');
-
   /// File path: assets/images/mobile/card_master.png
   AssetGenImage get cardMaster =>
       const AssetGenImage('assets/images/mobile/card_master.png');
@@ -238,6 +229,10 @@ class $AssetsImagesMobileGen {
   /// File path: assets/images/mobile/card_master_still.png
   AssetGenImage get cardMasterStill =>
       const AssetGenImage('assets/images/mobile/card_master_still.png');
+
+  /// File path: assets/images/mobile/deck_pack_still.png
+  AssetGenImage get deckPackStill =>
+      const AssetGenImage('assets/images/mobile/deck_pack_still.png');
 
   /// File path: assets/images/mobile/draw.svg
   SvgGenImage get draw => const SvgGenImage('assets/images/mobile/draw.svg');
@@ -266,9 +261,9 @@ class $AssetsImagesMobileGen {
 
   /// List of all assets
   List<dynamic> get values => [
-        backPack,
         cardMaster,
         cardMasterStill,
+        deckPackStill,
         draw,
         frontPack,
         loss,

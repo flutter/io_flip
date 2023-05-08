@@ -28,5 +28,6 @@ Handler middleware(Handler handler) {
       .use(jwtMiddleware.middleware)
       .use(encryptionMiddleware.middleware)
       .use(corsHeaders())
-      .use(allowHeaders());
+      .use(allowHeaders())
+      .use(contentTypeHeader());
 }

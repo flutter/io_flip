@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:api_client/api_client.dart';
 import 'package:encrypt/encrypt.dart';
@@ -372,7 +373,7 @@ void main() {
           () => httpClient.post(
             Uri.parse('$baseUrl/path/to/endpoint?param1=value1&param2=value2'),
             body: 'BODY_CONTENT',
-            headers: {},
+            headers: {HttpHeaders.contentTypeHeader: ContentType.json.value},
           ),
         ).called(1);
       });
@@ -389,6 +390,7 @@ void main() {
             headers: {
               'Authorization': 'Bearer $mockIdToken',
               'X-Firebase-AppCheck': mockAppCheckToken,
+              HttpHeaders.contentTypeHeader: ContentType.json.value,
             },
           ),
         ).called(1);
@@ -415,6 +417,7 @@ void main() {
             headers: {
               'Authorization': 'Bearer $mockIdToken',
               'X-Firebase-AppCheck': mockAppCheckToken,
+              HttpHeaders.contentTypeHeader: ContentType.json.value,
             },
           ),
         ).called(1);
@@ -424,6 +427,7 @@ void main() {
             headers: {
               'Authorization': 'Bearer $mockNewIdToken',
               'X-Firebase-AppCheck': mockAppCheckToken,
+              HttpHeaders.contentTypeHeader: ContentType.json.value,
             },
           ),
         ).called(1);
@@ -449,7 +453,7 @@ void main() {
           () => httpClient.patch(
             Uri.parse('$baseUrl/path/to/endpoint?param1=value1&param2=value2'),
             body: 'BODY_CONTENT',
-            headers: {},
+            headers: {HttpHeaders.contentTypeHeader: ContentType.json.value},
           ),
         ).called(1);
       });
@@ -466,6 +470,7 @@ void main() {
             headers: {
               'Authorization': 'Bearer $mockIdToken',
               'X-Firebase-AppCheck': mockAppCheckToken,
+              HttpHeaders.contentTypeHeader: ContentType.json.value,
             },
           ),
         ).called(1);
@@ -492,6 +497,7 @@ void main() {
             headers: {
               'Authorization': 'Bearer $mockIdToken',
               'X-Firebase-AppCheck': mockAppCheckToken,
+              HttpHeaders.contentTypeHeader: ContentType.json.value,
             },
           ),
         ).called(1);
@@ -501,6 +507,7 @@ void main() {
             headers: {
               'Authorization': 'Bearer $mockNewIdToken',
               'X-Firebase-AppCheck': mockAppCheckToken,
+              HttpHeaders.contentTypeHeader: ContentType.json.value,
             },
           ),
         ).called(1);
@@ -525,7 +532,7 @@ void main() {
           () => httpClient.put(
             Uri.parse('$baseUrl/path/to/endpoint'),
             body: 'BODY_CONTENT',
-            headers: {},
+            headers: {HttpHeaders.contentTypeHeader: ContentType.json.value},
           ),
         ).called(1);
       });
@@ -542,6 +549,7 @@ void main() {
             headers: {
               'Authorization': 'Bearer $mockIdToken',
               'X-Firebase-AppCheck': mockAppCheckToken,
+              HttpHeaders.contentTypeHeader: ContentType.json.value,
             },
           ),
         ).called(1);
@@ -568,6 +576,7 @@ void main() {
             headers: {
               'Authorization': 'Bearer $mockIdToken',
               'X-Firebase-AppCheck': mockAppCheckToken,
+              HttpHeaders.contentTypeHeader: ContentType.json.value,
             },
           ),
         ).called(1);
@@ -577,6 +586,7 @@ void main() {
             headers: {
               'Authorization': 'Bearer $mockNewIdToken',
               'X-Firebase-AppCheck': mockAppCheckToken,
+              HttpHeaders.contentTypeHeader: ContentType.json.value,
             },
           ),
         ).called(1);

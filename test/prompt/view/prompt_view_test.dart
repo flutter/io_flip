@@ -7,12 +7,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:io_flip/prompt/prompt.dart';
+import 'package:io_flip/settings/settings.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../helpers/helpers.dart';
 
 class _MockPromptFormBloc extends MockBloc<PromptFormEvent, PromptFormState>
     implements PromptFormBloc {}
+
+class _MockSettingsController extends Mock implements SettingsController {}
 
 void main() {
   late PromptFormBloc promptFormBloc;
@@ -78,6 +81,9 @@ void main() {
 
 extension PromptViewTest on WidgetTester {
   Future<void> pumpSubject(PromptFormBloc bloc, GoRouter? goRouter) {
+    final SettingsController settingsController = _MockSettingsController();
+    when(() => settingsController.muted).thenReturn(ValueNotifier(true));
+
     return pumpApp(
       Scaffold(
         body: BlocProvider.value(
@@ -86,6 +92,7 @@ extension PromptViewTest on WidgetTester {
         ),
       ),
       router: goRouter,
+      settingsController: settingsController,
     );
   }
 }

@@ -198,6 +198,19 @@ void main() {
         when(() => bloc.opponentCards).thenReturn(opponentCards);
       });
 
+      testWidgets('preloads opponent cards when game starts', (tester) async {
+        whenListen(
+          bloc,
+          Stream.fromIterable([MatchLoadingState(), baseState]),
+          initialState: MatchLoadingState(),
+        );
+        await tester.pumpSubject(bloc);
+
+        for (final card in opponentCards) {
+          expect(imageCache.containsKey(NetworkImage(card.image)), isTrue);
+        }
+      });
+
       testWidgets('renders the game in its initial state', (tester) async {
         mockState(baseState);
         await tester.pumpSubject(bloc);
@@ -486,9 +499,9 @@ void main() {
           final controller = StreamController<GameState>();
           whenListen(bloc, controller.stream, initialState: baseState);
 
-          when(() => bloc.lastPlayedOpponentCard)
+          when(() => bloc.clashSceneOpponentCard)
               .thenReturn(opponentCards.first);
-          when(() => bloc.lastPlayedPlayerCard).thenReturn(playerCards.first);
+          when(() => bloc.clashScenePlayerCard).thenReturn(playerCards.first);
           await tester.pumpSubject(
             bloc,
             gameScriptMachine: gameScriptMachine,
@@ -712,8 +725,8 @@ void main() {
 
         when(() => bloc.playerCards).thenReturn(playerCards);
         when(() => bloc.opponentCards).thenReturn(opponentCards);
-        when(() => bloc.lastPlayedPlayerCard).thenReturn(playerCards.first);
-        when(() => bloc.lastPlayedOpponentCard).thenReturn(opponentCards.first);
+        when(() => bloc.clashScenePlayerCard).thenReturn(playerCards.first);
+        when(() => bloc.clashSceneOpponentCard).thenReturn(opponentCards.first);
       });
 
       testWidgets('starts when player plays a card', (tester) async {

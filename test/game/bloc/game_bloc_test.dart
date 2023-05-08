@@ -1521,7 +1521,7 @@ void main() {
     );
 
     blocTest<GameBloc, GameState>(
-      'last played cards for player and opponent return correctly',
+      'clash scene cards for player and opponent return correctly',
       build: () => GameBloc(
         connectionRepository: connectionRepository,
         gameResource: gameResource,
@@ -1536,12 +1536,16 @@ void main() {
           MatchRound(
             playerCardId: hostCards.first.id,
             opponentCardId: guestCards.first.id,
-          )
+          ),
+          MatchRound(
+            playerCardId: null,
+            opponentCardId: 'WRONG',
+          ),
         ],
       ),
       verify: (bloc) {
-        expect(bloc.lastPlayedPlayerCard, equals(hostCards.first));
-        expect(bloc.lastPlayedOpponentCard, equals(guestCards.first));
+        expect(bloc.clashScenePlayerCard, equals(hostCards.first));
+        expect(bloc.clashSceneOpponentCard, equals(guestCards.first));
       },
     );
 
