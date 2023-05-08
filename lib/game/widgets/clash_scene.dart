@@ -6,7 +6,6 @@ import 'package:game_domain/game_domain.dart';
 import 'package:game_script_machine/game_script_machine.dart';
 import 'package:io_flip/audio/audio_controller.dart';
 import 'package:io_flip/gen/assets.gen.dart';
-import 'package:io_flip/utils/utils.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 
 enum ComparisonResult { player, opponent, none }

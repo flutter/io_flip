@@ -2,6 +2,15 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
+/// Definition of a platform aware asset function.
+typedef PlatformAwareAsset<T> = T Function({
+  required T desktop,
+  required T mobile,
+  bool isWeb,
+  TargetPlatform? overrideDefaultTargetPlatform,
+});
+
+/// Returns an asset based on the current platform.
 T platformAwareAsset<T>({
   required T desktop,
   required T mobile,
@@ -15,35 +24,48 @@ T platformAwareAsset<T>({
   return isWebMobile ? mobile : desktop;
 }
 
+/// {@template device_info}
+/// Model with device information.
+/// {@endtemplate}
 class DeviceInfo extends Equatable {
+  /// {@macro device_info}
   const DeviceInfo({
     required this.osVersion,
     required this.platform,
   });
 
+  /// The OS version of the device.
   final int osVersion;
+
+  /// The platform of the device.
   final TargetPlatform platform;
 
   @override
   List<Object?> get props => [osVersion, platform];
 }
 
+/// A predicate that checks if the device is an older Android.
 bool isOlderAndroid(DeviceInfo deviceInfo) {
   return deviceInfo.platform == TargetPlatform.android &&
       deviceInfo.osVersion <= 11;
 }
 
+/// A predicate that checks if the device is an android device.
 bool isAndroid(DeviceInfo deviceInfo) {
   return deviceInfo.platform == TargetPlatform.android;
 }
 
+/// Platform aware predicate.
 typedef DeviceInfoPredicate = bool Function(DeviceInfo deviceInfo);
+
+/// Device aware predicate.
 typedef DeviceInfoAwareAsset<T> = Future<T> Function({
   required DeviceInfoPredicate predicate,
   required T Function() asset,
   required T Function() orElse,
 });
 
+/// Returns an asset based on the device information.
 Future<T> deviceInfoAwareAsset<T>({
   required DeviceInfoPredicate predicate,
   required T Function() asset,

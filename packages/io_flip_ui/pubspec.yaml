@@ -8,6 +8,7 @@ environment:
   flutter: 3.10.0-1.4.pre
 
 dependencies:
+  device_info_plus: ^8.2.2
   equatable: ^2.0.5
   flame:
     git:

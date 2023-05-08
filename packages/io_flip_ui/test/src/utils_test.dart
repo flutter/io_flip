@@ -1,9 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:io_flip/utils/utils.dart';
+import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _MockDeviceInfoPlugin extends Mock implements DeviceInfoPlugin {}
@@ -79,6 +79,34 @@ void main() {
 
       expect(result, equals('A'));
     });
+
+    test(
+      'return the asset when the predicate is true and platform default',
+      () async {
+        final result = await deviceInfoAwareAsset(
+          predicate: (_) => true,
+          asset: () => 'A',
+          orElse: () => 'B',
+          overrideDeviceInfoPlugin: deviceInfoPlugin,
+        );
+
+        expect(result, equals('A'));
+      },
+    );
+
+    test(
+      'return orElse when the predicate is true and platform default',
+      () async {
+        final result = await deviceInfoAwareAsset(
+          predicate: (_) => true,
+          asset: () => 'A',
+          orElse: () => 'B',
+          overrideDefaultTargetPlatform: TargetPlatform.macOS,
+        );
+
+        expect(result, equals('B'));
+      },
+    );
 
     test('return the orElse when the predicate is false', () async {
       final result = await deviceInfoAwareAsset(
