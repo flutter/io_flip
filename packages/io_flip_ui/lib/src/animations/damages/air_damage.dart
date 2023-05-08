@@ -7,23 +7,8 @@ import 'package:io_flip_ui/io_flip_ui.dart';
 /// of a card on another.
 /// {@endtemplate}
 class AirDamage extends ElementalDamage {
-  /// {@macro air_damage_small}
-  AirDamage.small({required super.size})
-      : super(
-          chargeBackPath: Assets.images.elements.mobile.air.chargeBack.keyName,
-          chargeFrontPath:
-              Assets.images.elements.mobile.air.chargeFront.keyName,
-          damageReceivePath:
-              Assets.images.elements.mobile.air.damageReceive.keyName,
-          damageSendPath: Assets.images.elements.mobile.air.damageSend.keyName,
-          victoryChargeBackPath:
-              Assets.images.elements.mobile.air.victoryChargeBack.keyName,
-          victoryChargeFrontPath:
-              Assets.images.elements.mobile.air.victoryChargeFront.keyName,
-        );
-
-  /// {@macro air_damage_large}
-  AirDamage.large({required super.size})
+  /// {@macro air_damage}
+  AirDamage({required super.size})
       : super(
           chargeBackPath: Assets.images.elements.desktop.air.chargeBack.keyName,
           chargeFrontPath:
@@ -35,5 +20,7 @@ class AirDamage extends ElementalDamage {
               Assets.images.elements.desktop.air.victoryChargeBack.keyName,
           victoryChargeFrontPath:
               Assets.images.elements.desktop.air.victoryChargeFront.keyName,
+          badgePath: Assets.images.suits.card.air.keyName,
+          animationColor: IoFlipColors.seedSilver,
         );
 }

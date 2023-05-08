@@ -36,7 +36,9 @@ FutureOr<Response> onRequest(RequestContext context, String matchId) async {
           characterPower: ([...powers]..shuffle()).first.term,
         );
 
-        final hand = (cards..shuffle()).take(3).toList();
+        final bestCards = List<Card>.from(cards)
+          ..sort((a, b) => b.power.compareTo(a.power));
+        final hand = bestCards.take(3).toList();
 
         final deckId = await cardsRepository.createDeck(
           cardIds: hand.map((e) => e.id).toList(),

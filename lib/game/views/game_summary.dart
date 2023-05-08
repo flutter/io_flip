@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:game_domain/game_domain.dart';
@@ -19,6 +21,7 @@ class GameSummaryView extends StatelessWidget {
 
   final bool isWeb;
   static const _gap = SizedBox(width: IoFlipSpacing.sm);
+  static const cardInspectorDuration = Duration(seconds: 4);
 
   @override
   Widget build(BuildContext context) {
@@ -90,8 +93,21 @@ class GameSummaryView extends StatelessWidget {
   }
 }
 
-class _ResultView extends StatelessWidget {
+class _ResultView extends StatefulWidget {
   const _ResultView();
+
+  @override
+  State<_ResultView> createState() => _ResultViewState();
+}
+
+class _ResultViewState extends State<_ResultView> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showCardInspectorSnackBar(context);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -137,6 +153,52 @@ class _ResultView extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+
+  void showCardInspectorSnackBar(BuildContext context) {
+    final text = context.l10n.cardInspectorText;
+    const textStyle = IoFlipTextStyles.bodyMD;
+
+    const defaultPadding = IoFlipSpacing.lg;
+    final screenSize = MediaQuery.sizeOf(context);
+    final textSize = calculateTextSize(text, textStyle);
+    final double horizontalMargin = math.max(
+      0,
+      (screenSize.width - textSize.width - (2 * defaultPadding)) / 2,
+    );
+
+    showDialog<void>(
+      context: context,
+      barrierColor: Colors.transparent,
+      builder: (context) {
+        return Dialog(
+          insetPadding: EdgeInsets.symmetric(
+            horizontal: horizontalMargin,
+            vertical: IoFlipSpacing.md,
+          ),
+          backgroundColor: IoFlipColors.seedBlack.withOpacity(.7),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: IoFlipSpacing.md,
+              horizontal: defaultPadding,
+            ),
+            child: Text(text, style: textStyle, textAlign: TextAlign.center),
+          ),
+        );
+      },
+    );
+
+    Future.delayed(
+      GameSummaryView.cardInspectorDuration,
+      () {
+        if (ModalRoute.of(context)?.isCurrent != true) {
+          GoRouter.maybeOf(context)?.pop();
+        }
+      },
     );
   }
 }
@@ -210,7 +272,7 @@ class _CardsView extends StatelessWidget {
             isTransparent: true,
             child: CardInspectorDialog(
               playerCardIds: playerCardIds,
-              deck: cards,
+              cards: cards,
               startingIndex: index + card,
             ),
           ),

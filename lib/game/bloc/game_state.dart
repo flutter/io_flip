@@ -25,26 +25,35 @@ class MatchRound extends Equatable {
     required this.playerCardId,
     required this.opponentCardId,
     this.showCardsOverlay = false,
+    this.turnTimerStarted = false,
   });
 
   final String? playerCardId;
   final String? opponentCardId;
   final bool showCardsOverlay;
+  final bool turnTimerStarted;
 
   MatchRound copyWith({
     String? playerCardId,
     String? opponentCardId,
     bool? showCardsOverlay,
+    bool? turnTimerStarted,
   }) {
     return MatchRound(
       playerCardId: playerCardId ?? this.playerCardId,
       opponentCardId: opponentCardId ?? this.opponentCardId,
       showCardsOverlay: showCardsOverlay ?? this.showCardsOverlay,
+      turnTimerStarted: turnTimerStarted ?? this.turnTimerStarted,
     );
   }
 
   @override
-  List<Object?> get props => [playerCardId, opponentCardId, showCardsOverlay];
+  List<Object?> get props => [
+        playerCardId,
+        opponentCardId,
+        showCardsOverlay,
+        turnTimerStarted,
+      ];
 }
 
 class MatchLoadedState extends GameState {

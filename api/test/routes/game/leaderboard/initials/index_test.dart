@@ -84,6 +84,18 @@ void main() {
       expect(response.statusCode, equals(HttpStatus.badRequest));
     });
 
+    test("responds with a 400 when lowercase initials aren't 3 characters long",
+        () async {
+      when(request.json).thenAnswer(
+        (_) async => {
+          'initials': 'aaaa',
+          'scoreCardId': scoreCardId,
+        },
+      );
+      final response = await route.onRequest(context);
+      expect(response.statusCode, equals(HttpStatus.badRequest));
+    });
+
     test('allows only post methods', () async {
       when(() => request.method).thenReturn(HttpMethod.get);
       final response = await route.onRequest(context);

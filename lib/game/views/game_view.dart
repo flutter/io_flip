@@ -23,75 +23,110 @@ extension on List<TickerFuture> {
       );
 }
 
-class GameView extends StatelessWidget {
+class GameView extends StatefulWidget {
   const GameView({super.key});
 
   @override
+  State<GameView> createState() => _GameViewState();
+}
+
+class _GameViewState extends State<GameView> {
+  List<ImageProvider> imagesToEvict = [];
+
+  Future<void> preloadOpponentImages(List<Card> opponentCards) async {
+    final providers = [
+      for (final card in opponentCards) NetworkImage(card.image),
+    ];
+
+    imagesToEvict.addAll(providers);
+    await Future.wait([
+      for (final provider in providers) precacheImage(provider, context),
+    ]);
+  }
+
+  @override
+  void dispose() {
+    for (final provider in imagesToEvict) {
+      provider.evict();
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocConsumer<GameBloc, GameState>(
+    return BlocListener<GameBloc, GameState>(
       listenWhen: (previous, current) =>
-          context.read<GameBloc>().matchCompleted(current),
+          current is MatchLoadedState && previous is! MatchLoadedState,
       listener: (context, state) {
-        context.read<GameBloc>().sendMatchLeft();
+        final bloc = context.read<GameBloc>();
+        preloadOpponentImages(bloc.opponentCards);
       },
-      builder: (context, state) {
-        final l10n = context.l10n;
-        final Widget child;
+      child: BlocConsumer<GameBloc, GameState>(
+        listenWhen: (previous, current) =>
+            context.read<GameBloc>().matchCompleted(current),
+        listener: (context, state) {
+          context.read<GameBloc>().sendMatchLeft();
+        },
+        builder: (context, state) {
+          final l10n = context.l10n;
+          final Widget child;
 
-        if (state is MatchLoadingState) {
-          child = const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (state is MatchLoadFailedState) {
-          child = IoFlipErrorView(
-            text: 'Unable to join game!',
-            buttonText: l10n.playAgain,
-            onPressed: () {
-              final deck = state.deck;
-              if (deck != null) {
-                GoRouter.of(context).goNamed(
-                  'match_making',
-                  extra: MatchMakingPageData(deck: deck),
-                );
-              } else {
-                GoRouter.of(context).go('/');
-              }
-            },
-          );
-        } else if (state is MatchLoadedState) {
-          if (state.matchState.result != null && state.turnAnimationsFinished) {
-            return const GameSummaryView();
+          if (state is MatchLoadingState) {
+            child = const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (state is MatchLoadFailedState) {
+            child = IoFlipErrorView(
+              text: 'Unable to join game!',
+              buttonText: l10n.playAgain,
+              onPressed: () {
+                final deck = state.deck;
+                if (deck != null) {
+                  GoRouter.of(context).goNamed(
+                    'match_making',
+                    extra: MatchMakingPageData(deck: deck),
+                  );
+                } else {
+                  GoRouter.of(context).go('/');
+                }
+              },
+            );
+          } else if (state is MatchLoadedState) {
+            if (state.matchState.result != null &&
+                state.turnAnimationsFinished) {
+              return const GameSummaryView();
+            }
+            child = const _GameBoard();
+          } else if (state is LeaderboardEntryState) {
+            child = LeaderboardEntryView(
+              scoreCardId: state.scoreCardId,
+              shareHandPageData: state.shareHandPageData,
+            );
+          } else if (state is OpponentAbsentState) {
+            child = IoFlipErrorView(
+              text: 'Opponent left the game!',
+              buttonText: l10n.playAgain,
+              onPressed: () {
+                final deck = state.deck;
+                if (deck != null) {
+                  GoRouter.of(context).goNamed(
+                    'match_making',
+                    extra: MatchMakingPageData(deck: deck),
+                  );
+                } else {
+                  GoRouter.of(context).go('/');
+                }
+              },
+            );
+          } else {
+            child = const SizedBox();
           }
-          child = const _GameBoard();
-        } else if (state is LeaderboardEntryState) {
-          child = LeaderboardEntryView(
-            scoreCardId: state.scoreCardId,
-            shareHandPageData: state.shareHandPageData,
-          );
-        } else if (state is OpponentAbsentState) {
-          child = IoFlipErrorView(
-            text: 'Opponent left the game!',
-            buttonText: l10n.playAgain,
-            onPressed: () {
-              final deck = state.deck;
-              if (deck != null) {
-                GoRouter.of(context).goNamed(
-                  'match_making',
-                  extra: MatchMakingPageData(deck: deck),
-                );
-              } else {
-                GoRouter.of(context).go('/');
-              }
-            },
-          );
-        } else {
-          child = const SizedBox();
-        }
 
-        return IoFlipScaffold(
-          body: child,
-        );
-      },
+          return IoFlipScaffold(
+            body: child,
+          );
+        },
+      ),
     );
   }
 }
@@ -108,6 +143,7 @@ const cardsAtHand = 3;
 const movingCardDuration = Duration(milliseconds: 400);
 const droppedCardDuration = Duration(milliseconds: 200);
 const turnEndDuration = Duration(milliseconds: 250);
+const clashSceneTransitionDuration = Duration(milliseconds: 500);
 
 class _GameBoard extends StatefulWidget {
   const _GameBoard();
@@ -142,6 +178,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
   late List<GameCardSize> playerCardSizes;
   late Offset counterOffset;
   VelocityTracker? velocityTracker;
+  VoidCallback? afterClashCompleted;
 
   final velocity = ValueNotifier<Offset>(Offset.zero);
 
@@ -174,6 +211,24 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     audioController = context.read<AudioController>();
+    layoutAll();
+
+    final bloc = context.read<GameBloc>();
+    final state = bloc.state;
+    if (state is MatchLoadedState) {
+      final cardId =
+          state.rounds.isNotEmpty ? state.rounds.first.opponentCardId : null;
+      if (cardId != null) {
+        final cardIndex = bloc.opponentCards.indexWhere(
+          (card) => card.id == cardId,
+        );
+        if (cardIndex != -1) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            animateOpponentCard(cardIndex);
+          });
+        }
+      }
+    }
   }
 
   @override
@@ -182,9 +237,6 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     final newScreenSize = MediaQuery.sizeOf(context);
 
     if (newScreenSize != screenSize) {
-      if (screenSize == Size.zero) {
-        layoutAll();
-      }
       screenSize = newScreenSize;
       boardOffset = Offset(
         (screenSize.width - boardSize.width) / 2,
@@ -448,6 +500,12 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     return false;
   }
 
+  void animateOpponentCard(int opponentIndex) {
+    final controller = opponentCardControllers[opponentIndex];
+    _runningOpponentAnimations.add(controller.forward());
+    clashControllers.add(controller);
+  }
+
   Future<void> clashSceneCompleted() async {
     final bloc = context.read<GameBloc>()..add(const ClashSceneCompleted());
     for (final controller in clashControllers) {
@@ -472,13 +530,20 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     bloc
       ..add(const TurnAnimationsFinished())
       ..add(const TurnTimerStarted());
+    afterClashCompleted?.call();
+    afterClashCompleted = null;
   }
 
   int? lastPlayedPlayerCardIndex;
-  int? lastPlayedOpponentCardIndex;
 
   @override
   Widget build(BuildContext context) {
+    final isClashScene = context.select<GameBloc, bool>(
+      (bloc) =>
+          bloc.state is MatchLoadedState &&
+          (bloc.state as MatchLoadedState).isClashScene,
+    );
+
     final playerCards =
         context.select<GameBloc, List<Card>>((bloc) => bloc.playerCards);
     final opponentCards =
@@ -531,10 +596,11 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
             });
           }
           if (opponentIndex >= 0) {
-            lastPlayedOpponentCardIndex = opponentIndex;
-            final controller = opponentCardControllers[opponentIndex];
-            _runningOpponentAnimations.add(controller.forward());
-            clashControllers.add(controller);
+            if (state.isClashScene) {
+              afterClashCompleted = () => animateOpponentCard(opponentIndex);
+            } else {
+              animateOpponentCard(opponentIndex);
+            }
           }
 
           if (state.rounds.isNotEmpty) {
@@ -564,79 +630,85 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
         onTapUp: _onTapUp,
         child: Stack(
           children: [
-            Transform.scale(
-              scale: 1.4,
+            AnimatedScale(
+              duration: clashSceneTransitionDuration,
+              curve: Curves.easeOutCubic,
+              scale: isClashScene ? 4 : 1.4,
               child: Center(
                 child: Image.asset(
                   platformAwareAsset(
-                    desktop: Assets.images.stadiumBackground.keyName,
+                    desktop: Assets.images.desktop.stadiumBackground.keyName,
                     mobile: Assets.images.mobile.stadiumBackground.keyName,
                   ),
                   fit: BoxFit.cover,
                 ),
               ),
             ),
-            Center(
-              child: SizedBox.fromSize(
-                size: boardSize,
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    for (final offset in playerCardStartOffsets)
-                      _PlaceholderCard(
-                        rect: offset & playerHandCardSize.size,
+            AnimatedOpacity(
+              duration: clashSceneTransitionDuration,
+              opacity: isClashScene ? 0 : 1,
+              child: Center(
+                child: SizedBox.fromSize(
+                  size: boardSize,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      for (final offset in playerCardStartOffsets)
+                        _PlaceholderCard(
+                          rect: offset & playerHandCardSize.size,
+                        ),
+                      for (final offset in opponentCardOffsets)
+                        _PlaceholderCard(
+                          rect: offset & opponentHandCardSize.size,
+                        ),
+                      ...clashCardOffsets.mapIndexed(
+                        (i, offset) {
+                          var rect = offset & clashCardSize.size;
+                          if (i == 1 && draggingCardAccepted) {
+                            rect = rect.inflate(8);
+                          }
+                          return _ClashCard(
+                            key: Key('clash_card_$i'),
+                            rect: rect,
+                            showPlus: i == 1,
+                          );
+                        },
                       ),
-                    for (final offset in opponentCardOffsets)
-                      _PlaceholderCard(
-                        rect: offset & opponentHandCardSize.size,
+                      ...opponentCards.mapIndexed(
+                        (i, card) {
+                          return _OpponentCard(
+                            card: card,
+                            animation: opponentCardAnimations[i],
+                          );
+                        },
                       ),
-                    ...clashCardOffsets.mapIndexed(
-                      (i, offset) {
-                        var rect = offset & clashCardSize.size;
-                        if (i == 1 && draggingCardAccepted) {
-                          rect = rect.inflate(8);
-                        }
-                        return _ClashCard(
-                          key: Key('clash_card_$i'),
-                          rect: rect,
-                          showPlus: i == 1,
-                        );
-                      },
-                    ),
-                    ...opponentCards.mapIndexed(
-                      (i, card) {
-                        return _OpponentCard(
-                          card: card,
-                          animation: opponentCardAnimations[i],
-                        );
-                      },
-                    ),
-                    const _CardLandingPuffEffect(),
-                    for (var i = 0; i < playerCards.length; i++)
-                      AnimatedBuilder(
-                        animation: playerCardControllers[i],
-                        builder: (context, _) => ValueListenableBuilder(
-                          valueListenable: i == draggingCardIndex
-                              ? velocity
-                              : const AlwaysStoppedAnimation(Offset.zero),
-                          builder: (context, velocity, child) => _PlayerCard(
-                            card: playerCards[i],
-                            isDragging: i == draggingCardIndex,
-                            velocity: velocity,
-                            rect: i == draggingCardIndex
-                                ? GameCardRect(
-                                    gameCardSize: playerCardSizes[i],
-                                    offset: playerCardOffsets[i],
-                                  )
-                                : playerCardTweens[i]
-                                    .evaluate(playerCardControllers[i])!,
-                            animatedCardController:
-                                playerAnimatedCardControllers[i],
+                      const _CardLandingPuffEffect(),
+                      for (var i = 0; i < playerCards.length; i++)
+                        AnimatedBuilder(
+                          animation: playerCardControllers[i],
+                          builder: (context, _) => ValueListenableBuilder(
+                            valueListenable: i == draggingCardIndex
+                                ? velocity
+                                : const AlwaysStoppedAnimation(Offset.zero),
+                            builder: (context, velocity, child) => _PlayerCard(
+                              card: playerCards[i],
+                              isDragging: i == draggingCardIndex,
+                              velocity: velocity,
+                              rect: i == draggingCardIndex
+                                  ? GameCardRect(
+                                      gameCardSize: playerCardSizes[i],
+                                      offset: playerCardOffsets[i],
+                                    )
+                                  : playerCardTweens[i]
+                                      .evaluate(playerCardControllers[i])!,
+                              animatedCardController:
+                                  playerAnimatedCardControllers[i],
+                            ),
                           ),
                         ),
-                      ),
-                    _BoardCounter(counterOffset),
-                  ],
+                      _BoardCounter(counterOffset),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -724,7 +796,9 @@ class _OpponentCard extends StatelessWidget {
     final alreadyPlayed = context.select<GameBloc, bool>((bloc) {
       if (bloc.state is MatchLoadedState) {
         final state = bloc.state as MatchLoadedState;
-        return state.rounds.any((element) => element.opponentCardId == card.id);
+        return state.rounds.any(
+          (round) => round.isComplete() && round.opponentCardId == card.id,
+        );
       }
       return false;
     });
@@ -946,7 +1020,7 @@ class _CardLandingPuffEffect extends StatelessWidget {
   }
 }
 
-class _ClashScene extends StatelessWidget {
+class _ClashScene extends StatefulWidget {
   const _ClashScene({
     required this.onFinished,
     required this.boardSize,
@@ -954,6 +1028,16 @@ class _ClashScene extends StatelessWidget {
 
   final VoidCallback onFinished;
   final Size boardSize;
+
+  @override
+  State<_ClashScene> createState() => _ClashSceneState();
+}
+
+class _ClashSceneState extends State<_ClashScene> {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -965,36 +1049,16 @@ class _ClashScene extends StatelessWidget {
 
     if (isClashScene) {
       final opponentCard = context.select<GameBloc, Card>(
-        (bloc) => bloc.lastPlayedOpponentCard,
+        (bloc) => bloc.clashSceneOpponentCard,
       );
       final playerCard = context.select<GameBloc, Card>(
-        (bloc) => bloc.lastPlayedPlayerCard,
+        (bloc) => bloc.clashScenePlayerCard,
       );
       return Positioned.fill(
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Transform.scale(
-              scale: 1.4,
-              child: Center(
-                child: Image.asset(
-                  platformAwareAsset(
-                    desktop: Assets.images.stadiumBackgroundCloseUp.keyName,
-                    mobile:
-                        Assets.images.mobile.stadiumBackgroundCloseUp.keyName,
-                  ),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            Positioned.fill(
-              child: ClashScene(
-                onFinished: onFinished,
-                opponentCard: opponentCard,
-                playerCard: playerCard,
-              ),
-            )
-          ],
+        child: ClashScene(
+          onFinished: widget.onFinished,
+          opponentCard: opponentCard,
+          playerCard: playerCard,
         ),
       );
     }

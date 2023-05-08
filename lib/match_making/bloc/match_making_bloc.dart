@@ -35,7 +35,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   final String deckId;
   final ConnectionRepository _connectionRepository;
 
-  static const defaultHostWaitTime = Duration(seconds: 1);
+  static const defaultHostWaitTime = Duration(seconds: 2);
   final Duration hostWaitTime;
 
   Future<void> _connectToMatch({

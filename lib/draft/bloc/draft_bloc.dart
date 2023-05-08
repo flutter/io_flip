@@ -157,7 +157,6 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
     try {
       emit(state.copyWith(status: DraftStateStatus.deckLoading));
       final deckId = await _gameResource.createDeck(event.cardIds);
-      // TODO(jaime): refactor create deck call to return the full deck
       final deck = await _gameResource.getDeck(deckId);
       emit(
         state.copyWith(

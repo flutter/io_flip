@@ -10,7 +10,7 @@ FutureOr<Response> onRequest(RequestContext context) async {
     final scoreCardId = json['scoreCardId'];
     final initials = json['initials'];
 
-    if (scoreCardId is! String || initials is! String) {
+    if (scoreCardId is! String || initials is! String || initials.length != 3) {
       return Response(statusCode: HttpStatus.badRequest);
     }
 

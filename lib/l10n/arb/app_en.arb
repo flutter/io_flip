@@ -102,6 +102,10 @@
       }
     }
   },
+  "cardInspectorText": "Tap cards to inspect and share",
+  "@cardInspectorText": {
+    "description": "Text shown on game summary to allow the user that can inspect cards"
+  },
   "nextMatch": "NEXT MATCH",
   "@nextMatch": {
     "description": "Label show on the summary page to start the next match"
@@ -236,7 +240,7 @@
   "@quitGameDialogDescription": {
     "description": "Description of the quit game dialog"
   },
-  "playerAlreadyConnectedError": "I/O Flip is already open on another tab",
+  "playerAlreadyConnectedError": "I/O FLIP is already open on another tab",
   "@playerAlreadyConnectedError": {
     "description": "Error message shown when user connects in multiple tabs"
   },
@@ -272,7 +276,7 @@
   "@howToPlayDeckTitle": {
     "description": "Text shown in the deck page of the how to play flow"
   },
-  "howToPlayElementsTitle": "Flip your way to victory! Elemental powers apply extra damage in a match.",
+  "howToPlayElementsTitle": "FLIP your way to victory! Elemental powers apply extra damage in a match.",
   "@howToPlayElementsTitle": {
     "description": "Text shown in the elements page of the how to play flow"
   },
@@ -320,7 +324,7 @@
   "@infoDialogDescription": {
     "description": "Description prefix text shown in the info dialog"
   },
-  "infoDialogDescriptionInfixOne": "how I/O Flip was made",
+  "infoDialogDescriptionInfixOne": "how I/O FLIP was made",
   "@infoDialogDescriptionInfixOne": {
     "description": "First description infix text shown in the info dialog"
   },
@@ -356,7 +360,19 @@
   "@howItsMadeLinkLabel": {
     "description": "Text shown on the How it's made link"
   },
-  "shareTeamDialogDescription": "Share your team from I/O Flip and challenge your friends to beat your streak!",
+  "shareCardDisclaimer": "If you choose to share, your card will be made available at a unique URL for 30 days and then automatically deleted.",
+  "@shareCardDisclaimer": {
+    "description": "Disclaimer shown on the share card dialog"
+  },
+  "shareCardDialogDescription": "Share your AI-designed creation then head into a match.",
+  "@shareCardDialogDescription": {
+    "description": "Text shown on the share card dialog"
+  },
+  "shareTeamDisclaimer": "If you choose to share, your initials, cards and score will be made available at a unique URL for 30 days and then automatically deleted.",
+  "@shareTeamDisclaimer": {
+    "description": "Disclaimer shown on the share team dialog"
+  },
+  "shareTeamDialogDescription": "Share your team from I/O FLIP and challenge your friends to beat your streak!",
   "@shareTeamDialogDescription": {
     "description": "Text shown on the share team dialog"
   },

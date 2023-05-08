@@ -135,6 +135,10 @@ void main() {
           expect(input.controller.text == 'A', isTrue);
         }
 
+        await tester.enterText(initial2, '');
+        await tester.pumpAndSettle();
+
+        expect(inputs.last.controller.text, isEmpty);
         expect(find.text(l10n.enterInitialsError), findsNothing);
       });
 
@@ -168,6 +172,36 @@ void main() {
 
         expect(find.text(l10n.enterInitialsError), findsOneWidget);
       });
+
+      testWidgets(
+        'requests focus on last input when status is '
+        'InitialsFormStatus.blacklisted',
+        (tester) async {
+          whenListen(
+            initialsFormBloc,
+            Stream.fromIterable([
+              const InitialsFormState(
+                initials: ['A', 'A', 'A'],
+                status: InitialsFormStatus.blacklisted,
+              ),
+            ]),
+            initialState: const InitialsFormState(),
+          );
+
+          await tester.pumpSubject(initialsFormBloc);
+
+          final inputs =
+              tester.widgetList<EditableText>(find.byType(EditableText));
+
+          for (final input in inputs) {
+            if (input != inputs.last) {
+              expect(input.focusNode.hasFocus, isFalse);
+            } else {
+              expect(input.focusNode.hasFocus, isTrue);
+            }
+          }
+        },
+      );
 
       testWidgets('shows blacklist error text on blacklist initials',
           (tester) async {

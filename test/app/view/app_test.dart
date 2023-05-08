@@ -378,8 +378,8 @@ void main() {
       await tester.tap(find.byKey(Key('info_button')));
       await tester.pumpAndSettle();
 
-      // TODO(jaime): change verification when info popup created
       verify(() => audioController.playSfx(Assets.sfx.click)).called(1);
+      expect(find.byType(InfoView), findsOneWidget);
     });
   });
 }

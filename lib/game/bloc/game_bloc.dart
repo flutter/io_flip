@@ -87,11 +87,33 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         emit(MatchLoadFailedState(deck: event.deck));
       } else {
         _audioController.playSfx(Assets.sfx.startGame);
+        final String? initialOpponentCard;
+        if (isHost && matchState.guestPlayedCards.isNotEmpty) {
+          initialOpponentCard = matchState.guestPlayedCards.first;
+        } else if (!isHost && matchState.hostPlayedCards.isNotEmpty) {
+          initialOpponentCard = matchState.hostPlayedCards.first;
+        } else {
+          initialOpponentCard = null;
+        }
+
+        if (initialOpponentCard != null) {
+          playedCardsInOrder.add(initialOpponentCard);
+        }
+
         emit(
           MatchLoadedState(
             match: match,
             matchState: matchState,
-            rounds: const [],
+            rounds: [
+              if (initialOpponentCard != null)
+                MatchRound(
+                  playerCardId: null,
+                  opponentCardId: isHost
+                      ? matchState.guestPlayedCards.first
+                      : matchState.hostPlayedCards.first,
+                ),
+            ],
+            lastPlayedCardId: initialOpponentCard,
             playerScoreCard: scoreCard,
             turnTimeRemaining: _turnMaxTime,
             turnAnimationsFinished: true,
@@ -281,9 +303,21 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       final matchLoadedState = state as MatchLoadedState;
       if (isPlayerAllowedToPlay &&
           !matchLoadedState.matchState.isOver() &&
-          matchLoadedState.matchState.hostPlayedCards.length ==
-              matchLoadedState.matchState.guestPlayedCards.length) {
-        emit(matchLoadedState.copyWith(turnTimeRemaining: _turnMaxTime));
+          (matchLoadedState.rounds.isEmpty ||
+              !matchLoadedState.rounds.last.turnTimerStarted)) {
+        emit(
+          matchLoadedState.copyWith(
+            turnTimeRemaining: _turnMaxTime,
+            rounds: [
+              if (matchLoadedState.rounds.isNotEmpty) ...[
+                ...matchLoadedState.rounds
+                    .take(matchLoadedState.rounds.length - 1),
+                matchLoadedState.rounds.last.copyWith(turnTimerStarted: true),
+              ] else
+                ...matchLoadedState.rounds,
+            ],
+          ),
+        );
 
         _turnTimer?.cancel();
 
@@ -513,15 +547,19 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     return [];
   }
 
-  Card get lastPlayedPlayerCard {
+  Card get clashScenePlayerCard {
     final matchLoadedState = state as MatchLoadedState;
-    final cardId = matchLoadedState.rounds.last.playerCardId;
+    final cardId = matchLoadedState.rounds
+        .lastWhere((round) => round.isComplete())
+        .playerCardId;
     return playerCards.firstWhere((card) => card.id == cardId);
   }
 
-  Card get lastPlayedOpponentCard {
+  Card get clashSceneOpponentCard {
     final matchLoadedState = state as MatchLoadedState;
-    final cardId = matchLoadedState.rounds.last.opponentCardId;
+    final cardId = matchLoadedState.rounds
+        .lastWhere((round) => round.isComplete())
+        .opponentCardId;
     return opponentCards.firstWhere((card) => card.id == cardId);
   }
 

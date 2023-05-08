@@ -274,7 +274,7 @@ void main() {
           hostWaitTime: const Duration(milliseconds: 200),
         )..add(MatchRequested());
 
-        async.elapse(Duration(seconds: 12));
+        async.elapse(Duration(seconds: 5));
         expect(
           bloc.state,
           equals(
@@ -315,7 +315,7 @@ void main() {
           hostWaitTime: const Duration(milliseconds: 200),
         )..add(MatchRequested());
 
-        async.elapse(Duration(seconds: 12));
+        async.elapse(Duration(seconds: 5));
         expect(
           bloc.state,
           equals(
@@ -354,7 +354,7 @@ void main() {
           hostWaitTime: const Duration(milliseconds: 200),
         )..add(PrivateMatchRequested());
 
-        async.elapse(Duration(seconds: 124));
+        async.elapse(Duration(seconds: 122));
         expect(
           bloc.state,
           equals(

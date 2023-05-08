@@ -7,6 +7,7 @@ import 'package:io_flip/draft/draft.dart';
 import 'package:io_flip/how_to_play/how_to_play.dart';
 import 'package:io_flip/l10n/l10n.dart';
 import 'package:io_flip/match_making/match_making.dart';
+import 'package:io_flip/share/share.dart';
 import 'package:io_flip/utils/utils.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 
@@ -39,6 +40,7 @@ class DraftView extends StatefulWidget {
 
 class _DraftViewState extends State<DraftView> {
   bool imagesLoaded = false;
+  final Map<String, ImageProvider> _toEvict = {};
 
   @override
   void didChangeDependencies() {
@@ -48,9 +50,13 @@ class _DraftViewState extends State<DraftView> {
       final bloc = context.read<DraftBloc>();
       if (bloc.state.status == DraftStateStatus.deckLoaded ||
           bloc.state.status == DraftStateStatus.deckSelected) {
+        final providers = {
+          for (final card in bloc.state.cards) card.id: NetworkImage(card.image)
+        };
+        _toEvict.addAll(providers);
         Future.wait([
-          for (final card in bloc.state.cards)
-            widget._cacheImage(NetworkImage(card.image), context),
+          for (final provider in providers.values)
+            widget._cacheImage(provider, context),
         ]).then((_) {
           if (mounted) {
             setState(() {
@@ -60,6 +66,15 @@ class _DraftViewState extends State<DraftView> {
         });
       }
     }
+  }
+
+  @override
+  void dispose() {
+    for (final provider in _toEvict.values) {
+      provider.evict();
+    }
+
+    super.dispose();
   }
 
   @override
@@ -95,6 +110,9 @@ class _DraftViewState extends State<DraftView> {
           (previous.status != current.status) &&
           (current.status == DraftStateStatus.playerDeckCreated),
       listener: (context, state) {
+        for (final card in state.deck?.cards ?? <Card>[]) {
+          _toEvict.remove(card.id);
+        }
         widget._routerNeglectCall(
           context,
           () => GoRouter.of(context).goNamed(
@@ -279,13 +297,28 @@ class _TopCard extends StatelessWidget {
       },
       child: Opacity(
         opacity: opacity,
-        child: GameCard(
-          image: card.image,
-          name: card.name,
-          description: card.description,
-          power: card.power,
-          suitName: card.suit.name,
-          isRare: card.rarity,
+        child: Stack(
+          children: [
+            GameCard(
+              image: card.image,
+              name: card.name,
+              description: card.description,
+              power: card.power,
+              suitName: card.suit.name,
+              isRare: card.rarity,
+            ),
+            Positioned(
+              top: IoFlipSpacing.sm,
+              left: IoFlipSpacing.md,
+              child: RoundedButton.icon(
+                Icons.share_outlined,
+                onPressed: () => IoFlipDialog.show(
+                  context,
+                  child: ShareCardDialog(card: card),
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );

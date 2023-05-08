@@ -22,13 +22,11 @@ void main() {
         power: 1,
         suit: Suit.air,
       );
-  final deck = [card('1'), card('2'), card('3')];
-
-  setUp(() {});
+  final cards = [card('1'), card('2'), card('3')];
 
   group('CardInspector', () {
     Widget buildSubject() => CardInspectorDialog(
-          deck: deck,
+          cards: cards,
           playerCardIds: const ['1', '2', '3'],
           startingIndex: 0,
         );
