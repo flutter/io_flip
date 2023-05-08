@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:mocktail/mocktail.dart';
@@ -84,6 +84,27 @@ void main() {
       'return the asset when the predicate is true and platform default',
       () async {
         TestWidgetsFlutterBinding.ensureInitialized();
+
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+            .setMockMethodCallHandler(
+          MethodChannel('dev.fluttercommunity.plus/device_info'),
+          (message) async => {
+            'appCodeName': 'appCodeName',
+            'appName': 'appName',
+            'appVersion': 'appVersion',
+            'deviceMemory': 0,
+            'language': 'language',
+            'languages': [],
+            'platform': 'platform',
+            'product': 'product',
+            'productSub': 'productSub',
+            'userAgent': 'userAgent',
+            'vendor': 'vendor',
+            'vendorSub': 'vendorSub',
+            'maxTouchPoints': 0,
+            'hardwareConcurrency': 0,
+          },
+        );
         final result = await deviceInfoAwareAsset(
           predicate: (_) => true,
           asset: () => 'A',
