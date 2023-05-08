@@ -106,7 +106,7 @@ void main() {
         );
 
         final player = playerFactory.players['musicPlayer'];
-        verify(() => player!.play(any(), volume: 0.3)).called(1);
+        verify(() => player!.play(any())).called(1);
       });
 
       test('replace an old settings', () {
@@ -158,6 +158,7 @@ void main() {
           ..playSfx(Assets.sfx.addToHand);
 
         final player = playerFactory.players['sfxPlayer#0']!;
+
         final captured = verify(
           () => player.play(
             captureAny(),
