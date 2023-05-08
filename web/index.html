@@ -305,6 +305,10 @@
           });
         }
 
+        function isMobile() {
+          return /Android|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
         function beginPreloading(manifestAssets) {
           var assets = [
             "flutter.js",
@@ -323,7 +327,7 @@
             const value = Math.floor((loaded / totalAssets) * 100) + "%";
             progressIndicator.style.width = value;
 
-            if (assets.length == 0) {
+            if (assets.length == 0 || isMobile()) {
               dispatchAppLoad();
             } else {
               load(assets.shift());
