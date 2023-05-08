@@ -15,10 +15,9 @@ class _MockBoolValueListener extends Mock implements ValueNotifier<bool> {}
 class _MockAudioPlayer extends Mock implements AudioPlayer {}
 
 class _MockAudioPlayerFactory {
-  _MockAudioPlayerFactory({this.volume});
+  _MockAudioPlayerFactory();
   final Map<String, AudioPlayer> players = {};
   final Map<String, StreamController<void>> controllers = {};
-  double? volume;
 
   AudioPlayer createPlayer({required String playerId}) {
     final player = _MockAudioPlayer();
@@ -27,7 +26,7 @@ class _MockAudioPlayerFactory {
     when(
       () => player.play(
         any(),
-        volume: volume,
+        volume: any(named: 'volume'),
       ),
     ).thenAnswer((_) async {});
     when(() => player.onPlayerComplete).thenAnswer(
@@ -95,7 +94,7 @@ void main() {
       });
 
       test('auto play the music if is not muted', () {
-        final playerFactory = _MockAudioPlayerFactory(volume: 0.3);
+        final playerFactory = _MockAudioPlayerFactory();
 
         when(() => musicOn.value).thenReturn(true);
         when(() => muted.value).thenReturn(false);
@@ -315,7 +314,7 @@ void main() {
 
     group('musicOn', () {
       test('stops the music when music is disabled', () async {
-        final playerFactory = _MockAudioPlayerFactory(volume: 0.3);
+        final playerFactory = _MockAudioPlayerFactory();
 
         final musicOn = ValueNotifier(true);
         when(() => settingsController.musicOn).thenReturn(musicOn);
@@ -522,7 +521,7 @@ void main() {
 
       test('when resuming, and an error happens, play the next', () async {
         final lifecycleNotifier = ValueNotifier(AppLifecycleState.paused);
-        final playerFactory = _MockAudioPlayerFactory(volume: 0.3);
+        final playerFactory = _MockAudioPlayerFactory();
 
         when(() => soundsOn.value).thenReturn(true);
         when(() => musicOn.value).thenReturn(true);
@@ -554,7 +553,7 @@ void main() {
 
       test('when resuming, and player is completed, play the next', () async {
         final lifecycleNotifier = ValueNotifier(AppLifecycleState.paused);
-        final playerFactory = _MockAudioPlayerFactory(volume: 0.3);
+        final playerFactory = _MockAudioPlayerFactory();
 
         when(() => soundsOn.value).thenReturn(true);
         when(() => musicOn.value).thenReturn(true);
@@ -585,7 +584,7 @@ void main() {
 
       test('when resuming, and player is playing, do nothing', () async {
         final lifecycleNotifier = ValueNotifier(AppLifecycleState.paused);
-        final playerFactory = _MockAudioPlayerFactory(volume: 0.3);
+        final playerFactory = _MockAudioPlayerFactory();
 
         when(() => soundsOn.value).thenReturn(true);
         when(() => musicOn.value).thenReturn(true);
@@ -617,7 +616,7 @@ void main() {
 
     group('changeSong', () {
       test('plays the next song when the one is playing finishes', () async {
-        final playerFactory = _MockAudioPlayerFactory(volume: 0.3);
+        final playerFactory = _MockAudioPlayerFactory();
 
         when(() => muted.value).thenReturn(false);
         when(() => musicOn.value).thenReturn(true);
