@@ -163,7 +163,7 @@ class ApiClient {
           queryParameters: queryParameters,
         ),
         body: body,
-        headers: _headers,
+        headers: _headers..addContentTypeJson(),
       );
 
       return response.decrypted;
@@ -183,7 +183,7 @@ class ApiClient {
           queryParameters: queryParameters,
         ),
         body: body,
-        headers: _headers,
+        headers: _headers..addContentTypeJson(),
       );
 
       return response.decrypted;
@@ -199,7 +199,7 @@ class ApiClient {
       final response = await _put(
         _base.replace(path: path),
         body: body,
-        headers: _headers,
+        headers: _headers..addContentTypeJson(),
       );
 
       return response.decrypted;
@@ -356,5 +356,11 @@ extension on WebSocket {
     connection.where((state) => state is Reconnected).forEach((_) {
       onReconnected();
     });
+  }
+}
+
+extension on Map<String, String> {
+  void addContentTypeJson() {
+    addAll({HttpHeaders.contentTypeHeader: ContentType.json.value});
   }
 }
