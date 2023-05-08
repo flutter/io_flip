@@ -134,8 +134,11 @@ class MatchMakerRepository {
   }
 
   /// Finds a match.
-  Future<DraftMatch> findMatch(String id,
-      {int retryNumber = 0, bool forcedCpu = false}) async {
+  Future<DraftMatch> findMatch(
+    String id, {
+    int retryNumber = 0,
+    bool forcedCpu = false,
+  }) async {
     if (forcedCpu) {
       return _createMatch(id, forcedCpu: true);
     }
