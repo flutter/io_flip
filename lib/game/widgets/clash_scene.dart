@@ -187,18 +187,9 @@ class ClashSceneState extends State<ClashScene> with TickerProviderStateMixin {
         front: const FlippedGameCard(
           size: cardSize,
         ),
-        back: powerDecrementAnimation == null ||
-                winningSuit == ComparisonResult.player
-            ? GameCard(
-                size: cardSize,
-                image: widget.playerCard.image,
-                name: widget.playerCard.name,
-                description: widget.playerCard.description,
-                power: widget.playerCard.power,
-                suitName: widget.playerCard.suit.name,
-                isRare: widget.playerCard.rarity,
-              )
-            : AnimatedBuilder(
+        back: powerDecrementAnimation != null &&
+                winningSuit == ComparisonResult.opponent
+            ? AnimatedBuilder(
                 animation: powerDecrementAnimation!,
                 builder: (_, __) {
                   return GameCard(
@@ -211,6 +202,15 @@ class ClashSceneState extends State<ClashScene> with TickerProviderStateMixin {
                     isRare: widget.playerCard.rarity,
                   );
                 },
+              )
+            : GameCard(
+                size: cardSize,
+                image: widget.playerCard.image,
+                name: widget.playerCard.name,
+                description: widget.playerCard.description,
+                power: widget.playerCard.power,
+                suitName: widget.playerCard.suit.name,
+                isRare: widget.playerCard.rarity,
               ),
       ),
     );
@@ -229,18 +229,9 @@ class ClashSceneState extends State<ClashScene> with TickerProviderStateMixin {
         front: const FlippedGameCard(
           size: cardSize,
         ),
-        back: powerDecrementAnimation == null ||
-                winningSuit == ComparisonResult.opponent
-            ? GameCard(
-                size: cardSize,
-                image: widget.opponentCard.image,
-                name: widget.opponentCard.name,
-                description: widget.opponentCard.description,
-                power: widget.opponentCard.power,
-                suitName: widget.opponentCard.suit.name,
-                isRare: widget.opponentCard.rarity,
-              )
-            : AnimatedBuilder(
+        back: powerDecrementAnimation != null &&
+                winningSuit == ComparisonResult.player
+            ? AnimatedBuilder(
                 animation: powerDecrementAnimation!,
                 builder: (_, __) {
                   return GameCard(
@@ -253,6 +244,15 @@ class ClashSceneState extends State<ClashScene> with TickerProviderStateMixin {
                     isRare: widget.opponentCard.rarity,
                   );
                 },
+              )
+            : GameCard(
+                size: cardSize,
+                image: widget.opponentCard.image,
+                name: widget.opponentCard.name,
+                description: widget.opponentCard.description,
+                power: widget.opponentCard.power,
+                suitName: widget.opponentCard.suit.name,
+                isRare: widget.opponentCard.rarity,
               ),
       ),
     );
@@ -307,7 +307,7 @@ class ClashSceneState extends State<ClashScene> with TickerProviderStateMixin {
               if (_flipCards)
                 ElementalDamageAnimation(
                   winningElement!,
-                  direction: winningSuit == ComparisonResult.player
+                  direction: winningCard == ComparisonResult.player
                       ? DamageDirection.bottomToTop
                       : DamageDirection.topToBottom,
                   size: cardSize,
