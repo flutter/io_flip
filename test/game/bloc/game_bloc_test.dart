@@ -1274,7 +1274,13 @@ void main() {
                   playerScoreCard: ScoreCard(id: 'scoreCardId'),
                   match: match,
                   matchState: matchState,
-                  rounds: const [],
+                  rounds: const [
+                    MatchRound(
+                      playerCardId: null,
+                      opponentCardId: null,
+                      turnTimerStarted: true,
+                    ),
+                  ],
                   turnAnimationsFinished: true,
                   turnTimeRemaining: 8,
                   isClashScene: false,
