@@ -41,7 +41,7 @@ class DeckPackState extends State<DeckPack> {
 
     widget
         .deviceInfoAware(
-      predicate: isOlderAndroid,
+      predicate: isAndroid,
       asset: () => AnimatedDeckPack(
         onComplete: onComplete,
         onUnderlayVisible: onUnderlayVisible,
