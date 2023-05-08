@@ -29,9 +29,6 @@ class ConfigRepository {
   /// The [CollectionReference] for the config.
   late final CollectionReference<Map<String, dynamic>> configCollection;
 
-  /// Default generator of invite codes.
-  static String defaultInviteCodeGenerator() => const Uuid().v4();
-
   /// Return the private match wait time limit.
   Future<int> getPrivateMatchTimeLimit() async {
     try {
