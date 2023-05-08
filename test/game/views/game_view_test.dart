@@ -198,6 +198,19 @@ void main() {
         when(() => bloc.opponentCards).thenReturn(opponentCards);
       });
 
+      testWidgets('preloads opponent cards when game starts', (tester) async {
+        whenListen(
+          bloc,
+          Stream.fromIterable([MatchLoadingState(), baseState]),
+          initialState: MatchLoadingState(),
+        );
+        await tester.pumpSubject(bloc);
+
+        for (final card in opponentCards) {
+          expect(imageCache.containsKey(NetworkImage(card.image)), isTrue);
+        }
+      });
+
       testWidgets('renders the game in its initial state', (tester) async {
         mockState(baseState);
         await tester.pumpSubject(bloc);
