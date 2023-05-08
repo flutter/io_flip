@@ -12,7 +12,7 @@ class InfoView extends StatelessWidget {
     final l10n = context.l10n;
 
     final links = {
-      l10n.ioLinkLabel: ExternalLinks.googleIO,
+      l10n.ioFlip: ExternalLinks.googleIO,
       l10n.privacyPolicyLinkLabel: ExternalLinks.privacyPolicy,
       l10n.termsOfServiceLinkLabel: ExternalLinks.termsOfService,
       l10n.faqLinkLabel: ExternalLinks.faq,
@@ -21,7 +21,7 @@ class InfoView extends StatelessWidget {
     final descriptionStyle = IoFlipTextStyles.bodyLG.copyWith(
       color: IoFlipColors.seedWhite,
     );
-    final linkStyle = IoFlipTextStyles.bodyLG.copyWith(
+    final linkStyle = IoFlipTextStyles.linkLG.copyWith(
       color: IoFlipColors.seedYellow,
     );
 
@@ -78,7 +78,7 @@ class InfoView extends StatelessWidget {
                 ..onTap = () => openLink(link.value),
             ),
           )
-        ]
+        ],
       ],
     );
   }
