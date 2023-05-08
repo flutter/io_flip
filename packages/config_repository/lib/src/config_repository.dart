@@ -70,7 +70,7 @@ class ConfigRepository {
     return defaultMatchWaitTimeLimit;
   }
 
-  /// Return the match wait time limit before CPU joins.
+  /// Return the percentage of matches that should be matched with CPU.
   Future<double> getCPUAutoMatchPercentage() async {
     try {
       final results = await configCollection

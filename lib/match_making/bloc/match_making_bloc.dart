@@ -82,19 +82,13 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
           ),
         );
       } else {
-<<<<<<< HEAD
         final isHost = match.guest == null;
 
         await _connectToMatch(
           matchId: match.id,
           isHost: isHost,
-=======
-        await _waitGuestToJoin(
-          isPrivate: false,
-          draftMatch: match,
-          emit: emit,
->>>>>>> 5a052293f8e4f702e948611a3b0959d754bd5948
         );
+
         if (!isHost) {
           emit(
             state.copyWith(
@@ -106,7 +100,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
         } else {
           await _waitGuestToJoin(
             isPrivate: false,
-            match: match,
+            draftMatch: match,
             emit: emit,
           );
         }
