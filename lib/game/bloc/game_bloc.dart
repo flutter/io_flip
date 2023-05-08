@@ -183,6 +183,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
                 : null,
             showCardsOverlay: i < matchLoadedState.rounds.length &&
                 matchLoadedState.rounds[i].showCardsOverlay,
+            turnTimerStarted: i < matchLoadedState.rounds.length &&
+                matchLoadedState.rounds[i].turnTimerStarted,
           ),
       ];
 
@@ -301,21 +303,33 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   ) {
     if (state is MatchLoadedState) {
       final matchLoadedState = state as MatchLoadedState;
+      final incompleteRounds =
+          matchLoadedState.rounds.where((round) => !round.isComplete());
       if (isPlayerAllowedToPlay &&
           !matchLoadedState.matchState.isOver() &&
-          (matchLoadedState.rounds.isEmpty ||
-              !matchLoadedState.rounds.last.turnTimerStarted)) {
+          (incompleteRounds.isEmpty ||
+              !incompleteRounds.last.turnTimerStarted)) {
+        final List<MatchRound> rounds;
+        if (incompleteRounds.isNotEmpty) {
+          final roundIndex =
+              matchLoadedState.rounds.indexOf(incompleteRounds.last);
+          rounds = [...matchLoadedState.rounds];
+          final round = rounds.removeAt(roundIndex);
+          rounds.insert(roundIndex, round.copyWith(turnTimerStarted: true));
+        } else {
+          rounds = [
+            ...matchLoadedState.rounds,
+            const MatchRound(
+              playerCardId: null,
+              opponentCardId: null,
+              turnTimerStarted: true,
+            ),
+          ];
+        }
         emit(
           matchLoadedState.copyWith(
             turnTimeRemaining: _turnMaxTime,
-            rounds: [
-              if (matchLoadedState.rounds.isNotEmpty) ...[
-                ...matchLoadedState.rounds
-                    .take(matchLoadedState.rounds.length - 1),
-                matchLoadedState.rounds.last.copyWith(turnTimerStarted: true),
-              ] else
-                ...matchLoadedState.rounds,
-            ],
+            rounds: rounds,
           ),
         );
 
@@ -403,10 +417,17 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
       final matchLoadedState = state as MatchLoadedState;
       if (matchLoadedState.rounds.isNotEmpty) {
-        final lastRound = matchLoadedState.rounds.last;
+        final lastRoundIndex = matchLoadedState.rounds.lastIndexWhere(
+          (round) => round.isComplete(),
+        );
         final rounds = [...matchLoadedState.rounds]
-          ..removeLast()
-          ..add(lastRound.copyWith(showCardsOverlay: true));
+          ..removeAt(lastRoundIndex)
+          ..insert(
+            lastRoundIndex,
+            matchLoadedState.rounds[lastRoundIndex].copyWith(
+              showCardsOverlay: true,
+            ),
+          );
         emit(
           matchLoadedState.copyWith(
             rounds: rounds,
