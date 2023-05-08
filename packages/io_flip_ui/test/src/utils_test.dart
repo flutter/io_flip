@@ -80,6 +80,20 @@ void main() {
       expect(result, equals('A'));
     });
 
+    test(
+      'return the asset when the predicate is true and platform default',
+      () async {
+        TestWidgetsFlutterBinding.ensureInitialized();
+        final result = await deviceInfoAwareAsset(
+          predicate: (_) => true,
+          asset: () => 'A',
+          orElse: () => 'B',
+        );
+
+        expect(result, equals('A'));
+      },
+    );
+
     test('return the orElse when the predicate is false', () async {
       final result = await deviceInfoAwareAsset(
         predicate: (_) => false,
