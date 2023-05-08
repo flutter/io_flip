@@ -601,7 +601,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
               child: Center(
                 child: Image.asset(
                   platformAwareAsset(
-                    desktop: Assets.images.stadiumBackground.keyName,
+                    desktop: Assets.images.desktop.stadiumBackground.keyName,
                     mobile: Assets.images.mobile.stadiumBackground.keyName,
                   ),
                   fit: BoxFit.cover,

@@ -29,7 +29,7 @@ class DeckPack extends StatefulWidget {
 class DeckPackState extends State<DeckPack> {
   late final Images images;
   final asset = platformAwareAsset(
-    desktop: Assets.images.frontPack.keyName,
+    desktop: Assets.images.desktop.frontPack.keyName,
     mobile: Assets.images.mobile.frontPack.keyName,
   );
   bool _underlayVisible = false;
