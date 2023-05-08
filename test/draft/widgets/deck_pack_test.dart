@@ -26,7 +26,7 @@ void main() {
       when(() => images.load(any())).thenAnswer((_) async => image);
     });
 
-    Widget buildSubject({bool isOlderAndroid = false}) => DeckPack(
+    Widget buildSubject({bool isAndroid = false}) => DeckPack(
           onComplete: onComplete,
           size: size,
           child: child,
@@ -35,13 +35,13 @@ void main() {
             required ValueGetter<Widget> orElse,
             required DeviceInfoPredicate predicate,
           }) async =>
-              isOlderAndroid ? asset() : orElse(),
+              isAndroid ? asset() : orElse(),
         );
 
-    group('on older android phones', () {
+    group('on android phones', () {
       testWidgets('shows AnimatedDeckPack', (tester) async {
         await tester.pumpApp(
-          buildSubject(isOlderAndroid: true),
+          buildSubject(isAndroid: true),
           images: Images(prefix: ''),
         );
         await tester.pump();
@@ -51,7 +51,7 @@ void main() {
 
       testWidgets('shows child after 0.95 seconds', (tester) async {
         await tester.pumpApp(
-          buildSubject(isOlderAndroid: true),
+          buildSubject(isAndroid: true),
           images: Images(prefix: ''),
         );
         await tester.pump();
@@ -63,13 +63,14 @@ void main() {
 
       testWidgets('shows child after completing animation', (tester) async {
         await tester.pumpApp(
-          buildSubject(isOlderAndroid: true),
+          buildSubject(isAndroid: true),
           images: Images(prefix: ''),
         );
         await tester.pump();
         await tester.pumpAndSettle();
 
         expect(find.byWidget(child), findsOneWidget);
+        expect(find.byType(AnimatedDeckPack), findsNothing);
         expect(complete, isTrue);
       });
     });
@@ -117,7 +118,8 @@ void main() {
         await tester.pump();
 
         expect(find.byWidget(child), findsOneWidget);
-        expect(find.byType(SpriteAnimationWidget), findsOneWidget);
+        expect(find.byType(SpriteAnimationWidget), findsNothing);
+        expect(find.byType(SpriteAnimationDeckPack), findsNothing);
         expect(complete, isTrue);
       });
     });

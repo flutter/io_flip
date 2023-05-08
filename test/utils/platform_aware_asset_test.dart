@@ -52,8 +52,11 @@ void main() {
     const safariUA =
         'Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1';
 
-    const androidUA =
+    const androidSamsungUA =
         'Mozilla/5.0 (Linux; Android 12; SM-S906N Build/QP1A.190711.020; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/80.0.3987.119 Mobile Safari/537.36';
+
+    const androidPixelUA =
+        'Mozilla/5.0 (Linux; Android 13; Pixel 6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36';
 
     setUp(() {
       deviceInfoPlugin = _MockDeviceInfoPlugin();
@@ -62,7 +65,7 @@ void main() {
       when(() => deviceInfoPlugin.webBrowserInfo)
           .thenAnswer((_) async => webBrowserInfo);
 
-      when(() => webBrowserInfo.userAgent).thenReturn(androidUA);
+      when(() => webBrowserInfo.userAgent).thenReturn(androidSamsungUA);
     });
 
     test('return the asset when the predicate is true', () async {
@@ -114,9 +117,22 @@ void main() {
       expect(result, equals('B'));
     });
 
-    test('parses an android UA', () async {
+    test('parses a samsung android UA', () async {
       final result = await deviceInfoAwareAsset(
         predicate: (info) => info.osVersion == 12,
+        asset: () => 'A',
+        orElse: () => 'B',
+        overrideDeviceInfoPlugin: deviceInfoPlugin,
+        overrideDefaultTargetPlatform: TargetPlatform.android,
+      );
+
+      expect(result, equals('A'));
+    });
+
+    test('parses a pixel android UA', () async {
+      when(() => webBrowserInfo.userAgent).thenReturn(androidPixelUA);
+      final result = await deviceInfoAwareAsset(
+        predicate: (info) => info.osVersion == 13,
         asset: () => 'A',
         orElse: () => 'B',
         overrideDeviceInfoPlugin: deviceInfoPlugin,
@@ -206,6 +222,25 @@ void main() {
       test('isFalse when version is not android', () {
         expect(
           isOlderAndroid(
+            DeviceInfo(osVersion: 11, platform: TargetPlatform.iOS),
+          ),
+          isFalse,
+        );
+      });
+    });
+    group('isAndroid', () {
+      test('isTrue when is android', () {
+        expect(
+          isAndroid(
+            DeviceInfo(osVersion: 10, platform: TargetPlatform.android),
+          ),
+          isTrue,
+        );
+      });
+
+      test('isFalse when version is not android', () {
+        expect(
+          isAndroid(
             DeviceInfo(osVersion: 11, platform: TargetPlatform.iOS),
           ),
           isFalse,

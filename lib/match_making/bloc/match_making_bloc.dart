@@ -82,11 +82,18 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
           ),
         );
       } else {
+<<<<<<< HEAD
         final isHost = match.guest == null;
 
         await _connectToMatch(
           matchId: match.id,
           isHost: isHost,
+=======
+        await _waitGuestToJoin(
+          isPrivate: false,
+          draftMatch: match,
+          emit: emit,
+>>>>>>> 5a052293f8e4f702e948611a3b0959d754bd5948
         );
         if (!isHost) {
           emit(
@@ -124,7 +131,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
       );
       await _waitGuestToJoin(
         isPrivate: true,
-        match: match,
+        draftMatch: match,
         emit: emit,
       );
     } catch (e, s) {
@@ -163,14 +170,14 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
 
   Future<void> _waitGuestToJoin({
     required bool isPrivate,
-    required DraftMatch match,
+    required DraftMatch draftMatch,
     required Emitter<MatchMakingState> emit,
   }) async {
     final stream = _matchMakerRepository
-        .watchMatch(match.id)
+        .watchMatch(draftMatch.id)
         .where((match) => match.guest != null);
 
-    emit(state.copyWith(match: match));
+    emit(state.copyWith(match: draftMatch));
 
     late StreamSubscription<DraftMatch> subscription;
 
@@ -199,19 +206,37 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
         await subscription.cancel();
         await Future<void>.delayed(hostWaitTime);
         if (state.status == MatchMakingStatus.completed) return;
+
         try {
-          await _gameResource.connectToCpuMatch(matchId: match.id);
+          final match = await _gameResource.getMatch(draftMatch.id);
+          if (match == null) {
+            emit(state.copyWith(status: MatchMakingStatus.timeout));
+            return;
+          }
           emit(
             state.copyWith(
-              match: match.copyWithGuest(guest: 'CPU_${match.host}'),
+              match: draftMatch.copyWithGuest(guest: match.guestDeck.userId),
               status: MatchMakingStatus.completed,
               isHost: true,
             ),
           );
-        } catch (e, s) {
-          addError(e, s);
-          _connectionRepository.send(const WebSocketMessage.matchLeft());
-          emit(state.copyWith(status: MatchMakingStatus.timeout));
+          return;
+        } catch (_) {
+          try {
+            await _gameResource.connectToCpuMatch(matchId: draftMatch.id);
+            emit(
+              state.copyWith(
+                match:
+                    draftMatch.copyWithGuest(guest: 'CPU_${draftMatch.host}'),
+                status: MatchMakingStatus.completed,
+                isHost: true,
+              ),
+            );
+          } catch (e, s) {
+            addError(e, s);
+            _connectionRepository.send(const WebSocketMessage.matchLeft());
+            emit(state.copyWith(status: MatchMakingStatus.timeout));
+          }
         }
       },
     );

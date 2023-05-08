@@ -33,6 +33,10 @@ bool isOlderAndroid(DeviceInfo deviceInfo) {
       deviceInfo.osVersion <= 11;
 }
 
+bool isAndroid(DeviceInfo deviceInfo) {
+  return deviceInfo.platform == TargetPlatform.android;
+}
+
 typedef DeviceInfoPredicate = bool Function(DeviceInfo deviceInfo);
 typedef DeviceInfoAwareAsset<T> = Future<T> Function({
   required DeviceInfoPredicate predicate,
