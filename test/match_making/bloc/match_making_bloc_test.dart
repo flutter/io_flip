@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:api_client/api_client.dart';
 import 'package:bloc_test/bloc_test.dart';
@@ -9,6 +10,7 @@ import 'package:connection_repository/connection_repository.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
+import 'package:highlight/languages/awk.dart';
 import 'package:io_flip/match_making/match_making.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
@@ -21,12 +23,15 @@ class _MockGameResource extends Mock implements GameResource {}
 
 class _MockConnectionRepository extends Mock implements ConnectionRepository {}
 
+class _MockRandom extends Mock implements Random {}
+
 void main() {
   group('MatchMakingBloc', () {
     late GameResource gameResource;
     late MatchMakerRepository matchMakerRepository;
     late ConfigRepository configRepository;
     late ConnectionRepository connectionRepository;
+    late Random rng;
     late StreamController<DraftMatch> watchController;
     const deckId = 'deckId';
 
@@ -34,7 +39,10 @@ void main() {
       matchMakerRepository = _MockMatchMakerRepository();
       configRepository = _MockConfigRepository();
       connectionRepository = _MockConnectionRepository();
+      configRepository = _MockConfigRepository();
       watchController = StreamController.broadcast();
+      rng = _MockRandom();
+
       when(() => matchMakerRepository.watchMatch(any()))
           .thenAnswer((_) => watchController.stream);
 
@@ -53,6 +61,11 @@ void main() {
           ),
         ]),
       );
+
+      when(() => configRepository.getCPUAutoMatchPercentage())
+          .thenAnswer((_) async => 0);
+
+      when(() => rng.nextDouble()).thenReturn(1);
     });
 
     test('can be instantiated', () {
@@ -245,6 +258,48 @@ void main() {
           ),
         ),
       );
+    });
+
+    test('directly connects to a CPU match when chances force the player '
+      'to one', () {
+      fakeAsync((async) {
+        when(() => rng.nextDouble()).thenReturn(.8);
+        when(() => configRepository.getCPUAutoMatchPercentage())
+            .thenAnswer((_) async => .9);
+
+        when(() => matchMakerRepository.findMatch(deckId, forcedCpu: true)).thenAnswer(
+          (_) async => DraftMatch(
+            id: '',
+            host: deckId,
+            guest: reservedKey,
+          ),
+        );
+        when(() => gameResource.connectToCpuMatch(matchId: ''))
+            .thenAnswer((_) async {});
+
+        final bloc = MatchMakingBloc(
+          matchMakerRepository: matchMakerRepository,
+          configRepository: configRepository,
+          connectionRepository: connectionRepository,
+          gameResource: gameResource,
+          deckId: deckId,
+          rng: rng,
+          hostWaitTime: const Duration(milliseconds: 600),
+        )..add(MatchRequested());
+
+        async.elapse(const Duration(milliseconds: 200));
+
+        expect(
+          bloc.state,
+          equals(
+            MatchMakingState(
+              status: MatchMakingStatus.completed,
+              match: DraftMatch(id: '', host: deckId, guest: 'CPU_$deckId'),
+              isHost: true,
+            ),
+          ),
+        );
+      });
     });
 
     test(

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:api_client/api_client.dart';
 import 'package:config_repository/config_repository.dart';
@@ -18,11 +19,13 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
     required ConnectionRepository connectionRepository,
     required GameResource gameResource,
     required this.deckId,
+    Random? rng,
     this.hostWaitTime = defaultHostWaitTime,
   })  : _matchMakerRepository = matchMakerRepository,
         _configRepository = configRepository,
         _connectionRepository = connectionRepository,
         _gameResource = gameResource,
+        _rng = rng ?? Random(),
         super(const MatchMakingState.initial()) {
     on<MatchRequested>(_onMatchRequested);
     on<PrivateMatchRequested>(_onPrivateMatchRequested);
@@ -35,6 +38,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   final String deckId;
   final ConnectionRepository _connectionRepository;
 
+  final Random _rng;
   static const defaultHostWaitTime = Duration(seconds: 2);
   final Duration hostWaitTime;
 
@@ -59,28 +63,46 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   ) async {
     try {
       emit(state.copyWith(status: MatchMakingStatus.processing));
-      final match = await _matchMakerRepository.findMatch(deckId);
-      final isHost = match.guest == null;
 
-      await _connectToMatch(
-        matchId: match.id,
-        isHost: isHost,
+      final cpuChance = await _configRepository.getCPUAutoMatchPercentage();
+      final forcedCpu = _rng.nextDouble() < cpuChance;
+
+      final match = await _matchMakerRepository.findMatch(
+        deckId,
+        forcedCpu: forcedCpu,
       );
-      if (!isHost) {
+
+      if (forcedCpu) {
+        await _gameResource.connectToCpuMatch(matchId: match.id);
         emit(
           state.copyWith(
-            match: match,
+            match: match.copyWithGuest(guest: 'CPU_${match.host}'),
             status: MatchMakingStatus.completed,
-            isHost: false,
+            isHost: true,
           ),
         );
       } else {
-        await _waitGuestToJoin(
-          isPrivate: false,
-          match: match,
-          emit: emit,
-          matchWait: matchWait,
+        final isHost = match.guest == null;
+
+        await _connectToMatch(
+          matchId: match.id,
+          isHost: isHost,
         );
+        if (!isHost) {
+          emit(
+            state.copyWith(
+              match: match,
+              status: MatchMakingStatus.completed,
+              isHost: false,
+            ),
+          );
+        } else {
+          await _waitGuestToJoin(
+            isPrivate: false,
+            match: match,
+            emit: emit,
+          );
+        }
       }
     } catch (e, s) {
       addError(e, s);
@@ -94,7 +116,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   ) async {
     try {
       emit(state.copyWith(status: MatchMakingStatus.processing));
-     final match = await _matchMakerRepository.createPrivateMatch(deckId)
+      final match = await _matchMakerRepository.createPrivateMatch(deckId);
 
       await _connectToMatch(
         matchId: match.id,

@@ -105,7 +105,7 @@ class MatchRepository {
 
     final guestDeckId = matchData.data['guest'] as String;
 
-    if (guestDeckId == emptyKey) {
+    if (guestDeckId == emptyKey || guestDeckId == reservedKey) {
       return true;
     }
     return false;
