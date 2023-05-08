@@ -228,5 +228,24 @@ void main() {
         );
       });
     });
+    group('isAndroid', () {
+      test('isTrue when is android', () {
+        expect(
+          isAndroid(
+            DeviceInfo(osVersion: 10, platform: TargetPlatform.android),
+          ),
+          isTrue,
+        );
+      });
+
+      test('isFalse when version is not android', () {
+        expect(
+          isAndroid(
+            DeviceInfo(osVersion: 11, platform: TargetPlatform.iOS),
+          ),
+          isFalse,
+        );
+      });
+    });
   });
 }
