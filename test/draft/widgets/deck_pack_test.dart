@@ -1,20 +1,29 @@
 import 'package:flame/cache.dart';
+import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:io_flip/draft/draft.dart';
 import 'package:io_flip/utils/platform_aware_asset.dart';
+import 'package:mocktail/mocktail.dart';
 
 import '../../helpers/helpers.dart';
+
+class _MockImages extends Mock implements Images {}
 
 void main() {
   group('DeckPack', () {
     const child = SizedBox(key: Key('child'));
     const size = Size.square(200);
+    late Images images;
     late bool complete;
     void onComplete() => complete = true;
 
-    setUp(() {
+    setUp(() async {
       complete = false;
+      images = _MockImages();
+      final image = await createTestImage();
+
+      when(() => images.load(any())).thenAnswer((_) async => image);
     });
 
     Widget buildSubject({bool isOlderAndroid = false}) => DeckPack(
@@ -76,27 +85,27 @@ void main() {
       });
 
       testWidgets('shows child after frame 29', (tester) async {
-        final images = Images(prefix: '');
         await tester.pumpApp(
           buildSubject(),
           images: images,
         );
         await tester.pump();
 
-        tester
-            .state<SpriteAnimationDeckPackState>(
-              find.byType(SpriteAnimationDeckPack),
-            )
-            .onFrame(29);
+        final state = tester.state<SpriteAnimationDeckPackState>(
+          find.byType(SpriteAnimationDeckPack),
+        );
+        await state.setupAnimation();
+        state.onFrame(29);
         await tester.pump();
 
         expect(find.byWidget(child), findsOneWidget);
+        expect(find.byType(SpriteAnimationWidget), findsOneWidget);
       });
 
       testWidgets('shows child after completing animation', (tester) async {
         await tester.pumpApp(
           buildSubject(),
-          images: Images(prefix: ''),
+          images: images,
         );
         await tester.pump();
 
@@ -108,6 +117,7 @@ void main() {
         await tester.pump();
 
         expect(find.byWidget(child), findsOneWidget);
+        expect(find.byType(SpriteAnimationWidget), findsOneWidget);
         expect(complete, isTrue);
       });
     });
