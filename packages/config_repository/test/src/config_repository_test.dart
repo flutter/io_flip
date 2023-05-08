@@ -112,10 +112,17 @@ void main() {
 
       group('getMatchWaitTimeLimit', () {
         test('returns time limit from firebase config', () async {
-          mockQueryResult(0.0);
+          mockQueryResult(0.1);
           await expectLater(
             await configRepository.getCPUAutoMatchPercentage(),
-            equals(0.0),
+            equals(0.1),
+          );
+        });
+        test('clamps value if too high', () async {
+          mockQueryResult(1.1);
+          await expectLater(
+            await configRepository.getCPUAutoMatchPercentage(),
+            equals(1.0),
           );
         });
 

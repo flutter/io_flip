@@ -79,7 +79,7 @@ class ConfigRepository {
           .get();
 
       final data = results.docs.first.data();
-      return data['value'] as double;
+      return (data['value'] as double).clamp(0.0, 1.0);
     } catch (error, stackStrace) {
       log(
         'Error match time limit from db, return the default '
