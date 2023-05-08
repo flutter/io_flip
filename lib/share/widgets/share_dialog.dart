@@ -111,6 +111,14 @@ class ShareDialogView extends StatelessWidget {
               if (bloc.state.status != DownloadStatus.idle &&
                   bloc.state.status != DownloadStatus.loading)
                 _DownloadStatusBar(status: bloc.state.status),
+              const SizedBox(height: IoFlipSpacing.lg),
+              Text(
+                downloadDeck != null
+                    ? l10n.shareTeamDisclaimer
+                    : l10n.shareCardDisclaimer,
+                style: IoFlipTextStyles.bodyMD,
+                textAlign: TextAlign.center,
+              ),
             ],
           ),
         ],

@@ -4,7 +4,7 @@ external fun rollDoubleValue
 
 fun rollCardRarity() -> bool {
   var chance = rollDoubleValue();
-  return chance >= 0.99;
+  return chance >= 0.95;
 }
 
 

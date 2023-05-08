@@ -8,14 +8,14 @@ typedef ShowShareDialog = Future<void> Function(Card card);
 
 class CardInspectorDialog extends StatefulWidget {
   const CardInspectorDialog({
-    required this.deck,
+    required this.cards,
     required this.playerCardIds,
     required this.startingIndex,
     super.key,
   });
 
   final List<String> playerCardIds;
-  final List<Card> deck;
+  final List<Card> cards;
   final int startingIndex;
 
   @override
@@ -23,7 +23,7 @@ class CardInspectorDialog extends StatefulWidget {
 }
 
 class _CardInspectorDialogState extends State<CardInspectorDialog> {
-  late final start = widget.deck.length * 300 + widget.startingIndex;
+  late final start = widget.cards.length * 300 + widget.startingIndex;
   late final controller = PageController(initialPage: start);
 
   @override
@@ -43,7 +43,7 @@ class _CardInspectorDialogState extends State<CardInspectorDialog> {
         children: [
           _CardViewer(
             controller: controller,
-            deck: widget.deck,
+            deck: widget.cards,
             share: (card) => IoFlipDialog.show(
               context,
               child: ShareCardDialog(card: card),
