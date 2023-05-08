@@ -547,7 +547,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     return [];
   }
 
-  Card get lastPlayedPlayerCard {
+  Card get clashScenePlayerCard {
     final matchLoadedState = state as MatchLoadedState;
     final cardId = matchLoadedState.rounds
         .lastWhere((round) => round.isComplete())
@@ -555,9 +555,11 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     return playerCards.firstWhere((card) => card.id == cardId);
   }
 
-  Card get lastPlayedOpponentCard {
+  Card get clashSceneOpponentCard {
     final matchLoadedState = state as MatchLoadedState;
-    final cardId = matchLoadedState.rounds.last.opponentCardId;
+    final cardId = matchLoadedState.rounds
+        .lastWhere((round) => round.isComplete())
+        .opponentCardId;
     return opponentCards.firstWhere((card) => card.id == cardId);
   }
 
