@@ -260,14 +260,16 @@ void main() {
       );
     });
 
-    test('directly connects to a CPU match when chances force the player '
-      'to one', () {
+    test(
+        'directly connects to a CPU match when chances force the player '
+        'to one', () {
       fakeAsync((async) {
         when(() => rng.nextDouble()).thenReturn(.8);
         when(() => configRepository.getCPUAutoMatchPercentage())
             .thenAnswer((_) async => .9);
 
-        when(() => matchMakerRepository.findMatch(deckId, forcedCpu: true)).thenAnswer(
+        when(() => matchMakerRepository.findMatch(deckId, forcedCpu: true))
+            .thenAnswer(
           (_) async => DraftMatch(
             id: '',
             host: deckId,
