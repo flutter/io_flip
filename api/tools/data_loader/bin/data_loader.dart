@@ -190,7 +190,31 @@ void main(List<String> args) async {
       print('Done');
     } else {
       print(
-        'Usage: dart bin/data_loader.dart normalize <images_folder> ',
+        'Usage: dart bin/data_loader.dart missing_descriptions <project_id> <images_folder> <character>',
+      );
+    }
+  } else if (subcommand == 'missing_image_tables') {
+    if (args.length == 4) {
+      final projectId = args[1];
+      final csvPath = args[2];
+      final character = args[3];
+
+      final csv = File(csvPath);
+      final dbClient = DbClient.initialize(projectId);
+
+      final generator = MissingImageTables(
+        dbClient: dbClient,
+        csv: csv,
+        character: character,
+      );
+
+      await generator.checkMissing((__, _) {
+        // Progress printing gets in the way on this command.
+      });
+      print('Done');
+    } else {
+      print(
+        'Usage: dart bin/data_loader.dart missing_image_tables <project_id> <images_folder> <character>',
       );
     }
   } else {
