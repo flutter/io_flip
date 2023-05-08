@@ -25,7 +25,7 @@ void main() {
     testWidgets(
       "Don't render the animation when is older androids",
       (tester) async {
-        await tester.pumpSubject(isOldAndroid: true);
+        await tester.pumpSubject(isAndroid: true);
         await tester.pumpAndSettle();
         expect(find.byType(SpriteAnimationWidget), findsNothing);
       },
@@ -35,7 +35,7 @@ void main() {
 
 extension CardMasterTest on WidgetTester {
   Future<void> pumpSubject({
-    bool isOldAndroid = false,
+    bool isAndroid = false,
     bool isDesktop = false,
   }) async {
     Future<String> deviceInfoAwareAsset({
@@ -43,7 +43,7 @@ extension CardMasterTest on WidgetTester {
       required String Function() asset,
       required String Function() orElse,
     }) async {
-      if (isOldAndroid) {
+      if (isAndroid) {
         return asset();
       } else {
         return orElse();
