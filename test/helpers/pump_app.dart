@@ -1,5 +1,6 @@
 import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:config_repository/config_repository.dart';
 import 'package:connection_repository/connection_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flame/cache.dart';
@@ -34,6 +35,8 @@ class _MockLeaderboardResource extends Mock implements LeaderboardResource {}
 
 class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
 
+class _MockConfigRepository extends Mock implements ConfigRepository {}
+
 class _MockConnectionRepository extends Mock implements ConnectionRepository {}
 
 class _MockMatchSolver extends Mock implements MatchSolver {}
@@ -66,6 +69,7 @@ extension PumpApp on WidgetTester {
     PromptResource? promptResource,
     LeaderboardResource? leaderboardResource,
     MatchMakerRepository? matchMakerRepository,
+    ConfigRepository? configRepository,
     AudioController? audioController,
     ConnectionRepository? connectionRepository,
     MatchSolver? matchSolver,
@@ -98,6 +102,9 @@ extension PumpApp on WidgetTester {
           ),
           Provider.value(
             value: matchMakerRepository ?? _MockMatchMakerRepository(),
+          ),
+          Provider.value(
+            value: configRepository ?? _MockConfigRepository(),
           ),
           Provider.value(
             value: audioController ?? _MockAudioController(),
@@ -145,6 +152,7 @@ extension PumpAppWithRouter on WidgetTester {
     ScriptsResource? scriptsResource,
     LeaderboardResource? leaderboardResource,
     MatchMakerRepository? matchMakerRepository,
+    ConfigRepository? configRepository,
     MatchSolver? matchSolver,
     GameScriptMachine? gameScriptMachine,
     AudioController? audioController,
@@ -174,6 +182,9 @@ extension PumpAppWithRouter on WidgetTester {
           ),
           Provider.value(
             value: matchMakerRepository ?? _MockMatchMakerRepository(),
+          ),
+          Provider.value(
+            value: configRepository ?? _MockConfigRepository(),
           ),
           Provider.value(
             value: matchSolver ?? _MockMatchSolver(),

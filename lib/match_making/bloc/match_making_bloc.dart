@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:api_client/api_client.dart';
+import 'package:config_repository/config_repository.dart';
 import 'package:connection_repository/connection_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,11 +14,13 @@ part 'match_making_state.dart';
 class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   MatchMakingBloc({
     required MatchMakerRepository matchMakerRepository,
+    required ConfigRepository configRepository,
     required ConnectionRepository connectionRepository,
     required GameResource gameResource,
     required this.deckId,
     this.hostWaitTime = defaultHostWaitTime,
   })  : _matchMakerRepository = matchMakerRepository,
+        _configRepository = configRepository,
         _connectionRepository = connectionRepository,
         _gameResource = gameResource,
         super(const MatchMakingState.initial()) {
@@ -27,6 +30,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   }
 
   final MatchMakerRepository _matchMakerRepository;
+  final ConfigRepository _configRepository;
   final GameResource _gameResource;
   final String deckId;
   final ConnectionRepository _connectionRepository;
@@ -157,6 +161,8 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
       );
       subscription.cancel();
     });
+    final matchWait = await _configRepository.getMatchWaitTimeLimit();
+    final privateMatchWait = await _configRepository.getPrivateMatchTimeLimit();
 
     await Future.doWhile(() async {
       await Future<void>.delayed(hostWaitTime);
@@ -167,7 +173,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
 
       return Future.value(false);
     }).timeout(
-      Duration(seconds: isPrivate ? 120 : 3),
+      Duration(seconds: isPrivate ? privateMatchWait : matchWait),
       onTimeout: () async {
         await subscription.cancel();
         await Future<void>.delayed(hostWaitTime);

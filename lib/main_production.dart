@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:config_repository/config_repository.dart';
 import 'package:connection_repository/connection_repository.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:game_domain/game_domain.dart';
@@ -48,6 +49,7 @@ void main() async {
           settingsPersistence: LocalStorageSettingsPersistence(),
           apiClient: apiClient,
           matchMakerRepository: MatchMakerRepository(db: firestore),
+          configRepository: ConfigRepository(db: firestore),
           connectionRepository: ConnectionRepository(apiClient: apiClient),
           matchSolver: MatchSolver(gameScriptMachine: gameScriptMachine),
           gameScriptMachine: gameScriptMachine,

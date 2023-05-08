@@ -17,6 +17,8 @@ dependencies:
   cloud_firestore: ^4.5.0
   code_text_field: ^1.1.0
   collection: ^1.17.0
+  config_repository:
+    path: packages/config_repository
   connection_repository:
     path: packages/connection_repository
   cross_file: ^0.3.3+4

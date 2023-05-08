@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:api_client/api_client.dart';
 import 'package:bloc_test/bloc_test.dart';
+import 'package:config_repository/config_repository.dart';
 import 'package:connection_repository/connection_repository.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,6 +15,8 @@ import 'package:mocktail/mocktail.dart';
 
 class _MockMatchMakerRepository extends Mock implements MatchMakerRepository {}
 
+class _MockConfigRepository extends Mock implements ConfigRepository {}
+
 class _MockGameResource extends Mock implements GameResource {}
 
 class _MockConnectionRepository extends Mock implements ConnectionRepository {}
@@ -22,18 +25,25 @@ void main() {
   group('MatchMakingBloc', () {
     late GameResource gameResource;
     late MatchMakerRepository matchMakerRepository;
+    late ConfigRepository configRepository;
     late ConnectionRepository connectionRepository;
     late StreamController<DraftMatch> watchController;
     const deckId = 'deckId';
 
     setUp(() {
       matchMakerRepository = _MockMatchMakerRepository();
+      configRepository = _MockConfigRepository();
       connectionRepository = _MockConnectionRepository();
       watchController = StreamController.broadcast();
       when(() => matchMakerRepository.watchMatch(any()))
           .thenAnswer((_) => watchController.stream);
 
       gameResource = _MockGameResource();
+
+      when(() => configRepository.getMatchWaitTimeLimit())
+          .thenAnswer((_) async => 0);
+      when(() => configRepository.getPrivateMatchTimeLimit())
+          .thenAnswer((_) async => 0);
 
       when(() => connectionRepository.messages).thenAnswer(
         (_) => Stream.fromIterable([
@@ -49,6 +59,7 @@ void main() {
       expect(
         MatchMakingBloc(
           matchMakerRepository: _MockMatchMakerRepository(),
+          configRepository: configRepository,
           connectionRepository: connectionRepository,
           gameResource: gameResource,
           deckId: deckId,
@@ -61,6 +72,7 @@ void main() {
       expect(
         MatchMakingBloc(
           matchMakerRepository: _MockMatchMakerRepository(),
+          configRepository: configRepository,
           connectionRepository: connectionRepository,
           gameResource: gameResource,
           deckId: deckId,
@@ -73,6 +85,7 @@ void main() {
       'can find a match as a guest',
       build: () => MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
+        configRepository: configRepository,
         connectionRepository: connectionRepository,
         gameResource: gameResource,
         deckId: deckId,
@@ -117,6 +130,7 @@ void main() {
       'emits a failure when an error happens',
       build: () => MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
+        configRepository: configRepository,
         connectionRepository: connectionRepository,
         gameResource: gameResource,
         deckId: deckId,
@@ -142,6 +156,7 @@ void main() {
       "creates a match when there isn't one open",
       build: () => MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
+        configRepository: configRepository,
         connectionRepository: connectionRepository,
         gameResource: gameResource,
         deckId: deckId,
@@ -189,6 +204,7 @@ void main() {
 
       final bloc = MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
+        configRepository: configRepository,
         connectionRepository: connectionRepository,
         gameResource: gameResource,
         deckId: deckId,
@@ -251,6 +267,7 @@ void main() {
 
         final bloc = MatchMakingBloc(
           matchMakerRepository: matchMakerRepository,
+          configRepository: configRepository,
           connectionRepository: connectionRepository,
           gameResource: gameResource,
           deckId: deckId,
@@ -291,6 +308,7 @@ void main() {
 
         final bloc = MatchMakingBloc(
           matchMakerRepository: matchMakerRepository,
+          configRepository: configRepository,
           connectionRepository: connectionRepository,
           gameResource: gameResource,
           deckId: deckId,
@@ -329,6 +347,7 @@ void main() {
 
         final bloc = MatchMakingBloc(
           matchMakerRepository: matchMakerRepository,
+          configRepository: configRepository,
           connectionRepository: connectionRepository,
           gameResource: gameResource,
           deckId: deckId,
@@ -353,6 +372,7 @@ void main() {
       'creates a private match when requested',
       build: () => MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
+        configRepository: configRepository,
         connectionRepository: connectionRepository,
         gameResource: gameResource,
         deckId: deckId,
@@ -394,6 +414,7 @@ void main() {
       'emits failed when a private match is requested gives an error',
       build: () => MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
+        configRepository: configRepository,
         connectionRepository: connectionRepository,
         gameResource: gameResource,
         deckId: deckId,
@@ -418,6 +439,7 @@ void main() {
       'joins a private match',
       build: () => MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
+        configRepository: configRepository,
         connectionRepository: connectionRepository,
         gameResource: gameResource,
         deckId: deckId,
@@ -466,6 +488,7 @@ void main() {
       'emits failed when joining a private match gives an error',
       build: () => MatchMakingBloc(
         matchMakerRepository: matchMakerRepository,
+        configRepository: configRepository,
         connectionRepository: connectionRepository,
         gameResource: gameResource,
         deckId: deckId,
