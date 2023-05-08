@@ -59,12 +59,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   ) async {
     try {
       emit(state.copyWith(status: MatchMakingStatus.processing));
-      final matchFutures = await Future.wait([
-        _configRepository.getMatchWaitTimeLimit(),
-        _matchMakerRepository.findMatch(deckId)
-      ]);
-      final matchWait = matchFutures.first as int;
-      final match = matchFutures.last as DraftMatch;
+      final match = await _matchMakerRepository.findMatch(deckId);
       final isHost = match.guest == null;
 
       await _connectToMatch(
@@ -99,12 +94,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   ) async {
     try {
       emit(state.copyWith(status: MatchMakingStatus.processing));
-      final matchFutures = await Future.wait([
-        _configRepository.getPrivateMatchTimeLimit(),
-        _matchMakerRepository.createPrivateMatch(deckId)
-      ]);
-      final matchWait = matchFutures.first as int;
-      final match = matchFutures.last as DraftMatch;
+     final match = await _matchMakerRepository.createPrivateMatch(deckId)
 
       await _connectToMatch(
         matchId: match.id,
@@ -114,7 +104,6 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
         isPrivate: true,
         match: match,
         emit: emit,
-        matchWait: matchWait,
       );
     } catch (e, s) {
       addError(e, s);
@@ -154,7 +143,6 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
     required bool isPrivate,
     required DraftMatch match,
     required Emitter<MatchMakingState> emit,
-    required int matchWait,
   }) async {
     final stream = _matchMakerRepository
         .watchMatch(match.id)
@@ -184,7 +172,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
 
       return Future.value(false);
     }).timeout(
-      Duration(seconds: matchWait),
+      Duration(seconds: isPrivate ? 120 : 4),
       onTimeout: () async {
         await subscription.cancel();
         await Future<void>.delayed(hostWaitTime);
