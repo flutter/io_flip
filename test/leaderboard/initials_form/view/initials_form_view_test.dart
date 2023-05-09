@@ -169,7 +169,6 @@ void main() {
         final inputs =
             tester.widgetList<EditableText>(find.byType(EditableText));
 
-
         for (final input in inputs) {
           expect(input.controller.text == emptyCharacter, isTrue);
         }
