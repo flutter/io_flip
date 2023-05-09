@@ -412,6 +412,10 @@
   "@downloadingButtonLabel": {
     "description": "Label shown on the downloading button on share dialog"
   },
+  "downloadCompleteButtonLabel": "DOWNLOADED",
+  "@downloadCompleteButtonLabel": {
+    "description": "Label shown on the download button on complete"
+  },
   "downloadCompleteLabel": "Download complete",
   "@downloadCompleteLabel": {
     "description": "Text shown on the download notification on success"
