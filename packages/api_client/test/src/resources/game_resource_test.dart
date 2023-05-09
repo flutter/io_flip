@@ -491,17 +491,10 @@ void main() {
     group('calculate result', () {
       const deck = Deck(id: 'id', userId: 'userId', cards: []);
       const match = Match(id: 'matchId', hostDeck: deck, guestDeck: deck);
-      const matchState = MatchState(
-        id: 'id',
-        matchId: 'matchId',
-        hostPlayedCards: [],
-        guestPlayedCards: [],
-      );
       setUp(() {
         when(
           () => apiClient.patch(
             any(),
-            body: any(named: 'body'),
           ),
         ).thenAnswer((_) async => response);
       });
@@ -509,27 +502,24 @@ void main() {
       test('makes the correct call', () async {
         when(() => response.statusCode).thenReturn(HttpStatus.noContent);
         await resource.calculateResult(
-          match: match,
-          matchState: matchState,
+          matchId: match.id,
         );
 
         verify(
           () => apiClient.patch(
-            '/game/matches/result',
-            body: any(named: 'body'),
+            '/game/matches/${match.id}/result',
           ),
         ).called(1);
       });
 
       test('throws an ApiClientError when the request fails', () async {
         when(
-          () => apiClient.patch(any(), body: any(named: 'body')),
+          () => apiClient.patch(any()),
         ).thenThrow(Exception('Ops'));
 
         await expectLater(
           () => resource.calculateResult(
-            match: match,
-            matchState: matchState,
+            matchId: match.id,
           ),
           throwsA(
             isA<ApiClientError>().having(
@@ -551,8 +541,7 @@ void main() {
 
         await expectLater(
           () => resource.calculateResult(
-            match: match,
-            matchState: matchState,
+            matchId: match.id,
           ),
           throwsA(
             isA<ApiClientError>().having(
@@ -573,8 +562,7 @@ void main() {
 
         await expectLater(
           () => resource.calculateResult(
-            match: match,
-            matchState: matchState,
+            matchId: match.id,
           ),
           throwsA(
             isA<ApiClientError>().having(
