@@ -1,5 +1,6 @@
 import 'package:api_client/api_client.dart';
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:bloc_test/bloc_test.dart';
 import 'package:config_repository/config_repository.dart';
 import 'package:connection_repository/connection_repository.dart';
 import 'package:equatable/equatable.dart';
@@ -14,6 +15,7 @@ import 'package:io_flip/audio/audio_controller.dart';
 import 'package:io_flip/l10n/l10n.dart';
 import 'package:io_flip/settings/settings.dart';
 import 'package:io_flip/style/snack_bar.dart';
+import 'package:io_flip/terms_of_use/terms_of_use.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:match_maker_repository/match_maker_repository.dart';
 import 'package:mocktail/mocktail.dart';
@@ -52,6 +54,8 @@ class _MockUISoundAdapter extends Mock implements UISoundAdapter {}
 class _MockGoRouter extends Mock implements GoRouter {}
 
 class _MockImages extends Mock implements Images {}
+
+class _MockTermsOfUseCubit extends MockCubit<bool> implements TermsOfUseCubit {}
 
 UISoundAdapter _createUISoundAdapter() {
   final adapter = _MockUISoundAdapter();
@@ -148,27 +152,26 @@ extension PumpAppWithRouter on WidgetTester {
     SettingsController? settingsController,
     GameResource? gameResource,
     ShareResource? shareResource,
-    PromptResource? promptResource,
     ScriptsResource? scriptsResource,
+    PromptResource? promptResource,
     LeaderboardResource? leaderboardResource,
     MatchMakerRepository? matchMakerRepository,
     ConfigRepository? configRepository,
+    AudioController? audioController,
+    ConnectionRepository? connectionRepository,
     MatchSolver? matchSolver,
     GameScriptMachine? gameScriptMachine,
     UISoundAdapter? uiSoundAdapter,
-    AudioController? audioController,
     User? user,
-    T? bloc,
     Images? images,
+    T? bloc,
+    TermsOfUseCubit? termsOfUseCubit,
   }) {
     return pumpWidget(
       MultiProvider(
         providers: [
           Provider.value(
             value: settingsController ?? _MockSettingsController(),
-          ),
-          Provider.value(
-            value: promptResource ?? _MockPromptResource(),
           ),
           Provider.value(
             value: gameResource ?? _MockGameResource(),
@@ -180,6 +183,9 @@ extension PumpAppWithRouter on WidgetTester {
             value: scriptsResource ?? _MockScriptsResource(),
           ),
           Provider.value(
+            value: promptResource ?? _MockPromptResource(),
+          ),
+          Provider.value(
             value: leaderboardResource ?? _MockLeaderboardResource(),
           ),
           Provider.value(
@@ -189,16 +195,19 @@ extension PumpAppWithRouter on WidgetTester {
             value: configRepository ?? _MockConfigRepository(),
           ),
           Provider.value(
-            value: matchSolver ?? _MockMatchSolver(),
+            value: audioController ?? _MockAudioController(),
           ),
           Provider.value(
-            value: gameScriptMachine ?? _MockGameScriptMachine(),
+            value: connectionRepository ?? _MockConnectionRepository(),
+          ),
+          Provider.value(
+            value: matchSolver ?? _MockMatchSolver(),
           ),
           Provider.value(
             value: uiSoundAdapter ?? _createUISoundAdapter(),
           ),
           Provider.value(
-            value: audioController ?? _MockAudioController(),
+            value: gameScriptMachine ?? _MockGameScriptMachine(),
           ),
           Provider.value(
             value: user ?? _MockUser(),
@@ -207,27 +216,22 @@ extension PumpAppWithRouter on WidgetTester {
             value: images ?? _MockImages(),
           )
         ],
-        child: bloc != null
-            ? BlocProvider.value(
-                value: bloc,
-                child: MaterialApp.router(
-                  scaffoldMessengerKey: scaffoldMessengerKey,
-                  routeInformationProvider: router.routeInformationProvider,
-                  routeInformationParser: router.routeInformationParser,
-                  routerDelegate: router.routerDelegate,
-                  localizationsDelegates:
-                      AppLocalizations.localizationsDelegates,
-                  supportedLocales: AppLocalizations.supportedLocales,
-                ),
-              )
-            : MaterialApp.router(
-                scaffoldMessengerKey: scaffoldMessengerKey,
-                routeInformationProvider: router.routeInformationProvider,
-                routeInformationParser: router.routeInformationParser,
-                routerDelegate: router.routerDelegate,
-                localizationsDelegates: AppLocalizations.localizationsDelegates,
-                supportedLocales: AppLocalizations.supportedLocales,
-              ),
+        child: MultiBlocProvider(
+          providers: [
+            if (bloc != null) BlocProvider<T>.value(value: bloc),
+            BlocProvider<TermsOfUseCubit>.value(
+              value: termsOfUseCubit ?? _MockTermsOfUseCubit(),
+            ),
+          ],
+          child: MaterialApp.router(
+            scaffoldMessengerKey: scaffoldMessengerKey,
+            routeInformationProvider: router.routeInformationProvider,
+            routeInformationParser: router.routeInformationParser,
+            routerDelegate: router.routerDelegate,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+          ),
+        ),
       ),
     );
   }
