@@ -162,7 +162,13 @@ class CardRenderer {
         _getFile(Uri.parse(_titleFontAsset)),
       ]);
 
-      final characterCmd = _createCommand()..decodePng(assets.first);
+      final characterCmd = _createCommand()
+        ..decodePng(assets.first)
+        ..copyResize(
+          width: _characterSize.width,
+          height: _characterSize.height,
+          interpolation: Interpolation.cubic,
+        );
       final frameCmd = _createCommand()..decodePng(assets[1]);
       final elementIconCmd = _createCommand()..decodePng(assets[2]);
       final powerSpriteCmd = _createCommand()..decodePng(assets[3]);
@@ -180,14 +186,18 @@ class CardRenderer {
           characterCmd,
           dstX: _characterPosition.first,
           dstY: _characterPosition.last,
-          dstW: _characterSize.width,
-          dstH: _characterSize.height,
         )
         ..compositeImage(
           frameCmd,
           dstX: 0,
           dstY: 0,
         );
+
+      if (card.rarity) {
+        compositionCommand
+          ..filter(rainbowFilter)
+          ..chromaticAberration(shift: 2);
+      }
 
       final titleLines = _splitText(card.name, titleFont, _cardSize.width);
 
@@ -218,12 +228,6 @@ class CardRenderer {
               ((_descriptionSize.width - line.width) / 2).round(),
           y: _descriptionPosition.last + (lineHeight * i),
         );
-      }
-
-      if (card.rarity) {
-        compositionCommand
-          ..filter(rainbowFilter)
-          ..chromaticAberration(shift: 2);
       }
       compositionCommand
         ..compositeImage(
@@ -272,35 +276,17 @@ class CardRenderer {
           )
           .toList();
 
-      const angleValue = 10;
-      const offsetModifier = 5;
-
       final compositionCommand = _createCommand()
         ..createImage(
-          width: _cardSize.width * cards.length,
-          height: _cardSize.height + offsetModifier * angleValue,
+          width: _cardSize.width * cards.length + (20 * (cards.length - 1)),
+          height: _cardSize.height,
           numChannels: 4,
         );
 
-      const angles = {
-        0: -angleValue,
-        1: 0,
-        2: angleValue,
-      };
-
-      const offsets = {
-        0: [50, 0],
-        1: [0, 0],
-        2: [-170, 0],
-      };
-
       for (var i = 0; i < cards.length; i++) {
         compositionCommand.compositeImage(
-          cardCommands[i]..copyRotate(angle: angles[i]!),
-          dstX: (_cardSize.width * i) + offsets[i]![0],
-          dstY: offsets[i]![1],
-          dstW: _cardSize.width + offsetModifier * angles[i]!.abs(),
-          dstH: _cardSize.height + offsetModifier * angles[i]!.abs(),
+          cardCommands[i],
+          dstX: (_cardSize.width + 20) * i,
         );
       }
 
