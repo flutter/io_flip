@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - fix/unordered-triggered-match-state-changes
 
 jobs:
   deploy-dev:
