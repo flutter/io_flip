@@ -44,7 +44,6 @@ class DraftBloc extends Bloc<DraftEvent, DraftState> {
           status: DraftStateStatus.deckLoaded,
         ),
       );
-      // TODO(all): Replace reveal sfx
       _playHoloReveal(cards);
     } catch (e, s) {
       addError(e, s);
