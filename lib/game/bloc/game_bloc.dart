@@ -33,7 +33,11 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         _user = user,
         super(const MatchLoadingState()) {
     on<MatchRequested>(_onMatchRequested);
-    on<PlayerPlayed>(_onPlayerPlayed);
+    on<PlayerPlayed>(
+      _onPlayerPlayed,
+      // Process these events synchronously
+      transformer: (events, mapper) => events.asyncExpand(mapper),
+    );
     on<MatchStateUpdated>(_onMatchStateUpdated);
     on<ScoreCardUpdated>(_onScoreCardUpdated);
     on<LeaderboardEntryRequested>(_onLeaderboardEntryRequested);
@@ -233,7 +237,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     PlayerPlayed event,
     Emitter<GameState> emit,
   ) async {
-    if (state is MatchLoadedState) {
+    if (state is MatchLoadedState && canPlayerPlay(event.cardId)) {
       final matchState = state as MatchLoadedState;
       emit(
         matchState.copyWith(

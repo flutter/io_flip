@@ -9,12 +9,18 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
 
+import 'game/game.dart';
+
 class AppBlocObserver extends BlocObserver {
   const AppBlocObserver();
 
   @override
   void onChange(BlocBase<dynamic> bloc, Change<dynamic> change) {
     super.onChange(bloc, change);
+    if (bloc is GameBloc) {
+      print(change.currentState);
+      print(change.nextState);
+    }
     log('onChange(${bloc.runtimeType}, $change)');
   }
 
@@ -38,6 +44,7 @@ Future<void> bootstrap(BootstrapBuilder builder) async {
   };
 
   Bloc.observer = const AppBlocObserver();
+  recordStackTraceAtLevel = Level.ALL;
 
   await runZonedGuarded(
     () async {

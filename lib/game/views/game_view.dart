@@ -156,7 +156,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
   Offset? pointerPosition;
   int? draggingCardIndex;
   bool draggingCardAccepted = false;
-  bool didPlayerPlay = false;
+  bool playerPlayedManually = false;
   bool cardLandingShown = false;
 
   final boardSize = Size(
@@ -362,7 +362,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
 
     final bloc = context.read<GameBloc>();
     final card = bloc.playerCards[cardIndex];
-    if (bloc.canPlayerPlay(card.id)) {
+    if (!playerPlayedManually && bloc.canPlayerPlay(card.id)) {
       setState(() {
         pointerStartPosition = event.localPosition;
         pointerPosition = event.localPosition;
@@ -488,10 +488,12 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
     final card = bloc.playerCards[index];
     if (bloc.state is MatchLoadedState) {
       final state = bloc.state as MatchLoadedState;
-      if (bloc.canPlayerPlay(card.id) && state.turnAnimationsFinished) {
+      if (!playerPlayedManually &&
+          bloc.canPlayerPlay(card.id) &&
+          state.turnAnimationsFinished) {
         context.read<GameBloc>().add(PlayerPlayed(card.id));
         context.read<AudioController>().playSfx(Assets.sfx.cardMovement);
-        didPlayerPlay = true;
+        playerPlayedManually = true;
         return true;
       }
     }
@@ -573,7 +575,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
             draggingCardAccepted = false;
             _onPanEnd();
 
-            if (!didPlayerPlay) {
+            if (!playerPlayedManually) {
               final animation = playerCardTweens[playerIndex];
               animation
                 ..begin = animation.evaluate(controller)
@@ -614,7 +616,7 @@ class _GameBoardState extends State<_GameBoard> with TickerProviderStateMixin {
 
               resetCardAnimations();
 
-              didPlayerPlay = false;
+              playerPlayedManually = false;
               cardLandingShown = false;
 
               bloc.add(const ClashSceneStarted());
