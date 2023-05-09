@@ -13,6 +13,7 @@ import 'package:io_flip_ui/io_flip_ui.dart';
 class MatchMakingView extends StatelessWidget {
   const MatchMakingView({
     required this.deck,
+    required this.tryAgainEvent,
     super.key,
     Future<void> Function(ClipboardData) setClipboardData = Clipboard.setData,
     RouterNeglectCall routerNeglectCall = Router.neglect,
@@ -22,6 +23,9 @@ class MatchMakingView extends StatelessWidget {
   final Future<void> Function(ClipboardData) _setClipboardData;
   final Deck deck;
   final RouterNeglectCall _routerNeglectCall;
+
+  /// The event to add to the bloc when match making fails and we try again.
+  final MatchMakingEvent tryAgainEvent;
 
   @override
   Widget build(BuildContext context) {
@@ -73,12 +77,8 @@ class MatchMakingView extends StatelessWidget {
             body: IoFlipErrorView(
               text: 'Match making timed out, sorry!',
               buttonText: l10n.playAgain,
-              onPressed: () {
-                GoRouter.of(context).pushReplacementNamed(
-                  'match_making',
-                  extra: MatchMakingPageData(deck: deck),
-                );
-              },
+              onPressed: () =>
+                  context.read<MatchMakingBloc>().add(tryAgainEvent),
             ),
           );
         }
@@ -88,12 +88,8 @@ class MatchMakingView extends StatelessWidget {
             body: IoFlipErrorView(
               text: 'Match making failed, sorry!',
               buttonText: l10n.playAgain,
-              onPressed: () {
-                GoRouter.of(context).pushReplacementNamed(
-                  'match_making',
-                  extra: MatchMakingPageData(deck: deck),
-                );
-              },
+              onPressed: () =>
+                  context.read<MatchMakingBloc>().add(tryAgainEvent),
             ),
           );
         }
