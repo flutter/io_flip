@@ -100,8 +100,9 @@ class _InitialsFormViewState extends State<InitialsFormView> {
                   color: IoFlipColors.seedRed,
                 ),
               )
-            else if (state.status.isInvalid)
-              Text(l10n.enterInitialsError),
+            else
+              if (state.status.isInvalid)
+                Text(l10n.enterInitialsError),
             const SizedBox(height: IoFlipSpacing.xxlg),
             RoundedButton.text(
               l10n.enter,
@@ -115,12 +116,11 @@ class _InitialsFormViewState extends State<InitialsFormView> {
     );
   }
 
-  void _onInitialChanged(
-    BuildContext context,
-    String value,
-    int index, {
-    bool isBackspace = false,
-  }) {
+  void _onInitialChanged(BuildContext context,
+      String value,
+      int index, {
+        bool isBackspace = false,
+      }) {
     var text = value;
     if (text == emptyCharacter) {
       text = '';
@@ -150,8 +150,7 @@ class _InitialsFormViewState extends State<InitialsFormView> {
 }
 
 class _InitialFormField extends StatefulWidget {
-  const _InitialFormField(
-    this.index, {
+  const _InitialFormField(this.index, {
     required this.onChanged,
     required this.focusNode,
     required this.onBackspace,
@@ -169,7 +168,7 @@ class _InitialFormField extends StatefulWidget {
 
 class _InitialFormFieldState extends State<_InitialFormField> {
   late final TextEditingController controller =
-      TextEditingController.fromValue(lastValue);
+  TextEditingController.fromValue(lastValue);
 
   bool hasFocus = false;
   TextEditingValue lastValue = const TextEditingValue(
@@ -219,8 +218,8 @@ class _InitialFormFieldState extends State<_InitialFormField> {
         color: blacklisted
             ? IoFlipColors.seedRed
             : widget.focusNode.hasPrimaryFocus
-                ? IoFlipColors.seedYellow
-                : IoFlipColors.seedPaletteNeutral40,
+            ? IoFlipColors.seedYellow
+            : IoFlipColors.seedPaletteNeutral40,
         width: 2,
       ),
     );
@@ -263,10 +262,8 @@ class _InitialFormFieldState extends State<_InitialFormField> {
 
 class UpperCaseTextFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue,
+      TextEditingValue newValue,) {
     return TextEditingValue(
       text: newValue.text.toUpperCase(),
       selection: newValue.selection,
@@ -276,10 +273,8 @@ class UpperCaseTextFormatter extends TextInputFormatter {
 
 class EmptyCharacterAtEndFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue,
+      TextEditingValue newValue,) {
     final newText = newValue.text;
 
     var text = newText;
@@ -303,19 +298,13 @@ class BackspaceFormatter extends TextInputFormatter {
   final VoidCallback onBackspace;
 
   @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue,
+      TextEditingValue newValue,) {
     final oldText = oldValue.text;
     final newText = newValue.text;
 
-    print(
-        'BS oldText: $oldText:${oldText.length} newText: $newText:${newText.length}}');
-
     // Heuristic for detecting backspace press on an empty field on mobile.
     if (oldText == emptyCharacter && newText.isEmpty) {
-      print('BS onBackspace');
       onBackspace();
     }
     return newValue;
@@ -324,10 +313,8 @@ class BackspaceFormatter extends TextInputFormatter {
 
 class JustOneCharacterFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue,
+      TextEditingValue newValue,) {
     final oldText = oldValue.text;
     final newText = newValue.text;
 
