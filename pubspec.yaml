@@ -56,6 +56,8 @@ dependencies:
   shared_preferences: ^2.1.0
   styled_text: ^7.0.0
   url_launcher: ^6.1.10
+  visibility_repository:
+    path: packages/visibility_repository
 
 dev_dependencies:
   bloc_test: ^9.1.1

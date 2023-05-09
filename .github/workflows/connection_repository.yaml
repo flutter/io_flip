@@ -1,0 +1,21 @@
+name: connection_repository
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    paths:
+      - "packages/connection_repository/**"
+      - ".github/workflows/connection_repository.yaml"
+    branches:
+      - main
+
+jobs:
+  build:
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1.12.0
+    with:
+      flutter_channel: beta
+      flutter_version: 3.10.0-1.4.pre
+      working_directory: packages/connection_repository
