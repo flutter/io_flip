@@ -161,18 +161,20 @@ void main() {
         await tester.pumpAndSettle();
         await tester.sendKeyEvent(LogicalKeyboardKey.backspace);
         await tester.pumpAndSettle();
+        await tester.sendKeyEvent(LogicalKeyboardKey.backspace);
+        await tester.pumpAndSettle();
+        await tester.sendKeyEvent(LogicalKeyboardKey.backspace);
+        await tester.pumpAndSettle();
 
         final inputs =
             tester.widgetList<EditableText>(find.byType(EditableText));
 
-        final firstInput = inputs.first;
-        expect(firstInput.controller.text, 'A');
-        for (final input in inputs.skip(1)) {
+        for (final input in inputs) {
           expect(input.controller.text == emptyCharacter, isTrue);
         }
       });
 
-      testWidgets('correctly moves focus on backspaces', (tester) async {
+      testWidgets('moves focus on typing repeated letters', (tester) async {
         when(() => initialsFormBloc.state)
             .thenReturn(const InitialsFormState());
         await tester.pumpSubject(initialsFormBloc);
@@ -190,9 +192,9 @@ void main() {
 
         await tester.pumpAndSettle();
 
-        await tester.enterText(initial0, 'a');
-        await tester.enterText(initial1, 'b');
-        await tester.enterText(initial0, 'a');
+        await tester.enterText(initial0, 'aa');
+        await tester.enterText(initial1, 'ab');
+        await tester.enterText(initial0, 'aa');
 
         final inputs =
             tester.widgetList<EditableText>(find.byType(EditableText));
