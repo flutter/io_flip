@@ -110,9 +110,9 @@ void main() {
         downloadBloc: downloadBloc,
       );
       await tester.tap(find.text(tester.l10n.saveButtonLabel));
-      verifyNever(
+      verify(
         () => downloadBloc.add(const DownloadCardsRequested(cards: [card])),
-      );
+      ).called(1);
     });
 
     testWidgets('calls save deck on save button tap', (tester) async {
