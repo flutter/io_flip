@@ -1,5 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
@@ -138,8 +139,66 @@ void main() {
         await tester.enterText(initial2, '');
         await tester.pumpAndSettle();
 
-        expect(inputs.last.controller.text, isEmpty);
+        expect(inputs.last.controller.text, equals(emptyCharacter));
         expect(find.text(l10n.enterInitialsError), findsNothing);
+      });
+
+      testWidgets('correctly moves focus on backspaces', (tester) async {
+        when(() => initialsFormBloc.state)
+            .thenReturn(const InitialsFormState());
+        await tester.pumpSubject(initialsFormBloc);
+
+        final initial0 = find.byKey(const Key('initial_form_field_0'));
+        final initial2 = find.byKey(const Key('initial_form_field_2'));
+
+        await tester.enterText(initial0, 'a');
+        await tester.enterText(initial2, 'a');
+
+        await tester.pumpAndSettle();
+        await tester.tap(initial2);
+
+        await tester.sendKeyEvent(LogicalKeyboardKey.backspace);
+        await tester.pumpAndSettle();
+        await tester.sendKeyEvent(LogicalKeyboardKey.backspace);
+        await tester.pumpAndSettle();
+
+        final inputs =
+            tester.widgetList<EditableText>(find.byType(EditableText));
+
+        final firstInput = inputs.first;
+        expect(firstInput.controller.text, 'A');
+        for (final input in inputs.skip(1)) {
+          expect(input.controller.text == emptyCharacter, isTrue);
+        }
+      });
+
+      testWidgets('correctly moves focus on backspaces', (tester) async {
+        when(() => initialsFormBloc.state)
+            .thenReturn(const InitialsFormState());
+        await tester.pumpSubject(initialsFormBloc);
+
+        final initial0 = find.byKey(const Key('initial_form_field_0'));
+        final initial1 = find.byKey(const Key('initial_form_field_1'));
+        final initial2 = find.byKey(const Key('initial_form_field_2'));
+
+        await tester.enterText(initial0, 'a');
+        await tester.enterText(initial1, 'a');
+        await tester.enterText(initial2, 'a');
+
+        await tester.pumpAndSettle();
+        await tester.tap(initial0);
+
+        await tester.pumpAndSettle();
+
+        await tester.enterText(initial0, 'a');
+        await tester.enterText(initial1, 'b');
+        await tester.enterText(initial0, 'a');
+
+        final inputs =
+            tester.widgetList<EditableText>(find.byType(EditableText));
+        await tester.pumpAndSettle();
+
+        expect(inputs.elementAt(1).controller.text, 'B');
       });
 
       testWidgets('validates initials', (tester) async {
@@ -264,7 +323,7 @@ void main() {
         expect(find.text(l10n.enterInitialsError), findsNothing);
       });
 
-      testWidgets('typing two letters in the same field does not work',
+      testWidgets('typing two letters in the same field keeps last letter',
           (tester) async {
         when(() => initialsFormBloc.state)
             .thenReturn(const InitialsFormState());
@@ -280,7 +339,7 @@ void main() {
 
         final input =
             tester.widget<EditableText>(find.byType(EditableText).first);
-        expect(input.controller.text == 'A', isTrue);
+        expect(input.controller.text == 'B', isTrue);
 
         expect(find.text(l10n.enterInitialsError), findsNothing);
       });
