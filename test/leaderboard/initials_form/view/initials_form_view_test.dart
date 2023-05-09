@@ -142,6 +142,43 @@ void main() {
         expect(find.text(l10n.enterInitialsError), findsNothing);
       });
 
+      testWidgets(
+        'correctly updates fields and clears them on tap',
+        (tester) async {
+          when(() => initialsFormBloc.state)
+              .thenReturn(const InitialsFormState());
+          await tester.pumpSubject(initialsFormBloc);
+
+          final l10n = tester.element(find.byType(InitialsFormView)).l10n;
+
+          final initial0 = find.byKey(const Key('initial_form_field_0'));
+          final initial1 = find.byKey(const Key('initial_form_field_1'));
+          final initial2 = find.byKey(const Key('initial_form_field_2'));
+
+          await tester.enterText(initial0, 'a');
+          await tester.enterText(initial1, 'a');
+          await tester.enterText(initial2, 'a');
+
+          await tester.pumpAndSettle();
+
+          final inputs =
+              tester.widgetList<EditableText>(find.byType(EditableText));
+          for (final input in inputs) {
+            expect(input.controller.text == 'A', isTrue);
+          }
+
+          await tester.tap(initial0);
+          await tester.tap(initial1);
+          await tester.tap(initial2);
+          await tester.pumpAndSettle();
+
+          for (final input in inputs) {
+            expect(input.controller.text, isEmpty);
+          }
+          expect(find.text(l10n.enterInitialsError), findsNothing);
+        },
+      );
+
       testWidgets('validates initials', (tester) async {
         when(() => initialsFormBloc.state).thenReturn(
           const InitialsFormState(

@@ -122,6 +122,8 @@ class _InitialFormField extends StatefulWidget {
 }
 
 class _InitialFormFieldState extends State<_InitialFormField> {
+  late final TextEditingController _controller = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -156,6 +158,7 @@ class _InitialFormFieldState extends State<_InitialFormField> {
       decoration: decoration,
       child: TextFormField(
         key: Key('initial_form_field_${widget.index}'),
+        controller: _controller,
         autofocus: widget.index == 0,
         focusNode: widget.focusNode,
         showCursor: false,
@@ -173,6 +176,9 @@ class _InitialFormFieldState extends State<_InitialFormField> {
           border: InputBorder.none,
         ),
         textAlign: TextAlign.center,
+        onTap: () {
+          _controller.clear();
+        },
         onChanged: (value) {
           widget.onChanged(widget.index, value);
         },
