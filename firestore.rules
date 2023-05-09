@@ -45,7 +45,7 @@ service cloud.firestore {
       	&& request.auth.uid == getDeck(request.resource.data.host).data.userId;
       allow update: if isAuthenticated() 
       	&& request.auth.uid == getDeck(request.resource.data.guest).data.userId
-        && (resource.data.guest == 'EMPTY'|| resource.data.guest == 'RESERVED_EMPTY' || resource.data.guest == 'INVITE');
+        && (resource.data.guest == 'EMPTY' || resource.data.guest == 'RESERVED_EMPTY' || resource.data.guest == 'INVITE');
     }
 
     match /score_cards/{score_card} {
