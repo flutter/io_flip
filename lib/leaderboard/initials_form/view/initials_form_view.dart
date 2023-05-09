@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -139,8 +140,11 @@ class _InitialsFormViewState extends State<InitialsFormView> {
         setState(() {
           focusNodes[index - 1] = FocusNode();
         });
+
+        SchedulerBinding.instance.scheduleFrameCallback((timeStamp) {
+          FocusScope.of(context).requestFocus(focusNodes[index - 1]);
+        });
       }
-      FocusScope.of(context).requestFocus(focusNodes[index - 1]);
     }
   }
 }
@@ -238,7 +242,7 @@ class _InitialFormFieldState extends State<_InitialFormField> {
           ),
           FilteringTextInputFormatter.allow(RegExp('[a-zA-Z]')),
           UpperCaseTextFormatter(),
-          LengthLimitingTextInputFormatter(1),
+          JustOneCharacterFormatter(),
           EmptyCharacterAtEndFormatter(),
         ],
         style: IoFlipTextStyles.mobileH1.copyWith(
@@ -306,10 +310,36 @@ class BackspaceFormatter extends TextInputFormatter {
     final oldText = oldValue.text;
     final newText = newValue.text;
 
+    print(
+        'BS oldText: $oldText:${oldText.length} newText: $newText:${newText.length}}');
+
     // Heuristic for detecting backspace press on an empty field on mobile.
     if (oldText == emptyCharacter && newText.isEmpty) {
+      print('BS onBackspace');
       onBackspace();
     }
     return newValue;
+  }
+}
+
+class JustOneCharacterFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final oldText = oldValue.text;
+    final newText = newValue.text;
+
+    var text = newText;
+    var selection = newValue.selection;
+    if (newText.length > 1) {
+      text = newText.substring(newText.length - 1);
+      selection = const TextSelection.collapsed(offset: 1);
+    }
+    return TextEditingValue(
+      text: text,
+      selection: selection,
+    );
   }
 }
