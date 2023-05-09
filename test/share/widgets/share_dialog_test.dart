@@ -105,9 +105,20 @@ void main() {
       expect(find.text(tester.l10n.saveButtonLabel), findsOneWidget);
     });
 
-    testWidgets('calls save on save button tap', (tester) async {
+    testWidgets('calls save card on save button tap', (tester) async {
       await tester.pumpSubject(
         downloadBloc: downloadBloc,
+      );
+      await tester.tap(find.text(tester.l10n.saveButtonLabel));
+      verifyNever(
+        () => downloadBloc.add(const DownloadCardsRequested(cards: [card])),
+      );
+    });
+
+    testWidgets('calls save deck on save button tap', (tester) async {
+      await tester.pumpSubject(
+        downloadBloc: downloadBloc,
+        downloadDeck: deck,
       );
       await tester.tap(find.text(tester.l10n.saveButtonLabel));
       verifyNever(
@@ -153,6 +164,7 @@ void main() {
 extension ShareCardDialogTest on WidgetTester {
   Future<void> pumpSubject({
     required DownloadBloc downloadBloc,
+    Deck? downloadDeck,
     Widget? content,
   }) async {
     await mockNetworkImages(() {
@@ -167,7 +179,7 @@ extension ShareCardDialogTest on WidgetTester {
               launchedUrl = url;
             },
             downloadCards: const [card],
-            downloadDeck: deck,
+            downloadDeck: downloadDeck,
           ),
         ),
       );
