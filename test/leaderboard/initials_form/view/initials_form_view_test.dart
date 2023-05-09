@@ -148,18 +148,19 @@ void main() {
             .thenReturn(const InitialsFormState());
         await tester.pumpSubject(initialsFormBloc);
 
-        final l10n = tester.element(find.byType(InitialsFormView)).l10n;
-
         final initial0 = find.byKey(const Key('initial_form_field_0'));
         final initial1 = find.byKey(const Key('initial_form_field_1'));
         final initial2 = find.byKey(const Key('initial_form_field_2'));
 
         await tester.enterText(initial0, 'a');
+        await tester.enterText(initial1, 'a');
         await tester.enterText(initial2, 'a');
 
         await tester.pumpAndSettle();
         await tester.tap(initial2);
 
+        await tester.sendKeyEvent(LogicalKeyboardKey.backspace);
+        await tester.pumpAndSettle();
         await tester.sendKeyEvent(LogicalKeyboardKey.backspace);
         await tester.pumpAndSettle();
         await tester.sendKeyEvent(LogicalKeyboardKey.backspace);
@@ -174,6 +175,34 @@ void main() {
           expect(input.controller.text == emptyCharacter, isTrue);
         }
       });
+
+      // testWidgets('correctly moves focus on backspaces', (tester) async {
+      //   when(() => initialsFormBloc.state)
+      //       .thenReturn(const InitialsFormState());
+      //   await tester.pumpSubject(initialsFormBloc);
+      //
+      //   final initial0 = find.byKey(const Key('initial_form_field_0'));
+      //   final initial1 = find.byKey(const Key('initial_form_field_0'));
+      //   final initial2 = find.byKey(const Key('initial_form_field_2'));
+      //
+      //   await tester.enterText(initial0, 'a');
+      //   await tester.enterText(initial1, 'a');
+      //   await tester.enterText(initial2, 'a');
+      //
+      //   await tester.pumpAndSettle();
+      //   await tester.tap(initial1);
+      //
+      //   await tester.pumpAndSettle();
+      //
+      //   await tester.sendKeyEvent(LogicalKeyboardKey.keyB);
+      //   await tester.pumpAndSettle();
+      //
+      //   final inputs =
+      //       tester.widgetList<EditableText>(find.byType(EditableText));
+      //   await tester.pumpAndSettle();
+      //
+      //   expect(inputs.elementAt(1).controller.text, 'B');
+      // });
 
       testWidgets('validates initials', (tester) async {
         when(() => initialsFormBloc.state).thenReturn(
