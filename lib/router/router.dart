@@ -13,30 +13,42 @@ GoRouter createRouter({required bool isScriptsEnabled}) {
     routes: [
       GoRoute(
         path: '/',
-        builder: MainMenuScreen.routeBuilder,
+        pageBuilder: (context, state) => NoTransitionPage(
+          child: MainMenuScreen.routeBuilder(context, state),
+        ),
       ),
       GoRoute(
         path: '/draft',
-        builder: DraftPage.routeBuilder,
+        pageBuilder: (context, state) => NoTransitionPage(
+          child: DraftPage.routeBuilder(context, state),
+        ),
       ),
       GoRoute(
         path: '/prompt',
-        builder: PromptPage.routeBuilder,
+        pageBuilder: (context, state) => NoTransitionPage(
+          child: PromptPage.routeBuilder(context, state),
+        ),
       ),
       GoRoute(
         name: 'match_making',
         path: '/match_making',
-        builder: MatchMakingPage.routeBuilder,
+        pageBuilder: (context, state) => NoTransitionPage(
+          child: MatchMakingPage.routeBuilder(context, state),
+        ),
       ),
       GoRoute(
         name: 'game',
         path: '/game',
-        builder: GamePage.routeBuilder,
+        pageBuilder: (context, state) => NoTransitionPage(
+          child: GamePage.routeBuilder(context, state),
+        ),
       ),
       GoRoute(
         name: 'share_hand',
         path: '/share_hand',
-        builder: ShareHandPage.routeBuilder,
+        pageBuilder: (context, state) => NoTransitionPage(
+          child: ShareHandPage.routeBuilder(context, state),
+        ),
       ),
       if (isScriptsEnabled)
         GoRoute(
