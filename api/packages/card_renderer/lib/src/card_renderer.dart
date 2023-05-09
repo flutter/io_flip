@@ -276,34 +276,17 @@ class CardRenderer {
           )
           .toList();
 
-      const angleValue = 10;
-      const offsetModifier = 5;
-
       final compositionCommand = _createCommand()
         ..createImage(
-          width: _cardSize.width * cards.length,
-          height: _cardSize.height + offsetModifier * angleValue,
+          width: _cardSize.width * cards.length + (20 * (cards.length - 1)),
+          height: _cardSize.height,
           numChannels: 4,
         );
 
-      const angles = {
-        0: -angleValue,
-        1: 0,
-        2: angleValue,
-      };
-
-      const offsets = {
-        0: [50, 0],
-        1: [0, 0],
-        2: [-170, 0],
-      };
-
       for (var i = 0; i < cards.length; i++) {
         compositionCommand.compositeImage(
-          cardCommands[i]
-            ..copyRotate(angle: angles[i]!, interpolation: Interpolation.cubic),
-          dstX: (_cardSize.width * i) + offsets[i]![0],
-          dstY: offsets[i]![1],
+          cardCommands[i],
+          dstX: (_cardSize.width + 20) * i,
         );
       }
 
