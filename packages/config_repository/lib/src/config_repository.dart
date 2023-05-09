@@ -17,7 +17,7 @@ class ConfigRepository {
   final int defaultPrivateTimeLimit = 120;
 
   /// The wait time for a match before a CPU joins.
-  final int defaultMatchWaitTimeLimit = 3;
+  final int defaultMatchWaitTimeLimit = 4;
 
   /// The percentage of users that will be auto matched against a CPU.
   final double defaultCPUAutoMatchPercentage = 1;

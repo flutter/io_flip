@@ -187,50 +187,31 @@ void main() {
       'renders a timeout message when match making times out and navigates to '
       'match making again',
       (tester) async {
-        final goRouter = MockGoRouter();
         mockState(MatchMakingState(status: MatchMakingStatus.timeout));
 
-        await tester.pumpSubject(
-          bloc,
-          goRouter: goRouter,
-        );
+        await tester.pumpSubject(bloc);
 
         expect(find.text('Match making timed out, sorry!'), findsOneWidget);
 
         await tester.tap(find.byType(RoundedButton));
         await tester.pumpAndSettle();
-
-        verify(
-          () => goRouter.pushReplacementNamed(
-            'match_making',
-            extra: MatchMakingPageData(deck: deck),
-          ),
-        ).called(1);
+        verify(() => bloc.add(PrivateMatchRequested())).called(1);
       },
     );
 
     testWidgets(
-      'renders an error message when it fails and navigates to match making',
+      'renders an error message when it fails adds event to the bloc on retry',
       (tester) async {
-        final goRouter = MockGoRouter();
         mockState(MatchMakingState(status: MatchMakingStatus.failed));
 
-        await tester.pumpSubject(
-          bloc,
-          goRouter: goRouter,
-        );
+        await tester.pumpSubject(bloc);
 
         expect(find.text('Match making failed, sorry!'), findsOneWidget);
 
         await tester.tap(find.byType(RoundedButton));
         await tester.pumpAndSettle();
 
-        verify(
-          () => goRouter.pushReplacementNamed(
-            'match_making',
-            extra: MatchMakingPageData(deck: deck),
-          ),
-        ).called(1);
+        verify(() => bloc.add(PrivateMatchRequested())).called(1);
       },
     );
 
@@ -307,6 +288,7 @@ extension MatchMakingViewTest on WidgetTester {
     GoRouter? goRouter,
     Future<void> Function(ClipboardData)? setClipboardData,
     RouterNeglectCall routerNeglectCall = Router.neglect,
+    MatchMakingEvent? tryAgainEvent,
   }) {
     final SettingsController settingsController = _MockSettingsController();
     when(() => settingsController.muted).thenReturn(ValueNotifier(true));
@@ -319,6 +301,7 @@ extension MatchMakingViewTest on WidgetTester {
             setClipboardData: setClipboardData ?? Clipboard.setData,
             routerNeglectCall: routerNeglectCall,
             deck: deck,
+            tryAgainEvent: tryAgainEvent ?? PrivateMatchRequested(),
           ),
         ),
         router: goRouter,
