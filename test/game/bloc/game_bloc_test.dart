@@ -1236,6 +1236,248 @@ void main() {
         ],
       );
 
+      blocTest<GameBloc, GameState>(
+        'discards outdated states that may have been received out of order',
+        build: () => GameBloc(
+          connectionRepository: connectionRepository,
+          gameResource: gameResource,
+          audioController: audioController,
+          matchMakerRepository: matchMakerRepository,
+          matchSolver: matchSolver,
+          user: user,
+          isHost: true,
+        ),
+        seed: () => baseState,
+        setUp: () {
+          when(
+            () => matchSolver.isPlayerAllowedToPlay(
+              any(),
+              isHost: any(named: 'isHost'),
+            ),
+          ).thenReturn(true);
+        },
+        act: (bloc) {
+          bloc
+            ..add(
+              MatchStateUpdated(
+                MatchState(
+                  id: baseState.matchState.id,
+                  matchId: baseState.matchState.matchId,
+                  hostPlayedCards: const ['new_card_1'],
+                  guestPlayedCards: const ['new_card_2', 'new_card_3'],
+                ),
+              ),
+            )
+            ..add(
+              MatchStateUpdated(
+                MatchState(
+                  id: baseState.matchState.id,
+                  matchId: baseState.matchState.matchId,
+                  hostPlayedCards: const ['new_card_1'],
+                  guestPlayedCards: const ['new_card_2'],
+                ),
+              ),
+            );
+        },
+        expect: () => [
+          // We have two states triggered, that happens because of
+          // the handling of the timers, but note how the last state
+          // is still correct in matter of cards played.
+          MatchLoadedState(
+            playerScoreCard: ScoreCard(id: 'scoreCardId'),
+            match: baseState.match,
+            matchState: MatchState(
+              id: 'matchStateId',
+              matchId: baseState.match.id,
+              hostPlayedCards: const ['new_card_1'],
+              guestPlayedCards: const ['new_card_2', 'new_card_3'],
+            ),
+            rounds: const [
+              MatchRound(
+                opponentCardId: 'new_card_2',
+                playerCardId: 'new_card_1',
+              ),
+              MatchRound(
+                opponentCardId: 'new_card_3',
+                playerCardId: null,
+              ),
+            ],
+            turnAnimationsFinished: true,
+            turnTimeRemaining: 10,
+            isClashScene: false,
+            showCardLanding: false,
+          ),
+          MatchLoadedState(
+            playerScoreCard: ScoreCard(id: 'scoreCardId'),
+            match: baseState.match,
+            matchState: MatchState(
+              id: 'matchStateId',
+              matchId: baseState.match.id,
+              hostPlayedCards: const ['new_card_1'],
+              guestPlayedCards: const ['new_card_2', 'new_card_3'],
+            ),
+            rounds: const [
+              MatchRound(
+                opponentCardId: 'new_card_2',
+                playerCardId: 'new_card_1',
+              ),
+              MatchRound(
+                opponentCardId: 'new_card_3',
+                playerCardId: null,
+                turnTimerStarted: true,
+              ),
+            ],
+            turnAnimationsFinished: true,
+            turnTimeRemaining: 10,
+            isClashScene: false,
+            showCardLanding: false,
+          ),
+        ],
+      );
+
+      blocTest<GameBloc, GameState>(
+        'consider similar states that have different results',
+        build: () => GameBloc(
+          connectionRepository: connectionRepository,
+          gameResource: gameResource,
+          audioController: audioController,
+          matchMakerRepository: matchMakerRepository,
+          matchSolver: matchSolver,
+          user: user,
+          isHost: true,
+        ),
+        seed: () => baseState,
+        setUp: () {
+          when(
+            () => matchSolver.isPlayerAllowedToPlay(
+              any(),
+              isHost: any(named: 'isHost'),
+            ),
+          ).thenReturn(true);
+          when(
+            () => gameResource.calculateResult(
+              matchId: any(named: 'matchId'),
+            ),
+          ).thenAnswer((_) async {});
+        },
+        act: (bloc) {
+          bloc
+            ..add(
+              MatchStateUpdated(
+                MatchState(
+                  id: baseState.matchState.id,
+                  matchId: baseState.matchState.matchId,
+                  hostPlayedCards: const [
+                    'host_card_1',
+                    'host_card_2',
+                    'host_card_3',
+                  ],
+                  guestPlayedCards: const [
+                    'guest_card_1',
+                    'guest_card_2',
+                    'guest_card_3',
+                  ],
+                  // result is null here
+                ),
+              ),
+            )
+            ..add(
+              MatchStateUpdated(
+                MatchState(
+                  id: baseState.matchState.id,
+                  matchId: baseState.matchState.matchId,
+                  hostPlayedCards: const [
+                    'host_card_1',
+                    'host_card_2',
+                    'host_card_3',
+                  ],
+                  guestPlayedCards: const [
+                    'guest_card_1',
+                    'guest_card_2',
+                    'guest_card_3',
+                  ],
+                  result: MatchResult.host,
+                ),
+              ),
+            );
+        },
+        expect: () => [
+          MatchLoadedState(
+            playerScoreCard: ScoreCard(id: 'scoreCardId'),
+            match: baseState.match,
+            matchState: MatchState(
+              id: 'matchStateId',
+              matchId: baseState.match.id,
+              hostPlayedCards: const [
+                'host_card_1',
+                'host_card_2',
+                'host_card_3',
+              ],
+              guestPlayedCards: const [
+                'guest_card_1',
+                'guest_card_2',
+                'guest_card_3',
+              ],
+            ),
+            rounds: const [
+              MatchRound(
+                opponentCardId: 'guest_card_1',
+                playerCardId: 'host_card_1',
+              ),
+              MatchRound(
+                opponentCardId: 'guest_card_2',
+                playerCardId: 'host_card_2',
+              ),
+              MatchRound(
+                opponentCardId: 'guest_card_3',
+                playerCardId: 'host_card_3',
+              ),
+            ],
+            turnAnimationsFinished: true,
+            turnTimeRemaining: 10,
+            isClashScene: false,
+            showCardLanding: false,
+          ),
+          MatchLoadedState(
+            playerScoreCard: ScoreCard(id: 'scoreCardId'),
+            match: baseState.match,
+            matchState: MatchState(
+              id: 'matchStateId',
+              matchId: baseState.match.id,
+              hostPlayedCards: const [
+                'host_card_1',
+                'host_card_2',
+                'host_card_3',
+              ],
+              guestPlayedCards: const [
+                'guest_card_1',
+                'guest_card_2',
+                'guest_card_3',
+              ],
+              result: MatchResult.host,
+            ),
+            rounds: const [
+              MatchRound(
+                opponentCardId: 'guest_card_1',
+                playerCardId: 'host_card_1',
+              ),
+              MatchRound(
+                opponentCardId: 'guest_card_2',
+                playerCardId: 'host_card_2',
+              ),
+              MatchRound(
+                opponentCardId: 'guest_card_3',
+                playerCardId: 'host_card_3',
+              ),
+            ],
+            turnAnimationsFinished: true,
+            turnTimeRemaining: 10,
+            isClashScene: false,
+            showCardLanding: false,
+          ),
+        ],
+      );
+
       group('- turn countdown', () {
         test('starts correctly', () {
           fakeAsync((async) {
