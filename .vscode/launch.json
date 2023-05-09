@@ -15,13 +15,13 @@
         "--target",
         "lib/main_development.dart",
         "--dart-define",
-        "ENCRYPTION_KEY=Bx677bkZEXvmiqzKXoph2mp3kDoqexkV",
+        "ENCRYPTION_KEY=$ENCRYPTION_KEY",
         "--dart-define",
-        "ENCRYPTION_IV=rPMNKz2YzWQjjjMi",
+        "ENCRYPTION_IV=$ENCRYPTION_IV",
         "--dart-define",
-        "RECAPTCHA_KEY=6LeafHolAAAAAH-kou5bR2y4gtEOmFXdd6pM4cJz",
+        "RECAPTCHA_KEY=$RECAPTCHA_KEY",
         "--dart-define",
-        "APPCHECK_DEBUG_TOKEN=1E88A2CC-8D94-4ADC-A156-A63DBA49627D",
+        "APPCHECK_DEBUG_TOKEN=$APPCHECK_DEBUG_TOKEN",
         "--dart-define",
         "ALLOW_PRIVATE_MATCHES=true"
       ]

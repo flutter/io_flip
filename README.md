@@ -52,7 +52,7 @@ the scaling of the backend of the game.
 To execute it in the staging environment, open a terminal an execute:
 
 ```bash
-./scripts/start_flop_webserver.sh
+./scripts/start_flop_webserver.sh <ENCRYPTION_KEY> <ENCRYPTION_IV> <RECAPTCHA_KEY> <APPCHECK_DEBUG_TOKEN>
 ```
 
 You will be able to open the url where Flop started and check the progress of the bot run.
