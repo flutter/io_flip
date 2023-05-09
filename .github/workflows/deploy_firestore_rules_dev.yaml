@@ -6,7 +6,7 @@ on:
       - "firestore.rules"
     branches:
       - main
-      -fix/update-rules
+      - fix/update-rules
 
 jobs:
   deploy-dev:
