@@ -99,11 +99,10 @@ class ShareDialogView extends StatelessWidget {
                 _SaveButton(
                   status: bloc.state.status,
                   onSave: () {
-                    if (downloadCards != null) {
-                      bloc.add(DownloadCardsRequested(cards: downloadCards!));
-                    }
                     if (downloadDeck != null) {
                       bloc.add(DownloadDeckRequested(deck: downloadDeck!));
+                    } else if (downloadCards != null) {
+                      bloc.add(DownloadCardsRequested(cards: downloadCards!));
                     }
                   },
                 ),
