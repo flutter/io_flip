@@ -67,10 +67,16 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
       final cpuChance = await _configRepository.getCPUAutoMatchPercentage();
       final forcedCpu = _rng.nextDouble() < cpuChance;
 
-      final match = await _matchMakerRepository.findMatch(
-        deckId,
-        forcedCpu: forcedCpu,
-      );
+      final futures = await Future.wait([
+        _matchMakerRepository.findMatch(
+          deckId,
+          forcedCpu: forcedCpu,
+        ),
+        _configRepository.getMatchWaitTimeLimit(),
+      ]);
+
+      final match = futures.first as DraftMatch;
+      final waitTime = futures.last as int;
 
       if (forcedCpu) {
         await _gameResource.connectToCpuMatch(matchId: match.id);
@@ -102,6 +108,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
             isPrivate: false,
             draftMatch: match,
             emit: emit,
+            waitTime: waitTime,
           );
         }
       }
@@ -117,7 +124,13 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   ) async {
     try {
       emit(state.copyWith(status: MatchMakingStatus.processing));
-      final match = await _matchMakerRepository.createPrivateMatch(deckId);
+
+      final futures = await Future.wait([
+        _matchMakerRepository.createPrivateMatch(deckId),
+        _configRepository.getPrivateMatchTimeLimit(),
+      ]);
+      final match = futures.first as DraftMatch;
+      final waitTime = futures.last as int;
 
       await _connectToMatch(
         matchId: match.id,
@@ -127,6 +140,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
         isPrivate: true,
         draftMatch: match,
         emit: emit,
+        waitTime: waitTime,
       );
     } catch (e, s) {
       addError(e, s);
@@ -166,6 +180,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
     required bool isPrivate,
     required DraftMatch draftMatch,
     required Emitter<MatchMakingState> emit,
+    required int waitTime,
   }) async {
     final stream = _matchMakerRepository
         .watchMatch(draftMatch.id)
@@ -195,7 +210,7 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
 
       return Future.value(false);
     }).timeout(
-      Duration(seconds: isPrivate ? 120 : 4),
+      Duration(seconds: waitTime),
       onTimeout: () async {
         await subscription.cancel();
         await Future<void>.delayed(hostWaitTime);

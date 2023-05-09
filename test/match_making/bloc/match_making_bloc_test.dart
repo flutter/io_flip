@@ -317,6 +317,50 @@ void main() {
       });
     });
 
+    test('when match wait time increases wait for another player increases',
+        () {
+      fakeAsync((async) {
+        when(() => configRepository.getMatchWaitTimeLimit())
+            .thenAnswer((_) async => 120);
+        when(() => configRepository.getPrivateMatchTimeLimit())
+            .thenAnswer((_) async => 120);
+        when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(
+          (_) async => DraftMatch(
+            id: '',
+            host: deckId,
+          ),
+        );
+        when(() => gameResource.getMatch(any())).thenAnswer((_) async => match);
+        when(() => gameResource.connectToCpuMatch(matchId: ''))
+            .thenThrow(Exception());
+        final stream =
+            StreamController<DraftMatch>(onCancel: () async {}).stream;
+        when(() => matchMakerRepository.watchMatch(any())).thenAnswer(
+          (_) => stream,
+        );
+
+        final bloc = MatchMakingBloc(
+          matchMakerRepository: matchMakerRepository,
+          connectionRepository: connectionRepository,
+          gameResource: gameResource,
+          deckId: deckId,
+          configRepository: configRepository,
+          hostWaitTime: const Duration(milliseconds: 200),
+        )..add(MatchRequested());
+
+        async.elapse(Duration(seconds: 5));
+        expect(
+          bloc.state,
+          equals(
+            MatchMakingState(
+              status: MatchMakingStatus.processing,
+              match: DraftMatch(id: '', host: deckId),
+            ),
+          ),
+        );
+      });
+    });
+
     test('emits timeout if getMatch returns null after timeout', () {
       fakeAsync((async) {
         when(() => matchMakerRepository.findMatch(deckId)).thenAnswer(

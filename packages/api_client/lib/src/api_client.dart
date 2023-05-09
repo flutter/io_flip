@@ -258,7 +258,14 @@ class ApiClient {
       if (_idToken != null) {
         webSocket
           ..onConnected(
-            () => webSocket.send(jsonEncode(WebSocketMessage.token(_idToken!))),
+            () => webSocket.send(
+              jsonEncode(
+                WebSocketMessage.token(
+                  _idToken!,
+                  reconnect: true,
+                ),
+              ),
+            ),
           )
           ..onReconnected(
             () => webSocket.send(

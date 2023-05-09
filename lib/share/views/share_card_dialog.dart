@@ -24,7 +24,7 @@ class ShareCardDialog extends StatelessWidget {
     final shareResource = context.read<ShareResource>();
     return ShareDialog(
       twitterShareUrl: shareResource.twitterShareCardUrl(card.id),
-      facebookShareUrl: shareResource.twitterShareCardUrl(card.id),
+      facebookShareUrl: shareResource.facebookShareCardUrl(card.id),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
