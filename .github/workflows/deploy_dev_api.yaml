@@ -7,7 +7,6 @@ on:
       - ".github/workflows/deploy_dev_api.yaml"
     branches:
       - main
-      - feat/remote-config
 
 env:
   PROJECT_ID: top-dash-dev
