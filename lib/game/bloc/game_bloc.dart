@@ -156,6 +156,28 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           ? event.updatedState.guestPlayedCards
           : event.updatedState.hostPlayedCards;
 
+      final currentMatchStatePlayerMoves = isHost
+          ? matchLoadedState.matchState.hostPlayedCards
+          : matchLoadedState.matchState.guestPlayedCards;
+
+      final currentMatchStateOpponentMoves = isHost
+          ? matchLoadedState.matchState.guestPlayedCards
+          : matchLoadedState.matchState.hostPlayedCards;
+
+      // If the current state already have all the moves from the updated state,
+      // then we don't need to update the state.
+      if (matchLoadedState.matchState.result == event.updatedState.result &&
+          currentMatchStatePlayerMoves.isNotEmpty &&
+          currentMatchStateOpponentMoves.isNotEmpty &&
+          currentMatchStatePlayerMoves.toSet().containsAll(
+                matchStatePlayerMoves.toSet(),
+              ) &&
+          currentMatchStateOpponentMoves.toSet().containsAll(
+                matchStateOpponentMoves.toSet(),
+              )) {
+        return;
+      }
+
       String? lastPlayedCard;
       for (final cardId in [
         ...matchStatePlayerMoves,
@@ -193,8 +215,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           event.updatedState.hostPlayedCards.length ==
               event.updatedState.guestPlayedCards.length) {
         await _gameResource.calculateResult(
-          match: matchLoadedState.match,
-          matchState: matchLoadedState.matchState,
+          matchId: matchLoadedState.match.id,
         );
       }
 
