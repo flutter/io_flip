@@ -6,7 +6,7 @@ env:
   PROJECT_ID: io-flip
   SERVICE: io-flip-api
   REGION: us-central1
-  GAME_URL: https://f1c3862b-bc1f-49ba-a66d-017e47efef13.web.app/
+  GAME_URL: https://flip.withgoogle.com/
   INITIALS_BLACKLIST_ID: XEjMPnsdzhCO5l6bw8Kf
   FB_STORAGE_BUCKET: io-flip.appspot.com
 
