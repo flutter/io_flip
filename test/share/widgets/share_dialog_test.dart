@@ -139,6 +139,26 @@ void main() {
       expect(find.text(tester.l10n.downloadingButtonLabel), findsOneWidget);
     });
 
+    testWidgets('renders a downloaded button on download complete',
+        (tester) async {
+      when(() => downloadBloc.state)
+          .thenReturn(const DownloadState(status: DownloadStatus.completed));
+      await tester.pumpSubject(
+        downloadBloc: downloadBloc,
+      );
+      expect(
+        find.text(tester.l10n.downloadCompleteButtonLabel),
+        findsOneWidget,
+      );
+      await tester.tap(find.text(tester.l10n.downloadCompleteButtonLabel));
+      verifyNever(
+        () => downloadBloc.add(const DownloadCardsRequested(cards: [card])),
+      );
+      verifyNever(
+        () => downloadBloc.add(const DownloadDeckRequested(deck: deck)),
+      );
+    });
+
     testWidgets('renders a success message while on download complete',
         (tester) async {
       when(() => downloadBloc.state)
