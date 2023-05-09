@@ -1,4 +1,5 @@
 import 'package:api_client/api_client.dart';
+import 'package:config_repository/config_repository.dart';
 import 'package:connection_repository/connection_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart' hide Card;
@@ -44,11 +45,13 @@ class MatchMakingPage extends StatelessWidget {
     return BlocProvider(
       create: (context) {
         final matchMakerRepository = context.read<MatchMakerRepository>();
+        final configRepository = context.read<ConfigRepository>();
         final connectionRepository = context.read<ConnectionRepository>();
         final gameResource = context.read<GameResource>();
         return MatchMakingBloc(
           matchMakerRepository: matchMakerRepository,
           connectionRepository: connectionRepository,
+          configRepository: configRepository,
           gameResource: gameResource,
           deckId: deck.id,
         )..add(mapEvent());

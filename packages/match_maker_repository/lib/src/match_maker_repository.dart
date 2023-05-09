@@ -134,7 +134,15 @@ class MatchMakerRepository {
   }
 
   /// Finds a match.
-  Future<DraftMatch> findMatch(String id, {int retryNumber = 0}) async {
+  Future<DraftMatch> findMatch(
+    String id, {
+    int retryNumber = 0,
+    bool forcedCpu = false,
+  }) async {
+    if (forcedCpu) {
+      return _createMatch(id, forcedCpu: true);
+    }
+
     /// Find a match that is not full and has
     /// been updated in the last 4 seconds.
     final matchesResult = await collection
@@ -219,11 +227,20 @@ class MatchMakerRepository {
     return null;
   }
 
-  Future<DraftMatch> _createMatch(String id, {bool inviteOnly = false}) async {
+  Future<DraftMatch> _createMatch(
+    String id, {
+    bool inviteOnly = false,
+    bool forcedCpu = false,
+  }) async {
     final inviteCode = inviteOnly ? _inviteCode() : null;
     final result = await collection.add({
       'host': id,
-      'guest': inviteOnly ? _inviteKey : emptyKey,
+      if (inviteOnly)
+        'guest': _inviteKey
+      else if (forcedCpu)
+        'guest': reservedKey
+      else
+        'guest': emptyKey,
       if (inviteCode != null) 'inviteCode': inviteCode,
     });
 

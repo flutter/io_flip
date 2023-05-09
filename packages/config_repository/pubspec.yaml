@@ -1,0 +1,23 @@
+name: config_repository
+description: Repository for a remote config.
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0-134.0.dev <4.0.0"
+  flutter: 3.10.0-1.4.pre
+
+dependencies:
+  cloud_firestore: ^4.4.3
+  equatable: ^2.0.5
+  flutter:
+    sdk: flutter
+  game_domain:
+    path: ../../api/packages/game_domain
+  uuid: ^3.0.7
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mocktail: ^0.3.0
+  very_good_analysis: ^4.0.0

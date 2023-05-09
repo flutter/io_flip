@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:api_client/api_client.dart';
+import 'package:config_repository/config_repository.dart';
 import 'package:connection_repository/connection_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,13 +15,17 @@ part 'match_making_state.dart';
 class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   MatchMakingBloc({
     required MatchMakerRepository matchMakerRepository,
+    required ConfigRepository configRepository,
     required ConnectionRepository connectionRepository,
     required GameResource gameResource,
     required this.deckId,
+    Random? rng,
     this.hostWaitTime = defaultHostWaitTime,
   })  : _matchMakerRepository = matchMakerRepository,
+        _configRepository = configRepository,
         _connectionRepository = connectionRepository,
         _gameResource = gameResource,
+        _rng = rng ?? Random(),
         super(const MatchMakingState.initial()) {
     on<MatchRequested>(_onMatchRequested);
     on<PrivateMatchRequested>(_onPrivateMatchRequested);
@@ -27,10 +33,12 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   }
 
   final MatchMakerRepository _matchMakerRepository;
+  final ConfigRepository _configRepository;
   final GameResource _gameResource;
   final String deckId;
   final ConnectionRepository _connectionRepository;
 
+  final Random _rng;
   static const defaultHostWaitTime = Duration(seconds: 2);
   final Duration hostWaitTime;
 
@@ -55,27 +63,47 @@ class MatchMakingBloc extends Bloc<MatchMakingEvent, MatchMakingState> {
   ) async {
     try {
       emit(state.copyWith(status: MatchMakingStatus.processing));
-      final match = await _matchMakerRepository.findMatch(deckId);
-      final isHost = match.guest == null;
 
-      await _connectToMatch(
-        matchId: match.id,
-        isHost: isHost,
+      final cpuChance = await _configRepository.getCPUAutoMatchPercentage();
+      final forcedCpu = _rng.nextDouble() < cpuChance;
+
+      final match = await _matchMakerRepository.findMatch(
+        deckId,
+        forcedCpu: forcedCpu,
       );
-      if (!isHost) {
+
+      if (forcedCpu) {
+        await _gameResource.connectToCpuMatch(matchId: match.id);
         emit(
           state.copyWith(
-            match: match,
+            match: match.copyWithGuest(guest: 'CPU_${match.host}'),
             status: MatchMakingStatus.completed,
-            isHost: false,
+            isHost: true,
           ),
         );
       } else {
-        await _waitGuestToJoin(
-          isPrivate: false,
-          draftMatch: match,
-          emit: emit,
+        final isHost = match.guest == null;
+
+        await _connectToMatch(
+          matchId: match.id,
+          isHost: isHost,
         );
+
+        if (!isHost) {
+          emit(
+            state.copyWith(
+              match: match,
+              status: MatchMakingStatus.completed,
+              isHost: false,
+            ),
+          );
+        } else {
+          await _waitGuestToJoin(
+            isPrivate: false,
+            draftMatch: match,
+            emit: emit,
+          );
+        }
       }
     } catch (e, s) {
       addError(e, s);

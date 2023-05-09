@@ -294,6 +294,36 @@ void main() {
       ).called(1);
     });
 
+    test('returns a new match with CPU when forced CPU is true', () async {
+      mockQueryResult();
+      mockAdd('hostId', 'RESERVED_EMPTY', 'matchId');
+      mockAddState('matchId', const [], const []);
+
+      final match = await matchMakerRepository.findMatch(
+        'hostId',
+        forcedCpu: true,
+      );
+      expect(
+        match,
+        equals(
+          DraftMatch(
+            id: 'matchId',
+            host: 'hostId',
+          ),
+        ),
+      );
+
+      verify(
+        () => matchStateCollection.add(
+          {
+            'matchId': 'matchId',
+            'hostPlayedCards': const <String>[],
+            'guestPlayedCards': const <String>[],
+          },
+        ),
+      ).called(1);
+    });
+
     test('creates a new match as host when creating a private match', () async {
       mockQueryResult();
       mockAdd('hostId', 'INVITE', 'matchId', inviteCode: 'inviteCode');

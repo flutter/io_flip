@@ -287,6 +287,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+  config_repository:
+    dependency: "direct main"
+    description:
+      path: "packages/config_repository"
+      relative: true
+    source: path
+    version: "0.1.0+1"
   connection_repository:
     dependency: "direct main"
     description:
