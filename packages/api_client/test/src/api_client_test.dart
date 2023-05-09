@@ -651,7 +651,11 @@ void main() {
         await Future.microtask(() {});
 
         verify(
-          () => webSocket.send(jsonEncode(WebSocketMessage.token('token'))),
+          () => webSocket.send(
+            jsonEncode(
+              WebSocketMessage.token('token', reconnect: true),
+            ),
+          ),
         ).called(1);
 
         verify(
@@ -676,7 +680,9 @@ void main() {
 
           await Future.microtask(() {});
           verify(
-            () => webSocket.send(jsonEncode(WebSocketMessage.token('token'))),
+            () => webSocket.send(
+              jsonEncode(WebSocketMessage.token('token', reconnect: true)),
+            ),
           ).called(1);
 
           connectionStreamController.add(Reconnected());
