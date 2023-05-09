@@ -135,30 +135,46 @@ class _SaveButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return status == DownloadStatus.loading
-        ? RoundedButton.image(
-            const SizedBox(
-              width: IoFlipSpacing.xlg,
-              height: IoFlipSpacing.xlg,
-              child: CircularProgressIndicator(
-                color: IoFlipColors.seedGrey70,
-                strokeWidth: 2,
-              ),
+    switch (status) {
+      case DownloadStatus.loading:
+        return RoundedButton.image(
+          const SizedBox(
+            width: IoFlipSpacing.xlg,
+            height: IoFlipSpacing.xlg,
+            child: CircularProgressIndicator(
+              color: IoFlipColors.seedGrey70,
+              strokeWidth: 2,
             ),
-            label: l10n.downloadingButtonLabel,
-            borderColor: IoFlipColors.seedGrey50,
-            foregroundColor: IoFlipColors.seedGrey70,
-            backgroundColor: IoFlipColors.seedGrey30,
-          )
-        : RoundedButton.image(
-            Image.asset(
-              Assets.images.download.path,
-              color: IoFlipColors.seedWhite,
-              width: IoFlipSpacing.xlg,
-            ),
-            label: l10n.saveButtonLabel,
-            onPressed: onSave,
-          );
+          ),
+          label: l10n.downloadingButtonLabel,
+          borderColor: IoFlipColors.seedGrey50,
+          foregroundColor: IoFlipColors.seedGrey70,
+          backgroundColor: IoFlipColors.seedGrey30,
+        );
+      case DownloadStatus.completed:
+        return RoundedButton.image(
+          const Icon(
+            Icons.check,
+            size: IoFlipSpacing.xlg,
+            color: IoFlipColors.seedGrey70,
+          ),
+          label: l10n.downloadCompleteButtonLabel,
+          borderColor: IoFlipColors.seedGrey50,
+          foregroundColor: IoFlipColors.seedGrey70,
+          backgroundColor: IoFlipColors.seedGrey30,
+        );
+      case DownloadStatus.idle:
+      case DownloadStatus.failure:
+        return RoundedButton.image(
+          Image.asset(
+            Assets.images.download.path,
+            color: IoFlipColors.seedWhite,
+            width: IoFlipSpacing.xlg,
+          ),
+          label: l10n.saveButtonLabel,
+          onPressed: onSave,
+        );
+    }
   }
 }
 
