@@ -138,7 +138,7 @@ void main() {
         await tester.enterText(initial2, '');
         await tester.pumpAndSettle();
 
-        expect(inputs.last.controller.text, isEmpty);
+        expect(inputs.last.controller.text, equals(emptyCharacter));
         expect(find.text(l10n.enterInitialsError), findsNothing);
       });
 
@@ -264,7 +264,7 @@ void main() {
         expect(find.text(l10n.enterInitialsError), findsNothing);
       });
 
-      testWidgets('typing two letters in the same field does not work',
+      testWidgets('typing two letters in the same field keeps last letter',
           (tester) async {
         when(() => initialsFormBloc.state)
             .thenReturn(const InitialsFormState());
@@ -280,7 +280,7 @@ void main() {
 
         final input =
             tester.widget<EditableText>(find.byType(EditableText).first);
-        expect(input.controller.text == 'A', isTrue);
+        expect(input.controller.text == 'B', isTrue);
 
         expect(find.text(l10n.enterInitialsError), findsNothing);
       });
