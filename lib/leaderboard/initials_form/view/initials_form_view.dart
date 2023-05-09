@@ -7,11 +7,19 @@ import 'package:io_flip/leaderboard/initials_form/initials_form.dart';
 import 'package:io_flip/share/share.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 
-class InitialsFormView extends StatelessWidget {
+const emptyCharacter = '\u200b';
+
+class InitialsFormView extends StatefulWidget {
   const InitialsFormView({super.key, this.shareHandPageData});
 
-  static final focusNodes = List.generate(3, (_) => FocusNode());
   final ShareHandPageData? shareHandPageData;
+
+  @override
+  State<InitialsFormView> createState() => _InitialsFormViewState();
+}
+
+class _InitialsFormViewState extends State<InitialsFormView> {
+  final focusNodes = List.generate(3, (_) => FocusNode());
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +28,13 @@ class InitialsFormView extends StatelessWidget {
     return BlocConsumer<InitialsFormBloc, InitialsFormState>(
       listener: (context, state) {
         if (state.status == InitialsFormStatus.success) {
-          if (shareHandPageData != null) {
+          if (widget.shareHandPageData != null) {
             GoRouter.of(context).goNamed(
               'share_hand',
               extra: ShareHandPageData(
                 initials: state.initials.join(),
-                wins: shareHandPageData!.wins,
-                deck: shareHandPageData!.deck,
+                wins: widget.shareHandPageData!.wins,
+                deck: widget.shareHandPageData!.deck,
               ),
             );
           } else {
@@ -49,22 +57,37 @@ class InitialsFormView extends StatelessWidget {
                 _InitialFormField(
                   0,
                   focusNode: focusNodes[0],
-                  onChanged: (index, value) =>
-                      _onInitialChanged(context, value, index),
+                  key: ObjectKey(focusNodes[0]),
+                  onChanged: (index, value) {
+                    _onInitialChanged(context, value, index);
+                  },
+                  onBackspace: (index) {
+                    _onInitialChanged(context, '', index, isBackspace: true);
+                  },
                 ),
                 const SizedBox(width: IoFlipSpacing.sm),
                 _InitialFormField(
                   1,
+                  key: ObjectKey(focusNodes[1]),
                   focusNode: focusNodes[1],
-                  onChanged: (index, value) =>
-                      _onInitialChanged(context, value, index),
+                  onChanged: (index, value) {
+                    _onInitialChanged(context, value, index);
+                  },
+                  onBackspace: (index) {
+                    _onInitialChanged(context, '', index, isBackspace: true);
+                  },
                 ),
                 const SizedBox(width: IoFlipSpacing.sm),
                 _InitialFormField(
                   2,
+                  key: ObjectKey(focusNodes[2]),
                   focusNode: focusNodes[2],
-                  onChanged: (index, value) =>
-                      _onInitialChanged(context, value, index),
+                  onChanged: (index, value) {
+                    _onInitialChanged(context, value, index);
+                  },
+                  onBackspace: (index) {
+                    _onInitialChanged(context, '', index, isBackspace: true);
+                  },
                 ),
               ],
             ),
@@ -91,16 +114,32 @@ class InitialsFormView extends StatelessWidget {
     );
   }
 
-  void _onInitialChanged(BuildContext context, String value, int index) {
+  void _onInitialChanged(
+    BuildContext context,
+    String value,
+    int index, {
+    bool isBackspace = false,
+  }) {
+    var text = value;
+    if (text == emptyCharacter) {
+      text = '';
+    }
+
     context
         .read<InitialsFormBloc>()
-        .add(InitialsChanged(initial: value, index: index));
-    if (value.isNotEmpty) {
-      focusNodes[index].unfocus();
+        .add(InitialsChanged(initial: text, index: index));
+
+    if (text.isNotEmpty) {
       if (index < focusNodes.length - 1) {
+        focusNodes[index].unfocus();
         FocusScope.of(context).requestFocus(focusNodes[index + 1]);
       }
     } else if (index > 0) {
+      if (isBackspace) {
+        setState(() {
+          focusNodes[index - 1] = FocusNode();
+        });
+      }
       FocusScope.of(context).requestFocus(focusNodes[index - 1]);
     }
   }
@@ -111,10 +150,13 @@ class _InitialFormField extends StatefulWidget {
     this.index, {
     required this.onChanged,
     required this.focusNode,
+    required this.onBackspace,
+    super.key,
   });
 
   final int index;
   final void Function(int, String) onChanged;
+  final void Function(int) onBackspace;
   final FocusNode focusNode;
 
   @override
@@ -122,14 +164,43 @@ class _InitialFormField extends StatefulWidget {
 }
 
 class _InitialFormFieldState extends State<_InitialFormField> {
+  late final TextEditingController controller =
+      TextEditingController.fromValue(lastValue);
+
+  bool hasFocus = false;
+  TextEditingValue lastValue = const TextEditingValue(
+    text: emptyCharacter,
+    selection: TextSelection.collapsed(offset: 1),
+  );
+
   @override
   void initState() {
     super.initState();
-    widget.focusNode.addListener(() {
-      if (mounted) {
-        setState(() {});
+    widget.focusNode.addListener(onFocusChanged);
+  }
+
+  void onFocusChanged() {
+    if (mounted) {
+      final hadFocus = hasFocus;
+      final willFocus = widget.focusNode.hasPrimaryFocus;
+
+      setState(() {
+        hasFocus = willFocus;
+      });
+
+      if (!hadFocus && willFocus) {
+        final text = controller.text;
+        final selection = TextSelection.collapsed(offset: text.length);
+        controller.selection = selection;
       }
-    });
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.focusNode.removeListener(onFocusChanged);
+    controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -156,14 +227,19 @@ class _InitialFormFieldState extends State<_InitialFormField> {
       decoration: decoration,
       child: TextFormField(
         key: Key('initial_form_field_${widget.index}'),
+        controller: controller,
         autofocus: widget.index == 0,
         focusNode: widget.focusNode,
         showCursor: false,
         textInputAction: TextInputAction.next,
         inputFormatters: [
+          BackspaceFormatter(
+            onBackspace: () => widget.onBackspace(widget.index),
+          ),
           FilteringTextInputFormatter.allow(RegExp('[a-zA-Z]')),
           UpperCaseTextFormatter(),
-          LengthLimitingTextInputFormatter(1)
+          LengthLimitingTextInputFormatter(1),
+          EmptyCharacterAtEndFormatter(),
         ],
         style: IoFlipTextStyles.mobileH1.copyWith(
           color: blacklisted ? IoFlipColors.seedRed : IoFlipColors.seedYellow,
@@ -191,5 +267,49 @@ class UpperCaseTextFormatter extends TextInputFormatter {
       text: newValue.text.toUpperCase(),
       selection: newValue.selection,
     );
+  }
+}
+
+class EmptyCharacterAtEndFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final newText = newValue.text;
+
+    var text = newText;
+    var selection = newValue.selection;
+    if (newText.isEmpty) {
+      text = emptyCharacter;
+      selection = const TextSelection.collapsed(offset: 1);
+    }
+    return TextEditingValue(
+      text: text,
+      selection: selection,
+    );
+  }
+}
+
+class BackspaceFormatter extends TextInputFormatter {
+  BackspaceFormatter({
+    required this.onBackspace,
+  });
+
+  final VoidCallback onBackspace;
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final oldText = oldValue.text;
+    final newText = newValue.text;
+
+    // Heuristic for detecting backspace press on an empty field on mobile.
+    if (oldText == emptyCharacter && newText.isEmpty) {
+      onBackspace();
+    }
+    return newValue;
   }
 }
