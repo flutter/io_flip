@@ -23,7 +23,9 @@ void main() {
 
       when(() => apiClient.shareHandUrl(any())).thenReturn('handUrl');
       when(() => apiClient.shareCardUrl(any())).thenReturn('cardUrl');
-      when(() => apiClient.getPublic(any())).thenAnswer((_) async => response);
+      when(
+        () => apiClient.getPublic(any(), followRedirect: true),
+      ).thenAnswer((_) async => response);
       when(() => response.bodyBytes).thenReturn(bytes);
 
       resource = ShareResource(

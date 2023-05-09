@@ -301,6 +301,125 @@ void main() {
         ).called(1);
       });
 
+      test(
+        'follows redirect when that is enabled and the '
+        'response is a redirect',
+        () async {
+          when(
+            () => httpClient.get(
+              Uri.parse(
+                '$baseUrl/path/to/endpoint?param1=value1&param2=value2',
+              ),
+              headers: any(named: 'headers'),
+            ),
+          ).thenAnswer((_) async {
+            return http.Response(
+              '',
+              301,
+              headers: {
+                'location': 'https://example.com',
+              },
+              isRedirect: true,
+            );
+          });
+
+          when(
+            () => httpClient.get(
+              Uri.parse('https://example.com'),
+              headers: any(named: 'headers'),
+            ),
+          ).thenAnswer((_) async {
+            return http.Response(
+              '',
+              200,
+            );
+          });
+          await subject.getPublic(
+            '/path/to/endpoint',
+            queryParameters: {
+              'param1': 'value1',
+              'param2': 'value2',
+            },
+            followRedirect: true,
+          );
+
+          verify(
+            () => httpClient.get(
+              Uri.parse(
+                '$baseUrl/path/to/endpoint?param1=value1&param2=value2',
+              ),
+              headers: {},
+            ),
+          ).called(1);
+          verify(
+            () => httpClient.get(
+              Uri.parse(
+                'https://example.com',
+              ),
+            ),
+          ).called(1);
+        },
+      );
+
+      test(
+        "Don't follow a redirect when that is disabled and the "
+        'response is a redirect',
+        () async {
+          when(
+            () => httpClient.get(
+              Uri.parse(
+                '$baseUrl/path/to/endpoint?param1=value1&param2=value2',
+              ),
+              headers: any(named: 'headers'),
+            ),
+          ).thenAnswer((_) async {
+            return http.Response(
+              '',
+              301,
+              headers: {
+                'location': 'https://example.com',
+              },
+            );
+          });
+
+          when(
+            () => httpClient.get(
+              Uri.parse('https://example.com'),
+              headers: any(named: 'headers'),
+            ),
+          ).thenAnswer((_) async {
+            return http.Response(
+              '',
+              200,
+            );
+          });
+          await subject.getPublic(
+            '/path/to/endpoint',
+            queryParameters: {
+              'param1': 'value1',
+              'param2': 'value2',
+            },
+            followRedirect: true,
+          );
+
+          verify(
+            () => httpClient.get(
+              Uri.parse(
+                '$baseUrl/path/to/endpoint?param1=value1&param2=value2',
+              ),
+              headers: {},
+            ),
+          ).called(1);
+          verifyNever(
+            () => httpClient.get(
+              Uri.parse(
+                'https://example.com',
+              ),
+            ),
+          );
+        },
+      );
+
       test('sends the authentication and app check token', () async {
         idTokenStreamController.add(mockIdToken);
         appCheckTokenStreamController.add(mockAppCheckToken);

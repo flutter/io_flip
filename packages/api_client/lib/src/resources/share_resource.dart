@@ -63,7 +63,10 @@ class ShareResource {
   ///
   /// Returns a [Uint8List] image, if any to be found.
   Future<Uint8List> getShareCardImage(String cardId) async {
-    final response = await _apiClient.getPublic('/public/cards/$cardId');
+    final response = await _apiClient.getPublic(
+      '/public/cards/$cardId',
+      followRedirect: true,
+    );
 
     if (response.statusCode != HttpStatus.ok) {
       throw ApiClientError(
@@ -79,7 +82,10 @@ class ShareResource {
   ///
   /// Returns a [Uint8List] image, if any to be found.
   Future<Uint8List> getShareDeckImage(String deckId) async {
-    final response = await _apiClient.getPublic('/public/decks/$deckId');
+    final response = await _apiClient.getPublic(
+      '/public/decks/$deckId',
+      followRedirect: true,
+    );
 
     if (response.statusCode != HttpStatus.ok) {
       throw ApiClientError(

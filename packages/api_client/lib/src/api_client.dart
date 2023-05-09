@@ -228,6 +228,7 @@ class ApiClient {
   Future<http.Response> getPublic(
     String path, {
     Map<String, String>? queryParameters,
+    bool followRedirect = false,
   }) async {
     return _handleUnauthorized(() async {
       final response = await _get(
@@ -237,6 +238,11 @@ class ApiClient {
         ),
         headers: _headers,
       );
+
+      if (response.isRedirect && followRedirect) {
+        final url = response.headers['location']!;
+        return _get(Uri.parse(url));
+      }
 
       return response;
     });
