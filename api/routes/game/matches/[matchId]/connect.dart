@@ -19,7 +19,7 @@ FutureOr<Response> onRequest(RequestContext context, String matchId) async {
     );
 
     if (!await matchRepository.isDraftMatch(matchId)) {
-      return Response(statusCode: HttpStatus.forbidden);
+      return Response(statusCode: HttpStatus.forbidden, body: 'match is draft');
     }
     if (playerConnected || !matchRepository.trackPlayerPresence) {
       try {
@@ -57,7 +57,12 @@ FutureOr<Response> onRequest(RequestContext context, String matchId) async {
       }
       return Response(statusCode: HttpStatus.noContent);
     } else {
-      return Response(statusCode: HttpStatus.forbidden);
+      final isPlayerConnected = playerConnected ? 'player not connected' : '';
+      final trackPlayerPresenceMessage =
+          !matchRepository.trackPlayerPresence ? 'trackPlayerPresence' : '';
+      return Response(
+          statusCode: HttpStatus.forbidden,
+          body: isPlayerConnected + trackPlayerPresenceMessage);
     }
   }
   return Response(statusCode: HttpStatus.methodNotAllowed);
