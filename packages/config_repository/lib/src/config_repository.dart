@@ -19,8 +19,8 @@ class ConfigRepository {
   /// The wait time for a match before a CPU joins.
   final int defaultMatchWaitTimeLimit = 3;
 
-  /// The wait time for a match before a CPU joins.
-  final double defaultCPUAutoMatchPercentage = .9;
+  /// The percentage of users that will be auto matched against a CPU.
+  final double defaultCPUAutoMatchPercentage = 1;
 
   /// The [FirebaseFirestore] instance.
   final FirebaseFirestore db;
