@@ -8,7 +8,7 @@ import 'package:match_repository/match_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-import '../../../../routes/game/matches/result.dart' as route;
+import '../../../../../routes/game/matches/[matchId]/result.dart' as route;
 
 class _MockRequestContext extends Mock implements RequestContext {}
 
@@ -32,10 +32,10 @@ void main() {
     const deck = Deck(id: 'id', userId: 'userId', cards: []);
     const match = Match(id: 'id', hostDeck: deck, guestDeck: deck);
     const matchState = MatchState(
-      id: 'id',
-      matchId: 'matchId',
-      hostPlayedCards: ['A'],
-      guestPlayedCards: ['B'],
+      id: '',
+      matchId: '',
+      guestPlayedCards: [],
+      hostPlayedCards: [],
     );
 
     setUpAll(() {
@@ -45,6 +45,12 @@ void main() {
 
     setUp(() {
       matchRepository = _MockMatchRepository();
+      when(() => matchRepository.getMatch(match.id)).thenAnswer(
+        (_) async => match,
+      );
+      when(() => matchRepository.getMatchState(match.id)).thenAnswer(
+        (_) async => matchState,
+      );
       when(
         () => matchRepository.calculateMatchResult(
           match: any(named: 'match'),
@@ -56,12 +62,6 @@ void main() {
 
       request = _MockRequest();
       when(() => request.method).thenReturn(HttpMethod.patch);
-      when(request.body).thenAnswer(
-        (_) async => jsonEncode({
-          'match': match.toJson(),
-          'matchState': matchState.toJson(),
-        }),
-      );
 
       logger = _MockLogger();
 
@@ -72,25 +72,43 @@ void main() {
     });
 
     test('responds with a 204', () async {
-      final response = await route.onRequest(context);
+      final response = await route.onRequest(context, match.id);
       expect(response.statusCode, equals(HttpStatus.noContent));
     });
 
-    test("responds 400 when the match doesn't exists", () async {
+    test('responds 400 when something goes wrong', () async {
       when(
         () => matchRepository.calculateMatchResult(
           match: any(named: 'match'),
           matchState: any(named: 'matchState'),
         ),
       ).thenThrow(CalculateResultFailure());
-      final response = await route.onRequest(context);
+      final response = await route.onRequest(context, match.id);
 
       expect(response.statusCode, equals(HttpStatus.badRequest));
     });
 
+    test("responds 404 when the match doesn't exists", () async {
+      when(() => matchRepository.getMatch(match.id)).thenAnswer(
+        (_) async => null,
+      );
+      final response = await route.onRequest(context, match.id);
+
+      expect(response.statusCode, equals(HttpStatus.notFound));
+    });
+
+    test("responds 404 when the match state doesn't exists", () async {
+      when(() => matchRepository.getMatchState(match.id)).thenAnswer(
+        (_) async => null,
+      );
+      final response = await route.onRequest(context, match.id);
+
+      expect(response.statusCode, equals(HttpStatus.notFound));
+    });
+
     test('allows only patch methods', () async {
       when(() => request.method).thenReturn(HttpMethod.post);
-      final response = await route.onRequest(context);
+      final response = await route.onRequest(context, match.id);
       expect(response.statusCode, equals(HttpStatus.methodNotAllowed));
     });
   });
