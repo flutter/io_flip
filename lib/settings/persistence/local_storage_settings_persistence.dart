@@ -12,13 +12,13 @@ class LocalStorageSettingsPersistence extends SettingsPersistence {
       SharedPreferences.getInstance();
 
   @override
-  Future<bool> getSoundsOn({required bool defaultValue}) async {
+  Future<bool> getSoundsOn({bool defaultValue = false}) async {
     final prefs = await instanceFuture;
     return prefs.getBool('soundsOn') ?? defaultValue;
   }
 
   @override
-  Future<bool> getMusicOn({required bool defaultValue}) async {
+  Future<bool> getMusicOn({bool defaultValue = false}) async {
     final prefs = await instanceFuture;
     return prefs.getBool('musicOn') ?? defaultValue;
   }

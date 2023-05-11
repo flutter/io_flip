@@ -13,10 +13,10 @@ class MemoryOnlySettingsPersistence implements SettingsPersistence {
   String playerName = 'Player';
 
   @override
-  Future<bool> getSoundsOn({required bool defaultValue}) async => soundsOn;
+  Future<bool> getSoundsOn({bool defaultValue = false}) async => soundsOn;
 
   @override
-  Future<bool> getMusicOn({required bool defaultValue}) async => musicOn;
+  Future<bool> getMusicOn({bool defaultValue = false}) async => musicOn;
 
   @override
   Future<void> saveSoundsOn({required bool active}) async => soundsOn = active;
