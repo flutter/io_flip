@@ -65,8 +65,8 @@ class AudioController {
   }
 
   /// Enables the [AudioController] to track changes to settings.
-  /// Namely, when any of [SettingsController.muted],
-  /// [SettingsController.musicOn] or [SettingsController.soundsOn] changes,
+  /// Namely, when any of [SettingsController.musicOn] or
+  /// [SettingsController.soundsOn] changes,
   /// the audio controller will act accordingly.
   void attachSettings(SettingsController settingsController) {
     if (_settings == settingsController) {
@@ -77,7 +77,6 @@ class AudioController {
     // Remove handlers from the old settings controller if present
     final oldSettings = _settings;
     if (oldSettings != null) {
-      oldSettings.muted.removeListener(_mutedHandler);
       oldSettings.musicOn.removeListener(_musicOnHandler);
       oldSettings.soundsOn.removeListener(_soundsOnHandler);
     }
@@ -85,11 +84,10 @@ class AudioController {
     _settings = settingsController;
 
     // Add handlers to the new settings controller
-    settingsController.muted.addListener(_mutedHandler);
     settingsController.musicOn.addListener(_musicOnHandler);
     settingsController.soundsOn.addListener(_soundsOnHandler);
 
-    if (!settingsController.muted.value && settingsController.musicOn.value) {
+    if (settingsController.musicOn.value) {
       _startMusic();
     }
   }
@@ -122,7 +120,6 @@ class AudioController {
   /// Plays a single sound effect.
   ///
   /// The controller will ignore this call when the attached settings'
-  /// [SettingsController.muted] is `true` or if its
   /// [SettingsController.soundsOn] is `false`.
   void playSfx(String sfx) {
     if (!Assets.sfx.values.contains(sfx)) {
@@ -133,11 +130,6 @@ class AudioController {
       );
     }
 
-    final muted = _settings?.muted.value ?? true;
-    if (muted) {
-      _log.info(() => 'Ignoring playing sound ($sfx) because audio is muted.');
-      return;
-    }
     final soundsOn = _settings?.soundsOn.value ?? false;
     if (!soundsOn) {
       _log.info(
@@ -146,7 +138,7 @@ class AudioController {
       return;
     }
 
-    _log.info(() => 'Playing sound: $sfx');
+    _log.info(() => 'Playing sound: $sfx\n${StackTrace.current}');
 
     _sfxPlayers[_currentSfxPlayer].play(
       AssetSource(_replaceUrl(sfx)),
@@ -169,7 +161,7 @@ class AudioController {
         _stopAllSound();
         break;
       case AppLifecycleState.resumed:
-        if (!_settings!.muted.value && _settings!.musicOn.value) {
+        if (_settings!.musicOn.value) {
           _resumeMusic();
         }
         break;
@@ -182,24 +174,10 @@ class AudioController {
   void _musicOnHandler() {
     if (_settings!.musicOn.value) {
       // Music got turned on.
-      if (!_settings!.muted.value) {
-        _resumeMusic();
-      }
+      _resumeMusic();
     } else {
       // Music got turned off.
       _stopMusic();
-    }
-  }
-
-  void _mutedHandler() {
-    if (_settings!.muted.value) {
-      // All sound just got muted.
-      _stopAllSound();
-    } else {
-      // All sound just got un-muted.
-      if (_settings!.musicOn.value) {
-        _resumeMusic();
-      }
     }
   }
 

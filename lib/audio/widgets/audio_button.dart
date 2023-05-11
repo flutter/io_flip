@@ -9,14 +9,29 @@ class AudioToggleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final settings = context.watch<SettingsController>();
-    return ValueListenableBuilder<bool>(
-      valueListenable: settings.muted,
-      builder: (_, muted, __) {
-        return RoundedButton.icon(
-          muted ? Icons.volume_off : Icons.volume_up,
-          onPressed: settings.toggleMuted,
-        );
-      },
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ValueListenableBuilder<bool>(
+          valueListenable: settings.musicOn,
+          builder: (_, on, __) {
+            return RoundedButton.icon(
+              on ? Icons.music_note : Icons.music_off,
+              onPressed: settings.toggleMusicOn,
+            );
+          },
+        ),
+        const SizedBox(width: 8),
+        ValueListenableBuilder<bool>(
+          valueListenable: settings.soundsOn,
+          builder: (_, on, __) {
+            return RoundedButton.icon(
+              on ? Icons.volume_up : Icons.volume_off,
+              onPressed: settings.toggleSoundsOn,
+            );
+          },
+        ),
+      ],
     );
   }
 }

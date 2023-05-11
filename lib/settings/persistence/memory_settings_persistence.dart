@@ -7,29 +7,20 @@ import 'package:io_flip/settings/persistence/persistence.dart';
 /// An in-memory implementation of [SettingsPersistence].
 /// Useful for testing.
 class MemoryOnlySettingsPersistence implements SettingsPersistence {
-  bool musicOn = true;
-
-  bool soundsOn = true;
-
-  bool muted = false;
+  bool soundsOn = false;
+  bool musicOn = false;
 
   String playerName = 'Player';
 
   @override
-  Future<bool> getMusicOn() async => musicOn;
+  Future<bool> getSoundsOn({required bool defaultValue}) async => soundsOn;
 
   @override
-  Future<bool> getMuted({required bool defaultValue}) async => muted;
-
-  @override
-  Future<bool> getSoundsOn() async => soundsOn;
-
-  @override
-  Future<void> saveMusicOn({required bool active}) async => musicOn = active;
-
-  @override
-  Future<void> saveMuted({required bool active}) async => muted = active;
+  Future<bool> getMusicOn({required bool defaultValue}) async => musicOn;
 
   @override
   Future<void> saveSoundsOn({required bool active}) async => soundsOn = active;
+
+  @override
+  Future<void> saveMusicOn({required bool active}) async => musicOn = active;
 }
