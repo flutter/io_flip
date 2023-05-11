@@ -70,7 +70,8 @@ class ClashSceneState extends State<ClashScene> with TickerProviderStateMixin {
   late final ComparisonResult winningCard;
   late final ComparisonResult winningSuit;
 
-  var _flipCards = false;
+  bool _flipCards = false;
+  bool _playedWinningElementSound = false;
 
   void onFlipCards() {
     motionController.stop();
@@ -260,7 +261,9 @@ class ClashSceneState extends State<ClashScene> with TickerProviderStateMixin {
         ? widget.playerCard.suit
         : widget.opponentCard.suit];
 
-    if (_flipCards && winningSuit != ComparisonResult.none) {
+    if (_flipCards &&
+        !_playedWinningElementSound &&
+        winningSuit != ComparisonResult.none) {
       switch (winningElement!) {
         case Element.fire:
           context.read<AudioController>().playSfx(Assets.sfx.fire);
@@ -278,6 +281,7 @@ class ClashSceneState extends State<ClashScene> with TickerProviderStateMixin {
           context.read<AudioController>().playSfx(Assets.sfx.water);
           break;
       }
+      _playedWinningElementSound = true;
     }
 
     return AnimatedContainer(
