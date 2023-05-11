@@ -187,7 +187,6 @@ extension ShareCardDialogTest on WidgetTester {
     GoRouter? router,
   }) async {
     final SettingsController settingsController = _MockSettingsController();
-    when(() => settingsController.muted).thenReturn(ValueNotifier(true));
     await mockNetworkImages(() {
       return pumpApp(
         const ShareHandPage(

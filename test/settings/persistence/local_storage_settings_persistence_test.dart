@@ -28,33 +28,6 @@ void main() {
       expect(value, isFalse);
     });
 
-    test('getMuted', () async {
-      SharedPreferences.setMockInitialValues({
-        'mute': false,
-      });
-
-      final persistence = LocalStorageSettingsPersistence();
-      final value = await persistence.getMuted(defaultValue: false);
-      expect(value, isFalse);
-    });
-
-    test('getMuted returns default value if null', () async {
-      final persistence = LocalStorageSettingsPersistence();
-      final value = await persistence.getMuted(defaultValue: false);
-      expect(value, isFalse);
-    });
-
-    test('saveMuted', () async {
-      final persistence = LocalStorageSettingsPersistence();
-
-      await persistence.saveMuted(active: true);
-
-      expect(
-        await persistence.getMuted(defaultValue: false),
-        isTrue,
-      );
-    });
-
     test('saveMusicOn', () async {
       final persistence = LocalStorageSettingsPersistence();
 

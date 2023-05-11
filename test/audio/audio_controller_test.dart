@@ -56,7 +56,6 @@ void main() {
 
   group('AudioController', () {
     late SettingsController settingsController;
-    late ValueNotifier<bool> muted;
     late ValueNotifier<bool> musicOn;
     late ValueNotifier<bool> soundsOn;
 
@@ -66,9 +65,6 @@ void main() {
 
     setUp(() {
       settingsController = _MockSettingsController();
-
-      muted = _createMockNotifier();
-      when(() => settingsController.muted).thenReturn(muted);
 
       soundsOn = _createMockNotifier();
       when(() => settingsController.soundsOn).thenReturn(soundsOn);
@@ -88,16 +84,14 @@ void main() {
       test('attach to the settings', () {
         AudioController().attachSettings(settingsController);
 
-        verify(() => muted.addListener(any())).called(1);
         verify(() => musicOn.addListener(any())).called(1);
         verify(() => soundsOn.addListener(any())).called(1);
       });
 
-      test('auto play the music if is not muted', () {
+      test('auto play the music when music is enabled', () {
         final playerFactory = _MockAudioPlayerFactory();
 
         when(() => musicOn.value).thenReturn(true);
-        when(() => muted.value).thenReturn(false);
 
         AudioController(
           createPlayer: playerFactory.createPlayer,
@@ -114,14 +108,10 @@ void main() {
         final audioController = AudioController()
           ..attachSettings(settingsController);
 
-        verify(() => muted.addListener(any())).called(1);
         verify(() => musicOn.addListener(any())).called(1);
         verify(() => soundsOn.addListener(any())).called(1);
 
         final newController = _MockSettingsController();
-
-        final newMuted = _createMockNotifier();
-        when(() => newController.muted).thenReturn(newMuted);
 
         final newSoundsOn = _createMockNotifier();
         when(() => newController.soundsOn).thenReturn(newSoundsOn);
@@ -131,11 +121,9 @@ void main() {
 
         audioController.attachSettings(newController);
 
-        verify(() => muted.removeListener(any())).called(1);
         verify(() => musicOn.removeListener(any())).called(1);
         verify(() => soundsOn.removeListener(any())).called(1);
 
-        verify(() => newMuted.addListener(any())).called(1);
         verify(() => newMusicOn.addListener(any())).called(1);
         verify(() => newSoundsOn.addListener(any())).called(1);
       });
@@ -147,7 +135,6 @@ void main() {
 
         when(() => soundsOn.value).thenReturn(true);
         when(() => musicOn.value).thenReturn(true);
-        when(() => muted.value).thenReturn(false);
 
         AudioController(
           createPlayer: playerFactory.createPlayer,
@@ -177,7 +164,6 @@ void main() {
 
           when(() => soundsOn.value).thenReturn(true);
           when(() => musicOn.value).thenReturn(true);
-          when(() => muted.value).thenReturn(false);
 
           expect(
             () => AudioController(
@@ -193,37 +179,11 @@ void main() {
         },
       );
 
-      test("doesn't play when is muted", () {
-        final playerFactory = _MockAudioPlayerFactory();
-
-        when(() => soundsOn.value).thenReturn(true);
-        when(() => musicOn.value).thenReturn(true);
-        when(() => muted.value).thenReturn(true);
-
-        AudioController(
-          createPlayer: playerFactory.createPlayer,
-          polyphony: 1,
-        )
-          ..attachSettings(
-            settingsController,
-          )
-          ..playSfx(Assets.sfx.addToHand);
-
-        final player = playerFactory.players['sfxPlayer#0']!;
-
-        verifyNever(
-          () => player.play(
-            AssetSource('sfx/add_to_hand.mp3'),
-          ),
-        );
-      });
-
       test("doesn't play when sounds is off", () {
         final playerFactory = _MockAudioPlayerFactory();
 
         when(() => soundsOn.value).thenReturn(false);
         when(() => musicOn.value).thenReturn(true);
-        when(() => muted.value).thenReturn(false);
 
         AudioController(
           createPlayer: playerFactory.createPlayer,
@@ -241,76 +201,6 @@ void main() {
             AssetSource('sfx/add_to_hand.mp3'),
           ),
         );
-      });
-    });
-
-    group('muted', () {
-      test('stops the music when muted', () async {
-        final playerFactory = _MockAudioPlayerFactory();
-
-        final muted = ValueNotifier(false);
-        when(() => settingsController.muted).thenReturn(muted);
-
-        when(() => soundsOn.value).thenReturn(true);
-        when(() => musicOn.value).thenReturn(true);
-
-        AudioController(
-          createPlayer: playerFactory.createPlayer,
-          polyphony: 1,
-        )
-          ..attachSettings(
-            settingsController,
-          )
-          ..playSfx(Assets.sfx.addToHand);
-
-        final musicPlayer = playerFactory.players.entries
-            .firstWhere((entry) => entry.key.startsWith('music'))
-            .value;
-
-        final sfxPlayer = playerFactory.players.entries
-            .firstWhere((entry) => entry.key.startsWith('sfxPlayer'))
-            .value;
-
-        when(() => musicPlayer.state).thenReturn(PlayerState.playing);
-        when(() => sfxPlayer.state).thenReturn(PlayerState.playing);
-
-        muted.value = true;
-
-        await Future.microtask(() {});
-
-        verify(musicPlayer.pause).called(1);
-        verify(sfxPlayer.stop).called(1);
-      });
-
-      test('resumes the music when unmuting', () async {
-        final playerFactory = _MockAudioPlayerFactory();
-
-        final muted = ValueNotifier(true);
-        when(() => settingsController.muted).thenReturn(muted);
-
-        when(() => soundsOn.value).thenReturn(true);
-        when(() => musicOn.value).thenReturn(true);
-
-        AudioController(
-          createPlayer: playerFactory.createPlayer,
-          polyphony: 1,
-        )
-          ..attachSettings(
-            settingsController,
-          )
-          ..playSfx(Assets.sfx.addToHand);
-
-        final musicPlayer = playerFactory.players.entries
-            .firstWhere((entry) => entry.key.startsWith('music'))
-            .value;
-
-        when(() => musicPlayer.state).thenReturn(PlayerState.paused);
-
-        muted.value = false;
-
-        await Future.microtask(() {});
-
-        verify(musicPlayer.resume).called(1);
       });
     });
 
@@ -321,7 +211,6 @@ void main() {
         final musicOn = ValueNotifier(true);
         when(() => settingsController.musicOn).thenReturn(musicOn);
 
-        when(() => muted.value).thenReturn(false);
         when(() => soundsOn.value).thenReturn(true);
 
         AudioController(
@@ -352,7 +241,6 @@ void main() {
         final soundsOn = ValueNotifier(true);
         when(() => settingsController.soundsOn).thenReturn(soundsOn);
 
-        when(() => muted.value).thenReturn(false);
         when(() => musicOn.value).thenReturn(false);
 
         AudioController(
@@ -385,7 +273,6 @@ void main() {
 
         when(() => soundsOn.value).thenReturn(true);
         when(() => musicOn.value).thenReturn(true);
-        when(() => muted.value).thenReturn(false);
 
         AudioController(
           createPlayer: playerFactory.createPlayer,
@@ -422,7 +309,6 @@ void main() {
 
         when(() => soundsOn.value).thenReturn(true);
         when(() => musicOn.value).thenReturn(true);
-        when(() => muted.value).thenReturn(false);
 
         AudioController(
           createPlayer: playerFactory.createPlayer,
@@ -459,7 +345,6 @@ void main() {
 
         when(() => soundsOn.value).thenReturn(true);
         when(() => musicOn.value).thenReturn(true);
-        when(() => muted.value).thenReturn(false);
 
         AudioController(
           createPlayer: playerFactory.createPlayer,
@@ -496,7 +381,6 @@ void main() {
 
         when(() => soundsOn.value).thenReturn(true);
         when(() => musicOn.value).thenReturn(true);
-        when(() => muted.value).thenReturn(false);
 
         AudioController(
           createPlayer: playerFactory.createPlayer,
@@ -527,7 +411,6 @@ void main() {
 
         when(() => soundsOn.value).thenReturn(true);
         when(() => musicOn.value).thenReturn(true);
-        when(() => muted.value).thenReturn(false);
 
         AudioController(
           createPlayer: playerFactory.createPlayer,
@@ -559,7 +442,6 @@ void main() {
 
         when(() => soundsOn.value).thenReturn(true);
         when(() => musicOn.value).thenReturn(true);
-        when(() => muted.value).thenReturn(false);
 
         AudioController(
           createPlayer: playerFactory.createPlayer,
@@ -590,7 +472,6 @@ void main() {
 
         when(() => soundsOn.value).thenReturn(true);
         when(() => musicOn.value).thenReturn(true);
-        when(() => muted.value).thenReturn(false);
 
         AudioController(
           createPlayer: playerFactory.createPlayer,
@@ -620,7 +501,6 @@ void main() {
       test('plays the next song when the one is playing finishes', () async {
         final playerFactory = _MockAudioPlayerFactory();
 
-        when(() => muted.value).thenReturn(false);
         when(() => musicOn.value).thenReturn(true);
         when(() => soundsOn.value).thenReturn(true);
 

@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
@@ -131,7 +130,6 @@ extension GameSummaryViewTest on WidgetTester {
     GoRouter? goRouter,
   }) {
     final SettingsController settingsController = _MockSettingsController();
-    when(() => settingsController.muted).thenReturn(ValueNotifier(true));
     return mockNetworkImages(() {
       return pumpApp(
         MatchMakingPage(

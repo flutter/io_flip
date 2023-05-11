@@ -1077,7 +1077,6 @@ extension GameViewTest on WidgetTester {
     GameScriptMachine? gameScriptMachine,
   }) {
     final SettingsController settingsController = _MockSettingsController();
-    when(() => settingsController.muted).thenReturn(ValueNotifier(true));
     return mockNetworkImages(() {
       return pumpApp(
         BlocProvider<GameBloc>.value(

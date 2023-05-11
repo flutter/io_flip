@@ -82,7 +82,6 @@ void main() {
 extension PromptViewTest on WidgetTester {
   Future<void> pumpSubject(PromptFormBloc bloc, GoRouter? goRouter) {
     final SettingsController settingsController = _MockSettingsController();
-    when(() => settingsController.muted).thenReturn(ValueNotifier(true));
 
     return pumpApp(
       Scaffold(

@@ -121,7 +121,6 @@ void main() {
         (tester) async {
           final SettingsController settingsController =
               _MockSettingsController();
-          when(() => settingsController.muted).thenReturn(ValueNotifier(true));
 
           await tester.pumpAppWithRouter(
             router,
@@ -155,7 +154,6 @@ void main() {
         (tester) async {
           final SettingsController settingsController =
               _MockSettingsController();
-          when(() => settingsController.muted).thenReturn(ValueNotifier(true));
 
           await tester.pumpAppWithRouter(
             router,

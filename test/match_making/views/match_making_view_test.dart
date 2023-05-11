@@ -291,7 +291,6 @@ extension MatchMakingViewTest on WidgetTester {
     MatchMakingEvent? tryAgainEvent,
   }) {
     final SettingsController settingsController = _MockSettingsController();
-    when(() => settingsController.muted).thenReturn(ValueNotifier(true));
 
     return mockNetworkImages(() {
       return pumpApp(

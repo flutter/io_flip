@@ -615,7 +615,6 @@ extension DraftViewTest on WidgetTester {
     CacheImageFunction? cacheImage,
   }) async {
     final SettingsController settingsController = _MockSettingsController();
-    when(() => settingsController.muted).thenReturn(ValueNotifier(true));
 
     final ShareResource shareResource = _MockShareResource();
     when(() => shareResource.twitterShareCardUrl(any())).thenReturn('');

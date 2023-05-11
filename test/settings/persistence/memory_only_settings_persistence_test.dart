@@ -16,29 +16,6 @@ void main() {
       expect(value, isFalse);
     });
 
-    test('getMuted', () async {
-      final persistence = MemoryOnlySettingsPersistence()..muted = false;
-      final value = await persistence.getMuted(defaultValue: false);
-      expect(value, isFalse);
-    });
-
-    test('getMuted returns default value if null', () async {
-      final persistence = MemoryOnlySettingsPersistence();
-      final value = await persistence.getMuted(defaultValue: false);
-      expect(value, isFalse);
-    });
-
-    test('saveMuted', () async {
-      final persistence = MemoryOnlySettingsPersistence();
-
-      await persistence.saveMuted(active: true);
-
-      expect(
-        await persistence.getMuted(defaultValue: false),
-        isTrue,
-      );
-    });
-
     test('saveMusicOn', () async {
       final persistence = MemoryOnlySettingsPersistence();
 

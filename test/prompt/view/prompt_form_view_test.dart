@@ -98,7 +98,6 @@ extension PromptFormViewTest on WidgetTester {
     ValueChanged<Prompt>? onStep,
   }) {
     final SettingsController settingsController = _MockSettingsController();
-    when(() => settingsController.muted).thenReturn(ValueNotifier(true));
     return pumpApp(
       Scaffold(
         body: SimpleFlow(

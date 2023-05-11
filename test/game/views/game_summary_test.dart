@@ -238,7 +238,6 @@ void main() {
           when(bloc.gameResult).thenReturn(GameResult.win);
           final SettingsController settingsController =
               _MockSettingsController();
-          when(() => settingsController.muted).thenReturn(ValueNotifier(true));
           await mockNetworkImages(() async {
             await tester.pumpApp(
               BlocProvider<GameBloc>.value(
@@ -264,7 +263,6 @@ void main() {
           when(bloc.gameResult).thenReturn(GameResult.lose);
           final SettingsController settingsController =
               _MockSettingsController();
-          when(() => settingsController.muted).thenReturn(ValueNotifier(true));
           await mockNetworkImages(() async {
             await tester.pumpApp(
               BlocProvider<GameBloc>.value(
@@ -290,7 +288,6 @@ void main() {
           when(bloc.gameResult).thenReturn(GameResult.draw);
           final SettingsController settingsController =
               _MockSettingsController();
-          when(() => settingsController.muted).thenReturn(ValueNotifier(true));
           await mockNetworkImages(() async {
             await tester.pumpApp(
               BlocProvider<GameBloc>.value(
@@ -709,7 +706,6 @@ extension GameSummaryViewTest on WidgetTester {
     AudioController? audioController,
   }) {
     final SettingsController settingsController = _MockSettingsController();
-    when(() => settingsController.muted).thenReturn(ValueNotifier(true));
     return mockNetworkImages(() async {
       await pumpApp(
         BlocProvider<GameBloc>.value(
@@ -746,7 +742,6 @@ extension GameSummaryViewTest on WidgetTester {
       ],
     );
 
-    when(() => settingsController.muted).thenReturn(ValueNotifier(true));
     return mockNetworkImages(() async {
       await pumpAppWithRouter(
         goRouter,

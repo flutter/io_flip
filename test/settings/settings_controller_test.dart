@@ -14,11 +14,7 @@ void main() {
       persistence = _MockSettingsPersistence();
       when(persistence.getMusicOn).thenAnswer((_) async => true);
       when(persistence.getSoundsOn).thenAnswer((_) async => true);
-      when(() => persistence.getMuted(defaultValue: any(named: 'defaultValue')))
-          .thenAnswer((_) async => false);
 
-      when(() => persistence.saveMuted(active: any(named: 'active')))
-          .thenAnswer((_) async {});
       when(() => persistence.saveMusicOn(active: any(named: 'active')))
           .thenAnswer((_) async {});
       when(() => persistence.saveSoundsOn(active: any(named: 'active')))
@@ -32,7 +28,6 @@ void main() {
 
       expect(controller.musicOn.value, isTrue);
       expect(controller.soundsOn.value, isTrue);
-      expect(controller.muted.value, isFalse);
     });
 
     test('can toggle musicOn', () async {
@@ -47,13 +42,6 @@ void main() {
       controller.toggleSoundsOn();
 
       verify(() => persistence.saveSoundsOn(active: false)).called(1);
-    });
-
-    test('can toggle muted', () async {
-      await controller.loadStateFromPersistence();
-      controller.toggleMuted();
-
-      verify(() => persistence.saveMuted(active: true)).called(1);
     });
   });
 }

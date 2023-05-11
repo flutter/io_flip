@@ -118,7 +118,6 @@ void main() {
 extension PromptFormTest on WidgetTester {
   Future<void> pumpSubject(PromptFormBloc bloc, {math.Random? rng}) {
     final SettingsController settingsController = _MockSettingsController();
-    when(() => settingsController.muted).thenReturn(ValueNotifier(true));
     return pumpApp(
       Scaffold(
         body: BlocProvider.value(
