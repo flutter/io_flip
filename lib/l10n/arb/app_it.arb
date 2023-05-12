@@ -1,0 +1,435 @@
+{
+  "@@locale": "it",
+  "play": "Gioca ora",
+  "@play": {
+    "description": "Etichetta gioca"
+  },
+  "playAgain": "Gioca ancora",
+  "@playAgain": {
+    "description": "Etichetta gioca di nuovo"
+  },
+  "ioFlip": "I/O FLIP",
+  "@ioFlip": {
+    "description": "I/O FLIP - Nome del gioco"
+  },
+  "generatingCards": "Generazione {count} di {total}",
+  "@generatingCards": {
+    "description": "Etichetta visualizzata sulla pagina di selezione.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "gameResultError": "Errore durante il recupero del risultato del gioco",
+  "@gameResultError": {
+    "description": "Visualizzato in caso di errore durante il recupero del risultato del gioco"
+  },
+  "letsGetStarted": "Iniziamo",
+  "@letsGetStarted": {
+    "description": "etichetta iniziamo"
+  },
+  "select": "Avanti",
+  "@select": {
+    "description": "etichetta seleziona"
+  },
+  "niceToMeetYou": "Piacere di conoscerti!",
+  "@niceToMeetYou": {
+    "description": "etichetta piacere di conoscerti"
+  },
+  "introTextPromptPage": "Con poche richieste, posso creare un mazzo di carte progettato dall'intelligenza artificiale con alcuni dei nostri personaggi preferiti di Google: Dash, Sparky, Android e Dino, dotati di poteri speciali.",
+  "@introTextPromptPage": {
+    "description": "Testo per l'introduzione durante la selezione del prompt per costruire il mazzo"
+  },
+  "characterClassPromptPageTitle": "Innanzitutto, qual è la classe della vostra squadra?",
+  "@characterClassPromptPageTitle": {
+    "description": "Titolo della pagina di prompt per la classe dei personaggi"
+  },
+  "powerPromptPageTitle": "Quali poteri speciali hanno?",
+  "@powerPromptPageTitle": {
+    "description": "Titolo della pagina di prompt per i poteri"
+  },
+  "leaderboardLongestStreak": "MASSIMA SERIE DI VITTORIE",
+  "@leaderboardLongestStreak": {
+    "description": "Etichetta visualizzata nella classifica per la scheda della categoria della serie di vittorie più lunga"
+  },
+  "leaderboardMostWins": "VITTORIE PIÙ ELEVATE",
+  "@leaderboardMostWins": {
+    "description": "Etichetta visualizzata nella classifica per la scheda della categoria delle vittorie più elevate"
+  },
+  "leaderboardPlayerWins": "{total} vincite",
+  "@leaderboardPlayerWins": {
+    "description": "Etichetta visualizzata nella classifica per mostrare il totale delle vittorie di un giocatore",
+    "placeholders": {
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "leaderboardFailedToLoad": "Impossibile caricare la classifica",
+  "@leaderboardFailedToLoad": {
+    "description": "Etichetta visualizzata sulla classifica quando non si riesce a caricare"
+  },
+  "cardGenerationError": "Errore nella generazione delle schede, riprovare tra qualche istante.",
+  "@cardGenerationError": {
+    "description": "Etichetta visualizzata quando si verifica un errore durante la generazione di un mazzo di carte"
+  },
+  "nextCard": "Prossima carta",
+  "@nextCard": {
+    "description": "Etichetta visualizzata nella pagina di selezione della carta per mostrare la prossima carta"
+  },
+  "gameWonTitle": "Hai vinto!",
+  "@gameWonTitle": {
+    "description": "Titolo di riepilogo del gioco quando il giocatore vince"
+  },
+  "gameLostTitle": "Hai perso!",
+  "@gameLostTitle": {
+    "description": "Titolo di riepilogo del gioco quando il giocatore perde"
+  },
+  "gameTiedTitle": "E' un pareggio!",
+  "@gameTiedTitle": {
+    "description": "Titolo di riepilogo del gioco quando la partita finisce in pareggio"
+  },
+  "gameSummaryStreak": "{total} strisce di vittoria!",
+  "@gameSummaryStreak": {
+    "description": "Etichetta visualizzata nel riepilogo per mostrare la striscia di vittorie corrente di un giocatore",
+    "placeholders": {
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "cardInspectorText": "Toccare le carte per ispezionare e condividere",
+  "@cardInspectorText": {
+    "description": "Testo visualizzato nel riepilogo del gioco per consentire all'utente di ispezionare le carte"
+  },
+  "nextMatch": "PROSSIMO MATCH",
+  "@nextMatch": {
+    "description": "Etichetta visualizzata nella pagina di riepilogo per avviare il prossimo match"
+  },
+  "quit": "USCITA",
+  "@quit": {
+    "description": "Etichetta che mostra di uscire dal gioco"
+  },
+  "cancel": "CANCELLA",
+  "@cancel": {
+    "description": "Etichetta che mostra di annullare un'azione"
+  },
+  "continueLabel": "CONTINUA",
+  "@continueLabel": {
+    "description": "Etichetta che mostra di continuare un'azione"
+  },
+  "enter": "ENTRA",
+  "@enter": {
+    "description": "Etichetta che mostra di entrare"
+  },
+  "submitScore": "INVIA RISULTATO",
+  "@submitScore": {
+    "description": "Etichetta che mostra di inviare il punteggio"
+  },
+  "useCard": "Usa la carta",
+  "@useCard": {
+    "description": "Etichetta visualizzata nella pagina di selezione della carta per utilizzare la carta"
+  },
+  "enterYourInitials": "Inserisci le iniziali per la leaderboard",
+  "@enterYourInitials": {
+    "description": "Sottotitolo sulla pagina di inserimento della leaderboard per invitare gli utenti a inserire le loro iniziali"
+  },
+  "continueButton": "Continua",
+  "@continueButton": {
+    "description": "Etichetta del pulsante Continua"
+  },
+  "enterInitialsError": "Per favore inserisci tre iniziali",
+  "@enterInitialsError": {
+    "description": "Testo di errore di convalida del campo iniziali della classifica"
+  },
+  "blacklistedInitialsError": "Tieni il tuo PG, usa iniziali diverse",
+  "@blacklistedInitialsError": {
+    "description": "Testo di errore di convalida del campo iniziali della classifica quando le iniziali sono in lista nera"
+  },
+  "sharePageTitle": "Condividi la tua mano!",
+  "@sharePageTitle": {
+    "description": "Titolo visualizzato sulla pagina di condivisione"
+  },
+  "sharePageShareButton": "Condividi",
+  "@sharePageShareButton": {
+    "description": "Testo del pulsante Condividi sulla pagina di condivisione",
+    "type": "text",
+    "placeholders": {}
+  },
+  "sharePageMainMenuButton": "Menu principale",
+  "@sharePageMainMenuButton": {
+    "description": "Testo del pulsante del menu principale sulla pagina di condivisione",
+    "type": "text",
+    "placeholders": {}
+  },
+  "settingsPageTitle": "Impostazioni",
+  "@settingsPageTitle": {
+    "description": "Titolo visualizzato sulla pagina delle impostazioni",
+    "type": "text",
+    "placeholders": {}
+  },
+  "mutedItem": "Muto",
+  "@mutedItem": {
+    "description": "Titolo della voce disattivata nelle impostazioni",
+    "type": "text",
+    "placeholders": {}
+  },
+  "settingsSoundEffectsItem": "Effetti sonori",
+  "@settingsSoundEffectsItem": {
+    "description": "Titolo della voce effetti sonori nelle impostazioni",
+    "type": "text",
+    "placeholders": {}
+  },
+  "settingsMusicItem": "Musica",
+  "@settingsMusicItem": {
+    "description": "Titolo della voce musica nelle impostazioni",
+    "type": "text",
+    "placeholders": {}
+  },
+  "settingsCreditsItem": "Crediti, Note legali, Link...",
+  "@settingsCreditsItem": {
+    "description": "Titolo della voce crediti nelle impostazioni",
+    "type": "text",
+    "placeholders": {}
+  },
+  "joinMatch": "Partecipa al match",
+  "@joinMatch": {
+    "description": "Etichetta per partecipare a un match"
+  },
+  "deckBuildingTitle": "Scegliete la vostra squadra",
+  "@deckBuildingTitle": {
+    "description": "Titolo della pagina di selezione del mazzo"
+  },
+  "deckBuildingSubtitle": "Scorri il dito per vedere il resto del tuo pacchetto",
+  "@deckBuildingSubtitle": {
+    "description": "Sottotitolo della pagina di selezione del mazzo"
+  },
+  "findingMatch": "Cerco un match...",
+  "@findingMatch": {
+    "description": "Titolo visualizzato durante l'attesa di trovare un match"
+  },
+  "searchingForOpponents": "Cercando avversari",
+  "@searchingForOpponents": {
+    "description": "Sottotitolo visualizzato durante l'attesa di trovare un match"
+  },
+  "copyInviteCode": "Copia codice di invito",
+  "@copyInviteCode": {
+    "description": "Etichetta sul pulsante per copiare il codice di invito alla partita"
+  },
+  "matchmaking": "MATCHMAKING...",
+  "@matchmaking": {
+    "description": "Etichetta del pulsante della pagina di ricerca della partita"
+  },
+  "getReadyToFlip": "Preparati a FLIPPARE!",
+  "@getReadyToFlip": {
+    "description": "Titolo visualizzato quando la partita è stata trovata, prima di entrare nel gioco"
+  },
+  "aiGameByGoogle": "Un gioco di carte progettato dall'AI di Google",
+  "@aiGameByGoogle": {
+    "description": "Sottotitolo visualizzato quando la partita è stata trovata, prima di entrare nel gioco"
+  },
+  "quitGameDialogTitle": "Sei sicuro?",
+  "@quitGameDialogTitle": {
+    "description": "Titolo della finestra di dialogo per uscire dal gioco"
+  },
+  "quitGameDialogDescription": "Perderai la tua squadra attuale e la tua serie di vittorie.",
+  "@quitGameDialogDescription": {
+    "description": "Descrizione della finestra di dialogo per uscire dal gioco"
+  },
+  "playerAlreadyConnectedError": "I/O FLIP è già aperto su un'altra scheda",
+  "@playerAlreadyConnectedError": {
+    "description": "Messaggio di errore mostrato quando l'utente si connette in più schede"
+  },
+  "playerAlreadyConnectedErrorBody": "Puoi giocare solo su una scheda alla volta.",
+  "@playerAlreadyConnectedErrorBody": {
+    "description": "Messaggio di errore mostrato quando l'utente si connette in più schede"
+  },
+  "unknownConnectionError": "Impossibile connettersi",
+  "@unknownConnectionError": {
+    "description": "Messaggio di errore mostrato quando si verifica un errore sconosciuto durante la connessione"
+  },
+  "unknownConnectionErrorBody": "Riprova tra qualche momento.",
+  "@unknownConnectionErrorBody": {
+    "description": "Messaggio di errore mostrato quando si verifica un errore sconosciuto durante la connessione"
+  },
+  "unknownConnectionErrorButton": "RIPROVA",
+  "@unknownConnectionErrorButton": {
+    "description": "Pulsante mostrato quando si verifica un errore sconosciuto durante la connessione"
+  },
+  "twitterButtonLabel": "TWITTER",
+  "@twitterButtonLabel": {
+    "description": "Etichetta del pulsante per condividere su Twitter"
+  },
+  "facebookButtonLabel": "FACEBOOK",
+  "@facebookButtonLabel": {
+    "description": "Etichetta del pulsante per condividere su Facebook"
+  },
+  "howToPlayIntroTitle": "Prendi un mazzo e crea la tua squadra da milioni di carte progettate dall'AI.",
+  "@howToPlayIntroTitle": {
+    "description": "Testo mostrato nella prima pagina della guida su come giocare"
+  },
+  "howToPlayDeckTitle": "FLIPPA il tuo percorso verso la vetta della classifica con la serie di vittorie più lunga.",
+  "@howToPlayDeckTitle": {
+    "description": "Testo mostrato nella pagina del mazzo della guida su come giocare"
+  },
+  "howToPlayElementsTitle": "GIRA verso la vittoria! I poteri degli elementi causano danni extra durante una partita.",
+  "@howToPlayElementsTitle": {
+    "description": "Testo mostrato nella pagina degli elementi del tutorial"
+  },
+  "howToPlayElementsFireTitle": "<yellow>Il Fuoco</yellow> brucia l'<lightblue>Aria</lightblue> e\nscioglie il <green>Metallo</green>.",
+  "@howToPlayElementsFireTitle": {
+    "description": "Testo mostrato nella pagina del Fuoco del tutorial"
+  },
+  "howToPlayElementsAirTitle": "<lightblue>L'Aria</lightblue> soffia via <red>La Terra</red> e\nspazza via l'<blue>Acqua</blue>.",
+  "@howToPlayElementsAirTitle": {
+    "description": "Testo mostrato nella pagina dell'Aria del tutorial"
+  },
+  "howToPlayElementsMetalTitle": "<green>Il Metallo</green> intrappola l'<lightblue>Aria</lightblue> e\ndevia l'<blue>Acqua</blue>.",
+  "@howToPlayElementsMetalTitle": {
+    "description": "Testo mostrato nella pagina del Metallo del tutorial"
+  },
+  "howToPlayElementsEarthTitle": "<red>La Terra</red> schiaccia il <green>Metallo</green> e\nsoffoca il <yellow>Fuoco</yellow>.",
+  "@howToPlayElementsEarthTitle": {
+    "description": "Testo mostrato nella pagina della Terra del tutorial"
+  },
+  "howToPlayElementsWaterTitle": "<blue>L'Acqua</blue> spegne il <yellow>Fuoco</yellow> e\nerode la <red>Terra</red>.",
+  "@howToPlayElementsWaterTitle": {
+    "description": "Testo mostrato nella pagina dell'Acqua del tutorial"
+  },
+  "shareTeamTitle": "Condividi il tuo team!",
+  "@shareTeamTitle": {
+    "description": "Titolo mostrato nella pagina per condividere il team"
+  },
+  "winStreakLabel": "streak di vittorie!",
+  "@winStreakLabel": {
+    "description": "Etichetta per il numero di vittorie dell'utente"
+  },
+  "shareButtonLabel": "CONDIVIDI",
+  "@shareButtonLabel": {
+    "description": "Testo mostrato sul pulsante per condividere"
+  },
+  "mainMenuButtonLabel": "MENU PRINCIPALE",
+  "@mainMenuButtonLabel": {
+    "description": "Testo mostrato sul pulsante per tornare al menu principale"
+  },
+  "infoDialogTitle": "Informazioni su I/O FLIP",
+  "@infoAboutGameTitle": {
+    "description": "Titolo mostrato nella finestra delle informazioni"
+  },
+  "infoDialogDescriptionPrefix": "Scopri",
+  "@infoDialogDescription": {
+    "description": "Testo prefisso della descrizione mostrata nella finestra delle informazioni"
+  },
+  "infoDialogDescriptionInfixOne": "come è stato creato I/O FLIP",
+  "@infoDialogDescriptionInfixOne": {
+    "description": "Primo testo infix della descrizione mostrato nella finestra delle informazioni"
+  },
+  "infoDialogDescriptionInfixTwo": "e\ncaptura il",
+  "@infoDialogDescriptionInfixTwo": {
+    "description": "Secondo testo infix della descrizione mostrato nella finestra delle informazioni"
+  },
+  "infoDialogDescriptionSuffix": "codice open source.",
+  "@infoDialogDescriptionSuffix": {
+    "description": "Testo suffix della descrizione mostrato nella finestra delle informazioni"
+  },
+  "infoDialogOtherLinks": "Altri Link",
+  "@infoDialogOtherLinks": {
+    "description": "Testo mostrato per il link ad altri contenuti nella finestra delle informazioni"
+  },
+  "ioLinkLabel": "Google I/O",
+  "@ioLinkLabel": {
+    "description": "Testo mostrato sul link Google I/O"
+  },
+  "privacyPolicyLinkLabel": "Privacy Policy",
+  "@privacyPolicyLinkLabel": {
+    "description": "Testo mostrato sul link alla politica sulla privacy"
+  },
+  "termsOfServiceLinkLabel": "Termini di Servizio",
+  "@termsOfServiceLinkLabel": {
+    "description": "Testo mostrato sul link ai termini di servizio"
+  },
+  "faqLinkLabel": "FAQ",
+  "@faqLinkLabel": {
+    "description": "Testo mostrato sul link alle FAQ"
+  },
+  "howItsMadeLinkLabel": "Come è stato creato",
+  "@howItsMadeLinkLabel": {
+    "description": "Testo mostrato sul link 'Come è stato creato'"
+  },
+  "shareCardDisclaimer": "Se scegli di condividere, la tua carta sarà disponibile su un URL unico per 30 giorni e poi cancellata automaticamente.",
+  "@shareCardDisclaimer": {
+    "description": "Disclaimer mostrato nella finestra di condivisione della carta"
+  },
+  "shareCardDialogDescription": "Condividi la tua creazione realizzata dall'AI e poi entra in una partita.",
+  "@shareCardDialogDescription": {
+    "description": "Testo mostrato nella finestra di condivisione della carta"
+  },
+  "shareTeamDisclaimer": "Se scegli di condividere, le tue iniziali, le carte e il tuo punteggio saranno disponibili su un URL unico per 30 giorni e poi cancellati automaticamente.",
+  "@shareTeamDisclaimer": {
+    "description": "Disclaimer mostrato nella finestra di condivisione del team"
+  },
+  "shareTeamDialogDescription": "Condividi il tuo team di I/O FLIP e sfida i tuoi amici a battere la tua striscia vincente!",
+  "@shareTeamDialogDescription": {
+    "description": "Testo mostrato nella finestra di condivisione del team"
+  },
+  "termsOfUseTitle": "Termini di utilizzo di I/O FLIP",
+  "@termsOfUseTitle": {
+    "description": "Titolo mostrato nella pagina dei termini di utilizzo"
+  },
+  "termsOfUseDescriptionPrefix": "Continuando, accetto i",
+  "@termsOfUseDescriptionPrefix": {
+    "description": "Prefisso della descrizione mostrato nella pagina dei termini di utilizzo"
+  },
+  "termsOfUseDescriptionInfixOne": "Termini di servizio",
+  "@termsOfUseDescriptionInfixOne": {
+    "description": "Primo testo infix di descrizione mostrato nella pagina dei termini di servizio"
+  },
+  "termsOfUseDescriptionInfixTwo": "e riconosco che le informazioni che Google raccoglie su di me in relazione a I/O FLIP saranno trattate in conformità con la",
+  "@termsOfUseDescriptionInfixTwo": {
+    "description": "Secondo testo infix di descrizione mostrato nella pagina dei termini di servizio"
+  },
+  "termsOfUseDescriptionSuffix": "Informativa sulla privacy di Google.",
+  "@termsOfUseDescriptionSuffix": {
+    "description": "Testo di descrizione suffisso mostrato nella pagina dei termini di servizio"
+  },
+  "termsOfUseAcceptLabel": "ACCETTA",
+  "@termsOfUseAcceptLabel": {
+    "description": "Testo mostrato sul pulsante di accettazione nella pagina dei termini di servizio"
+  },
+  "termsOfUseDeclineLabel": "RIFIUTA",
+  "@termsOfUseDeclineLabel": {
+    "description": "Testo mostrato sul pulsante di rifiuto nella pagina dei termini di servizio"
+  },
+  "saveButtonLabel": "SALVA",
+  "@saveButtonLabel": {
+    "description": "Etichetta mostrata sul pulsante di salvataggio nella finestra di condivisione"
+  },
+  "downloadingButtonLabel": "SCARICAMENTO IN CORSO",
+  "@downloadingButtonLabel": {
+    "description": "Etichetta mostrata sul pulsante di scaricamento nella finestra di condivisione"
+  },
+  "downloadCompleteButtonLabel": "SCARICATO",
+  "@downloadCompleteButtonLabel": {
+    "description": "Etichetta mostrata sul pulsante di scaricamento completato nella finestra di condivisione"
+  },
+  "downloadCompleteLabel": "Scaricamento completato",
+  "@downloadCompleteLabel": {
+    "description": "Testo mostrato nella notifica di scaricamento completato"
+  },
+  "downloadFailedLabel": "Qualcosa è andato storto, riprova",
+  "@downloadFailedLabel": {
+    "description": "Testo mostrato nella notifica di scaricamento fallito"
+  },
+  "blacklistedErrorMessage": "Teniamolo per la sezione PG, usa iniziali diverse",
+  "@blacklistedErrorMessage": {
+    "description": "Testo mostrato nella form di inserimento iniziali quando queste sono state ritenute non valide"
+  },
+  "termsOfUseContinueLabel": "CONTINUA",
+  "@termsOfUseContinueLabel": {
+    "description": "Testo mostrato sul pulsante di continuazione nella pagina dei termini di servizio"
+  }
+}
