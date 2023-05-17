@@ -16,6 +16,6 @@ jobs:
   build:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1.12.0
     with:
-      flutter_channel: beta
+      flutter_channel: stable
       flutter_version: 3.10.0
       working_directory: packages/io_flip_ui
