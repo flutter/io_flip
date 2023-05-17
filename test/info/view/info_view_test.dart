@@ -22,7 +22,6 @@ void main() {
         l10n.infoDialogTitle,
         descriptionText,
         l10n.infoDialogOtherLinks,
-        l10n.ioFlip,
         l10n.privacyPolicyLinkLabel,
         l10n.termsOfServiceLinkLabel,
         l10n.faqLinkLabel,
