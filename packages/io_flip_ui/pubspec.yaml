@@ -4,8 +4,8 @@ version: 0.1.0+1
 publish_to: none
 
 environment:
-  sdk: ">=3.0.0-417.3.beta <4.0.0"
-  flutter: 3.10.0
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 dependencies:
   device_info_plus: ^8.2.2
