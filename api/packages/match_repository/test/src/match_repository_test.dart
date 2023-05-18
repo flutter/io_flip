@@ -1,4 +1,6 @@
 // ignore_for_file: prefer_const_constructors
+import 'dart:math';
+
 import 'package:cards_repository/cards_repository.dart';
 import 'package:db_client/db_client.dart';
 import 'package:game_domain/game_domain.dart';
@@ -11,6 +13,8 @@ class _MockCardRepository extends Mock implements CardsRepository {}
 class _MockDbClient extends Mock implements DbClient {}
 
 class _MockMatchSolver extends Mock implements MatchSolver {}
+
+class _MockRandom extends Mock implements Random {}
 
 void main() {
   group('MatchRepository', () {
@@ -474,6 +478,8 @@ void main() {
         'correctly updates the match state when is against cpu '
         'and plays only one cpu card',
         () async {
+          final random = _MockRandom();
+          when(() => random.nextInt(any())).thenReturn(1);
           final cpuDeck = Deck(
             id: 'guestDeckId',
             userId: 'CPU_UserId',
@@ -502,6 +508,7 @@ void main() {
             cardId: 'A',
             deckId: hostDeck.id,
             userId: hostDeck.userId,
+            random: random,
           );
 
           verify(
@@ -541,7 +548,7 @@ void main() {
                 id: matchStateId,
                 data: const {
                   'matchId': matchId,
-                  'guestPlayedCards': <String>['card_3'],
+                  'guestPlayedCards': <String>['card_4'],
                   'result': null,
                 },
               ),
