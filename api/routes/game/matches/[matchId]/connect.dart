@@ -36,9 +36,7 @@ FutureOr<Response> onRequest(RequestContext context, String matchId) async {
           characterPower: ([...powers]..shuffle()).first.term,
         );
 
-        final bestCards = List<Card>.from(cards)
-          ..sort((a, b) => b.power.compareTo(a.power));
-        final hand = bestCards.take(3).toList();
+        final hand = _selectCards(List<Card>.from(cards), 0.8);
 
         final deckId = await cardsRepository.createDeck(
           cardIds: hand.map((e) => e.id).toList(),
@@ -61,4 +59,10 @@ FutureOr<Response> onRequest(RequestContext context, String matchId) async {
     }
   }
   return Response(statusCode: HttpStatus.methodNotAllowed);
+}
+
+List<Card> _selectCards(List<Card> inputList, double force) {
+  inputList.sort((a, b) => a.power.compareTo(b.power));
+  final startIndex = ((inputList.length - 3) * force).round();
+  return inputList.sublist(startIndex, startIndex + 3);
 }
