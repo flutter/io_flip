@@ -19,7 +19,7 @@ jobs:
 
       - uses: dart-lang/setup-dart@v1
         with:
-          sdk: beta
+          sdk: stable
 
       - name: Install Dart Frog
         run: dart pub global activate dart_frog_cli
