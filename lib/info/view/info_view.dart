@@ -16,6 +16,7 @@ class InfoView extends StatelessWidget {
       l10n.privacyPolicyLinkLabel: ExternalLinks.privacyPolicy,
       l10n.termsOfServiceLinkLabel: ExternalLinks.termsOfService,
       l10n.faqLinkLabel: ExternalLinks.faq,
+      l10n.devButtonLabel: ExternalLinks.devAward,
     };
 
     final descriptionStyle = IoFlipTextStyles.bodyLG.copyWith(

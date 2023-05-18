@@ -8,6 +8,8 @@ abstract class ExternalLinks {
   static const String faq = 'https://flutter.dev/flip';
   static const String howItsMade = 'https://flutter.dev/flip';
   static const String openSourceCode = 'https://github.com/flutter/io_flip';
+  static const String devAward =
+      'https://developers.google.com/profile/badges/events/io/2023/flip_game/award';
 }
 
 Future<void> openLink(String url, {VoidCallback? onError}) async {
