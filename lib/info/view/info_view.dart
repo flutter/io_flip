@@ -12,7 +12,7 @@ class InfoView extends StatelessWidget {
     final l10n = context.l10n;
 
     final links = {
-      l10n.ioFlip: ExternalLinks.googleIO,
+      l10n.ioLinkLabel: ExternalLinks.googleIO,
       l10n.privacyPolicyLinkLabel: ExternalLinks.privacyPolicy,
       l10n.termsOfServiceLinkLabel: ExternalLinks.termsOfService,
       l10n.faqLinkLabel: ExternalLinks.faq,

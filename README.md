@@ -5,7 +5,6 @@
 [![io_flip][build_status_badge]][workflow_link]
 ![coverage][coverage_badge]
 [![style: very good analysis][very_good_analysis_badge]][very_good_analysis_link]
-[![License: MIT][license_badge]][license_link]
 
 An AI-designed card game built with [Flutter][flutter_link] and [Firebase][firebase_link] for [Google I/O 2023][google_io_link].
 
@@ -52,7 +51,7 @@ the scaling of the backend of the game.
 To execute it in the staging environment, open a terminal an execute:
 
 ```bash
-./scripts/start_flop_webserver.sh
+./scripts/start_flop_webserver.sh <ENCRYPTION_KEY> <ENCRYPTION_IV> <RECAPTCHA_KEY> <APPCHECK_DEBUG_TOKEN>
 ```
 
 You will be able to open the url where Flop started and check the progress of the bot run.
@@ -199,8 +198,6 @@ Update the `CFBundleLocalizations` array in the `Info.plist` at `ios/Runner/Info
 [how_its_made]: https://flutter.dev/flip
 [internationalization_link]: https://flutter.dev/docs/development/accessibility-and-localization/internationalization
 [io_flip_link]: https://flip.withgoogle.com/
-[license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
-[license_link]: https://opensource.org/licenses/MIT
 [logo]: art/readme_header.png
 [very_good_analysis_badge]: https://img.shields.io/badge/style-very_good_analysis-B22C89.svg
 [very_good_analysis_link]: https://pub.dev/packages/very_good_analysis
