@@ -25,7 +25,6 @@ void main() {
         l10n.privacyPolicyLinkLabel,
         l10n.termsOfServiceLinkLabel,
         l10n.faqLinkLabel,
-        l10n.devButtonLabel,
       ];
 
       for (final text in expectedTexts) {
