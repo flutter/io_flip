@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:cards_repository/cards_repository.dart';
 import 'package:db_client/db_client.dart';
@@ -156,7 +157,9 @@ class MatchRepository {
     required String cardId,
     required String deckId,
     required String userId,
+    Random? random,
   }) async {
+    final rng = random ?? Random();
     final match = await getMatch(matchId);
 
     if (match == null) throw MatchNotFoundFailure();
@@ -181,16 +184,18 @@ class MatchRepository {
         newMatchState.guestPlayedCards.length < 3 &&
         newMatchState.guestPlayedCards.length <=
             newMatchState.hostPlayedCards.length) {
+      final unplayedCards = match.guestDeck.cards
+          .where(
+            (card) => !newMatchState.guestPlayedCards.contains(card.id),
+          )
+          .toList();
+
       unawaited(
         Future.delayed(const Duration(seconds: 1), () {
           _playCard(
             match: match,
             matchState: newMatchState,
-            cardId: match.guestDeck.cards
-                .firstWhere(
-                  (card) => !newMatchState.guestPlayedCards.contains(card.id),
-                )
-                .id,
+            cardId: unplayedCards[rng.nextInt(unplayedCards.length)].id,
             deckId: match.guestDeck.id,
             userId: match.guestDeck.userId,
           );
