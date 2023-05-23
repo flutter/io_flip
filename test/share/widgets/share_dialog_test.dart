@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:io_flip/share/bloc/download_bloc.dart';
 import 'package:io_flip/share/widgets/widgets.dart';
+import 'package:io_flip/utils/external_links.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 
@@ -93,6 +94,24 @@ void main() {
           launchedUrl,
           equals(
             shareUrl,
+          ),
+        );
+      },
+    );
+
+    testWidgets(
+      'tapping the Google Developer button launches the correct url',
+      (tester) async {
+        await tester.pumpSubject(
+          downloadBloc: downloadBloc,
+        );
+
+        await tester.tap(find.text(tester.l10n.devButtonLabel));
+
+        expect(
+          launchedUrl,
+          equals(
+            ExternalLinks.devAward,
           ),
         );
       },
