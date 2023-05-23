@@ -273,6 +273,80 @@ void main() {
       }
     });
 
+    group('createCpuDeck', () {
+      late List<Card> cards;
+
+      setUp(() {
+        when(() => dbClient.add('decks', any()))
+            .thenAnswer((_) async => 'deck');
+        cards = List.generate(
+          12,
+          (index) => Card(
+            id: '$index',
+            name: '$index',
+            description: '$index',
+            image: '$index',
+            power: index,
+            rarity: false,
+            suit: Suit.air,
+          ),
+        );
+      });
+
+      test('creates a deck from a list of cards with force 0.92', () async {
+        when(rng.nextDouble).thenReturn(0.8);
+        final deckId = await cardsRepository.createCpuDeck(
+          cards: cards,
+          userId: 'mock-userId',
+        );
+
+        expect(deckId, equals('deck'));
+
+        verify(
+          () => dbClient.add('decks', {
+            'cards': ['8', '9', '10'],
+            'userId': 'CPU_mock-userId',
+          }),
+        ).called(1);
+      });
+
+      test('creates a deck from a list of cards with minimum force: 0.6',
+          () async {
+        when(rng.nextDouble).thenReturn(0);
+        final deckId = await cardsRepository.createCpuDeck(
+          cards: cards,
+          userId: 'mock-userId',
+        );
+
+        expect(deckId, equals('deck'));
+
+        verify(
+          () => dbClient.add('decks', {
+            'cards': ['5', '6', '7'],
+            'userId': 'CPU_mock-userId',
+          }),
+        ).called(1);
+      });
+
+      test('creates a deck from a list of cards with maximum force 1',
+          () async {
+        when(rng.nextDouble).thenReturn(1);
+        final deckId = await cardsRepository.createCpuDeck(
+          cards: cards,
+          userId: 'mock-userId',
+        );
+
+        expect(deckId, equals('deck'));
+
+        verify(
+          () => dbClient.add('decks', {
+            'cards': ['9', '10', '11'],
+            'userId': 'CPU_mock-userId',
+          }),
+        ).called(1);
+      });
+    });
+
     group('createDeck', () {
       setUp(() {
         when(() => dbClient.add('decks', any()))

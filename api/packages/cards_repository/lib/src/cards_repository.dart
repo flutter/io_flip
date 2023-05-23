@@ -90,6 +90,22 @@ class CardsRepository {
     );
   }
 
+  /// Creates a deck for cpu using the given cards.
+  Future<String> createCpuDeck({
+    required List<Card> cards,
+    required String userId,
+  }) {
+    final randomDouble = _rng.nextDouble();
+    final force = 0.4 * randomDouble + 0.6;
+    cards.sort((a, b) => a.power.compareTo(b.power));
+    final startIndex = ((cards.length - 3) * force).round();
+    final deck = cards.sublist(startIndex, startIndex + 3);
+    return _dbClient.add('decks', {
+      'cards': deck.map((e) => e.id).toList(),
+      'userId': 'CPU_$userId',
+    });
+  }
+
   /// Creates a deck with the given cards.
   Future<String> createDeck({
     required List<String> cardIds,
