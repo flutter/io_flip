@@ -260,6 +260,10 @@
   "@unknownConnectionErrorButton": {
     "description": "Button shown when an unknown error occurs while connecting"
   },
+  "devButtonLabel": "DEVELOPER PROFILE",
+  "@devButtonLabel": {
+    "description": "Label for the developer profile button"
+  },
   "twitterButtonLabel": "TWITTER",
   "@twitterButtonLabel": {
     "description": "Label for the share to twitter button"
