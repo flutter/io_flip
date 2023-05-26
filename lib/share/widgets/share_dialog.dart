@@ -95,6 +95,7 @@ class ShareDialogView extends StatelessWidget {
                 label: l10n.facebookButtonLabel,
                 onPressed: () => _urlLauncher(facebookShareUrl),
               ),
+              const SizedBox(height: IoFlipSpacing.sm),
               RoundedButton.image(
                 Image.asset(
                   Assets.images.google.path,
