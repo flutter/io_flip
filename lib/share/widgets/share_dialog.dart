@@ -6,6 +6,7 @@ import 'package:game_domain/game_domain.dart';
 import 'package:io_flip/gen/assets.gen.dart';
 import 'package:io_flip/l10n/l10n.dart';
 import 'package:io_flip/share/bloc/download_bloc.dart';
+import 'package:io_flip/utils/external_links.dart';
 import 'package:io_flip_ui/io_flip_ui.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -93,6 +94,16 @@ class ShareDialogView extends StatelessWidget {
                 ),
                 label: l10n.facebookButtonLabel,
                 onPressed: () => _urlLauncher(facebookShareUrl),
+              ),
+              const SizedBox(height: IoFlipSpacing.sm),
+              RoundedButton.image(
+                Image.asset(
+                  Assets.images.google.path,
+                  color: IoFlipColors.seedWhite,
+                  width: IoFlipSpacing.xlg,
+                ),
+                label: l10n.devButtonLabel,
+                onPressed: () => _urlLauncher(ExternalLinks.devAward),
               ),
               const SizedBox(height: IoFlipSpacing.sm),
               if (downloadCards != null || downloadDeck != null)

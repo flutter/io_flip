@@ -55,8 +55,8 @@ void main() {
   setUp(() {
     cardsRepository = _MockCardsRepository();
     when(
-      () => cardsRepository.createDeck(
-        cardIds: any(named: 'cardIds'),
+      () => cardsRepository.createCpuDeck(
+        cards: any(named: 'cards'),
         userId: any(named: 'userId'),
       ),
     ).thenAnswer((_) async => 'deckId');

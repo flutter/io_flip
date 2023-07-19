@@ -4,8 +4,8 @@ version: 0.1.0+1
 publish_to: none
 
 environment:
-  sdk: ">=3.0.0-134.0.dev <4.0.0"
-  flutter: 3.10.0-1.4.pre
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 dependencies:
   equatable: ^2.0.5
