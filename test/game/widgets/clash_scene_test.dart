@@ -487,6 +487,30 @@ void main() {
         expect(stack, findsOneWidget);
       },
     );
+
+    testWidgets("plays winner's sfx correctly", (tester) async {
+      final audioController = _MockAudioController();
+      when(
+        () => gameScriptMachine.compare(
+          playerCard,
+          opponentCard,
+        ),
+      ).thenReturn(1);
+      when(
+        () => gameScriptMachine.compareSuits(
+          playerCard.suit,
+          opponentCard.suit,
+        ),
+      ).thenReturn(1);
+      await tester.pumpSubject(
+        playerCard,
+        opponentCard,
+        audioController: audioController,
+        gameScriptMachine: gameScriptMachine,
+      );
+
+      verify(() => audioController.playSfx(Assets.sfx.air)).called(1);
+    });
   });
 }
 
