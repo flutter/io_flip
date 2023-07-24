@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:io_flip/audio/audio.dart';
+import 'package:io_flip/audio/audio_controller.dart';
 import 'package:io_flip/draft/draft.dart';
+import 'package:io_flip/gen/assets.gen.dart';
 import 'package:io_flip/how_to_play/how_to_play.dart';
 import 'package:io_flip/l10n/l10n.dart';
 import 'package:io_flip/match_making/match_making.dart';
@@ -148,6 +150,7 @@ class DraftLoadedView extends StatefulWidget {
 class _DraftLoadedViewState extends State<DraftLoadedView> {
   static const _fadeInDuration = Duration(milliseconds: 450);
   static const _fadeInCurve = Curves.easeInOut;
+
   double get _uiOffset => uiVisible ? 0 : 48;
   bool uiVisible = false;
 
@@ -195,6 +198,9 @@ class _DraftLoadedViewState extends State<DraftLoadedView> {
                     opacity: showArrows ? 1 : 0,
                     child: IconButton(
                       onPressed: () {
+                        context
+                            .read<AudioController>()
+                            .playSfx(Assets.sfx.cardMovement);
                         context.read<DraftBloc>().add(const PreviousCard());
                       },
                       icon: const Icon(
@@ -216,6 +222,9 @@ class _DraftLoadedViewState extends State<DraftLoadedView> {
                     opacity: showArrows ? 1 : 0,
                     child: IconButton(
                       onPressed: () {
+                        context
+                            .read<AudioController>()
+                            .playSfx(Assets.sfx.cardMovement);
                         context.read<DraftBloc>().add(const NextCard());
                       },
                       icon: const Icon(

@@ -10,6 +10,7 @@ import 'package:game_domain/game_domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:io_flip/audio/audio_controller.dart';
 import 'package:io_flip/draft/draft.dart';
+import 'package:io_flip/gen/assets.gen.dart';
 import 'package:io_flip/how_to_play/how_to_play.dart';
 import 'package:io_flip/l10n/l10n.dart';
 import 'package:io_flip/match_making/match_making.dart';
@@ -600,6 +601,33 @@ void main() {
         );
 
         expect(find.byType(DeckPack), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'plays card movement sfx correctly',
+      (tester) async {
+        mockState(
+          [
+            DraftState(
+              cards: const [card1, card2],
+              selectedCards: const [],
+              status: DraftStateStatus.deckLoaded,
+              firstCardOpacity: 1,
+            )
+          ],
+        );
+        final audioController = _MockAudioController();
+        await tester.pumpSubject(
+          draftBloc: draftBloc,
+          audioController: audioController,
+        );
+        final buttonFinder = find.byIcon(Icons.arrow_back_ios_new);
+        expect(buttonFinder, findsOneWidget);
+        await tester.tap(buttonFinder);
+        verify(
+          () => audioController.playSfx(Assets.sfx.cardMovement),
+        ).called(1);
       },
     );
   });
