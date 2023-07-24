@@ -70,7 +70,8 @@ class ClashSceneState extends State<ClashScene> with TickerProviderStateMixin {
   late final ComparisonResult winningCard;
   late final ComparisonResult winningSuit;
 
-  var _flipCards = false;
+  bool _flipCards = false;
+  bool _playedWinningElementSound = false;
 
   void onFlipCards() {
     motionController.stop();
@@ -147,6 +148,26 @@ class ClashSceneState extends State<ClashScene> with TickerProviderStateMixin {
           curve: Curves.easeOutCirc,
         ),
       );
+    }
+  }
+
+  void _playSoundByElement(Element element) {
+    switch (element) {
+      case Element.fire:
+        context.read<AudioController>().playSfx(Assets.sfx.fire);
+        break;
+      case Element.air:
+        context.read<AudioController>().playSfx(Assets.sfx.air);
+        break;
+      case Element.earth:
+        context.read<AudioController>().playSfx(Assets.sfx.earth);
+        break;
+      case Element.metal:
+        context.read<AudioController>().playSfx(Assets.sfx.metal);
+        break;
+      case Element.water:
+        context.read<AudioController>().playSfx(Assets.sfx.water);
+        break;
     }
   }
 
@@ -256,28 +277,28 @@ class ClashSceneState extends State<ClashScene> with TickerProviderStateMixin {
       ),
     );
 
+    if (_playedWinningElementSound) {
+      final suit = switch (winningCard) {
+        ComparisonResult.player => widget.playerCard.suit,
+        ComparisonResult.opponent => widget.opponentCard.suit,
+        ComparisonResult.none => null,
+      };
+      if (suit != null) {
+        final element = _elementsMap[suit]!;
+        _playSoundByElement(element);
+      }
+    }
+
     final winningElement = _elementsMap[winningSuit == ComparisonResult.player
         ? widget.playerCard.suit
         : widget.opponentCard.suit];
-
-    if (_flipCards && winningSuit != ComparisonResult.none) {
-      switch (winningElement!) {
-        case Element.fire:
-          context.read<AudioController>().playSfx(Assets.sfx.fire);
-          break;
-        case Element.air:
-          context.read<AudioController>().playSfx(Assets.sfx.air);
-          break;
-        case Element.earth:
-          context.read<AudioController>().playSfx(Assets.sfx.earth);
-          break;
-        case Element.metal:
-          context.read<AudioController>().playSfx(Assets.sfx.metal);
-          break;
-        case Element.water:
-          context.read<AudioController>().playSfx(Assets.sfx.water);
-          break;
+    if (_flipCards &&
+        !_playedWinningElementSound &&
+        winningSuit != ComparisonResult.none) {
+      if (winningSuit != ComparisonResult.none) {
+        _playSoundByElement(winningElement!);
       }
+      _playedWinningElementSound = true;
     }
 
     return AnimatedContainer(

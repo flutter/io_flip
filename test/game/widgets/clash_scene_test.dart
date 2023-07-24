@@ -37,7 +37,6 @@ void main() {
       power: 2,
       suit: Suit.fire,
     );
-
     const earthPlayerCard = Card(
       id: 'earth_player_card',
       name: 'earth_host_card',
@@ -47,7 +46,6 @@ void main() {
       power: 2,
       suit: Suit.earth,
     );
-
     const metalPlayerCard = Card(
       id: 'metal_player_card',
       name: 'metal_host_card',
@@ -57,7 +55,6 @@ void main() {
       power: 2,
       suit: Suit.metal,
     );
-
     const waterPlayerCard = Card(
       id: 'water_player_card',
       name: 'water_host_card',
@@ -67,6 +64,25 @@ void main() {
       power: 2,
       suit: Suit.water,
     );
+    const waterPlayerCardWith11Power = Card(
+      id: 'water_player_card',
+      name: 'water_host_card',
+      description: '',
+      image: 'image.png',
+      rarity: true,
+      power: 11,
+      suit: Suit.water,
+    );
+    const waterPlayerCardWith12Power = Card(
+      id: 'water_player_card',
+      name: 'water_host_card',
+      description: '',
+      image: 'image.png',
+      rarity: true,
+      power: 12,
+      suit: Suit.water,
+    );
+
     const opponentCard = Card(
       id: 'opponent_card',
       name: 'guest_card',
@@ -76,7 +92,6 @@ void main() {
       power: 1,
       suit: Suit.air,
     );
-
     const waterOpponentCard = Card(
       id: 'opponent_card',
       name: 'guest_card',
@@ -487,6 +502,97 @@ void main() {
         expect(stack, findsOneWidget);
       },
     );
+
+    group('plays winning element sfx correctly', () {
+      String sfxBySuit(Suit suit) {
+        switch (suit) {
+          case Suit.fire:
+            return Assets.sfx.fire;
+          case Suit.air:
+            return Assets.sfx.air;
+          case Suit.earth:
+            return Assets.sfx.earth;
+          case Suit.metal:
+            return Assets.sfx.metal;
+          case Suit.water:
+            return Assets.sfx.water;
+        }
+      }
+
+      Future<void> testCards(
+        WidgetTester tester,
+        Card player,
+        Card opponent,
+        int compareResult,
+        int compareSuitsResult,
+      ) async {
+        final audioController = _MockAudioController();
+        when(
+          () => gameScriptMachine.compare(player, opponent),
+        ).thenReturn(compareResult);
+        when(
+          () => gameScriptMachine.compareSuits(player.suit, opponent.suit),
+        ).thenReturn(compareSuitsResult);
+        await tester.pumpSubject(
+          player,
+          opponent,
+          audioController: audioController,
+          gameScriptMachine: gameScriptMachine,
+        );
+        tester
+            .widget<FlipCountdown>(find.byType(FlipCountdown))
+            .onComplete
+            ?.call();
+        await tester.pump(smallFlipAnimation.duration * 2);
+        tester
+            .widget<ElementalDamageAnimation>(
+              find.byType(ElementalDamageAnimation),
+            )
+            .onComplete
+            ?.call();
+        await tester.pumpAndSettle();
+        final playerSfxPlayed =
+            (compareResult == 1 ? 1 : 0) + (compareSuitsResult == 1 ? 1 : 0);
+        final opponentSfxPlayed =
+            (compareResult == -1 ? 1 : 0) + (compareSuitsResult == -1 ? 1 : 0);
+        if (playerSfxPlayed == 0) {
+          verifyNever(() => audioController.playSfx(sfxBySuit(player.suit)));
+        } else {
+          verify(
+            () => audioController.playSfx(sfxBySuit(player.suit)),
+          ).called(playerSfxPlayed);
+        }
+        if (opponentSfxPlayed == 0) {
+          verifyNever(() => audioController.playSfx(sfxBySuit(opponent.suit)));
+        } else {
+          verify(
+            () => audioController.playSfx(sfxBySuit(opponent.suit)),
+          ).called(opponentSfxPlayed);
+        }
+      }
+
+      /// Covers all cases.
+      testWidgets(
+        'air V.S. air',
+        (t) => testCards(t, playerCard, opponentCard, 0, 0),
+      );
+      testWidgets(
+        'fire V.S. water',
+        (t) => testCards(t, firePlayerCard, waterOpponentCard, 1, 1),
+      );
+      testWidgets(
+        'water V.S. air',
+        (t) => testCards(t, waterPlayerCard, opponentCard, -1, -1),
+      );
+      testWidgets(
+        'water11 V.S. air',
+        (t) => testCards(t, waterPlayerCardWith11Power, opponentCard, 0, -1),
+      );
+      testWidgets(
+        'water12 V.S. air',
+        (t) => testCards(t, waterPlayerCardWith12Power, opponentCard, 1, -1),
+      );
+    });
   });
 }
 
