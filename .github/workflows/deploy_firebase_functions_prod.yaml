@@ -14,14 +14,14 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@main
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18
       - run: npm install
       - run: npm run lint
       - run: npm test
       - name: GitHub Action for Firebase
-        uses: w9jds/firebase-action@v12.4.0
+        uses: w9jds/firebase-action@v14.10.1
         with:
           args: deploy --only functions
         env:
