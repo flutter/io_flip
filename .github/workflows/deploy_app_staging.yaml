@@ -12,7 +12,7 @@ jobs:
         with:
           channel: "stable"
       - run: flutter packages get
-      - run: flutter build web --web-renderer canvaskit -t lib/main_staging.dart --dart-define SHARING_ENABLED=true --dart-define ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }} --dart-define ENCRYPTION_IV=${{ secrets.ENCRYPTION_IV }} --dart-define RECAPTCHA_KEY=${{ secrets.RECAPTCHA_KEY }} --dart-define ALLOW_PRIVATE_MATCHES=true
+      - run: flutter build web -t lib/main_staging.dart --dart-define SHARING_ENABLED=true --dart-define ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }} --dart-define ENCRYPTION_IV=${{ secrets.ENCRYPTION_IV }} --dart-define RECAPTCHA_KEY=${{ secrets.RECAPTCHA_KEY }} --dart-define ALLOW_PRIVATE_MATCHES=true
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
