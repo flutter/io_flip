@@ -12,7 +12,7 @@
     "test": "ts-mocha --reporter spec test/**/*.ts"
   },
   "engines": {
-    "node": "18"
+    "node": "24"
   },
   "main": "lib/index.js",
   "dependencies": {
