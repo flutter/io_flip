@@ -18,7 +18,7 @@ jobs:
         with:
           channel: "stable"
       - run: cd flop && flutter packages get
-      - run: cd flop && flutter build web --web-renderer canvaskit -t lib/main.dart --dart-define SHARING_ENABLED=true --dart-define ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }} --dart-define ENCRYPTION_IV=${{ secrets.ENCRYPTION_IV }} --dart-define RECAPTCHA_KEY=${{ secrets.RECAPTCHA_KEY }} --dart-define ALLOW_PRIVATE_MATCHES=true
+      - run: cd flop && flutter build web -t lib/main.dart --dart-define SHARING_ENABLED=true --dart-define ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }} --dart-define ENCRYPTION_IV=${{ secrets.ENCRYPTION_IV }} --dart-define RECAPTCHA_KEY=${{ secrets.RECAPTCHA_KEY }} --dart-define ALLOW_PRIVATE_MATCHES=true
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
