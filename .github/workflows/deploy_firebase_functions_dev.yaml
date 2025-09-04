@@ -27,7 +27,7 @@ jobs:
       - run: npm run lint
       - run: npm test
       - name: GitHub Action for Firebase
-        uses: w9jds/firebase-action@v14.12.1
+        uses: w9jds/firebase-action@v14.15.2
         with:
           args: deploy --only functions
         env:
