@@ -56,7 +56,7 @@ To execute it in the staging environment, open a terminal an execute:
 
 You will be able to open the url where Flop started and check the progress of the bot run.
 
-Which page represents one instance of Flop, to start several instance at the same time,
+Which page represents one instance of Flop, to start several instances at the same time,
 the `scripts/spam_flop.sh` can be used, this scripts needs to receive the port where Flop
 started, so assuming that flop is running on `http://localhost:54678`, run:
 
